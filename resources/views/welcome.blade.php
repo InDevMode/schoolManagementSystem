@@ -25,7 +25,7 @@
 <body class="max-w-sm sm:max-w-xl lg:max-w-7xl mx-auto bg-gray-100 text-slate-800 px-2.5 sm:px-0">
     <div class="flex flex-col lg:flex-row justify-center items-center h-screen">
         <h1
-            class="md:text-2xl lg:text-3xl mb-5 font-bold uppercase text-center bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white py-2 rounded px-8">
+            class="lg:max-w-sm mx-auto md:text-2xl lg:text-3xl mb-5 font-bold uppercase text-center bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white py-2 rounded px-8">
             School Management System</h1>
         <form class="max-w-md mx-auto w-full bg-white rounded-lg p-8">
             <h2 class="md:text-2xl lg:text-3xl mb-5 font-bold uppercase text-center">Connectez-vous</h2>
@@ -75,7 +75,7 @@
                     class="text-white bg-violet-600 hover:bg-violet-800 focus:ring-4 focus:outline-none focus:ring-violet-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-violet-600 dark:hover:bg-violet-700 dark:focus:ring-violet-800 transition-all ease-out w-full sm:w-fit mt-3">Connexion</button>
             </div>
             <button type="submit"
-                class="flex items-center justify-center gap-x-3 text-red-500 border border-red-500 hover:text-white hover:bg-red-600 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-red-500 dark:hover:bg-red-600 dark:focus:ring-red-500 w-full mb-3 transition-all ease-in-out duration-300">
+                class="flex items-center justify-center gap-x-3 text-violet-500 border border-violet-500 hover:text-white hover:bg-violet-600 focus:ring-4 focus:outline-none focus:ring-violet-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-violet-500 dark:hover:bg-violet-600 dark:focus:ring-violet-500 w-full mb-3 transition-all ease-in-out duration-300">
                 <svg class="w-6 h-6 hidden sm:block" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
                     width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
                     <path fill-rule="evenodd"
