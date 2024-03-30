@@ -23,17 +23,17 @@
 </head>
 
 <body class="max-w-sm sm:max-w-xl lg:max-w-7xl mx-auto flex justify-center items-center min-h-screen text-slate-800 px-2.5 sm:px-0 bg-white">
-    <div class="p-8">
+    <div class="lg:p-8">
         <h1 class="hidden lg:block text-slate text-3xl font-bold text-center my-5 uppercase">
             School Management System
         </h1>
-        <div class="flex flex-col lg:flex-row h-1/2 px-44">
+        <div class="flex flex-col lg:flex-row w-full h-1/2 lg:px-44">
             <div class="w-full hidden lg:block">
                 <img class="object-cover rounded-l-lg h-96 w-full " src="https://img.freepik.com/vecteurs-libre/mere-enfant-triste-parlant-illustration-plate-psychologue_1284-65687.jpg?t=st=1711798415~exp=1711802015~hmac=df9ff303731eb48573a5d7fa669992d5ab01d92aec1ab864a3f0e1c4793969ab&w=1380"
                     alt="">
             </div>
-            <form class="w-full bg-gray-100 border-t border-b border-e border-gray-200 rounded-r-lg p-8 lg:h-96">
-                <h2 class="md:text-2xl lg:text-3xl mb-5 font-bold uppercase text-center">Connectez-vous</h2>
+            <form class="w-full bg-gray-100 border-2 lg:border-t lg:border-b lg:border-e border-gray-200 lg:rounded-r-lg rounded-md p-3 lg:p-8 lg:h-96">
+                <h2 class="md:text-2xl lg:text-3xl mb-5 font-bold uppercase text-center bg-gray-500 text-white rounded-t-md py-2">Connectez-vous</h2>
                 <div class="flex mb-5">
                     <span
                         class="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border border-e-0 border-gray-300 rounded-s-md dark:bg-gray-600 dark:text-gray-400 dark:border-gray-600">
@@ -68,7 +68,7 @@
                         class="text-white bg-violet-600 hover:bg-violet-800 focus:ring-4 focus:outline-none focus:ring-violet-300 font-medium rounded-md text-sm px-5 py-2.5 text-center dark:bg-violet-600 dark:hover:bg-violet-700 dark:focus:ring-violet-800 transition-all duration-500 ease-out w-full sm:w-fit mt-3 hover:scale-105">Connexion</button>
                 </div>
                 <button type="submit"
-                    class="flex items-center justify-center gap-x-3 text-violet-600 border-1 border-violet-500 hover:text-white hover:bg-violet-600 focus:ring-4 focus:outline-none focus:ring-violet-300 font-medium rounded-md text-sm px-5 py-2.5 text-center dark:bg-violet-500 dark:hover:bg-violet-600 dark:focus:ring-violet-500 w-full mb-3 transition-all ease-in-out duration-500 hover:scale-105">
+                    class="flex items-center justify-center gap-x-3 text-gray-600 border-2 border-gray-400 hover:text-white hover:border-violet-600 hover:bg-violet-600 focus:ring-4 focus:outline-none focus:ring-violet-300 font-medium rounded-md text-sm px-5 py-2.5 text-center dark:bg-violet-500 dark:hover:bg-violet-600 dark:focus:ring-violet-500 w-full mb-3 transition-all ease-in-out duration-500 hover:scale-105">
                     <i class="fa-brands fa-google-plus-g"></i>
                     Continuez
                     avec Google</button>
@@ -76,7 +76,7 @@
                     <span class="text-sm"><a href="#" class="hover:underline transition-all ease-in duration-300">Mot
                             de passe oublié</a></span>
                     <span class="text-sm"><a href="#"
-                            class="hover:underline text-violet-600 transition-all ease-in duration-300">Créer un
+                            class="hover:underline text-violet-600 transition-all ease-in duration-500">Créer un
                             compte</a></span>
                 </div>
             </form>
