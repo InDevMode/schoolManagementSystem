@@ -24,16 +24,16 @@
 
 <body class="max-w-sm sm:max-w-xl lg:max-w-7xl mx-auto flex justify-center items-center min-h-screen text-slate-800 px-2.5 sm:px-0 bg-white">
     <div class="lg:p-8">
-        <h1 class="hidden lg:block text-slate text-3xl font-bold text-center my-5 uppercase">
+        {{-- <h1 class="hidden lg:block text-slate text-3xl font-bold text-center my-5 uppercase">
             School Management System
-        </h1>
+        </h1> --}}
         <div class="flex flex-col lg:flex-row w-full h-1/2 lg:px-44">
             <div class="w-full hidden lg:block">
-                <img class="object-cover rounded-l-lg h-96 w-full " src="https://img.freepik.com/vecteurs-libre/mere-enfant-triste-parlant-illustration-plate-psychologue_1284-65687.jpg?t=st=1711798415~exp=1711802015~hmac=df9ff303731eb48573a5d7fa669992d5ab01d92aec1ab864a3f0e1c4793969ab&w=1380"
+                <img class="object-cover rounded-l-lg h-96 w-full " src="https://img.freepik.com/psd-gratuit/jeune-femme-discutant-smartphone-tout-etant-assis-chaise-fond-isole-illustration-3d-personnages-dessins-animes_1150-63078.jpg?t=st=1711807749~exp=1711811349~hmac=15d45b38dd560c2a9482586d1b953f681e8eb81abf47108c162334f564b68118&w=1380"
                     alt="">
             </div>
-            <form class="w-full bg-gray-100 border-2 lg:border-t lg:border-b lg:border-e border-gray-200 lg:rounded-r-lg rounded-md p-3 lg:p-8 lg:h-96">
-                <h2 class="md:text-2xl lg:text-3xl mb-5 font-bold uppercase text-center bg-gray-500 text-white rounded-t-md py-2">Connectez-vous</h2>
+            <form class="w-full bg-gray-100 border-2 lg:border-t lg:border-b lg:border-e border-gray-200 lg:rounded-r-lg rounded-md p-3 lg:px-5 lg:h-96">
+                <h2 class="md:text-2xl lg:text-3xl mb-5 font-bold uppercase text-center bg-white text-slate-800 rounded-t-md py-2">Connectez-vous</h2>
                 <div class="flex mb-5">
                     <span
                         class="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border border-e-0 border-gray-300 rounded-s-md dark:bg-gray-600 dark:text-gray-400 dark:border-gray-600">
