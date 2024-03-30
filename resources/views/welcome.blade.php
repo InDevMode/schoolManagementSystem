@@ -22,80 +22,69 @@
     </style>
 </head>
 
-<body class="max-w-sm sm:max-w-xl lg:max-w-7xl mx-auto bg-gray-100 text-slate-800 px-2.5 sm:px-0">
-    <div class="flex flex-col lg:flex-row justify-center items-center h-screen">
-        <h1
-            class="lg:max-w-sm mx-auto md:text-2xl lg:text-3xl mb-5 font-bold uppercase text-center bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white py-2 rounded px-8">
-            School Management System</h1>
-        <form class="max-w-md mx-auto w-full bg-white rounded-lg p-8">
-            <h2 class="md:text-2xl lg:text-3xl mb-5 font-bold uppercase text-center">Connectez-vous</h2>
-            <div class="flex mb-5">
-                <span
-                    class="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border border-e-0 border-gray-300 rounded-s-md dark:bg-gray-600 dark:text-gray-400 dark:border-gray-600">
-                    <svg class="w-5 h-5 text-gray-500 dark:text-gray-400" aria-hidden="true"
-                        xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
-                        viewBox="0 0 24 24">
-                        <path
-                            d="M2.038 5.61A2.01 2.01 0 0 0 2 6v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6c0-.12-.01-.238-.03-.352l-.866.65-7.89 6.032a2 2 0 0 1-2.429 0L2.884 6.288l-.846-.677Z" />
-                        <path
-                            d="M20.677 4.117A1.996 1.996 0 0 0 20 4H4c-.225 0-.44.037-.642.105l.758.607L12 10.742 19.9 4.7l.777-.583Z" />
-                    </svg>
-                </span>
-                <input type="email" id="email"
-                    class="rounded-none rounded-e-lg bg-gray-50 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block flex-1 min-w-0 w-full text-sm p-2  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500"
-                    placeholder="email..." required>
+<body class="max-w-sm sm:max-w-xl lg:max-w-7xl mx-auto flex justify-center items-center min-h-screen text-slate-800 px-2.5 sm:px-0 bg-white">
+    <div class="p-8">
+        <h1 class="hidden lg:block text-slate text-3xl font-bold text-center my-5 uppercase">
+            School Management System
+        </h1>
+        <div class="flex flex-col lg:flex-row h-1/2 px-44">
+            <div class="w-full hidden lg:block">
+                <img class="object-cover rounded-l-lg h-96 w-full " src="https://img.freepik.com/vecteurs-libre/mere-enfant-triste-parlant-illustration-plate-psychologue_1284-65687.jpg?t=st=1711798415~exp=1711802015~hmac=df9ff303731eb48573a5d7fa669992d5ab01d92aec1ab864a3f0e1c4793969ab&w=1380"
+                    alt="">
             </div>
-            <div class="flex mb-5">
-                <span
-                    class="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border border-e-0 border-gray-300 rounded-s-md dark:bg-gray-600 dark:text-gray-400 dark:border-gray-600">
-                    <svg class="w-5 h-5 text-gray-500 dark:text-gray-400" aria-hidden="true"
-                        xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
-                        viewBox="0 0 24 24">
-                        <path fill-rule="evenodd"
-                            d="M8 10V7a4 4 0 1 1 8 0v3h1a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h1Zm2-3a2 2 0 1 1 4 0v3h-4V7Zm2 6a1 1 0 0 1 1 1v3a1 1 0 1 1-2 0v-3a1 1 0 0 1 1-1Z"
-                            clip-rule="evenodd" />
-                    </svg>
-                </span>
-                <input type="password" id="password"
-                    class="rounded-none rounded-e-lg bg-gray-50 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block flex-1 min-w-0 w-full text-sm p-2  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500"
-                    placeholder="mot de passe..." required>
-            </div>
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-5 transition-all duration-300 ease-out">
-                <span class="flex items-start">
-                    <div class="flex items-center h-5">
-                        <input id="remember_token" type="checkbox" value=""
-                            class="w-4 h-4 border border-gray-300 rounded bg-gray-100 focus:ring-3 focus:ring-violet-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-violet-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:outline-none checked:bg-violet-600"
-                            required />
-                    </div>
-                    <label for="remember_token" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Se
-                        souvenir
-                        de moi</label>
-                </span>
+            <form class="w-full bg-gray-100 border-t border-b border-e border-gray-200 rounded-r-lg p-8 lg:h-96">
+                <h2 class="md:text-2xl lg:text-3xl mb-5 font-bold uppercase text-center">Connectez-vous</h2>
+                <div class="flex mb-5">
+                    <span
+                        class="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border border-e-0 border-gray-300 rounded-s-md dark:bg-gray-600 dark:text-gray-400 dark:border-gray-600">
+                        <i class="fa-solid fa-envelope"></i>
+                    </span>
+                    <input type="email" id="email"
+                        class="rounded-none rounded-e-lg bg-white border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block flex-1 min-w-0 w-full text-sm p-2  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500"
+                        placeholder="email..." required>
+                </div>
+                <div class="flex mb-5">
+                    <span
+                        class="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border border-e-0 border-gray-300 rounded-s-md dark:bg-gray-600 dark:text-gray-400 dark:border-gray-600">
+                        <i class="fa-solid fa-lock"></i>
+                    </span>
+                    <input type="password" id="password"
+                        class="rounded-none rounded-e-lg bg-white border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block flex-1 min-w-0 w-full text-sm p-2  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500"
+                        placeholder="mot de passe..." required>
+                </div>
+                <div
+                    class="flex flex-col sm:flex-row sm:items-center justify-between mb-5 transition-all duration-300 ease-out">
+                    <span class="flex items-start">
+                        <div class="flex items-center h-5">
+                            <input id="remember_token" type="checkbox" value=""
+                                class="w-4 h-4 border border-gray-300 rounded bg-white focus:ring-3 focus:ring-violet-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-violet-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:outline-none checked:bg-violet-600"
+                                required />
+                        </div>
+                        <label for="remember_token" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Se
+                            souvenir
+                            de moi</label>
+                    </span>
+                    <button type="submit"
+                        class="text-white bg-violet-600 hover:bg-violet-800 focus:ring-4 focus:outline-none focus:ring-violet-300 font-medium rounded-md text-sm px-5 py-2.5 text-center dark:bg-violet-600 dark:hover:bg-violet-700 dark:focus:ring-violet-800 transition-all duration-500 ease-out w-full sm:w-fit mt-3 hover:scale-105">Connexion</button>
+                </div>
                 <button type="submit"
-                    class="text-white bg-violet-600 hover:bg-violet-800 focus:ring-4 focus:outline-none focus:ring-violet-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-violet-600 dark:hover:bg-violet-700 dark:focus:ring-violet-800 transition-all ease-out w-full sm:w-fit mt-3">Connexion</button>
-            </div>
-            <button type="submit"
-                class="flex items-center justify-center gap-x-3 text-violet-500 border border-violet-500 hover:text-white hover:bg-violet-600 focus:ring-4 focus:outline-none focus:ring-violet-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-violet-500 dark:hover:bg-violet-600 dark:focus:ring-violet-500 w-full mb-3 transition-all ease-in-out duration-300">
-                <svg class="w-6 h-6 hidden sm:block" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                    width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                    <path fill-rule="evenodd"
-                        d="M12.037 21.998a10.313 10.313 0 0 1-7.168-3.049 9.888 9.888 0 0 1-2.868-7.118 9.947 9.947 0 0 1 3.064-6.949A10.37 10.37 0 0 1 12.212 2h.176a9.935 9.935 0 0 1 6.614 2.564L16.457 6.88a6.187 6.187 0 0 0-4.131-1.566 6.9 6.9 0 0 0-4.794 1.913 6.618 6.618 0 0 0-2.045 4.657 6.608 6.608 0 0 0 1.882 4.723 6.891 6.891 0 0 0 4.725 2.07h.143c1.41.072 2.8-.354 3.917-1.2a5.77 5.77 0 0 0 2.172-3.41l.043-.117H12.22v-3.41h9.678c.075.617.109 1.238.1 1.859-.099 5.741-4.017 9.6-9.746 9.6l-.215-.002Z"
-                        clip-rule="evenodd" />
-                </svg>
-                Continuez
-                avec Google</button>
-            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center font-medium mt-5">
-                <span class="text-sm"><a href="#" class="hover:underline transition-all ease-in duration-300">Mot
-                        de passe oublié</a></span>
-                <span class="text-sm"><a href="#"
-                        class="hover:underline text-violet-600 transition-all ease-in duration-300">Créer un
-                        compte</a></span>
-            </div>
-        </form>
+                    class="flex items-center justify-center gap-x-3 text-violet-600 border-1 border-violet-500 hover:text-white hover:bg-violet-600 focus:ring-4 focus:outline-none focus:ring-violet-300 font-medium rounded-md text-sm px-5 py-2.5 text-center dark:bg-violet-500 dark:hover:bg-violet-600 dark:focus:ring-violet-500 w-full mb-3 transition-all ease-in-out duration-500 hover:scale-105">
+                    <i class="fa-brands fa-google-plus-g"></i>
+                    Continuez
+                    avec Google</button>
+                <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center font-medium mt-5">
+                    <span class="text-sm"><a href="#" class="hover:underline transition-all ease-in duration-300">Mot
+                            de passe oublié</a></span>
+                    <span class="text-sm"><a href="#"
+                            class="hover:underline text-violet-600 transition-all ease-in duration-300">Créer un
+                            compte</a></span>
+                </div>
+            </form>
+        </div>
     </div>
 </body>
 
 <!--Script setup flowbite-->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
-
+<script src="https://kit.fontawesome.com/79fa04224e.js" crossorigin="anonymous"></script>
 </html>
