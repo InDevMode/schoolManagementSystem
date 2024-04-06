@@ -30,10 +30,10 @@
 
 <body class="max-w-[360px] sm:max-w-7xl mx-auto flex justify-center items-center h-screen backImage">
     <div class="bg-white py-2 sm:p-5 border-2 border-gray-300 rounded-md  shadow-2xl ">
-        <h1 class="text-center uppercase lg:text-3xl sm:text-2xl text-gray-700 font-bold px-3 py-2 mb-3">School Management
+        <h1 class="text-center uppercase lg:text-3xl sm:text-2xl text-gray-700 font-bold px-3 py-2 lg:py-0 lg:mb-3">School Management
             System
         </h1>
-        <div class="flex flex-col lg:flex-row items-center gap-2lg:px-12 lg:pt-5 sm:p-8 sm:pt-0 border-t-2 border-gray-400 ">
+        <div class="flex flex-col lg:flex-row items-center gap-2">
             <div class="hidden lg:block w-full h-full rounded-r-none rounded-md">
                 <img src="public/images/login3.png" alt="Image login" class="object-cover w-full h-auto">
             </div>
@@ -61,7 +61,7 @@
                     </div>
                     <div
                         class="flex flex-col sm:flex-row sm:items-center justify-between transition-all duration-300 ease-out mb-3">
-                        <span class="flex items-start">
+                        <span class="flex items-start mb-3 sm:mb-0">
                             <div class="flex items-center h-5">
                                 <input id="remember_token" type="checkbox" value=""
                                     class="w-4 h-4 border border-gray-300 rounded bg-white focus:ring-3 focus:ring-violet-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-violet-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:outline-none checked:bg-violet-600"
@@ -83,7 +83,7 @@
                         <hr class="border border-gray-400 w-1/2">
                     </div>
                     <button type="submit"
-                        class="flex items-center justify-center gap-x-3 text-gray-700 border border-gray-600 hover:text-white hover:border-violet-600 hover:bg-violet-600 focus:ring-4 focus:outline-none focus:ring-violet-300 font-medium rounded-md text-sm px-5 py-2.5 text-center dark:bg-violet-500 dark:hover:bg-violet-600 dark:focus:ring-violet-500 w-full mb-3 transition-all ease-in-out duration-700 hover:-translate-y-2 hover:translate-x-2">
+                        class="flex items-center justify-center gap-x-3 text-gray-700 border border-gray-400 hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-violet-300 font-medium rounded-md text-sm px-5 py-2.5 text-center dark:bg-violet-500 dark:hover:bg-violet-600 dark:focus:ring-violet-500 w-full mb-3 transition-all ease-in-out duration-700 hover:-translate-y-2 hover:translate-x-2">
                         <i class="fa-brands fa-google-plus-g"></i>
                         Continuez
                         avec Google
