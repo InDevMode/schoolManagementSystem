@@ -77,14 +77,14 @@
                             class="text-white bg-violet-600 hover:bg-violet-800 focus:ring-4 focus:outline-none focus:ring-violet-300 font-medium rounded-md text-sm px-5 py-2.5 text-center dark:bg-violet-600 dark:hover:bg-violet-700 dark:focus:ring-violet-800 transition-all duration-500 ease-out w-full sm:w-fit hover:scale-105">Connexion
                         </button>
                     </div>
-                    <div class="flex justify-between gap-8 items-center mb-3">
+                    <div class="flex justify-between gap-8 items-center mb-3 text-sm">
                         <hr class="border border-gray-400 w-1/2">
-                        <span>Or</span>
+                        <span class="text-violet-500 font-bold">Or</span>
                         <hr class="border border-gray-400 w-1/2">
                     </div>
                     <button type="submit"
-                        class="flex items-center justify-center gap-x-3 text-gray-700 border border-gray-400 hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-violet-300 font-medium rounded-md text-sm px-5 py-2.5 text-center dark:bg-violet-500 dark:hover:bg-violet-600 dark:focus:ring-violet-500 w-full mb-3 transition-all ease-in-out duration-700 hover:-translate-y-2 hover:translate-x-2">
-                        <i class="fa-brands fa-google-plus-g"></i>
+                        class="flex items-center justify-center gap-x-3 text-pink-500 border border-gray-400 hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-violet-300 font-medium rounded-md text-sm px-5 py-2.5 text-center w-full mb-3 transition-all ease-in-out duration-700 hover:-translate-y-2 hover:translate-x-2">
+                        <i class="fa-brands fa-google-plus-g text-pink-500"></i>
                         Continuez
                         avec Google
                     </button>
