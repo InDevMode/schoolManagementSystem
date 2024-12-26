@@ -7,9 +7,9 @@
             @if(Auth::user()->user_type == 1)
             <li>
                 <a href="{{ url('admin/dashboard') }}"
-                   class="flex items-center p-2 text-white rounded-md dark:text-white hover:bg-white dark:hover:bg-violet-600 group transition-all duration-300 ease-out">
+                   class="flex items-center p-2 text-white rounded-md dark:text-white hover:bg-white dark:hover:bg-violet-600 group transition-all duration-300 ease-out {{ Request::Segment(2) == 'dashboard' ? 'bg-white' : '' }}">
                     <svg
-                        class="w-5 h-5 text-white transition duration-75 dark:text-white group-hover:text-violet-600 dark:group-hover:text-violet-600"
+                        class="w-5 h-5 transition duration-75 dark:text-white group-hover:text-violet-600 dark:group-hover:text-violet-600 {{ Request::Segment(2) == 'dashboard' ? 'group-hover:text-violet-500 text-violet-500' : 'text-white' }}"
                         aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
                         viewBox="0 0 22 21">
                         <path
@@ -17,23 +17,23 @@
                         <path
                             d="M12.5 0c-.157 0-.311.01-.565.027A1 1 0 0 0 11 1.02V10h8.975a1 1 0 0 0 1-.935c.013-.188.028-.374.028-.565A8.51 8.51 0 0 0 12.5 0Z"/>
                     </svg>
-                    <span class="ms-3 group-hover:text-violet-600 dark:group-hover:text-violet-600">Dashboard</span>
+                    <span class="ms-3 group-hover:text-violet-600 dark:group-hover:text-violet-600 {{ Request::Segment(2) == 'dashboard' ? 'text-violet-500' : '' }}">Dashboard</span>
+                    <span
+                        class="inline-flex items-center justify-center px-2.5 ms-3 text-sm font-medium text-violet-500 bg-gray-200 rounded dark:bg-gray-700 dark:text-gray-300"> {{ Request::Segment(1) }}</span>
                 </a>
             </li>
             <li>
                 <a href="{{ url('admin/admin/list') }}"
-                   class="flex items-center p-2 text-white rounded-md dark:text-white hover:bg-violet-600 dark:hover:bg-gray-700 group transition-all duration-300 ease-out">
+                   class="flex items-center p-2 text-white rounded-md dark:text-white hover:bg-white dark:hover:bg-violet-600 group transition-all duration-300 ease-out  {{ Request::Segment(2) == 'admin' ? 'bg-white' : '' }}">
                     <svg
-                        class="flex-shrink-0 w-5 h-5 text-white transition duration-300 dark:text-gray-400 group-hover:text-white dark:group-hover:text-white"
+                        class="w-5 h-5 transition duration-75 dark:text-white group-hover:text-violet-600 dark:group-hover:text-violet-600 {{ Request::Segment(2) == 'admin' ? 'text-violet-500' : 'text-white' }}"
                         aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
                         viewBox="0 0 18 18">
                         <path
                             d="M6.143 0H1.857A1.857 1.857 0 0 0 0 1.857v4.286C0 7.169.831 8 1.857 8h4.286A1.857 1.857 0 0 0 8 6.143V1.857A1.857 1.857 0 0 0 6.143 0Zm10 0h-4.286A1.857 1.857 0 0 0 10 1.857v4.286C10 7.169 10.831 8 11.857 8h4.286A1.857 1.857 0 0 0 18 6.143V1.857A1.857 1.857 0 0 0 16.143 0Zm-10 10H1.857A1.857 1.857 0 0 0 0 11.857v4.286C0 17.169.831 18 1.857 18h4.286A1.857 1.857 0 0 0 8 16.143v-4.286A1.857 1.857 0 0 0 6.143 10Zm10 0h-4.286A1.857 1.857 0 0 0 10 11.857v4.286c0 1.026.831 1.857 1.857 1.857h4.286A1.857 1.857 0 0 0 18 16.143v-4.286A1.857 1.857 0 0 0 16.143 10Z"/>
                     </svg>
                     <span
-                        class="flex-1 ms-3 whitespace-nowrap group-hover:text-white dark:group-hover:text-white">Administrateur</span>
-                    <span
-                        class="inline-flex items-center justify-center px-2.5 ms-3 text-sm font-medium text-gray-800 bg-gray-100 rounded-md dark:bg-gray-700 dark:text-gray-300">Pro</span>
+                        class="ms-3 group-hover:text-violet-600 dark:group-hover:text-violet-600 {{ Request::Segment(2) == 'admin' ? 'text-violet-500' : '' }}">Administrateur</span>
                 </a>
             </li>
             <li>
@@ -192,9 +192,9 @@
             @elseif(Auth::user()->user_type == 2)
             <li>
                 <a href="{{ url('teacher/dashboard') }}"
-                   class="flex items-center p-2 text-white rounded-md dark:text-white hover:bg-white dark:hover:bg-violet-600 group transition-all duration-300 ease-out">
+                   class="flex items-center p-2 text-white rounded-md dark:text-white hover:bg-white dark:hover:bg-violet-600 group transition-all duration-300 ease-out {{ Request::Segment(2) == 'dashboard' ? 'bg-white' : '' }}">
                     <svg
-                        class="w-5 h-5 text-white transition duration-75 dark:text-white group-hover:text-violet-600 dark:group-hover:text-violet-600"
+                        class="w-5 h-5 transition duration-75 dark:text-white group-hover:text-violet-600 dark:group-hover:text-violet-600 {{ Request::Segment(2) == 'dashboard' ? 'group-hover:text-violet-500 text-violet-500' : 'text-white' }}"
                         aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
                         viewBox="0 0 22 21">
                         <path
@@ -202,7 +202,9 @@
                         <path
                             d="M12.5 0c-.157 0-.311.01-.565.027A1 1 0 0 0 11 1.02V10h8.975a1 1 0 0 0 1-.935c.013-.188.028-.374.028-.565A8.51 8.51 0 0 0 12.5 0Z"/>
                     </svg>
-                    <span class="ms-3 group-hover:text-violet-600 dark:group-hover:text-violet-600">Dashboard</span>
+                    <span class="ms-3 group-hover:text-violet-600 dark:group-hover:text-violet-600 {{ Request::Segment(2) == 'dashboard' ? 'text-violet-500' : '' }}">Dashboard</span>
+                    <span
+                        class="inline-flex items-center justify-center px-2.5 ms-3 text-sm font-medium text-violet-500 bg-gray-100 rounded dark:bg-gray-700 dark:text-gray-300"> {{ Request::Segment(1) }}</span>
                 </a>
             </li>
             <li>
@@ -278,9 +280,9 @@
             @elseif(Auth::user()->user_type == 3)
             <li>
                 <a href="{{ url('student/dashboard') }}"
-                   class="flex items-center p-2 text-white rounded-md dark:text-white hover:bg-white dark:hover:bg-violet-600 group transition-all duration-300 ease-out">
+                   class="flex items-center p-2 text-white rounded-md dark:text-white hover:bg-white dark:hover:bg-violet-600 group transition-all duration-300 ease-out {{ Request::Segment(2) == 'dashboard' ? 'bg-white' : '' }}">
                     <svg
-                        class="w-5 h-5 text-white transition duration-75 dark:text-white group-hover:text-violet-600 dark:group-hover:text-violet-600"
+                        class="w-5 h-5 transition duration-75 dark:text-white group-hover:text-violet-600 dark:group-hover:text-violet-600 {{ Request::Segment(2) == 'dashboard' ? 'group-hover:text-violet-500 text-violet-500' : 'text-white' }}"
                         aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
                         viewBox="0 0 22 21">
                         <path
@@ -288,7 +290,9 @@
                         <path
                             d="M12.5 0c-.157 0-.311.01-.565.027A1 1 0 0 0 11 1.02V10h8.975a1 1 0 0 0 1-.935c.013-.188.028-.374.028-.565A8.51 8.51 0 0 0 12.5 0Z"/>
                     </svg>
-                    <span class="ms-3 group-hover:text-violet-600 dark:group-hover:text-violet-600">Dashboard</span>
+                    <span class="ms-3 group-hover:text-violet-600 dark:group-hover:text-violet-600 {{ Request::Segment(2) == 'dashboard' ? 'text-violet-500' : '' }}">Dashboard</span>
+                    <span
+                        class="inline-flex items-center justify-center px-2.5 ms-3 text-sm font-medium text-violet-500 bg-gray-100 rounded dark:bg-gray-700 dark:text-gray-300"> {{ Request::Segment(1) }}</span>
                 </a>
             </li>
             <li>
@@ -364,9 +368,9 @@
             @elseif(Auth::user()->user_type == 4)
             <li>
                 <a href="{{ url('parent/dashboard') }}"
-                   class="flex items-center p-2 text-white rounded-md dark:text-white hover:bg-white dark:hover:bg-violet-600 group transition-all duration-300 ease-out">
+                   class="flex items-center p-2 text-white rounded-md dark:text-white hover:bg-white dark:hover:bg-violet-600 group transition-all duration-300 ease-out {{ Request::Segment(2) == 'dashboard' ? 'bg-white' : '' }}">
                     <svg
-                        class="w-5 h-5 text-white transition duration-75 dark:text-white group-hover:text-violet-600 dark:group-hover:text-violet-600"
+                        class="w-5 h-5 transition duration-75 dark:text-white group-hover:text-violet-600 dark:group-hover:text-violet-600 {{ Request::Segment(2) == 'dashboard' ? 'group-hover:text-violet-500 text-violet-500' : 'text-white' }}"
                         aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
                         viewBox="0 0 22 21">
                         <path
@@ -374,7 +378,9 @@
                         <path
                             d="M12.5 0c-.157 0-.311.01-.565.027A1 1 0 0 0 11 1.02V10h8.975a1 1 0 0 0 1-.935c.013-.188.028-.374.028-.565A8.51 8.51 0 0 0 12.5 0Z"/>
                     </svg>
-                    <span class="ms-3 group-hover:text-violet-600 dark:group-hover:text-violet-600">Dashboard</span>
+                    <span class="ms-3 group-hover:text-violet-600 dark:group-hover:text-violet-600 {{ Request::Segment(2) == 'dashboard' ? 'text-violet-500' : '' }}">Dashboard</span>
+                    <span
+                        class="inline-flex items-center justify-center px-2.5 ms-3 text-sm font-medium text-violet-500 bg-gray-100 rounded dark:bg-gray-700 dark:text-gray-300"> {{ Request::Segment(1) }}</span>
                 </a>
             </li>
             <li>
@@ -559,8 +565,7 @@
                                 d="M8.961 16a.93.93 0 0 0 .189-.019l3.4-.679a.961.961 0 0 0 .49-.263l6.118-6.117a2.884 2.884 0 0 0-4.079-4.078l-6.117 6.117a.96.96 0 0 0-.263.491l-.679 3.4A.961.961 0 0 0 8.961 16Zm7.477-9.8a.958.958 0 0 1 .68-.281.961.961 0 0 1 .682 1.644l-.315.315-1.36-1.36.313-.318Zm-5.911 5.911 4.236-4.236 1.359 1.359-4.236 4.237-1.7.339.341-1.699Z"/>
                         </svg>
                         <span
-                            class="flex-1 ms-3 whitespace-nowrap group-hover:text-white dark:group-hover:text-white">Sign
-                                                Up</span>
+                            class="flex-1 ms-3 whitespace-nowrap group-hover:text-white dark:group-hover:text-white">Sign Up</span>
                     </a>
                 </li>
             </ul>
@@ -568,9 +573,9 @@
             <ul>
                 <li class="absolute bottom-0 left-0 w-full">
                     <a href="{{ url('logout') }}"
-                       class="flex items-center p-2 text-white rounded-md hover:bg-white dark:hover:bg-white group transition-all duration-300 ease-out">
+                       class="flex items-center p-2 text-violet-500 rounded-md border hover:border-white hover:text-white hover:bg-violet-500 bg-white group transition-all duration-300 ease-out">
                         <svg
-                            class="flex-shrink-0 w-5 h-5 text-white transition duration-75 dark:text-gray-400 group-hover:text-violet-600 dark:group-hover:text-violet-600"
+                            class="flex-shrink-0 w-5 h-5 text-violet-500 transition group-hover:border-white duration-75 dark:text-gray-400 group-hover:text-white dark:group-hover:text-violet-600"
                             aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
                             viewBox="0 0 24 24">
                             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -578,7 +583,7 @@
                         </svg>
 
                         <span
-                            class="flex-1 ms-3 whitespace-nowrap group-hover:text-violet-600 dark:group-hover:text-violet-600">Déconnexion</span>
+                            class="flex-1 ms-3 whitespace-nowrap group-hover:text-white dark:group-hover:text-white">Déconnexion</span>
                     </a>
                 </li>
             </ul>

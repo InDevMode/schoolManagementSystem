@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <title>SchoolManagementSystem</title>
+    <title>{{ !empty($header_title) ? $header_title : '' }} - School</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -20,6 +20,7 @@
             font-family: 'Poppins', sans-serif;
         }
     </style>
+    @yield('sytle')
 </head>
 
 <body class="">
@@ -34,5 +35,5 @@
 
 <!--Script setup flowbite-->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
-
+@yield('script')
 </html>
