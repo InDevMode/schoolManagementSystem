@@ -41,7 +41,7 @@ class AuthController extends Controller
         } else {
             return redirect()->back()->with('error', 'Email et mot de passe incorrect');
         }
-        return redirect('login');
+        return redirect(url(''));
     }
 
     public function logout(): \Illuminate\Foundation\Application|\Illuminate\Routing\Redirector|\Illuminate\Http\RedirectResponse|\Illuminate\Contracts\Foundation\Application

@@ -4,6 +4,7 @@
     <div
         class="h-full px-3 pb-4 overflow-y-auto scrollbar-thin scrollbar-thumb-blue-500 scrollbar-track-gray-200 bg-violet-600 text-white dark:bg-gray-800">
         <ul class="space-y-2 font-medium">
+            @if(Auth::user()->user_type == 1)
             <li>
                 <a href="{{ url('admin/dashboard') }}"
                    class="flex items-center p-2 text-white rounded-md dark:text-white hover:bg-white dark:hover:bg-violet-600 group transition-all duration-300 ease-out">
@@ -49,34 +50,6 @@
                         class="flex-1 ms-3 whitespace-nowrap group-hover:text-white dark:group-hover:text-white">Inbox</span>
                     <span
                         class="inline-flex items-center justify-center w-3 h-3 p-3 ms-3 text-sm font-medium text-blue-800 bg-blue-100 rounded-full dark:bg-blue-900 dark:text-blue-300">3</span>
-                </a>
-            </li>
-            <li>
-                <a href="#"
-                   class="flex items-center p-2 text-white rounded-md dark:text-white hover:bg-violet-600 dark:hover:bg-gray-700 group transition-all duration-300 ease-out">
-                    <svg
-                        class="flex-shrink-0 w-5 h-5 text-white transition duration-300 dark:text-gray-400 group-hover:text-white dark:group-hover:text-whit"
-                        aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
-                        viewBox="0 0 20 18">
-                        <path
-                            d="M14 2a3.963 3.963 0 0 0-1.4.267 6.439 6.439 0 0 1-1.331 6.638A4 4 0 1 0 14 2Zm1 9h-1.264A6.957 6.957 0 0 1 15 15v2a2.97 2.97 0 0 1-.184 1H19a1 1 0 0 0 1-1v-1a5.006 5.006 0 0 0-5-5ZM6.5 9a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9ZM8 10H5a5.006 5.006 0 0 0-5 5v2a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-2a5.006 5.006 0 0 0-5-5Z"/>
-                    </svg>
-                    <span
-                        class="flex-1 ms-3 whitespace-nowrap group-hover:text-white dark:group-hover:text-white">Users</span>
-                </a>
-            </li>
-            <li>
-                <a href="#"
-                   class="flex items-center p-2 text-white rounded-md dark:text-white hover:bg-violet-600 dark:hover:bg-gray-700 group transition-all duration-300 ease-out">
-                    <svg
-                        class="flex-shrink-0 w-5 h-5 text-white transition duration-300 dark:text-gray-400 group-hover:text-white dark:group-hover:text-whit"
-                        aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
-                        viewBox="0 0 18 20">
-                        <path
-                            d="M17 5.923A1 1 0 0 0 16 5h-3V4a4 4 0 1 0-8 0v1H2a1 1 0 0 0-1 .923L.086 17.846A2 2 0 0 0 2.08 20h13.84a2 2 0 0 0 1.994-2.153L17 5.923ZM7 9a1 1 0 0 1-2 0V7h2v2Zm0-5a2 2 0 1 1 4 0v1H7V4Zm6 5a1 1 0 1 1-2 0V7h2v2Z"/>
-                    </svg>
-                    <span
-                        class="flex-1 ms-3 whitespace-nowrap group-hover:text-white dark:group-hover:text-white">Products</span>
                 </a>
             </li>
             <li>
@@ -151,6 +124,262 @@
             <li>
                 <button type="button"
                         class="flex items-center w-full p-2 text-base text-white transition duration-500 rounded-md group hover:bg-violet-600 dark:text-white dark:hover:bg-gray-700"
+                        aria-controls="dropdownPages" data-collapse-toggle="dropdownPages">
+                    <svg
+                        class="flex-shrink-0 w-5 h-5 text-white transition duration-300 group-hover:text-white dark:text-gray-400 dark:group-hover:text-white"
+                        aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                        viewBox="0 0 18 21">
+                        <path
+                            d="M15 12a1 1 0 0 0 .962-.726l2-7A1 1 0 0 0 17 3H3.77L3.175.745A1 1 0 0 0 2.208 0H1a1 1 0 0 0 0 2h.438l.6 2.255v.019l2 7 .746 2.986A3 3 0 1 0 9 17a2.966 2.966 0 0 0-.184-1h2.368c-.118.32-.18.659-.184 1a3 3 0 1 0 3-3H6.78l-.5-2H15Z"/>
+                    </svg>
+                    <span
+                        class="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap group-hover:text-white dark:group-hover:text-white">Pages</span>
+                    <svg
+                        class="w-3 h-3 text-white transition duration-300 group-hover:text-white dark:text-gray-400 dark:group-hover:text-white"
+                        aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                              stroke-width="2" d="m1 1 4 4 4-4"/>
+                    </svg>
+                </button>
+                <ul id="dropdownPages" class="hidden py-2 space-y-2">
+                    <li>
+                        <a href="#"
+                           class="flex items-center gap-3 w-full p-2 text-white transition duration-300 rounded-md group hover:bg-violet-600 dark:text-white dark:hover:bg-gray-700">
+                            <svg
+                                class=" w-5 h-5 text-white transition duration-300 dark:text-gray-400 group-hover:text-white dark:group-hover:text-whit"
+                                aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
+                                height="24" fill="currentColor" viewBox="0 0 24 24">
+                                <path fill-rule="evenodd"
+                                      d="M3 4a1 1 0 0 0-.822 1.57L6.632 12l-4.454 6.43A1 1 0 0 0 3 20h13.153a1 1 0 0 0 .822-.43l4.847-7a1 1 0 0 0 0-1.14l-4.847-7a1 1 0 0 0-.822-.43H3Z"
+                                      clip-rule="evenodd"/>
+                            </svg>
+                            <span
+                                class="whitespace-nowrap group-hover:text-white dark:group-hover:text-white">Principale</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#"
+                           class="flex items-center gap-3 w-full p-2 text-white transition duration-300 rounded-md group hover:bg-violet-600 dark:text-white dark:hover:bg-gray-700">
+                            <svg
+                                class=" w-5 h-5 text-white transition duration-300 dark:text-gray-400 group-hover:text-white dark:group-hover:text-whit"
+                                aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
+                                height="24" fill="currentColor" viewBox="0 0 24 24">
+                                <path fill-rule="evenodd"
+                                      d="M3 4a1 1 0 0 0-.822 1.57L6.632 12l-4.454 6.43A1 1 0 0 0 3 20h13.153a1 1 0 0 0 .822-.43l4.847-7a1 1 0 0 0 0-1.14l-4.847-7a1 1 0 0 0-.822-.43H3Z"
+                                      clip-rule="evenodd"/>
+                            </svg>
+                            <span
+                                class="whitespace-nowrap group-hover:text-white dark:group-hover:text-white">Secondary</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#"
+                           class="flex items-center gap-3 w-full p-2 text-white transition duration-300 rounded-md group hover:bg-violet-600 dark:text-white dark:hover:bg-gray-700">
+                            <svg
+                                class=" w-5 h-5 text-white transition duration-300 dark:text-gray-400 group-hover:text-white dark:group-hover:text-whit"
+                                aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
+                                height="24" fill="currentColor" viewBox="0 0 24 24">
+                                <path fill-rule="evenodd"
+                                      d="M3 4a1 1 0 0 0-.822 1.57L6.632 12l-4.454 6.43A1 1 0 0 0 3 20h13.153a1 1 0 0 0 .822-.43l4.847-7a1 1 0 0 0 0-1.14l-4.847-7a1 1 0 0 0-.822-.43H3Z"
+                                      clip-rule="evenodd"/>
+                            </svg>
+                            <span
+                                class="whitespace-nowrap group-hover:text-white dark:group-hover:text-white">Tertiary</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            @elseif(Auth::user()->user_type == 2)
+            <li>
+                <a href="{{ url('teacher/dashboard') }}"
+                   class="flex items-center p-2 text-white rounded-md dark:text-white hover:bg-white dark:hover:bg-violet-600 group transition-all duration-300 ease-out">
+                    <svg
+                        class="w-5 h-5 text-white transition duration-75 dark:text-white group-hover:text-violet-600 dark:group-hover:text-violet-600"
+                        aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                        viewBox="0 0 22 21">
+                        <path
+                            d="M16.975 11H10V4.025a1 1 0 0 0-1.066-.998 8.5 8.5 0 1 0 9.039 9.039.999.999 0 0 0-1-1.066h.002Z"/>
+                        <path
+                            d="M12.5 0c-.157 0-.311.01-.565.027A1 1 0 0 0 11 1.02V10h8.975a1 1 0 0 0 1-.935c.013-.188.028-.374.028-.565A8.51 8.51 0 0 0 12.5 0Z"/>
+                    </svg>
+                    <span class="ms-3 group-hover:text-violet-600 dark:group-hover:text-violet-600">Dashboard</span>
+                </a>
+            </li>
+            <li>
+                <button type="button"
+                        class="flex items-center w-full p-2 text-base text-white transition duration-500 rounded-md group hover:bg-violet-600 dark:text-white dark:hover:bg-gray-700"
+                        aria-controls="dropdownMessages" data-collapse-toggle="dropdownMessages">
+                    <svg
+                        class="flex-shrink-0 w-5 h-5 text-white transition duration-300 group-hover:text-white dark:text-gray-400 dark:group-hover:text-white"
+                        aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                        fill="currentColor" viewBox="0 0 24 24">
+                        <path fill-rule="evenodd"
+                              d="M3 5.983C3 4.888 3.895 4 5 4h14c1.105 0 2 .888 2 1.983v8.923a1.992 1.992 0 0 1-2 1.983h-6.6l-2.867 2.7c-.955.899-2.533.228-2.533-1.08v-1.62H5c-1.105 0-2-.888-2-1.983V5.983Zm5.706 3.809a1 1 0 1 0-1.412 1.417 1 1 0 1 0 1.412-1.417Zm2.585.002a1 1 0 1 1 .003 1.414 1 1 0 0 1-.003-1.414Zm5.415-.002a1 1 0 1 0-1.412 1.417 1 1 0 1 0 1.412-1.417Z"
+                              clip-rule="evenodd"/>
+                    </svg>
+
+                    <span
+                        class="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap group-hover:text-white dark:group-hover:text-white">Messages</span>
+                    <svg
+                        class="w-3 h-3 text-white transition duration-300 group-hover:text-white dark:text-gray-400 dark:group-hover:text-white"
+                        aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                              stroke-width="2" d="m1 1 4 4 4-4"/>
+                    </svg>
+                </button>
+                <ul id="dropdownMessages" class="hidden py-2 space-y-2">
+                    <li>
+                        <a href="#"
+                           class="flex items-center gap-3 w-full p-2 text-white transition duration-300 rounded-md group hover:bg-violet-600 dark:text-white dark:hover:bg-gray-700">
+                            <svg
+                                class=" w-5 h-5 text-white transition duration-300 dark:text-gray-400 group-hover:text-white dark:group-hover:text-whit"
+                                aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
+                                height="24" fill="currentColor" viewBox="0 0 24 24">
+                                <path fill-rule="evenodd"
+                                      d="M3 4a1 1 0 0 0-.822 1.57L6.632 12l-4.454 6.43A1 1 0 0 0 3 20h13.153a1 1 0 0 0 .822-.43l4.847-7a1 1 0 0 0 0-1.14l-4.847-7a1 1 0 0 0-.822-.43H3Z"
+                                      clip-rule="evenodd"/>
+                            </svg>
+                            <span
+                                class="whitespace-nowrap group-hover:text-white dark:group-hover:text-white">Parents</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#"
+                           class="flex items-center gap-3 w-full p-2 text-white transition duration-300 rounded-md group hover:bg-violet-600 dark:text-white dark:hover:bg-gray-700">
+                            <svg
+                                class=" w-5 h-5 text-white transition duration-300 dark:text-gray-400 group-hover:text-white dark:group-hover:text-whit"
+                                aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
+                                height="24" fill="currentColor" viewBox="0 0 24 24">
+                                <path fill-rule="evenodd"
+                                      d="M3 4a1 1 0 0 0-.822 1.57L6.632 12l-4.454 6.43A1 1 0 0 0 3 20h13.153a1 1 0 0 0 .822-.43l4.847-7a1 1 0 0 0 0-1.14l-4.847-7a1 1 0 0 0-.822-.43H3Z"
+                                      clip-rule="evenodd"/>
+                            </svg>
+                            <span
+                                class="whitespace-nowrap group-hover:text-white dark:group-hover:text-white">Professor</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#"
+                           class="flex items-center gap-3 w-full p-2 text-white transition duration-300 rounded-md group hover:bg-violet-600 dark:text-white dark:hover:bg-gray-700">
+                            <svg
+                                class=" w-5 h-5 text-white transition duration-300 dark:text-gray-400 group-hover:text-white dark:group-hover:text-whit"
+                                aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
+                                height="24" fill="currentColor" viewBox="0 0 24 24">
+                                <path fill-rule="evenodd"
+                                      d="M3 4a1 1 0 0 0-.822 1.57L6.632 12l-4.454 6.43A1 1 0 0 0 3 20h13.153a1 1 0 0 0 .822-.43l4.847-7a1 1 0 0 0 0-1.14l-4.847-7a1 1 0 0 0-.822-.43H3Z"
+                                      clip-rule="evenodd"/>
+                            </svg>
+                            <span
+                                class="whitespace-nowrap group-hover:text-white dark:group-hover:text-white">Student</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            @elseif(Auth::user()->user_type == 3)
+            <li>
+                <a href="{{ url('student/dashboard') }}"
+                   class="flex items-center p-2 text-white rounded-md dark:text-white hover:bg-white dark:hover:bg-violet-600 group transition-all duration-300 ease-out">
+                    <svg
+                        class="w-5 h-5 text-white transition duration-75 dark:text-white group-hover:text-violet-600 dark:group-hover:text-violet-600"
+                        aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                        viewBox="0 0 22 21">
+                        <path
+                            d="M16.975 11H10V4.025a1 1 0 0 0-1.066-.998 8.5 8.5 0 1 0 9.039 9.039.999.999 0 0 0-1-1.066h.002Z"/>
+                        <path
+                            d="M12.5 0c-.157 0-.311.01-.565.027A1 1 0 0 0 11 1.02V10h8.975a1 1 0 0 0 1-.935c.013-.188.028-.374.028-.565A8.51 8.51 0 0 0 12.5 0Z"/>
+                    </svg>
+                    <span class="ms-3 group-hover:text-violet-600 dark:group-hover:text-violet-600">Dashboard</span>
+                </a>
+            </li>
+            <li>
+                <button type="button"
+                        class="flex items-center w-full p-2 text-base text-white transition duration-500 rounded-md group hover:bg-violet-600 dark:text-white dark:hover:bg-gray-700"
+                        aria-controls="dropdownMessages" data-collapse-toggle="dropdownMessages">
+                    <svg
+                        class="flex-shrink-0 w-5 h-5 text-white transition duration-300 group-hover:text-white dark:text-gray-400 dark:group-hover:text-white"
+                        aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                        fill="currentColor" viewBox="0 0 24 24">
+                        <path fill-rule="evenodd"
+                              d="M3 5.983C3 4.888 3.895 4 5 4h14c1.105 0 2 .888 2 1.983v8.923a1.992 1.992 0 0 1-2 1.983h-6.6l-2.867 2.7c-.955.899-2.533.228-2.533-1.08v-1.62H5c-1.105 0-2-.888-2-1.983V5.983Zm5.706 3.809a1 1 0 1 0-1.412 1.417 1 1 0 1 0 1.412-1.417Zm2.585.002a1 1 0 1 1 .003 1.414 1 1 0 0 1-.003-1.414Zm5.415-.002a1 1 0 1 0-1.412 1.417 1 1 0 1 0 1.412-1.417Z"
+                              clip-rule="evenodd"/>
+                    </svg>
+
+                    <span
+                        class="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap group-hover:text-white dark:group-hover:text-white">Messages</span>
+                    <svg
+                        class="w-3 h-3 text-white transition duration-300 group-hover:text-white dark:text-gray-400 dark:group-hover:text-white"
+                        aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                              stroke-width="2" d="m1 1 4 4 4-4"/>
+                    </svg>
+                </button>
+                <ul id="dropdownMessages" class="hidden py-2 space-y-2">
+                    <li>
+                        <a href="#"
+                           class="flex items-center gap-3 w-full p-2 text-white transition duration-300 rounded-md group hover:bg-violet-600 dark:text-white dark:hover:bg-gray-700">
+                            <svg
+                                class=" w-5 h-5 text-white transition duration-300 dark:text-gray-400 group-hover:text-white dark:group-hover:text-whit"
+                                aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
+                                height="24" fill="currentColor" viewBox="0 0 24 24">
+                                <path fill-rule="evenodd"
+                                      d="M3 4a1 1 0 0 0-.822 1.57L6.632 12l-4.454 6.43A1 1 0 0 0 3 20h13.153a1 1 0 0 0 .822-.43l4.847-7a1 1 0 0 0 0-1.14l-4.847-7a1 1 0 0 0-.822-.43H3Z"
+                                      clip-rule="evenodd"/>
+                            </svg>
+                            <span
+                                class="whitespace-nowrap group-hover:text-white dark:group-hover:text-white">Parents</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#"
+                           class="flex items-center gap-3 w-full p-2 text-white transition duration-300 rounded-md group hover:bg-violet-600 dark:text-white dark:hover:bg-gray-700">
+                            <svg
+                                class=" w-5 h-5 text-white transition duration-300 dark:text-gray-400 group-hover:text-white dark:group-hover:text-whit"
+                                aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
+                                height="24" fill="currentColor" viewBox="0 0 24 24">
+                                <path fill-rule="evenodd"
+                                      d="M3 4a1 1 0 0 0-.822 1.57L6.632 12l-4.454 6.43A1 1 0 0 0 3 20h13.153a1 1 0 0 0 .822-.43l4.847-7a1 1 0 0 0 0-1.14l-4.847-7a1 1 0 0 0-.822-.43H3Z"
+                                      clip-rule="evenodd"/>
+                            </svg>
+                            <span
+                                class="whitespace-nowrap group-hover:text-white dark:group-hover:text-white">Professor</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#"
+                           class="flex items-center gap-3 w-full p-2 text-white transition duration-300 rounded-md group hover:bg-violet-600 dark:text-white dark:hover:bg-gray-700">
+                            <svg
+                                class=" w-5 h-5 text-white transition duration-300 dark:text-gray-400 group-hover:text-white dark:group-hover:text-whit"
+                                aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
+                                height="24" fill="currentColor" viewBox="0 0 24 24">
+                                <path fill-rule="evenodd"
+                                      d="M3 4a1 1 0 0 0-.822 1.57L6.632 12l-4.454 6.43A1 1 0 0 0 3 20h13.153a1 1 0 0 0 .822-.43l4.847-7a1 1 0 0 0 0-1.14l-4.847-7a1 1 0 0 0-.822-.43H3Z"
+                                      clip-rule="evenodd"/>
+                            </svg>
+                            <span
+                                class="whitespace-nowrap group-hover:text-white dark:group-hover:text-white">Student</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            @elseif(Auth::user()->user_type == 4)
+            <li>
+                <a href="{{ url('parent/dashboard') }}"
+                   class="flex items-center p-2 text-white rounded-md dark:text-white hover:bg-white dark:hover:bg-violet-600 group transition-all duration-300 ease-out">
+                    <svg
+                        class="w-5 h-5 text-white transition duration-75 dark:text-white group-hover:text-violet-600 dark:group-hover:text-violet-600"
+                        aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                        viewBox="0 0 22 21">
+                        <path
+                            d="M16.975 11H10V4.025a1 1 0 0 0-1.066-.998 8.5 8.5 0 1 0 9.039 9.039.999.999 0 0 0-1-1.066h.002Z"/>
+                        <path
+                            d="M12.5 0c-.157 0-.311.01-.565.027A1 1 0 0 0 11 1.02V10h8.975a1 1 0 0 0 1-.935c.013-.188.028-.374.028-.565A8.51 8.51 0 0 0 12.5 0Z"/>
+                    </svg>
+                    <span class="ms-3 group-hover:text-violet-600 dark:group-hover:text-violet-600">Dashboard</span>
+                </a>
+            </li>
+            <li>
+                <button type="button"
+                        class="flex items-center w-full p-2 text-base text-white transition duration-500 rounded-md group hover:bg-violet-600 dark:text-white dark:hover:bg-gray-700"
                         aria-controls="dropdownMessages" data-collapse-toggle="dropdownMessages">
                     <svg
                         class="flex-shrink-0 w-5 h-5 text-white transition duration-300 group-hover:text-white dark:text-gray-400 dark:group-hover:text-white"
@@ -219,73 +448,32 @@
                 </ul>
             </li>
             <li>
-                <button type="button"
-                        class="flex items-center w-full p-2 text-base text-white transition duration-500 rounded-md group hover:bg-violet-600 dark:text-white dark:hover:bg-gray-700"
-                        aria-controls="dropdownPages" data-collapse-toggle="dropdownPages">
+                <a href="#"
+                   class="flex items-center p-2 text-white rounded-md dark:text-white hover:bg-violet-600 dark:hover:bg-gray-700 group transition-all duration-300 ease-out">
                     <svg
-                        class="flex-shrink-0 w-5 h-5 text-white transition duration-300 group-hover:text-white dark:text-gray-400 dark:group-hover:text-white"
+                        class="flex-shrink-0 w-5 h-5 text-white transition duration-300 dark:text-gray-400 group-hover:text-white dark:group-hover:text-whit"
                         aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
-                        viewBox="0 0 18 21">
+                        viewBox="0 0 20 18">
                         <path
-                            d="M15 12a1 1 0 0 0 .962-.726l2-7A1 1 0 0 0 17 3H3.77L3.175.745A1 1 0 0 0 2.208 0H1a1 1 0 0 0 0 2h.438l.6 2.255v.019l2 7 .746 2.986A3 3 0 1 0 9 17a2.966 2.966 0 0 0-.184-1h2.368c-.118.32-.18.659-.184 1a3 3 0 1 0 3-3H6.78l-.5-2H15Z"/>
+                            d="M14 2a3.963 3.963 0 0 0-1.4.267 6.439 6.439 0 0 1-1.331 6.638A4 4 0 1 0 14 2Zm1 9h-1.264A6.957 6.957 0 0 1 15 15v2a2.97 2.97 0 0 1-.184 1H19a1 1 0 0 0 1-1v-1a5.006 5.006 0 0 0-5-5ZM6.5 9a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9ZM8 10H5a5.006 5.006 0 0 0-5 5v2a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-2a5.006 5.006 0 0 0-5-5Z"/>
                     </svg>
                     <span
-                        class="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap group-hover:text-white dark:group-hover:text-white">Pages</span>
+                        class="flex-1 ms-3 whitespace-nowrap group-hover:text-white dark:group-hover:text-white">Users</span>
+                </a>
+            </li>
+            <li>
+                <a href="#"
+                   class="flex items-center p-2 text-white rounded-md dark:text-white hover:bg-violet-600 dark:hover:bg-gray-700 group transition-all duration-300 ease-out">
                     <svg
-                        class="w-3 h-3 text-white transition duration-300 group-hover:text-white dark:text-gray-400 dark:group-hover:text-white"
-                        aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                              stroke-width="2" d="m1 1 4 4 4-4"/>
+                        class="flex-shrink-0 w-5 h-5 text-white transition duration-300 dark:text-gray-400 group-hover:text-white dark:group-hover:text-whit"
+                        aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                        viewBox="0 0 18 20">
+                        <path
+                            d="M17 5.923A1 1 0 0 0 16 5h-3V4a4 4 0 1 0-8 0v1H2a1 1 0 0 0-1 .923L.086 17.846A2 2 0 0 0 2.08 20h13.84a2 2 0 0 0 1.994-2.153L17 5.923ZM7 9a1 1 0 0 1-2 0V7h2v2Zm0-5a2 2 0 1 1 4 0v1H7V4Zm6 5a1 1 0 1 1-2 0V7h2v2Z"/>
                     </svg>
-                </button>
-                <ul id="dropdownPages" class="hidden py-2 space-y-2">
-                    <li>
-                        <a href="#"
-                           class="flex items-center gap-3 w-full p-2 text-white transition duration-300 rounded-md group hover:bg-violet-600 dark:text-white dark:hover:bg-gray-700">
-                            <svg
-                                class=" w-5 h-5 text-white transition duration-300 dark:text-gray-400 group-hover:text-white dark:group-hover:text-whit"
-                                aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
-                                height="24" fill="currentColor" viewBox="0 0 24 24">
-                                <path fill-rule="evenodd"
-                                      d="M3 4a1 1 0 0 0-.822 1.57L6.632 12l-4.454 6.43A1 1 0 0 0 3 20h13.153a1 1 0 0 0 .822-.43l4.847-7a1 1 0 0 0 0-1.14l-4.847-7a1 1 0 0 0-.822-.43H3Z"
-                                      clip-rule="evenodd"/>
-                            </svg>
-                            <span
-                                class="whitespace-nowrap group-hover:text-white dark:group-hover:text-white">Principale</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#"
-                           class="flex items-center gap-3 w-full p-2 text-white transition duration-300 rounded-md group hover:bg-violet-600 dark:text-white dark:hover:bg-gray-700">
-                            <svg
-                                class=" w-5 h-5 text-white transition duration-300 dark:text-gray-400 group-hover:text-white dark:group-hover:text-whit"
-                                aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
-                                height="24" fill="currentColor" viewBox="0 0 24 24">
-                                <path fill-rule="evenodd"
-                                      d="M3 4a1 1 0 0 0-.822 1.57L6.632 12l-4.454 6.43A1 1 0 0 0 3 20h13.153a1 1 0 0 0 .822-.43l4.847-7a1 1 0 0 0 0-1.14l-4.847-7a1 1 0 0 0-.822-.43H3Z"
-                                      clip-rule="evenodd"/>
-                            </svg>
-                            <span
-                                class="whitespace-nowrap group-hover:text-white dark:group-hover:text-white">Secondary</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#"
-                           class="flex items-center gap-3 w-full p-2 text-white transition duration-300 rounded-md group hover:bg-violet-600 dark:text-white dark:hover:bg-gray-700">
-                            <svg
-                                class=" w-5 h-5 text-white transition duration-300 dark:text-gray-400 group-hover:text-white dark:group-hover:text-whit"
-                                aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
-                                height="24" fill="currentColor" viewBox="0 0 24 24">
-                                <path fill-rule="evenodd"
-                                      d="M3 4a1 1 0 0 0-.822 1.57L6.632 12l-4.454 6.43A1 1 0 0 0 3 20h13.153a1 1 0 0 0 .822-.43l4.847-7a1 1 0 0 0 0-1.14l-4.847-7a1 1 0 0 0-.822-.43H3Z"
-                                      clip-rule="evenodd"/>
-                            </svg>
-                            <span
-                                class="whitespace-nowrap group-hover:text-white dark:group-hover:text-white">Tertiary</span>
-                        </a>
-                    </li>
-
-                </ul>
+                    <span
+                        class="flex-1 ms-3 whitespace-nowrap group-hover:text-white dark:group-hover:text-white">Products</span>
+                </a>
             </li>
             <ul class="pt-4 mt-4 space-y-2 font-medium border-t border-gray-200 dark:border-gray-700">
                 <li>
@@ -354,7 +542,7 @@
                         </svg>
                         <span
                             class="flex-1 ms-3 whitespace-nowrap group-hover:text-white dark:group-hover:text-white">Sign
-                                In</span>
+                                                In</span>
                     </a>
                 </li>
                 <li>
@@ -372,9 +560,12 @@
                         </svg>
                         <span
                             class="flex-1 ms-3 whitespace-nowrap group-hover:text-white dark:group-hover:text-white">Sign
-                                Up</span>
+                                                Up</span>
                     </a>
                 </li>
+            </ul>
+            @endif
+            <ul>
                 <li class="absolute bottom-0 left-0 w-full">
                     <a href="{{ url('logout') }}"
                        class="flex items-center p-2 text-white rounded-md hover:bg-white dark:hover:bg-white group transition-all duration-300 ease-out">
