@@ -6,6 +6,7 @@ use App\Mail\ForgotPasswordMail;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 
@@ -76,6 +77,21 @@ class AuthController extends Controller
             return view('auth.reset', $data);
         } else {
             abort(404);
+        }
+    }
+
+    public function resetAndChangePassword(Request $request, $token): \Illuminate\Foundation\Application|\Illuminate\Routing\Redirector|\Illuminate\Http\RedirectResponse|\Illuminate\Contracts\Foundation\Application
+    {
+        if ($request->password == $request->confPassword) {
+
+            $user = User::getTokenSingle($token);
+            $user->password = Hash::make($request->password);
+            $user->remember_token = Str::random(30);
+            $user->save();
+
+            return redirect(url(''))->with('success', 'Votre mot de passe a été réinitialisé avec succès.');
+        } else {
+            return redirect()->back()->with('error', 'Les deux mot de passes ne correspondent pas.');
         }
     }
 
