@@ -1,8 +1,14 @@
 @component('mail::message')
-Salut {{ $user->name }},
-<p>Nous comprenons que cela arrive</p>
-@component('mail::button', ['url' => url('reset/' .$user->remember_token)]) Réinitialiser votre mot de passe @endcomponent
-<p>Si vous rencontrez des problèmes pour récupérer votre mot de passe, veuillez nous contacter.</p>
-Merci</br>
+{{ $user->name }},
+
+Vous avez demandé la réinitialisation de votre mot de passe. Cliquez sur le bouton ci-dessous pour définir un nouveau mot de passe.
+
+@component('mail::button', ['url' => url('reset/' . $user->remember_token)])
+Réinitialiser mon mot de passe
+@endcomponent
+
+Si vous n'avez pas fait cette demande, ignorez cet email.
+
+Merci,
 {{ config('app.name') }}
 @endcomponent

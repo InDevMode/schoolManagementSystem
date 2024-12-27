@@ -30,7 +30,7 @@ class ForgotPasswordMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Mot de passe oublié',
+            subject: 'Réinitialisez votre mot de passe',
         );
     }
 

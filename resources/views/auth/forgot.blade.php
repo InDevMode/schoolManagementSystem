@@ -42,8 +42,8 @@
             @include('message')
             <form action="{{ url('forgot-password') }}" method="post" class="">
                 {{ csrf_field() }}
-                <h2 class="lg:text-3xl sm:text-2xl font-bold uppercase text-center text-gray-700 rounded-t-md mb-3">
-                    Changez votre mot de passe</h2>
+                <h2 class="lg:text-2xl sm:text-2xl font-bold uppercase text-center text-gray-700 rounded-t-md mb-3">
+                    Réinitialisez votre mot de passe</h2>
                 <div class="flex mb-5">
                         <span
                             class="inline-flex items-center px-3 text-sm text-gray-900 bg-white border border-e-0 border-gray-300 rounded-s-md dark:bg-gray-600 dark:text-gray-400 dark:border-gray-600">

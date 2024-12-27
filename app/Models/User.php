@@ -47,4 +47,8 @@ class User extends Authenticatable
     static public function getEmailSingle($email){
         return User::where('email', '=' , $email)->first();
     }
+
+    static public function getTokenSingle($remember_token){
+        return User::where('remember_toker', '=', $remember_token)->first();
+    }
 }

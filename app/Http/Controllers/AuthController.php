@@ -6,7 +6,6 @@ use App\Mail\ForgotPasswordMail;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 
@@ -55,17 +54,28 @@ class AuthController extends Controller
 
     public function changePassword(Request $request): \Illuminate\Foundation\Application|\Illuminate\Routing\Redirector|\Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse
     {
-        $checkUserEmail = User::getEmailSingle($request->email);
+        $user = User::getEmailSingle($request->email);
 
-        if(!empty($checkUserEmail)){
-            $checkUserEmail->remember_token = Str::random(30);
-            $checkUserEmail->save();
+        if (!empty($user)) {
+            $user->remember_token = Str::random(30);
+            $user->save();
 
-            Mail::to($checkUserEmail->email)->send(new ForgotPasswordMail($checkUserEmail));
-
+            Mail::to($user->email)->send(new ForgotPasswordMail($user));
             return redirect()->back()->with('success', 'Veuillez vérifier votre boîte mail et réinitialiser votre mot de passe.');
-        }else{
+        } else {
             return redirect()->back()->with('error', 'Email non trouvé dans le système.');
+        }
+    }
+
+    public function resetPassword($remember_token)
+    {
+        $user = User::getTokenSingle($remember_token);
+
+        if (!empty($user)) {
+            $data['user'] = $user;
+            return view('auth.reset', $data);
+        } else {
+            abort(404);
         }
     }
 
