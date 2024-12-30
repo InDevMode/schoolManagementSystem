@@ -68,9 +68,9 @@ class AuthController extends Controller
         }
     }
 
-    public function resetPassword($remember_token)
+    public function resetPassword($token)
     {
-        $user = User::getTokenSingle($remember_token);
+        $user = User::getTokenSingle($token);
 
         if (!empty($user)) {
             $data['user'] = $user;
@@ -85,6 +85,9 @@ class AuthController extends Controller
         if ($request->password == $request->confPassword) {
 
             $user = User::getTokenSingle($token);
+            if (!$user) {
+                return redirect()->back()->with('error', 'Token invalide ou utilisateur introuvable.');
+            }
             $user->password = Hash::make($request->password);
             $user->remember_token = Str::random(30);
             $user->save();

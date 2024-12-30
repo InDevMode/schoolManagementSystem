@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <title>Réinitialisez le mot de passe</title>
+    <title>Changez le mot de passe</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -37,10 +37,10 @@
     <div class="flex flex-col lg:flex-row items-center gap-2">
         <div class="w-full rounded-l-none rounded-md p-5">
             @include('message')
-            <form action="}" method="post" class="">
+            <form action="" method="post" class="">
                 {{ csrf_field() }}
                 <h2 class="lg:text-2xl sm:text-2xl font-bold uppercase text-center text-gray-700 rounded-t-md mb-3">
-                    Réinitialisez votre mot de passe</h2>
+                    Changez votre mot de passe</h2>
                 <div class="flex mb-5">
                         <span
                             class="inline-flex items-center px-3 text-sm text-gray-900 bg-white border border-e-0 border-gray-300 rounded-s-md dark:bg-gray-600 dark:text-gray-400 dark:border-gray-600">
@@ -48,7 +48,7 @@
                         </span>
                     <input type="password" id="password" name="password"
                            class="rounded-none rounded-e-md bg-white border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500"
-                           placeholder="mot de passe..." required>
+                           placeholder="nouveau mot de passe..." required>
                 </div>
                 <div class="flex mb-5">
                         <span
