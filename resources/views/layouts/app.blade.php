@@ -35,5 +35,7 @@
 
 <!--Script setup flowbite-->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
+<script src="https://kit.fontawesome.com/79fa04224e.js" crossorigin="anonymous"></script>
 @yield('script')
+
 </html>

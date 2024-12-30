@@ -31,6 +31,7 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'user_type',
+        'is_delete',
         'remember_token',
     ];
 
@@ -43,6 +44,18 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    static public function getSingle($id){
+        return User::find($id);
+    }
+
+    static public function getAllAdmin(){
+        return User::select('users.*')
+            ->where('user_type','=',1)
+            ->where('is_delete', '=',0)
+            ->orderBy('id', 'desc')
+            ->get();
+    }
 
     static public function getEmailSingle($email){
         return User::where('email', '=' , $email)->first();
