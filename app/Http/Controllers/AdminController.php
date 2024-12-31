@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
 
 class AdminController extends Controller
 {
@@ -25,17 +26,33 @@ class AdminController extends Controller
     public function create(Request $request): \Illuminate\Foundation\Application|\Illuminate\Routing\Redirector|\Illuminate\Http\RedirectResponse|\Illuminate\Contracts\Foundation\Application
     {
         try {
+            $userMail = User::getEmailSingle($request->email);
+            $passwordLength = strlen($request->password);
+            $regex = '/^[a-z0-9]+@[a-z0-9]+\.(fr|com|org|bj|io)$/';
+
+            if($userMail){
+                return redirect('admin/admin/add')->with('error', 'Cet email a déjà été utilisé.');
+            }
+            if($passwordLength < 6){
+                return redirect('admin/admin/add')->with('error', 'Votre mot de passe ne doit pas être de moins de 6 caractères.');
+            }
+
+            if (!preg_match($regex, $request->email)) {
+                return redirect('admin/admin/add')->with('error', 'Cet email est invalide. Assurez-vous qu\'il se termine par .fr, .com, .org, .bj ou .io.');
+            }
+
             $user = new User;
             $user->name = trim($request->name);
             $user->email = trim($request->email);
             $user->password = Hash::make($request->password);
             $user->user_type = 1;
             $user->save();
+
             return redirect('admin/admin/list')->with('success', 'Cet administrateur a été créé avec succès.');
         } catch (\Exception $e) {
             Log::error("Erreur lors de la création d'un utilisateur : " . $e->getMessage());
 
-            return redirect()->back()->with('error', 'Erreur lors de la création d\'un utilisateur. Veuillez réessayer.');
+            return redirect()->back()->with('error', 'Vos informations ne sont pas correctes. Veuillez réessayer.');
         }
     }
 
@@ -54,18 +71,43 @@ class AdminController extends Controller
     {
         try {
             $user = User::getSingle($id);
+            $userMail = User::checkEmailSingle($request->email, $id);
+            $passwordLength = strlen($request->password);
+            $regex = '/^[a-z0-9]+@[a-z0-9]+\.(fr|com|org|bj|io)$/';
+
+            if (!$user) {
+                return redirect()->back()->with('error', 'Cet administrateur est introuvable.');
+            }
+
+            if ($userMail) {
+                return redirect()->back()->with('error', 'Cet email est déjà utilisé par un autre utilisateur.');
+            }
+
+            if (!preg_match($regex, $request->email)) {
+                return redirect()->back()->with('error', 'Cet email est invalide. Assurez-vous qu\'il se termine par .fr, .com, .org, .bj ou .io.');
+            }
+
+            if (!empty($request->password) && $passwordLength < 6) {
+                return redirect()->back()->with('error', 'Votre mot de passe ne doit pas être de moins de 6 caractères.');
+            }
+
             $user->name = trim($request->name);
             $user->email = trim($request->email);
+
             if (!empty($request->password)) {
                 $user->password = Hash::make($request->password);
             }
+
             $user->save();
-            return redirect('admin/admin/list')->with('success', 'Les informations de cet administrateur ont été modifié avec succès.');
+
+            return redirect('admin/admin/list')->with('success', 'Les informations de cet administrateur ont été modifiées avec succès.');
+
         } catch (\Exception $e) {
             Log::error("Erreur lors de la modification des informations de cet utilisateur : " . $e->getMessage());
 
-            return redirect()->back()->with('error', 'Erreur lors de la de la modification des informations utilisateur. Veuillez réessayer.');
+            return redirect()->back()->with('error', 'Erreur lors de la modification des informations utilisateur. Veuillez réessayer.');
         }
+
     }
 
     public function delete($id): \Illuminate\Foundation\Application|\Illuminate\Routing\Redirector|\Illuminate\Http\RedirectResponse|\Illuminate\Contracts\Foundation\Application

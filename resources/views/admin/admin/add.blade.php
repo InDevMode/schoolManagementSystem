@@ -12,7 +12,7 @@
                             class="inline-flex items-center px-3 text-sm text-gray-900 bg-white border border-e-0 border-gray-300 rounded-s-md dark:bg-gray-600 dark:text-gray-400 dark:border-gray-600">
                             <i class="fa-solid fa-user text-violet-600"></i>
                         </span>
-                <input type="text" id="name" name="name"
+                <input type="text" id="name" name="name" value="{{ old('name') }}"
                        class="rounded-none rounded-e-md bg-white border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500"
                        placeholder="nom..." required>
             </div>
@@ -21,7 +21,7 @@
                             class="inline-flex items-center px-3 text-sm text-gray-900 bg-white border border-e-0 border-gray-300 rounded-s-md dark:bg-gray-600 dark:text-gray-400 dark:border-gray-600">
                             <i class="fa-solid fa-envelope text-violet-600"></i>
                         </span>
-                <input type="email" id="email" name="email"
+                <input type="email" id="email" name="email" value="{{ old('email') }}"
                        class="rounded-none rounded-e-md bg-white border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500"
                        placeholder="email..." required>
             </div>
