@@ -6,6 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Request;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
@@ -52,11 +53,25 @@ class User extends Authenticatable
 
     static public function getAllAdmin()
     {
-        return User::select('users.*')
+        $results = User::select('users.*')
             ->where('user_type', '=', 1)
-            ->where('is_delete', '=', 0)
-            ->orderBy('id', 'desc')
-            ->paginate(1);
+            ->where('is_delete', '=', 0);
+
+        $filters = [
+            'name' => 'like',
+            'email' => 'like',
+            'created_at' => 'like',
+            'updated_at' => 'like',
+        ];
+
+        foreach ($filters as $field => $operator) {
+            if (!empty(Request::get($field))) {
+                $value = $operator === 'like' ? '%' . Request::get($field) . '%' : Request::get($field);
+                $results = $results->where($field, $operator, $value);
+            }
+        }
+
+        return $results->orderBy('id', 'desc')->paginate(5);
     }
 
     static public function getEmailSingle($email)

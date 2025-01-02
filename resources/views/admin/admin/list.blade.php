@@ -4,19 +4,55 @@
     <div class="p-4 rounded-lg dark:border-gray-700 mt-14">
         @include('message')
         <div class="flex justify-between pt-2">
-            <span class="font-bold uppercase">Liste des administrateurs</span>
+            <span class="font-bold uppercase">Liste des administrateurs  </span>
             <a href="{{ url('admin/admin/add') }}"
                class="text-white bg-violet-600 hover:bg-violet-800 focus:ring-4 focus:outline-none focus:ring-violet-300 font-medium rounded-md text-sm px-5 py-2.5 text-center dark:bg-violet-600 dark:hover:bg-violet-700 dark:focus:ring-violet-800 transition-all duration-500 ease-out w-full sm:w-fit hover:scale-105">
                 Créer un Administrateur
             </a>
         </div>
-        <div class="pt-2">
+        <div class="">
             <div class="mt-4">
                 {{ $getAdmin->links('vendor.pagination.tailwind') }}
             </div>
         </div>
-
-        <div class="pt-3 relative overflow-x-auto shadow-md sm:rounded-lg">
+        <form action="" method="get" class="flex justify-between my-5" id="searchForm">
+            {{ csrf_field() }}
+            <div class="">
+                <input type="text" id="name" name="name" value="{{ Request::get('name') }}"
+                       class="rounded bg-white border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500"
+                       placeholder="nom...">
+            </div>
+            <div class="">
+                <input type="email" id="email" name="email" value="{{ Request::get('email') }}"
+                       class="rounded bg-white border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500"
+                       placeholder="email...">
+            </div>
+            <div class="">
+                <input type="date" id="created_at" name="created_at" value="{{ Request::get('created_at') }}"
+                       class="rounded bg-white border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500"
+                       placeholder="date de création...">
+            </div>
+            <div class="">
+                <input type="date" id="updated_at" name="updated_at" value="{{ Request::get('updated_at') }}"
+                       class="rounded bg-white border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500"
+                       placeholder="date de modification...">
+            </div>
+            <div class="flex">
+                <button type="submit"
+                        class="flex justify-between text-white bg-violet-600 hover:bg-violet-800 focus:ring-4 focus:outline-none focus:ring-violet-300 font-medium rounded-md text-sm px-5 py-2.5 text-center dark:bg-violet-600 dark:hover:bg-violet-700 dark:focus:ring-violet-800 transition-all duration-500 ease-out w-fit hover:scale-105">
+                    Rechercher
+                    <span
+                        class="inline-flex items-center px-3 text-sm text-gray-900">
+                            <i class="fa-solid fa-search text-white"></i>
+                        </span>
+                </button>
+                <a href="{{ url('admin/admin/list') }}"
+                   class="ms-5 text-gray-800 bg-gray-300 hover:bg-gray-400 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-md text-sm px-5 py-2.5 text-center dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800 transition-all duration-500 ease-out w-fit hover:scale-105">
+                    Réinitialiser les filtres
+                </a>
+            </div>
+        </form>
+        <div class="pt-3 relative overflow-x-auto shadow-md sm:rounded-lg" id="results">
             <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                 <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                 <tr>
@@ -112,10 +148,10 @@
                         {{ $user -> email }}
                     </td>
                     <td class="px-6 py-4">
-                        {{ $user -> created_at }}
+                        {{ $user -> created_at->format('d/m/Y H:i:s') }}
                     </td>
                     <td class="px-6 py-4">
-                        {{ $user -> updated_at }}
+                        {{ $user -> updated_at->format('d/m/Y H:i:s') }}
                     </td>
                     <td class="flex items-center px-6 py-4">
                         <a href="{{ url('admin/admin/edit', $user -> id) }}"
@@ -145,20 +181,48 @@
                         </button>
                     </td>
                 </tr>
+                @endforeach
                 @if($getAdmin->isEmpty())
                 <tr>
-                    <td colspan="7" class="px-6 py-4 text-center text-gray-500">
+                    <td colspan="7" class="p-6 text-center text-gray-500">
                         Aucun administrateur trouvé.
                     </td>
                 </tr>
                 @endif
-                @endforeach
                 </tbody>
             </table>
+            <div class="text-center p-2">
+                <div class="mt-4">
+                    <span class="text-violet-500">Total :</span> {{ $getAdmin->total() }}
+                </div>
+            </div>
         </div>
     </div>
 </div>
 @endsection
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const form = document.getElementById('searchForm');
+        const resultsContainer = document.getElementById('results');
 
+        form.addEventListener('input', () => {
+            const formData = new FormData(form);
+
+            fetch('{{ url("admin/admin/list") }}', {
+                method: 'GET',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                },
+                body: new URLSearchParams(formData),
+            })
+                .then(response => response.text())
+                .then(html => {
+                    resultsContainer.innerHTML = html;
+                })
+                .catch(error => console.error('Error:', error));
+        });
+    });
+
+</script>
 
 
