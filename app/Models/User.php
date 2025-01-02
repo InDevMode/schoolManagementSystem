@@ -46,12 +46,12 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
-    static public function getSingle($id)
+    static public function getSingle(int $id)
     {
         return User::find($id);
     }
 
-    static public function getAllAdmin()
+    static public function getAllAdmin(int $perPage)
     {
         $results = User::select('users.*')
             ->where('user_type', '=', 1)
@@ -71,21 +71,27 @@ class User extends Authenticatable
             }
         }
 
-        return $results->orderBy('id', 'desc')->paginate(5);
+        return $results->orderBy('id', 'desc')->paginate($perPage);
     }
 
-    static public function getEmailSingle($email)
+    static public function getEmailSingle(string $email)
     {
         return User::where('email', '=', $email)->first();
     }
 
-    static public function checkEmailSingle($email, $id)
+    static public function checkEmailSingle(string $email, int $id)
     {
         return User::where('email', $email)->where('id', '!=', $id)->first();
     }
 
-    static public function getTokenSingle($token)
+    static public function getTokenSingle(string $token)
     {
         return User::where('remember_token', '=', $token)->first();
     }
+
+    public function classes(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(ClassModel::class, 'created_by');
+    }
+
 }

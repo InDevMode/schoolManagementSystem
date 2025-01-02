@@ -12,7 +12,7 @@ class AdminController extends Controller
     public function list(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
     {
         $data['header_title'] = "Liste des admins";
-        $data['getAdmin'] = User::getAllAdmin();
+        $data['getAdmin'] = User::getAllAdmin(5);
         return view('admin.admin.list', $data);
     }
 

@@ -4,15 +4,15 @@
     <div class="p-4 rounded-lg dark:border-gray-700 mt-14">
         @include('message')
         <div class="flex justify-between pt-2">
-            <span class="font-bold uppercase">Liste des administrateurs</span>
-            <a href="{{ url('admin/admin/add') }}"
+            <span class="font-bold uppercase">Liste des classes</span>
+            <a href="{{ url('admin/class/add') }}"
                class="text-white bg-violet-600 hover:bg-violet-800 focus:ring-4 focus:outline-none focus:ring-violet-300 font-medium rounded-md text-sm px-5 py-2.5 text-center dark:bg-violet-600 dark:hover:bg-violet-700 dark:focus:ring-violet-800 transition-all duration-500 ease-out w-full sm:w-fit hover:scale-105">
-                Créer un Administrateur
+                Créer une classe
             </a>
         </div>
         <div class="">
             <div class="mt-4">
-                {{ $getAdmin->links('vendor.pagination.tailwind') }}
+                {{ $getClass->links('vendor.pagination.tailwind') }}
             </div>
         </div>
         <form action="" method="get" class="flex justify-between my-5" id="searchForm">
@@ -23,7 +23,16 @@
                        placeholder="nom...">
             </div>
             <div class="">
-                <input type="email" id="email" name="email" value="{{ Request::get('email') }}"
+                <select id="status"
+                        class="rounded bg-white border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500"
+                        required>
+                    <option selected>Filtrer par status</option>
+                    <option value="{{ Request::get('status') }}" name="status">Activée</option>
+                    <option value="{{ Request::get('status') }}" name="status">Désactivée</option>
+                </select>
+            </div>
+            <div class="">
+                <input type="text" id="created_by" name="created_by" value="{{ Request::get('created_by') }}"
                        class="rounded bg-white border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500"
                        placeholder="email...">
             </div>
@@ -46,7 +55,7 @@
                             <i class="fa-solid fa-search text-white"></i>
                         </span>
                 </button>
-                <a href="{{ url('admin/admin/list') }}"
+                <a href="{{ url('admin/class/list') }}"
                    class="ms-5 text-gray-800 bg-gray-300 hover:bg-gray-400 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-md text-sm px-5 py-2.5 text-center dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800 transition-all duration-500 ease-out w-fit hover:scale-105">
                     Réinitialiser les filtres
                 </a>
@@ -89,7 +98,19 @@
                     </th>
                     <th scope="col" class="px-6 py-3">
                         <div class="flex items-center">
-                            Email
+                            Status
+                            <a href="#">
+                                <svg class="w-3 h-3 ms-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                                     fill="currentColor" viewBox="0 0 24 24">
+                                    <path
+                                        d="M8.574 11.024h6.852a2.075 2.075 0 0 0 1.847-1.086 1.9 1.9 0 0 0-.11-1.986L13.736 2.9a2.122 2.122 0 0 0-3.472 0L6.837 7.952a1.9 1.9 0 0 0-.11 1.986 2.074 2.074 0 0 0 1.847 1.086Zm6.852 1.952H8.574a2.072 2.072 0 0 0-1.847 1.087 1.9 1.9 0 0 0 .11 1.985l3.426 5.05a2.123 2.123 0 0 0 3.472 0l3.427-5.05a1.9 1.9 0 0 0 .11-1.985 2.074 2.074 0 0 0-1.846-1.087Z"/>
+                                </svg>
+                            </a>
+                        </div>
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        <div class="flex items-center">
+                            Crée par
                             <a href="#">
                                 <svg class="w-3 h-3 ms-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
                                      fill="currentColor" viewBox="0 0 24 24">
@@ -129,7 +150,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                @foreach($getAdmin as $index => $user)
+                @foreach($getClass as $index => $class)
                 <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                     <td class="w-4 p-4">
                         <div class="flex items-center">
@@ -142,19 +163,28 @@
                         {{ $index + 1 }}
                     </th>
                     <td class="px-6 py-4">
-                        {{ $user -> name }}
+                        {{ $class -> name }}
                     </td>
                     <td class="px-6 py-4">
-                        {{ $user -> email }}
+                        @if($class->status == 0)
+                        <span
+                            class="bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300">Désactivée</span>
+                        @elseif($class->status == 1)
+                        <span
+                            class="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300">Activée</span>
+                        @endif
                     </td>
                     <td class="px-6 py-4">
-                        {{ $user -> created_at->format('d/m/Y H:i:s') }}
+                        {{ $class -> created_by_name }}
                     </td>
                     <td class="px-6 py-4">
-                        {{ $user -> updated_at->format('d/m/Y H:i:s') }}
+                        {{ $class -> created_at->format('d/m/Y H:i:s') }}
+                    </td>
+                    <td class="px-6 py-4">
+                        {{ $class -> updated_at->format('d/m/Y H:i:s') }}
                     </td>
                     <td class="flex items-center px-6 py-4">
-                        <a href="{{ url('admin/admin/edit', $user -> id) }}"
+                        <a href="{{ url('admin/class/edit', $class -> id) }}"
                            class="font-medium text-violet-500 dark:text-violet-500 hover:underline" title="Modifier">
                             <svg class="w-6 h-6 text-violet-500 dark:text-white" aria-hidden="true"
                                  xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
@@ -167,7 +197,7 @@
                                       clip-rule="evenodd"/>
                             </svg>
                         </a>
-                        @include('admin.admin.delete')
+                        @include('admin.class.delete')
                         <button data-modal-target="popup-modal" data-modal-toggle="popup-modal"
                                 class="font-medium text-violet-500 dark:text-violet-500 hover:underline"
                                 title="Supprimer">
@@ -182,10 +212,10 @@
                     </td>
                 </tr>
                 @endforeach
-                @if($getAdmin->isEmpty())
+                @if($getClass->isEmpty())
                 <tr>
                     <td colspan="7" class="p-6 text-center text-gray-500">
-                        Aucun administrateur trouvé.
+                        Aucune classe trouvée.
                     </td>
                 </tr>
                 @endif
@@ -193,7 +223,7 @@
             </table>
             <div class="text-center p-2">
                 <div class="mt-4">
-                    <span class="text-violet-500">Total :</span> {{ $getAdmin->total() }}
+                    <span class="text-violet-500">Total :</span> {{ $getClass->total() }}
                 </div>
             </div>
         </div>
@@ -208,7 +238,7 @@
         form.addEventListener('input', () => {
             const formData = new FormData(form);
 
-            fetch('{{ url("admin/admin/list") }}', {
+            fetch('{{ url("admin/class/list") }}', {
                 method: 'GET',
                 headers: {
                     'X-Requested-With': 'XMLHttpRequest',
