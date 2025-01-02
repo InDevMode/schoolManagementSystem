@@ -10,6 +10,11 @@
                 Créer un Administrateur
             </a>
         </div>
+        <div class="pt-2">
+            <div class="mt-4">
+                {{ $getAdmin->links('vendor.pagination.tailwind') }}
+            </div>
+        </div>
 
         <div class="pt-3 relative overflow-x-auto shadow-md sm:rounded-lg">
             <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
@@ -140,6 +145,13 @@
                         </button>
                     </td>
                 </tr>
+                @if($getAdmin->isEmpty())
+                <tr>
+                    <td colspan="7" class="px-6 py-4 text-center text-gray-500">
+                        Aucun administrateur trouvé.
+                    </td>
+                </tr>
+                @endif
                 @endforeach
                 </tbody>
             </table>
