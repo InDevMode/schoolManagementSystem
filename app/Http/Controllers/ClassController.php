@@ -59,7 +59,6 @@ class ClassController extends Controller
     public function update(Request $request, $id): \Illuminate\Foundation\Application|\Illuminate\Routing\Redirector|\Illuminate\Http\RedirectResponse|\Illuminate\Contracts\Foundation\Application
     {
         try {
-
             $class = ClassModel::getSingle($id);
             $existingClass = ClassModel::checkNameSingle($request->name, $id);
 
@@ -70,10 +69,10 @@ class ClassController extends Controller
             if (!$class) {
                 return redirect()->back()->with('error', 'Cette classe est introuvable.');
             }
-            $class->name = trim($request->name);
-            $class->status = trim($request->status);
-            $class->save();
 
+            $class->name = trim($request->name);
+            $class->status = intval($request->status);
+            $class->save();
             return redirect('admin/class/list')->with('success', 'Cette classe a été modifiée avec succès.');
 
         } catch (\Exception $e) {
