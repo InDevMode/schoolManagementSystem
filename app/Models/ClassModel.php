@@ -6,6 +6,7 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\Request;
 
 class ClassModel extends Model
 {
@@ -38,9 +39,28 @@ class ClassModel extends Model
      */
     public static function getAllClass(int $perPage): LengthAwarePaginator
     {
-        return ClassModel::select('class.*', 'users.name as created_by_name')
-            ->join('users', 'users.id', '=', 'class.created_by')
-            ->where('class.is_delete', '=', 0)
+        $results = ClassModel::select('class.*', 'users.name as created_by_name')
+            ->join('users', 'users.id', '=', 'class.created_by');
+
+        $filters = [
+            'class.name' => strtolower(Request::get('name')),
+            'users.name' => strtolower(Request::get('created_by')), //TODO A REVOIR ULT2RIEUMENT
+            'class.created_at' => strtolower(Request::get('created_at')),
+            'class.updated_at' => strtolower(Request::get('updated_at')),
+        ];
+
+        foreach ($filters as $column => $value) {
+            if (!empty($value)) {
+                $results->where($column, 'like', '%' . $value . '%');
+            }
+        }
+
+        $status = Request::get('status');
+        if (in_array($status, ['0', '1'], true)) {
+            $results->where('class.status', $status);
+        }
+
+        return $results->where('class.is_delete', 0)
             ->orderBy('class.id', 'desc')
             ->paginate($perPage);
     }

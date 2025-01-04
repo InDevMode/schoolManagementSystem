@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('content')
-<div class="p-4 mt-40 sm:ml-64 flex items-center justify-center">
-    <div class="p-5 w-full max-w-screen-md">
+<div class="p-4 mt-72 sm:ml-64 flex items-center justify-center">
+    <div class="p-8 w-full max-w-screen-md shadow-xl rounded bg-gray-100 border">
         @include('message')
         <form action="" method="post" class="">
             {{ csrf_field() }}
@@ -9,11 +9,11 @@
                 Modifier une classe</h2>
             <div class="flex mb-5">
                 <input type="text" id="name" name="name" value="{{ $getClass->name }}"
-                       class="rounded-none rounded-e-md bg-white border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500"
-                       placeholder="nom..." required>
+                       class="rounded bg-white border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500"
+                       placeholder="nom de la classe..." required>
             </div>
             <div class="flex mb-5">
-                <select id="status" name="status" class="rounded-none rounded-e-md bg-white border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500" required>
+                <select id="status" name="status" class="rounded bg-white border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500" required>
                     <option disabled selected>Définissez un statut pour cette classe</option>
                     <option value="1" name="status" {{ $getClass->status == 1 ? 'selected' : '' }}>Activée </option>
                     <option value="0" name="status" {{ $getClass->status == 0 ? 'selected' : '' }}>Désactivée </option>

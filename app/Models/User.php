@@ -66,13 +66,17 @@ class User extends Authenticatable
 
         foreach ($filters as $field => $operator) {
             if (!empty(Request::get($field))) {
-                $value = $operator === 'like' ? '%' . Request::get($field) . '%' : Request::get($field);
-                $results = $results->where($field, $operator, $value);
+                $value = strtolower(Request::get($field));
+                if ($operator === 'like') {
+                    $value = '%' . $value . '%';
+                }
+                $results = $results->whereRaw("LOWER($field) $operator ?", [$value]);
             }
         }
 
         return $results->orderBy('id', 'desc')->paginate($perPage);
     }
+
 
     static public function getEmailSingle(string $email)
     {
