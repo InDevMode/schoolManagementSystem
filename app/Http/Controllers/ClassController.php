@@ -11,7 +11,7 @@ class ClassController extends Controller
     public function list(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
     {
         $data['header_title'] = "Liste des classes";
-        $data['getClass'] = ClassModel::getAllClass(5);
+        $data['getClass'] = ClassModel::getAllClass(8);
         return view('admin.class.list', $data);
     }
 

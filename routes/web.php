@@ -28,7 +28,7 @@ Route::get('signup', [AuthController::class, 'signup']);
 
 Route::group(['middleware' => 'admin'], function () {
 
-   //Admin url
+    //Admin url
     Route::get('admin/dashboard', [DashboardController::class, 'dashboard']);
     Route::get('admin/admin/list', [AdminController::class, 'list']);
     Route::get('admin/admin/add', [AdminController::class, 'add']);
@@ -37,7 +37,7 @@ Route::group(['middleware' => 'admin'], function () {
     Route::post('admin/admin/edit/{id}', [AdminController::class, 'update']);
     Route::get('admin/admin/delete/{id}', [AdminController::class, 'delete']);
 
-   //Class url
+    //Class url
     Route::get('admin/class/list', [ClassController::class, 'list']);
     Route::get('admin/class/add', [ClassController::class, 'add']);
     Route::post('admin/class/add', [ClassController::class, 'create']);

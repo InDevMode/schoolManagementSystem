@@ -6,7 +6,7 @@
         <div class="flex justify-between pt-2">
             <span class="font-bold uppercase">Liste des classes</span>
             <a href="{{ url('admin/class/add') }}"
-               class="text-white bg-violet-600 hover:bg-violet-800 focus:ring-4 focus:outline-none focus:ring-violet-300 font-medium rounded-md text-sm px-5 py-2.5 text-center dark:bg-violet-600 dark:hover:bg-violet-700 dark:focus:ring-violet-800 transition-all duration-500 ease-out w-full sm:w-fit hover:scale-105">
+               class="text-white bg-violet-600 hover:bg-violet-800 focus:ring-4 focus:outline-none focus:ring-violet-300 font-medium rounded-full text-sm px-5 py-2.5 text-center dark:bg-violet-600 dark:hover:bg-violet-700 dark:focus:ring-violet-800 transition-all duration-500 ease-out w-full sm:w-fit hover:scale-105">
                 Créer une classe
             </a>
         </div>
@@ -20,14 +20,14 @@
             <!-- Nom de la classe -->
             <div>
                 <input type="text" id="name" name="name" value="{{ Request::get('name') }}"
-                       class="rounded bg-white border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500"
+                       class="rounded-full bg-white border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500"
                        placeholder="Nom de la classe...">
             </div>
 
             <!-- Statut -->
             <div>
                 <select id="status" name="status"
-                        class="rounded bg-white border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500">
+                        class="rounded-full bg-white border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500">
                     <option value="">Filtrer par statut</option>
                     <option value="1" {{ Request::get('status') == '1' ? 'selected' : '' }}>Activée</option>
                     <option value="0" {{ Request::get('status') == '0' ? 'selected' : '' }}>Désactivée</option>
@@ -37,41 +37,41 @@
             <!-- Créé par -->
             <div>
                 <input type="text" id="created_by" name="created_by" value="{{ Request::get('created_by') }}"
-                       class="rounded bg-white border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500"
+                       class="rounded-full bg-white border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500"
                        placeholder="Créé par...">
             </div>
 
             <!-- Date de création -->
             <div>
                 <input type="date" id="created_at" name="created_at" value="{{ Request::get('created_at') }}"
-                       class="rounded bg-white border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500"
+                       class="rounded-full bg-white border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500"
                        placeholder="Date de création...">
             </div>
 
             <!-- Date de modification -->
             <div>
                 <input type="date" id="updated_at" name="updated_at" value="{{ Request::get('updated_at') }}"
-                       class="rounded bg-white border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500"
+                       class="rounded-full bg-white border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500"
                        placeholder="Date de modification...">
             </div>
 
             <!-- Boutons -->
             <div class="flex">
                 <button type="submit"
-                        class="flex justify-between text-white bg-violet-600 hover:bg-violet-800 focus:ring-4 focus:outline-none focus:ring-violet-300 font-medium rounded-md text-sm px-5 py-2.5 text-center dark:bg-violet-600 dark:hover:bg-violet-700 dark:focus:ring-violet-800 transition-all duration-500 ease-out w-fit hover:scale-105">
+                        class="flex justify-between text-white bg-violet-600 hover:bg-violet-800 focus:ring-4 focus:outline-none focus:ring-violet-300 font-medium rounded-full text-sm px-5 py-2.5 text-center dark:bg-violet-600 dark:hover:bg-violet-700 dark:focus:ring-violet-800 transition-all duration-500 ease-out w-fit hover:scale-105">
                     Rechercher
                     <span class="inline-flex items-center px-3 text-sm text-gray-900">
                 <i class="fa-solid fa-search text-white"></i>
             </span>
                 </button>
                 <a href="{{ url('admin/class/list') }}"
-                   class="ms-5 text-gray-800 bg-gray-300 hover:bg-gray-400 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-md text-sm px-5 py-2.5 text-center dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800 transition-all duration-500 ease-out w-fit hover:scale-105">
+                   class="ms-5 text-gray-800 bg-gray-300 hover:bg-gray-400 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-full text-sm px-5 py-2.5 text-center dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800 transition-all duration-500 ease-out w-fit hover:scale-105">
                     Réinitialiser les filtres
                 </a>
             </div>
         </form>
 
-        <div class="pt-3 relative overflow-x-auto shadow-md sm:rounded-lg" id="results">
+        <div class="pt-3 relative overflow-x-auto shadow-md sm:rounded-lg h-[65vh]" id="results">
             <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                 <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                 <tr>
@@ -233,7 +233,7 @@
             </table>
             <div class="text-center p-2">
                 <div class="mt-4">
-                    <span class="text-violet-500">Total :</span> {{ $getClass->total() }}
+                    <span class="text-violet-500 font-bold text-xl">Total : {{ $getClass->total() }}</span>
                 </div>
             </div>
         </div>
