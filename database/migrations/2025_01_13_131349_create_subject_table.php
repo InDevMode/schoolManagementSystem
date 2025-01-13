@@ -18,7 +18,6 @@ return new class extends Migration
             $table->Integer('created_by')->unsigned()->foreign('created_by')->references('id')->on('users')->onDelete('cascade');
             $table->tinyInteger('status')->default(0);
             $table->tinyInteger('is_delete')->default(0);
-            $table->id();
             $table->timestamps();
         });
     }

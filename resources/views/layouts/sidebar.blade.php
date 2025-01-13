@@ -68,7 +68,7 @@
                     </svg>
 
                     <span
-                        class="ms-3 group-hover:text-violet-600 dark:group-hover:text-violet-600 {{ Request::Segment(2) == 'subject' ? 'text-violet-500' : '' }}">Subjects</span>
+                        class="ms-3 group-hover:text-violet-600 dark:group-hover:text-violet-600 {{ Request::Segment(2) == 'subject' ? 'text-violet-500' : '' }}">Matières</span>
                 </a>
             </li>
             <li>
