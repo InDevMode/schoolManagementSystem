@@ -4,30 +4,30 @@
     <div class="p-4 rounded-lg dark:border-gray-700 mt-14">
         @include('message')
         <div class="flex justify-between pt-2">
-            <span class="font-bold uppercase">Liste des classes</span>
+            <span class="font-bold uppercase text-lg">Liste des classes</span>
             <a href="{{ url('admin/class/add') }}"
-               class="text-white bg-violet-600 hover:bg-violet-800 focus:ring-4 focus:outline-none focus:ring-violet-300 font-medium rounded-full text-sm px-5 py-2.5 text-center dark:bg-violet-600 dark:hover:bg-violet-700 dark:focus:ring-violet-800 transition-all duration-500 ease-out w-full sm:w-fit hover:scale-105">
-                Créer une classe
+               class="uppercase shadow font-bold text-white bg-violet-600 hover:bg-violet-800 focus:ring-4 focus:outline-none focus:ring-violet-300 rounded-full text-sm px-5 py-2.5 text-center dark:bg-violet-600 dark:hover:bg-violet-700 dark:focus:ring-violet-800 transition-all duration-500 ease-out w-full sm:w-fit hover:scale-105">
+                Créer une nouvelle classe
             </a>
         </div>
-        <div class="">
+        <div class="font-bold">
             <div class="mt-4">
                 {{ $getClass->links('vendor.pagination.tailwind') }}
             </div>
         </div>
-        <form action="" method="get" class="flex justify-between my-5" id="searchForm">
+        <form action="" method="get" class="flex justify-between my-5 shadow p-3 bg-white rounded border border-gray-300" id="searchForm">
             {{ csrf_field() }}
             <!-- Nom de la classe -->
             <div>
                 <input type="text" id="name" name="name" value="{{ Request::get('name') }}"
-                       class="rounded-full bg-white border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500"
-                       placeholder="Nom de la classe...">
+                       class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500"
+                       placeholder="Rechercher par nom de la classe...">
             </div>
 
             <!-- Statut -->
             <div>
                 <select id="status" name="status"
-                        class="rounded-full bg-white border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500">
+                        class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500">
                     <option value="">Filtrer par statut</option>
                     <option value="1" {{ Request::get('status') == '1' ? 'selected' : '' }}>Activée</option>
                     <option value="0" {{ Request::get('status') == '0' ? 'selected' : '' }}>Désactivée</option>
@@ -37,22 +37,22 @@
             <!-- Créé par -->
             <div>
                 <input type="text" id="created_by" name="created_by" value="{{ Request::get('created_by') }}"
-                       class="rounded-full bg-white border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500"
-                       placeholder="Créé par...">
+                       class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500"
+                       placeholder="Rechercher par le créateur...">
             </div>
 
             <!-- Date de création -->
             <div>
                 <input type="date" id="created_at" name="created_at" value="{{ Request::get('created_at') }}"
-                       class="rounded-full bg-white border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500"
-                       placeholder="Date de création...">
+                       class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500"
+                       placeholder="Rechercher par date de création...">
             </div>
 
             <!-- Date de modification -->
             <div>
                 <input type="date" id="updated_at" name="updated_at" value="{{ Request::get('updated_at') }}"
-                       class="rounded-full bg-white border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500"
-                       placeholder="Date de modification...">
+                       class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500"
+                       placeholder="Rechercher par date de modification...">
             </div>
 
             <!-- Boutons -->
@@ -71,9 +71,9 @@
             </div>
         </form>
 
-        <div class="pt-3 relative overflow-x-auto shadow-md sm:rounded-lg h-[65vh]" id="results">
+        <div class="relative overflow-x-auto shadow-lg sm:rounded-lg h-[63vh]" id="results">
             <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                <thead class="text-xs text-white uppercase bg-violet-500 dark:bg-gray-700 dark:text-gray-400">
                 <tr>
                     <th scope="col" class="p-4">
                         <div class="flex items-center">
@@ -231,9 +231,9 @@
                 @endif
                 </tbody>
             </table>
-            <div class="text-center p-2">
-                <div class="mt-4">
-                    <span class="text-violet-500 font-bold text-xl">Total : {{ $getClass->total() }}</span>
+            <div class="text-center bg-white py-2">
+                <div class="flex justify-between items-center mt-4">
+                    <span class="text-violet-500 font-bold text-md ps-4 uppercase">Total : {{ $getClass->total() }}</span>
                 </div>
             </div>
         </div>

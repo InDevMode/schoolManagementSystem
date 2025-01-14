@@ -54,27 +54,24 @@ class User extends Authenticatable
     static public function getAllAdmin(int $perPage)
     {
         $results = User::select('users.*')
-            ->where('user_type', '=', 1)
-            ->where('is_delete', '=', 0);
+            ->where('user_type', '=', 1);
 
         $filters = [
-            'name' => 'like',
-            'email' => 'like',
-            'created_at' => 'like',
-            'updated_at' => 'like',
+            'users.name' => strtolower(Request::get('name')),
+            'users.email' => strtolower(Request::get('email')),
+            'users.created_at' => strtolower(Request::get('created_at')),
+            'users.updated_at' => strtolower(Request::get('updated_at')),
         ];
 
-        foreach ($filters as $field => $operator) {
-            if (!empty(Request::get($field))) {
-                $value = strtolower(Request::get($field));
-                if ($operator === 'like') {
-                    $value = '%' . $value . '%';
-                }
-                $results = $results->whereRaw("LOWER($field) $operator ?", [$value]);
+        foreach ($filters as $column => $value) {
+            if (!empty($value)) {
+                $results->where($column, 'like', '%' . $value . '%');
             }
         }
 
-        return $results->orderBy('id', 'desc')->paginate($perPage);
+        return $results->where('is_delete', '=', 0)
+            ->orderBy('id', 'desc')
+            ->paginate($perPage);
     }
 
 

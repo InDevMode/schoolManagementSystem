@@ -15,19 +15,19 @@
                 {{ $getSubject->links('vendor.pagination.tailwind') }}
             </div>
         </div>
-        <form action="" method="get" class="flex justify-between my-5" id="searchForm">
+        <form action="" method="get" class="flex justify-between my-5 shadow p-3 bg-white rounded border border-gray-300" id="searchForm">
             {{ csrf_field() }}
             <!-- Nom de la matière -->
             <div>
                 <input type="text" id="name" name="name" value="{{ Request::get('name') }}"
-                       class="rounded-full bg-white border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500"
+                       class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500"
                        placeholder="Nom de la matière...">
             </div>
 
             <!-- Type -->
             <div>
                 <select id="type" name="type"
-                        class="rounded-full bg-white border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500">
+                        class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500">
                     <option value="">Filtrer par type de matière</option>
                     <option value="theoretical" {{ Request::get(
                     'type') == 'theoretical' ? 'selected' : '' }}>Théorique</option>
@@ -39,7 +39,7 @@
             <!-- Statut -->
             <div>
                 <select id="status" name="status"
-                        class="rounded-full bg-white border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500">
+                        class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500">
                     <option value="">Filtrer par statut</option>
                     <option value="1" {{ Request::get(
                     'status') == '1' ? 'selected' : '' }}>Activée</option>
@@ -51,14 +51,14 @@
             <!-- Date de création -->
             <div>
                 <input type="date" id="created_at" name="created_at" value="{{ Request::get('created_at') }}"
-                       class="rounded-full bg-white border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500"
+                       class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500"
                        placeholder="Date de création...">
             </div>
 
             <!-- Date de modification -->
             <div>
                 <input type="date" id="updated_at" name="updated_at" value="{{ Request::get('updated_at') }}"
-                       class="rounded-full bg-white border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500"
+                       class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500"
                        placeholder="Date de modification...">
             </div>
 
@@ -78,9 +78,9 @@
             </div>
         </form>
 
-        <div class="pt-3 relative overflow-x-auto shadow-md sm:rounded-lg h-[65vh]" id="results">
+        <div class="relative overflow-x-auto shadow-md sm:rounded-lg h-[65vh]" id="results">
             <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                <thead class="text-xs text-white uppercase bg-violet-500 dark:bg-gray-700 dark:text-gray-400">
                 <tr>
                     <th scope="col" class="p-4">
                         <div class="flex items-center">
@@ -259,9 +259,9 @@
                 @endif
                 </tbody>
             </table>
-            <div class="text-center p-2">
-                <div class="mt-4">
-                    <span class="text-violet-500 font-bold text-xl">Total : {{ $getSubject->total() }}</span>
+            <div class="text-center bg-white p-2">
+                <div class="flex justify-between items-center mt-4">
+                    <span class="text-violet-500 font-bold text-md ps-4 uppercase">Total : {{ $getSubject->total() }}</span>
                 </div>
             </div>
         </div>

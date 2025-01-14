@@ -1,5 +1,5 @@
 <aside id="logo-sidebar"
-       class="fixed top-0 left-0 z-40 w-64 h-screen pt-20 transition-transform -translate-x-full bg-violet-600 border-r border-gray-200 sm:translate-x-0 dark:bg-gray-800 dark:border-gray-700"
+       class="fixed top-0 left-0 z-40 shadow-lg w-64 h-screen pt-20 transition-transform -translate-x-full bg-violet-600 border-r border-gray-200 sm:translate-x-0 dark:bg-gray-800 dark:border-gray-700"
        aria-label="Sidebar">
     <div
         class="h-full px-3 pb-4 overflow-y-auto scrollbar-thin scrollbar-thumb-blue-500 scrollbar-track-gray-200 bg-violet-600 text-white dark:bg-gray-800">
@@ -8,15 +8,10 @@
             <li>
                 <a href="{{ url('admin/dashboard') }}"
                    class="flex items-center p-2 text-white rounded-md dark:text-white hover:bg-white dark:hover:bg-violet-600 group transition-all duration-300 ease-out {{ Request::Segment(2) == 'dashboard' ? 'bg-white' : '' }}">
-                    <svg
-                        class="w-5 h-5 transition duration-75 dark:text-white group-hover:text-violet-600 dark:group-hover:text-violet-600 {{ Request::Segment(2) == 'dashboard' ? 'group-hover:text-violet-500 text-violet-500' : 'text-white' }}"
-                        aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
-                        viewBox="0 0 22 21">
-                        <path
-                            d="M16.975 11H10V4.025a1 1 0 0 0-1.066-.998 8.5 8.5 0 1 0 9.039 9.039.999.999 0 0 0-1-1.066h.002Z"/>
-                        <path
-                            d="M12.5 0c-.157 0-.311.01-.565.027A1 1 0 0 0 11 1.02V10h8.975a1 1 0 0 0 1-.935c.013-.188.028-.374.028-.565A8.51 8.51 0 0 0 12.5 0Z"/>
-                    </svg>
+                    <span
+                        class="w-5 h-5 transition duration-75 dark:text-white group-hover:text-violet-600 dark:group-hover:text-violet-600 {{ Request::Segment(2) == 'dashboard' ? 'group-hover:text-violet-500 text-violet-500' : 'text-white' }}">
+                        <i class="fa-solid fa-gauge-high"></i>
+                    </span>
                     <span
                         class="ms-3 group-hover:text-violet-600 dark:group-hover:text-violet-600 {{ Request::Segment(2) == 'dashboard' ? 'text-violet-500' : '' }}">Dashboard</span>
                     <span
@@ -26,14 +21,10 @@
             <li>
                 <a href="{{ url('admin/admin/list') }}"
                    class="flex items-center p-2 text-white rounded-md dark:text-white hover:bg-white dark:hover:bg-violet-600 group transition-all duration-300 ease-out  {{ Request::Segment(2) == 'admin' ? 'bg-white' : '' }}">
-                    <svg
-                        class="w-5 h-5 transition duration-75 dark:text-white group-hover:text-violet-600 dark:group-hover:text-violet-600 {{ Request::Segment(2) == 'admin' ? 'text-violet-500' : 'text-white' }}"
-                        aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
-                        viewBox="0 0 24 24">
-                        <path fill-rule="evenodd"
-                              d="M12 20a7.966 7.966 0 0 1-5.002-1.756l.002.001v-.683c0-1.794 1.492-3.25 3.333-3.25h3.334c1.84 0 3.333 1.456 3.333 3.25v.683A7.966 7.966 0 0 1 12 20ZM2 12C2 6.477 6.477 2 12 2s10 4.477 10 10c0 5.5-4.44 9.963-9.932 10h-.138C6.438 21.962 2 17.5 2 12Zm10-5c-1.84 0-3.333 1.455-3.333 3.25S10.159 13.5 12 13.5c1.84 0 3.333-1.455 3.333-3.25S13.841 7 12 7Z"
-                              clip-rule="evenodd"/>
-                    </svg>
+                    <span
+                        class="w-5 h-5 transition duration-75 dark:text-white group-hover:text-violet-600 dark:group-hover:text-violet-600 {{ Request::Segment(2) == 'admin' ? 'text-violet-500' : 'text-white' }}">
+                        <i class="fa-solid fa-user"></i>
+                    </span>
 
                     <span
                         class="ms-3 group-hover:text-violet-600 dark:group-hover:text-violet-600 {{ Request::Segment(2) == 'admin' ? 'text-violet-500' : '' }}">Administrateurs</span>
@@ -42,14 +33,10 @@
             <li>
                 <a href="{{ url('admin/class/list') }}"
                    class="flex items-center p-2 text-white rounded-md dark:text-white hover:bg-white dark:hover:bg-violet-600 group transition-all duration-300 ease-out  {{ Request::Segment(2) == 'class' ? 'bg-white' : '' }}">
-                    <svg
-                        class="w-5 h-5 transition duration-75 dark:text-white group-hover:text-violet-600 dark:group-hover:text-violet-600 {{ Request::Segment(2) == 'class' ? 'text-violet-500' : 'text-white' }}"
-                        aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
-                        viewBox="0 0 24 24">
-                        <path fill-rule="evenodd"
-                              d="M12 6a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Zm-1.5 8a4 4 0 0 0-4 4 2 2 0 0 0 2 2h7a2 2 0 0 0 2-2 4 4 0 0 0-4-4h-3Zm6.82-3.096a5.51 5.51 0 0 0-2.797-6.293 3.5 3.5 0 1 1 2.796 6.292ZM19.5 18h.5a2 2 0 0 0 2-2 4 4 0 0 0-4-4h-1.1a5.503 5.503 0 0 1-.471.762A5.998 5.998 0 0 1 19.5 18ZM4 7.5a3.5 3.5 0 0 1 5.477-2.889 5.5 5.5 0 0 0-2.796 6.293A3.501 3.501 0 0 1 4 7.5ZM7.1 12H6a4 4 0 0 0-4 4 2 2 0 0 0 2 2h.5a5.998 5.998 0 0 1 3.071-5.238A5.505 5.505 0 0 1 7.1 12Z"
-                              clip-rule="evenodd"/>
-                    </svg>
+                    <span
+                        class="w-5 h-5 transition duration-75 dark:text-white group-hover:text-violet-600 dark:group-hover:text-violet-600 {{ Request::Segment(2) == 'class' ? 'text-violet-500' : 'text-white' }}">
+                        <i class="fa-solid fa-users"></i>
+                    </span>
                     <span
                         class="ms-3 group-hover:text-violet-600 dark:group-hover:text-violet-600 {{ Request::Segment(2) == 'class' ? 'text-violet-500' : '' }}">Classes</span>
                 </a>
@@ -57,16 +44,10 @@
             <li>
                 <a href="{{ url('admin/subject/list') }}"
                    class="flex items-center p-2 text-white rounded-md dark:text-white hover:bg-white dark:hover:bg-violet-600 group transition-all duration-300 ease-out  {{ Request::Segment(2) == 'subject' ? 'bg-white' : '' }}">
-                    <svg
-                        class="w-5 h-5 transition duration-75 dark:text-white group-hover:text-violet-600 dark:group-hover:text-violet-600 {{ Request::Segment(2) == 'subject' ? 'text-violet-500' : 'text-white' }}"
-                        aria-hidden="true"
-                        xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
-                        viewBox="0 0 24 24">
-                        <path fill-rule="evenodd"
-                              d="M12 4a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm-2 9a4 4 0 0 0-4 4v1a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-1a4 4 0 0 0-4-4h-4Z"
-                              clip-rule="evenodd"/>
-                    </svg>
-
+                    <span
+                        class="w-5 h-5 transition duration-75 dark:text-white group-hover:text-violet-600 dark:group-hover:text-violet-600 {{ Request::Segment(2) == 'subject' ? 'text-violet-500' : 'text-white' }}">
+                        <i class="fa-solid fa-book-open-reader"></i>
+                    </span>
                     <span
                         class="ms-3 group-hover:text-violet-600 dark:group-hover:text-violet-600 {{ Request::Segment(2) == 'subject' ? 'text-violet-500' : '' }}">Matières</span>
                 </a>
