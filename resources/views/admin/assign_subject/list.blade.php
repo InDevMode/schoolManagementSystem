@@ -75,7 +75,7 @@
             </div>
         </form>
 
-        <div class="relative overflow-x-auto shadow-md sm:rounded-lg h-[65vh]" id="results">
+        <div class="relative overflow-x-auto shadow-md sm:rounded-lg" id="results">
 <!--            <form id="bulkDeleteForm" method="POST" action="{{ url('admin/assign_subject/delete-multiple') }}">-->
 <!--                @csrf-->
                 <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
