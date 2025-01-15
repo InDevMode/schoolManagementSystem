@@ -44,7 +44,7 @@ class ClassModel extends Model
 
         $filters = [
             'class.name' => strtolower(Request::get('name')),
-            'users.name' => strtolower(Request::get('created_by')), //TODO A REVOIR ULT2RIEUMENT
+            'users.name' => strtolower(Request::get('created_by')), //TODO A REVOIR ULTERIEUREMENT
             'class.created_at' => strtolower(Request::get('created_at')),
             'class.updated_at' => strtolower(Request::get('updated_at')),
         ];
@@ -63,6 +63,16 @@ class ClassModel extends Model
         return $results->where('class.is_delete', 0)
             ->orderBy('class.id', 'desc')
             ->paginate($perPage);
+    }
+
+    static public function getClass()
+    {
+        return ClassModel::select('class.*')
+            ->join('users', 'users.id', '=', 'class.created_by')
+            ->where('class.is_delete', 0)
+            ->where('class.status', 0)
+            ->orderBy('class.name', 'asc')
+            ->get();
     }
 
     /**

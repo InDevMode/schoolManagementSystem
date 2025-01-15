@@ -53,6 +53,17 @@
                 </a>
             </li>
             <li>
+                <a href="{{ url('admin/assign_subject/list') }}"
+                   class="flex items-center p-2 text-white rounded-md dark:text-white hover:bg-white dark:hover:bg-violet-600 group transition-all duration-300 ease-out  {{ Request::Segment(2) == 'assign_subject' ? 'bg-white' : '' }}">
+                    <span
+                        class="w-5 h-5 transition duration-75 dark:text-white group-hover:text-violet-600 dark:group-hover:text-violet-600 {{ Request::Segment(2) == 'assign_subject' ? 'text-violet-500' : 'text-white' }}">
+                        <i class="fa-solid fa-book-open-reader"></i>
+                    </span>
+                    <span
+                        class="ms-3 group-hover:text-violet-600 dark:group-hover:text-violet-600 {{ Request::Segment(2) == 'assign_subject' ? 'text-violet-500' : '' }}">Assignation</span>
+                </a>
+            </li>
+            <li>
                 <a href="#"
                    class="flex items-center p-2 text-white rounded-lg dark:text-white hover:bg-violet-600 dark:hover:bg-gray-700 group transition-all duration-300 ease-out">
                     <svg
