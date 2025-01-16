@@ -1,91 +1,92 @@
 <nav class="fixed top-0 w-full z-50 bg-white shadow-lg border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700">
-        <div class="px-3 py-3 lg:px-5 lg:pl-3">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center justify-start rtl:justify-end">
-                    <button data-drawer-target="logo-sidebar" data-drawer-toggle="logo-sidebar"
+    <div class="px-3 py-3 lg:px-5 lg:pl-3">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center justify-start rtl:justify-end">
+                <button data-drawer-target="logo-sidebar" data-drawer-toggle="logo-sidebar"
                         aria-controls="logo-sidebar" type="button"
-                        class="inline-flex items-center p-2 text-sm text-gray-500 rounded-lg sm:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600">
-                        <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true"
-                            xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
-                            viewBox="0 0 24 24">
-                            <path fill-rule="evenodd"
-                                d="M15 4H9v16h6V4Zm2 16h3a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-3v16ZM4 4h3v16H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Z"
-                                clip-rule="evenodd" />
-                        </svg>
-                        <span class="sr-only">Open sidebar</span>
+                        class="inline-flex items-center p-2 text-sm text-gray-500 rounded-lg sm:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200">
+                        <span class="w-6 h-6 text-gray-800 dark:text-white">
+                            <i class="fa-solid fa-bars-staggered"></i>
+                        </span>
+                    <span class="sr-only">Open sidebar</span>
+                </button>
+                <a href="{{ url('admin/dashboard') }}" class="flex ms-2 md:me-24 font-bold text-lg">
+                    <img src="public/images/logo.png" class="w-44" alt="SCHOOLMANAGEMENT"/>
+                </a>
+            </div>
+            <div class="flex space-x-4 items-center text-violet-500">
+                <div>
+                    <button type="button" class="p-2"
+                        <span class=""><i class="fa-solid fa-2x fa-bell"></i></span>
                     </button>
-                    <a href="{{ url('admin.dashboard') }}" class="flex ms-2 md:me-24">
-                        <span
-                            class="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white uppercase bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 px-3 py-1 rounded text-white">SchoolMSystem</span>
-                    </a>
                 </div>
-                <div class="flex items-center">
-                    <div class="flex items-center ms-3">
-                        <div>
-                            <button type="button"
-                                class="flex text-sm bg-gray-800 rounded-full focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
+                <div class="flex items-center justify-center rounded-full">
+                    <div>
+                        <button type="button"
+                                class="p-2"
                                 aria-expanded="false" data-dropdown-toggle="dropdown-user">
-                                <span class="sr-only">Open user menu</span>
-                                <img class="w-8 h-8 rounded-full"
-                                    src="https://flowbite.com/docs/images/people/profile-picture-5.jpg"
-                                    alt="user photo">
-                            </button>
+                            <span class="sr-only">Open user menu</span>
+                            <span class="">
+                                    <i class="fa-solid fa-2x fa-user-graduate"></i>
+                            </span>
+                        </button>
+                    </div>
+                    <div
+                        class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded shadow dark:bg-gray-700 dark:divide-gray-600"
+                        id="dropdown-user">
+                        <div class="px-4 py-3" role="none">
+                            <p class="text-sm text-gray-900 dark:text-white" role="none">
+                                {{ Auth::user()->name }}
+                            </p>
+                            <p class="text-sm font-medium text-gray-900 truncate dark:text-gray-300" role="none">
+                                {{ Auth::user()->email }}
+                            </p>
                         </div>
-                        <div class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded shadow dark:bg-gray-700 dark:divide-gray-600"
-                            id="dropdown-user">
-                            <div class="px-4 py-3" role="none">
-                                <p class="text-sm text-gray-900 dark:text-white" role="none">
-                                    {{ Auth::user()->name }}
-                                </p>
-                                <p class="text-sm font-medium text-gray-900 truncate dark:text-gray-300" role="none">
-                                    {{ Auth::user()->email }}
-                                </p>
-                            </div>
-                            <ul class="py-1" role="none">
-                                @if(Auth::user()->user_type === 1)
-                                <li>
-                                    <a href="{{ url('admin/dashboard') }}"
-                                        class="block px-4 py-2 text-sm text-gray-700 hover:text-white hover:bg-violet-600 dark:text-gray-300 dark:hover:bg-gray-600 transition duration-300 ease-out dark:hover:text-white"
-                                        role="menuitem">Dashboard</a>
-                                </li>
-                                <li>
-                                    <a href="#"
-                                       class="block px-4 py-2 text-sm text-gray-700 hover:text-white hover:bg-violet-600 dark:text-gray-300 dark:hover:bg-gray-600 transition duration-300 ease-out dark:hover:text-white"
-                                       role="menuitem">Paramètres</a>
-                                </li>
-                                @elseif(Auth::user()->user_type === 2)
-                                <li>
-                                    <a href="{{ url('teacher/dashboard') }}"
-                                       class="block px-4 py-2 text-sm text-gray-700 hover:text-white hover:bg-violet-600 dark:text-gray-300 dark:hover:bg-gray-600 transition duration-300 ease-out dark:hover:text-white"
-                                       role="menuitem">Dashboard</a>
-                                </li>
-                                @elseif(Auth::user()->user_type === 3)
-                                <li>
-                                    <a href="{{ url('student/dashboard') }}"
-                                       class="block px-4 py-2 text-sm text-gray-700 hover:text-white hover:bg-violet-600 dark:text-gray-300 dark:hover:bg-gray-600 transition duration-300 ease-out dark:hover:text-white"
-                                       role="menuitem">Dashboard</a>
-                                </li>
-                                <li>
-                                    <a href="#"
-                                       class="block px-4 py-2 text-sm text-gray-700 hover:text-white hover:bg-violet-600 dark:text-gray-300 dark:hover:bg-gray-600 transition duration-300 ease-out dark:hover:text-white"
-                                       role="menuitem">Cours</a>
-                                </li>
-                                @elseif(Auth::user()->user_type === 4)
-                                <li>
-                                    <a href="{{ url('parent/dashboard') }}"
-                                       class="block px-4 py-2 text-sm text-gray-700 hover:text-white hover:bg-violet-600 dark:text-gray-300 dark:hover:bg-gray-600 transition duration-300 ease-out dark:hover:text-white"
-                                       role="menuitem">Dashboard</a>
-                                </li>
-                                @endif
-                                <li>
-                                    <a href="{{ url('logout') }}"
-                                        class="block px-4 py-2 text-sm text-gray-700 hover:text-white hover:bg-violet-600 dark:text-gray-300 dark:hover:bg-gray-600 transition duration-300 ease-out dark:hover:text-white"
-                                        role="menuitem">Déconnexion</a>
-                                </li>
-                            </ul>
-                        </div>
+                        <ul class="py-1" role="none">
+                            @if(Auth::user()->user_type === 1)
+                            <li>
+                                <a href="{{ url('admin/dashboard') }}"
+                                   class="block px-4 py-2 text-sm text-gray-700 hover:text-white hover:bg-violet-500 transition duration-300 ease-out"
+                                   role="menuitem">Dashboard</a>
+                            </li>
+                            <li>
+                                <a href="#"
+                                   class="block px-4 py-2 text-sm text-gray-700 hover:text-white hover:bg-violet-500 transition duration-300 ease-out"
+                                   role="menuitem">Paramètres</a>
+                            </li>
+                            @elseif(Auth::user()->user_type === 2)
+                            <li>
+                                <a href="{{ url('teacher/dashboard') }}"
+                                   class="block px-4 py-2 text-sm text-gray-700 hover:text-white hover:bg-violet-500 transition duration-300 ease-oute"
+                                   role="menuitem">Dashboard</a>
+                            </li>
+                            @elseif(Auth::user()->user_type === 3)
+                            <li>
+                                <a href="{{ url('student/dashboard') }}"
+                                   class="block px-4 py-2 text-sm text-gray-700 hover:text-white hover:bg-violet-500 transition duration-300 ease-out"
+                                   role="menuitem">Dashboard</a>
+                            </li>
+                            <li>
+                                <a href="#"
+                                   class="block px-4 py-2 text-sm text-gray-700 hover:text-white hover:bg-violet-500 transition duration-300 ease-out"
+                                   role="menuitem">Cours</a>
+                            </li>
+                            @elseif(Auth::user()->user_type === 4)
+                            <li>
+                                <a href="{{ url('parent/dashboard') }}"
+                                   class="block px-4 py-2 text-sm text-gray-700 hover:text-white hover:bg-violet-500 transition duration-300 ease-out"
+                                   role="menuitem">Dashboard</a>
+                            </li>
+                            @endif
+                            <li>
+                                <a href="{{ url('logout') }}"
+                                   class="block px-4 py-2 text-sm text-gray-700 hover:text-white hover:bg-violet-500 transition duration-300 ease-out"
+                                   role="menuitem">Déconnexion</a>
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </div>
         </div>
-    </nav>
+    </div>
+</nav>

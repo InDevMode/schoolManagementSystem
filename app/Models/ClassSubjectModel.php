@@ -68,5 +68,9 @@ class ClassSubjectModel extends Model
         return ClassSubjectModel::where('class_id', '=', $class_id)->where('subject_id', '=', $subject_id)->first();
     }
 
+    static public function getAssignSubject($class_id){
+        return ClassSubjectModel::where('class_id', '=', $class_id)->where('is_delete', 0)->get();
+    }
+
 
 }

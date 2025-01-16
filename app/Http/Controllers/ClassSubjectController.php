@@ -59,8 +59,22 @@ class ClassSubjectController extends Controller
         }
     }
 
-    public function edit()
+    public function edit($id): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
     {
+        $editExisting = ClassSubjectModel::getSingle($id);
+
+        if(!empty($editExisting)){
+
+            $data['getClassSubject'] = $editExisting;
+            $data['getAssignSubject'] = ClassSubjectModel::getAssignSubject($editExisting->class_id);
+            $data['getClass'] = ClassModel::getClass();
+            $data['getSubject'] = SubjectModel::getSubject();
+            $data['header_title'] = "Modifier un assignation";
+            return view('admin.assign_subject.edit', $data);
+        }else{
+            abort(404);
+        }
+
     }
 
     public function update()

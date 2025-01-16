@@ -13,7 +13,7 @@
                         required>
                     <option selected>Choisissez la classe que vous voudriez assignée</option>
                     @foreach($getClass as $class)
-                    <option value="{{ $class->id }}">{{ $class->name }}</option>
+                    <option {{ $getClassSubject->class_id == $class->id ? 'selected' : '' }} value="{{ $class->id }}">{{ $class->name }}</option>
                     @endforeach
                 </select>
             </div>
