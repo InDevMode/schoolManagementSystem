@@ -15,11 +15,13 @@
                 </a>
             </div>
             <div class="flex space-x-4 items-center text-violet-500">
+                @if(Auth::user()->user_type === 1)
                 <div>
                     <button type="button" class="p-2"
                         <span class=""><i class="fa-solid fa-2x fa-bell"></i></span>
                     </button>
                 </div>
+                @endif
                 <div class="flex items-center justify-center rounded-full">
                     <div>
                         <button type="button"

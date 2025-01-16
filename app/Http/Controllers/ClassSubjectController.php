@@ -94,7 +94,6 @@ class ClassSubjectController extends Controller
                     $classSubject->status = $request->status;
                     $classSubject->created_by = Auth::user()->id;
                     $classSubject->save();
-
                 }
             } else {
                 return redirect()->back()->with('error', 'Veuillez bien remplir tous les champs s\'il vous plaît....');
