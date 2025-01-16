@@ -76,198 +76,146 @@
         </form>
 
         <div class="relative overflow-x-auto shadow-md sm:rounded-lg" id="results">
-<!--            <form id="bulkDeleteForm" method="POST" action="{{ url('admin/assign_subject/delete-multiple') }}">-->
-<!--                @csrf-->
-                <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                    <thead class="text-xs text-white uppercase bg-violet-500 dark:bg-gray-700 dark:text-gray-400">
-                    <tr>
-                        <th scope="col" class="p-4">
-                            <div class="flex items-center">
-                                <input id="checkbox-all-search" type="checkbox"
-                                       class="w-4 h-4 border border-gray-300 rounded bg-white focus:ring-3 focus:ring-violet-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-violet-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:outline-none checked:bg-violet-600">
-                                <label for="checkbox-all-search" class="sr-only">checkbox</label>
-                            </div>
-                        </th>
-                        <th scope="col" class="px-6 py-3">
-                            <div class="flex items-center">
-                                Identifiant
-                                <a href="#">
-                                    <span class="w-3 h-3 ms-1.5"><i class="fa-solid fa-filter"></i></span>
-                                </a>
-                            </div>
-                        </th>
-                        <th scope="col" class="px-6 py-3">
-                            <div class="flex items-center">
-                                Nom de la classe
-                                <a href="#">
-                                    <span class="w-3 h-3 ms-1.5"><i class="fa-solid fa-filter"></i></span>
-                                </a>
-                            </div>
-                        </th>
-                        <th scope="col" class="px-6 py-3">
-                            <div class="flex items-center">
-                                Nom de la matière
-                                <a href="#">
-                                    <span class="w-3 h-3 ms-1.5"><i class="fa-solid fa-filter"></i></span>
-                                </a>
-                            </div>
-                        </th>
-                        <th scope="col" class="px-6 py-3">
-                            <div class="flex items-center">
-                                Status
-                                <a href="#">
-                                    <span class="w-3 h-3 ms-1.5"><i class="fa-solid fa-filter"></i></span>
-                                </a>
-                            </div>
-                        </th>
-                        <th scope="col" class="px-6 py-3">
-                            <div class="flex items-center">
-                                Crée par
-                                <a href="#">
-                                    <span class="w-3 h-3 ms-1.5"><i class="fa-solid fa-filter"></i></span>
-                                </a>
-                            </div>
-                        </th>
-                        <th scope="col" class="px-6 py-3">
-                            <div class="flex items-center">
-                                Date de création
-                                <a href="#">
-                                    <span class="w-3 h-3 ms-1.5"><i class="fa-solid fa-filter"></i></span>
-                                </a>
-                            </div>
-                        </th>
-                        <th scope="col" class="px-6 py-3">
-                            <div class="flex items-center">
-                                Date de modification
-                                <a href="#">
-                                    <span class="w-3 h-3 ms-1.5"><i class="fa-solid fa-filter"></i></span>
-                                </a>
-                            </div>
-                        </th>
-                        <th scope="col" class="px-6 py-3">
-                            Actions
-                        </th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    @foreach($getClassSubject as $index => $classSubject)
-                    <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                        <td class="w-4 p-4">
-                            <div class="flex items-center">
-                                <input name="ids[]" value="{{ $classSubject->id }}" type="checkbox"
-                                       class="w-4 h-4 border border-gray-300 rounded bg-white focus:ring-3 focus:ring-violet-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-violet-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:outline-none checked:bg-violet-600">
-                                <label for="checkbox-table-search-{{ $index }}" class="sr-only">checkbox</label>
-                            </div>
-                        </td>
-                        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                            {{ $index + 1 }}
-                        </th>
-                        <td class="px-6 py-4">
-                            {{ $classSubject -> class_name }}
-                        </td>
-                        <td class="px-6 py-4">
-                            {{ $classSubject -> subject_name }}
-                        </td>
-                        <td class="px-6 py-4">
-                            @if($classSubject->status == 0)
-                            <span
-                                class="bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300">Désactivée</span>
-                            @elseif($classSubject->status == 1)
-                            <span
-                                class="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300">Activée</span>
-                            @endif
-                        </td>
-                        <td class="px-6 py-4">
-                            {{ $classSubject -> created_by_name }}
-                        </td>
-                        <td class="px-6 py-4">
-                            {{ $classSubject -> created_at->format('d/m/Y H:i:s') }}
-                        </td>
-                        <td class="px-6 py-4">
-                            {{ $classSubject -> updated_at->format('d/m/Y H:i:s') }}
-                        </td>
-                        <td class="flex items-center px-6 py-4">
-                            <a href="{{ url('admin/assign_subject/edit', $classSubject -> id) }}"
-                               class="font-medium text-violet-500 me-5"
-                               title="Modifier">
-                                <span class="w-6 h-6 text-violet-500 text-[22px]"><i class="fa-solid fa-pen-to-square"></i></span>
+            <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                <thead class="text-xs text-white uppercase bg-violet-500 dark:bg-gray-700 dark:text-gray-400">
+                <tr>
+                    <th scope="col" class="p-4">
+                        <div class="flex items-center">
+                            <input id="checkbox-all-search" type="checkbox"
+                                   class="w-4 h-4 border border-gray-300 rounded bg-white focus:ring-3 focus:ring-violet-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-violet-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:outline-none checked:bg-violet-600">
+                            <label for="checkbox-all-search" class="sr-only">checkbox</label>
+                        </div>
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        <div class="flex items-center">
+                            Identifiant
+                            <a href="#">
+                                <span class="w-3 h-3 ms-1.5"><i class="fa-solid fa-filter"></i></span>
                             </a>
-                            @include('admin.assign_subject.delete')
-                            <button data-modal-target="popup-modal" data-modal-toggle="popup-modal"
-                                    class="font-medium text-violet-500 dark:text-violet-500 hover:underline"
-                                    title="Supprimer">
-                                <span class="w-6 h-6 text-red-500 text-[22px]"><i class="fa-solid fa-trash"></i></span>
-                            </button>
-                        </td>
-                    </tr>
-                    @endforeach
-                    @if($getClassSubject->isEmpty())
-                    <tr>
-                        <td colspan="8" class="p-6 text-center text-gray-500">
-                            Aucune matière trouvée.
-                        </td>
-                    </tr>
-                    @endif
-                    </tbody>
-                </table>
-                <div class="text-center bg-white p-2">
-                    <div class="flex justify-between items-center mt-4">
+                        </div>
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        <div class="flex items-center">
+                            Nom de la classe
+                            <a href="#">
+                                <span class="w-3 h-3 ms-1.5"><i class="fa-solid fa-filter"></i></span>
+                            </a>
+                        </div>
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        <div class="flex items-center">
+                            Nom de la matière
+                            <a href="#">
+                                <span class="w-3 h-3 ms-1.5"><i class="fa-solid fa-filter"></i></span>
+                            </a>
+                        </div>
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        <div class="flex items-center">
+                            Status
+                            <a href="#">
+                                <span class="w-3 h-3 ms-1.5"><i class="fa-solid fa-filter"></i></span>
+                            </a>
+                        </div>
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        <div class="flex items-center">
+                            Crée par
+                            <a href="#">
+                                <span class="w-3 h-3 ms-1.5"><i class="fa-solid fa-filter"></i></span>
+                            </a>
+                        </div>
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        <div class="flex items-center">
+                            Date de création
+                            <a href="#">
+                                <span class="w-3 h-3 ms-1.5"><i class="fa-solid fa-filter"></i></span>
+                            </a>
+                        </div>
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        <div class="flex items-center">
+                            Date de modification
+                            <a href="#">
+                                <span class="w-3 h-3 ms-1.5"><i class="fa-solid fa-filter"></i></span>
+                            </a>
+                        </div>
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Actions
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach($getClassSubject as $index => $classSubject)
+                <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                    <td class="w-4 p-4">
+                        <div class="flex items-center">
+                            <input name="ids[]" value="{{ $classSubject->id }}" type="checkbox"
+                                   class="w-4 h-4 border border-gray-300 rounded bg-white focus:ring-3 focus:ring-violet-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-violet-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:outline-none checked:bg-violet-600">
+                            <label for="checkbox-table-search-{{ $index }}" class="sr-only">checkbox</label>
+                        </div>
+                    </td>
+                    <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                        {{ $index + 1 }}
+                    </th>
+                    <td class="px-6 py-4">
+                        {{ $classSubject -> class_name }}
+                    </td>
+                    <td class="px-6 py-4">
+                        {{ $classSubject -> subject_name }}
+                    </td>
+                    <td class="px-6 py-4">
+                        @if($classSubject->status == 0)
+                        <span
+                            class="bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300">Désactivée</span>
+                        @elseif($classSubject->status == 1)
+                        <span
+                            class="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300">Activée</span>
+                        @endif
+                    </td>
+                    <td class="px-6 py-4">
+                        {{ $classSubject -> created_by_name }}
+                    </td>
+                    <td class="px-6 py-4">
+                        {{ $classSubject -> created_at->format('d/m/Y H:i:s') }}
+                    </td>
+                    <td class="px-6 py-4">
+                        {{ $classSubject -> updated_at->format('d/m/Y H:i:s') }}
+                    </td>
+                    <td class="flex items-center px-6 py-4">
+                        <a href="{{ url('admin/assign_subject/edit', $classSubject -> id) }}"
+                           class="font-medium text-violet-500 me-5"
+                           title="Modifier">
+                            <span class="w-6 h-6 text-violet-500 text-[22px]"><i class="fa-solid fa-pen-to-square"></i></span>
+                        </a>
+                        <a href="{{ url('admin/assign_subject/delete', $classSubject -> id) }}"
+                           class="font-medium text-violet-500 me-5"
+                           title="Supprimer">
+                            <span class="w-6 h-6 text-red-500 text-[22px]"><i class="fa-solid fa-trash"></i></span>
+                        </a>
+                    </td>
+                </tr>
+                @endforeach
+                @if($getClassSubject->isEmpty())
+                <tr>
+                    <td colspan="8" class="p-6 text-center text-gray-500">
+                        Aucune matière trouvée.
+                    </td>
+                </tr>
+                @endif
+                </tbody>
+            </table>
+            <div class="text-center bg-white p-2">
+                <div class="flex justify-between items-center mt-4">
                         <span
                             class="text-violet-500 font-bold text-md ps-3.5 uppercase">Total : {{ $getClassSubject->total() }}</span>
-                    </div>
                 </div>
-<!--            </form>-->
+            </div>
         </div>
     </div>
 </div>
 @endsection
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const form = document.getElementById('searchForm');
-        const resultsContainer = document.getElementById('results');
-
-        form.addEventListener('input', () => {
-            const formData = new FormData(form);
-
-            fetch('{{ url("admin/assign_subject/list") }}', {
-                method: 'GET',
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest',
-                },
-                body: new URLSearchParams(formData),
-            })
-                .then(response => response.text())
-                .then(html => {
-                    resultsContainer.innerHTML = html;
-                })
-                .catch(error => console.error('Error:', error));
-        });
-
-        // const checkboxAll = document.getElementById("checkbox-all-search");
-        // const checkboxes = document.querySelectorAll(".checkbox-item");
-        // const deleteButton = document.getElementById("delete-selected");
-        //
-        // // Fonction pour cocher/décocher toutes les cases
-        // checkboxAll.addEventListener("change", function () {
-        //     checkboxes.forEach(checkbox => {
-        //         checkbox.checked = checkboxAll.checked;
-        //     });
-        //     toggleDeleteButton();
-        // });
-        //
-        // // Gestion individuelle des cases
-        // checkboxes.forEach(checkbox => {
-        //     checkbox.addEventListener("change", toggleDeleteButton);
-        // });
-        //
-        // // Afficher/masquer le bouton "Supprimer tout"
-        // function toggleDeleteButton() {
-        //     const anyChecked = Array.from(checkboxes).some(checkbox => checkbox.checked);
-        //     deleteButton.style.display = anyChecked ? "block" : "none";
-        // }
-
-    });
-
-</script>
 
 

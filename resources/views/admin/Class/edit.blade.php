@@ -1,26 +1,26 @@
 @extends('layouts.app')
 @section('content')
-<div class="p-4 mt-72 sm:ml-64 flex items-center justify-center">
-    <div class="p-8 w-full max-w-screen-md shadow-xl rounded bg-gray-100 border">
+<div class="p-4 mt-52 ms-28 flex items-center justify-center">
+    <div class="w-full max-w-screen-md shadow-xl rounded bg-white">
         @include('message')
-        <form action="" method="post" class="">
+        <h2 class="bg-emerald-500 font-bold uppercase text-center text-white rounded-t-lg py-3">
+            Modifier une classe</h2>
+        <form action="" method="post" class="p-5">
             {{ csrf_field() }}
-            <h2 class="lg:text-3xl sm:text-2xl text-xl font-bold uppercase text-center text-gray-700 rounded-t-md mb-10">
-                Modifier une classe</h2>
             <div class="flex mb-5">
                 <input type="text" id="name" name="name" value="{{ $getClass->name }}"
-                       class="rounded bg-white border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500"
+                       class="rounded bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm ps-3"
                        placeholder="nom de la classe..." required>
             </div>
             <div class="flex mb-5">
-                <select id="status" name="status" class="rounded bg-white border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500" required>
+                <select id="status" name="status" class="rounded bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm ps-3" required>
                     <option disabled selected>Définissez un statut pour cette classe</option>
                     <option value="1" name="status" {{ $getClass->status == 1 ? 'selected' : '' }}>Activée </option>
                     <option value="0" name="status" {{ $getClass->status == 0 ? 'selected' : '' }}>Désactivée </option>
                 </select>
             </div>
             <button type="submit"
-                    class="text-white bg-green-500 hover:bg-green-600 focus:ring-4 focus:outline-none focus:ring-emerald-300 font-medium rounded-md text-sm px-5 py-2.5 text-center dark:bg-violet-600 dark:hover:bg-emerald-700 dark:focus:ring-emerald-800 transition-all duration-500 ease-out w-full hover:scale-105">
+                    class="text-white bg-emerald-500 hover:bg-emerald-600 focus:ring-4 focus:outline-none focus:ring-emerald-300 font-medium rounded text-sm px-5 py-2.5 text-center transition-all duration-700 ease-out w-full">
                 Modifier
             </button>
     </div>

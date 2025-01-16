@@ -174,12 +174,10 @@
                            class="font-medium text-violet-500 me-5" title="Modifier">
                             <span class="w-6 h-6 text-violet-500 text-[22px]"><i class="fa-solid fa-pen-to-square"></i></span>
                         </a>
-                        @include('admin.class.delete')
-                        <button data-modal-target="popup-modal" data-modal-toggle="popup-modal"
-                                class="font-medium text-violet-500"
-                                title="Supprimer">
+                        <a href="{{ url('admin/class/delete', $class -> id) }}"
+                           class="font-medium text-violet-500 me-5" title="Supprimer">
                             <span class="w-6 h-6 text-red-500 text-[22px]"><i class="fa-solid fa-trash"></i></span>
-                        </button>
+                        </a>
                     </td>
                 </tr>
                 @endforeach
@@ -201,29 +199,3 @@
     </div>
 </div>
 @endsection
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const form = document.getElementById('searchForm');
-        const resultsContainer = document.getElementById('results');
-
-        form.addEventListener('input', () => {
-            const formData = new FormData(form);
-
-            fetch('{{ url("admin/class/list") }}', {
-                method: 'GET',
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest',
-                },
-                body: new URLSearchParams(formData),
-            })
-                .then(response => response.text())
-                .then(html => {
-                    resultsContainer.innerHTML = html;
-                })
-                .catch(error => console.error('Error:', error));
-        });
-    });
-
-</script>
-
-

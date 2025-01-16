@@ -72,5 +72,9 @@ class ClassSubjectModel extends Model
         return ClassSubjectModel::where('class_id', '=', $class_id)->where('is_delete', 0)->get();
     }
 
+    static public function deleteSubjectAssign($class_id){
+        return ClassSubjectModel::where('class_id', '=', $class_id)->delete();
+    }
+
 
 }

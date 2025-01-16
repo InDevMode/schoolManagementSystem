@@ -10,7 +10,7 @@
                    class="flex items-center p-2 rounded hover:bg-violet-600 transition-all duration-700 ease-out group {{ Request::Segment(2) == 'dashboard' ? 'bg-violet-500' : 'text-violet-500' }}">
                     <span
                         class="flex-shrink-0 transition duration-75 group-hover:text-white {{ Request::Segment(2) == 'dashboard' ? 'text-white' : 'text-violet-500'}}">
-                        <i class="fa-solid fa-gauge-high"></i>
+                        <i class="fa-solid fa-house-chimney"></i>
                     </span>
                     <span
                         class="flex-1 ms-3 whitespace-nowrap group-hover:text-white {{ Request::Segment(2) == 'dashboard' ? 'group-hover:text-white' : 'text-violet-500'}}">Dashboard</span>
@@ -62,7 +62,7 @@
                    class="flex items-center p-2 rounded hover:bg-violet-600 transition-all duration-700 ease-out group {{ Request::Segment(2) == 'dashboard' ? 'bg-violet-500' : 'text-violet-500' }}">
                     <span
                         class="flex-shrink-0 transition duration-75 group-hover:text-white {{ Request::Segment(2) == 'dashboard' ? 'text-white' : 'text-violet-500'}}">
-                        <i class="fa-solid fa-gauge-high"></i>
+                        <i class="fa-solid fa-house-chimney"></i>
                     </span>
                     <span
                         class="flex-1 ms-3 whitespace-nowrap group-hover:text-white {{ Request::Segment(2) == 'dashboard' ? 'group-hover:text-white' : 'text-violet-500'}}">Dashboard</span>
@@ -76,7 +76,7 @@
                    class="flex items-center p-2 rounded hover:bg-violet-600 transition-all duration-700 ease-out group {{ Request::Segment(2) == 'dashboard' ? 'bg-violet-500' : 'text-violet-500' }}">
                     <span
                         class="flex-shrink-0 transition duration-75 group-hover:text-white {{ Request::Segment(2) == 'dashboard' ? 'text-white' : 'text-violet-500'}}">
-                        <i class="fa-solid fa-gauge-high"></i>
+                        <i class="fa-solid fa-house-chimney"></i>
                     </span>
                     <span
                         class="flex-1 ms-3 whitespace-nowrap group-hover:text-white {{ Request::Segment(2) == 'dashboard' ? 'group-hover:text-white' : 'text-violet-500'}}">Dashboard</span>
@@ -90,7 +90,7 @@
                    class="flex items-center p-2 rounded hover:bg-violet-600 transition-all duration-700 ease-out group {{ Request::Segment(2) == 'dashboard' ? 'bg-violet-500' : 'text-violet-500' }}">
                     <span
                         class="flex-shrink-0 transition duration-75 group-hover:text-white {{ Request::Segment(2) == 'dashboard' ? 'text-white' : 'text-violet-500'}}">
-                        <i class="fa-solid fa-gauge-high"></i>
+                        <i class="fa-solid fa-house-chimney"></i>
                     </span>
                     <span
                         class="flex-1 ms-3 whitespace-nowrap group-hover:text-white {{ Request::Segment(2) == 'dashboard' ? 'group-hover:text-white' : 'text-violet-500'}}">Dashboard</span>
