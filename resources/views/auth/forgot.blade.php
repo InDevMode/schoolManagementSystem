@@ -50,7 +50,7 @@
                         class="text-white bg-violet-500 hover:bg-violet-600 focus:ring-4 focus:outline-none focus:ring-violet-300 font-medium rounded-md text-sm px-5 py-2.5 mt-5 text-center transition-all duration-500 ease-out w-full hover:scale-105">
                     Connexion
                 </button>
-                <div class="flex justify-between gap-8 items-center mt-5 sm:mt-14 text-sm">
+                <div class="flex justify-between gap-8 items-center mt-5 sm:mt-8 text-sm">
                     <hr class="border border-gray-400 w-1/2">
                     <span class="text-violet-500 font-bold">Or</span>
                     <hr class="border border-gray-400 w-1/2">
