@@ -7,7 +7,7 @@
             <div class="space-x-2 font-semibold">
                 <span class="text-violet-500 text-[25px]"><i class="fa-solid fa-book-open-reader"></i></span>
                 <span>/</span>
-                <span class="hover:underline hover:text-violet-600 transition-all duration-300"><a href="{{ url('admin/dashboard') }}">Dashboard</a></span>
+                <span class="hover:underline hover:text-violet-500 transition-all duration-300"><a href="{{ url('admin/dashboard') }}">Dashboard</a></span>
                 <span>/</span>
                 <span>Liste des matières</span>
             </div>

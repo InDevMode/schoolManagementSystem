@@ -16,10 +16,10 @@
                     <span class="text-2xl">School</span>
                 </a>
             </div>
-            <div class="flex space-x-4 items-center text-violet-500">
+            <div class="flex space-x-4 items-center text-gray-900">
                 @if(Auth::user()->user_type === 1)
                 <div>
-                    <button type="button" class="p-2"
+                    <button type="button" class="p-2 hover:text-violet-500 transition duration-700"
                     <span class=""><i class="fa-solid fa-2x fa-bell"></i></span>
                     </button>
                 </div>
@@ -27,7 +27,7 @@
                 <div class="flex items-center justify-center rounded-full">
                     <div>
                         <button type="button"
-                                class="p-2"
+                                class="p-2 hover:text-violet-500 transition duration-700"
                                 aria-expanded="false" data-dropdown-toggle="dropdown-user">
                             <span class="sr-only">Open user menu</span>
                             <span class="">
@@ -36,13 +36,13 @@
                         </button>
                     </div>
                     <div
-                        class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded shadow dark:bg-gray-700 dark:divide-gray-600"
+                        class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded shadow"
                         id="dropdown-user">
                         <div class="px-4 py-3" role="none">
-                            <p class="text-sm text-gray-900 dark:text-white" role="none">
+                            <p class="text-sm text-gray-900" role="none">
                                 {{ Auth::user()->name }}
                             </p>
-                            <p class="text-sm font-medium text-gray-900 truncate dark:text-gray-300" role="none">
+                            <p class="text-sm font-medium text-gray-900 truncate" role="none">
                                 {{ Auth::user()->email }}
                             </p>
                         </div>
@@ -61,11 +61,11 @@
                             @elseif(Auth::user()->user_type === 2)
                             <li>
                                 <a href="{{ url('teacher/dashboard') }}"
-                                   class="block px-4 py-2 text-sm text-gray-700 hover:text-white hover:bg-violet-500 transition duration-300 ease-oute"
+                                   class="block px-4 py-2 text-sm text-gray-700 hover:text-white hover:bg-violet-500 transition duration-300 ease-out"
                                    role="menuitem">Dashboard</a>
                             </li>
                             <li>
-                                <a href="{{ url('teacher/profile') }}"
+                                <a href="{{ url('teacher/change_password') }}"
                                    class="block px-4 py-2 text-sm text-gray-700 hover:text-white hover:bg-violet-500 transition duration-300 ease-out"
                                    role="menuitem">Profile</a>
                             </li>
@@ -76,7 +76,7 @@
                                    role="menuitem">Dashboard</a>
                             </li>
                             <li>
-                                <a href="{{ url('student/profile') }}"
+                                <a href="{{ url('student/change_password') }}"
                                    class="block px-4 py-2 text-sm text-gray-700 hover:text-white hover:bg-violet-500 transition duration-300 ease-out"
                                    role="menuitem">Profile</a>
                             </li>
@@ -92,7 +92,7 @@
                                    role="menuitem">Dashboard</a>
                             </li>
                             <li>
-                                <a href="{{ url('parent/profile') }}"
+                                <a href="{{ url('parent/change_password') }}"
                                    class="block px-4 py-2 text-sm text-gray-700 hover:text-white hover:bg-violet-500 transition duration-300 ease-out"
                                    role="menuitem">Profile</a>
                             </li>

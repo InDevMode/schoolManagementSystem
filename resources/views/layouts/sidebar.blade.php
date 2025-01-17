@@ -4,12 +4,12 @@
     <div
         class="h-full px-3 pb-4 overflow-y-auto scrollbar-thin scrollbar-thumb-blue-500 scrollbar-track-gray-200 bg-white text-white">
         <span
-            class="flex items-center ps-2.5 text-violet-500 mt-3 border-gray-200 p-3">
+            class="flex flex-col items-center ps-2.5 text-gray-900 mt-3 border-b border-gray-200 p-3 mb-2">
             <img src="https://flowbite.com/docs/images/people/profile-picture-5.jpg"
-                 class="w-8 h-8 rounded-full me-3 sm:h-7" alt="Flowbite Logo"/>
+                 class="w-10 h-10 rounded-full me-3" alt="Flowbite Logo"/>
             <span class="self-center text-md font-medium whitespace-nowrap">{{ Auth::user()->name }}</span>
         </span>
-        <ul class="space-y-2 font-semibold">
+        <ul class="space-y-2 font-medium">
             @if(Auth::user()->user_type == 1)
             <li>
                 <a href="{{ url('admin/dashboard') }}"
