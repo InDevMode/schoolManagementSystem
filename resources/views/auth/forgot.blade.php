@@ -28,22 +28,15 @@
     </style>
 </head>
 
-<body class="max-w-[360px] sm:max-w-7xl mx-auto flex justify-center items-center h-screen backImage">
-<div class="lg:bg-gray-100 bg-white rounded-lg shadow-2xl">
-    <h1 class="text-center uppercase bg-violet-500 lg:text-3xl sm:text-2xl text-white font-bold px-3 py-2 lg:py-3 rounded-t-lg lg:mb-3">School
-        Management
-        System
-    </h1>
-    <div class="flex flex-col lg:flex-row items-center gap-2">
-        <div class="hidden lg:block w-full h-full rounded-r-none rounded-md">
-            <img src="public/images/login3.png" alt="Image login" class="object-cover w-full h-auto">
-        </div>
-        <div class="w-full rounded-l-none rounded-md p-5">
-            @include('message')
-            <form action="{{ url('forgot-password') }}" method="post" class="lg:bg-white lg:border border-gray-200 lg:shadow rounded-lg sm:py-10 sm:px-5">
+<body class="max-w-[640px] sm:max-w-[1640px] mx-auto h-screen backImage flex">
+<div class="lg:w-[800px] md:w-[600px] w-full rounded-lg flex items-center justify-center p-8">
+    <div>
+        <div class="flex flex-col items-center gap-2">
+            <form action="" method="post" class="bg-white border border-gray-200 shadow-2xl rounded-lg p-8">
+                @include('message')
                 {{ csrf_field() }}
-                <h2 class="lg:text-2xl sm:text-2xl text-sm font-bold uppercase text-center text-gray-700 rounded-t-md sm:mb-5">
-                    Réinitialisez votre mot de passe</h2>
+                <h2 class="lg:text-2xl sm:text-2xl font-bold uppercase text-center text-gray-700 mb-3">Réinitialisez
+                    votre mot de passe</h2>
                 <div class="flex mt-5 sm:mb-1">
                         <span
                             class="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-100 border border-e-0 border-gray-300 rounded-s-md">
@@ -62,15 +55,17 @@
                     <span class="text-violet-500 font-bold">Or</span>
                     <hr class="border border-gray-400 w-1/2">
                 </div>
-
-                <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center font-medium sm:mt-1">
+                <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center font-medium mt-5">
                         <span class="block text-sm text-gray-700">
                             <a href="{{ url('') }}"
-                               class="hover:underline transition-all ease-in duration-300">Connectez-vous</a>
+                               class="hover:underline transition-all ease-in duration-300">Connectez-vous
+                            </a>
                         </span>
                     <span class="block text-sm">
                             <a href="{{ url('signup') }}"
-                               class="hover:underline text-violet-500 transition-all ease-in duration-500">Créer un compte </a>
+                               class="hover:underline text-violet-600 transition-all ease-in duration-500">Créer un
+                                compte
+                            </a>
                         </span>
                 </div>
             </form>

@@ -28,21 +28,15 @@
     </style>
 </head>
 
-<body class="max-w-[360px] sm:max-w-7xl mx-auto flex justify-center items-center h-screen backImage">
-<div class="lg:bg-gray-100 bg-white rounded-lg shadow-2xl">
-    <h1 class="text-center uppercase bg-violet-500 lg:text-3xl sm:text-2xl text-white font-bold px-3 py-2 lg:py-3 rounded-t-lg lg:mb-3">School
-        Management
-        System
-    </h1>
-    <div class="flex flex-col lg:flex-row items-center gap-2">
-        <div class="hidden lg:block w-full h-full rounded-r-none rounded-md">
-            <img src="public/images/login3.png" alt="Image login" class="object-cover w-full h-auto">
-        </div>
-        <div class="w-full rounded-l-none rounded-md p-5">
-            @include('message')
-            <form action="{{ url('login') }}" method="post" class="lg:bg-white lg:border border-gray-200 lg:shadow rounded-lg p-5">
+<body class="max-w-[640px] sm:max-w-[1640px] mx-auto h-screen backImage flex">
+<div id="animated-container"
+     class="lg:w-[800px] md:w-[600px] w-full rounded-lg flex items-center justify-center p-8 transform -translate-x-full transition-transform duration-1000 ease-out">
+    <div>
+        <div class="flex flex-col items-center gap-2">
+            <form action="{{ url('login') }}" method="post" class="bg-white border border-gray-200 shadow-2xl rounded-lg p-8">
+                @include('message')
                 {{ csrf_field() }}
-                <h2 class="lg:text-3xl sm:text-2xl font-bold uppercase text-center text-gray-700 rounded-t-md mb-3">
+                <h2 class="lg:text-3xl sm:text-2xl font-bold uppercase text-center text-gray-700 mb-3">
                     Connectez-vous</h2>
                 <div class="flex mb-5">
                         <span
@@ -120,8 +114,21 @@
 </div>
 </body>
 
+
 <!--Script setup flowbite-->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
 <script src="https://kit.fontawesome.com/79fa04224e.js" crossorigin="anonymous"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const animatedContainer = document.getElementById('animated-container');
+        if (animatedContainer) {
+            setTimeout(() => {
+                animatedContainer.classList.remove('-translate-x-full');
+                animatedContainer.classList.add('translate-x-0');
+            }, 1000);
+        }
+    });
+
+</script>
 
 </html>
