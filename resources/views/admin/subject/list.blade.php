@@ -6,7 +6,7 @@
         <div class="flex justify-between pt-2">
             <span class="font-bold uppercase">Liste des matières</span>
             <a href="{{ url('admin/subject/add') }}"
-               class="text-white bg-violet-600 hover:bg-violet-800 focus:ring-4 focus:outline-none focus:ring-violet-300 font-medium rounded-full text-sm px-5 py-2.5 text-center transition-all duration-500 ease-out w-full sm:w-fit hover:scale-105">
+               class="text-white bg-violet-500 hover:bg-violet-600 focus:ring-4 focus:outline-none focus:ring-violet-300 font-medium rounded-full text-sm px-5 py-2.5 text-center transition-all duration-500 ease-out w-full sm:w-fit hover:scale-105">
                 Créer une nouvelle matière
             </a>
         </div>
@@ -66,7 +66,7 @@
             <!-- Boutons -->
             <div class="flex">
                 <button type="submit"
-                        class="flex justify-between text-white bg-violet-600 hover:bg-violet-800 focus:ring-4 focus:outline-none focus:ring-violet-300 font-medium rounded-full text-sm px-5 py-2.5 text-center transition-all duration-500 ease-out w-fit hover:scale-105">
+                        class="flex justify-between text-white bg-violet-500 hover:bg-violet-600 focus:ring-4 focus:outline-none focus:ring-violet-300 font-medium rounded-full text-sm px-5 py-2.5 text-center transition-all duration-500 ease-out w-fit hover:scale-105">
                     Rechercher
                     <span class="inline-flex items-center px-3 text-sm text-gray-900">
                 <i class="fa-solid fa-search text-white"></i>
@@ -86,7 +86,7 @@
                     <th scope="col" class="p-4">
                         <div class="flex items-center">
                             <input id="checkbox-all-search" type="checkbox"
-                                   class="w-4 h-4 border border-gray-300 rounded bg-white focus:ring-3 focus:ring-violet-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-violet-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:outline-none checked:bg-violet-600">
+                                   class="w-4 h-4 border border-gray-300 rounded bg-white focus:ring-3 focus:ring-violet-300 focus:outline-none checked:bg-violet-600">
                             <label for="checkbox-all-search" class="sr-only">checkbox</label>
                         </div>
                     </th>
@@ -170,19 +170,23 @@
                     <td class="px-6 py-4">
                         @if($subject->type == 'theoretical')
                         <span
-                            class="bg-pink-100 text-pink-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded">Théorique</span>
+                            class="bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded">Théorique</span>
                         @elseif($subject->type == 'practical')
                         <span
-                            class="bg-indigo-100 text-indigo-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded">Pratique</span>
+                            class="bg-violet-100 text-violet-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded">Pratique</span>
                         @endif
                     </td>
                     <td class="px-6 py-4">
                         @if($subject->status == 0)
-                        <span
-                            class="bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded">Désactivée</span>
+                        <div class="flex items-center">
+                            <div class="h-2.5 w-2.5 rounded-full bg-red-500 me-2"></div>
+                            Désactivée
+                        </div>
                         @elseif($subject->status == 1)
-                        <span
-                            class="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded">Activée</span>
+                        <div class="flex items-center">
+                            <div class="h-2.5 w-2.5 rounded-full bg-emerald-500 me-2"></div>
+                            Activée
+                        </div>
                         @endif
                     </td>
                     <td class="px-6 py-4">

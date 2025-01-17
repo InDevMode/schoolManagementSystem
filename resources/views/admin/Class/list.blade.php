@@ -15,7 +15,8 @@
                 {{ $getClass->links('vendor.pagination.tailwind') }}
             </div>
         </div>
-        <form action="" method="get" class="flex justify-between my-5 shadow p-3 bg-white rounded border border-gray-300" id="searchForm">
+        <form action="" method="get"
+              class="flex justify-between my-5 shadow p-3 bg-white rounded border border-gray-300" id="searchForm">
             {{ csrf_field() }}
             <!-- Nom de la classe -->
             <div>
@@ -29,8 +30,10 @@
                 <select id="status" name="status"
                         class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500">
                     <option value="">Filtrer par statut</option>
-                    <option value="1" {{ Request::get('status') == '1' ? 'selected' : '' }}>Activée</option>
-                    <option value="0" {{ Request::get('status') == '0' ? 'selected' : '' }}>Désactivée</option>
+                    <option value="1" {{ Request::get(
+                    'status') == '1' ? 'selected' : '' }}>Activée</option>
+                    <option value="0" {{ Request::get(
+                    'status') == '0' ? 'selected' : '' }}>Désactivée</option>
                 </select>
             </div>
 
@@ -153,11 +156,15 @@
                     </td>
                     <td class="px-6 py-4">
                         @if($class->status == 0)
-                        <span
-                            class="bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300">Désactivée</span>
+                        <div class="flex items-center">
+                            <div class="h-2.5 w-2.5 rounded-full bg-red-500 me-2"></div>
+                            Désactivée
+                        </div>
                         @elseif($class->status == 1)
-                        <span
-                            class="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300">Activée</span>
+                        <div class="flex items-center">
+                            <div class="h-2.5 w-2.5 rounded-full bg-emerald-500 me-2"></div>
+                            Activée
+                        </div>
                         @endif
                     </td>
                     <td class="px-6 py-4">
@@ -192,7 +199,8 @@
             </table>
             <div class="text-center bg-white py-2">
                 <div class="flex justify-between items-center mt-4">
-                    <span class="text-violet-500 font-bold text-md ps-5 uppercase">Total : {{ $getClass->total() }}</span>
+                    <span
+                        class="text-violet-500 font-bold text-md ps-5 uppercase">Total : {{ $getClass->total() }}</span>
                 </div>
             </div>
         </div>

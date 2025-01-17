@@ -72,12 +72,10 @@ class ClassSubjectController extends Controller
         } else {
             abort(404);
         }
-
     }
 
     public function update(Request $request): \Illuminate\Foundation\Application|\Illuminate\Routing\Redirector|\Illuminate\Http\RedirectResponse|\Illuminate\Contracts\Foundation\Application
     {
-
         try {
             ClassSubjectModel::deleteSubjectAssign($request->class_id);
 
@@ -105,6 +103,48 @@ class ClassSubjectController extends Controller
 
             return redirect()->back()->with('error', 'Vos informations ne sont pas correctes. Veuillez réessayer.');
         }
+    }
+
+    public function editSingle($id)
+    {
+        $editExisting = ClassSubjectModel::getSingle($id);
+        if (!empty($editExisting)) {
+            $data['getClassSubject'] = $editExisting;
+            $data['getClass'] = ClassModel::getClass();
+            $data['getSubject'] = SubjectModel::getSubject();
+            $data['getAssignSubject'] = ClassSubjectModel::getAssignSubject($editExisting->class_id);
+            $data['header_title'] = "Modifier une assignation";
+            return view('admin.assign_subject.edit_single', $data);
+        } else {
+            abort(404);
+        }
+    }
+
+    public function updateSingle(Request $request, $id): \Illuminate\Foundation\Application|\Illuminate\Routing\Redirector|\Illuminate\Http\RedirectResponse|\Illuminate\Contracts\Foundation\Application
+    {
+        try {
+
+            $classSubjectAlreadyExist = ClassSubjectModel::getAlreadyExist($request->class_id, $request->subject_id);
+            if (!empty($classSubjectAlreadyExist)) {
+                $classSubjectAlreadyExist->status = $request->status;
+                $classSubjectAlreadyExist->save();
+
+                return redirect('admin/assign_subject/list')->with('success', 'Le status de cette assignation a été modifié avec succès.');
+            }else{
+                $classSubject = ClassSubjectModel::getSingle($id);;
+                $classSubject->class_id = $request->class_id;
+                $classSubject->subject_id = $request->subject_id;
+                $classSubject->status = $request->status;
+                $classSubject->save();
+            }
+
+            return redirect('admin/assign_subject/list')->with('success', 'Cette assignation a été modifiée avec succès.');
+        } catch (\Exception $e) {
+            Log::error("Erreur lors de la modification de l'assignation de cette matière. " . $e->getMessage());
+
+            return redirect()->back()->with('error', 'Vos informations ne sont pas correctes. Veuillez réessayer.');
+        }
+
     }
 
     public function delete($id)

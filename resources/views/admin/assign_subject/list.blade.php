@@ -168,11 +168,15 @@
                     </td>
                     <td class="px-6 py-4">
                         @if($classSubject->status == 0)
-                        <span
-                            class="bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300">Désactivée</span>
+                        <div class="flex items-center">
+                            <div class="h-2.5 w-2.5 rounded-full bg-red-500 me-2"></div>
+                            Désactivée
+                        </div>
                         @elseif($classSubject->status == 1)
-                        <span
-                            class="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300">Activée</span>
+                        <div class="flex items-center">
+                            <div class="h-2.5 w-2.5 rounded-full bg-green-500 me-2"></div>
+                            Activée
+                        </div>
                         @endif
                     </td>
                     <td class="px-6 py-4">
@@ -185,9 +189,14 @@
                         {{ $classSubject -> updated_at->format('d/m/Y H:i:s') }}
                     </td>
                     <td class="flex items-center px-6 py-4">
+                        <a href="{{ url('admin/assign_subject/edit_single', $classSubject -> id) }}"
+                           class="font-medium text-violet-500 me-5"
+                           title="Modification unique">
+                            <span class="w-6 h-6 text-violet-500 text-[22px]"><i class="fa-solid fa-pen"></i></span>
+                        </a>
                         <a href="{{ url('admin/assign_subject/edit', $classSubject -> id) }}"
                            class="font-medium text-violet-500 me-5"
-                           title="Modifier">
+                           title="Modification multiple">
                             <span class="w-6 h-6 text-violet-500 text-[22px]"><i class="fa-solid fa-pen-to-square"></i></span>
                         </a>
                         <a href="{{ url('admin/assign_subject/delete', $classSubject -> id) }}"

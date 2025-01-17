@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('content')
-<div class="p-4 mt-52 ms-28 flex items-center justify-center">
-    <div class="w-full max-w-screen-md shadow-xl rounded bg-white">
+<div class="p-4 mt-40 sm:ml-64 flex items-center justify-center">
+    <div class="w-full max-w-screen-md bg-white shadow-lg mt-24 rounded-md">
         @include('message')
         <h2 class="bg-violet-500 font-bold uppercase text-center text-white rounded-t-lg py-3">
             Créer une nouvelle matière</h2>
@@ -28,7 +28,7 @@
             </div>
             <button type="submit"
                     class="text-white bg-violet-500 hover:bg-violet-600 focus:ring-4 focus:outline-none focus:ring-violet-300 font-medium rounded-md text-sm px-5 py-2.5 text-center transition-all duration-700 ease-out w-full">
-                Créer cette matière
+                Créer
             </button>
     </div>
     </form>

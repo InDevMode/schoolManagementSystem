@@ -1,10 +1,10 @@
 @extends('layouts.app')
 @section('content')
-<div class="p-4 mt-52 ms-28 flex items-center justify-center">
-    <div class="w-full max-w-screen-md shadow-xl rounded bg-white">
+<div class="p-4 mt-40 sm:ml-64 flex items-center justify-center">
+    <div class="w-full max-w-screen-md bg-white shadow-lg mt-24 rounded-md">
         @include('message')
         <h2 class="bg-emerald-500 font-bold uppercase text-center text-white rounded-t-lg py-3">
-            Modifier une classe</h2>
+            Modifier cette classe</h2>
         <form action="" method="post" class="p-5">
             {{ csrf_field() }}
             <div class="flex mb-5">

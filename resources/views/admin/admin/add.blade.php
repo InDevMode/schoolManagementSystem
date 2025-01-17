@@ -1,9 +1,9 @@
 @extends('layouts.app')
 @section('content')
 <div class="p-4 mt-40 sm:ml-64 flex items-center justify-center">
-    <div class="p-5 w-full max-w-screen-md bg-white shadow-lg mt-24 rounded-md">
+    <div class="w-full max-w-screen-md bg-white shadow-lg mt-24 rounded-md">
         @include('message')
-        <form action="{{ url('admin/admin/add') }}" method="post" class="">
+        <form action="{{ url('admin/admin/add') }}" method="post" class="p-5">
             {{ csrf_field() }}
             <h2 class="font-bold uppercase text-center text-white rounded-t-md bg-violet-500 py-3 mb-10">
                 Créer un administrateur</h2>
@@ -23,7 +23,7 @@
                        placeholder="mot de passe..." required>
             </div>
             <button type="submit"
-                    class="text-white bg-violet-500 hover:bg-violet-600 focus:ring-4 focus:outline-none focus:ring-violet-300 font-medium rounded text-sm px-5 py-2.5 text-center uppercase transition-all duration-500 ease-out w-full">
+                    class="text-white bg-violet-500 hover:bg-violet-600 focus:ring-4 focus:outline-none focus:ring-violet-300 font-medium rounded text-sm px-5 py-2.5 text-center transition-all duration-500 ease-out w-full">
                 Créer
             </button>
     </div>

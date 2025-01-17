@@ -102,9 +102,9 @@
             <ul>
                 <li class="absolute bottom-2 left-0 px-3 w-full">
                     <a href="{{ url('logout') }}"
-                       class="flex items-center p-2 text-violet-500 rounded border-2 border-violet-500 hover:text-white hover:bg-violet-600 bg-white group transition-all duration-300 ease-out">
+                       class="flex items-center p-2 text-white rounded border-2 border-violet-500 hover:text-white hover:bg-violet-600 bg-violet-500 group transition-all duration-300 ease-out">
                         <span
-                            class="flex-shrink-0 text-violet-500 transition group-hover:border-white duration-75 group-hover:text-white">
+                            class="flex-shrink-0 text-white transition group-hover:border-white duration-75 group-hover:text-white">
                             <i class="fa-solid fa-arrow-right-from-bracket"></i>
                         </span>
 
