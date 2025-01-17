@@ -3,6 +3,12 @@
        aria-label="Sidebar">
     <div
         class="h-full px-3 pb-4 overflow-y-auto scrollbar-thin scrollbar-thumb-blue-500 scrollbar-track-gray-200 bg-white text-white">
+        <span
+            class="flex items-center ps-2.5 text-violet-500 mt-3 border-gray-200 p-3">
+            <img src="https://flowbite.com/docs/images/people/profile-picture-5.jpg"
+                 class="w-8 h-8 rounded-full me-3 sm:h-7" alt="Flowbite Logo"/>
+            <span class="self-center text-md font-medium whitespace-nowrap">{{ Auth::user()->name }}</span>
+        </span>
         <ul class="space-y-2 font-semibold">
             @if(Auth::user()->user_type == 1)
             <li>
@@ -32,28 +38,34 @@
             <li>
                 <a href="{{ url('admin/class/list') }}"
                    class="flex items-center p-2 rounded hover:bg-violet-600 transition-all duration-700 ease-out group {{ Request::Segment(2) == 'class' ? 'bg-violet-500' : 'text-violet-500'}}">
-                    <span class="flex-shrink-00 transition duration-75 group-hover:text-white {{ Request::Segment(2) == 'class' ? 'text-white' : ' text-violet-500'}}">
+                    <span
+                        class="flex-shrink-00 transition duration-75 group-hover:text-white {{ Request::Segment(2) == 'class' ? 'text-white' : ' text-violet-500'}}">
                         <i class="fa-solid fa-landmark"></i>
                     </span>
-                    <span class="flex-1 ms-3 whitespace-nowrap group-hover:text-white {{ Request::Segment(2) == 'class' ? 'group-hover:text-white' : 'text-violet-500'}}">Classes</span>
+                    <span
+                        class="flex-1 ms-3 whitespace-nowrap group-hover:text-white {{ Request::Segment(2) == 'class' ? 'group-hover:text-white' : 'text-violet-500'}}">Classes</span>
                 </a>
             </li>
             <li>
                 <a href="{{ url('admin/subject/list') }}"
                    class="flex items-center p-2 rounded hover:bg-violet-600 transition-all duration-700 ease-out group {{ Request::Segment(2) == 'subject' ? 'bg-violet-500' : 'text-violet-500'}}">
-                    <span class="flex-shrink-0 transition duration-75 group-hover:text-white {{ Request::Segment(2) == 'subject' ? 'text-white' : ' text-violet-500'}}">
+                    <span
+                        class="flex-shrink-0 transition duration-75 group-hover:text-white {{ Request::Segment(2) == 'subject' ? 'text-white' : ' text-violet-500'}}">
                         <i class="fa-solid fa-book-open-reader"></i>
                     </span>
-                    <span class="flex-1 ms-3 whitespace-nowrap group-hover:text-white {{ Request::Segment(2) == 'subject' ? 'group-hover:text-white' : 'text-violet-500'}}">Matières</span>
+                    <span
+                        class="flex-1 ms-3 whitespace-nowrap group-hover:text-white {{ Request::Segment(2) == 'subject' ? 'group-hover:text-white' : 'text-violet-500'}}">Matières</span>
                 </a>
             </li>
             <li>
                 <a href="{{ url('admin/assign_subject/list') }}"
                    class="flex items-center p-2 rounded hover:bg-violet-600 transition-all duration-700 ease-out group {{ Request::Segment(2) == 'assign_subject' ? 'bg-violet-500' : 'text-violet-500'}}">
-                    <span class="flex-shrink-0 transition duration-75 group-hover:text-white {{ Request::Segment(2) == 'assign_subject' ? 'text-white' : ' text-violet-500'}}">
+                    <span
+                        class="flex-shrink-0 transition duration-75 group-hover:text-white {{ Request::Segment(2) == 'assign_subject' ? 'text-white' : ' text-violet-500'}}">
                         <i class="fa-solid fa-arrows-rotate"></i>
                     </span>
-                    <span class="flex-1 ms-3 whitespace-nowrap group-hover:text-white {{ Request::Segment(2) == 'assign_subject' ? 'group-hover:text-white' : 'text-violet-500'}}">Assignations</span>
+                    <span
+                        class="flex-1 ms-3 whitespace-nowrap group-hover:text-white {{ Request::Segment(2) == 'assign_subject' ? 'group-hover:text-white' : 'text-violet-500'}}">Assignations</span>
                 </a>
             </li>
             @elseif(Auth::user()->user_type == 2)

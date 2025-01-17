@@ -2,56 +2,68 @@
 @section('content')
 <div class="p-4 sm:ml-64">
     <div class="p-4 mt-14">
+        <div class="mb-8 font-semibold space-x-2">
+            <span class="text-violet-500 text-[25px]"><i class="fa-solid fa-house-chimney"></i></span>
+            <span>/</span>
+            <span class="">Dashboard</span>
+        </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-4">
             <div
-                class="max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
-                <span class="mb-3 text-gray-500">
-                    <i class="fa-solid  fa-2x fa-user-tag"></i>
+                class="max-w-sm p-6 bg-violet-500 hover:bg-white border border-gray-300 rounded-lg shadow group transition-all duration-700">
+                <span class="mb-3 group-hover:text-violet-500 text-white">
+                    <i class="fa-solid fa-2x fa-user-tag"></i>
                 </span>
                 <a href="#">
-                    <h5 class="mb-2 text-2xl font-semibold tracking-tight text-gray-900 dark:text-white">Total Utilisateur</h5>
+                    <h5 class="mb-2 text-2xl font-semibold tracking-tight uppercase group-hover:text-gray-900 text-white">
+                        Total des
+                        Utilisateurs</h5>
                 </a>
             </div>
             <div
-                class="max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
-                <svg class="w-7 h-7 text-gray-500 dark:text-gray-400 mb-3" aria-hidden="true"
-                     xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                    <path
-                        d="M18 5h-.7c.229-.467.349-.98.351-1.5a3.5 3.5 0 0 0-3.5-3.5c-1.717 0-3.215 1.2-4.331 2.481C8.4.842 6.949 0 5.5 0A3.5 3.5 0 0 0 2 3.5c.003.52.123 1.033.351 1.5H2a2 2 0 0 0-2 2v3a1 1 0 0 0 1 1h18a1 1 0 0 0 1-1V7a2 2 0 0 0-2-2ZM8.058 5H5.5a1.5 1.5 0 0 1 0-3c.9 0 2 .754 3.092 2.122-.219.337-.392.635-.534.878Zm6.1 0h-3.742c.933-1.368 2.371-3 3.739-3a1.5 1.5 0 0 1 0 3h.003ZM11 13H9v7h2v-7Zm-4 0H2v5a2 2 0 0 0 2 2h3v-7Zm6 0v7h3a2 2 0 0 0 2-2v-5h-5Z"/>
-                </svg>
+                class="max-w-sm p-6 bg-red-500 hover:bg-white border border-gray-300 rounded-lg shadow group transition-all duration-700">
+                <span class="mb-3 group-hover:text-red-500 text-white">
+                    <i class="fa-solid fa-2x fa-user-secret"></i>
+                </span>
                 <a href="#">
-                    <h5 class="mb-2 text-2xl font-semibold tracking-tight text-gray-900 dark:text-white">Total Administrateur</h5>
+                    <h5 class="mb-2 text-2xl font-semibold tracking-tight uppercase group-hover:text-gray-900 text-white">
+                        Total des
+                        Administrateus</h5>
                 </a>
             </div>
             <div
-                class="max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
-               <span class="mb-3 text-gray-500">
+                class="max-w-sm p-6 bg-amber-500 hover:bg-white border border-gray-300 rounded-lg shadow group transition-all duration-700">
+                <span class="mb-3 group-hover:text-amber-500 text-white">
                     <i class="fa-solid fa-2x fa-user-tie"></i>
                 </span>
                 <a href="#">
-                    <h5 class="mb-2 text-2xl font-semibold tracking-tight text-gray-900 dark:text-white">Total Professeur</h5>
+                    <h5 class="mb-2 text-2xl font-semibold tracking-tight uppercase group-hover:text-gray-900 text-white">
+                        Total des
+                        Professeurs</h5>
                 </a>
             </div>
             <div
-                class="max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
-                <span class="mb-3 text-gray-500">
-                   <i class="fa-solid fa-2x fa-user-graduate"></i>
+                class="max-w-sm p-6 bg-emerald-500 hover:bg-white border border-gray-300 rounded-lg shadow group transition-all duration-700">
+                <span class="mb-3 group-hover:text-emerald-500 text-white">
+                    <i class="fa-solid fa-2x fa-user-graduate"></i>
                 </span>
                 <a href="#">
-                    <h5 class="mb-2 text-2xl font-semibold tracking-tight text-gray-900 dark:text-white">Total Elève</h5>
+                    <h5 class="mb-2 text-2xl font-semibold tracking-tight uppercase group-hover:text-gray-900 text-white">
+                        Total des
+                        Elèves</h5>
                 </a>
             </div>
             <div
-                class="max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
-                <svg class="w-7 h-7 text-gray-500 dark:text-gray-400 mb-3" aria-hidden="true"
-                     xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                    <path
-                        d="M18 5h-.7c.229-.467.349-.98.351-1.5a3.5 3.5 0 0 0-3.5-3.5c-1.717 0-3.215 1.2-4.331 2.481C8.4.842 6.949 0 5.5 0A3.5 3.5 0 0 0 2 3.5c.003.52.123 1.033.351 1.5H2a2 2 0 0 0-2 2v3a1 1 0 0 0 1 1h18a1 1 0 0 0 1-1V7a2 2 0 0 0-2-2ZM8.058 5H5.5a1.5 1.5 0 0 1 0-3c.9 0 2 .754 3.092 2.122-.219.337-.392.635-.534.878Zm6.1 0h-3.742c.933-1.368 2.371-3 3.739-3a1.5 1.5 0 0 1 0 3h.003ZM11 13H9v7h2v-7Zm-4 0H2v5a2 2 0 0 0 2 2h3v-7Zm6 0v7h3a2 2 0 0 0 2-2v-5h-5Z"/>
-                </svg>
+                class="max-w-sm p-6 bg-pink-500 hover:bg-white border border-gray-300 rounded-lg shadow group transition-all duration-700">
+                <span class="mb-3 group-hover:text-pink-500 text-white">
+                    <i class="fa-solid fa-2x fa-person-breastfeeding"></i>
+                </span>
                 <a href="#">
-                    <h5 class="mb-2 text-2xl font-semibold tracking-tight text-gray-900 dark:text-white">Total Parent</h5>
+                    <h5 class="mb-2 text-2xl font-semibold tracking-tight uppercase group-hover:text-gray-900 text-white">
+                        Total des
+                        Parents</h5>
                 </a>
             </div>
+
         </div>
         <div class="flex items-center justify-center h-48 mb-4 rounded bg-gray-50 dark:bg-gray-800">
             <p class="text-2xl text-gray-400 dark:text-gray-500">
@@ -109,44 +121,62 @@
                 </svg>
             </p>
         </div>
-        <div class="grid grid-cols-2 gap-4">
-            <div class="flex items-center justify-center rounded bg-gray-50 h-28 dark:bg-gray-800">
-                <p class="text-2xl text-gray-400 dark:text-gray-500">
-                    <svg class="w-3.5 h-3.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                         fill="none" viewBox="0 0 18 18">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                              stroke-width="2" d="M9 1v16M1 9h16"/>
-                    </svg>
-                </p>
+
+        <div data-dial-init class="fixed end-6 bottom-6 group">
+            <div id="speed-dial-menu-default" class="flex flex-col items-center hidden mb-4 space-y-2">
+                <a href="{{ url('admin/assign_subject/list') }}" data-tooltip-target="tooltip-share"
+                   data-tooltip-placement="left"
+                   class="flex justify-center items-center w-[52px] h-[52px] text-gray-500 hover:text-gray-900 bg-white rounded-full border border-gray-200 dark:border-gray-600 shadow-sm dark:hover:text-white dark:text-gray-400 hover:bg-gray-50 dark:bg-gray-700 dark:hover:bg-gray-600 focus:ring-4 focus:ring-gray-300 focus:outline-none dark:focus:ring-gray-400">
+                    <i class="fa-solid fa-arrows-rotate"></i>
+                    <span class="sr-only">Assignations</span>
+                </a>
+                <div id="tooltip-share" role="tooltip"
+                     class="absolute z-10 invisible inline-block w-auto px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+                    Assignations
+                    <div class="tooltip-arrow" data-popper-arrow></div>
+                </div>
+                <a href="{{ url('admin/subject/list') }}" data-tooltip-target="tooltip-print"
+                   data-tooltip-placement="left"
+                   class="flex justify-center items-center w-[52px] h-[52px] text-gray-500 hover:text-gray-900 bg-white rounded-full border border-gray-200 dark:border-gray-600 shadow-sm dark:hover:text-white dark:text-gray-400 hover:bg-gray-50 dark:bg-gray-700 dark:hover:bg-gray-600 focus:ring-4 focus:ring-gray-300 focus:outline-none dark:focus:ring-gray-400">
+                    <i class="fa-solid fa-book-open-reader"></i>
+                    <span class="sr-only">Matières</span>
+                </a>
+                <div id="tooltip-print" role="tooltip"
+                     class="absolute z-10 invisible inline-block w-auto px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+                    Matières
+                    <div class="tooltip-arrow" data-popper-arrow></div>
+                </div>
+                <a href="{{ url('admin/class/list') }}" data-tooltip-target="tooltip-download"
+                   data-tooltip-placement="left"
+                   class="flex justify-center items-center w-[52px] h-[52px] text-gray-500 hover:text-gray-900 bg-white rounded-full border border-gray-200 dark:border-gray-600 shadow-sm dark:hover:text-white dark:text-gray-400 hover:bg-gray-50 dark:bg-gray-700 dark:hover:bg-gray-600 focus:ring-4 focus:ring-gray-300 focus:outline-none dark:focus:ring-gray-400">
+                    <i class="fa-solid fa-landmark"></i>
+                    <span class="sr-only">Classes</span>
+                </a>
+                <div id="tooltip-download" role="tooltip"
+                     class="absolute z-10 invisible inline-block w-auto px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+                    Classes
+                    <div class="tooltip-arrow" data-popper-arrow></div>
+                </div>
+                <a href="{{ url('admin/admin/list') }}" data-tooltip-target="tooltip-copy" data-tooltip-placement="left"
+                   class="flex justify-center items-center w-[52px] h-[52px] text-gray-500 hover:text-gray-900 bg-white rounded-full border border-gray-200 dark:border-gray-600 dark:hover:text-white shadow-sm dark:text-gray-400 hover:bg-gray-50 dark:bg-gray-700 dark:hover:bg-gray-600 focus:ring-4 focus:ring-gray-300 focus:outline-none dark:focus:ring-gray-400">
+                    <i class="fa-solid fa-user-secret"></i>
+                    <span class="sr-only">Administrateurs</span>
+                </a>
+                <div id="tooltip-copy" role="tooltip"
+                     class="absolute z-10 invisible inline-block w-auto px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+                    Administrateurs
+                    <div class="tooltip-arrow" data-popper-arrow></div>
+                </div>
             </div>
-            <div class="flex items-center justify-center rounded bg-gray-50 h-28 dark:bg-gray-800">
-                <p class="text-2xl text-gray-400 dark:text-gray-500">
-                    <svg class="w-3.5 h-3.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                         fill="none" viewBox="0 0 18 18">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                              stroke-width="2" d="M9 1v16M1 9h16"/>
-                    </svg>
-                </p>
-            </div>
-            <div class="flex items-center justify-center rounded bg-gray-50 h-28 dark:bg-gray-800">
-                <p class="text-2xl text-gray-400 dark:text-gray-500">
-                    <svg class="w-3.5 h-3.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                         fill="none" viewBox="0 0 18 18">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                              stroke-width="2" d="M9 1v16M1 9h16"/>
-                    </svg>
-                </p>
-            </div>
-            <div class="flex items-center justify-center rounded bg-gray-50 h-28 dark:bg-gray-800">
-                <p class="text-2xl text-gray-400 dark:text-gray-500">
-                    <svg class="w-3.5 h-3.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                         fill="none" viewBox="0 0 18 18">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                              stroke-width="2" d="M9 1v16M1 9h16"/>
-                    </svg>
-                </p>
-            </div>
+            <button type="button" data-dial-toggle="speed-dial-menu-default" aria-controls="speed-dial-menu-default"
+                    aria-expanded="false"
+                    class="flex items-center justify-center text-white bg-violet-500 rounded-full w-14 h-14 hover:bg-violet-600 focus:ring-4 focus:ring-violet-300 focus:outline-non">
+                <span class="transition-transform group-hover:rotate-45"><i class="fa-solid fa-2x fa-plus"></i></span>
+                <span class="sr-only">Open actions menu</span>
+            </button>
         </div>
+
+
     </div>
 </div>
 @endsection

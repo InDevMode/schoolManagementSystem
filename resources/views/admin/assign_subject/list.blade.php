@@ -4,9 +4,15 @@
     <div class="p-4 rounded-lg dark:border-gray-700 mt-14">
         @include('message')
         <div class="flex justify-between pt-2">
-            <span class="font-bold uppercase">Liste des matières assignées</span>
+            <div class="space-x-2 font-semibold">
+                <span class="text-violet-500 text-[25px]"><i class="fa-solid fa-arrows-rotate"></i></span>
+                <span>/</span>
+                <span class="hover:underline hover:text-violet-600 transition-all duration-300"><a href="{{ url('admin/dashboard') }}">Dashboard</a></span>
+                <span>/</span>
+                <span>Liste des matières assignées</span>
+            </div>
             <a href="{{ url('admin/assign_subject/add') }}"
-               class="text-white bg-violet-600 hover:bg-violet-800 focus:ring-4 focus:outline-none focus:ring-violet-300 font-medium rounded-full text-sm px-5 py-2.5 text-center dark:bg-violet-600 dark:hover:bg-violet-700 dark:focus:ring-violet-800 transition-all duration-500 ease-out w-full sm:w-fit hover:scale-105">
+               class="text-white bg-violet-500 hover:bg-violet-600 focus:ring-4 focus:outline-none focus:ring-violet-300 font-medium rounded-full text-sm px-5 py-2.5 text-center transition-all duration-500 ease-out w-full sm:w-fit hover:scale-105">
                 Assignez une nouvelle matière
             </a>
         </div>
@@ -22,21 +28,21 @@
             <!-- Nom de la classe -->
             <div>
                 <input type="text" id="class_name" name="class_name" value="{{ Request::get('class_name') }}"
-                       class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500"
+                       class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2"
                        placeholder="Rechercher par le nom de la classe...">
             </div>
 
             <!-- Nom de la matière -->
             <div>
                 <input type="text" id="subject_name" name="subject_name" value="{{ Request::get('subject_name') }}"
-                       class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500"
+                       class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2"
                        placeholder="Rechercher par le nom de la matière...">
             </div>
 
             <!-- Statut -->
             <div>
                 <select id="status" name="status"
-                        class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500">
+                        class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2">
                     <option value="">Filtrer par statut</option>
                     <option value="1" {{ Request::get(
                     'status') == '1' ? 'selected' : '' }}>Activée</option>
@@ -48,41 +54,41 @@
             <!-- Date de création -->
             <div>
                 <input type="date" id="created_at" name="created_at" value="{{ Request::get('created_at') }}"
-                       class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500"
+                       class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2"
                        placeholder="Date de création...">
             </div>
 
             <!-- Date de modification -->
             <div>
                 <input type="date" id="updated_at" name="updated_at" value="{{ Request::get('updated_at') }}"
-                       class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500"
+                       class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2"
                        placeholder="Date de modification...">
             </div>
 
             <!-- Boutons -->
             <div class="flex">
                 <button type="submit"
-                        class="flex justify-between text-white bg-violet-600 hover:bg-violet-800 focus:ring-4 focus:outline-none focus:ring-violet-300 font-medium rounded-full text-sm px-5 py-2.5 text-center dark:bg-violet-600 dark:hover:bg-violet-700 dark:focus:ring-violet-800 transition-all duration-500 ease-out w-fit hover:scale-105">
+                        class="flex justify-between text-white bg-violet-500 hover:bg-violet-600 focus:ring-4 focus:outline-none focus:ring-violet-300 font-medium rounded-full text-sm px-5 py-2.5 text-center transition-all duration-500 ease-out w-fit hover:scale-105">
                     Rechercher
                     <span class="inline-flex items-center px-3 text-sm text-gray-900">
                 <i class="fa-solid fa-search text-white"></i>
             </span>
                 </button>
                 <a href="{{ url('admin/assign_subject/list') }}"
-                   class="ms-5 text-gray-800 bg-gray-300 hover:bg-gray-400 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-full text-sm px-5 py-2.5 text-center dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800 transition-all duration-500 ease-out w-fit hover:scale-105">
+                   class="ms-5 text-gray-800 bg-gray-300 hover:bg-gray-400 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-full text-sm px-5 py-2.5 text-center transition-all duration-500 ease-out w-fit hover:scale-105">
                     Réinitialiser les filtres
                 </a>
             </div>
         </form>
 
         <div class="relative overflow-x-auto shadow-md sm:rounded-lg" id="results">
-            <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                <thead class="text-xs text-white uppercase bg-violet-500 dark:bg-gray-700 dark:text-gray-400">
+            <table class="w-full text-sm text-left rtl:text-right text-gray-500">
+                <thead class="text-xs text-white uppercase bg-violet-500">
                 <tr>
                     <th scope="col" class="p-4">
                         <div class="flex items-center">
                             <input id="checkbox-all-search" type="checkbox"
-                                   class="w-4 h-4 border border-gray-300 rounded bg-white focus:ring-3 focus:ring-violet-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-violet-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:outline-none checked:bg-violet-600">
+                                   class="w-4 h-4 border border-gray-300 rounded bg-white focus:ring-3 focus:ring-violet-300 focus:outline-none checked:bg-violet-600">
                             <label for="checkbox-all-search" class="sr-only">checkbox</label>
                         </div>
                     </th>

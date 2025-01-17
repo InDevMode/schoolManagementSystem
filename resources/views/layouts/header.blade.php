@@ -10,15 +10,17 @@
                         </span>
                     <span class="sr-only">Open sidebar</span>
                 </button>
-                <a href="{{ url('admin/dashboard') }}" class="flex ms-2 md:me-24 font-bold text-lg">
-                    <img src="public/images/logo.png" class="w-44" alt="SCHOOLMANAGEMENT"/>
+                <a href="{{ url('admin/dashboard') }}"
+                   class="flex space-x-3 ms-2 md:me-24 font-bold justify-center items-center uppercase text-violet-500">
+                    <span><i class="fa-solid fa-2x fa-hands-holding-child"></i></span>
+                    <span class="text-2xl">School</span>
                 </a>
             </div>
             <div class="flex space-x-4 items-center text-violet-500">
                 @if(Auth::user()->user_type === 1)
                 <div>
                     <button type="button" class="p-2"
-                        <span class=""><i class="fa-solid fa-2x fa-bell"></i></span>
+                    <span class=""><i class="fa-solid fa-2x fa-bell"></i></span>
                     </button>
                 </div>
                 @endif
@@ -52,9 +54,9 @@
                                    role="menuitem">Dashboard</a>
                             </li>
                             <li>
-                                <a href="#"
+                                <a href="{{ url('admin/change_password') }}"
                                    class="block px-4 py-2 text-sm text-gray-700 hover:text-white hover:bg-violet-500 transition duration-300 ease-out"
-                                   role="menuitem">Paramètres</a>
+                                   role="menuitem">Profile</a>
                             </li>
                             @elseif(Auth::user()->user_type === 2)
                             <li>
@@ -62,11 +64,21 @@
                                    class="block px-4 py-2 text-sm text-gray-700 hover:text-white hover:bg-violet-500 transition duration-300 ease-oute"
                                    role="menuitem">Dashboard</a>
                             </li>
+                            <li>
+                                <a href="{{ url('teacher/profile') }}"
+                                   class="block px-4 py-2 text-sm text-gray-700 hover:text-white hover:bg-violet-500 transition duration-300 ease-out"
+                                   role="menuitem">Profile</a>
+                            </li>
                             @elseif(Auth::user()->user_type === 3)
                             <li>
                                 <a href="{{ url('student/dashboard') }}"
                                    class="block px-4 py-2 text-sm text-gray-700 hover:text-white hover:bg-violet-500 transition duration-300 ease-out"
                                    role="menuitem">Dashboard</a>
+                            </li>
+                            <li>
+                                <a href="{{ url('student/profile') }}"
+                                   class="block px-4 py-2 text-sm text-gray-700 hover:text-white hover:bg-violet-500 transition duration-300 ease-out"
+                                   role="menuitem">Profile</a>
                             </li>
                             <li>
                                 <a href="#"
@@ -78,6 +90,11 @@
                                 <a href="{{ url('parent/dashboard') }}"
                                    class="block px-4 py-2 text-sm text-gray-700 hover:text-white hover:bg-violet-500 transition duration-300 ease-out"
                                    role="menuitem">Dashboard</a>
+                            </li>
+                            <li>
+                                <a href="{{ url('parent/profile') }}"
+                                   class="block px-4 py-2 text-sm text-gray-700 hover:text-white hover:bg-violet-500 transition duration-300 ease-out"
+                                   role="menuitem">Profile</a>
                             </li>
                             @endif
                             <li>
