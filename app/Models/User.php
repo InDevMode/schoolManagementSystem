@@ -90,9 +90,28 @@ class User extends Authenticatable
         return User::where('remember_token', '=', $token)->first();
     }
 
-    public function classes(): \Illuminate\Database\Eloquent\Relations\HasMany
+    static public function getAllStudent(int $perPage)
     {
-        return $this->hasMany(ClassModel::class, 'created_by');
+        $results = User::select('users.*')
+            ->where('users.user_type', 3);
+
+        $filters = [
+            'users.last_name' => strtolower(Request::get('last_name')),
+            'users.email' => strtolower(Request::get('email')),
+            'users.created_at' => strtolower(Request::get('created_at')),
+            'users.updated_at' => strtolower(Request::get('updated_at')),
+        ];
+
+        foreach ($filters as $column => $value) {
+            if (!empty($value)) {
+                $results->where($column, 'like', '%' . $value . '%');
+            }
+        }
+
+        return $results->where('users.is_delete', '=', 0)
+            ->orderBy('users.id', 'desc')
+            ->paginate($perPage);
     }
+
 
 }

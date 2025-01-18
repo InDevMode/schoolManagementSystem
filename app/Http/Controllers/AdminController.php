@@ -79,7 +79,7 @@ class AdminController extends Controller
             }
 
             if ($userMail) {
-                return redirect()->back()->with('error', 'Cet email est déjà utilisé par un autre utilisateur.');
+                return redirect()->back()->with('error', 'Cet email est déjà utilisé par un autre administrateur.');
             }
 
             if (!preg_match($regex, $request->email)) {
