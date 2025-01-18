@@ -7,7 +7,8 @@
             <div class="space-x-2 font-semibold">
                 <span class="text-violet-500 text-[25px]"><i class="fa-solid fa-user-graduate"></i></span>
                 <span>/</span>
-                <span class="hover:underline hover:text-violet-500 transition-all duration-300"><a href="{{ url('admin/dashboard') }}">Dashboard</a></span>
+                <span class="hover:underline hover:text-violet-500 transition-all duration-300"><a
+                        href="{{ url('admin/dashboard') }}">Dashboard</a></span>
                 <span>/</span>
                 <span>Liste des élèves</span>
             </div>
@@ -88,7 +89,47 @@
                     </th>
                     <th scope="col" class="px-6 py-3">
                         <div class="flex items-center">
+                            Prénom
+                            <a href="#">
+                                <span class="w-3 h-3 ms-1.5"><i class="fa-solid fa-filter"></i></span>
+                            </a>
+                        </div>
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        <div class="flex items-center">
                             Email
+                            <a href="#">
+                                <span class="w-3 h-3 ms-1.5"><i class="fa-solid fa-filter"></i></span>
+                            </a>
+                        </div>
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        <div class="flex items-center">
+                            Status
+                            <a href="#">
+                                <span class="w-3 h-3 ms-1.5"><i class="fa-solid fa-filter"></i></span>
+                            </a>
+                        </div>
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        <div class="flex items-center">
+                            Date de naissance
+                            <a href="#">
+                                <span class="w-3 h-3 ms-1.5"><i class="fa-solid fa-filter"></i></span>
+                            </a>
+                        </div>
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        <div class="flex items-center">
+                            Genre
+                            <a href="#">
+                                <span class="w-3 h-3 ms-1.5"><i class="fa-solid fa-filter"></i></span>
+                            </a>
+                        </div>
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        <div class="flex items-center">
+                            Classe
                             <a href="#">
                                 <span class="w-3 h-3 ms-1.5"><i class="fa-solid fa-filter"></i></span>
                             </a>
@@ -132,7 +173,42 @@
                         {{ $student -> name }}
                     </td>
                     <td class="px-6 py-4">
+                        {{ $student -> last_name }}
+                    </td>
+                    <td class="px-6 py-4">
                         {{ $student -> email }}
+                    </td>
+                    <td class="px-6 py-4">
+                        @if($student->status == 0)
+                        <div class="flex items-center">
+                            <div class="h-2.5 w-2.5 rounded-full bg-red-500 me-2"></div>
+                            Désactivée
+                        </div>
+                        @elseif($student->status == 1)
+                        <div class="flex items-center">
+                            <div class="h-2.5 w-2.5 rounded-full bg-green-500 me-2"></div>
+                            Activée
+                        </div>
+                        @endif
+                    </td>
+                    <td class="px-6 py-4">
+                        {{ $student -> date_of_birth }}
+                    </td>
+                    <td class="px-6 py-4">
+                        @if($student->gender == 'male')
+                        <div class="flex items-center">
+                            <div class="h-2.5 w-2.5 rounded-full bg-violet-500 me-2"></div>
+                            Masculin
+                        </div>
+                        @elseif($student->gender == 'female')
+                        <div class="flex items-center">
+                            <div class="h-2.5 w-2.5 rounded-full bg-pink-500 me-2"></div>
+                            Féminin
+                        </div>
+                        @endif
+                    </td>
+                    <td class="px-6 py-4">
+                        Classe
                     </td>
                     <td class="px-6 py-4">
                         {{ $student -> created_at->format('d/m/Y H:i:s') }}
