@@ -92,8 +92,10 @@ class User extends Authenticatable
 
     static public function getAllStudent(int $perPage)
     {
-        $results = User::select('users.*')
-            ->where('users.user_type', 3);
+        $results = User::select('users.*', 'class.name as class_name')
+            ->join('class', 'class.id', '=', 'users.class_id')
+            ->where('users.user_type', 3)
+            ->where('users.is_delete', '=', 0);
 
         $filters = [
             'users.admission_number' => strtolower(Request::get('admission_number')),
@@ -118,8 +120,7 @@ class User extends Authenticatable
             $results->where('users.gender', $gender);
         }
 
-        return $results->where('users.is_delete', '=', 0)
-            ->orderBy('users.id', 'desc')
+        return $results->orderBy('users.id', 'desc')
             ->paginate($perPage);
     }
 

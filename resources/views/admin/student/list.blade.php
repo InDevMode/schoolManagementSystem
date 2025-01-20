@@ -23,10 +23,12 @@
             </div>
         </div>
         <form action="" method="get"
-              class="flex flex-wrap justify-between gap-y-2 my-5 shadow p-3 bg-white rounded border border-gray-300" id="searchForm">
+              class="flex flex-wrap justify-between gap-y-2 my-5 shadow p-3 bg-white rounded border border-gray-300"
+              id="searchForm">
             {{ csrf_field() }}
             <div class="">
-                <input type="text" id="admission_number" name="admission_number" value="{{ Request::get('admission_number') }}"
+                <input type="text" id="admission_number" name="admission_number"
+                       value="{{ Request::get('admission_number') }}"
                        class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block text-sm p-2 w-full"
                        placeholder="Rechercher par le numéro d'admission...">
             </div>
@@ -200,7 +202,7 @@
                         {{ $student -> last_name }}
                     </td>
                     <td class="px-6 py-4">
-                        {{ $student -> email }}
+                        <span class="bg-gray-100 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded border border-gray-400">{{ $student -> email }}</span>
                     </td>
                     <td class="px-6 py-4">
                         @if($student->status == 0)
@@ -218,21 +220,20 @@
                     <td class="px-6 py-4">
                         {{ \Carbon\Carbon::parse($student->date_of_birth)->format('d M Y') }}
                     </td>
-                    <td class="px-6 py-4">
+                    <td class="px-6 py-4 text-center">
                         @if($student->gender == 'male')
-                        <div class="flex items-center">
-                            <div class="h-2.5 w-2.5 rounded-full bg-violet-500 me-2"></div>
-                            Masculin
-                        </div>
+                            <div class="bg-pink-100 text-pink-800 font-medium text-xs me-2 px-2.5 py-0.5 rounded-full border border-pink-400">Masculin
+                            </div>
                         @elseif($student->gender == 'female')
-                        <div class="flex items-center">
-                            <div class="h-2.5 w-2.5 rounded-full bg-pink-500 me-2"></div>
-                            Féminin
+                            <div class="bg-violet-100 text-violet-800 font-medium text-xs me-2 px-2.5 py-0.5 rounded-full border border-violet-400">Féminin
+                            </div>
+                        @elseif($student->gender == 'other')
+                        <div class="bg-slate-100 text-slate-800 font-medium text-xs me-2 px-2.5 py-0.5 rounded-full border border-slate-400">Autre
                         </div>
                         @endif
                     </td>
                     <td class="px-6 py-4">
-                        Classe
+                        {{ $student->class_name }}
                     </td>
                     <td class="px-6 py-4">
                         {{ $student -> created_at->format('d/m/Y H:i:s') }}
