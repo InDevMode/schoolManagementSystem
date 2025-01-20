@@ -70,7 +70,7 @@ class StudentController extends Controller
             if (!empty($request->file('profile_picture'))) {
                 $ext = $request->file('profile_picture')->getClientOriginalExtension();
                 $file = $request->file('profile_picture');
-                $randomStr = Str::random(20);
+                $randomStr = date('dmYhis').Str::random(20);
                 $fileName = strtolower($randomStr) . '.' . $ext;
                 $file->move('upload/profile/', $fileName);
                 $student->profile_picture = $fileName;
