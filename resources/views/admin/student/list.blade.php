@@ -23,65 +23,120 @@
             </div>
         </div>
         <form action="" method="get"
-              class="flex flex-wrap justify-between gap-y-2 my-5 shadow p-3 bg-white rounded border border-gray-300"
+              class="my-5 shadow p-3 bg-white rounded border border-gray-300"
               id="searchForm">
             {{ csrf_field() }}
-            <div class="">
-                <input type="text" id="admission_number" name="admission_number"
-                       value="{{ Request::get('admission_number') }}"
-                       class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block text-sm p-2 w-full"
-                       placeholder="Rechercher par le numéro d'admission...">
-            </div>
-            <div class="">
-                <input type="text" id="last_name" name="last_name" value="{{ Request::get('name') }}"
-                       class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block text-sm p-2 w-full"
-                       placeholder="Rechercher par le nom...">
-            </div>
-            <div class="">
-                <input type="text" id="last_name" name="last_name" value="{{ Request::get('last_name') }}"
-                       class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block text-sm p-2 w-full"
-                       placeholder="Rechercher par le prénom...">
-            </div>
-            <div class="">
-                <input type="email" id="email" name="email" value="{{ Request::get('email') }}"
-                       class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block text-sm p-2 w-full"
-                       placeholder="Rechercher par email...">
-            </div>
-            <div>
-                <select id="status" name="status"
-                        class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block text-sm p-2 w-full">
-                    <option value="">Filtrer par statut</option>
-                    <option value="1" {{ Request::get(
-                    'status') == '1' ? 'selected' : '' }}>Activée</option>
-                    <option value="0" {{ Request::get(
-                    'status') == '0' ? 'selected' : '' }}>Désactivée</option>
-                </select>
-            </div>
-            <div class="">
-                <input type="date" id="date_of_birth" name="date_of_birth" value="{{ Request::get('date_of_birth') }}"
-                       class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block text-sm p-2 w-full"
-                       placeholder="Rechercher par date de naissance...">
-            </div>
-            <div>
-                <select id="gender" name="gender"
-                        class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block text-sm p-2 w-full">
-                    <option value="">Filtrer par genre</option>
-                    <option value="male" {{ Request::get(
-                    'gender') == 'male' ? 'selected' : '' }}>Masculin</option>
-                    <option value="female" {{ Request::get(
-                    'gender') == 'female' ? 'selected' : '' }}>Féminin</option>
-                    <option value="other" {{ Request::get(
-                    'gender') == 'other' ? 'selected' : '' }}>Autre</option>
-                </select>
-            </div>
-            <div class="">
-                <input type="date" id="created_at" name="created_at" value="{{ Request::get('created_at') }}"
-                       class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block text-sm p-2 w-full"
-                       placeholder="Rechercher par date de création...">
-            </div>
-            <div class="flex">
+            <div class="grid grid-cols-6 gap-x-5 gap-y-2">
+                <div class="">
+                    <input type="text" id="admission_number" name="admission_number"
+                           value="{{ Request::get('admission_number') }}"
+                           class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block text-sm p-2 w-full"
+                           placeholder="numéro d'admission...">
+                </div>
+                <div class="">
+                    <input type="text" id="last_name" name="last_name" value="{{ Request::get('name') }}"
+                           class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block text-sm p-2 w-full"
+                           placeholder="Rechercher par le nom...">
+                </div>
+                <div class="">
+                    <input type="text" id="last_name" name="last_name" value="{{ Request::get('last_name') }}"
+                           class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block text-sm p-2 w-full"
+                           placeholder="Rechercher par le prénom...">
+                </div>
+                <div class="">
+                    <input type="email" id="email" name="email" value="{{ Request::get('email') }}"
+                           class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block text-sm p-2 w-full"
+                           placeholder="Rechercher par email...">
+                </div>
+                <div>
+                    <select id="status" name="status"
+                            class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block text-sm p-2 w-full">
+                        <option value="">Filtrer par statut</option>
+                        <option value="1" {{ Request::get(
+                        'status') == '1' ? 'selected' : '' }}>Activée</option>
+                        <option value="0" {{ Request::get(
+                        'status') == '0' ? 'selected' : '' }}>Désactivée</option>
+                    </select>
+                </div>
+
+                <div>
+                    <select id="gender" name="gender"
+                            class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block text-sm p-2 w-full">
+                        <option value="">Filtrer par genre</option>
+                        <option value="male" {{ Request::get(
+                        'gender') == 'male' ? 'selected' : '' }}>Masculin</option>
+                        <option value="female" {{ Request::get(
+                        'gender') == 'female' ? 'selected' : '' }}>Féminin</option>
+                        <option value="other" {{ Request::get(
+                        'gender') == 'other' ? 'selected' : '' }}>Autre</option>
+                    </select>
+                </div>
+                <div class="">
+                    <input type="text" id="class_name" name="class_name" value="{{ Request::get('class_name') }}"
+                           class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block text-sm p-2 w-full"
+                           placeholder="Rechercher par la classe...">
+                </div>
+                <div class="">
+                    <input type="text" id="height" name="height" value="{{ Request::get('height') }}"
+                           class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block text-sm p-2 w-full"
+                           placeholder="Rechercher par la taille...">
+                </div>
+                <div class="">
+                    <input type="text" id="weight" name="weight" value="{{ Request::get('weight') }}"
+                           class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block text-sm p-2 w-full"
+                           placeholder="Rechercher par la poids...">
+                </div>
+                <div class="">
+                    <input type="text" id="religion" name="religion" value="{{ Request::get('religion') }}"
+                           class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block text-sm p-2 w-full"
+                           placeholder="Rechercher par la religion...">
+                </div>
+                <div>
+                    <select id="blood_group" name="blood_group"
+                            class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block text-sm p-2 w-full">
+                        <option value="">Filtrer par groupe sanguin</option>
+                        <option {{ Request::get(
+                        'blood_group') == 'a+' ? 'selected' : '' }} value="a+">A+</option>
+                        <option {{ Request::get(
+                        'blood_group') == 'a-' ? 'selected' : '' }} value="a-">A-</option>
+                        <option {{ Request::get(
+                        'blood_group') == 'b+' ? 'selected' : '' }} value="b+">B+</option>
+                        <option {{ Request::get(
+                        'blood_group') == 'b-' ? 'selected' : '' }} value="b-">B-</option>
+                        <option {{ Request::get(
+                        'blood_group') == 'ab+' ? 'selected' : '' }} value="ab+">AB+</option>
+                        <option {{ Request::get(
+                        'blood_group') == 'ab-' ? 'selected' : '' }} value="ab-">AB-</option>
+                        <option {{ Request::get(
+                        'blood_group') == 'o+' ? 'selected' : '' }} value="o+">O+</option>
+                        <option {{ Request::get(
+                        'blood_group') == 'o-' ? 'selected' : '' }} value="o-">O-</option>
+                    </select>
+                </div>
+                <div>
+                    <select id="status" name="status"
+                            class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block text-sm p-2 w-full">
+                        <option value="">Filtrer par statut</option>
+                        <option value="1" {{ Request::get(
+                        'status') == '1' ? 'selected' : '' }}>Activée</option>
+                        <option value="0" {{ Request::get(
+                        'status') == '0' ? 'selected' : '' }}>Désactivée</option>
+                    </select>
+                </div>
+                <div class="">
+                    <input type="date" id="date_of_birth" name="date_of_birth"
+                           value="{{ Request::get('date_of_birth') }}"
+                           class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block text-sm p-2 w-full"
+                           placeholder="Rechercher par date de naissance...">
+                </div>
+                <div class="">
+                    <input type="date" id="created_at" name="created_at" value="{{ Request::get('created_at') }}"
+                           class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block text-sm p-2 w-full"
+                           placeholder="Rechercher par date de création...">
+                </div>
+
                 <button type="submit"
-                        class="flex justify-between text-white bg-violet-500 hover:bg-violet-600 focus:ring-4 focus:outline-none focus:ring-violet-300 font-medium rounded-full text-sm px-5 py-2.5 text-center transition-all duration-500 ease-out w-fit hover:scale-105">
+                        class="flex justify-between text-white bg-violet-500 hover:bg-violet-600 focus:ring-4 focus:outline-none focus:ring-violet-300 font-medium rounded-full text-sm px-5 py-2.5 text-center transition-all duration-500 ease-out w-full hover:scale-105">
                     Rechercher
                     <span
                         class="inline-flex items-center px-3 text-sm text-gray-900">
@@ -89,9 +144,10 @@
                         </span>
                 </button>
                 <a href="{{ url('admin/student/list') }}"
-                   class="ms-5 text-gray-800 bg-gray-300 hover:bg-gray-400 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-full text-sm px-5 py-2.5 text-center transition-all duration-500 ease-out w-fit hover:scale-105">
+                   class="text-gray-800 bg-gray-300 hover:bg-gray-400 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-full text-sm px-5 py-2.5 text-center transition-all duration-500 ease-out w-full hover:scale-105">
                     Réinitialiser les filtres
                 </a>
+
             </div>
         </form>
         <div class="relative overflow-x-auto shadow-md sm:rounded-lg border border-gray-300" id="results">
@@ -107,7 +163,7 @@
                     </th>
                     <th scope="col" class="px-6 py-3">
                         <div class="flex items-center">
-                            Matricule
+                            N° d'admission
                             <a href="#">
                                 <span class="w-3 h-3 ms-1.5"><i class="fa-solid fa-filter"></i></span>
                             </a>
@@ -202,7 +258,8 @@
                         {{ $student -> last_name }}
                     </td>
                     <td class="px-6 py-4">
-                        <span class="bg-gray-100 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded border border-gray-400">{{ $student -> email }}</span>
+                        <span
+                            class="bg-gray-100 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded border border-gray-400">{{ $student -> email }}</span>
                     </td>
                     <td class="px-6 py-4">
                         @if($student->status == 0)
@@ -222,13 +279,19 @@
                     </td>
                     <td class="px-6 py-4 text-center">
                         @if($student->gender == 'male')
-                            <div class="bg-pink-100 text-pink-800 font-medium text-xs me-2 px-2.5 py-0.5 rounded-full border border-pink-400">Masculin
-                            </div>
+                        <div
+                            class="bg-pink-100 text-pink-800 font-medium text-xs me-2 px-2.5 py-0.5 rounded-full border border-pink-400">
+                            Masculin
+                        </div>
                         @elseif($student->gender == 'female')
-                            <div class="bg-violet-100 text-violet-800 font-medium text-xs me-2 px-2.5 py-0.5 rounded-full border border-violet-400">Féminin
-                            </div>
+                        <div
+                            class="bg-violet-100 text-violet-800 font-medium text-xs me-2 px-2.5 py-0.5 rounded-full border border-violet-400">
+                            Féminin
+                        </div>
                         @elseif($student->gender == 'other')
-                        <div class="bg-slate-100 text-slate-800 font-medium text-xs me-2 px-2.5 py-0.5 rounded-full border border-slate-400">Autre
+                        <div
+                            class="bg-slate-100 text-slate-800 font-medium text-xs me-2 px-2.5 py-0.5 rounded-full border border-slate-400">
+                            Autre
                         </div>
                         @endif
                     </td>

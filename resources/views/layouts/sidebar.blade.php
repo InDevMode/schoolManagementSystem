@@ -25,17 +25,6 @@
                 </a>
             </li>
             <li>
-                <a href="{{ url('admin/student/list') }}"
-                   class="flex items-center p-2 rounded hover:bg-violet-600 transition-all duration-700 ease-out group {{ Request::Segment(2) == 'student' ? 'bg-violet-500' : 'text-violet-500'}}">
-                    <span
-                        class="flex-shrink-0 transition duration-75 group-hover:text-white {{ Request::Segment(2) == 'student' ? 'text-white' : ' text-violet-500'}}">
-                       <i class="fa-solid fa-user-graduate"></i>
-                    </span>
-                    <span
-                        class="flex-1 ms-3 whitespace-nowrap group-hover:text-white {{ Request::Segment(2) == 'student' ? 'group-hover:text-white' : 'text-violet-500'}}">Elèves</span>
-                </a>
-            </li>
-            <li>
                 <a href="{{ url('admin/admin/list') }}"
                    class="flex items-center p-2 rounded hover:bg-violet-600 transition-all duration-700 ease-out group {{ Request::Segment(2) == 'admin' ? 'bg-violet-500' : 'text-violet-500'}}">
                     <span
@@ -44,6 +33,39 @@
                     </span>
                     <span
                         class="flex-1 ms-3 whitespace-nowrap group-hover:text-white {{ Request::Segment(2) == 'admin' ? 'group-hover:text-white' : 'text-violet-500'}}">Administrateurs</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ url('admin/teacher/list') }}"
+                   class="flex items-center p-2 rounded hover:bg-violet-600 transition-all duration-700 ease-out group {{ Request::Segment(2) == 'teacher' ? 'bg-violet-500' : 'text-violet-500'}}">
+                    <span
+                        class="flex-shrink-0 transition duration-75 group-hover:text-white {{ Request::Segment(2) == 'teacher' ? 'text-white' : ' text-violet-500'}}">
+                       <i class="fa-solid fa-user-tie"></i>
+                    </span>
+                    <span
+                        class="flex-1 ms-3 whitespace-nowrap group-hover:text-white {{ Request::Segment(2) == 'teacher' ? 'group-hover:text-white' : 'text-violet-500'}}">Professeurs</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ url('admin/parent/list') }}"
+                   class="flex items-center p-2 rounded hover:bg-violet-600 transition-all duration-700 ease-out group {{ Request::Segment(2) == 'parent' ? 'bg-violet-500' : 'text-violet-500'}}">
+                    <span
+                        class="flex-shrink-0 transition duration-75 group-hover:text-white {{ Request::Segment(2) == 'parent' ? 'text-white' : ' text-violet-500'}}">
+                       <i class="fa-solid fa-person-breastfeeding"></i>
+                    </span>
+                    <span
+                        class="flex-1 ms-3 whitespace-nowrap group-hover:text-white {{ Request::Segment(2) == 'parent' ? 'group-hover:text-white' : 'text-violet-500'}}">Parents</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ url('admin/student/list') }}"
+                   class="flex items-center p-2 rounded hover:bg-violet-600 transition-all duration-700 ease-out group {{ Request::Segment(2) == 'student' ? 'bg-violet-500' : 'text-violet-500'}}">
+                    <span
+                        class="flex-shrink-0 transition duration-75 group-hover:text-white {{ Request::Segment(2) == 'student' ? 'text-white' : ' text-violet-500'}}">
+                       <i class="fa-solid fa-user-graduate"></i>
+                    </span>
+                    <span
+                        class="flex-1 ms-3 whitespace-nowrap group-hover:text-white {{ Request::Segment(2) == 'student' ? 'group-hover:text-white' : 'text-violet-500'}}">Elèves</span>
                 </a>
             </li>
             <li>

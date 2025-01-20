@@ -102,6 +102,12 @@ class User extends Authenticatable
             'users.name' => strtolower(Request::get('name')),
             'users.last_name' => strtolower(Request::get('last_name')),
             'users.email' => strtolower(Request::get('email')),
+            'users.mobile_number' => strtolower(Request::get('mobile_number')),
+            'users.date_of_birth' => strtolower(Request::get('date_of_birth')),
+            'class.name' => strtolower(Request::get('class_name')),
+            'users.height' => strtolower(Request::get('height')),
+            'users.weight' => strtolower(Request::get('weight')),
+            'users.religion' => strtolower(Request::get('religion')),
             'users.created_at' => strtolower(Request::get('created_at')),
             'users.updated_at' => strtolower(Request::get('updated_at')),
         ];
@@ -118,6 +124,10 @@ class User extends Authenticatable
         $gender = Request::get('gender');
         if (in_array($gender, ['male', 'female', 'other'], true)) {
             $results->where('users.gender', $gender);
+        }
+        $blood_group = Request::get('blood_group');
+        if (in_array($blood_group, ['a+', 'a-', 'b+', 'b-', 'ab+', 'ab-', 'o+', 'o-'], true)) {
+            $results->where('users.blood_group', $blood_group);
         }
 
         return $results->orderBy('users.id', 'desc')
