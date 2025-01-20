@@ -14,8 +14,8 @@ class StudentController extends Controller
 {
     public function list(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
     {
-        $data['getStudent'] = User::getAllStudent(10);
         $data['header_title'] = "Liste des Elèves";
+        $data['getStudent'] = User::getAllStudent(10);
         return view('admin.student.list', $data);
     }
 
@@ -102,14 +102,14 @@ class StudentController extends Controller
     public function edit($id)
     {
         $data['getStudent'] = User::getSingle($id);
+        $data['header_title'] = "Modifier un élève";
         if (!empty($data['getStudent'])) {
             $data['getClass'] = ClassModel::getClass();
             if (!empty($data['getStudent']->profile_picture)) {
                 $data['profile_picture_url'] = $data['getStudent']->getProfile($data['getStudent']->profile_picture);
-            }else{
+            } else {
                 $data['profile_picture_url'] = '';
             }
-            $data['header_title'] = "Modifier un élève";
             return view('admin.student.edit', $data);
         } else {
             abort(404);
