@@ -17,18 +17,26 @@
                     {{ csrf_field() }}
                     <h2 class="font-bold uppercase text-center text-white rounded-t-md bg-emerald-500 py-3 mb-5">
                         Modifier les informations de cet élève</h2>
+                    <div class="mb-3">
+                        <label class="block mb-2 text-sm font-medium text-gray-900" for="profile_picture">Photo de
+                            Profile</label>
+                        <input type="file" id="profile_picture" name="profile_picture"
+                               class="rounded bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm ps-3"
+                               placeholder="Photo de profile...">
+                        <img class="h-auto max-w-[100px] rounded-full" src="{{ $profile_picture_url }}" alt="Profile picture">
+                    </div>
                     <div class="grid grid-cols-2 gap-x-5">
                         <div class="mb-3">
                             <label class="block mb-2 text-sm font-medium text-gray-900" for="name">Nom<span
                                     class="text-red-500 font-bold">*</span></label>
-                            <input type="text" id="name" name="name" value="{{ $getStudent->name }}"
+                            <input type="text" id="name" name="name" value="{{ old('name', $getStudent->name) }}"
                                    class="rounded bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm ps-3"
                                    placeholder="nom..." required>
                         </div>
                         <div class="mb-3">
                             <label class="block mb-2 text-sm font-medium text-gray-900" for="last_name">Prénom<span
                                     class="text-red-500 font-bold">*</span></label>
-                            <input type="text" id="last_name" name="last_name" value="{{ $getStudent->last_name }}"
+                            <input type="text" id="last_name" name="last_name" value="{{ old('last_name', $getStudent->last_name) }}"
                                    class="rounded bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm ps-3"
                                    placeholder="prénom..." required>
                         </div>
@@ -36,7 +44,7 @@
                             <label class="block mb-2 text-sm font-medium text-gray-900" for="admission_number">Numéro
                                 d'admission<span class="text-red-500 font-bold">*</span></label>
                             <input type="text" id="admission_number" name="admission_number"
-                                   value="{{ $getStudent->admission_number }}"
+                                   value="{{ old('admission_number', $getStudent->admission_number) }}"
                                    class="rounded bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm ps-3"
                                    placeholder="numéro d'admission..." required>
                         </div>
@@ -44,7 +52,7 @@
                             <label class="block mb-2 text-sm font-medium text-gray-900" for="roll_number">Numéro de
                                 Rôle</label>
                             <input type="text" id="roll_number" name="roll_number"
-                                   value="{{ $getStudent->roll_number }}"
+                                   value="{{ old('roll_number', $getStudent->roll_number) }}"
                                    class="rounded bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm ps-3"
                                    placeholder="numéro de rôle...">
                         </div>
@@ -56,9 +64,10 @@
                                     required>
                                 <option disabled selected>Attribuez une classe à cet élève</option>
                                 @foreach($getClass as $class)
-                                <option {{ $getStudent->class_id == $class->id ? 'selected' : '' }}
+                                <option {{ old('class_id', $getStudent->class_id) == $class->id ? 'selected' : '' }}
                                     value="{{ $class->id}}">{{ $class->name }}
                                 </option>
+                                @endforeach
                             </select>
                         </div>
                         <div class="mb-5">
@@ -68,11 +77,11 @@
                                     class="rounded bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm ps-3"
                                     required>
                                 <option disabled selected>Choisissez un genre à cet élève</option>
-                                <option value="male" {{ $getStudent->gender == 'male' ? 'selected' : ''}}>Masculin
+                                <option value="male" {{ old('gender', $getStudent->gender) == 'male' ? 'selected' : ''}}>Masculin
                                 </option>
-                                <option value="female" {{ $getStudent->gender == 'female' ? 'selected' : ''}}>Féminin
+                                <option value="female" {{ old('gender', $getStudent->gender) == 'female' ? 'selected' : ''}}>Féminin
                                 </option>
-                                <option value="other" {{ $getStudent->gender == 'other' ? 'selected' : ''}}>Autre
+                                <option value="other" {{ old('gender', $getStudent->gender) == 'other' ? 'selected' : ''}}>Autre
                                 </option>
                             </select>
                         </div>
@@ -80,19 +89,19 @@
                             <label class="block mb-2 text-sm font-medium text-gray-900" for="date_of_birth">Date
                                 d'anniversaire<span class="text-red-500 font-bold">*</span></label>
                             <input type="date" id="date_of_birth" name="date_of_birth"
-                                   value="{{ $getStudent->date_of_birth }}"
+                                   value="{{ old('date_of_birth', $getStudent->date_of_birth) }}"
                                    class="rounded bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm ps-3"
                                    placeholder="Date d'anniversaire..." required>
                         </div>
                         <div class="mb-3">
                             <label class="block mb-2 text-sm font-medium text-gray-900" for="caste">Caste</label>
-                            <input type="text" id="caste" name="caste" value="{{ $getStudent->caste }}"
+                            <input type="text" id="caste" name="caste" value="{{ old('caste', $getStudent->caste) }}"
                                    class="rounded bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm ps-3"
                                    placeholder="Caste...">
                         </div>
                         <div class="mb-3">
                             <label class="block mb-2 text-sm font-medium text-gray-900" for="religion">Religion</label>
-                            <input type="text" id="religion" name="religion" value="{{ $getStudent->religion }}"
+                            <input type="text" id="religion" name="religion" value="{{ old('religion', $getStudent->religion) }}"
                                    class="rounded bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm ps-3"
                                    placeholder="Religion...">
                         </div>
@@ -100,7 +109,7 @@
                             <label class="block mb-2 text-sm font-medium text-gray-900" for="mobile_number">Numéro de
                                 téléphone</label>
                             <input type="text" id="mobile_number" name="mobile_number"
-                                   value="{{ $getStudent->mobile_number }}"
+                                   value="{{ old('mobile_number', $getStudent->mobile_number) }}"
                                    class="rounded bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm ps-3"
                                    placeholder="Numéro de téléphone...">
                         </div>
@@ -108,17 +117,9 @@
                             <label class="block mb-2 text-sm font-medium text-gray-900" for="admission_date">Date
                                 d'admission<span class="text-red-500 font-bold">*</span></label>
                             <input type="date" id="admission_date" name="admission_date"
-                                   value="{{ $getStudent->admission_date }}"
+                                   value="{{ old('admission_date', $getStudent->admission_date) }}"
                                    class="rounded bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm ps-3"
                                    placeholder="Date d'admission..." required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="block mb-2 text-sm font-medium text-gray-900" for="profile_picture">Photo de
-                                Profile</label>
-                            <input type="file" id="profile_picture" name="profile_picture"
-                                   value="{{ old('profile_picture') }}"
-                                   class="rounded bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm ps-3"
-                                   placeholder="Photo de profile...">
                         </div>
                         <div class="mb-5">
                             <label class="block mb-2 text-sm font-medium text-gray-900" for="blood_group">Groupe
@@ -126,27 +127,27 @@
                             <select id="blood_group" name="blood_group"
                                     class="rounded bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm ps-3">
                                 <option disabled selected>Attribuez un group sanguin pour cet élève</option>
-                                <option value="a+" {{ $getStudent->blood_group == 'a+' ? 'selected' : ''}} >A+</option>
-                                <option value="a-" {{ $getStudent->blood_group == 'a-' ? 'selected' : ''}} >A-</option>
-                                <option value="b+" {{ $getStudent->blood_group == 'b+' ? 'selected' : ''}} >B+</option>
-                                <option value="b-" {{ $getStudent->blood_group == 'b-' ? 'selected' : ''}} >B-</option>
-                                <option value="ab+" {{ $getStudent->blood_group == 'ab+' ? 'selected' : ''}} >AB+
+                                <option value="a+" {{ old('blood_group', $getStudent->blood_group) == 'a+' ? 'selected' : ''}} >A+</option>
+                                <option value="a-" {{ old('blood_group', $getStudent->blood_group) == 'a-' ? 'selected' : ''}} >A-</option>
+                                <option value="b+" {{ old('blood_group', $getStudent->blood_group) == 'b+' ? 'selected' : ''}} >B+</option>
+                                <option value="b-" {{ old('blood_group', $getStudent->blood_group) == 'b-' ? 'selected' : ''}} >B-</option>
+                                <option value="ab+" {{ old('blood_group', $getStudent->blood_group) == 'ab+' ? 'selected' : ''}} >AB+
                                 </option>
-                                <option value="ab-" {{ $getStudent->blood_group == 'ab-' ? 'selected' : ''}} >AB-
+                                <option value="ab-" {{ old('blood_group', $getStudent->blood_group) == 'ab-' ? 'selected' : ''}} >AB-
                                 </option>
-                                <option value="o+" {{ $getStudent->blood_group == 'o+' ? 'selected' : ''}} >O+</option>
-                                <option value="o-" {{ $getStudent->blood_group == 'o-' ? 'selected' : ''}} >O-</option>
+                                <option value="o+" {{ old('blood_group', $getStudent->blood_group) == 'o+' ? 'selected' : ''}} >O+</option>
+                                <option value="o-" {{ old('blood_group', $getStudent->blood_group) == 'o-' ? 'selected' : ''}} >O-</option>
                             </select>
                         </div>
                         <div class="mb-3">
                             <label class="block mb-2 text-sm font-medium text-gray-900" for="height">Taille</label>
-                            <input type="text" id="height" name="height" value="{{ $getStudent->height }}"
+                            <input type="text" id="height" name="height" value="{{ old('height' , $getStudent->height) }}"
                                    class="rounded bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm ps-3"
                                    placeholder="Taille...">
                         </div>
                         <div class="mb-3">
                             <label class="block mb-2 text-sm font-medium text-gray-900" for="weight">Poids</label>
-                            <input type="text" id="weight" name="weight" value="{{ $getStudent->weight }}"
+                            <input type="text" id="weight" name="weight" value="{{ old('weight', $getStudent->weight) }}"
                                    class="rounded bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm ps-3"
                                    placeholder="Poids...">
                         </div>
@@ -157,9 +158,9 @@
                                     class="rounded bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm ps-3"
                                     required>
                                 <option disabled selected>Définissez un status pour cet élève</option>
-                                <option value="1" name="status" {{ $getStudent->status == 1 ? 'selected' : ''}}>Activée
+                                <option value="1" name="status" {{ old('status', $getStudent->status) == 1 ? 'selected' : ''}}>Activée
                                 </option>
-                                <option value="0" name="status" {{ $getStudent->status == 0 ? 'selected' :
+                                <option value="0" name="status" {{ old('status', $getStudent->status) == 0 ? 'selected' :
                                     ''}}>Désactivée
                                 </option>
                             </select>
@@ -169,16 +170,16 @@
                         <div class="mb-3">
                             <label class="block mb-2 text-sm font-medium text-gray-900" for="email">Email<span
                                     class="text-red-500 font-bold">*</span></label>
-                            <input type="email" id="email" name="email" value="{{ $getStudent->email }}"
+                            <input type="email" id="email" name="email" value="{{ old('email', $getStudent->email) }}"
                                    class="rounded bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm ps-3"
                                    placeholder="email..." required>
                         </div>
                         <div class="mb-3">
                             <label class="block mb-2 text-sm font-medium text-gray-900" for="password">Mot de
-                                passe<span class="text-red-500 font-bold">*</span></label>
+                                passe</label>
                             <input type="password" id="password" name="password" value="{{ old('password') }}"
                                    class="rounded bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm ps-3"
-                                   placeholder="mot de passe..." required>
+                                   placeholder="mot de passe...">
                         </div>
                     </div>
                     <div>
@@ -187,10 +188,10 @@
                             Modifier
                         </button>
                     </div>
+                    </div>
+                </form>
             </div>
-
         </div>
-        </form>
     </div>
 </div>
 @endsection

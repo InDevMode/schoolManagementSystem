@@ -23,27 +23,59 @@
             </div>
         </div>
         <form action="" method="get"
-              class="flex justify-between my-5 shadow p-3 bg-white rounded border border-gray-300" id="searchForm">
+              class="flex flex-wrap justify-between gap-y-2 my-5 shadow p-3 bg-white rounded border border-gray-300" id="searchForm">
             {{ csrf_field() }}
             <div class="">
+                <input type="text" id="admission_number" name="admission_number" value="{{ Request::get('admission_number') }}"
+                       class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block text-sm p-2 w-full"
+                       placeholder="Rechercher par le numéro d'admission...">
+            </div>
+            <div class="">
+                <input type="text" id="last_name" name="last_name" value="{{ Request::get('name') }}"
+                       class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block text-sm p-2 w-full"
+                       placeholder="Rechercher par le nom...">
+            </div>
+            <div class="">
                 <input type="text" id="last_name" name="last_name" value="{{ Request::get('last_name') }}"
-                       class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2"
-                       placeholder="Rechercher par nom...">
+                       class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block text-sm p-2 w-full"
+                       placeholder="Rechercher par le prénom...">
             </div>
             <div class="">
                 <input type="email" id="email" name="email" value="{{ Request::get('email') }}"
-                       class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2"
+                       class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block text-sm p-2 w-full"
                        placeholder="Rechercher par email...">
+            </div>
+            <div>
+                <select id="status" name="status"
+                        class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block text-sm p-2 w-full">
+                    <option value="">Filtrer par statut</option>
+                    <option value="1" {{ Request::get(
+                    'status') == '1' ? 'selected' : '' }}>Activée</option>
+                    <option value="0" {{ Request::get(
+                    'status') == '0' ? 'selected' : '' }}>Désactivée</option>
+                </select>
+            </div>
+            <div class="">
+                <input type="date" id="date_of_birth" name="date_of_birth" value="{{ Request::get('date_of_birth') }}"
+                       class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block text-sm p-2 w-full"
+                       placeholder="Rechercher par date de naissance...">
+            </div>
+            <div>
+                <select id="gender" name="gender"
+                        class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block text-sm p-2 w-full">
+                    <option value="">Filtrer par genre</option>
+                    <option value="male" {{ Request::get(
+                    'gender') == 'male' ? 'selected' : '' }}>Masculin</option>
+                    <option value="female" {{ Request::get(
+                    'gender') == 'female' ? 'selected' : '' }}>Féminin</option>
+                    <option value="other" {{ Request::get(
+                    'gender') == 'other' ? 'selected' : '' }}>Autre</option>
+                </select>
             </div>
             <div class="">
                 <input type="date" id="created_at" name="created_at" value="{{ Request::get('created_at') }}"
-                       class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2"
+                       class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block text-sm p-2 w-full"
                        placeholder="Rechercher par date de création...">
-            </div>
-            <div class="">
-                <input type="date" id="updated_at" name="updated_at" value="{{ Request::get('updated_at') }}"
-                       class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2"
-                       placeholder="Rechercher par date de modification...">
             </div>
             <div class="flex">
                 <button type="submit"
@@ -61,8 +93,8 @@
             </div>
         </form>
         <div class="relative overflow-x-auto shadow-md sm:rounded-lg border border-gray-300" id="results">
-            <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                <thead class="text-xs text-white uppercase bg-violet-500 dark:bg-gray-700 dark:text-gray-400">
+            <table class="w-full text-[12px] text-left rtl:text-right text-gray-500 ">
+                <thead class="text-[12px] text-white uppercase bg-violet-500 dark:bg-gray-700">
                 <tr>
                     <th scope="col" class="p-4">
                         <div class="flex items-center">
@@ -73,7 +105,7 @@
                     </th>
                     <th scope="col" class="px-6 py-3">
                         <div class="flex items-center">
-                            Identifiant
+                            Matricule
                             <a href="#">
                                 <span class="w-3 h-3 ms-1.5"><i class="fa-solid fa-filter"></i></span>
                             </a>
@@ -144,14 +176,6 @@
                         </div>
                     </th>
                     <th scope="col" class="px-6 py-3">
-                        <div class="flex items-center">
-                            Date de modification
-                            <a href="#">
-                                <span class="w-3 h-3 ms-1.5"><i class="fa-solid fa-filter"></i></span>
-                            </a>
-                        </div>
-                    </th>
-                    <th scope="col" class="px-6 py-3">
                         Actions
                     </th>
                 </tr>
@@ -167,7 +191,7 @@
                         </div>
                     </td>
                     <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-                        {{ $index + 1 }}
+                        {{$student -> admission_number }}
                     </th>
                     <td class="px-6 py-4">
                         {{ $student -> name }}
@@ -192,7 +216,7 @@
                         @endif
                     </td>
                     <td class="px-6 py-4">
-                        {{ $student -> date_of_birth }}
+                        {{ \Carbon\Carbon::parse($student->date_of_birth)->format('d M Y') }}
                     </td>
                     <td class="px-6 py-4">
                         @if($student->gender == 'male')
@@ -213,9 +237,6 @@
                     <td class="px-6 py-4">
                         {{ $student -> created_at->format('d/m/Y H:i:s') }}
                     </td>
-                    <td class="px-6 py-4">
-                        {{ $student -> updated_at->format('d/m/Y H:i:s') }}
-                    </td>
                     <td class="flex items-center px-6 py-4">
                         <a href="{{ url('admin/student/edit', $student -> id) }}"
                            class="font-medium text-violet-500 me-5" title="Modifier">
@@ -230,15 +251,15 @@
                 @endforeach
                 @if($getStudent->isEmpty())
                 <tr>
-                    <td colspan="7" class="p-6 text-center text-gray-500">
+                    <td colspan="10" class="p-6 text-center text-gray-500">
                         Aucun élève trouvé.
                     </td>
                 </tr>
                 @endif
                 </tbody>
             </table>
-            <div class="text-center bg-white py-2">
-                <div class="flex justify-between items-center mt-4">
+            <div class="text-center bg-white py-2 w-full">
+                <div class="flex justify-between items-center mt-4 w-full">
                     <span
                         class="text-violet-500 font-bold text-md ps-5 uppercase">Total : {{ $getStudent->total() }}</span>
                 </div>

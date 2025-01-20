@@ -63,14 +63,20 @@ class StudentController extends Controller
             }
             $student->caste = trim($request->caste);
             $student->religion = trim($request->religion);
-            $student->mobile_number = trim($request->mobile_number);
+            if (!empty($request->mobile_number)) {
+                $mobileNumber = trim($request->mobile_number);
+                if (!preg_match('/^\d{8,15}$/', $mobileNumber)) {
+                    return redirect()->back()->with('error', 'Le numéro de téléphone doit contenir uniquement des chiffres et être compris entre 8 et 15 chiffres.');
+                }
+                $student->mobile_number = $mobileNumber;
+            }
             if (!empty($request->admission_date)) {
                 $student->admission_date = trim($request->admission_date);
             }
             if (!empty($request->file('profile_picture'))) {
                 $ext = $request->file('profile_picture')->getClientOriginalExtension();
                 $file = $request->file('profile_picture');
-                $randomStr = date('dmYhis').Str::random(20);
+                $randomStr = date('dmYhis') . Str::random(20);
                 $fileName = strtolower($randomStr) . '.' . $ext;
                 $file->move('upload/profile/', $fileName);
                 $student->profile_picture = $fileName;
@@ -97,6 +103,12 @@ class StudentController extends Controller
     {
         $data['getStudent'] = User::getSingle($id);
         if (!empty($data['getStudent'])) {
+            $data['getClass'] = ClassModel::getClass();
+            if (!empty($data['getStudent']->profile_picture)) {
+                $data['profile_picture_url'] = $data['getStudent']->getProfile($data['getStudent']->profile_picture);
+            }else{
+                $data['profile_picture_url'] = '';
+            }
             $data['header_title'] = "Modifier un élève";
             return view('admin.student.edit', $data);
         } else {
@@ -108,7 +120,7 @@ class StudentController extends Controller
     {
         try {
             $student = User::getSingle($id);
-            $studentMail = User::getEmailSingle($request->email);
+            $studentMail = User::checkEmailSingle($request->email, $id);
             $passwordLength = strlen($request->password);
             $regex = '/^[a-z0-9]+@[a-z0-9]+\.(fr|com|org|bj|io)$/';
 
@@ -145,18 +157,39 @@ class StudentController extends Controller
             }
             $student->caste = trim($request->caste);
             $student->religion = trim($request->religion);
-            $student->mobile_number = trim($request->mobile_number);
+            if (!empty($request->mobile_number)) {
+                $mobileNumber = trim($request->mobile_number);
+                if (!preg_match('/^\d{8,15}$/', $mobileNumber)) {
+                    return redirect()->back()->with('error', 'Le numéro de téléphone doit contenir uniquement des chiffres et être compris entre 8 et 15 chiffres.');
+                }
+                $student->mobile_number = $mobileNumber;
+            }
             if (!empty($request->admission_date)) {
                 $student->admission_date = trim($request->admission_date);
             }
+
+            //Condition de chargement ou de modification d'une photo de profile
             if (!empty($request->file('profile_picture'))) {
+                $studentProfilePicture = $student->profile_picture;
+
+                if (!empty($studentProfilePicture)) {
+                    $profilePictureUrl = User::getProfile($studentProfilePicture);
+
+                    if (!empty($profilePictureUrl)) {
+                        unlink('upload/profile/' . $studentProfilePicture);
+                    }
+                }
+
                 $ext = $request->file('profile_picture')->getClientOriginalExtension();
                 $file = $request->file('profile_picture');
-                $randomStr = Str::random(20);
+                $randomStr = date('dmYhis') . Str::random(20);
                 $fileName = strtolower($randomStr) . '.' . $ext;
+
                 $file->move('upload/profile/', $fileName);
+
                 $student->profile_picture = $fileName;
             }
+
             $student->blood_group = trim($request->blood_group);
             $student->height = trim($request->height);
             $student->weight = trim($request->weight);
@@ -166,9 +199,9 @@ class StudentController extends Controller
             }
             $student->save();
 
-            return redirect('admin/student/list')->with('success', 'Cet élève a été créé avec succès.');
+            return redirect('admin/student/list')->with('success', 'Cet élève a été modifié avec succès.');
         } catch (\Exception $e) {
-            Log::error("Erreur lors de la création d'un élève' : " . $e->getMessage());
+            Log::error("Erreur lors de la modification d'un élève' : " . $e->getMessage());
 
             return redirect()->back()->with('error', 'Vos informations ne sont pas correctes. Veuillez réessayer.');
         }

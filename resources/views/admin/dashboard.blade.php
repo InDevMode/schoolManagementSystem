@@ -124,45 +124,56 @@
 
         <div data-dial-init class="fixed end-6 bottom-6 group">
             <div id="speed-dial-menu-default" class="flex flex-col items-center hidden mb-4 space-y-2">
-                <a href="{{ url('admin/assign_subject/list') }}" data-tooltip-target="tooltip-share"
-                   data-tooltip-placement="left"
-                   class="flex justify-center items-center w-[52px] h-[52px] text-gray-500 hover:text-gray-900 bg-white rounded-full border border-gray-200 shadow-sm hover:bg-gray-50 focus:ring-4 focus:ring-gray-300 focus:outline-none">
-                    <i class="fa-solid fa-arrows-rotate"></i>
-                    <span class="sr-only">Assignations</span>
-                </a>
-                <div id="tooltip-share" role="tooltip"
-                     class="absolute z-10 invisible inline-block w-auto px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip">
-                    Assignations
-                    <div class="tooltip-arrow" data-popper-arrow></div>
-                </div>
-                <a href="{{ url('admin/subject/list') }}" data-tooltip-target="tooltip-print"
+                <a href="{{ url('admin/subject/list') }}" data-tooltip-target="tooltip-matres"
                    data-tooltip-placement="left"
                    class="flex justify-center items-center w-[52px] h-[52px] text-gray-500 hover:text-gray-900 bg-white rounded-full border border-gray-200 dark:border-gray-600 shadow-sm dark:hover:text-white dark:text-gray-400 hover:bg-gray-50 focus:ring-4 focus:ring-gray-300 focus:outline-none dark:focus:ring-gray-400">
                     <i class="fa-solid fa-book-open-reader"></i>
                     <span class="sr-only">Matières</span>
                 </a>
-                <div id="tooltip-print" role="tooltip"
+                <div id="tooltip-matres" role="tooltip"
                      class="absolute z-10 invisible inline-block w-auto px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip">
                     Matières
                     <div class="tooltip-arrow" data-popper-arrow></div>
                 </div>
-                <a href="{{ url('admin/class/list') }}" data-tooltip-target="tooltip-download"
+                <a href="{{ url('admin/subject/list') }}" data-tooltip-target="tooltip-student"
+                   data-tooltip-placement="left"
+                   class="flex justify-center items-center w-[52px] h-[52px] text-gray-500 hover:text-gray-900 bg-white rounded-full border border-gray-200 dark:border-gray-600 shadow-sm dark:hover:text-white dark:text-gray-400 hover:bg-gray-50 focus:ring-4 focus:ring-gray-300 focus:outline-none dark:focus:ring-gray-400">
+                    <i class="fa-solid fa-user-graduate"></i>
+                    <span class="sr-only">Elèves</span>
+                </a>
+                <div id="tooltip-student" role="tooltip"
+                     class="absolute z-10 invisible inline-block w-auto px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip">
+                    Elèves
+                    <div class="tooltip-arrow" data-popper-arrow></div>
+                </div>
+                <a href="{{ url('admin/class/list') }}" data-tooltip-target="tooltip-class"
                    data-tooltip-placement="left"
                    class="flex justify-center items-center w-[52px] h-[52px] text-gray-500 hover:text-gray-900 bg-white rounded-full border border-gray-200 hover:bg-gray-50 focus:ring-4 focus:ring-gray-300 focus:outline-none">
                     <i class="fa-solid fa-landmark"></i>
                     <span class="sr-only">Classes</span>
                 </a>
-                <div id="tooltip-download" role="tooltip"
+                <div id="tooltip-class" role="tooltip"
                      class="absolute z-10 invisible inline-block w-auto px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip">
                     Classes
                     <div class="tooltip-arrow" data-popper-arrow></div>
                 </div>
-                <a href="{{ url('admin/admin/list') }}" data-tooltip-target="tooltip-copy" data-tooltip-placement="left"
+                <a href="{{ url('admin/assign_subject/list') }}" data-tooltip-target="tooltip-assignations"
+                   data-tooltip-placement="left"
+                   class="flex justify-center items-center w-[52px] h-[52px] text-gray-500 hover:text-gray-900 bg-white rounded-full border border-gray-200 shadow-sm hover:bg-gray-50 focus:ring-4 focus:ring-gray-300 focus:outline-none">
+                    <i class="fa-solid fa-arrows-rotate"></i>
+                    <span class="sr-only">Assignations</span>
+                </a>
+                <div id="tooltip-assignations" role="tooltip"
+                     class="absolute z-10 invisible inline-block w-auto px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip">
+                    Assignations
+                    <div class="tooltip-arrow" data-popper-arrow></div>
+                </div>
+                <a href="{{ url('admin/admin/list') }}" data-tooltip-target="tooltip-administrates" data-tooltip-placement="left"
                    class="flex justify-center items-center w-[52px] h-[52px] text-gray-500 hover:text-gray-900 bg-white rounded-full border border-gray-200 shadow-sm hover:bg-gray-50 focus:ring-4 focus:ring-gray-300 focus:outline-none">
                     <i class="fa-solid fa-user-secret"></i>
                     <span class="sr-only">Administrateurs</span>
                 </a>
-                <div id="tooltip-copy" role="tooltip"
+                <div id="tooltip-administrates" role="tooltip"
                      class="absolute z-10 invisible inline-block w-auto px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip">
                     Administrateurs
                     <div class="tooltip-arrow" data-popper-arrow></div>

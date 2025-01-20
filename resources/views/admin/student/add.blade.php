@@ -50,7 +50,7 @@
                                     required>
                                 <option disabled selected>Attribuez une classe à cet élève</option>
                                 @foreach($getClass as $class)
-                                <option value="{{ $class->id }}">{{ $class->name }}</option>
+                                <option value="{{ $class->id }}">{{ $class->name}}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -60,9 +60,9 @@
                                     class="rounded bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm ps-3"
                                     required>
                                 <option disabled selected>Choisissez un genre à cet élève</option>
-                                <option value="male">Masculin</option>
-                                <option value="female">Féminin</option>
-                                <option value="other">Autre</option>
+                                <option {{ (old('gender') == 'male') ? 'selected' : '' }} value="male">Masculin</option>
+                                <option {{ (old('gender') == 'female') ? 'selected' : '' }} value="female">Féminin</option>
+                                <option {{ (old('gender') == 'other') ? 'selected' : '' }} value="other">Autre</option>
                             </select>
                         </div>
                         <div class="mb-3">
@@ -100,7 +100,7 @@
                         <div class="mb-3">
                             <label class="block mb-2 text-sm font-medium text-gray-900" for="profile_picture">Photo de Profile</label>
                             <input type="file" id="profile_picture" name="profile_picture"
-                                   value="{{ old('profile_picture') }}"
+                                   value=""
                                    class="rounded bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm ps-3"
                                    placeholder="Photo de profile...">
                         </div>
@@ -109,14 +109,14 @@
                             <select id="blood_group" name="blood_group"
                                     class="rounded bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm ps-3">
                                 <option disabled selected>Attribuez un group sanguin pour cet élève</option>
-                                <option value="a+">A+</option>
-                                <option value="a-">A-</option>
-                                <option value="b+">B+</option>
-                                <option value="b-">B-</option>
-                                <option value="ab+">AB+</option>
-                                <option value="ab-">AB-</option>
-                                <option value="o+">O+</option>
-                                <option value="o-">O-</option>
+                                <option {{ (old('blood_group') == 'a+') ? 'selected' : '' }} value="a+">A+</option>
+                                <option {{ (old('blood_group') == 'a-') ? 'selected' : '' }} value="a-">A-</option>
+                                <option {{ (old('blood_group') == 'b+') ? 'selected' : '' }} value="b+">B+</option>
+                                <option {{ (old('blood_group') == 'b-') ? 'selected' : '' }} value="b-">B-</option>
+                                <option {{ (old('blood_group') == 'ab+') ? 'selected' : '' }} value="ab+">AB+</option>
+                                <option {{ (old('blood_group') == 'ab-') ? 'selected' : '' }} value="ab-">AB-</option>
+                                <option {{ (old('blood_group') == 'o+') ? 'selected' : '' }} value="o+">O+</option>
+                                <option {{ (old('blood_group') == 'o-') ? 'selected' : '' }} value="o-">O-</option>
                             </select>
                         </div>
                         <div class="mb-3">
@@ -137,8 +137,8 @@
                                     class="rounded bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm ps-3"
                                     required>
                                 <option disabled selected>Définissez un status pour cet élève</option>
-                                <option value="1">Activé</option>
-                                <option value="0">Désactivé</option>
+                                <option {{ (old('status') == '1') ? 'selected' : '' }} value="1">Activé</option>
+                                <option {{ (old('status') == '0') ? 'selected' : '' }} value="0">Désactivé</option>
                             </select>
                         </div>
                     </div>

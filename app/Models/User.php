@@ -96,6 +96,8 @@ class User extends Authenticatable
             ->where('users.user_type', 3);
 
         $filters = [
+            'users.admission_number' => strtolower(Request::get('admission_number')),
+            'users.name' => strtolower(Request::get('name')),
             'users.last_name' => strtolower(Request::get('last_name')),
             'users.email' => strtolower(Request::get('email')),
             'users.created_at' => strtolower(Request::get('created_at')),
@@ -107,10 +109,27 @@ class User extends Authenticatable
                 $results->where($column, 'like', '%' . $value . '%');
             }
         }
+        $status = Request::get('status');
+        if (in_array($status, ['0', '1'], true)) {
+            $results->where('users.status', $status);
+        }
+        $gender = Request::get('gender');
+        if (in_array($gender, ['male', 'female', 'other'], true)) {
+            $results->where('users.gender', $gender);
+        }
 
         return $results->where('users.is_delete', '=', 0)
             ->orderBy('users.id', 'desc')
             ->paginate($perPage);
+    }
+
+    static public function getProfile(string $profilePicture): string
+    {
+        if (!empty($profilePicture) && file_exists('upload/profile/' . $profilePicture)) {
+            return url('upload/profile/' . $profilePicture);
+        } else {
+            return "";
+        }
     }
 
 
