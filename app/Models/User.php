@@ -20,6 +20,18 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
+        'last_name',
+        'admission_number',
+        'roll_number',
+        'gender',
+        'caste',
+        'religion',
+        'mobile_number',
+        'admission_date',
+        'blood_group',
+        'height',
+        'weight',
+        'status',
         'email',
         'password',
     ];
@@ -32,6 +44,7 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'user_type',
+        'class_id',
         'is_delete',
         'remember_token',
     ];
@@ -73,7 +86,6 @@ class User extends Authenticatable
             ->orderBy('id', 'desc')
             ->paginate($perPage);
     }
-
 
     static public function getEmailSingle(string $email)
     {
@@ -134,14 +146,85 @@ class User extends Authenticatable
             ->paginate($perPage);
     }
 
-    static public function getProfile(string $profilePicture): string
+    static public function getAllParent(int $perPage)
     {
-        if (!empty($profilePicture) && file_exists('upload/profile/' . $profilePicture)) {
-            return url('upload/profile/' . $profilePicture);
-        } else {
-            return "";
+        $results = User::select('users.*')
+            ->where('users.user_type', 4)
+            ->where('users.is_delete', '=', 0);
+
+        $filters = [
+            'users.name' => strtolower(Request::get('name')),
+            'users.last_name' => strtolower(Request::get('last_name')),
+            'users.email' => strtolower(Request::get('email')),
+            'users.mobile_number' => strtolower(Request::get('mobile_number')),
+            'users.occupation' => strtolower(Request::get('occupation')),
+            'users.address' => strtolower(Request::get('address')),
+            'users.created_at' => strtolower(Request::get('created_at')),
+            'users.updated_at' => strtolower(Request::get('updated_at')),
+        ];
+
+        foreach ($filters as $column => $value) {
+            if (!empty($value)) {
+                $results->where($column, 'like', '%' . $value . '%');
+            }
         }
+        $status = Request::get('status');
+        if (in_array($status, ['0', '1'], true)) {
+            $results->where('users.status', $status);
+        }
+        $gender = Request::get('gender');
+        if (in_array($gender, ['male', 'female', 'other'], true)) {
+            $results->where('users.gender', $gender);
+        }
+
+        return $results->orderBy('users.id', 'desc')
+            ->paginate($perPage);
     }
+
+    static public function getAllTeacher(int $perPage)
+    {
+        $results = User::select('users.*')
+            ->where('users.user_type', 2)
+            ->where('users.is_delete', '=', 0);
+
+        $filters = [
+            'users.name' => strtolower(Request::get('name')),
+            'users.last_name' => strtolower(Request::get('last_name')),
+            'users.email' => strtolower(Request::get('email')),
+            'users.mobile_number' => strtolower(Request::get('mobile_number')),
+            'users.occupation' => strtolower(Request::get('occupation')),
+            'users.address' => strtolower(Request::get('address')),
+            'users.created_at' => strtolower(Request::get('created_at')),
+            'users.updated_at' => strtolower(Request::get('updated_at')),
+        ];
+
+        foreach ($filters as $column => $value) {
+            if (!empty($value)) {
+                $results->where($column, 'like', '%' . $value . '%');
+            }
+        }
+        $status = Request::get('status');
+        if (in_array($status, ['0', '1'], true)) {
+            $results->where('users.status', $status);
+        }
+        $gender = Request::get('gender');
+        if (in_array($gender, ['male', 'female', 'other'], true)) {
+            $results->where('users.gender', $gender);
+        }
+
+        return $results->orderBy('users.id', 'desc')
+            ->paginate($perPage);
+    }
+
+    static public function getProfile(string $profilePicture, string $userType): string
+    {
+        $basePath = 'upload/profile/' . $userType . '/';
+        if (!empty($profilePicture) && file_exists(public_path($basePath . $profilePicture))) {
+            return url($basePath . $profilePicture);
+        }
+        return url('upload/profile/default.jpg');
+    }
+
 
 
 }

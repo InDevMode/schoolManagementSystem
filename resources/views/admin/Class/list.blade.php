@@ -81,8 +81,8 @@
         </form>
 
         <div class="relative overflow-x-auto shadow-lg sm:rounded-lg" id="results">
-            <table class="w-full text-sm text-left rtl:text-right text-gray-500">
-                <thead class="text-xs text-white uppercase bg-violet-500">
+            <table class="w-full text-[12px] text-left rtl:text-right">
+                <thead class="text-[12px] text-white uppercase bg-violet-500">
                 <tr>
                     <th scope="col" class="p-4">
                         <div class="flex items-center">
@@ -93,7 +93,7 @@
                     </th>
                     <th scope="col" class="px-6 py-3">
                         <div class="flex items-center">
-                            Identifiant
+                            Id
                             <a href="#">
                                 <span class="w-3 h-3 ms-1.5"><i class="fa-solid fa-filter"></i></span>
                             </a>
@@ -158,7 +158,8 @@
                         {{ $index + 1 }}
                     </th>
                     <td class="px-6 py-4">
-                        {{ $class -> name }}
+                         <span
+                             class="bg-gray-100 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded border border-gray-400">{{ $class -> name }}</span>
                     </td>
                     <td class="px-6 py-4">
                         @if($class->status == 0)
@@ -185,11 +186,11 @@
                     <td class="flex items-center px-6 py-4">
                         <a href="{{ url('admin/class/edit', $class -> id) }}"
                            class="font-medium text-violet-500 me-5" title="Modifier">
-                            <span class="w-6 h-6 text-violet-500 text-[22px]"><i class="fa-solid fa-pen-to-square"></i></span>
+                            <span class="w-6 h-6 text-violet-500 text-[16px]"><i class="fa-solid fa-pen-to-square"></i></span>
                         </a>
                         <a href="{{ url('admin/class/delete', $class -> id) }}"
                            class="font-medium text-violet-500 me-5" title="Supprimer">
-                            <span class="w-6 h-6 text-red-500 text-[22px]"><i class="fa-solid fa-trash"></i></span>
+                            <span class="w-6 h-6 text-red-500 text-[16px]"><i class="fa-solid fa-trash"></i></span>
                         </a>
                     </td>
                 </tr>

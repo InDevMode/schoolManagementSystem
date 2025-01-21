@@ -73,12 +73,12 @@ class StudentController extends Controller
             if (!empty($request->admission_date)) {
                 $student->admission_date = trim($request->admission_date);
             }
-            if (!empty($request->file('profile_picture'))) {
+            if (!empty($request->hasfile('profile_picture'))) {
                 $ext = $request->file('profile_picture')->getClientOriginalExtension();
                 $file = $request->file('profile_picture');
                 $randomStr = date('dmYhis') . Str::random(20);
                 $fileName = strtolower($randomStr) . '.' . $ext;
-                $file->move('upload/profile/', $fileName);
+                $file->move(public_path('upload/profile/student'), $fileName);
                 $student->profile_picture = $fileName;
             }
             $student->blood_group = trim($request->blood_group);
@@ -105,15 +105,10 @@ class StudentController extends Controller
         $data['header_title'] = "Modifier un élève";
         if (!empty($data['getStudent'])) {
             $data['getClass'] = ClassModel::getClass();
-            if (!empty($data['getStudent']->profile_picture)) {
-                $data['profile_picture_url'] = $data['getStudent']->getProfile($data['getStudent']->profile_picture);
-            } else {
-                $data['profile_picture_url'] = '';
-            }
+            $data['profile_picture_url'] = User::getProfile($data['getStudent']->profile_picture ?? '', 'student');
             return view('admin.student.edit', $data);
-        } else {
-            abort(404);
         }
+        abort(404);
     }
 
     public function update(Request $request, $id): \Illuminate\Foundation\Application|\Illuminate\Routing\Redirector|\Illuminate\Http\RedirectResponse|\Illuminate\Contracts\Foundation\Application
@@ -167,8 +162,6 @@ class StudentController extends Controller
             if (!empty($request->admission_date)) {
                 $student->admission_date = trim($request->admission_date);
             }
-
-            //Condition de chargement ou de modification d'une photo de profile
             if (!empty($request->file('profile_picture'))) {
                 $studentProfilePicture = $student->profile_picture;
 
@@ -179,17 +172,13 @@ class StudentController extends Controller
                         unlink('upload/profile/' . $studentProfilePicture);
                     }
                 }
-
                 $ext = $request->file('profile_picture')->getClientOriginalExtension();
                 $file = $request->file('profile_picture');
                 $randomStr = date('dmYhis') . Str::random(20);
                 $fileName = strtolower($randomStr) . '.' . $ext;
-
-                $file->move('upload/profile/', $fileName);
-
+                $file->move(('upload/profile/student'), $fileName);
                 $student->profile_picture = $fileName;
             }
-
             $student->blood_group = trim($request->blood_group);
             $student->height = trim($request->height);
             $student->weight = trim($request->weight);

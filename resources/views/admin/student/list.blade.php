@@ -48,6 +48,11 @@
                            class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block text-sm p-2 w-full"
                            placeholder="Rechercher par email...">
                 </div>
+                <div class="">
+                    <input type="text" id="mobile_number" name="mobile_number" value="{{ Request::get('mobile_number') }}"
+                           class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block text-sm p-2 w-full"
+                           placeholder="Rechercher par numéro de téléphone...">
+                </div>
                 <div>
                     <select id="status" name="status"
                             class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block text-sm p-2 w-full">
@@ -58,7 +63,6 @@
                         'status') == '0' ? 'selected' : '' }}>Désactivée</option>
                     </select>
                 </div>
-
                 <div>
                     <select id="gender" name="gender"
                             class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block text-sm p-2 w-full">
@@ -113,16 +117,6 @@
                         'blood_group') == 'o-' ? 'selected' : '' }} value="o-">O-</option>
                     </select>
                 </div>
-                <div>
-                    <select id="status" name="status"
-                            class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block text-sm p-2 w-full">
-                        <option value="">Filtrer par statut</option>
-                        <option value="1" {{ Request::get(
-                        'status') == '1' ? 'selected' : '' }}>Activée</option>
-                        <option value="0" {{ Request::get(
-                        'status') == '0' ? 'selected' : '' }}>Désactivée</option>
-                    </select>
-                </div>
                 <div class="">
                     <input type="date" id="date_of_birth" name="date_of_birth"
                            value="{{ Request::get('date_of_birth') }}"
@@ -134,7 +128,6 @@
                            class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block text-sm p-2 w-full"
                            placeholder="Rechercher par date de création...">
                 </div>
-
                 <button type="submit"
                         class="flex justify-between text-white bg-violet-500 hover:bg-violet-600 focus:ring-4 focus:outline-none focus:ring-violet-300 font-medium rounded-full text-sm px-5 py-2.5 text-center transition-all duration-500 ease-out w-full hover:scale-105">
                     Rechercher
@@ -151,8 +144,8 @@
             </div>
         </form>
         <div class="relative overflow-x-auto shadow-md sm:rounded-lg border border-gray-300" id="results">
-            <table class="w-full text-[12px] text-left rtl:text-right text-gray-500 ">
-                <thead class="text-[12px] text-white uppercase bg-violet-500 dark:bg-gray-700">
+            <table class="w-full text-[12px] text-left rtl:text-right">
+                <thead class="text-[12px] text-white uppercase bg-violet-500">
                 <tr>
                     <th scope="col" class="p-4">
                         <div class="flex items-center">
@@ -240,7 +233,7 @@
                 </thead>
                 <tbody>
                 @foreach($getStudent as $index => $student)
-                <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50">
+                <tr class="bg-white border-b hover:bg-gray-50">
                     <td class="w-4 p-4">
                         <div class="flex items-center">
                             <input id="checkbox-table-search-1" type="checkbox"
@@ -265,12 +258,12 @@
                         @if($student->status == 0)
                         <div class="flex items-center">
                             <div class="h-2.5 w-2.5 rounded-full bg-red-500 me-2"></div>
-                            Désactivée
+                            Désactivé
                         </div>
                         @elseif($student->status == 1)
                         <div class="flex items-center">
                             <div class="h-2.5 w-2.5 rounded-full bg-green-500 me-2"></div>
-                            Activée
+                            Activé
                         </div>
                         @endif
                     </td>
@@ -304,11 +297,11 @@
                     <td class="flex items-center px-6 py-4">
                         <a href="{{ url('admin/student/edit', $student -> id) }}"
                            class="font-medium text-violet-500 me-5" title="Modifier">
-                            <span class="w-6 h-6 text-violet-500 text-[22px]"><i class="fa-solid fa-pen-to-square"></i></span>
+                            <span class="w-6 h-6 text-violet-500 text-[16px]"><i class="fa-solid fa-pen-to-square"></i></span>
                         </a>
                         <a href="{{ url('admin/student/delete', $student -> id) }}"
                            class="font-medium text-violet-500 me-5" title="Supprimer">
-                            <span class="w-6 h-6 text-red-500 text-[22px]"><i class="fa-solid fa-trash"></i></span>
+                            <span class="w-6 h-6 text-red-500 text-[16px]"><i class="fa-solid fa-trash"></i></span>
                         </a>
                     </td>
                 </tr>

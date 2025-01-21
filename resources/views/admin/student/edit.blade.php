@@ -23,7 +23,7 @@
                         <input type="file" id="profile_picture" name="profile_picture"
                                class="rounded bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm ps-3"
                                placeholder="Photo de profile...">
-                        <img class="h-auto max-w-[100px] rounded-full" src="{{ $profile_picture_url }}" alt="Profile picture">
+                        <img class="h-auto max-w-[100px] rounded-full" src="{{ $profile_picture_url }}" alt="Photo de profile">
                     </div>
                     <div class="grid grid-cols-2 gap-x-5">
                         <div class="mb-3">

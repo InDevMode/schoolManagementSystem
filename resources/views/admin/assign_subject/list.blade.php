@@ -82,8 +82,8 @@
         </form>
 
         <div class="relative overflow-x-auto shadow-md sm:rounded-lg" id="results">
-            <table class="w-full text-sm text-left rtl:text-right text-gray-500">
-                <thead class="text-xs text-white uppercase bg-violet-500">
+            <table class="w-full text-[12px] text-left rtl:text-right">
+                <thead class="text-[12px] text-white uppercase bg-violet-500">
                 <tr>
                     <th scope="col" class="p-4">
                         <div class="flex items-center">
@@ -198,17 +198,17 @@
                         <a href="{{ url('admin/assign_subject/edit_single', $classSubject -> id) }}"
                            class="font-medium text-violet-500 me-5"
                            title="Modification unique">
-                            <span class="w-6 h-6 text-violet-500 text-[22px]"><i class="fa-solid fa-pen"></i></span>
+                            <span class="w-6 h-6 text-violet-500 text-[16px]"><i class="fa-solid fa-pen"></i></span>
                         </a>
                         <a href="{{ url('admin/assign_subject/edit', $classSubject -> id) }}"
                            class="font-medium text-violet-500 me-5"
                            title="Modification multiple">
-                            <span class="w-6 h-6 text-violet-500 text-[22px]"><i class="fa-solid fa-pen-to-square"></i></span>
+                            <span class="w-6 h-6 text-violet-500 text-[16px]"><i class="fa-solid fa-pen-to-square"></i></span>
                         </a>
                         <a href="{{ url('admin/assign_subject/delete', $classSubject -> id) }}"
                            class="font-medium text-violet-500 me-5"
                            title="Supprimer">
-                            <span class="w-6 h-6 text-red-500 text-[22px]"><i class="fa-solid fa-trash"></i></span>
+                            <span class="w-6 h-6 text-red-500 text-[16px]"><i class="fa-solid fa-trash"></i></span>
                         </a>
                     </td>
                 </tr>
