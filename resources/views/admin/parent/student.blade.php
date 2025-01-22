@@ -428,7 +428,7 @@
                             date
                         </td>
                         <td class="flex items-center px-6 py-4">
-                            <a href="{{ url('admin/parent/'.$parent_id.'/deassign_student_parent/'.$studentParent->id) }}"
+                            <a href="{{ url('admin/parent/des_assign_student_parent/'.$studentParent->id) }}"
                                class="font-medium text-red-500 me-5" title="Désassignez">
                             <span class="w-6 h-6 text-red-500 text-[16px]">
                                 <i class="fa-solid fa-arrows-rotate"></i>

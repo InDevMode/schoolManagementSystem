@@ -177,6 +177,13 @@ class ParentController extends Controller
         $student->save();
         return redirect()->back()->with('success', 'Cet élève a été assignée à un parent avec succès.');
     }
+    public function desAssignStudentParent($student_id): \Illuminate\Http\RedirectResponse
+    {
+        $student = User::getSingle($student_id);
+        $student->parent_id = null;
+        $student->save();
+        return redirect()->back()->with('success', 'Cet élève a été désassignée à un parent avec succès.');
+    }
 
     public function delete($id)
     {
