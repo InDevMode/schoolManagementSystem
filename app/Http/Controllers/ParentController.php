@@ -59,9 +59,9 @@ class ParentController extends Controller
             if (!empty($request->file('profile_picture'))) {
                 $ext = $request->file('profile_picture')->getClientOriginalExtension();
                 $file = $request->file('profile_picture');
-                $randomStr = date('dmYhis') . Str::random(20);
+                $randomStr = 'parent' . date('dmYhis') . Str::random(20);
                 $fileName = strtolower($randomStr) . '.' . $ext;
-                $file->move('upload/profile/parent/', $fileName);
+                $file->move('upload/profile/', $fileName);
                 $parent->profile_picture = $fileName;
             }
             $parent->status = intval($request->status);
@@ -86,9 +86,9 @@ class ParentController extends Controller
         $data['header_title'] = "Modifier un Parent";
         if (!empty($data['getParent'])) {
             if (!empty($data['getParent']->profile_picture)) {
-                $data['profile_picture_url'] = $data['getParent']->getProfile($data['getParent']->profile_picture, 'parent');
+                $data['profile_picture_url'] = $data['getParent']->getProfile($data['getParent']->profile_picture);
             } else {
-                $data['profile_picture_url'] = 'upload/profile/default.jpg';
+                $data['profile_picture_url'] = asset('upload/default.jpg');
             }
             return view('admin.parent.edit', $data);
         } else {
@@ -132,25 +132,19 @@ class ParentController extends Controller
                 }
                 $parent->mobile_number = $mobileNumber;
             }
-            //Condition de chargement ou de modification d'une photo de profile
             if (!empty($request->file('profile_picture'))) {
                 $parentProfilePicture = $parent->profile_picture;
-
                 if (!empty($parentProfilePicture)) {
-                    $profilePictureUrl = User::getProfile($parentProfilePicture, 'parent');
-
+                    $profilePictureUrl = User::getProfile($parentProfilePicture);
                     if (!empty($profilePictureUrl)) {
-                        unlink('upload/profile/parent' . $parentProfilePicture);
+                        unlink('upload/profile/' . $parentProfilePicture);
                     }
                 }
-
                 $ext = $request->file('profile_picture')->getClientOriginalExtension();
                 $file = $request->file('profile_picture');
-                $randomStr = date('dmYhis') . Str::random(20);
+                $randomStr = 'parent' . date('dmYhis') . Str::random(20);
                 $fileName = strtolower($randomStr) . '.' . $ext;
-
-                $file->move('upload/profile/parent', $fileName);
-
+                $file->move('upload/profile/', $fileName);
                 $parent->profile_picture = $fileName;
             }
             $parent->status = intval($request->status);

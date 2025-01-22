@@ -216,15 +216,12 @@ class User extends Authenticatable
             ->paginate($perPage);
     }
 
-    static public function getProfile(string $profilePicture, string $userType): string
+    static public function getProfile(string $profilePicture): string
     {
-        $basePath = 'upload/profile/' . $userType . '/';
-        if (!empty($profilePicture) && file_exists(public_path($basePath . $profilePicture))) {
-            return url($basePath . $profilePicture);
+        if (!empty($profilePicture) && file_exists('upload/profile/' . $profilePicture)) {
+            return url('upload/profile/' . $profilePicture);
         }
-        return url('upload/profile/default.jpg');
+        return url('');
     }
-
-
 
 }

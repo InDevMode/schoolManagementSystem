@@ -73,12 +73,12 @@ class StudentController extends Controller
             if (!empty($request->admission_date)) {
                 $student->admission_date = trim($request->admission_date);
             }
-            if (!empty($request->hasfile('profile_picture'))) {
+            if (!empty($request->file('profile_picture'))) {
                 $ext = $request->file('profile_picture')->getClientOriginalExtension();
                 $file = $request->file('profile_picture');
-                $randomStr = date('dmYhis') . Str::random(20);
+                $randomStr = 'student' . date('dmYhis') . Str::random(20);
                 $fileName = strtolower($randomStr) . '.' . $ext;
-                $file->move(public_path('upload/profile/student'), $fileName);
+                $file->move('upload/profile/', $fileName);
                 $student->profile_picture = $fileName;
             }
             $student->blood_group = trim($request->blood_group);
@@ -105,7 +105,11 @@ class StudentController extends Controller
         $data['header_title'] = "Modifier un élève";
         if (!empty($data['getStudent'])) {
             $data['getClass'] = ClassModel::getClass();
-            $data['profile_picture_url'] = User::getProfile($data['getStudent']->profile_picture ?? '', 'student');
+            if (!empty($data['getStudent']->profile_picture)) {
+                $data['profile_picture_url'] = User::getProfile($data['getStudent']->profile_picture);
+            } else {
+                $data['profile_picture_url'] = asset('upload/default.jpg');
+            }
             return view('admin.student.edit', $data);
         }
         abort(404);
@@ -164,19 +168,17 @@ class StudentController extends Controller
             }
             if (!empty($request->file('profile_picture'))) {
                 $studentProfilePicture = $student->profile_picture;
-
                 if (!empty($studentProfilePicture)) {
                     $profilePictureUrl = User::getProfile($studentProfilePicture);
-
                     if (!empty($profilePictureUrl)) {
                         unlink('upload/profile/' . $studentProfilePicture);
                     }
                 }
                 $ext = $request->file('profile_picture')->getClientOriginalExtension();
                 $file = $request->file('profile_picture');
-                $randomStr = date('dmYhis') . Str::random(20);
+                $randomStr = 'student' . date('dmYhis') . Str::random(20);
                 $fileName = strtolower($randomStr) . '.' . $ext;
-                $file->move(('upload/profile/student'), $fileName);
+                $file->move('upload/profile/', $fileName);
                 $student->profile_picture = $fileName;
             }
             $student->blood_group = trim($request->blood_group);
