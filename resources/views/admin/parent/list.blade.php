@@ -5,7 +5,7 @@
         @include('message')
         <div class="flex justify-between pt-2">
             <div class="space-x-2 font-semibold">
-                <span class="text-violet-500 text-[25px]"><i class="fa-solid fa-user-tie"></i></span>
+                <span class="text-violet-500 text-[25px]"><i class="fa-solid fa-person-breastfeeding"></i></span>
                 <span>/</span>
                 <span class="hover:underline hover:text-violet-500 transition-all duration-300"><a
                         href="{{ url('admin/dashboard') }}">Dashboard</a></span>
@@ -251,6 +251,12 @@
                                 <i class="fa-solid fa-pen-to-square"></i>
                             </span>
                         </a>
+                        <a href="{{ url('admin/parent/student', $parent -> id) }}"
+                           class="font-medium text-pink-500 me-5" title="Mon Elève">
+                            <span class="w-6 h-6 text-pink-500 text-[16px]">
+                                <i class="fa-solid fa-user-graduate"></i>
+                            </span>
+                        </a>
                         <a href="{{ url('admin/parent/delete', $parent -> id) }}"
                            class="font-medium text-violet-500 me-5" title="Supprimer">
                             <span class="w-6 h-6 text-red-500 text-[16px]">
@@ -262,7 +268,7 @@
                 @endforeach
                 @if($getParent->isEmpty())
                 <tr>
-                    <td colspan="7" class="p-6 text-center text-gray-500">
+                    <td colspan="10" class="p-6 text-center text-gray-500">
                         Aucun parent trouvé.
                     </td>
                 </tr>

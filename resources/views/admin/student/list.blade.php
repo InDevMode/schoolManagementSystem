@@ -308,7 +308,7 @@
                 @endforeach
                 @if($getStudent->isEmpty())
                 <tr>
-                    <td colspan="10" class="p-6 text-center text-gray-500">
+                    <td colspan="11" class="p-6 text-center text-gray-500">
                         Aucun élève trouvé.
                     </td>
                 </tr>

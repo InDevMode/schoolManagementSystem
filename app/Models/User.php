@@ -224,4 +224,53 @@ class User extends Authenticatable
         return url('');
     }
 
+    static public function getStudentList(int $perPage)
+    {
+        $results = User::select('users.*')
+            ->where('user_type', '=', 3);
+
+        $filters = [
+            'users.name' => strtolower(Request::get('name')),
+            'users.last_name' => strtolower(Request::get('last_name')),
+            'users.email' => strtolower(Request::get('email')),
+            'users.created_at' => strtolower(Request::get('created_at')),
+            'users.updated_at' => strtolower(Request::get('updated_at')),
+        ];
+
+        foreach ($filters as $column => $value) {
+            if (!empty($value)) {
+                $results->where($column, 'like', '%' . $value . '%');
+            }
+        }
+
+        return $results->where('is_delete', '=', 0)
+            ->orderBy('id', 'desc')
+            ->paginate($perPage);
+    }
+
+    static public function getStudentAssignList(int $perPage)
+    {
+        $results = User::select('users.*')
+            ->where('parent_id', '=', 'users.id')
+            ->where('user_type', '=', 3);
+
+        $filters = [
+            'users.name' => strtolower(Request::get('name')),
+            'users.last_name' => strtolower(Request::get('last_name')),
+            'users.email' => strtolower(Request::get('email')),
+            'users.created_at' => strtolower(Request::get('created_at')),
+            'users.updated_at' => strtolower(Request::get('updated_at')),
+        ];
+
+        foreach ($filters as $column => $value) {
+            if (!empty($value)) {
+                $results->where($column, 'like', '%' . $value . '%');
+            }
+        }
+
+        return $results->where('is_delete', '=', 0)
+            ->orderBy('id', 'desc')
+            ->paginate($perPage);
+    }
+
 }

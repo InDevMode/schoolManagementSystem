@@ -161,6 +161,23 @@ class ParentController extends Controller
         }
     }
 
+    public function student($id): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
+    {
+        $data['parent_id'] = $id;
+        $data['getStudentList'] = User::getStudentList(10);
+        $data['getParentStudent'] = User::getStudentAssignList(10);
+        $data['header_title'] = "Listes des élèves du parent";
+        return view('admin.parent.student', $data);
+    }
+
+    public function assignStudentParent($parent_id, $student_id): \Illuminate\Http\RedirectResponse
+    {
+        $student = User::getSingle($student_id);
+        $student->parent_id = $parent_id;
+        $student->save();
+        return redirect()->back()->with('success', 'Cet élève a été assignée à un parent avec succès.');
+    }
+
     public function delete($id)
     {
         $parent = User::getSingle($id);
