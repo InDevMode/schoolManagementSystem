@@ -271,7 +271,7 @@
             </div>
             <div class="">
                 <div class="mt-4">
-                    {{ $getParentStudent->links('vendor.pagination.tailwind') }}
+                    {{ $getMyStudent->links('vendor.pagination.tailwind') }}
                 </div>
             </div>
             <form action="" method="get"
@@ -366,15 +366,7 @@
                         </th>
                         <th scope="col" class="px-6 py-3">
                             <div class="flex items-center">
-                                Nom
-                                <a href="#">
-                                    <span class="w-3 h-3 ms-1.5"><i class="fa-solid fa-filter"></i></span>
-                                </a>
-                            </div>
-                        </th>
-                        <th scope="col" class="px-6 py-3">
-                            <div class="flex items-center">
-                                Prénoms
+                                Nom et prénoms de l'élève
                                 <a href="#">
                                     <span class="w-3 h-3 ms-1.5"><i class="fa-solid fa-filter"></i></span>
                                 </a>
@@ -383,6 +375,14 @@
                         <th scope="col" class="px-6 py-3">
                             <div class="flex items-center">
                                 Email
+                                <a href="#">
+                                    <span class="w-3 h-3 ms-1.5"><i class="fa-solid fa-filter"></i></span>
+                                </a>
+                            </div>
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            <div class="flex items-center">
+                                Nom et prénoms du parent
                                 <a href="#">
                                     <span class="w-3 h-3 ms-1.5"><i class="fa-solid fa-filter"></i></span>
                                 </a>
@@ -402,7 +402,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                    @foreach($getParentStudent as $index => $studentParent)
+                    @foreach($getMyStudent as $index => $myStudent)
                     <tr class="bg-white border-b hover:bg-gray-50">
                         <td class="w-4 p-4">
                             <div class="flex items-center">
@@ -415,20 +415,22 @@
                             {{ $index + 1  }}
                         </th>
                         <td class="px-6 py-4">
-                            name
-                        </td>
-                        <td class="px-6 py-4">
-                            lastname
+                            <span>{{ $myStudent->name }}</span>
+                            <span>{{ $myStudent->last_name }}</span>
                         </td>
                         <td class="px-6 py-4">
                          <span
-                             class="bg-gray-100 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded border border-gray-400">email</span>
+                             class="bg-gray-100 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded border border-gray-400">{{ $myStudent->email }}</span>
                         </td>
                         <td class="px-6 py-4">
-                            date
+                            <span>{{ $myStudent->parent_name }}</span>
+                            <span>{{ $myStudent->parent_last_name }}</span>
+                        </td>
+                        <td class="px-6 py-4">
+                           {{ $myStudent->created_at->format('d/m/Y H:i:s') }}
                         </td>
                         <td class="flex items-center px-6 py-4">
-                            <a href="{{ url('admin/parent/des_assign_student_parent/'.$studentParent->id) }}"
+                            <a href="{{ url('admin/parent/des_assign_student_parent/'.$myStudent->id) }}"
                                class="font-medium text-red-500 me-5" title="Désassignez">
                             <span class="w-6 h-6 text-red-500 text-[16px]">
                                 <i class="fa-solid fa-arrows-rotate"></i>
@@ -437,7 +439,7 @@
                         </td>
                     </tr>
                     @endforeach
-                    @if($getParentStudent->isEmpty())
+                    @if($getMyStudent->isEmpty())
                     <tr>
                         <td colspan="10" class="p-6 text-center text-gray-500">
                             Aucun élève assigné trouvé.
@@ -449,7 +451,7 @@
                 <div class="text-center bg-white py-2">
                     <div class="flex justify-between items-center mt-4">
                     <span
-                        class="text-violet-500 font-bold text-md ps-5 uppercase">Total : {{ $getParentStudent->total() }}</span>
+                        class="text-violet-500 font-bold text-md ps-5 uppercase">Total : {{ $getMyStudent->total() }}</span>
                     </div>
                 </div>
             </div>

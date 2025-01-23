@@ -144,8 +144,8 @@
             </div>
         </form>
         <div class="relative overflow-x-auto shadow-md sm:rounded-lg border border-gray-300" id="results">
-            <table class="w-full text-[12px] text-left rtl:text-right">
-                <thead class="text-[12px] text-white uppercase bg-violet-500">
+            <table class="w-full text-[10px] text-left rtl:text-right">
+                <thead class="text-[10px] text-white uppercase bg-violet-500">
                 <tr>
                     <th scope="col" class="p-4">
                         <div class="flex items-center">
@@ -164,7 +164,7 @@
                     </th>
                     <th scope="col" class="px-6 py-3">
                         <div class="flex items-center">
-                            Nom
+                            Nom et prénoms
                             <a href="#">
                                 <span class="w-3 h-3 ms-1.5"><i class="fa-solid fa-filter"></i></span>
                             </a>
@@ -172,7 +172,7 @@
                     </th>
                     <th scope="col" class="px-6 py-3">
                         <div class="flex items-center">
-                            Prénom
+                            Nom et Prénoms du Parent
                             <a href="#">
                                 <span class="w-3 h-3 ms-1.5"><i class="fa-solid fa-filter"></i></span>
                             </a>
@@ -245,10 +245,12 @@
                         {{$student -> admission_number }}
                     </th>
                     <td class="px-6 py-4">
-                        {{ $student -> name }}
+                        <span>{{ $student -> name }}</span>
+                        <span>{{ $student -> last_name }}</span>
                     </td>
                     <td class="px-6 py-4">
-                        {{ $student -> last_name }}
+                        <span>{{ $student -> parent_name }}</span>
+                        <span>{{ $student -> parent_last_name }}</span>
                     </td>
                     <td class="px-6 py-4">
                         <span
