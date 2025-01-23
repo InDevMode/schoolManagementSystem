@@ -230,12 +230,12 @@
                         <td class="px-6 py-4">
                             {{ $studentList -> updated_at->format('d/m/Y H:i:s') }}
                         </td>
-                        <td class="flex items-center px-6 py-4">
+                        <td class="flex items-center px-6 py-4 relative">
                             <a href="{{ url('admin/parent/'.$parent_id.'/assign_student_parent/'.$studentList->id) }}"
-                               class="font-medium text-violet-500 me-5" title="Assignez">
-                            <span class="w-6 h-6 text-violet-500 text-[16px]">
-                                <i class="fa-solid fa-arrows-rotate"></i>
-                            </span>
+                               class="font-medium flex items-center space-x-5 px-4 py-3 hover:bg-violet-500 text-[12px] hover:text-white text-violet-500 rounded transition-all duration-500"
+                               title="Assignez">
+                                <span><i class="fa-solid fa-arrows-rotate"></i></span>
+                                <span>Assignez cet élève</span>
                             </a>
                         </td>
                     </tr>
@@ -345,7 +345,7 @@
                     </a>
                 </div>
             </form>
-            <div class="relative overflow-x-auto shadow-md sm:rounded-lg border border-gray-300" id="results">
+            <div class="relative overflow-visible shadow-md sm:rounded-lg border border-gray-300 z-10" id="results">
                 <table class="w-full text-[12px] text-left rtl:text-right">
                     <thead class="text-[12px] text-white uppercase bg-violet-500">
                     <tr>
@@ -412,7 +412,7 @@
                             </div>
                         </td>
                         <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-                            {{ $index + 1  }}
+                            {{ $index + 1 }}
                         </th>
                         <td class="px-6 py-4">
                             <span>{{ $myStudent->name }}</span>
@@ -427,14 +427,14 @@
                             <span>{{ $myStudent->parent_last_name }}</span>
                         </td>
                         <td class="px-6 py-4">
-                           {{ $myStudent->created_at->format('d/m/Y H:i:s') }}
+                            {{ $myStudent->created_at->format('d/m/Y H:i:s') }}
                         </td>
-                        <td class="flex items-center px-6 py-4">
+                        <td class="flex items-center px-6 py-4 relative">
                             <a href="{{ url('admin/parent/des_assign_student_parent/'.$myStudent->id) }}"
-                               class="font-medium text-red-500 me-5" title="Désassignez">
-                            <span class="w-6 h-6 text-red-500 text-[16px]">
-                                <i class="fa-solid fa-arrows-rotate"></i>
-                            </span>
+                               class="font-medium flex items-center space-x-5 px-4 py-3 hover:bg-red-500 text-[12px] hover:text-white text-red-500 rounded transition-all duration-500"
+                               title="Désassignez">
+                                <span><i class="fa-solid fa-arrows-rotate"></i></span>
+                                <span>Désassignez cet élève</span>
                             </a>
                         </td>
                     </tr>

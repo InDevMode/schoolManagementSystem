@@ -143,7 +143,7 @@
 
             </div>
         </form>
-        <div class="relative overflow-x-auto shadow-md sm:rounded-lg border border-gray-300" id="results">
+        <div class="relative overflow-visible shadow-md sm:rounded-lg border border-gray-300 z-10" id="results">
             <table class="w-full text-[10px] text-left rtl:text-right">
                 <thead class="text-[10px] text-white uppercase bg-violet-500">
                 <tr>
@@ -296,15 +296,34 @@
                     <td class="px-6 py-4">
                         {{ $student -> created_at->format('d/m/Y H:i:s') }}
                     </td>
-                    <td class="flex items-center px-6 py-4">
-                        <a href="{{ url('admin/student/edit', $student -> id) }}"
-                           class="font-medium text-violet-500 me-5" title="Modifier">
-                            <span class="w-6 h-6 text-violet-500 text-[16px]"><i class="fa-solid fa-pen-to-square"></i></span>
-                        </a>
-                        <a href="{{ url('admin/student/delete', $student -> id) }}"
-                           class="font-medium text-violet-500 me-5" title="Supprimer">
-                            <span class="w-6 h-6 text-red-500 text-[16px]"><i class="fa-solid fa-trash"></i></span>
-                        </a>
+                    <td class="flex items-center px-6 py-4 relative">
+                        <button id="dropdownMenuIconButton-{{ $index + 1}}"
+                                data-dropdown-toggle="dropdownDots-{{ $index + 1}}"
+                                class="inline-flex items-center p-2 text-sm font-medium text-center text-gray-900 bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-50"
+                                type="button">
+                            <i class="fa-solid fa-ellipsis"></i>
+                        </button>
+                        <!-- Dropdown menu -->
+                        <div id="dropdownDots-{{ $index + 1}}"
+                             class="hidden absolute top-full left-0 bg-white rounded-lg shadow w-44 z-50">
+                            <ul class="text-sm text-gray-700"
+                                aria-labelledby="dropdownMenuIconButton-{{ $index + 1}}">
+                                <li>
+                                    <a href="{{ url('admin/student/edit', $student -> id) }}"
+                                       class="font-medium flex items-center space-x-5 px-4 py-3 hover:bg-gray-100 text-[12px] text-violet-500" title="Modifier">
+                                        <span><i class="fa-solid fa-pen-to-square"></i></span>
+                                        <span>Modifier</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ url('admin/student/delete', $student -> id) }}"
+                                       class="font-medium flex items-center space-x-5 px-4 py-3 hover:bg-gray-100 text-red-500 text-[12px]" title="Supprimer">
+                                        <span><i class="fa-solid fa-trash"></i></span>
+                                        <span>Supprimer</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
                     </td>
                 </tr>
                 @endforeach
@@ -327,5 +346,13 @@
     </div>
 </div>
 @endsection
-
+<script>
+    document.querySelectorAll('[data-dropdown-toggle]').forEach(button => {
+        button.addEventListener('click', () => {
+            const dropdownId = button.getAttribute('data-dropdown-toggle');
+            const dropdown = document.getElementById(dropdownId);
+            dropdown.classList.toggle('hidden');
+        });
+    });
+</script>
 

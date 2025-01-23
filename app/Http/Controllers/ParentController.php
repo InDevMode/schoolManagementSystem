@@ -69,7 +69,6 @@ class ParentController extends Controller
                 $parent->password = Hash::make($request->password);
             }
             $parent->user_type = 4;
-            $parent->class_id = 0;
             $parent->save();
 
             return redirect('admin/parent/list')->with('success', 'Cet parent a été créé avec succès.');

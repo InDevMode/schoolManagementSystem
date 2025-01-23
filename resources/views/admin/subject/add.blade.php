@@ -27,8 +27,8 @@
                                 class="rounded bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm ps-3"
                                 required>
                             <option selected>Définissez un type pour cette matière</option>
-                            <option value="theoretical">Théorique</option>
-                            <option value="practical">Pratique</option>
+                            <option {{ (old('type') == 'theoretical') ? 'selected' : '' }} value="theoretical" value="theoretical">Théorique</option>
+                            <option {{ (old('type') == 'practical') ? 'selected' : '' }} value="practical" value="practical">Pratique</option>
                         </select>
                     </div>
                     <div class="flex mb-5">
@@ -36,8 +36,8 @@
                                 class="rounded bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm ps-3"
                                 required>
                             <option selected>Définissez un status pour cette classe</option>
-                            <option value="1">Activée</option>
-                            <option value="0">Désactivée</option>
+                            <option {{ (old('status') == '1') ? 'selected' : '' }} value="1">Activée</option>
+                            <option {{ (old('status') == '0') ? 'selected' : '' }} value="0">Désactivée</option>
                         </select>
                     </div>
                     <button type="submit"

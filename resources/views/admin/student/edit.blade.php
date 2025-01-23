@@ -87,7 +87,7 @@
                         </div>
                         <div class="mb-3">
                             <label class="block mb-2 text-sm font-medium text-gray-900" for="date_of_birth">Date
-                                d'anniversaire<span class="text-red-500 font-bold">*</span></label>
+                                de Naissance<span class="text-red-500 font-bold">*</span></label>
                             <input type="date" id="date_of_birth" name="date_of_birth"
                                    value="{{ old('date_of_birth', $getStudent->date_of_birth) }}"
                                    class="rounded bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm ps-3"
