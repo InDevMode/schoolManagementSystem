@@ -3,10 +3,21 @@
 <div class="p-4 sm:ml-64">
     <div class="p-4 rounded-lg mt-14">
         <div class="space-x-2 font-semibold">
-            <span class="text-violet-500 text-[25px]"><i class="fa-solid fa-user-secret"></i></span>
+            <span class="text-emerald-500 text-[25px]"><i class="fa-solid fa-user-secret"></i></span>
             <span>/</span>
-            <span class="hover:underline hover:text-violet-600 transition-all duration-300"><a
+            @if(Auth::user()->user_type == 1)
+            <span class="hover:underline hover:text-emerald-600 transition-all duration-300"><a
                     href="{{ url('admin/dashboard') }}">Dashboard</a></span>
+            @elseif(Auth::user()->user_type == 2)
+            <span class="hover:underline hover:text-emerald-600 transition-all duration-300"><a
+                    href="{{ url('teacher/dashboard') }}">Dashboard</a></span>
+            @elseif(Auth::user()->user_type == 3)
+            <span class="hover:underline hover:text-emerald-600 transition-all duration-300"><a
+                    href="{{ url('student/dashboard') }}">Dashboard</a></span>
+            @elseif(Auth::user()->user_type == 4)
+            <span class="hover:underline hover:text-emerald-600 transition-all duration-300"><a
+                    href="{{ url('parent/dashboard') }}">Dashboard</a></span>
+            @endif
             <span>/</span>
             <span>Profile</span>
         </div>

@@ -100,6 +100,9 @@ Route::group(['middleware' => 'admin'], function () {
     Route::get('admin/parent/des_assign_student_parent/{student_id}', [ParentController::class, 'desAssignStudentParent']);
     Route::get('admin/parent/delete/{id}', [ParentController::class, 'delete']);
 
+    // Admin account url
+    Route::get('admin/account', [UserController::class, 'myAccount']);
+    Route::post('admin/account', [UserController::class, 'updateAdminAccount']);
 
 });
 
@@ -109,6 +112,11 @@ Route::group(['middleware' => 'teacher'], function () {
     // Teacher Change Password url
     Route::get('teacher/change_password', [UserController::class, 'changePassword']);
     Route::post('teacher/change_password', [UserController::class, 'updatePassword']);
+
+    // Teacher account url
+    Route::get('teacher/account', [UserController::class, 'myAccount']);
+    Route::post('teacher/account', [UserController::class, 'updateTeacherAccount']);
+
 });
 
 Route::group(['middleware' => 'student'], function () {
@@ -117,6 +125,10 @@ Route::group(['middleware' => 'student'], function () {
     // Student Change Password url
     Route::get('student/change_password', [UserController::class, 'changePassword']);
     Route::post('student/change_password', [UserController::class, 'updatePassword']);
+
+    // Student account url
+    Route::get('student/account', [UserController::class, 'myAccount']);
+    Route::post('student/account', [UserController::class, 'updateStudentAccount']);
 });
 
 Route::group(['middleware' => 'parent'], function () {
@@ -125,4 +137,8 @@ Route::group(['middleware' => 'parent'], function () {
     // Parent Change Password url
     Route::get('parent/change_password', [UserController::class, 'changePassword']);
     Route::post('parent/change_password', [UserController::class, 'updatePassword']);
+
+    // Parent account url
+    Route::get('parent/account', [UserController::class, 'myAccount']);
+    Route::post('parent/account', [UserController::class, 'updateParentAccount']);
 });

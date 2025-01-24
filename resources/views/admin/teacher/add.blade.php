@@ -2,7 +2,6 @@
 @section('content')
 <div class="p-4 sm:ml-64">
     <div class="p-4 rounded-lg mt-14">
-        @include('message')
         <div class="flex justify-between pt-2">
             <div class="space-x-2 font-semibold">
                 <span class="text-violet-500 text-[25px]"><i class="fa-solid fa-user-tie"></i></span>
@@ -19,7 +18,7 @@
                 <form action="{{ url('admin/teacher/add') }}" method="post" class="p-5" enctype="multipart/form-data">
                     {{ csrf_field() }}
                     <h2 class="font-bold uppercase text-center text-white rounded-t-md bg-violet-500 py-3 mb-5">
-                        Ajouter un élève</h2>
+                        Ajouter un professeur</h2>
                     <div class="grid grid-cols-2 gap-x-5">
                         <div class="mb-3">
                             <label class="block mb-2 text-sm font-medium text-gray-900" for="name">Nom<span

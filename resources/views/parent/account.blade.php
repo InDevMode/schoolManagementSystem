@@ -7,9 +7,9 @@
                 <span class="text-emerald-500 text-[25px]"><i class="fa-solid fa-person-breastfeeding"></i></span>
                 <span>/</span>
                 <span class="hover:underline hover:text-emerald-500 transition-all duration-300"><a
-                        href="{{ url('admin/parent/list') }}">Listes des parents</a></span>
+                        href="{{ url('parent/dashboard') }}">Dashboard</a></span>
                 <span>/</span>
-                <span>Parent</span>
+                <span>Mon Compte</span>
             </div>
         </div>
         <div class="p-4 flex items-center justify-center">
@@ -18,7 +18,7 @@
                 <form action="" method="post" class="p-5" enctype="multipart/form-data">
                     {{ csrf_field() }}
                     <h2 class="font-bold uppercase text-center text-white rounded-t-md bg-emerald-500 py-3 mb-5">
-                        Modifier un parent</h2>
+                        Modifier mes informations personnelles</h2>
                     <div class="mb-3">
                         <label class="block mb-2 text-sm font-medium text-gray-900" for="profile_picture">Photo de
                             Profile</label>
@@ -32,7 +32,7 @@
                         <div class="mb-3">
                             <label class="block mb-2 text-sm font-medium text-gray-900" for="name">Nom<span
                                     class="text-red-500 font-bold">*</span></label>
-                            <input type="text" id="name" name="name" value="{{ old('name', $getParent->name) }}"
+                            <input type="text" id="name" name="name" value="{{ old('name', $getUserData->name) }}"
                                    class="rounded bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm ps-3"
                                    placeholder="nom..." required>
                         </div>
@@ -40,7 +40,7 @@
                             <label class="block mb-2 text-sm font-medium text-gray-900" for="last_name">Prénom<span
                                     class="text-red-500 font-bold">*</span></label>
                             <input type="text" id="last_name" name="last_name"
-                                   value="{{ old('last_name', $getParent->last_name) }}"
+                                   value="{{ old('last_name', $getUserData->last_name) }}"
                                    class="rounded bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm ps-3"
                                    placeholder="prénom..." required>
                         </div>
@@ -52,13 +52,13 @@
                                     required>
                                 <option disabled selected>Choisissez un genre à cet parent</option>
                                 <option {{ (old(
-                                'gender', $getParent->gender) == 'male') ? 'selected' : '' }}
+                                'gender', $getUserData->gender) == 'male') ? 'selected' : '' }}
                                 value="male">Masculin</option>
                                 <option {{ (old(
-                                'gender', $getParent->gender) == 'female') ? 'selected' : '' }}
+                                'gender', $getUserData->gender) == 'female') ? 'selected' : '' }}
                                 value="female">Féminin</option>
                                 <option {{ (old(
-                                'gender', $getParent->gender) == 'other') ? 'selected' : '' }}
+                                'gender', $getUserData->gender) == 'other') ? 'selected' : '' }}
                                 value="other">Autre</option>
                             </select>
                         </div>
@@ -66,7 +66,7 @@
                             <label class="block mb-2 text-sm font-medium text-gray-900"
                                    for="occupation">Occupation<span class="text-red-500 font-bold">*</span></label>
                             <input type="text" id="occupation" name="occupation"
-                                   value="{{ old('occupation', $getParent->occupation) }}"
+                                   value="{{ old('occupation', $getUserData->occupation) }}"
                                    class="rounded bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm ps-3"
                                    placeholder="occupation..." required>
                         </div>
@@ -74,7 +74,7 @@
                             <label class="block mb-2 text-sm font-medium text-gray-900" for="mobile_number">Numéro de
                                 téléphone<span class="text-red-500 font-bold">*</span></label>
                             <input type="text" id="mobile_number" name="mobile_number"
-                                   value="{{ old('mobile_number', $getParent->mobile_number) }}"
+                                   value="{{ old('mobile_number', $getUserData->mobile_number) }}"
                                    class="rounded bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm ps-3"
                                    placeholder="Numéro de téléphone..." required>
                         </div>
@@ -82,40 +82,19 @@
                             <label class="block mb-2 text-sm font-medium text-gray-900" for="address">Addresse<span
                                     class="text-red-500 font-bold">*</span></label>
                             <input type="text" id="address" name="address"
-                                   value="{{ old('address', $getParent->address) }}"
+                                   value="{{ old('address', $getUserData->address) }}"
                                    class="rounded bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm ps-3"
                                    placeholder="addresse...">
-                        </div>
-                        <div class="mb-5">
-                            <label class="block mb-2 text-sm font-medium text-gray-900" for="status">Status<span
-                                    class="text-red-500 font-bold">*</span></label>
-                            <select id="status" name="status"
-                                    class="rounded bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm ps-3"
-                                    required>
-                                <option disabled selected>Définissez un status pour cet parent</option>
-                                <option {{ (old(
-                                'status', $getParent->status) == '1') ? 'selected' : '' }} value="1">Activé</option>
-                                <option {{ (old(
-                                'status', $getParent->status) == '0') ? 'selected' : '' }} value="0">Désactivé</option>
-                            </select>
                         </div>
                     </div>
                     <div class="border-t-2 border-gray-300 mt-3 mb-5 pt-3">
                         <div class="mb-3">
                             <label class="block mb-2 text-sm font-medium text-gray-900" for="email">Email<span
                                     class="text-red-500 font-bold">*</span></label>
-                            <input type="email" id="email" name="email" value="{{ old('email', $getParent->email) }}"
+                            <input type="email" id="email" name="email" value="{{ old('email', $getUserData->email) }}"
                                    class="rounded bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm ps-3"
                                    placeholder="email..." required>
                         </div>
-                        <div class="mb-3">
-                            <label class="block mb-2 text-sm font-medium text-gray-900" for="password">Mot de
-                                passe</label>
-                            <input type="password" id="password" name="password" value="{{ old('password') }}"
-                                   class="rounded bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm ps-3"
-                                   placeholder="mot de passe...">
-                        </div>
-                    </div>
                     <div>
                         <button type="submit"
                                 class="text-white bg-emerald-500 hover:bg-emerald-600 focus:ring-4 focus:outline-none focus:ring-emerald-300 font-medium rounded text-sm px-5 py-2.5 text-center transition-all duration-500 ease-out">

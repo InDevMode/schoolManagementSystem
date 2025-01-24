@@ -39,9 +39,6 @@
                         class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded shadow"
                         id="dropdown-user">
                         <div class="px-4 py-3" role="none">
-                            <p class="text-sm text-gray-900" role="none">
-                                {{ Auth::user()->name }}
-                            </p>
                             <p class="text-sm font-medium text-gray-900 truncate" role="none">
                                 {{ Auth::user()->email }}
                             </p>
@@ -56,7 +53,12 @@
                             <li>
                                 <a href="{{ url('admin/change_password') }}"
                                    class="block px-4 py-2 text-sm text-gray-700 hover:text-white hover:bg-violet-500 transition duration-300 ease-out"
-                                   role="menuitem">Profile</a>
+                                   role="menuitem">Mot de Passe</a>
+                            </li>
+                            <li>
+                                <a href="{{ url('admin/account') }}"
+                                   class="block px-4 py-2 text-sm text-gray-700 hover:text-white hover:bg-violet-500 transition duration-300 ease-out"
+                                   role="menuitem">Mon Compte</a>
                             </li>
                             @elseif(Auth::user()->user_type === 2)
                             <li>
@@ -65,9 +67,14 @@
                                    role="menuitem">Dashboard</a>
                             </li>
                             <li>
+                                <a href="{{ url('teacher/account') }}"
+                                   class="block px-4 py-2 text-sm text-gray-700 hover:text-white hover:bg-violet-500 transition duration-300 ease-out"
+                                   role="menuitem">Mon Compte</a>
+                            </li>
+                            <li>
                                 <a href="{{ url('teacher/change_password') }}"
                                    class="block px-4 py-2 text-sm text-gray-700 hover:text-white hover:bg-violet-500 transition duration-300 ease-out"
-                                   role="menuitem">Profile</a>
+                                   role="menuitem">Mot de Passe</a>
                             </li>
                             @elseif(Auth::user()->user_type === 3)
                             <li>
@@ -76,14 +83,14 @@
                                    role="menuitem">Dashboard</a>
                             </li>
                             <li>
-                                <a href="{{ url('student/change_password') }}"
+                                <a href="{{ url('student/account') }}"
                                    class="block px-4 py-2 text-sm text-gray-700 hover:text-white hover:bg-violet-500 transition duration-300 ease-out"
-                                   role="menuitem">Profile</a>
+                                   role="menuitem">Mon Compte</a>
                             </li>
                             <li>
-                                <a href="#"
+                                <a href="{{ url('student/change_password') }}"
                                    class="block px-4 py-2 text-sm text-gray-700 hover:text-white hover:bg-violet-500 transition duration-300 ease-out"
-                                   role="menuitem">Cours</a>
+                                   role="menuitem">Mot de passe</a>
                             </li>
                             @elseif(Auth::user()->user_type === 4)
                             <li>
@@ -92,9 +99,14 @@
                                    role="menuitem">Dashboard</a>
                             </li>
                             <li>
+                                <a href="{{ url('parent/account') }}"
+                                   class="block px-4 py-2 text-sm text-gray-700 hover:text-white hover:bg-violet-500 transition duration-300 ease-out"
+                                   role="menuitem">Mon Compte</a>
+                            </li>
+                            <li>
                                 <a href="{{ url('parent/change_password') }}"
                                    class="block px-4 py-2 text-sm text-gray-700 hover:text-white hover:bg-violet-500 transition duration-300 ease-out"
-                                   role="menuitem">Profile</a>
+                                   role="menuitem">Mot de Passe</a>
                             </li>
                             @endif
                             <li>

@@ -115,6 +115,17 @@
                         class="inline-flex items-center justify-center me-2 px-2.5 py-0.5 rounded bg-violet-100 text-violet-800 text-xs font-medium"> {{ Request::Segment(1) }}</span>
                 </a>
             </li>
+            <li>
+                <a href="{{ url('teacher/account') }}"
+                   class="flex items-center p-2 rounded hover:bg-violet-600 transition-all duration-700 ease-out group {{ Request::Segment(2) == 'account' ? 'bg-violet-500' : 'text-violet-500' }}">
+                    <span
+                        class="flex-shrink-0 transition duration-75 group-hover:text-white {{ Request::Segment(2) == 'account' ? 'text-white' : 'text-violet-500'}}">
+                        <i class="fa-solid fa-circle-user"></i>
+                    </span>
+                    <span
+                        class="flex-1 ms-3 whitespace-nowrap group-hover:text-white {{ Request::Segment(2) == 'account' ? 'group-hover:text-white' : 'text-violet-500'}}">Mon Compte</span>
+                </a>
+            </li>
             @elseif(Auth::user()->user_type == 3)
             <li>
                 <a href="{{ url('student/dashboard') }}"
@@ -129,6 +140,17 @@
                         class="inline-flex items-center justify-center me-2 px-2.5 py-0.5 rounded bg-violet-100 text-violet-800 text-xs font-medium"> {{ Request::Segment(1) }}</span>
                 </a>
             </li>
+            <li>
+                <a href="{{ url('student/account') }}"
+                   class="flex items-center p-2 rounded hover:bg-violet-600 transition-all duration-700 ease-out group {{ Request::Segment(2) == 'account' ? 'bg-violet-500' : 'text-violet-500' }}">
+                    <span
+                        class="flex-shrink-0 transition duration-75 group-hover:text-white {{ Request::Segment(2) == 'account' ? 'text-white' : 'text-violet-500'}}">
+                        <i class="fa-solid fa-circle-user"></i>
+                    </span>
+                    <span
+                        class="flex-1 ms-3 whitespace-nowrap group-hover:text-white {{ Request::Segment(2) == 'account' ? 'group-hover:text-white' : 'text-violet-500'}}">Mon Compte</span>
+                </a>
+            </li>
             @elseif(Auth::user()->user_type == 4)
             <li>
                 <a href="{{ url('parent/dashboard') }}"
@@ -141,6 +163,17 @@
                         class="flex-1 ms-3 whitespace-nowrap group-hover:text-white {{ Request::Segment(2) == 'dashboard' ? 'group-hover:text-white' : 'text-violet-500'}}">Dashboard</span>
                     <span
                         class="inline-flex items-center justify-center me-2 px-2.5 py-0.5 rounded bg-violet-100 text-violet-800 text-xs font-medium"> {{ Request::Segment(1) }}</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ url('parent/account') }}"
+                   class="flex items-center p-2 rounded hover:bg-violet-600 transition-all duration-700 ease-out group {{ Request::Segment(2) == 'account' ? 'bg-violet-500' : 'text-violet-500' }}">
+                    <span
+                        class="flex-shrink-0 transition duration-75 group-hover:text-white {{ Request::Segment(2) == 'account' ? 'text-white' : 'text-violet-500'}}">
+                        <i class="fa-solid fa-circle-user"></i>
+                    </span>
+                    <span
+                        class="flex-1 ms-3 whitespace-nowrap group-hover:text-white {{ Request::Segment(2) == 'account' ? 'group-hover:text-white' : 'text-violet-500'}}">Mon Compte</span>
                 </a>
             </li>
             @endif
