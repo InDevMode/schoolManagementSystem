@@ -7,7 +7,8 @@
             <div class="space-x-2 font-semibold">
                 <span class="text-violet-500 text-[25px]"><i class="fa-solid fa-book-open-reader"></i></span>
                 <span>/</span>
-                <span class="hover:underline hover:text-violet-500 transition-all duration-300"><a href="{{ url('admin/dashboard') }}">Dashboard</a></span>
+                <span class="hover:underline hover:text-violet-500 transition-all duration-300"><a
+                        href="{{ url('admin/dashboard') }}">Dashboard</a></span>
                 <span>/</span>
                 <span>Liste des matières</span>
             </div>
@@ -49,9 +50,9 @@
                         class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2">
                     <option value="">Filtrer par statut</option>
                     <option value="1" {{ Request::get(
-                    'status') == '1' ? 'selected' : '' }}>Activée</option>
+                    'status') == '1' ? 'selected' : '' }}>Active</option>
                     <option value="0" {{ Request::get(
-                    'status') == '0' ? 'selected' : '' }}>Désactivée</option>
+                    'status') == '0' ? 'selected' : '' }}>Inactive</option>
                 </select>
             </div>
 
@@ -187,12 +188,12 @@
                         @if($subject->status == 0)
                         <div class="flex items-center">
                             <div class="h-2.5 w-2.5 rounded-full bg-red-500 me-2"></div>
-                            Désactivée
+                            Inactive
                         </div>
                         @elseif($subject->status == 1)
                         <div class="flex items-center">
                             <div class="h-2.5 w-2.5 rounded-full bg-emerald-500 me-2"></div>
-                            Activée
+                            Active
                         </div>
                         @endif
                     </td>
@@ -200,10 +201,10 @@
                         {{ $subject -> created_by_name }}
                     </td>
                     <td class="px-6 py-4">
-                        {{ $subject -> created_at->format('d/m/Y H:i:s') }}
+                        {{ \Carbon\Carbon::parse($subject->created_at)->format('d/m/Y H:i:s') }}
                     </td>
                     <td class="px-6 py-4">
-                        {{ $subject -> updated_at->format('d/m/Y H:i:s') }}
+                        {{ \Carbon\Carbon::parse($subject->updated_at)->format('d/m/Y H:i:s') }}
                     </td>
                     <td class="flex items-center px-6 py-4 relative">
                         <button id="dropdownMenuIconButton-{{ $index + 1}}"
@@ -219,14 +220,16 @@
                                 aria-labelledby="dropdownMenuIconButton-{{ $index + 1}}">
                                 <li>
                                     <a href="{{ url('admin/subject/edit', $subject -> id) }}"
-                                       class="font-medium flex items-center space-x-5 px-4 py-3 hover:bg-gray-100 text-[12px] text-violet-500" title="Modifier">
+                                       class="font-medium flex items-center space-x-5 px-4 py-3 hover:bg-gray-100 text-[12px] text-violet-500"
+                                       title="Modifier">
                                         <span><i class="fa-solid fa-pen-to-square"></i></span>
                                         <span>Modifier</span>
                                     </a>
                                 </li>
                                 <li>
                                     <a href="{{ url('admin/subject/delete', $subject -> id) }}"
-                                       class="font-medium flex items-center space-x-5 px-4 py-3 hover:bg-gray-100 text-red-500 text-[12px]" title="Supprimer">
+                                       class="font-medium flex items-center space-x-5 px-4 py-3 hover:bg-gray-100 text-red-500 text-[12px]"
+                                       title="Supprimer">
                                         <span><i class="fa-solid fa-trash"></i></span>
                                         <span>Supprimer</span>
                                     </a>

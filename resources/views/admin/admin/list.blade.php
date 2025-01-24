@@ -133,13 +133,14 @@
                         {{ $user -> name }}
                     </td>
                     <td class="px-6 py-4">
-                         <span class="bg-gray-100 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded border border-gray-400">{{ $user -> email }}</span>
+                        <span
+                            class="bg-gray-100 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded border border-gray-400">{{ $user -> email }}</span>
                     </td>
                     <td class="px-6 py-4">
-                        {{ $user -> created_at->format('d/m/Y H:i:s') }}
+                        {{ \Carbon\Carbon::parse($user->created_at)->format('d/m/Y H:i:s') }}
                     </td>
                     <td class="px-6 py-4">
-                        {{ $user -> updated_at->format('d/m/Y H:i:s') }}
+                        {{ \Carbon\Carbon::parse($user->created_at)->format('d/m/Y H:i:s') }}
                     </td>
                     <td class="flex items-center px-6 py-4 relative">
                         <button id="dropdownMenuIconButton-{{ $index + 1}}"
@@ -155,14 +156,16 @@
                                 aria-labelledby="dropdownMenuIconButton-{{ $index + 1}}">
                                 <li>
                                     <a href="{{ url('admin/admin/edit', $user -> id) }}"
-                                       class="font-medium flex items-center space-x-5 px-4 py-3 hover:bg-gray-100 text-[12px] text-violet-500" title="Modifier">
+                                       class="font-medium flex items-center space-x-5 px-4 py-3 hover:bg-gray-100 text-[12px] text-violet-500"
+                                       title="Modifier">
                                         <span><i class="fa-solid fa-pen-to-square"></i></span>
                                         <span>Modifier</span>
                                     </a>
                                 </li>
                                 <li>
                                     <a href="{{ url('admin/admin/delete', $user -> id) }}"
-                                       class="font-medium flex items-center space-x-5 px-4 py-3 hover:bg-gray-100 text-red-500 text-[12px]" title="Supprimer">
+                                       class="font-medium flex items-center space-x-5 px-4 py-3 hover:bg-gray-100 text-red-500 text-[12px]"
+                                       title="Supprimer">
                                         <span><i class="fa-solid fa-trash"></i></span>
                                         <span>Supprimer</span>
                                     </a>

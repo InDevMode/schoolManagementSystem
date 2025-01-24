@@ -55,6 +55,12 @@
                            placeholder="Rechercher par occupation...">
                 </div>
                 <div class="">
+                    <input type="text" id="marital_status" name="marital_status"
+                           value="{{ Request::get('marital_status') }}"
+                           class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block text-sm p-2 w-full"
+                           placeholder="Rechercher par situation maritale...">
+                </div>
+                <div class="">
                     <input type="text" id="address" name="address"
                            value="{{ Request::get('address') }}"
                            class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block text-sm p-2 w-full"

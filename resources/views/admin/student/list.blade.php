@@ -49,7 +49,8 @@
                            placeholder="Rechercher par email...">
                 </div>
                 <div class="">
-                    <input type="text" id="mobile_number" name="mobile_number" value="{{ Request::get('mobile_number') }}"
+                    <input type="text" id="mobile_number" name="mobile_number"
+                           value="{{ Request::get('mobile_number') }}"
                            class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block text-sm p-2 w-full"
                            placeholder="Rechercher par numéro de téléphone...">
                 </div>
@@ -294,7 +295,7 @@
                         {{ $student->class_name }}
                     </td>
                     <td class="px-6 py-4">
-                        {{ $student -> created_at->format('d/m/Y H:i:s') }}
+                        {{ \Carbon\Carbon::parse($student->created_at)->format('d/m/Y H:i:s') }}
                     </td>
                     <td class="flex items-center px-6 py-4 relative">
                         <button id="dropdownMenuIconButton-{{ $index + 1}}"
@@ -310,14 +311,16 @@
                                 aria-labelledby="dropdownMenuIconButton-{{ $index + 1}}">
                                 <li>
                                     <a href="{{ url('admin/student/edit', $student -> id) }}"
-                                       class="font-medium flex items-center space-x-5 px-4 py-3 hover:bg-gray-100 text-[12px] text-violet-500" title="Modifier">
+                                       class="font-medium flex items-center space-x-5 px-4 py-3 hover:bg-gray-100 text-[12px] text-violet-500"
+                                       title="Modifier">
                                         <span><i class="fa-solid fa-pen-to-square"></i></span>
                                         <span>Modifier</span>
                                     </a>
                                 </li>
                                 <li>
                                     <a href="{{ url('admin/student/delete', $student -> id) }}"
-                                       class="font-medium flex items-center space-x-5 px-4 py-3 hover:bg-gray-100 text-red-500 text-[12px]" title="Supprimer">
+                                       class="font-medium flex items-center space-x-5 px-4 py-3 hover:bg-gray-100 text-red-500 text-[12px]"
+                                       title="Supprimer">
                                         <span><i class="fa-solid fa-trash"></i></span>
                                         <span>Supprimer</span>
                                     </a>

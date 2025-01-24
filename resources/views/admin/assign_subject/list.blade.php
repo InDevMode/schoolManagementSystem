@@ -190,10 +190,10 @@
                         {{ $classSubject -> created_by_name }}
                     </td>
                     <td class="px-6 py-4">
-                        {{ $classSubject -> created_at->format('d/m/Y H:i:s') }}
+                        {{ \Carbon\Carbon::parse($classSubject->created_at)->format('d/m/Y H:i:s') }}
                     </td>
                     <td class="px-6 py-4">
-                        {{ $classSubject -> updated_at->format('d/m/Y H:i:s') }}
+                        {{ \Carbon\Carbon::parse($classSubject->updated_at)->format('d/m/Y H:i:s') }}
                     </td>
                     <td class="flex items-center px-6 py-4 relative">
                         <button id="dropdownMenuIconButton-{{ $index + 1}}"

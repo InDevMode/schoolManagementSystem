@@ -179,10 +179,10 @@
                         {{ $class -> created_by_name }}
                     </td>
                     <td class="px-6 py-4">
-                        {{ $class -> created_at->format('d/m/Y H:i:s') }}
+                        {{ \Carbon\Carbon::parse($class->created_at)->format('d/m/Y H:i:s') }}
                     </td>
                     <td class="px-6 py-4">
-                        {{ $class -> updated_at->format('d/m/Y H:i:s') }}
+                        {{ \Carbon\Carbon::parse($class->updated_at)->format('d/m/Y H:i:s') }}
                     </td>
                     <td class="flex items-center px-6 py-4 relative">
                         <button id="dropdownMenuIconButton-{{ $index + 1}}"

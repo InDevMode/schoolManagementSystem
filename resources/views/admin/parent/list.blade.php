@@ -46,9 +46,9 @@
                             class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block text-sm p-2 w-full">
                         <option value="">Filtrer par statut</option>
                         <option value="1" {{ Request::get(
-                        'status') == '1' ? 'selected' : '' }}>Activée</option>
+                        'status') == '1' ? 'selected' : '' }}>Actif</option>
                         <option value="0" {{ Request::get(
-                        'status') == '0' ? 'selected' : '' }}>Désactivée</option>
+                        'status') == '0' ? 'selected' : '' }}>Inactif</option>
                     </select>
                 </div>
                 <div class="">
@@ -56,6 +56,18 @@
                            value="{{ Request::get('mobile_number') }}"
                            class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block text-sm p-2 w-full"
                            placeholder="Rechercher par numéro de téléphone...">
+                </div>
+                <div class="">
+                    <input type="text" id="occupation" name="occupation"
+                           value="{{ Request::get('occupation') }}"
+                           class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block text-sm p-2 w-full"
+                           placeholder="Rechercher par occupation...">
+                </div>
+                <div class="">
+                    <input type="text" id="address" name="address"
+                           value="{{ Request::get('address') }}"
+                           class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block text-sm p-2 w-full"
+                           placeholder="Rechercher par addresse...">
                 </div>
                 <div>
                     <select id="gender" name="gender"
@@ -88,14 +100,14 @@
                         </span>
                 </button>
                 <a href="{{ url('admin/parent/list') }}"
-                   class="ms-5 text-gray-800 bg-gray-300 hover:bg-gray-400 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-full text-sm px-5 py-2.5 text-center transition-all duration-500 ease-out w-full hover:scale-105">
+                   class="text-gray-800 bg-gray-300 hover:bg-gray-400 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-full text-sm px-5 py-2.5 text-center transition-all duration-500 ease-out w-full hover:scale-105">
                     Réinitialiser les filtres
                 </a>
             </div>
         </form>
         <div class="relative overflow-visible shadow-md sm:rounded-lg border border-gray-300 z-10" id="results">
-            <table class="w-full text-[12px] text-left rtl:text-right">
-                <thead class="text-[12px] text-white uppercase bg-violet-500">
+            <table class="w-full text-[10px] text-left rtl:text-right">
+                <thead class="text-[10px] text-white uppercase bg-violet-500">
                 <tr>
                     <th scope="col" class="p-4">
                         <div class="flex items-center">
@@ -114,15 +126,7 @@
                     </th>
                     <th scope="col" class="px-6 py-3">
                         <div class="flex items-center">
-                            Nom
-                            <a href="#">
-                                <span class="w-3 h-3 ms-1.5"><i class="fa-solid fa-filter"></i></span>
-                            </a>
-                        </div>
-                    </th>
-                    <th scope="col" class="px-6 py-3">
-                        <div class="flex items-center">
-                            Prénoms
+                            Nom & Prénoms
                             <a href="#">
                                 <span class="w-3 h-3 ms-1.5"><i class="fa-solid fa-filter"></i></span>
                             </a>
@@ -170,6 +174,14 @@
                     </th>
                     <th scope="col" class="px-6 py-3">
                         <div class="flex items-center">
+                            Occupation
+                            <a href="#">
+                                <span class="w-3 h-3 ms-1.5"><i class="fa-solid fa-filter"></i></span>
+                            </a>
+                        </div>
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        <div class="flex items-center">
                             Date de création
                             <a href="#">
                                 <span class="w-3 h-3 ms-1.5"><i class="fa-solid fa-filter"></i></span>
@@ -195,10 +207,8 @@
                         {{ $index + 1 }}
                     </th>
                     <td class="px-6 py-4">
-                        {{ $parent -> name }}
-                    </td>
-                    <td class="px-6 py-4">
-                        {{ $parent -> last_name }}
+                        <span>{{ $parent -> name }}</span>
+                        <span>{{ $parent -> last_name }}</span>
                     </td>
                     <td class="px-6 py-4">
                          <span
@@ -208,12 +218,12 @@
                         @if($parent->status == 0)
                         <div class="flex items-center">
                             <div class="h-2.5 w-2.5 rounded-full bg-red-500 me-2"></div>
-                            Désactivé
+                            Inactif
                         </div>
                         @elseif($parent->status == 1)
                         <div class="flex items-center">
                             <div class="h-2.5 w-2.5 rounded-full bg-green-500 me-2"></div>
-                            Activé
+                            Actif
                         </div>
                         @endif
                     </td>
@@ -240,6 +250,9 @@
                     </td>
                     <td class="px-6 py-4">
                         {{ $parent -> address }}
+                    </td>
+                    <td class="px-6 py-4">
+                        {{ $parent -> occupation }}
                     </td>
                     <td class="px-6 py-4">
                         {{ $parent -> created_at->format('d/m/Y H:i:s') }}
