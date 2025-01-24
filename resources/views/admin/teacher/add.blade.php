@@ -121,7 +121,7 @@
                                       placeholder="expérience de travail..."></textarea>
                         </div>
                         <div class="mb-3">
-                            <label class="block mb-2 text-sm font-medium text-gray-900" for="note">Expérience</label>
+                            <label class="block mb-2 text-sm font-medium text-gray-900" for="note">Note</label>
                             <textarea type="text" id="note" name="note" value="{{ old('note') }}"
                                       class="rounded bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm"
                                       placeholder="note..."></textarea>

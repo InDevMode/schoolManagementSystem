@@ -126,9 +126,9 @@
                                 required>
                             <option disabled selected>Définissez un status pour cet élève</option>
                             <option {{ (old(
-                            'status', $getTeacher->status) == '1') ? 'selected' : '' }} value="1">Activé</option>
+                            'status', $getTeacher->status) == '1') ? 'selected' : '' }} value="1">Actif</option>
                             <option {{ (old(
-                            'status', $getTeacher->status) == '0') ? 'selected' : '' }} value="0">Désactivé</option>
+                            'status', $getTeacher->status) == '0') ? 'selected' : '' }} value="0">Inatif</option>
                         </select>
                     </div>
                     <div class="border-t-2 border-gray-300 mt-3 mb-5 pt-3">

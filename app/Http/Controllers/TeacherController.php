@@ -107,7 +107,7 @@ class TeacherController extends Controller
             $regex = '/^[a-z0-9]+@[a-z0-9]+\.(fr|com|org|bj|io)$/';
 
             if (!$teacher) {
-                return redirect()->back()->with('error', 'Cet parent est introuvable.');
+                return redirect()->back()->with('error', 'Cet professeur est introuvable.');
             }
 
             if ($teacherMail) {
@@ -124,6 +124,9 @@ class TeacherController extends Controller
             $teacher->name = trim($request->name);
             $teacher->last_name = trim($request->last_name);
             $teacher->email = trim($request->email);
+            $teacher->gender = trim($request->gender);
+            $teacher->date_of_birth = trim($request->date_of_birth);
+            $teacher->admission_date = trim($request->admission_date);
             $teacher->marital_status = trim($request->marital_status);
             $teacher->address = trim($request->address);
             $teacher->permanent_address = trim($request->permanent_address);

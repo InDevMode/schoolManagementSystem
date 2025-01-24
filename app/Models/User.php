@@ -22,18 +22,26 @@ class User extends Authenticatable
         'name',
         'last_name',
         'admission_number',
+        'address',
         'roll_number',
         'gender',
         'caste',
         'religion',
         'mobile_number',
         'admission_date',
+        'date_of_birth',
         'blood_group',
         'height',
         'weight',
         'status',
         'email',
         'password',
+        'note',
+        'occupation',
+        'work_experience',
+        'marital_status',
+        'permanent_address',
+        'profile_picture',
     ];
 
     /**
@@ -45,6 +53,7 @@ class User extends Authenticatable
         'password',
         'user_type',
         'class_id',
+        'parent_id',
         'is_delete',
         'remember_token',
     ];
@@ -105,7 +114,7 @@ class User extends Authenticatable
     static public function getAllStudent(int $perPage)
     {
         $results = User::select('users.*', 'class.name as class_name', 'parent.name as parent_name', 'parent.last_name as parent_last_name')
-            ->join('users as parent','parent.id', '=', 'users.parent_id', 'left')
+            ->join('users as parent', 'parent.id', '=', 'users.parent_id', 'left')
             ->join('class', 'class.id', '=', 'users.class_id')
             ->where('users.user_type', 3)
             ->where('users.is_delete', '=', 0);
@@ -185,16 +194,20 @@ class User extends Authenticatable
     static public function getAllTeacher(int $perPage)
     {
         $results = User::select('users.*')
-            ->where('users.user_type', 2)
-            ->where('users.is_delete', '=', 0);
+            ->where('users.user_type', 2);
 
         $filters = [
             'users.name' => strtolower(Request::get('name')),
-            'users.last_name' => strtolower(Request::get('last_name')),
+            'users.note' => strtolower(Request::get('note')),
             'users.email' => strtolower(Request::get('email')),
-            'users.mobile_number' => strtolower(Request::get('mobile_number')),
-            'users.occupation' => strtolower(Request::get('occupation')),
             'users.address' => strtolower(Request::get('address')),
+            'users.last_name' => strtolower(Request::get('last_name')),
+            'users.occupation' => strtolower(Request::get('occupation')),
+            'users.mobile_number' => strtolower(Request::get('mobile_number')),
+            'users.permanent_address' => strtolower(Request::get('permanent_address')),
+            'users.marital_status' => strtolower(Request::get('marital_status')),
+            'users.work_experience' => strtolower(Request::get('work_experience')),
+            'users.admission_date' => strtolower(Request::get('admission_date')),
             'users.created_at' => strtolower(Request::get('created_at')),
             'users.updated_at' => strtolower(Request::get('updated_at')),
         ];
@@ -213,7 +226,8 @@ class User extends Authenticatable
             $results->where('users.gender', $gender);
         }
 
-        return $results->orderBy('users.id', 'desc')
+        return $results->where('users.is_delete', '=', 0)
+            ->orderBy('users.id', 'desc')
             ->paginate($perPage);
     }
 
@@ -228,7 +242,7 @@ class User extends Authenticatable
     static public function getStudentList(int $perPage)
     {
         $results = User::select('users.*', 'class.name as class_name', 'parent.name as parent_name', 'parent.last_name as parent_last_name')
-            ->join('users as parent','parent.id', '=', 'users.parent_id', 'left')
+            ->join('users as parent', 'parent.id', '=', 'users.parent_id', 'left')
             ->join('class', 'class.id', '=', 'users.class_id', 'left')
             ->where('users.user_type', '=', 3)
             ->whereNull('users.parent_id');
@@ -255,7 +269,7 @@ class User extends Authenticatable
     static public function getMyStudent(int $parent_id, int $perPage)
     {
         $results = User::select('users.*', 'class.name as class_name', 'parent.name as parent_name', 'parent.last_name as parent_last_name')
-            ->join('users as parent','parent.id', '=', 'users.parent_id', 'left')
+            ->join('users as parent', 'parent.id', '=', 'users.parent_id', 'left')
             ->join('class', 'class.id', '=', 'users.class_id', 'left')
             ->where('users.parent_id', '=', $parent_id)
             ->where('users.user_type', '=', 3);
