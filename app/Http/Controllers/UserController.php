@@ -49,16 +49,16 @@ class UserController extends Controller
     {
         try {
             $id = Auth::user()->id;
-            $user = User::getSingle($id);
-            $userMail = User::checkEmailSingle($request->email, $id);
+            $admin = User::getSingle($id);
+            $adminMail = User::checkEmailSingle($request->email, $id);
             $passwordLength = strlen($request->password);
             $regex = '/^[a-z0-9]+@[a-z0-9]+\.(fr|com|org|bj|io)$/';
 
-            if (!$user) {
+            if (!$admin) {
                 return redirect()->back()->with('error', 'Cet administrateur est introuvable.');
             }
 
-            if ($userMail) {
+            if ($adminMail) {
                 return redirect()->back()->with('error', 'Cet email est déjà utilisé par un autre administrateur.');
             }
 
@@ -69,10 +69,25 @@ class UserController extends Controller
             if (!empty($request->password) && $passwordLength < 6) {
                 return redirect()->back()->with('error', 'Votre mot de passe ne doit pas être de moins de 6 caractères.');
             }
+            if (!empty($request->file('profile_picture'))) {
+                $adminProfilePicture = $admin->profile_picture;
+                if (!empty($adminProfilePicture)) {
+                    $profilePictureUrl = User::getProfile($adminProfilePicture);
+                    if (!empty($profilePictureUrl)) {
+                        unlink('upload/profile/' . $adminProfilePicture);
+                    }
+                }
+                $ext = $request->file('profile_picture')->getClientOriginalExtension();
+                $file = $request->file('profile_picture');
+                $randomStr = 'admin' . date('dmYhis') . Str::random(20);
+                $fileName = strtolower($randomStr) . '.' . $ext;
+                $file->move('upload/profile/', $fileName);
+                $admin->profile_picture = $fileName;
+            }
 
-            $user->name = trim($request->name);
-            $user->email = trim($request->email);
-            $user->save();
+            $admin->name = trim($request->name);
+            $admin->email = trim($request->email);
+            $admin->save();
 
             return redirect()->back()->with('success', 'Les informations de cet administrateur ont été modifiées avec succès.');
 

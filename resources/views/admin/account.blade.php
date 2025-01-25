@@ -16,7 +16,15 @@
                 <form action="" method="post" class="p-5">
                     {{ csrf_field() }}
                     <h2 class="font-bold uppercase text-center text-white rounded-t-md bg-emerald-500 py-3 mb-10">
-                        Modifier mes informations</h2>
+                        Modifier mes informations personnelles</h2>
+                    <div class="mb-3">
+                        <label class="block mb-2 text-sm font-medium text-gray-900" for="profile_picture">Photo de
+                            Profile</label>
+                        <input type="file" id="profile_picture" name="profile_picture"
+                               class="rounded bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm ps-3"
+                               placeholder="Photo de profile...">
+                        <img class="h-auto max-w-[100px] rounded-full" src="{{ $profile_picture_url }}" alt="Photo de profile">
+                    </div>
                     <div class="flex mb-5">
                         <input type="text" id="name" name="name" value="{{ $getUserData -> name }}"
                                class="rounded bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm ps-3"

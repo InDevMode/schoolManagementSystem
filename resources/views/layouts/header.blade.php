@@ -14,6 +14,7 @@
                    class="flex space-x-3 ms-2 md:me-24 font-bold justify-center items-center uppercase text-violet-500">
                     <span><i class="fa-solid fa-2x fa-hands-holding-child"></i></span>
                     <span class="text-2xl">School</span>
+                    <span class="text-xs">V.1.0</span>
                 </a>
             </div>
             <div class="flex space-x-4 items-center text-gray-900">
@@ -51,14 +52,14 @@
                                    role="menuitem">Dashboard</a>
                             </li>
                             <li>
-                                <a href="{{ url('admin/change_password') }}"
-                                   class="block px-4 py-2 text-sm text-gray-700 hover:text-white hover:bg-violet-500 transition duration-300 ease-out"
-                                   role="menuitem">Mot de Passe</a>
-                            </li>
-                            <li>
                                 <a href="{{ url('admin/account') }}"
                                    class="block px-4 py-2 text-sm text-gray-700 hover:text-white hover:bg-violet-500 transition duration-300 ease-out"
                                    role="menuitem">Mon Compte</a>
+                            </li>
+                            <li>
+                                <a href="{{ url('admin/change_password') }}"
+                                   class="block px-4 py-2 text-sm text-gray-700 hover:text-white hover:bg-violet-500 transition duration-300 ease-out"
+                                   role="menuitem">Mot de Passe</a>
                             </li>
                             @elseif(Auth::user()->user_type === 2)
                             <li>
