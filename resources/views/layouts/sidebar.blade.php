@@ -176,6 +176,17 @@
                         class="flex-1 ms-3 whitespace-nowrap group-hover:text-white {{ Request::Segment(2) == 'account' ? 'group-hover:text-white' : 'text-violet-500'}}">Mon Compte</span>
                 </a>
             </li>
+            <li>
+                <a href="{{ url('parent/student') }}"
+                   class="flex items-center p-2 rounded hover:bg-violet-600 transition-all duration-700 ease-out group {{ Request::Segment(2) == 'student' ? 'bg-violet-500' : 'text-violet-500' }}">
+                    <span
+                        class="flex-shrink-0 transition duration-75 group-hover:text-white {{ Request::Segment(2) == 'student' ? 'text-white' : 'text-violet-500'}}">
+                        <i class="fa-solid fa-user-graduate"></i>
+                    </span>
+                    <span
+                        class="flex-1 ms-3 whitespace-nowrap group-hover:text-white {{ Request::Segment(2) == 'student' ? 'group-hover:text-white' : 'text-violet-500'}}">Mes Elèves</span>
+                </a>
+            </li>
             @endif
             <ul>
                 <li class="absolute bottom-2 left-0 px-3 w-full">

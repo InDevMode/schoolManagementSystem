@@ -109,15 +109,7 @@
                         </th>
                         <th scope="col" class="px-6 py-3">
                             <div class="flex items-center">
-                                Nom
-                                <a href="#">
-                                    <span class="w-3 h-3 ms-1.5"><i class="fa-solid fa-filter"></i></span>
-                                </a>
-                            </div>
-                        </th>
-                        <th scope="col" class="px-6 py-3">
-                            <div class="flex items-center">
-                                Prénoms
+                                Nom & Prénoms
                                 <a href="#">
                                     <span class="w-3 h-3 ms-1.5"><i class="fa-solid fa-filter"></i></span>
                                 </a>
@@ -182,10 +174,8 @@
                             {{ $index + 1 }}
                         </th>
                         <td class="px-6 py-4">
-                            {{ $studentList->name }}
-                        </td>
-                        <td class="px-6 py-4">
-                            {{ $studentList->last_name }}
+                            <span>{{ $studentList->name }}</span>
+                            <span>{{ $studentList->last_name }}</span>
                         </td>
                         <td class="px-6 py-4">
                          <span
@@ -197,12 +187,12 @@
                             @if($studentList->status == 0)
                             <div class="flex items-center">
                                 <div class="h-2.5 w-2.5 rounded-full bg-red-500 me-2"></div>
-                                Désactivé
+                                Inactif
                             </div>
                             @elseif($studentList->status == 1)
                             <div class="flex items-center">
                                 <div class="h-2.5 w-2.5 rounded-full bg-green-500 me-2"></div>
-                                Activé
+                                Actif
                             </div>
                             @endif
                         </td>

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
@@ -163,6 +164,7 @@ class ParentController extends Controller
     public function student($id): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
     {
         $data['parent_id'] = $id;
+        $data['getParent'] = User::getSingle($id);
         $data['getStudentList'] = User::getStudentList(5);
         $data['getMyStudent'] = User::getMyStudent($id, 5);
         $data['header_title'] = "Listes des élèves du parent";
@@ -196,4 +198,14 @@ class ParentController extends Controller
             abort(404);
         }
     }
+
+    public function parentStudent(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
+    {
+        $id = Auth::user()->id;
+        $data['parent_id'] = User::getSingle($id);
+        $data['getMyStudent'] = User::getMyStudent($id, 5);
+        $data['header_title'] = "Mes élèves";
+        return view('parent.student', $data);
+    }
+
 }
