@@ -94,6 +94,30 @@ class ClassSubjectModel extends Model
             ->where('class_subject.is_delete', '=', 0)
             ->where('class_subject.status', '=', 0);
 
+        $filters = [
+            'class.name' => strtolower(Request::get('class_name')),
+            'subject.name' => strtolower(Request::get('subject_name')),
+            'class_subject.created_at' => strtolower(Request::get('created_at')),
+            'class_subject.updated_at' => strtolower(Request::get('updated_at')),
+        ];
+
+        foreach ($filters as $column => $value) {
+            if (!empty($value)) {
+                $results->where($column, 'like', '%' . $value . '%');
+            }
+        }
+
+        $status = Request::get('subject_status');
+        if (in_array($status, ['0', '1'], true)) {
+            $results->where('subject.status', $status);
+        }
+
+        $type = Request::get('subject_type');
+        if (in_array($type, ['theoretical', 'practical'], true)) {
+            $results->where('subject.type', $type);
+        }
+
+
         return $results->orderBy('class_subject.id', 'desc')
             ->paginate($perPage);
     }

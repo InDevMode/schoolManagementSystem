@@ -9,34 +9,29 @@
                     <span class="text-violet-500 text-[25px]"><i class="fa-solid fa-book-open-reader"></i></span>
                     <span>/</span>
                     <span class="hover:underline hover:text-violet-500 transition-all duration-300"><a
-                            href="{{ url('student/my_subject') }}">Liste de mes cours</a></span>
+                                href="{{ url('parent/my_student') }}">Liste des mes élèves</a></span>
                     <span>/</span>
-                    <span>Mes Cours</span>
+                    <span>{{ $getUser->name }} {{ $getUser->last_name }} </span>
                 </div>
             </div>
             <div class="">
                 <div class="mt-4">
-                    {{ $getStudentSubject->links('vendor.pagination.tailwind') }}
+                    {{ $getParentStudentSubject->links('vendor.pagination.tailwind') }}
                 </div>
             </div>
             <form action="" method="get"
                   class="my-5 shadow p-3 bg-white rounded border border-gray-300" id="searchForm">
                 {{ csrf_field() }}
-                <div class="grid grid-cols-5 gap-x-5 gap-y-2">
+                <div class="grid grid-cols-6 gap-x-5 gap-y-2">
                     <div class="">
                         <input type="text" id="subject_name" name="subject_name" value="{{ Request::get('subject_name') }}"
                                class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2"
                                placeholder="Rechercher par nom de la matière...">
                     </div>
                     <div class="">
-                        <input type="text" id="subject_type" name="subject_type" value="{{ Request::get('subject_type') }}"
-                               class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2"
-                               placeholder="Rechercher par type de matière...">
-                    </div>
-                    <div class="">
                         <input type="text" id="teacher_name" name="teacher_name" value="{{ Request::get('teacher_name') }}"
                                class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2"
-                               placeholder="Rechercher par email...">
+                               placeholder="Rechercher par du professeur...">
                     </div>
                     <div>
                         <select id="subject_type" name="subject_type"
@@ -60,11 +55,11 @@
                             class="flex justify-between text-white bg-violet-500 hover:bg-violet-600 focus:ring-4 focus:outline-none focus:ring-violet-300 font-medium rounded-full text-sm px-5 py-2.5 text-center transition-all duration-500 ease-out w-full hover:scale-105">
                         Rechercher
                         <span
-                            class="inline-flex items-center px-3 text-sm text-gray-900">
+                                class="inline-flex items-center px-3 text-sm text-gray-900">
                             <i class="fa-solid fa-search text-white"></i>
                         </span>
                     </button>
-                    <a href="{{ url('student/my_subject', $student_id) }}"
+                    <a href="{{ url('parent/my_student/'.$getUser->id.'/subject') }}"
                        class="text-gray-800 bg-gray-300 hover:bg-gray-400 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-full text-sm px-5 py-2.5 text-center transition-all duration-500 ease-out w-full hover:scale-105">
                         Réinitialiser les filtres
                     </a>
@@ -124,7 +119,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                    @foreach($getStudentSubject as $index => $mySubject)
+                    @foreach($getParentStudentSubject as $index => $parentStudentSubject)
                     <tr class="bg-white border-b hover:bg-gray-50">
                         <td class="w-4 p-4">
                             <div class="flex items-center">
@@ -137,24 +132,24 @@
                             <span>{{ $index + 1 }}</span>
                         </td>
                         <td class="px-6 py-4">
-                            <span>{{ $mySubject -> subject_name }}</span>
+                            <span>{{ $parentStudentSubject -> subject_name }}</span>
                         </td>
                         <td class="px-6 py-4">
-                            @if($mySubject -> subject_type == 'theoretical')
+                            @if($parentStudentSubject -> subject_type == 'theoretical')
                             <span
                                     class="bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded">Théorique</span>
-                            @elseif($mySubject -> subject_type == 'practical')
+                            @elseif($parentStudentSubject -> subject_type == 'practical')
                             <span
                                     class="bg-violet-100 text-violet-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded">Pratique</span>
                             @endif
                         </td>
                         <td class="px-6 py-4">
-                            @if($mySubject -> subject_status == 0)
+                            @if($parentStudentSubject -> subject_status == 0)
                             <div class="flex items-center">
                                 <div class="h-2.5 w-2.5 rounded-full bg-red-500 me-2"></div>
                                 Inactif
                             </div>
-                            @elseif($mySubject -> subject_status == 1)
+                            @elseif($parentStudentSubject -> subject_status == 1)
                             <div class="flex items-center">
                                 <div class="h-2.5 w-2.5 rounded-full bg-green-500 me-2"></div>
                                 Actif
@@ -167,7 +162,7 @@
 
                     </tr>
                     @endforeach
-                    @if($getStudentSubject->isEmpty())
+                    @if($getParentStudentSubject->isEmpty())
                     <tr>
                         <td colspan="10" class="p-6 text-center text-gray-500">
                             Aucun cours disponible.
@@ -179,7 +174,7 @@
                 <div class="text-center bg-white py-2">
                     <div class="flex justify-between items-center mt-4">
                     <span
-                        class="text-violet-500 font-bold text-md ps-5 uppercase">Total : {{ $getStudentSubject->total() }}</span>
+                            class="text-violet-500 font-bold text-md ps-5 uppercase">Total : {{ $getParentStudentSubject->total() }}</span>
                     </div>
                 </div>
             </div>

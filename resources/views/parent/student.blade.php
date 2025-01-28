@@ -9,7 +9,7 @@
                     <span class="text-violet-500 text-[25px]"><i class="fa-solid fa-person-breastfeeding"></i></span>
                     <span>/</span>
                     <span class="hover:underline hover:text-violet-500 transition-all duration-300"><a
-                            href="{{ url('parent/my_student') }}">Listes de mes élèves</a></span>
+                                href="{{ url('parent/my_student') }}">Liste de mes élèves</a></span>
                     <span>/</span>
                     <span>Mes Elèves</span>
                 </div>
@@ -80,12 +80,12 @@
                             class="flex justify-between text-white bg-violet-500 hover:bg-violet-600 focus:ring-4 focus:outline-none focus:ring-violet-300 font-medium rounded-full text-sm px-5 py-2.5 text-center transition-all duration-500 ease-out w-full hover:scale-105">
                         Rechercher
                         <span
-                            class="inline-flex items-center px-3 text-sm text-gray-900">
+                                class="inline-flex items-center px-3 text-sm text-gray-900">
                             <i class="fa-solid fa-search text-white"></i>
                         </span>
                     </button>
-                    <a href="{{ url('parent/my_student', $parent_id) }}"
-                       class="ms-5 text-gray-800 bg-gray-300 hover:bg-gray-400 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-full text-sm px-5 py-2.5 text-center transition-all duration-500 ease-out w-full hover:scale-105">
+                    <a href="{{ url('parent/my_student') }}"
+                       class="text-gray-800 bg-gray-300 hover:bg-gray-400 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-full text-sm px-5 py-2.5 text-center transition-all duration-500 ease-out w-full hover:scale-105">
                         Réinitialiser les filtres
                     </a>
                 </div>
@@ -173,6 +173,14 @@
                                 </a>
                             </div>
                         </th>
+                        <th scope="col" class="px-6 py-3">
+                            <div class="flex items-center">
+                                Actions
+                                <a href="#">
+                                    <span class="w-3 h-3 ms-1.5"><i class="fa-solid fa-filter"></i></span>
+                                </a>
+                            </div>
+                        </th>
                     </tr>
                     </thead>
                     <tbody>
@@ -198,7 +206,7 @@
                         </td>
                         <td class="px-6 py-4">
                         <span
-                            class="bg-gray-100 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded border border-gray-400">{{ $myStudent -> email }}</span>
+                                class="bg-gray-100 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded border border-gray-400">{{ $myStudent -> email }}</span>
                         </td>
                         <td class="px-6 py-4">
                             @if($myStudent->status == 0)
@@ -219,17 +227,17 @@
                         <td class="px-6 py-4 text-center">
                             @if($myStudent->gender == 'male')
                             <div
-                                class="bg-pink-100 text-pink-800 font-medium text-xs me-2 px-2.5 py-0.5 rounded-full border border-pink-400">
+                                    class="bg-pink-100 text-pink-800 font-medium text-xs me-2 px-2.5 py-0.5 rounded-full border border-pink-400">
                                 Masculin
                             </div>
                             @elseif($myStudent->gender == 'female')
                             <div
-                                class="bg-violet-100 text-violet-800 font-medium text-xs me-2 px-2.5 py-0.5 rounded-full border border-violet-400">
+                                    class="bg-violet-100 text-violet-800 font-medium text-xs me-2 px-2.5 py-0.5 rounded-full border border-violet-400">
                                 Féminin
                             </div>
                             @elseif($myStudent->gender == 'other')
                             <div
-                                class="bg-slate-100 text-slate-800 font-medium text-xs me-2 px-2.5 py-0.5 rounded-full border border-slate-400">
+                                    class="bg-slate-100 text-slate-800 font-medium text-xs me-2 px-2.5 py-0.5 rounded-full border border-slate-400">
                                 Autre
                             </div>
                             @endif
@@ -239,6 +247,14 @@
                         </td>
                         <td class="px-6 py-4">
                             {{ \Carbon\Carbon::parse($myStudent->created_at)->format('d/m/Y H:i:s') }}
+                        </td>
+                        <td class="px-6 py-4">
+                            <a href="{{ url('parent/my_student/'.$myStudent -> id.'/subject' ) }}"
+                               class="font-medium flex items-center space-x-5 px-4 py-3 hover:bg-gray-100 text-[12px] text-violet-500"
+                               title="Modifier">
+                                <span><i class="fa-solid fa-book-open-reader"></i></span>
+                                <span>Ses Cours</span>
+                            </a>
                         </td>
                     </tr>
                     @endforeach
@@ -254,7 +270,7 @@
                 <div class="text-center bg-white py-2">
                     <div class="flex justify-between items-center mt-4">
                     <span
-                        class="text-violet-500 font-bold text-md ps-5 uppercase">Total : {{ $getMyStudent->total() }}</span>
+                            class="text-violet-500 font-bold text-md ps-5 uppercase">Total : {{ $getMyStudent->total() }}</span>
                     </div>
                 </div>
             </div>
