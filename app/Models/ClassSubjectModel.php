@@ -24,7 +24,8 @@ class ClassSubjectModel extends Model
         'is_delete',
     ];
 
-    static public function getSingle(int $id) {
+    static public function getSingle(int $id)
+    {
         return ClassSubjectModel::find($id);
     }
 
@@ -68,12 +69,33 @@ class ClassSubjectModel extends Model
         return ClassSubjectModel::where('class_id', '=', $class_id)->where('subject_id', '=', $subject_id)->first();
     }
 
-    static public function getAssignSubject($class_id){
+    static public function getAssignSubject($class_id)
+    {
         return ClassSubjectModel::where('class_id', '=', $class_id)->where('is_delete', 0)->get();
     }
 
-    static public function deleteSubjectAssign($class_id){
+    static public function deleteSubjectAssign($class_id)
+    {
         return ClassSubjectModel::where('class_id', '=', $class_id)->delete();
+    }
+
+    static public function studentStubject(int $perPage, int $class_id)
+    {
+        $results = ClassSubjectModel::select(
+            'class_subject.*',
+            'class.name as class_name',
+            'subject.name as subject_name',
+            'subject.type as subject_type',
+            'subject.status as subject_status')
+            ->join('subject', 'subject.id', '=', 'class_subject.subject_id')
+            ->join('class', 'class.id', '=', 'class_subject.class_id')
+            ->join('users', 'users.id', '=', 'class_subject.created_by')
+            ->where('class_subject.class_id', '=', $class_id)
+            ->where('class_subject.is_delete', '=', 0)
+            ->where('class_subject.status', '=', 0);
+
+        return $results->orderBy('class_subject.id', 'desc')
+            ->paginate($perPage);
     }
 
 

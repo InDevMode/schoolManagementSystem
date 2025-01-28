@@ -129,6 +129,9 @@ Route::group(['middleware' => 'student'], function () {
     // Student account url
     Route::get('student/account', [UserController::class, 'myAccount']);
     Route::post('student/account', [UserController::class, 'updateStudentAccount']);
+
+    // Student route side show subject
+    Route::get('student/my_subject', [SubjectController::class, 'studentSubject']);
 });
 
 Route::group(['middleware' => 'parent'], function () {
@@ -142,6 +145,6 @@ Route::group(['middleware' => 'parent'], function () {
     Route::get('parent/account', [UserController::class, 'myAccount']);
     Route::post('parent/account', [UserController::class, 'updateParentAccount']);
 
-    // Parent route side showstudent
-    Route::get('parent/student', [ParentController::class, 'parentStudent']);
+    // Parent route side show student
+    Route::get('parent/my_student', [ParentController::class, 'parentStudent']);
 });

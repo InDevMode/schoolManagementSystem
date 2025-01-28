@@ -9,7 +9,7 @@
                     <span class="text-violet-500 text-[25px]"><i class="fa-solid fa-person-breastfeeding"></i></span>
                     <span>/</span>
                     <span class="hover:underline hover:text-violet-500 transition-all duration-300"><a
-                            href="{{ url('parent/student') }}">Listes de mes élèves</a></span>
+                            href="{{ url('parent/my_student') }}">Listes de mes élèves</a></span>
                     <span>/</span>
                     <span>Mes Elèves</span>
                 </div>
@@ -84,7 +84,7 @@
                             <i class="fa-solid fa-search text-white"></i>
                         </span>
                     </button>
-                    <a href="{{ url('parent/student', $parent_id) }}"
+                    <a href="{{ url('parent/my_student', $parent_id) }}"
                        class="ms-5 text-gray-800 bg-gray-300 hover:bg-gray-400 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-full text-sm px-5 py-2.5 text-center transition-all duration-500 ease-out w-full hover:scale-105">
                         Réinitialiser les filtres
                     </a>

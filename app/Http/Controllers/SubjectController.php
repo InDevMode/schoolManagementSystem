@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ClassSubjectModel;
 use App\Models\SubjectModel;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 class SubjectController extends Controller
@@ -94,5 +96,14 @@ class SubjectController extends Controller
         } else {
             abort(404);
         }
+    }
+
+    public function studentSubject(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
+    {
+        $data['getStudentSubject'] = ClassSubjectModel::studentStubject(10, Auth::user()->class_id);
+        $data['student_id'] = Auth::user()->id;
+        $data['header_title'] = "Mes Cours";
+        return view('student.subject', $data);
+
     }
 }
