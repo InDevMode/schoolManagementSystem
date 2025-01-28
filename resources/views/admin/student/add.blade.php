@@ -6,7 +6,7 @@
             <span class="text-violet-500 text-[25px]"><i class="fa-solid fa-user-graduate"></i></span>
             <span>/</span>
             <span class="hover:underline hover:text-violet-500 transition-all duration-300"><a
-                    href="{{ url('admin/student/list') }}">Listes des élèves</a></span>
+                    href="{{ url('admin/student/list') }}">Liste des élèves</a></span>
             <span>/</span>
             <span>Elève</span>
         </div>
@@ -16,7 +16,7 @@
                 <form action="{{ url('admin/student/add') }}" method="post" class="p-5" enctype="multipart/form-data">
                     {{ csrf_field() }}
                     <h2 class="font-bold uppercase text-center text-white rounded-t-md bg-violet-500 py-3 mb-5">
-                        Ajouter un élève</h2>
+                        Créer un élève</h2>
                     <div class="grid grid-cols-2 gap-x-5">
                         <div class="mb-3">
                             <label class="block mb-2 text-sm font-medium text-gray-900" for="name">Nom<span

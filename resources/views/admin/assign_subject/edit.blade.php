@@ -6,7 +6,7 @@
             <span class="text-emerald-500 text-[25px]"><i class="fa-solid fa-arrows-rotate"></i></span>
             <span>/</span>
             <span class="hover:underline hover:text-emerald-500 transition-all duration-300"><a
-                    href="{{ url('admin/assign_subject/list') }}">Listes des assignations</a></span>
+                    href="{{ url('admin/assign_subject/list') }}">Liste des assignations</a></span>
             <span>/</span>
             <span>Assignation</span>
         </div>

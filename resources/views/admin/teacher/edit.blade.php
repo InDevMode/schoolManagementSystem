@@ -7,7 +7,7 @@
                 <span class="text-emerald-500 text-[25px]"><i class="fa-solid fa-user-tie"></i></span>
                 <span>/</span>
                 <span class="hover:underline hover:text-emerald-500 transition-all duration-300"><a
-                        href="{{ url('admin/teacher/list') }}">Listes des professeurs</a></span>
+                        href="{{ url('admin/teacher/list') }}">Liste des professeurs</a></span>
                 <span>/</span>
                 <span>Professeur</span>
             </div>
@@ -18,7 +18,7 @@
                 <form action="" method="post" class="p-5" enctype="multipart/form-data">
                     {{ csrf_field() }}
                     <h2 class="font-bold uppercase text-center text-white rounded-t-md bg-emerald-500 py-3 mb-5">
-                        Modifier un professeur</h2>
+                        Modifier cet professeur</h2>
                     <div class="mb-3">
                         <label class="block mb-2 text-sm font-medium text-gray-900" for="profile_picture">Photo de
                             Profile</label>

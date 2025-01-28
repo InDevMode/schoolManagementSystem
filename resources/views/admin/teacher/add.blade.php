@@ -7,7 +7,7 @@
                 <span class="text-violet-500 text-[25px]"><i class="fa-solid fa-user-tie"></i></span>
                 <span>/</span>
                 <span class="hover:underline hover:text-violet-500 transition-all duration-300"><a
-                        href="{{ url('admin/teacher/list') }}">Listes des professeurs</a></span>
+                        href="{{ url('admin/teacher/list') }}">Liste des professeurs</a></span>
                 <span>/</span>
                 <span>Professeur</span>
             </div>
@@ -18,7 +18,7 @@
                 <form action="{{ url('admin/teacher/add') }}" method="post" class="p-5" enctype="multipart/form-data">
                     {{ csrf_field() }}
                     <h2 class="font-bold uppercase text-center text-white rounded-t-md bg-violet-500 py-3 mb-5">
-                        Ajouter un professeur</h2>
+                        Créer un professeur</h2>
                     <div class="grid grid-cols-2 gap-x-5">
                         <div class="mb-3">
                             <label class="block mb-2 text-sm font-medium text-gray-900" for="name">Nom<span
@@ -133,9 +133,9 @@
                                     required>
                                 <option disabled selected>Définissez un status pour cet élève</option>
                                 <option {{ (old(
-                                'status') == '1') ? 'selected' : '' }} value="1">Activé</option>
+                                'status') == '1') ? 'selected' : '' }} value="1">Actif</option>
                                 <option {{ (old(
-                                'status') == '0') ? 'selected' : '' }} value="0">Désactivé</option>
+                                'status') == '0') ? 'selected' : '' }} value="0">Inactif</option>
                             </select>
                         </div>
                     </div>

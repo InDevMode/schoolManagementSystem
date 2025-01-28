@@ -13,7 +13,7 @@
                 <span>Liste des administrateurs</span>
             </div>
             <a href="{{ url('admin/admin/add') }}"
-               class="uppercase shadow-lg text-white bg-violet-500 hover:bg-violet-600 focus:ring-4 focus:outline-none focus:ring-violet-300 font-bold rounded-full text-sm px-5 py-2.5 text-center transition-all duration-500 ease-out w-full sm:w-fit hover:scale-105">
+               class="shadow-lg text-white bg-violet-500 hover:bg-violet-600 focus:ring-4 focus:outline-none focus:ring-violet-300 font-bold uppercase rounded-full text-sm px-5 py-2.5 text-center transition-all duration-500 ease-out w-full sm:w-fit hover:scale-105">
                 Créer un nouveau Administrateur
             </a>
         </div>
@@ -238,6 +238,28 @@
                 </div>
             </div>
         </div>
+
+        <div data-dial-init class="fixed end-6 bottom-6 group">
+            <div id="speed-dial-menu-default" class="flex flex-col items-center hidden mb-4 space-y-2">
+                <a href="{{ url('admin/admin/add') }}" data-tooltip-target="tooltip-administrates" data-tooltip-placement="left"
+                   class="flex justify-center items-center w-full h-[52px] text-gray-500 hover:text-gray-900 bg-white rounded-full border border-gray-200 shadow-sm hover:bg-gray-50 focus:ring-4 focus:ring-gray-300 focus:outline-none">
+                    <i class="fa-solid fa-user-secret"></i>
+                    <span class="sr-only">Créer un administrateur</span>
+                </a>
+                <div id="tooltip-administrates" role="tooltip"
+                     class="absolute z-10 invisible inline-block w-auto px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip">
+                    Créer un administrateur
+                    <div class="tooltip-arrow" data-popper-arrow></div>
+                </div>
+            </div>
+            <button type="button" data-dial-toggle="speed-dial-menu-default" aria-controls="speed-dial-menu-default"
+                    aria-expanded="false"
+                    class="flex items-center justify-center text-white bg-violet-500 rounded-full w-14 h-14 hover:bg-violet-600 focus:ring-4 focus:ring-violet-300 focus:outline-non">
+                <span class="transition-transform group-hover:rotate-45"><i class="fa-solid fa-2x fa-plus"></i></span>
+                <span class="sr-only">Open actions menu</span>
+            </button>
+        </div>
+
     </div>
 </div>
 @endsection

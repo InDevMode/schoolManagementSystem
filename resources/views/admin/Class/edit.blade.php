@@ -6,7 +6,7 @@
             <span class="text-emerald-500 text-[25px]"><i class="fa-solid fa-landmark"></i></span>
             <span>/</span>
             <span class="hover:underline hover:text-emerald-500 transition-all duration-300"><a
-                    href="{{ url('admin/class/list') }}">Listes des classes</a></span>
+                    href="{{ url('admin/class/list') }}">Liste des classes</a></span>
             <span>/</span>
             <span>Classe</span>
         </div>

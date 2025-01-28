@@ -6,7 +6,7 @@
             <span class="text-emerald-500 text-[25px]"><i class="fa-solid fa-user-secret"></i></span>
             <span>/</span>
             <span class="hover:underline hover:text-emerald-500 transition-all duration-300"><a
-                        href="{{ url('admin/admin/list') }}">Listes des administrateurs</a></span>
+                        href="{{ url('admin/admin/list') }}">Liste des administrateurs</a></span>
             <span>/</span>
             <span>Administrateur</span>
         </div>
@@ -16,7 +16,7 @@
                 <form action="" method="post" class="p-5">
                     {{ csrf_field() }}
                     <h2 class="font-bold uppercase text-center text-white rounded-t-md bg-emerald-500 py-3 mb-10">
-                        Modifier un administrateur</h2>
+                        Modifier cet administrateur</h2>
                         <div class="flex mb-5">
                             <input type="text" id="name" name="name" value="{{ $getAdmin -> name }}"
                                    class="rounded bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm ps-3"
