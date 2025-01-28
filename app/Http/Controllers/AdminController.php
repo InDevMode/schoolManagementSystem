@@ -11,14 +11,14 @@ class AdminController extends Controller
 {
     public function list(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
     {
-        $data['header_title'] = "Liste des admins";
+        $data['header_title'] = "Liste des administrateurs";
         $data['getAdmin'] = User::getAllAdmin(5);
         return view('admin.admin.list', $data);
     }
 
     public function add(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
     {
-        $data['header_title'] = "Créer un admin";
+        $data['header_title'] = "Créer un administrateur";
         return view('admin.admin.add', $data);
     }
 
@@ -30,19 +30,21 @@ class AdminController extends Controller
             $regex = '/^[a-z0-9]+@[a-z0-9]+\.(fr|com|org|bj|io)$/';
 
             if($userMail){
-                return redirect('admin/admin/add')->with('error', 'Cet email a déjà été utilisé.');
+                return redirect()->back()->with('error', 'Cet email a déjà été utilisé.');
             }
             if($passwordLength < 6){
-                return redirect('admin/admin/add')->with('error', 'Votre mot de passe ne doit pas être de moins de 6 caractères.');
+                return redirect()->back()->with('error', 'Votre mot de passe ne doit pas être de moins de 6 caractères.');
             }
 
             if (!preg_match($regex, $request->email)) {
-                return redirect('admin/admin/add')->with('error', 'Cet email est invalide. Assurez-vous qu\'il se termine par .fr, .com, .org, .bj ou .io.');
+                return redirect()->back()->with('error', 'Cet email est invalide. Assurez-vous qu\'il se termine par .fr, .com, .org, .bj ou .io.');
             }
 
             $user = new User;
             $user->name = trim($request->name);
+            $user->last_name = trim($request->last_name);
             $user->email = trim($request->email);
+            $user->status = trim($request->status);
             $user->password = Hash::make($request->password);
             $user->user_type = 1;
             $user->save();
@@ -59,7 +61,7 @@ class AdminController extends Controller
     {
         $data['getAdmin'] = User::getSingle($id);
         if (!empty($data['getAdmin'])) {
-            $data['header_title'] = "Modifier un admin";
+            $data['header_title'] = "Modifier un administrateur";
             return view('admin.admin.edit', $data);
         } else {
             abort(404);
@@ -91,8 +93,9 @@ class AdminController extends Controller
             }
 
             $user->name = trim($request->name);
+            $user->last_name = trim($request->last_name);
             $user->email = trim($request->email);
-
+            $user->status = trim($request->status);
             if (!empty($request->password)) {
                 $user->password = Hash::make($request->password);
             }

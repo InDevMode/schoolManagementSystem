@@ -219,7 +219,7 @@
                 @endforeach
                 @if($getClass->isEmpty())
                 <tr>
-                    <td colspan="7" class="p-6 text-center text-gray-500">
+                    <td colspan="8" class="p-6 text-center text-gray-500">
                         Aucune classe trouvée.
                     </td>
                 </tr>

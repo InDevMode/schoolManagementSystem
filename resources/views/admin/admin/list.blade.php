@@ -31,9 +31,24 @@
                        placeholder="Rechercher par nom...">
             </div>
             <div class="">
+                <input type="text" id="last_name" name="last_name" value="{{ Request::get('last_name') }}"
+                       class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2"
+                       placeholder="Rechercher par prénom...">
+            </div>
+            <div class="">
                 <input type="email" id="email" name="email" value="{{ Request::get('email') }}"
                        class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2"
                        placeholder="Rechercher par email...">
+            </div>
+            <div>
+                <select id="status" name="status"
+                        class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2">
+                    <option value="">Filtrer par statut</option>
+                    <option value="1" {{ Request::get(
+                    'status') == '1' ? 'selected' : '' }}>Actif</option>
+                    <option value="0" {{ Request::get(
+                    'status') == '0' ? 'selected' : '' }}>Inactif</option>
+                </select>
             </div>
             <div class="">
                 <input type="date" id="created_at" name="created_at" value="{{ Request::get('created_at') }}"
@@ -89,7 +104,23 @@
                     </th>
                     <th scope="col" class="px-6 py-3">
                         <div class="flex items-center">
+                            Prénoms
+                            <a href="#">
+                                <span class="w-3 h-3 ms-1.5"><i class="fa-solid fa-filter"></i></span>
+                            </a>
+                        </div>
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        <div class="flex items-center">
                             Email
+                            <a href="#">
+                                <span class="w-3 h-3 ms-1.5"><i class="fa-solid fa-filter"></i></span>
+                            </a>
+                        </div>
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        <div class="flex items-center">
+                            Status
                             <a href="#">
                                 <span class="w-3 h-3 ms-1.5"><i class="fa-solid fa-filter"></i></span>
                             </a>
@@ -133,8 +164,24 @@
                         {{ $user -> name }}
                     </td>
                     <td class="px-6 py-4">
+                        {{ $user -> last_name }}
+                    </td>
+                    <td class="px-6 py-4">
                         <span
-                            class="bg-gray-100 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded border border-gray-400">{{ $user -> email }}</span>
+                            class="bg-slate-100 text-slate-900 text-xs font-medium me-2 px-2.5 py-0.5 rounded border border-gray-400">{{ $user -> email }}</span>
+                    </td>
+                    <td class="px-6 py-4">
+                        @if($user->status == 0)
+                        <div class="flex items-center">
+                            <div class="h-2.5 w-2.5 rounded-full bg-red-500 me-2"></div>
+                            Inactif
+                        </div>
+                        @elseif($user->status == 1)
+                        <div class="flex items-center">
+                            <div class="h-2.5 w-2.5 rounded-full bg-emerald-500 me-2"></div>
+                            Actif
+                        </div>
+                        @endif
                     </td>
                     <td class="px-6 py-4">
                         {{ \Carbon\Carbon::parse($user->created_at)->format('d/m/Y H:i:s') }}

@@ -11,7 +11,7 @@ class SubjectController extends Controller
     public function list(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
     {
         $data['header_title'] = "Liste des matières";
-        $data['getSubject'] = SubjectModel::getAllSubject(8);
+        $data['getSubject'] = SubjectModel::getAllSubject(10);
         return view('admin.subject.list', $data);
     }
 
