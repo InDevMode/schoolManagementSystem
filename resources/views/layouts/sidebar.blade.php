@@ -91,15 +91,41 @@
                 </a>
             </li>
             <li>
-                <a href="{{ url('admin/assign_subject/list') }}"
-                   class="flex items-center p-2 rounded hover:bg-violet-600 transition-all duration-700 ease-out group {{ Request::Segment(2) == 'assign_subject' ? 'bg-violet-500' : 'text-violet-500'}}">
+                <button type="button"
+                        class="flex items-center w-full p-2 text-base hover:bg-violet-600 text-violet-500 transition-all duration-700 ease-out rounded-lg group"
+                        aria-controls="dropdown-assign" data-collapse-toggle="dropdown-assign">
                     <span
-                        class="flex-shrink-0 transition duration-75 group-hover:text-white {{ Request::Segment(2) == 'assign_subject' ? 'text-white' : ' text-violet-500'}}">
+                        class="flex-shrink-0 transition duration-75 group-hover:text-white">
                         <i class="fa-solid fa-arrows-rotate"></i>
                     </span>
+                    <span class="flex-1 ms-3 text-left rtl:text-right group-hover:text-white whitespace-nowrap">Assignations</span>
+                    <span class="group-hover:text-white"><i class="fa-solid fa-chevron-down"></i></span>
+
+                </button>
+                <ul id="dropdown-assign" class="hidden py-2 space-y-2">
+                    <li>
+                        <a href="{{ url('admin/assign_subject/list') }}"
+                           class="flex items-center p-2 rounded pl-8 hover:bg-violet-600 transition-all duration-700 ease-out group {{ Request::Segment(2) == 'assign_subject' ? 'bg-violet-500' : 'text-violet-500'}}">
                     <span
-                        class="flex-1 ms-3 whitespace-nowrap group-hover:text-white {{ Request::Segment(2) == 'assign_subject' ? 'group-hover:text-white' : 'text-violet-500'}}">Assignations</span>
-                </a>
+                        class="flex-shrink-0 transition duration-75 group-hover:text-white {{ Request::Segment(2) == 'assign_subject' ? 'text-white' : ' text-violet-500'}}">
+                       <i class="fa-solid fa-chevron-right"></i>
+                    </span>
+                            <span
+                                class="flex-1 ms-3 whitespace-nowrap group-hover:text-white {{ Request::Segment(2) == 'assign_subject' ? 'group-hover:text-white' : 'text-violet-500'}}">Matières</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url('admin/assign_class/list') }}"
+                           class="flex items-center p-2 rounded pl-8 hover:bg-violet-600 transition-all duration-700 ease-out group {{ Request::Segment(2) == 'assign_class' ? 'bg-violet-500' : 'text-violet-500'}}">
+                    <span
+                        class="flex-shrink-0 transition duration-75 group-hover:text-white {{ Request::Segment(2) == 'assign_class' ? 'text-white' : ' text-violet-500'}}">
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </span>
+                            <span
+                                class="flex-1 ms-3 whitespace-nowrap group-hover:text-white {{ Request::Segment(2) == 'assign_class' ? 'group-hover:text-white' : 'text-violet-500'}}">Classes</span>
+                        </a>
+                    </li>
+                </ul>
             </li>
             @elseif(Auth::user()->user_type == 2)
             <li>
@@ -155,11 +181,11 @@
                 <a href="{{ url('student/my_subject') }}"
                    class="flex items-center p-2 rounded hover:bg-violet-600 transition-all duration-700 ease-out group {{ Request::Segment(2) == 'my_subject' ? 'bg-violet-500' : 'text-violet-500' }}">
                     <span
-                            class="flex-shrink-0 transition duration-75 group-hover:text-white {{ Request::Segment(2) == 'my_subject' ? 'text-white' : 'text-violet-500'}}">
+                        class="flex-shrink-0 transition duration-75 group-hover:text-white {{ Request::Segment(2) == 'my_subject' ? 'text-white' : 'text-violet-500'}}">
                         <i class="fa-solid fa-book-open-reader"></i>
                     </span>
                     <span
-                            class="flex-1 ms-3 whitespace-nowrap group-hover:text-white {{ Request::Segment(2) == 'my_subject' ? 'group-hover:text-white' : 'text-violet-500'}}">Mes Cours</span>
+                        class="flex-1 ms-3 whitespace-nowrap group-hover:text-white {{ Request::Segment(2) == 'my_subject' ? 'group-hover:text-white' : 'text-violet-500'}}">Mes Cours</span>
                 </a>
             </li>
             @elseif(Auth::user()->user_type == 4)

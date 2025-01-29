@@ -6,7 +6,7 @@
             <span class="text-emerald-500 text-[25px]"><i class="fa-solid fa-arrows-rotate"></i></span>
             <span>/</span>
             <span class="hover:underline hover:text-emerald-500 transition-all duration-300"><a
-                    href="{{ url('admin/assign_subject/list') }}">Listes des assignations</a></span>
+                    href="{{ url('admin/assign_class/list') }}">Listes des assignations</a></span>
             <span>/</span>
             <span>Assignation</span>
         </div>
@@ -21,9 +21,9 @@
                         <select id="class_id" name="class_id"
                                 class="rounded bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm ps-3"
                                 required>
-                            <option disabled selected>Choisissez la classe pour cette assignation</option>
+                            <option disabled>Choisissez la classe pour cette assignation</option>
                             @foreach($getClass as $class)
-                            <option {{ ($getClassSubject->class_id == $class->id) ? 'selected' : '' }}
+                            <option {{ ($getClassTeacher->class_id == $class->id) ? 'selected' : '' }}
                                 value="{{ $class->id
                                 }}">{{ $class->name }}
                             </option>
@@ -31,14 +31,14 @@
                         </select>
                     </div>
                     <div class="flex mb-5">
-                        <select id="subject_id" name="subject_id"
+                        <select id="teacher_id" name="teacher_id"
                                 class="rounded bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm ps-3"
                                 required>
-                            <option disabled selected>Choisissez la matière a assignée</option>
-                            @foreach($getSubject as $subject)
-                            <option {{ ($getClassSubject->subject_id == $subject->id) ? 'selected' : '' }}
-                                value="{{ $subject->id
-                                }}">{{ $subject->name }}
+                            <option disabled>Choisissez le professeur a assignée</option>
+                            @foreach($getTeacher as $teacher)
+                            <option {{ ($getClassTeacher->teacher_id == $teacher->id) ? 'selected' : '' }}
+                                value="{{ $teacher->id
+                                }}">{{ $teacher->name }} {{ $teacher->last_name }}
                                 @endforeach
                         </select>
                     </div>
@@ -46,11 +46,11 @@
                         <select id="status" name="status"
                                 class="rounded bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm ps-3"
                                 required>
-                            <option selected>Définissez un status pour cette assignation</option>
-                            <option value="1" name="status" {{ ($getClassSubject->status == 1) ? 'selected' : ''
+                            <option disabled>Définissez un status pour cette assignation</option>
+                            <option value="1" name="status" {{ ($getClassTeacher->status == 1) ? 'selected' : ''
                                 }}>Activée
                             </option>
-                            <option value="0" name="status" {{ ($getClassSubject->status == 0) ? 'selected' : ''
+                            <option value="0" name="status" {{ ($getClassTeacher->status == 0) ? 'selected' : ''
                                 }}>Désactivée
                             </option>
                         </select>

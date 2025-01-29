@@ -14,7 +14,6 @@ class ClassTeacherController extends Controller
     public function list(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
     {
         $data['getClassTeacher'] = ClassTeacherModel::getAllClassTeacher(10);
-
         $data['header_title'] = "Liste des classes assignées";
         return view('admin.assign_class.list', $data);
     }
@@ -60,17 +59,18 @@ class ClassTeacherController extends Controller
     {
         $editExisting = ClassTeacherModel::getSingle($id);
         if (!empty($editExisting)) {
-            $data['getClassSubject'] = $editExisting;
+            $data['getClassTeacher'] = $editExisting;
             $data['getClass'] = ClassModel::getClass();
-            $data['getAssignSubject'] = ClassTeacherModel::getAssignTeacher($editExisting->class_id);
+            $data['getTeacher'] = User::getTeacher();
+            $data['getAssignClass'] = ClassTeacherModel::getAssignTeacher($editExisting->class_id);
             $data['header_title'] = "Modifier une assignation";
-            return view('admin.assign_class.edit_single', $data);
+            return view('admin.assign_class.edit', $data);
         } else {
             abort(404);
         }
     }
 
-    public function update(Request $request, $id): \Illuminate\Foundation\Application|\Illuminate\Routing\Redirector|\Illuminate\Http\RedirectResponse|\Illuminate\Contracts\Foundation\Application
+    public function update(Request $request): \Illuminate\Foundation\Application|\Illuminate\Routing\Redirector|\Illuminate\Http\RedirectResponse|\Illuminate\Contracts\Foundation\Application
     {
         try {
             ClassTeacherModel::deleteClassAssign($request->class_id);
@@ -100,11 +100,52 @@ class ClassTeacherController extends Controller
         }
     }
 
+    public function editSingle($id)
+    {
+        $editExisting = ClassTeacherModel::getSingle($id);
+        if (!empty($editExisting)) {
+            $data['getClassTeacher'] = $editExisting;
+            $data['getClass'] = ClassModel::getClass();
+            $data['getTeacher'] = User::getTeacher();
+            $data['getAssignClass'] = ClassTeacherModel::getAssignTeacher($editExisting->class_id);
+            $data['header_title'] = "Modifier une assignation";
+            return view('admin.assign_subject.edit_single', $data);
+        } else {
+            abort(404);
+        }
+    }
+
+    public function updateSingle(Request $request, $id): \Illuminate\Foundation\Application|\Illuminate\Routing\Redirector|\Illuminate\Http\RedirectResponse|\Illuminate\Contracts\Foundation\Application
+    {
+        try {
+            $classClassAlreadyExist = ClassTeacherModel::getAlreadyExist($request->class_id, $request->teacher_id);
+            if (!empty($classClassAlreadyExist)) {
+                $classClassAlreadyExist->status = $request->status;
+                $classClassAlreadyExist->save();
+
+                return redirect('admin/assign_class/list')->with('success', 'Le status de cette assignation a été modifié avec succès.');
+            }else{
+                $classClass = ClassTeacherModel::getSingle($id);;
+                $classClass->class_id = $request->class_id;
+                $classClass->teacher_id = $request->teacher_id;
+                $classClass->status = $request->status;
+                $classClass->save();
+            }
+
+            return redirect('admin/assign_class/list')->with('success', 'Cette assignation a été modifiée avec succès.');
+        } catch (\Exception $e) {
+            Log::error("Erreur lors de la modification de l'assignation de cette classe. " . $e->getMessage());
+
+            return redirect()->back()->with('error', 'Vos informations ne sont pas correctes. Veuillez réessayer.');
+        }
+
+    }
+
     public function delete($id)
     {
         $classTeacher = ClassTeacherModel::getSingle($id);
         if ($classTeacher) {
-            $classTeacher->is_delete = 0;
+            $classTeacher->is_delete = 1;
             $classTeacher->save();
             return redirect('admin/assign_class/list')->with('success', 'Cette assignation a été supprimée avec succès.');
         } else {
