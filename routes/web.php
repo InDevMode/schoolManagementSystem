@@ -4,6 +4,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ClassController;
 use App\Http\Controllers\ClassSubjectController;
+use App\Http\Controllers\ClassTeacherController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ParentController;
 use App\Http\Controllers\StudentController;
@@ -103,6 +104,15 @@ Route::group(['middleware' => 'admin'], function () {
     // Admin account url
     Route::get('admin/account', [UserController::class, 'myAccount']);
     Route::post('admin/account', [UserController::class, 'updateAdminAccount']);
+
+    // Assign class to teacher url
+    Route::get('admin/assign_class/list', [ClassTeacherController::class, 'list']);
+    Route::get('admin/assign_class/add', [ClassTeacherController::class, 'add']);
+    Route::post('admin/assign_class/add', [ClassTeacherController::class, 'create']);
+    Route::get('admin/assign_class/edit/{id}', [ClassTeacherController::class, 'edit']);
+    Route::post('admin/assign_class/edit/{id}', [ClassTeacherController::class, 'update']);
+    Route::get('admin/assign_class/delete/{id}', [ClassTeacherController::class, 'delete']);
+
 
 });
 
