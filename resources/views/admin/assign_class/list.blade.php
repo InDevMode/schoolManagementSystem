@@ -41,21 +41,6 @@
                            placeholder="Rechercher par le nom du professeur...">
                 </div>
 
-                <!-- Prénom du professeur -->
-                <div>
-                    <input type="text" id="teacher_last_name" name="teacher_last_name"
-                           value="{{ Request::get('teacher_last_name') }}"
-                           class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2"
-                           placeholder="Rechercher par le prénom du professeur...">
-                </div>
-
-                <!-- Nom de la matière -->
-                <div>
-                    <input type="text" id="subject_name" name="subject_name" value="{{ Request::get('subject_name') }}"
-                           class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2"
-                           placeholder="Rechercher par le nom de la matière...">
-                </div>
-
                 <!-- Statut -->
                 <div>
                     <select id="status" name="status"
@@ -90,7 +75,7 @@
                         <i class="fa-solid fa-search text-white"></i>
                     </span>
                 </button>
-                <a href="{{ url('admin/class_teacher/list') }}"
+                <a href="{{ url('admin/assign_class/list') }}"
                    class="text-gray-800 bg-gray-300 hover:bg-gray-400 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-full text-sm px-5 py-2.5 text-center transition-all duration-500 ease-out w-full hover:scale-105">
                     Réinitialiser les filtres
                 </a>

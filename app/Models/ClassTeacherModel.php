@@ -45,8 +45,7 @@ class ClassTeacherModel extends Model
 
         $filters = [
             'class.name' => strtolower(Request::get('class_name')),
-            'users.name' => strtolower(Request::get('teacher_name')),
-            'users.last_name' => strtolower(Request::get('teacher_last_name')),
+            'teacher.name' => strtolower(Request::get('teacher_name')),
             'class_teacher.created_at' => strtolower(Request::get('created_at')),
             'class_teacher.updated_at' => strtolower(Request::get('updated_at')),
         ];
