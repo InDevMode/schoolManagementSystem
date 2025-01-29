@@ -71,15 +71,15 @@ Authentification :
 Email: admintech@domain.bj 
 Mot de passe: admintech
 
-Email: admin@gmail.com
-Mot de passe: administrateur
+Email: adminmain@domain.bj
+Mot de passe: adminmain
 
-Email: teacher@gmail.com
-Mot de passe: teacher
+Email: teacherblack@gmail.com
+Mot de passe: teacherblack
 
-Email: student@gmail.com
-Mot de passe: student
+Email: studentblack@gmail.com
+Mot de passe: studentblack
 
-Email: parent@gmail.com
-Mot de passe: parent
+Email: parentblack@gmail.com
+Mot de passe: parentblack
 
