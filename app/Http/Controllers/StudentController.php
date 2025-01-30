@@ -6,6 +6,7 @@ use App\Models\ClassModel;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
@@ -213,7 +214,8 @@ class StudentController extends Controller
     public function myStudent(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
     {
         $data['header_title'] = "Mes Elèves";
-        $data['getStudent'] = User::getAllStudent(10);
+        $teacher_id = Auth::user()->id;
+        $data['getTeacherStudent'] = User::getTeacherStudent(10, $teacher_id);
         return view('teacher.student', $data);
     }
 

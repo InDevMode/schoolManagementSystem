@@ -133,7 +133,7 @@ Route::group(['middleware' => 'teacher'], function () {
     Route::get('teacher/class_subject', [ClassTeacherController::class, 'myClassSubject']);
 
     // Teacher student url
-    Route::get('teacher/student', [StudentController::class, 'myStudent']);
+    Route::get('teacher/my_student', [StudentController::class, 'myStudent']);
 
 
 });
