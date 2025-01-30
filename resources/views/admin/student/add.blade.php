@@ -53,7 +53,7 @@
                             <select id="class_id" name="class_id"
                                     class="rounded bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm ps-3"
                                     required>
-                                <option disabled selected>Attribuez une classe à cet élève</option>
+                                <option disabled>Attribuez une classe à cet élève</option>
                                 @foreach($getClass as $class)
                                 <option value="{{ $class->id }}">{{ $class->name}}</option>
                                 @endforeach
@@ -65,7 +65,7 @@
                             <select id="gender" name="gender"
                                     class="rounded bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm ps-3"
                                     required>
-                                <option disabled selected>Choisissez un genre à cet élève</option>
+                                <option disabled>Choisissez un genre à cet élève</option>
                                 <option {{ (old(
                                 'gender') == 'male') ? 'selected' : '' }} value="male">Masculin</option>
                                 <option {{ (old(
@@ -123,7 +123,7 @@
                                 Sanguin</label>
                             <select id="blood_group" name="blood_group"
                                     class="rounded bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm ps-3">
-                                <option disabled selected>Attribuez un group sanguin pour cet élève</option>
+                                <option disabled>Attribuez un group sanguin pour cet élève</option>
                                 <option {{ (old(
                                 'blood_group') == 'a+') ? 'selected' : '' }} value="a+">A+</option>
                                 <option {{ (old(
@@ -160,7 +160,7 @@
                             <select id="status" name="status"
                                     class="rounded bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm ps-3"
                                     required>
-                                <option disabled selected>Définissez un status pour cet élève</option>
+                                <option disabled>Définissez un status pour cet élève</option>
                                 <option {{ (old(
                                 'status') == '1') ? 'selected' : '' }} value="1">Activé</option>
                                 <option {{ (old(

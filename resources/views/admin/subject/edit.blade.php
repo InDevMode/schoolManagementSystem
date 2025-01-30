@@ -26,7 +26,7 @@
                         <select id="type" name="type"
                                 class="rounded bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm ps-3"
                                 required>
-                            <option disabled selected>Définissez un type pour cette matière</option>
+                            <option disabled>Définissez un type pour cette matière</option>
                             <option value="theoretical" name="type" {{ $getSubject->type == 'theoretical' ? 'selected' :
                                 '' }}>Théorique
                             </option>
@@ -39,7 +39,7 @@
                         <select id="status" name="status"
                                 class="rounded bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm ps-3"
                                 required>
-                            <option disabled selected>Définissez un statut pour cette classe</option>
+                            <option disabled>Définissez un statut pour cette classe</option>
                             <option value="1" name="status" {{ $getSubject->status == 1 ? 'selected' : '' }}>Activée
                             </option>
                             <option value="0" name="status" {{ $getSubject->status == 0 ? 'selected' : ''

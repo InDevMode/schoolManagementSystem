@@ -21,7 +21,7 @@
                         <select id="class_id" name="class_id"
                                 class="rounded bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm ps-3"
                                 required>
-                            <option disabled selected>Choisissez la classe que vous voudriez assignée</option>
+                            <option disabled>Choisissez la classe que vous voudriez assignée</option>
                             @foreach($getClass as $class)
                             <option value="{{ $class->id }}">{{ $class->name }}</option>
                             @endforeach
@@ -31,7 +31,7 @@
                         <select multiple id="subject_id" name="subject_id[]"
                                 class="rounded bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm ps-3"
                                 required>
-                            <option disabled selected>Choisissez la matière que vous voudriez assignée</option>
+                            <option disabled>Choisissez la matière que vous voudriez assignée</option>
                             @foreach($getSubject as $subject)
                             <option value="{{ $subject->id }}">{{ $subject->name }}</option>
                             @endforeach
@@ -41,7 +41,7 @@
                         <select id="status" name="status"
                                 class="rounded bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm ps-3"
                                 required>
-                            <option disabled selected>Définissez un status pour cette assignation</option>
+                            <option disabled>Définissez un status pour cette assignation</option>
                             <option value="1">Activée</option>
                             <option value="0">Désactivée</option>
                         </select>

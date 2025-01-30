@@ -21,7 +21,7 @@
                         <select id="class_id" name="class_id"
                                 class="rounded bg-white border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500"
                                 required>
-                            <option disabled selected>Choisissez la classe pour cette assignation</option>
+                            <option disabled>Choisissez la classe pour cette assignation</option>
                             @foreach($getClass as $class)
                             <option {{ $getClassSubject->class_id == $class->id ? 'selected' : '' }}
                                 value="{{ $class->id
@@ -34,7 +34,7 @@
                         <select multiple id="subject_id" name="subject_id[]"
                                 class="rounded bg-white border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500"
                                 required>
-                            <option disabled selected>Choisissez la ou les matières a assignée(s)</option>
+                            <option disabled>Choisissez la ou les matières a assignée(s)</option>
                             @foreach($getSubject as $subject)
                             @php
                             $selected = "";
@@ -54,7 +54,7 @@
                         <select id="status" name="status"
                                 class="rounded bg-white border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500"
                                 required>
-                            <option disabled selected>Définissez un status pour cette assignation</option>
+                            <option disabled>Définissez un status pour cette assignation</option>
                             <option value="1" name="status" {{ $getClassSubject->status == 1 ? 'selected' : ''
                                 }}>Activée
                             </option>

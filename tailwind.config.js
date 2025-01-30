@@ -6,6 +6,21 @@ export default {
         "./resources/**/*.vue",
         "./node_modules/flowbite/**/*.js"
     ],
+    safelist: [
+        'w-64',
+        'w-1/2',
+        'rounded-l-lg',
+        'rounded-r-lg',
+        'bg-gray-200',
+        'grid-cols-4',
+        'grid-cols-7',
+        'h-6',
+        'leading-6',
+        'h-9',
+        'leading-9',
+        'shadow-lg',
+        'bg-opacity-50',
+    ],
     theme: {
         extend: {
             colors: {
@@ -22,10 +37,17 @@ export default {
                     900: '#064e3b',
                 },
             },
+            fontFamily: {
+                'sans': ['Inter', 'ui-sans-serif', 'system-ui', 'Roboto', 'Helvetica Neue', 'Arial', 'Noto Sans', 'sans-serif','Poppins'],
+                'body': ['Inter', 'ui-sans-serif', 'system-ui', 'Roboto', 'Helvetica Neue', 'Arial', 'Noto Sans', 'sans-serif', 'Poppins'],
+                'mono': ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'Liberation Mono', 'Courier New', 'monospace']
+            },
         },
     },
     plugins: [
-        require('flowbite/plugin')
+        require('flowbite/plugin')({
+            charts: true,
+        })
     ],
 }
 

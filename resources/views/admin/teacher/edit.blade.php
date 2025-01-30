@@ -48,7 +48,7 @@
                             <select id="gender" name="gender"
                                     class="rounded bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm ps-3"
                                     required>
-                                <option disabled selected>Choisissez un genre à cet élève</option>
+                                <option disabled>Choisissez un genre à cet élève</option>
                                 <option {{ (old('gender', $getTeacher->gender) == 'male') ? 'selected' : '' }} value="male">Masculin</option>
                                 <option {{ (old('gender', $getTeacher->gender) == 'female') ? 'selected' : '' }} value="female">Féminin</option>
                                 <option {{ (old('gender', $getTeacher->gender) == 'other') ? 'selected' : '' }} value="other">Autre</option>
@@ -123,7 +123,7 @@
                         <select id="status" name="status"
                                 class="rounded bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm ps-3"
                                 required>
-                            <option disabled selected>Définissez un status pour cet élève</option>
+                            <option disabled>Définissez un status pour cet élève</option>
                             <option {{ (old(
                             'status', $getTeacher->status) == '1') ? 'selected' : '' }} value="1">Actif</option>
                             <option {{ (old(

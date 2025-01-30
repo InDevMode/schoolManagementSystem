@@ -62,7 +62,7 @@
                             <select id="class_id" name="class_id"
                                     class="rounded bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm ps-3"
                                     required>
-                                <option disabled selected>Attribuez une classe à cet élève</option>
+                                <option disabled>Attribuez une classe à cet élève</option>
                                 @foreach($getClass as $class)
                                 <option {{ old('class_id', $getStudent->class_id) == $class->id ? 'selected' : '' }}
                                     value="{{ $class->id}}">{{ $class->name }}
@@ -76,7 +76,7 @@
                             <select id="gender" name="gender"
                                     class="rounded bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm ps-3"
                                     required>
-                                <option disabled selected>Choisissez un genre à cet élève</option>
+                                <option disabled>Choisissez un genre à cet élève</option>
                                 <option value="male" {{ old('gender', $getStudent->gender) == 'male' ? 'selected' : ''}}>Masculin
                                 </option>
                                 <option value="female" {{ old('gender', $getStudent->gender) == 'female' ? 'selected' : ''}}>Féminin
@@ -126,7 +126,7 @@
                                 Sanguin</label>
                             <select id="blood_group" name="blood_group"
                                     class="rounded bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm ps-3">
-                                <option disabled selected>Attribuez un group sanguin pour cet élève</option>
+                                <option disabled>Attribuez un group sanguin pour cet élève</option>
                                 <option value="a+" {{ old('blood_group', $getStudent->blood_group) == 'a+' ? 'selected' : ''}} >A+</option>
                                 <option value="a-" {{ old('blood_group', $getStudent->blood_group) == 'a-' ? 'selected' : ''}} >A-</option>
                                 <option value="b+" {{ old('blood_group', $getStudent->blood_group) == 'b+' ? 'selected' : ''}} >B+</option>
@@ -157,7 +157,7 @@
                             <select id="status" name="status"
                                     class="rounded bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm ps-3"
                                     required>
-                                <option disabled selected>Définissez un status pour cet élève</option>
+                                <option disabled>Définissez un status pour cet élève</option>
                                 <option value="1" name="status" {{ old('status', $getStudent->status) == 1 ? 'selected' : ''}}>Activée
                                 </option>
                                 <option value="0" name="status" {{ old('status', $getStudent->status) == 0 ? 'selected' :

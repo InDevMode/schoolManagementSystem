@@ -41,7 +41,7 @@
                         <select id="status" name="status"
                                 class="rounded bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm ps-3"
                                 required>
-                            <option disabled selected>Définissez un status pour cet administrateur</option>
+                            <option disabled>Définissez un status pour cet administrateur</option>
                             <option {{ (old(
                             'status') == '1') ? 'selected' : '' }} value="1">Actif</option>
                             <option {{ (old(
