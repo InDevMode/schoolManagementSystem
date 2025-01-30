@@ -10,12 +10,12 @@
                 <span class="hover:underline hover:text-violet-500 transition-all duration-300"><a
                         href="{{ url('teacher/dashboard') }}">Dashboard</a></span>
                 <span>/</span>
-                <span>Liste de mes Classes et Matières</span>
+                <span>Liste de mes Elèves</span>
             </div>
         </div>
         <div class="">
             <div class="mt-4">
-                {{ $getClassTeacher->links('vendor.pagination.tailwind') }}
+                {{ $getStudent->links('vendor.pagination.tailwind') }}
             </div>
         </div>
         <form action="" method="get"
@@ -64,7 +64,7 @@
                         <i class="fa-solid fa-search text-white"></i>
                     </span>
                 </button>
-                <a href="{{ url('teacher/class') }}"
+                <a href="{{ url('teacher/class_subject') }}"
                    class="text-gray-800 bg-gray-300 hover:bg-gray-400 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-full text-sm px-5 py-2.5 text-center transition-all duration-500 ease-out w-full hover:scale-105">
                     Réinitialiser les filtres
                 </a>
@@ -134,11 +134,11 @@
                 </tr>
                 </thead>
                 <tbody>
-                @foreach($getClassTeacher as $index => $classTeacher)
+                @foreach($getClassSubjectTeacher as $index => $classSubjectTeacher)
                 <tr class="bg-white border-b hover:bg-gray-50">
                     <td class="w-4 p-4">
                         <div class="flex items-center">
-                            <input name="ids[]" value="{{ $classTeacher->id }}" type="checkbox"
+                            <input name="ids[]" value="{{ $classSubjectTeacher->id }}" type="checkbox"
                                    class="w-4 h-4 border border-gray-300 rounded bg-white focus:ring-3 focus:ring-violet-300 focus:outline-none checked:bg-violet-600">
                             <label for="checkbox-table-search-{{ $index }}" class="sr-only">checkbox</label>
                         </div>
@@ -147,29 +147,29 @@
                         {{ $index + 1 }}
                     </th>
                     <td class="px-6 py-4">
-                        {{ $classTeacher -> class_name }}
+                        {{ $classSubjectTeacher -> class_name }}
                     </td>
                     <td class="px-6 py-4">
-                        {{ $classTeacher -> subject_name }}
+                        {{ $classSubjectTeacher -> subject_name }}
                     </td>
                     <td class="px-6 py-4">
-                        @if($classTeacher -> subject_type == 'theoretical')
+                        @if($classSubjectTeacher -> subject_type == 'theoretical')
                         <span
                             class="bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded">Théorique</span>
-                        @elseif($classTeacher -> subject_type == 'practical')
+                        @elseif($classSubjectTeacher -> subject_type == 'practical')
                         <span
                             class="bg-violet-100 text-violet-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded">Pratique</span>
                         @endif
                     </td>
                     <td class="px-6 py-4">
-                        {{ \Carbon\Carbon::parse($classTeacher->created_at)->format('d/m/Y H:i:s') }}
+                        {{ \Carbon\Carbon::parse($classSubjectTeacher->created_at)->format('d/m/Y H:i:s') }}
                     </td>
                     <td class="px-6 py-4">
-                        {{ \Carbon\Carbon::parse($classTeacher->updated_at)->format('d/m/Y H:i:s') }}
+                        {{ \Carbon\Carbon::parse($classSubjectTeacher->updated_at)->format('d/m/Y H:i:s') }}
                     </td>
                 </tr>
                 @endforeach
-                @if($getClassTeacher->isEmpty())
+                @if($getClassSubjectTeacher->isEmpty())
                 <tr>
                     <td colspan="9" class="p-6 text-center text-gray-500">
                         Aucune classe assignée trouvée.
@@ -181,7 +181,7 @@
             <div class="text-center bg-white p-2">
                 <div class="flex justify-between items-center mt-4">
                         <span
-                            class="text-violet-500 font-bold text-md ps-3.5 uppercase">Total : {{ $getClassTeacher->total() }}</span>
+                            class="text-violet-500 font-bold text-md ps-3.5 uppercase">Total : {{ $getClassSubjectTeacher->total() }}</span>
                 </div>
             </div>
         </div>

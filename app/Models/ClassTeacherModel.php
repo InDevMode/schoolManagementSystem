@@ -80,7 +80,7 @@ class ClassTeacherModel extends Model
         return ClassTeacherModel::where('class_id', '=', $class_id)->delete();
     }
 
-    static public function getMyClass(int $perPage, int $teacher_id){
+    static public function getMyClassSubject(int $perPage, int $teacher_id){
         $results = ClassTeacherModel::select(
             'class_teacher.*',
             'class.name as class_name',

@@ -153,12 +153,12 @@ class ClassTeacherController extends Controller
         }
     }
 
-    public function myClass(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
+    public function myClassSubject(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
     {
         $data['header_title'] = "Mes Classes";
         $teacher_id = Auth::user()->id;
-        $data['getClassTeacher'] = ClassTeacherModel::getMyClass(10, $teacher_id);
-        return view('teacher.class', $data);
+        $data['getClassSubjectTeacher'] = ClassTeacherModel::getMyClassSubject(10, $teacher_id);
+        return view('teacher.class_subject', $data);
     }
 
 }

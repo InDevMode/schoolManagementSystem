@@ -210,4 +210,11 @@ class StudentController extends Controller
         }
     }
 
+    public function myStudent(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
+    {
+        $data['header_title'] = "Mes Elèves";
+        $data['getStudent'] = User::getAllStudent(10);
+        return view('teacher.student', $data);
+    }
+
 }
