@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ClassController;
 use App\Http\Controllers\ClassSubjectController;
 use App\Http\Controllers\ClassTeacherController;
+use App\Http\Controllers\ClassTimetableController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ParentController;
 use App\Http\Controllers\StudentController;
@@ -114,6 +115,9 @@ Route::group(['middleware' => 'admin'], function () {
     Route::get('admin/assign_class/edit_single/{id}', [ClassTeacherController::class, 'editSingle']);
     Route::post('admin/assign_class/edit_single/{id}', [ClassTeacherController::class, 'updateSingle']);
     Route::get('admin/assign_class/delete/{id}', [ClassTeacherController::class, 'delete']);
+
+    // Class timetable url
+    Route::get('admin/class_timetable/list', [ClassTimetableController::class, 'list']);
 
 
 });
