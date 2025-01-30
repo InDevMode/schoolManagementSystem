@@ -54,6 +54,7 @@ class User extends Authenticatable
         'user_type',
         'class_id',
         'parent_id',
+        'teacher_id',
         'is_delete',
         'remember_token',
     ];
@@ -296,6 +297,46 @@ class User extends Authenticatable
 
         return $results->where('users.is_delete', '=', 0)
             ->orderBy('users.id', 'desc')
+            ->paginate($perPage);
+    }
+
+    static public function getTeacher()
+    {
+        $results = User::select('users.*')
+            ->where('users.user_type', '=', 2)
+            ->where('users.is_delete', '=', 0);
+        return $results->orderBy('users.id', 'desc')
+            ->get();
+    }
+
+    static public function getTeacherStudent(int $perPage, int $teacher_id)
+    {
+        $results = User::select('users.*', 'class.name as class_name')
+            ->join('class', 'class.id', '=', 'users.class_id')
+            ->join('class_teacher', 'class_teacher.class_id', '=', 'class.id')
+            ->where('class_teacher.teacher_id', '=', $teacher_id)
+            ->where('class_teacher.status', '=', 1)
+            ->where('class_teacher.is_delete', '=', 0)
+            ->where('users.user_type', '=', 3)
+            ->where('users.is_delete', '=', 0);
+
+        $filters = [
+            'users.name' => strtolower(Request::get('name')),
+            'users.last_name' => strtolower(Request::get('last_name')),
+            'users.email' => strtolower(Request::get('email')),
+            'users.created_at' => strtolower(Request::get('created_at')),
+            'users.updated_at' => strtolower(Request::get('updated_at')),
+        ];
+
+        foreach ($filters as $column => $value) {
+            if (!empty($value)) {
+                $results->where($column, 'like', '%' . $value . '%');
+            }
+        }
+
+        return $results
+            ->orderBy('users.id', 'desc')
+            ->groupBy('users.id')
             ->paginate($perPage);
     }
 

@@ -50,7 +50,7 @@
                             <select id="gender" name="gender"
                                     class="rounded bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm ps-3"
                                     required>
-                                <option disabled selected>Choisissez un genre à cet parent</option>
+                                <option disabled>Choisissez un genre à cet parent</option>
                                 <option {{ (old(
                                 'gender', $getParent->gender) == 'male') ? 'selected' : '' }}
                                 value="male">Masculin</option>
@@ -92,7 +92,7 @@
                             <select id="status" name="status"
                                     class="rounded bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm ps-3"
                                     required>
-                                <option disabled selected>Définissez un status pour cet parent</option>
+                                <option disabled>Définissez un status pour cet parent</option>
                                 <option {{ (old(
                                 'status', $getParent->status) == '1') ? 'selected' : '' }} value="1">Activé</option>
                                 <option {{ (old(

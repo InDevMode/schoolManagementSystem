@@ -6,7 +6,7 @@
             <span class="text-emerald-500 text-[25px]"><i class="fa-solid fa-arrows-rotate"></i></span>
             <span>/</span>
             <span class="hover:underline hover:text-emerald-500 transition-all duration-300"><a
-                    href="{{ url('admin/assign_subject/list') }}">Liste des assignations</a></span>
+                    href="{{ url('admin/assign_class/list') }}">Liste des assignations</a></span>
             <span>/</span>
             <span>Assignation</span>
         </div>
@@ -23,7 +23,7 @@
                                 required>
                             <option disabled>Choisissez la classe pour cette assignation</option>
                             @foreach($getClass as $class)
-                            <option {{ $getClassSubject->class_id == $class->id ? 'selected' : '' }}
+                            <option {{ $getClassTeacher->class_id == $class->id ? 'selected' : '' }}
                                 value="{{ $class->id
                                 }}">{{ $class->name }}
                             </option>
@@ -31,22 +31,24 @@
                         </select>
                     </div>
                     <div class="flex mb-5">
-                        <select multiple id="subject_id" name="subject_id[]"
+                        <select multiple id="teacher_id" name="teacher_id[]"
                                 class="rounded bg-white border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500"
                                 required>
-                            <option disabled>Choisissez la ou les matières a assignée(s)</option>
-                            @foreach($getSubject as $subject)
+                            <option disabled>Choisissez le ou les professeurs a assignée(s)</option>
+                            @foreach($getTeacher as $teacher)
                             @php
                             $selected = "";
                             @endphp
-                            @foreach($getAssignSubject as $getAssign)
-                            @if($getAssign->subject_id == $subject->id)
+                            @foreach($getAssignClass as $getAssign)
+                            @if($getAssign->teacher_id == $teacher->id)
                             @php
                             $selected = "selected";
                             @endphp
                             @endif
                             @endforeach
-                            <option {{ $selected }} value="{{ $subject->id }}">{{ $subject->name }}</option>
+                            <option {{ $selected }} value="{{ $teacher->id }}">{{ $teacher->name
+                                }} {{ $teacher->last_name }}
+                            </option>
                             @endforeach
                         </select>
                     </div>
@@ -55,10 +57,10 @@
                                 class="rounded bg-white border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500"
                                 required>
                             <option disabled>Définissez un status pour cette assignation</option>
-                            <option value="1" name="status" {{ $getClassSubject->status == 1 ? 'selected' : ''
+                            <option value="1" name="status" {{ $getClassTeacher->status == 1 ? 'selected' : ''
                                 }}>Activée
                             </option>
-                            <option value="0" name="status" {{ $getClassSubject->status == 0 ? 'selected' : ''
+                            <option value="0" name="status" {{ $getClassTeacher->status == 0 ? 'selected' : ''
                                 }}>Désactivée
                             </option>
                         </select>

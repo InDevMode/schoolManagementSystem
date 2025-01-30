@@ -12,74 +12,75 @@
                 <span>/</span>
                 <span>Liste des assignations</span>
             </div>
-            <a href="{{ url('admin/assign_subject/add') }}"
+            <a href="{{ url('admin/assign_class/add') }}"
                class="uppercase text-white bg-violet-500 hover:bg-violet-600 focus:ring-4 focus:outline-none focus:ring-violet-300 font-bold rounded-full text-sm px-5 py-2.5 text-center transition-all duration-500 ease-out w-full sm:w-fit hover:scale-105">
-                Assignez une nouvelle matière
+                Assignez une nouvelle classe
             </a>
         </div>
         <div class="">
             <div class="mt-4">
-                {{ $getClassSubject->links('vendor.pagination.tailwind') }}
+                {{ $getClassTeacher->links('vendor.pagination.tailwind') }}
             </div>
         </div>
         <form action="" method="get"
               class="flex justify-between my-5 shadow p-3 bg-white rounded border border-gray-300" id="searchForm">
             {{ csrf_field() }}
 
-            <!-- Nom de la classe -->
-            <div>
-                <input type="text" id="class_name" name="class_name" value="{{ Request::get('class_name') }}"
-                       class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2"
-                       placeholder="Rechercher par le nom de la classe...">
-            </div>
+            <div class="grid grid-cols-6 gap-x-5 gap-y-2">
+                <!-- Nom de la classe -->
+                <div>
+                    <input type="text" id="class_name" name="class_name" value="{{ Request::get('class_name') }}"
+                           class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2"
+                           placeholder="Rechercher par le nom de la classe...">
+                </div>
 
-            <!-- Nom de la matière -->
-            <div>
-                <input type="text" id="subject_name" name="subject_name" value="{{ Request::get('subject_name') }}"
-                       class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2"
-                       placeholder="Rechercher par le nom de la matière...">
-            </div>
+                <!-- Nom du professeur -->
+                <div>
+                    <input type="text" id="teacher_name" name="teacher_name" value="{{ Request::get('teacher_name') }}"
+                           class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2"
+                           placeholder="Rechercher par le nom du professeur...">
+                </div>
 
-            <!-- Statut -->
-            <div>
-                <select id="status" name="status"
-                        class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2">
-                    <option value="">Filtrer par statut</option>
-                    <option value="1" {{ Request::get(
-                    'status') == '1' ? 'selected' : '' }}>Activée</option>
-                    <option value="0" {{ Request::get(
-                    'status') == '0' ? 'selected' : '' }}>Désactivée</option>
-                </select>
-            </div>
+                <!-- Statut -->
+                <div>
+                    <select id="status" name="status"
+                            class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2">
+                        <option value="">Filtrer par statut</option>
+                        <option value="1" {{ Request::get(
+                        'status') == '1' ? 'selected' : '' }}>Activée</option>
+                        <option value="0" {{ Request::get(
+                        'status') == '0' ? 'selected' : '' }}>Désactivée</option>
+                    </select>
+                </div>
 
-            <!-- Date de création -->
-            <div>
-                <input type="date" id="created_at" name="created_at" value="{{ Request::get('created_at') }}"
-                       class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2"
-                       placeholder="Date de création...">
-            </div>
+                <!-- Date de création -->
+                <div>
+                    <input type="date" id="created_at" name="created_at" value="{{ Request::get('created_at') }}"
+                           class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2"
+                           placeholder="Date de création...">
+                </div>
 
-            <!-- Date de modification -->
-            <div>
-                <input type="date" id="updated_at" name="updated_at" value="{{ Request::get('updated_at') }}"
-                       class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2"
-                       placeholder="Date de modification...">
-            </div>
+                <!-- Date de modification -->
+                <div>
+                    <input type="date" id="updated_at" name="updated_at" value="{{ Request::get('updated_at') }}"
+                           class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2"
+                           placeholder="Date de modification...">
+                </div>
 
-            <!-- Boutons -->
-            <div class="flex">
+                <!-- Boutons -->
                 <button type="submit"
-                        class="flex justify-between text-white bg-violet-500 hover:bg-violet-600 focus:ring-4 focus:outline-none focus:ring-violet-300 font-medium rounded-full text-sm px-5 py-2.5 text-center transition-all duration-500 ease-out w-fit hover:scale-105">
+                        class="flex justify-between text-white bg-violet-500 hover:bg-violet-600 focus:ring-4 focus:outline-none focus:ring-violet-300 font-medium rounded-full text-sm px-5 py-2.5 text-center transition-all duration-500 ease-out w-full hover:scale-105">
                     Rechercher
                     <span class="inline-flex items-center px-3 text-sm text-gray-900">
-                <i class="fa-solid fa-search text-white"></i>
-            </span>
+                        <i class="fa-solid fa-search text-white"></i>
+                    </span>
                 </button>
-                <a href="{{ url('admin/assign_subject/list') }}"
-                   class="ms-5 text-gray-800 bg-gray-300 hover:bg-gray-400 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-full text-sm px-5 py-2.5 text-center transition-all duration-500 ease-out w-fit hover:scale-105">
+                <a href="{{ url('admin/assign_class/list') }}"
+                   class="text-gray-800 bg-gray-300 hover:bg-gray-400 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-full text-sm px-5 py-2.5 text-center transition-all duration-500 ease-out w-full hover:scale-105">
                     Réinitialiser les filtres
                 </a>
             </div>
+
         </form>
 
         <div class="relative overflow-visible shadow-md sm:rounded-lg border border-gray-300 z-10" id="results">
@@ -95,7 +96,7 @@
                     </th>
                     <th scope="col" class="px-6 py-3">
                         <div class="flex items-center">
-                            Identifiant
+                            N°
                             <a href="#">
                                 <span class="w-3 h-3 ms-1.5"><i class="fa-solid fa-filter"></i></span>
                             </a>
@@ -111,7 +112,7 @@
                     </th>
                     <th scope="col" class="px-6 py-3">
                         <div class="flex items-center">
-                            Nom de la matière
+                            Nom & Prénoms du professeur
                             <a href="#">
                                 <span class="w-3 h-3 ms-1.5"><i class="fa-solid fa-filter"></i></span>
                             </a>
@@ -155,11 +156,11 @@
                 </tr>
                 </thead>
                 <tbody>
-                @foreach($getClassSubject as $index => $classSubject)
+                @foreach($getClassTeacher as $index => $classTeacher)
                 <tr class="bg-white border-b hover:bg-gray-50">
                     <td class="w-4 p-4">
                         <div class="flex items-center">
-                            <input name="ids[]" value="{{ $classSubject->id }}" type="checkbox"
+                            <input name="ids[]" value="{{ $classTeacher->id }}" type="checkbox"
                                    class="w-4 h-4 border border-gray-300 rounded bg-white focus:ring-3 focus:ring-violet-300 focus:outline-none checked:bg-violet-600">
                             <label for="checkbox-table-search-{{ $index }}" class="sr-only">checkbox</label>
                         </div>
@@ -168,18 +169,18 @@
                         {{ $index + 1 }}
                     </th>
                     <td class="px-6 py-4">
-                        {{ $classSubject -> class_name }}
+                        {{ $classTeacher -> class_name }}
                     </td>
                     <td class="px-6 py-4">
-                        {{ $classSubject -> subject_name }}
+                        {{ $classTeacher -> teacher_name }} {{ $classTeacher -> teacher_last_name }}
                     </td>
                     <td class="px-6 py-4">
-                        @if($classSubject->status == 0)
+                        @if($classTeacher->status == 0)
                         <div class="flex items-center">
                             <div class="h-2.5 w-2.5 rounded-full bg-red-500 me-2"></div>
                             Désactivée
                         </div>
-                        @elseif($classSubject->status == 1)
+                        @elseif($classTeacher->status == 1)
                         <div class="flex items-center">
                             <div class="h-2.5 w-2.5 rounded-full bg-green-500 me-2"></div>
                             Activée
@@ -187,13 +188,13 @@
                         @endif
                     </td>
                     <td class="px-6 py-4">
-                        {{ $classSubject -> created_by_name }}
+                        {{ $classTeacher -> created_by_name }}
                     </td>
                     <td class="px-6 py-4">
-                        {{ \Carbon\Carbon::parse($classSubject->created_at)->format('d/m/Y H:i:s') }}
+                        {{ \Carbon\Carbon::parse($classTeacher->created_at)->format('d/m/Y H:i:s') }}
                     </td>
                     <td class="px-6 py-4">
-                        {{ \Carbon\Carbon::parse($classSubject->updated_at)->format('d/m/Y H:i:s') }}
+                        {{ \Carbon\Carbon::parse($classTeacher->updated_at)->format('d/m/Y H:i:s') }}
                     </td>
                     <td class="flex items-center px-6 py-4 relative">
                         <button id="dropdownMenuIconButton-{{ $index + 1}}"
@@ -208,7 +209,7 @@
                             <ul class="text-sm text-gray-700"
                                 aria-labelledby="dropdownMenuIconButton-{{ $index + 1}}">
                                 <li>
-                                    <a href="{{ url('admin/assign_subject/edit_single', $classSubject -> id) }}"
+                                    <a href="{{ url('admin/assign_class/edit_single', $classTeacher -> id) }}"
                                        class="font-medium flex items-center space-x-2 px-4 py-3 hover:bg-gray-100 text-[12px] text-violet-500"
                                        title="Modifier">
                                         <span><i class="fa-solid fa-pen"></i></span>
@@ -216,7 +217,7 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="{{ url('admin/assign_subject/edit', $classSubject -> id) }}"
+                                    <a href="{{ url('admin/assign_class/edit', $classTeacher -> id) }}"
                                        class="font-medium flex items-center space-x-2 px-4 py-3 hover:bg-gray-100 text-[12px] text-violet-500"
                                        title="Modifier">
                                         <span><i class="fa-solid fa-pen-to-square"></i></span>
@@ -224,7 +225,7 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="{{ url('admin/assign_subject/delete', $classSubject -> id) }}"
+                                    <a href="{{ url('admin/assign_class/delete', $classTeacher -> id) }}"
                                        class="font-medium flex items-center space-x-2 px-4 py-3 hover:bg-gray-100 text-red-500 text-[12px]"
                                        title="Supprimer">
                                         <span><i class="fa-solid fa-trash"></i></span>
@@ -236,10 +237,10 @@
                     </td>
                 </tr>
                 @endforeach
-                @if($getClassSubject->isEmpty())
+                @if($getClassTeacher->isEmpty())
                 <tr>
                     <td colspan="9" class="p-6 text-center text-gray-500">
-                        Aucune matière assignée trouvée.
+                        Aucune classe assignée trouvée.
                     </td>
                 </tr>
                 @endif
@@ -248,7 +249,7 @@
             <div class="text-center bg-white p-2">
                 <div class="flex justify-between items-center mt-4">
                         <span
-                            class="text-violet-500 font-bold text-md ps-3.5 uppercase">Total : {{ $getClassSubject->total() }}</span>
+                            class="text-violet-500 font-bold text-md ps-3.5 uppercase">Total : {{ $getClassTeacher->total() }}</span>
                 </div>
             </div>
         </div>

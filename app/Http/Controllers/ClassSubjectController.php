@@ -151,7 +151,7 @@ class ClassSubjectController extends Controller
     {
         $classSubject = ClassSubjectModel::getSingle($id);
         if ($classSubject) {
-            $classSubject->is_delete = 0;
+            $classSubject->is_delete = 1;
             $classSubject->save();
             return redirect('admin/assign_subject/list')->with('success', 'Cette assignation a été supprimée avec succès.');
         } else {
