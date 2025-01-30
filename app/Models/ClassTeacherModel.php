@@ -80,4 +80,43 @@ class ClassTeacherModel extends Model
         return ClassTeacherModel::where('class_id', '=', $class_id)->delete();
     }
 
+    static public function getMyClass(int $perPage, int $teacher_id){
+        $results = ClassTeacherModel::select(
+            'class_teacher.*',
+            'class.name as class_name',
+            'subject.name as subject_name',
+            'subject.type as subject_type',
+        )
+            ->join('class', 'class.id', '=', 'class_teacher.class_id')
+            ->join('class_subject', 'class_subject.class_id', '=', 'class.id')
+            ->join('subject', 'subject.id', '=', 'class_subject.subject_id')
+            ->where('class_teacher.is_delete', 0)
+            ->where('class_teacher.status', 1)
+            ->where('subject.is_delete', 0)
+            ->where('subject.status', 1)
+            ->where('class_subject.is_delete', 0)
+            ->where('class_subject.status', 1)
+            ->where('class_teacher.teacher_id', '=', $teacher_id);
+
+        $filters = [
+            'class.name' => strtolower(Request::get('class_name')),
+            'class_teacher.created_at' => strtolower(Request::get('created_at')),
+            'class_teacher.updated_at' => strtolower(Request::get('updated_at')),
+        ];
+
+        foreach ($filters as $column => $value) {
+            if (!empty($value)) {
+                $results->where($column, 'like', '%' . $value . '%');
+            }
+        }
+
+        $type = Request::get('subject_type');
+        if (in_array($type, ['theoretical', 'practical'], true)) {
+            $results->where('subject.type', $type);
+        }
+
+        return $results->orderBy('class_teacher.id', 'desc')
+            ->paginate($perPage);
+    }
+
 }

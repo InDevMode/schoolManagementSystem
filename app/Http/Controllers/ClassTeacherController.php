@@ -47,9 +47,9 @@ class ClassTeacherController extends Controller
                 return redirect()->back()->with('error', 'Veuillez bien remplir tous les champs s\'il vous plaît....');
             }
 
-            return redirect('admin/assign_class/list')->with('success', 'Ces matières ont été bien assignées à cette classe avec succès.');
+            return redirect('admin/assign_class/list')->with('success', 'Ces professeurs ont été bien assignées à cette classe avec succès.');
         } catch (\Exception $e) {
-            Log::error("Erreur lors de la création de l'assignation de ces matières. " . $e->getMessage());
+            Log::error("Erreur lors de la création de l'assignation de cette classe. " . $e->getMessage());
 
             return redirect()->back()->with('error', 'Vos informations ne sont pas correctes. Veuillez réessayer.');
         }
@@ -151,6 +151,14 @@ class ClassTeacherController extends Controller
         } else {
             abort(404);
         }
+    }
+
+    public function myClass(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
+    {
+        $data['header_title'] = "Mes Classes";
+        $teacher_id = Auth::user()->id;
+        $data['getClassTeacher'] = ClassTeacherModel::getMyClass(10, $teacher_id);
+        return view('teacher.class', $data);
     }
 
 }
