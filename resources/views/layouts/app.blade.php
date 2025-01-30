@@ -37,5 +37,19 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
 <script src="https://kit.fontawesome.com/79fa04224e.js" crossorigin="anonymous"></script>
 @yield('script')
+<script>
+    function toggleDropdown() {
+        let dropdown = document.getElementById("dropdown-assign");
+        let chevron = document.getElementById("chevron");
+
+        if (dropdown.style.maxHeight && dropdown.style.maxHeight !== "0px") {
+            dropdown.style.maxHeight = "0px";
+            chevron.style.transform = "rotate(0deg)";
+        } else {
+            dropdown.style.maxHeight = dropdown.scrollHeight + "px";
+            chevron.style.transform = "rotate(90deg)";
+        }
+    }
+</script>
 
 </html>
