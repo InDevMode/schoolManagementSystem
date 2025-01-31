@@ -23,7 +23,6 @@ class ClassSubjectController extends Controller
     {
         $data['getClass'] = ClassModel::getClass();
         $data['getSubject'] = SubjectModel::getSubject();
-
         $data['header_title'] = "Assignez une matière";
         return view('admin.assign_subject.add', $data);
     }

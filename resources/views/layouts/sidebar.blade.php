@@ -106,6 +106,15 @@
                 </button>
                 <ul id="dropdown-assign" class="max-h-0 overflow-visible transition-all duration-1000 ease-out">
                     <li>
+                        <a href="{{ url('admin/assign_class/list') }}"
+                           class="flex items-center p-2 rounded pl-8 hover:bg-violet-600 transition-all duration-700 ease-out group {{ Request::Segment(2) == 'assign_class' ? 'bg-violet-500' : 'text-violet-500'}}">
+                            <span class="flex-shrink-0 transition duration-700 group-hover:text-white">
+                                <i class="fa-solid fa-chevron-right"></i>
+                            </span>
+                            <span class="flex-1 ms-3 whitespace-nowrap group-hover:text-white">Classes</span>
+                        </a>
+                    </li>
+                    <li>
                         <a href="{{ url('admin/assign_subject/list') }}"
                            class="flex items-center p-2 rounded pl-8 hover:bg-violet-600 transition-all duration-700 ease-out group {{ Request::Segment(2) == 'assign_subject' ? 'bg-violet-500' : 'text-violet-500'}}">
                             <span class="flex-shrink-0 transition duration-700 group-hover:text-white">
@@ -115,12 +124,12 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{{ url('admin/assign_class/list') }}"
-                           class="flex items-center p-2 rounded pl-8 hover:bg-violet-600 transition-all duration-700 ease-out group {{ Request::Segment(2) == 'assign_class' ? 'bg-violet-500' : 'text-violet-500'}}">
+                        <a href="{{ url('admin/class_timetable/list') }}"
+                           class="flex items-center p-2 rounded pl-8 hover:bg-violet-600 transition-all duration-700 ease-out group {{ Request::Segment(2) == 'class_timetable' ? 'bg-violet-500' : 'text-violet-500'}}">
                             <span class="flex-shrink-0 transition duration-700 group-hover:text-white">
                                 <i class="fa-solid fa-chevron-right"></i>
                             </span>
-                            <span class="flex-1 ms-3 whitespace-nowrap group-hover:text-white">Classes</span>
+                            <span class="flex-1 ms-3 whitespace-nowrap group-hover:text-white">Horaires de Cours</span>
                         </a>
                     </li>
                 </ul>
