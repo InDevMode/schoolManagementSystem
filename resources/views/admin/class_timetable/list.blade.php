@@ -40,7 +40,9 @@
                         </option>
                         @if(!empty($getSubject))
                         @foreach($getSubject as $subject)
-                        <option {{ Request::get('subject_id') == $subject->subject_id ? 'selected' : '' }} value="{{ $subject->subject_id }}">{{ $subject->subject_name }}</option>
+                        <option {{ Request::get(
+                        'subject_id') == $subject->subject_id ? 'selected' : '' }} value="{{ $subject->subject_id
+                        }}">{{ $subject->subject_name }}</option>
                         @endforeach
                         @endif
                     </select>
@@ -61,110 +63,126 @@
         </form>
 
         @if(!empty(Request::get('class_id') && !empty(Request::get('subject_id'))))
-        <div class="relative overflow-visible shadow-md sm:rounded-lg border border-gray-300 z-10" id="results">
-            <table class="w-full text-[12px] text-left rtl:text-right">
-                <thead class="text-[12px] text-white uppercase bg-violet-500">
-                <tr>
-                    <th scope="col" class="p-4">
-                        <div class="flex items-center">
-                            <input id="checkbox-all-search" type="checkbox"
-                                   class="w-4 h-4 border border-gray-300 rounded bg-white focus:ring-3 focus:ring-violet-300 focus:outline-none checked:bg-violet-600">
-                            <label for="checkbox-all-search" class="sr-only">checkbox</label>
-                        </div>
-                    </th>
-                    <th scope="col" class="px-6 py-3">
-                        <div class="flex items-center">
-                            N°
-                            <a href="#">
-                                <span class="w-3 h-3 ms-1.5"><i class="fa-solid fa-filter"></i></span>
-                            </a>
-                        </div>
-                    </th>
-                    <th scope="col" class="px-6 py-3">
-                        <div class="flex items-center">
-                            Jour de semaine
-                            <a href="#">
-                                <span class="w-3 h-3 ms-1.5"><i class="fa-solid fa-filter"></i></span>
-                            </a>
-                        </div>
-                    </th>
-                    <th scope="col" class="px-6 py-3">
-                        <div class="flex items-center">
-                            Heure de début
-                            <a href="#">
-                                <span class="w-3 h-3 ms-1.5"><i class="fa-solid fa-filter"></i></span>
-                            </a>
-                        </div>
-                    </th>
-                    <th scope="col" class="px-6 py-3">
-                        <div class="flex items-center">
-                            Heure de fin
-                            <a href="#">
-                                <span class="w-3 h-3 ms-1.5"><i class="fa-solid fa-filter"></i></span>
-                            </a>
-                        </div>
-                    </th>
-                    <th scope="col" class="px-6 py-3">
-                        <div class="flex items-center">
-                            Numéro de classe
-                            <a href="#">
-                                <span class="w-3 h-3 ms-1.5"><i class="fa-solid fa-filter"></i></span>
-                            </a>
-                        </div>
-                    </th>
-                </tr>
-                </thead>
-                <tbody>
-                @foreach($getWeek as $index => $week)
-                <tr class="bg-white border-b hover:bg-gray-50">
-                    <td class="w-4 p-4">
-                        <div class="flex items-center">
-                            <input id="checkbox-table-search-1" type="checkbox"
-                                   class="w-4 h-4 border border-gray-300 rounded bg-white focus:ring-3 focus:ring-violet-300 focus:outline-none checked:bg-violet-600">
-                            <label for="checkbox-table-search-1" class="sr-only">checkbox</label>
-                        </div>
-                    </td>
-                    <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-                        {{ $index + 1 }}
-                    </th>
-                    <td class="px-6 py-4">
-                         <span
-                             class="block w-[100px] text-center bg-violet-100 text-violet-800 text-xs font-medium me-2 px-2.5 py-1 rounded">{{ $week->name }}</span>
-                    </td>
-                    <td class="px-6 py-4">
-                        <input type="time" id="start_time" name="start_time" value="{{ old('start_time') }}"
-                               class="rounded bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm ps-3"
-                               placeholder="heure de fin..." required>
-                    </td>
-                    <td class="px-6 py-4">
-                        <input type="time" id="end_time" name="end_time" value="{{ old('end_time') }}"
-                               class="rounded bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm ps-3"
-                               placeholder="heure de début..." required>
-                    </td>
-                    <td class="px-6 py-4">
-                        <input type="text" id="room_number" name="room_number" value="{{ old('room_number') }}"
-                               class="rounded bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm ps-3"
-                               placeholder="numéro de salle..." required>
-                    </td>
+        <form action="{{ url('admin/class_timetable/add') }}" method="post">
+            {{ csrf_field() }}
+            <input type="hidden" name="subject_id" value="{{ Request::get('subject_id') }}">
+            <input type="hidden" name="class_id" value="{{ Request::get('class_id') }}">
+            <div class="relative overflow-visible shadow-md sm:rounded-lg border border-gray-300 z-10" id="results">
+                <table class="w-full text-[12px] text-left rtl:text-right">
+                    <thead class="text-[12px] text-white uppercase bg-violet-500">
+                    <tr>
+                        <th scope="col" class="p-4">
+                            <div class="flex items-center">
+                                <input id="checkbox-all-search" type="checkbox"
+                                       class="w-4 h-4 border border-gray-300 rounded bg-white focus:ring-3 focus:ring-violet-300 focus:outline-none checked:bg-violet-600">
+                                <label for="checkbox-all-search" class="sr-only">checkbox</label>
+                            </div>
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            <div class="flex items-center">
+                                N°
+                                <a href="#">
+                                    <span class="w-3 h-3 ms-1.5"><i class="fa-solid fa-filter"></i></span>
+                                </a>
+                            </div>
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            <div class="flex items-center">
+                                Jour de semaine
+                                <a href="#">
+                                    <span class="w-3 h-3 ms-1.5"><i class="fa-solid fa-filter"></i></span>
+                                </a>
+                            </div>
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            <div class="flex items-center">
+                                Heure de début
+                                <a href="#">
+                                    <span class="w-3 h-3 ms-1.5"><i class="fa-solid fa-filter"></i></span>
+                                </a>
+                            </div>
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            <div class="flex items-center">
+                                Heure de fin
+                                <a href="#">
+                                    <span class="w-3 h-3 ms-1.5"><i class="fa-solid fa-filter"></i></span>
+                                </a>
+                            </div>
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            <div class="flex items-center">
+                                Numéro de salle
+                                <a href="#">
+                                    <span class="w-3 h-3 ms-1.5"><i class="fa-solid fa-filter"></i></span>
+                                </a>
+                            </div>
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @php
+                    $i = 1;
+                    @endphp
+                    @foreach($week as $index => $weekData)
+                    <tr class="bg-white border-b hover:bg-gray-50">
+                        <td class="w-4 p-4">
+                            <div class="flex items-center">
+                                <input id="checkbox-table-search-{{ $index }}" type="checkbox"
+                                       class="w-4 h-4 border border-gray-300 rounded bg-white focus:ring-3 focus:ring-violet-300 focus:outline-none checked:bg-violet-600">
+                                <label for="checkbox-table-search-{{ $index }}" class="sr-only">checkbox</label>
+                            </div>
+                        </td>
+                        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
+                            {{ $index + 1 }}
+                        </th>
+                        <td class="px-6 py-4">
+                            <input type="hidden" name="timetable[{{ $index }}][week_id]"
+                                   value="{{ $weekData['week_id'] }}">
+                            <span
+                                class="block w-[100px] text-center bg-violet-100 text-violet-800 text-xs font-medium me-2 px-2.5 py-1 rounded">{{ $weekData['week_name'] }}</span>
+                        </td>
+                        <td class="px-6 py-4">
+                            <input type="time" id="timetable[{{ $index }}][start_time]"
+                                   name="timetable[{{ $index }}][start_time]"
+                                   value="{{ old('timetable.' . $index . '.start_time', $weekData['start_time']) }}"
+                                   class="rounded bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm ps-3">
+                        </td>
+                        <td class="px-6 py-4">
+                            <input type="time" id="timetable[{{ $index }}][end_time]"
+                                   name="timetable[{{ $index }}][end_time]"
+                                   value="{{ old('timetable.' . $index . '.end_time', $weekData['end_time']) }}"
+                                   class="rounded bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm ps-3">
+                        </td>
+                        <td class="px-6 py-4">
+                            <input type="text" id="timetable[{{ $index }}][room_number]"
+                                   name="timetable[{{ $index }}][room_number]"
+                                   value="{{ old('timetable.' . $index . '.room_number', $weekData['room_number']) }}"
+                                   class="rounded bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm ps-3">
+                        </td>
+                    </tr>
+                    @php
+                    $i++
+                    @endphp
+                    @endforeach
+                    @if($getWeek->isEmpty())
+                    <tr>
+                        <td colspan="7" class="p-6 text-center text-gray-500">
+                            Aucun horaire de cours trouvé.
+                        </td>
+                    </tr>
+                    @endif
+                    </tbody>
+                </table>
+                <div class="flex ms-4 my-3">
+                    <button type="submit"
+                            class="text-white bg-violet-500 hover:bg-violet-600 focus:ring-4 focus:outline-none focus:ring-violet-300 font-medium rounded-md text-sm px-5 py-2.5 text-center transition-all duration-700 ease-out w-fit">
+                        Ajouter
+                    </button>
+                </div>
+            </div>
+        </form>
 
-                </tr>
-                @endforeach
-                @if($getWeek->isEmpty())
-                <tr>
-                    <td colspan="7" class="p-6 text-center text-gray-500">
-                        Aucun horaire de cours trouvé.
-                    </td>
-                </tr>
-                @endif
-                </tbody>
-            </table>
-           <div class="flex ms-4 my-3">
-               <button type="submit"
-                       class="text-white bg-violet-500 hover:bg-violet-600 focus:ring-4 focus:outline-none focus:ring-violet-300 font-medium rounded-md text-sm px-5 py-2.5 text-center transition-all duration-700 ease-out w-fit">
-                   Ajouter
-               </button>
-           </div>
-        </div>
         @endif
     </div>
 </div>

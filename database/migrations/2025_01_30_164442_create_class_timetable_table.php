@@ -13,7 +13,12 @@ return new class extends Migration
     {
         Schema::create('class_timetable', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->nullable();
+            $table->Integer('class_id')->unsigned()->nullable()->foreign('class_id')->references('id')->on('class')->onDelete('cascade');
+            $table->Integer('subject_id')->unsigned()->nullable()->foreign('subject_id')->references('id')->on('subject')->onDelete('cascade');
+            $table->Integer('week_id')->unsigned()->nullable()->foreign('week_id')->references('id')->on('week')->onDelete('cascade');
+            $table->string('start_time')->nullable();
+            $table->string('end_time')->nullable();
+            $table->string('room_number')->nullable();
             $table->timestamps();
         });
     }

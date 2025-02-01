@@ -118,8 +118,8 @@ Route::group(['middleware' => 'admin'], function () {
 
     // Class timetable url
     Route::get('admin/class_timetable/list', [ClassTimetableController::class, 'list']);
-    Route::get('admin/class_timetable/add', [ClassTimetableController::class, 'add']);
     Route::post('admin/class_timetable/subject', [ClassTimetableController::class, 'getSubject']);
+    Route::post('admin/class_timetable/add', [ClassTimetableController::class, 'add']);
 
 
 });

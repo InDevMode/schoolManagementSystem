@@ -12,13 +12,23 @@ class ClassTimetableModel extends Model
     protected $table = 'class_timetable';
 
     protected $fillable = [
-        'name',
+        'start_time',
+        'end_time',
+        'room_number',
     ];
 
+    protected $hidden = [
+        'class_id',
+        'subject_id',
+        'week_id',
+    ];
 
-    static public function getClassTimetable(int $perPage)
+    static public function getClassTimetable(int $class_id, int $subject_id, int $week_id)
     {
-        return $perPage;
+        return ClassTimetableModel::where('class_id', '=', $class_id)
+            ->where('subject_id', '=', $subject_id)
+            ->where('week_id', '=', $week_id)
+            ->first();
     }
 
     static public function getSubject(int $class_id){
