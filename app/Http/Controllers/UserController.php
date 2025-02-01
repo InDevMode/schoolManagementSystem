@@ -86,6 +86,7 @@ class UserController extends Controller
             }
 
             $admin->name = trim($request->name);
+            $admin->last_name = trim($request->last_name);
             $admin->email = trim($request->email);
             $admin->save();
 

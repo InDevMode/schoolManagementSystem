@@ -15,4 +15,9 @@ class WeekModel extends Model
         'name',
     ];
 
+    static public function getAllWeek()
+    {
+        return WeekModel::get();
+    }
+
 }

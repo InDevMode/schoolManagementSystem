@@ -104,7 +104,7 @@
                             <i class="fa-solid fa-chevron-down"></i>
                         </span>
                 </button>
-                <ul id="dropdown-assign" class="max-h-0 overflow-visible transition-all duration-1000 ease-out">
+                <ul id="dropdown-assign" class="max-h-0 overflow-y-visible transition-all duration-1000 ease-out">
                     <li>
                         <a href="{{ url('admin/assign_class/list') }}"
                            class="flex items-center p-2 rounded pl-8 hover:bg-violet-600 transition-all duration-700 ease-out group {{ Request::Segment(2) == 'assign_class' ? 'bg-violet-500' : 'text-violet-500'}}">

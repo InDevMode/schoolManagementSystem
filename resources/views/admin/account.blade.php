@@ -31,6 +31,11 @@
                                placeholder="nom..." required>
                     </div>
                     <div class="flex mb-5">
+                        <input type="text" id="last_name" name="last_name" value="{{ $getUserData -> last_name }}"
+                               class="rounded bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm ps-3"
+                               placeholder="prénom..." required>
+                    </div>
+                    <div class="flex mb-5">
                         <input type="email" id="email" name="email" value="{{ $getUserData -> email }}"
                                class="rounded bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm ps-3"
                                placeholder="email..." required>

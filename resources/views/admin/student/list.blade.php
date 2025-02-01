@@ -141,7 +141,6 @@
                    class="text-gray-800 bg-gray-300 hover:bg-gray-400 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-full text-sm px-5 py-2.5 text-center transition-all duration-500 ease-out w-full hover:scale-105">
                     Réinitialiser les filtres
                 </a>
-
             </div>
         </form>
         <div class="relative overflow-visible shadow-md sm:rounded-lg border border-gray-300 z-10" id="results">

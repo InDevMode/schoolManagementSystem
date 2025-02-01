@@ -160,7 +160,7 @@
                     </th>
                     <td class="px-6 py-4">
                          <span
-                             class="bg-gray-100 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded border border-gray-400">{{ $class -> name }}</span>
+                             class="block w-[100px] text-center bg-gray-100 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded">{{ $class -> name }}</span>
                     </td>
                     <td class="px-6 py-4">
                         @if($class->status == 0)

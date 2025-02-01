@@ -31,7 +31,7 @@ class ClassTimetableModel extends Model
             ->join('users', 'users.id', '=', 'class_subject.created_by')
             ->where('class_subject.class_id', '=', $class_id)
             ->where('class_subject.is_delete', '=', 0)
-            ->where('class_subject.status', '=', 0)
+            ->where('class_subject.status', '=', 1)
             ->orderBy('class_subject.id', 'desc')
             ->get();
 
