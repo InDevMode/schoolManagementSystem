@@ -13,12 +13,14 @@
                 <span>Liste des Horaires de Cours</span>
             </div>
         </div>
+        <div
+            class="pt-5 text-red-500 text-sm font-semibold">Veuillez chossir la classe et la matière dont vous souhaiterez définir les horaires</div>
         <form action="" method="get"
               class="my-5 shadow p-3 bg-white rounded border border-gray-300"
               id="searchForm">
             {{ csrf_field() }}
             <div class="grid grid-cols-2 gap-x-2">
-                <div class="flex mb-5">
+                <div class="flex mb-3">
                     <select id="class_id" name="class_id"
                             class="class_id rounded-full bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm ps-3"
                             required>
@@ -31,7 +33,7 @@
                         @endforeach
                     </select>
                 </div>
-                <div class="flex mb-5">
+                <div class="flex mb-3">
                     <select id="subject_id" name="subject_id"
                             class="subject_id rounded-full bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm ps-3"
                             required>
@@ -61,6 +63,8 @@
                 </a>
             </div>
         </form>
+
+        <div class="mb-5 text-red-500 text-sm font-semibold">Définissez des horaires de cours pour cette classe et cette matière</div>
 
         @if(!empty(Request::get('class_id') && !empty(Request::get('subject_id'))))
         <form action="{{ url('admin/class_timetable/add') }}" method="post">
