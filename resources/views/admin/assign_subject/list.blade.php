@@ -4,12 +4,12 @@
     <div class="p-4 rounded-lg dark:border-gray-700 mt-14">
         @include('message')
         <div class="flex justify-between pt-2">
-            <div class="space-x-2 font-semibold">
-                <span class="text-violet-500 text-[25px]"><i class="fa-solid fa-arrows-rotate"></i></span>
-                <span>/</span>
+            <div class="space-x-2 font-semibold mt-3">
+                <span class="text-violet-500"><i class="fa-solid fa-arrows-rotate"></i></span>
+                <span><i class="fa-solid fa-chevron-right"></i></span>
                 <span class="hover:underline hover:text-violet-500 transition-all duration-300"><a
                         href="{{ url('admin/dashboard') }}">Dashboard</a></span>
-                <span>/</span>
+                <span><i class="fa-solid fa-chevron-right"></i></span>
                 <span>Liste des assignations</span>
             </div>
             <a href="{{ url('admin/assign_subject/add') }}"
@@ -25,58 +25,57 @@
         <form action="" method="get"
               class="flex justify-between my-5 shadow p-3 bg-white rounded border border-gray-300" id="searchForm">
             {{ csrf_field() }}
+            <div class="grid grid-cols-7 gap-x-5 gap-y-2">
 
-            <!-- Nom de la classe -->
-            <div>
-                <input type="text" id="class_name" name="class_name" value="{{ Request::get('class_name') }}"
-                       class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2"
-                       placeholder="Rechercher par le nom de la classe...">
-            </div>
+                <!-- Nom de la classe -->
+                <div>
+                    <input type="text" id="class_name" name="class_name" value="{{ Request::get('class_name') }}"
+                           class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2"
+                           placeholder="Rechercher par le nom de la classe...">
+                </div>
 
-            <!-- Nom de la matière -->
-            <div>
-                <input type="text" id="subject_name" name="subject_name" value="{{ Request::get('subject_name') }}"
-                       class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2"
-                       placeholder="Rechercher par le nom de la matière...">
-            </div>
+                <!-- Nom de la matière -->
+                <div>
+                    <input type="text" id="subject_name" name="subject_name" value="{{ Request::get('subject_name') }}"
+                           class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2"
+                           placeholder="Rechercher par le nom de la matière...">
+                </div>
 
-            <!-- Statut -->
-            <div>
-                <select id="status" name="status"
-                        class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2">
-                    <option value="">Filtrer par statut</option>
-                    <option value="1" {{ Request::get(
-                    'status') == '1' ? 'selected' : '' }}>Activée</option>
-                    <option value="0" {{ Request::get(
-                    'status') == '0' ? 'selected' : '' }}>Désactivée</option>
-                </select>
-            </div>
+                <!-- Statut -->
+                <div>
+                    <select id="status" name="status"
+                            class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2">
+                        <option value="">Filtrer par statut</option>
+                        <option value="1" {{ Request::get(
+                        'status') == '1' ? 'selected' : '' }}>Activée</option>
+                        <option value="0" {{ Request::get(
+                        'status') == '0' ? 'selected' : '' }}>Désactivée</option>
+                    </select>
+                </div>
+                <!-- Date de création -->
+                <div>
+                    <input type="date" id="created_at" name="created_at" value="{{ Request::get('created_at') }}"
+                           class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2"
+                           placeholder="Date de création...">
+                </div>
 
-            <!-- Date de création -->
-            <div>
-                <input type="date" id="created_at" name="created_at" value="{{ Request::get('created_at') }}"
-                       class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2"
-                       placeholder="Date de création...">
-            </div>
+                <!-- Date de modification -->
+                <div>
+                    <input type="date" id="updated_at" name="updated_at" value="{{ Request::get('updated_at') }}"
+                           class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2"
+                           placeholder="Date de modification...">
+                </div>
 
-            <!-- Date de modification -->
-            <div>
-                <input type="date" id="updated_at" name="updated_at" value="{{ Request::get('updated_at') }}"
-                       class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2"
-                       placeholder="Date de modification...">
-            </div>
-
-            <!-- Boutons -->
-            <div class="flex">
+                <!-- Boutons -->
                 <button type="submit"
-                        class="flex justify-between text-white bg-violet-500 hover:bg-violet-600 focus:ring-4 focus:outline-none focus:ring-violet-300 font-medium rounded-full text-sm px-5 py-2.5 text-center transition-all duration-500 ease-out w-fit hover:scale-105">
+                        class="flex justify-between text-white bg-violet-500 hover:bg-violet-600 focus:ring-4 focus:outline-none focus:ring-violet-300 font-medium rounded-full text-sm px-5 py-2.5 text-center transition-all duration-500 ease-out w-full hover:scale-105">
                     Rechercher
                     <span class="inline-flex items-center px-3 text-sm text-gray-900">
-                <i class="fa-solid fa-search text-white"></i>
-            </span>
+                        <i class="fa-solid fa-search text-white"></i>
+                    </span>
                 </button>
                 <a href="{{ url('admin/assign_subject/list') }}"
-                   class="ms-5 text-gray-800 bg-gray-300 hover:bg-gray-400 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-full text-sm px-5 py-2.5 text-center transition-all duration-500 ease-out w-fit hover:scale-105">
+                   class="text-gray-800 bg-gray-300 hover:bg-gray-400 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-full text-sm px-5 py-2.5 text-center transition-all duration-500 ease-out w-full hover:scale-105">
                     Réinitialiser les filtres
                 </a>
             </div>

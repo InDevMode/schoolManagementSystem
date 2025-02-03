@@ -2,16 +2,16 @@
 @section('content')
 <div class="p-4 sm:ml-64">
     <div class="p-4 rounded-lg mt-14">
-        <div class="space-x-2 font-semibold">
-            <span class="text-emerald-500 text-[25px]"><i class="fa-solid fa-arrows-rotate"></i></span>
-            <span>/</span>
+        <div class="space-x-2 font-semibold mt-3">
+            <span class="text-emerald-500"><i class="fa-solid fa-arrows-rotate"></i></span>
+            <span><i class="fa-solid fa-chevron-right"></i></span>
             <span class="hover:underline hover:text-emerald-500 transition-all duration-300"><a
-                    href="{{ url('admin/assign_subject/list') }}">Listes des assignations</a></span>
-            <span>/</span>
+                    href="{{ url('admin/assign_subject/list') }}">Liste des assignations</a></span>
+            <span><i class="fa-solid fa-chevron-right"></i></span>
             <span>Assignation</span>
         </div>
         <div class="p-4 flex items-center justify-center">
-            <div class="w-full max-w-screen-md bg-white shadow-lg mt-24 rounded-md">
+            <div class="w-full max-w-screen-md bg-white shadow-xl mt-24 rounded-md">
                 @include('message')
                 <h2 class="bg-emerald-500 font-bold uppercase text-center text-white rounded-t-lg py-3 mb-5">
                     Modifier cette assignation</h2>

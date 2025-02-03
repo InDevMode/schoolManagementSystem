@@ -89,6 +89,12 @@ class ClassTimetableController extends Controller
         }
     }
 
+    public function studentTimetable(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
+    {
+        $data['header_title'] = "Horaire de cours de l'élève";
+        return view('student.timetable', $data);
+    }
+
     public function create()
     {
     }

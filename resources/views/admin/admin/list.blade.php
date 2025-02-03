@@ -3,13 +3,13 @@
 <div class="p-4 sm:ml-64">
     <div class="p-4 rounded-lg mt-14">
         @include('message')
-        <div class="flex justify-between pt-2">
+        <div class="flex justify-between mt-3">
             <div class="space-x-2 font-semibold">
-                <span class="text-violet-500 text-[25px]"><i class="fa-solid fa-user-secret"></i></span>
-                <span>/</span>
+                <span class="text-violet-500"><i class="fa-solid fa-user-secret"></i></span>
+                <span><i class="fa-solid fa-chevron-right"></i></span>
                 <span class="hover:underline hover:text-violet-500 transition-all duration-300"><a
                         href="{{ url('admin/dashboard') }}">Dashboard</a></span>
-                <span>/</span>
+                <span><i class="fa-solid fa-chevron-right"></i></span>
                 <span>Liste des administrateurs</span>
             </div>
             <a href="{{ url('admin/admin/add') }}"
@@ -25,52 +25,57 @@
         <form action="" method="get"
               class="flex justify-between my-5 shadow p-3 bg-white rounded border border-gray-300" id="searchForm">
             {{ csrf_field() }}
-            <div class="">
-                <input type="text" id="name" name="name" value="{{ Request::get('name') }}"
-                       class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2"
-                       placeholder="Rechercher par nom...">
-            </div>
-            <div class="">
-                <input type="text" id="last_name" name="last_name" value="{{ Request::get('last_name') }}"
-                       class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2"
-                       placeholder="Rechercher par prénom...">
-            </div>
-            <div class="">
-                <input type="email" id="email" name="email" value="{{ Request::get('email') }}"
-                       class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2"
-                       placeholder="Rechercher par email...">
-            </div>
-            <div>
-                <select id="status" name="status"
-                        class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2">
-                    <option value="">Filtrer par statut</option>
-                    <option value="1" {{ Request::get(
-                    'status') == '1' ? 'selected' : '' }}>Actif</option>
-                    <option value="0" {{ Request::get(
-                    'status') == '0' ? 'selected' : '' }}>Inactif</option>
-                </select>
-            </div>
-            <div class="">
-                <input type="date" id="created_at" name="created_at" value="{{ Request::get('created_at') }}"
-                       class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2"
-                       placeholder="Rechercher par date de création...">
-            </div>
-            <div class="">
-                <input type="date" id="updated_at" name="updated_at" value="{{ Request::get('updated_at') }}"
-                       class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2"
-                       placeholder="Rechercher par date de modification...">
-            </div>
-            <div class="flex">
+            <div class="grid grid-cols-8 gap-x-5 gap-y-2">
+                <div class="">
+                    <input type="text" id="name" name="name" value="{{ Request::get('name') }}"
+                           class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2"
+                           placeholder="Rechercher par nom...">
+                </div>
+                <div class="">
+                    <input type="text" id="last_name" name="last_name" value="{{ Request::get('last_name') }}"
+                           class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2"
+                           placeholder="Rechercher par prénom...">
+                </div>
+                <div class="">
+                    <input type="email" id="email" name="email" value="{{ Request::get('email') }}"
+                           class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2"
+                           placeholder="Rechercher par email...">
+                </div>
+                <div>
+                    <select id="status" name="status"
+                            class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2">
+                        <option value="">Filtrer par statut</option>
+                        <option value="1" {{ Request::get(
+                        'status') == '1' ? 'selected' : '' }}>Actif</option>
+                        <option value="0" {{ Request::get(
+                        'status') == '0' ? 'selected' : '' }}>Inactif</option>
+                    </select>
+                </div>
+
+                <!-- Date de création -->
+                <div>
+                    <input type="date" id="created_at" name="created_at" value="{{ Request::get('created_at') }}"
+                           class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2"
+                           placeholder="Date de création...">
+                </div>
+
+                <!-- Date de modification -->
+                <div>
+                    <input type="date" id="updated_at" name="updated_at" value="{{ Request::get('updated_at') }}"
+                           class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2"
+                           placeholder="Date de modification...">
+                </div>
+
+                <!-- Boutons -->
                 <button type="submit"
-                        class="flex justify-between text-white bg-violet-500 hover:bg-violet-600 focus:ring-4 focus:outline-none focus:ring-violet-300 font-medium rounded-full text-sm px-5 py-2.5 text-center transition-all duration-500 ease-out w-fit hover:scale-105">
+                        class="flex justify-between text-white bg-violet-500 hover:bg-violet-600 focus:ring-4 focus:outline-none focus:ring-violet-300 font-medium rounded-full text-sm px-5 py-2.5 text-center transition-all duration-500 ease-out w-full hover:scale-105">
                     Rechercher
-                    <span
-                        class="inline-flex items-center px-3 text-sm text-gray-900">
-                            <i class="fa-solid fa-search text-white"></i>
-                        </span>
+                    <span class="inline-flex items-center px-3 text-sm text-gray-900">
+                        <i class="fa-solid fa-search text-white"></i>
+                    </span>
                 </button>
                 <a href="{{ url('admin/admin/list') }}"
-                   class="ms-5 text-gray-800 bg-gray-300 hover:bg-gray-400 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-full text-sm px-5 py-2.5 text-center transition-all duration-500 ease-out w-fit hover:scale-105">
+                   class="text-gray-800 bg-gray-300 hover:bg-gray-400 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-full text-sm px-5 py-2.5 text-center transition-all duration-500 ease-out w-full hover:scale-105">
                     Réinitialiser les filtres
                 </a>
             </div>
@@ -238,28 +243,6 @@
                 </div>
             </div>
         </div>
-
-        <div data-dial-init class="fixed end-6 bottom-6 group">
-            <div id="speed-dial-menu-default" class="flex flex-col items-center hidden mb-4 space-y-2">
-                <a href="{{ url('admin/admin/add') }}" data-tooltip-target="tooltip-administrates" data-tooltip-placement="left"
-                   class="flex justify-center items-center w-full h-[52px] text-gray-500 hover:text-gray-900 bg-white rounded-full border border-gray-200 shadow-sm hover:bg-gray-50 focus:ring-4 focus:ring-gray-300 focus:outline-none">
-                    <i class="fa-solid fa-user-secret"></i>
-                    <span class="sr-only">Créer un administrateur</span>
-                </a>
-                <div id="tooltip-administrates" role="tooltip"
-                     class="absolute z-10 invisible inline-block w-auto px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip">
-                    Créer un administrateur
-                    <div class="tooltip-arrow" data-popper-arrow></div>
-                </div>
-            </div>
-            <button type="button" data-dial-toggle="speed-dial-menu-default" aria-controls="speed-dial-menu-default"
-                    aria-expanded="false"
-                    class="flex items-center justify-center text-white bg-violet-500 rounded-full w-14 h-14 hover:bg-violet-600 focus:ring-4 focus:ring-violet-300 focus:outline-non">
-                <span class="transition-transform group-hover:rotate-45"><i class="fa-solid fa-2x fa-plus"></i></span>
-                <span class="sr-only">Open actions menu</span>
-            </button>
-        </div>
-
     </div>
 </div>
 @endsection

@@ -2,16 +2,16 @@
 @section('content')
 <div class="p-4 sm:ml-64">
     <div class="p-4 rounded-lg mt-14">
-        <div class="space-x-2 font-semibold">
+        <div class="space-x-2 font-semibold mt-3">
             <span class="text-emerald-500 text-[25px]"><i class="fa-solid fa-user-graduate"></i></span>
-            <span>/</span>
+            <span><i class="fa-solid fa-chevron-right"></i></span>
             <span class="hover:underline hover:text-emerald-500 transition-all duration-300"><a
                     href="{{ url('student/dashboard') }}">Dashboard</a></span>
-            <span>/</span>
+            <span><i class="fa-solid fa-chevron-right"></i></span>
             <span>Mon Compte</span>
         </div>
         <div class="p-4 flex items-center justify-center">
-            <div class="w-full max-w-7xl bg-white shadow-lg mt-2 rounded-md">
+            <div class="w-full max-w-7xl bg-white shadow-xl mt-2 rounded-md">
                 @include('message')
                 <form action="" method="post" class="p-5" enctype="multipart/form-data">
                     {{ csrf_field() }}

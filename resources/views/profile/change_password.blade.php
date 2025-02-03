@@ -4,7 +4,7 @@
     <div class="p-4 rounded-lg mt-14">
         <div class="space-x-2 font-semibold">
             <span class="text-emerald-500 text-[25px]"><i class="fa-solid fa-user-secret"></i></span>
-            <span>/</span>
+            <span><i class="fa-solid fa-chevron-right"></i></span>
             @if(Auth::user()->user_type == 1)
             <span class="hover:underline hover:text-emerald-600 transition-all duration-300"><a
                     href="{{ url('admin/dashboard') }}">Dashboard</a></span>
@@ -18,7 +18,7 @@
             <span class="hover:underline hover:text-emerald-600 transition-all duration-300"><a
                     href="{{ url('parent/dashboard') }}">Dashboard</a></span>
             @endif
-            <span>/</span>
+            <span><i class="fa-solid fa-chevron-right"></i></span>
             <span>Profile</span>
         </div>
         <div class="p-4 flex items-center justify-center">

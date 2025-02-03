@@ -218,6 +218,17 @@
                         class="flex-1 ms-3 whitespace-nowrap group-hover:text-white {{ Request::Segment(2) == 'my_subject' ? 'group-hover:text-white' : 'text-violet-500'}}">Mes Cours</span>
                 </a>
             </li>
+            <li>
+                <a href="{{ url('student/my_timetable') }}"
+                   class="flex items-center p-2 rounded hover:bg-violet-600 transition-all duration-700 ease-out group {{ Request::Segment(2) == 'my_timetable' ? 'bg-violet-500' : 'text-violet-500' }}">
+                    <span
+                        class="flex-shrink-0 transition duration-75 group-hover:text-white {{ Request::Segment(2) == 'my_timetable' ? 'text-white' : 'text-violet-500'}}">
+                        <i class="fa-solid fa-clock"></i>
+                    </span>
+                    <span
+                        class="flex-1 ms-3 whitespace-nowrap group-hover:text-white {{ Request::Segment(2) == 'my_timetable' ? 'group-hover:text-white' : 'text-violet-500'}}">Mes Programmes</span>
+                </a>
+            </li>
             @elseif(Auth::user()->user_type == 4)
             <li>
                 <a href="{{ url('parent/dashboard') }}"

@@ -157,6 +157,7 @@ Route::group(['middleware' => 'student'], function () {
 
     // Student route side show subject
     Route::get('student/my_subject', [SubjectController::class, 'studentSubject']);
+    Route::get('student/my_timetable', [ClassTimetableController::class, 'studentTimetable']);
 });
 
 Route::group(['middleware' => 'parent'], function () {
