@@ -2,9 +2,9 @@
 @section('content')
 <div class="p-4 sm:ml-64">
     <div class="p-4 mt-14">
-        <div class="mb-8 font-semibold space-x-2">
-            <span class="text-violet-500 text-[25px]"><i class="fa-solid fa-house-chimney"></i></span>
-            <span>/</span>
+        <div class="mb-8 mt-3 font-semibold space-x-2">
+            <span class="text-violet-500"><i class="fa-solid fa-house-chimney"></i></span>
+            <span><i class="fa-solid fa-chevron-right"></i></span>
             <span class="">Dashboard</span>
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-4">

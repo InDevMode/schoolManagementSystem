@@ -3,13 +3,13 @@
 <div class="p-4 sm:ml-64">
     <div class="p-4 rounded-lg dark:border-gray-700 mt-14">
         @include('message')
-        <div class="flex justify-between pt-2">
+        <div class="flex justify-between mt-3">
             <div class="space-x-2 font-semibold">
-                <span class="text-violet-500 text-[25px]"><i class="fa-solid fa-arrows-rotate"></i></span>
-                <span>/</span>
+                <span class="text-violet-500"><i class="fa-solid fa-arrows-rotate"></i></span>
+                <span><i class="fa-solid fa-chevron-right"></i></span>
                 <span class="hover:underline hover:text-violet-500 transition-all duration-300"><a
                         href="{{ url('admin/dashboard') }}">Dashboard</a></span>
-                <span>/</span>
+                <span><i class="fa-solid fa-chevron-right"></i></span>
                 <span>Liste des assignations</span>
             </div>
             <a href="{{ url('admin/assign_class/add') }}"
@@ -26,7 +26,7 @@
               class="flex justify-between my-5 shadow p-3 bg-white rounded border border-gray-300" id="searchForm">
             {{ csrf_field() }}
 
-            <div class="grid grid-cols-6 gap-x-5 gap-y-2">
+            <div class="grid grid-cols-7 gap-x-5 gap-y-2">
                 <!-- Nom de la classe -->
                 <div>
                     <input type="text" id="class_name" name="class_name" value="{{ Request::get('class_name') }}"

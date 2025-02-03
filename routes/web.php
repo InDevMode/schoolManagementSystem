@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ClassController;
 use App\Http\Controllers\ClassSubjectController;
 use App\Http\Controllers\ClassTeacherController;
+use App\Http\Controllers\ClassTimetableController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ParentController;
 use App\Http\Controllers\StudentController;
@@ -115,6 +116,11 @@ Route::group(['middleware' => 'admin'], function () {
     Route::post('admin/assign_class/edit_single/{id}', [ClassTeacherController::class, 'updateSingle']);
     Route::get('admin/assign_class/delete/{id}', [ClassTeacherController::class, 'delete']);
 
+    // Class timetable url
+    Route::get('admin/class_timetable/list', [ClassTimetableController::class, 'list']);
+    Route::post('admin/class_timetable/subject', [ClassTimetableController::class, 'getSubject']);
+    Route::post('admin/class_timetable/add', [ClassTimetableController::class, 'add']);
+
 
 });
 
@@ -151,6 +157,7 @@ Route::group(['middleware' => 'student'], function () {
 
     // Student route side show subject
     Route::get('student/my_subject', [SubjectController::class, 'studentSubject']);
+    Route::get('student/my_timetable', [ClassTimetableController::class, 'studentTimetable']);
 });
 
 Route::group(['middleware' => 'parent'], function () {

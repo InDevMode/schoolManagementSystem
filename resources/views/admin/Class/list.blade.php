@@ -4,12 +4,12 @@
     <div class="p-4 rounded-lg dark:border-gray-700 mt-14">
         @include('message')
         <div class="flex justify-between pt-2">
-            <div class="space-x-2 font-semibold">
-                <span class="text-violet-500 text-[25px]"><i class="fa-solid fa-landmark"></i></span>
-                <span>/</span>
+            <div class="space-x-2 font-semibold mt-3">
+                <span class="text-violet-500"><i class="fa-solid fa-landmark"></i></span>
+                <span><i class="fa-solid fa-chevron-right"></i></span>
                 <span class="hover:underline hover:text-violet-500 transition-all duration-300"><a
                         href="{{ url('admin/dashboard') }}">Dashboard</a></span>
-                <span>/</span>
+                <span><i class="fa-solid fa-chevron-right"></i></span>
                 <span>Liste des classes</span>
             </div>
             <a href="{{ url('admin/class/add') }}"
@@ -160,7 +160,7 @@
                     </th>
                     <td class="px-6 py-4">
                          <span
-                             class="bg-gray-100 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded border border-gray-400">{{ $class -> name }}</span>
+                             class="block w-[100px] text-center bg-gray-100 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded">{{ $class -> name }}</span>
                     </td>
                     <td class="px-6 py-4">
                         @if($class->status == 0)

@@ -4,12 +4,12 @@
     <div class="p-4 rounded-lg dark:border-gray-700 mt-14">
         @include('message')
         <div class="flex justify-between pt-2">
-            <div class="space-x-2 font-semibold">
-                <span class="text-violet-500 text-[25px]"><i class="fa-solid fa-landmark"></i></span>
-                <span>/</span>
+            <div class="space-x-2 font-semibold mt-3">
+                <span class="text-violet-500"><i class="fa-solid fa-landmark"></i></span>
+                <span><i class="fa-solid fa-chevron-right"></i></span>
                 <span class="hover:underline hover:text-violet-500 transition-all duration-300"><a
                         href="{{ url('teacher/dashboard') }}">Dashboard</a></span>
-                <span>/</span>
+                <span><i class="fa-solid fa-chevron-right"></i></span>
                 <span>Liste de mes Classes et Matières</span>
             </div>
         </div>

@@ -5,13 +5,13 @@
         @include('message')
         <div class="mb-10">
             <div class="flex justify-between pt-2">
-                <div class="space-x-2 font-semibold">
-                    <span class="text-violet-500 text-[25px]"><i class="fa-solid fa-person-breastfeeding"></i></span>
-                    <span>/</span>
+                <div class="space-x-2 font-semibold mt-3">
+                    <span class="text-violet-500"><i class="fa-solid fa-person-breastfeeding"></i></span>
+                    <span><i class="fa-solid fa-chevron-right"></i></span>
                     <span class="hover:underline hover:text-violet-500 transition-all duration-300"><a
-                            href="{{ url('admin/student/list') }}">Listes des élèves</a></span>
-                    <span>/</span>
-                    <span>Listes des élèves pouvant être assignés</span>
+                            href="{{ url('admin/student/list') }}">Liste des élèves</a></span>
+                    <span><i class="fa-solid fa-chevron-right"></i></span>
+                    <span>Liste des élèves pouvant être assignés</span>
                 </div>
                 <a href="{{ url('admin/student/add') }}"
                    class="uppercase shadow-lg text-white bg-violet-500 hover:bg-violet-600 focus:ring-4 focus:outline-none focus:ring-violet-300 font-bold rounded-full text-sm px-5 py-2.5 text-center transition-all duration-500 ease-out w-full sm:w-fit hover:scale-105">
@@ -251,13 +251,17 @@
         <div>
             <div class="flex justify-between pt-2">
                 <div class="space-x-2 font-semibold">
-                    <span class="text-violet-500 text-[25px]"><i class="fa-solid fa-person-breastfeeding"></i></span>
-                    <span>/</span>
+                    <span class="text-violet-500"><i class="fa-solid fa-person-breastfeeding"></i></span>
+                    <span><i class="fa-solid fa-chevron-right"></i></span>
                     <span class="hover:underline hover:text-violet-500 transition-all duration-300"><a
-                            href="{{ url('admin/parent/list') }}">Listes des parents</a></span>
-                    <span>/</span>
-                    <span>Listes des élèves assignés à ce parent</span>
+                            href="{{ url('admin/parent/list') }}">Liste des parents</a></span>
+                    <span><i class="fa-solid fa-chevron-right"></i></span>
+                    <span>Liste des élèves assignés à ce parent</span>
                 </div>
+                <a href="{{ url('admin/parent/add') }}"
+                   class="uppercase shadow-lg text-white bg-violet-500 hover:bg-violet-600 focus:ring-4 focus:outline-none focus:ring-violet-300 font-bold rounded-full text-sm px-5 py-2.5 text-center transition-all duration-500 ease-out w-full sm:w-fit hover:scale-105">
+                    Créer un nouveau parent
+                </a>
             </div>
             <div class="">
                 <div class="mt-4">
