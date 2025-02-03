@@ -23,7 +23,7 @@
     @yield('sytle')
 </head>
 
-<body class="">
+<body class="bg-gray-50">
 
 @include('layouts.header')
 

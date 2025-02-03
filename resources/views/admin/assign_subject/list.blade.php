@@ -25,8 +25,7 @@
         <form action="" method="get"
               class="flex justify-between my-5 shadow p-3 bg-white rounded border border-gray-300" id="searchForm">
             {{ csrf_field() }}
-            <div class="grid grid-cols-7 gap-x-5 gap-y-2">
-
+            <div class="grid grid-cols-7 gap-x-2">
                 <!-- Nom de la classe -->
                 <div>
                     <input type="text" id="class_name" name="class_name" value="{{ Request::get('class_name') }}"
@@ -167,10 +166,10 @@
                         {{ $index + 1 }}
                     </th>
                     <td class="px-6 py-4">
-                        {{ $classSubject -> class_name }}
-                    </td>
-                    <td class="px-6 py-4">
-                        {{ $classSubject -> subject_name }}
+                        <div class="block w-[100px] text-center text-xs font-semibold me-2 px-2.5 py-1 rounded
+                            {{ ($classSubject->status == 1) ? 'bg-emerald-100 text-emerald-800' : 'bg-red-100 text-red-800' }}">
+                            {{ $classSubject -> class_name }}
+                        </div>
                     </td>
                     <td class="px-6 py-4">
                         @if($classSubject->status == 0)

@@ -169,7 +169,10 @@
                         {{ $index + 1 }}
                     </th>
                     <td class="px-6 py-4">
-                        {{ $classTeacher -> class_name }}
+                        <div class="block w-[100px] text-center text-xs font-semibold me-2 px-2.5 py-1 rounded
+                            {{ ($classTeacher->status === 1) ? 'bg-emerald-100 text-emerald-800' : 'bg-red-100 text-red-800' }}">
+                            {{ $classTeacher -> class_name }}
+                        </div>
                     </td>
                     <td class="px-6 py-4">
                         {{ $classTeacher -> teacher_name }} {{ $classTeacher -> teacher_last_name }}

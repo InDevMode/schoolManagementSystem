@@ -159,8 +159,10 @@
                         {{ $index + 1 }}
                     </th>
                     <td class="px-6 py-4">
-                         <span
-                             class="block w-[100px] text-center bg-gray-100 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded">{{ $class -> name }}</span>
+                        <div class="block w-[100px] text-center text-xs font-semibold me-2 px-2.5 py-1 rounded
+                            {{ ($class->status === 1) ? 'bg-emerald-100 text-emerald-800' : 'bg-red-100 text-red-800' }}">
+                            {{ $class -> name }}
+                        </div>
                     </td>
                     <td class="px-6 py-4">
                         @if($class->status == 0)
