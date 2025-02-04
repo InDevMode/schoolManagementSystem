@@ -11,7 +11,11 @@
                     <a href="{{ url('teacher/dashboard') }}">Dashboard</a>
                 </span>
                 <span><i class="fa-solid fa-chevron-right"></i></span>
-                <span>Liste de mes cours et horaires disponibles</span>
+                <span class="hover:underline hover:text-violet-500 transition-all duration-300">
+                    <a href="{{ url('teacher/class_subject') }}">Liste de mes cours et horaires</a>
+                </span>
+                <span><i class="fa-solid fa-chevron-right"></i></span>
+                <span>{{ $getSubject->name }}</span>
             </div>
         </div>
 
@@ -41,7 +45,7 @@
                                         {{ $teacherTime['end_time'] ? \Carbon\Carbon::parse($teacherTime['end_time'])->format('G\h i\m\i\n') : '-'
                                         }}
                                     </td>
-                                    <td class="px-4 py-3 text-center">{{ $teacherTime['room_number'] ? : '-' }}</td>
+                                    <td class="px-4 py-3">{{ $teacherTime['room_number'] ? : '-' }}</td>
                                 </tr>
                                 @empty
                                 <tr>

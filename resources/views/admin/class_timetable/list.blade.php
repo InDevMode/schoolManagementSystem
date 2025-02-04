@@ -10,7 +10,7 @@
                 <span class="hover:underline hover:text-violet-500 transition-all duration-300"><a
                         href="{{ url('admin/dashboard') }}">Dashboard</a></span>
                 <span><i class="fa-solid fa-chevron-right"></i></span>
-                <span>Liste des Horaires de Cours</span>
+                <span>Liste des horaires de cours</span>
             </div>
         </div>
         <div

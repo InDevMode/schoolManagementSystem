@@ -69,13 +69,6 @@
                 <table class="w-full text-[10px] text-left rtl:text-right">
                     <thead class="text-[10px] text-white uppercase bg-violet-500">
                     <tr>
-                        <th scope="col" class="p-4">
-                            <div class="flex items-center">
-                                <input id="checkbox-all-search" type="checkbox"
-                                       class="w-4 h-4 border border-gray-300 rounded bg-white focus:ring-3 focus:ring-violet-300 focus:outline-none checked:bg-violet-600">
-                                <label for="checkbox-all-search" class="sr-only">checkbox</label>
-                            </div>
-                        </th>
                         <th scope="col" class="px-6 py-3">
                             <div class="flex items-center">
                                 N°
@@ -102,7 +95,7 @@
                         </th>
                         <th scope="col" class="px-6 py-3">
                             <div class="flex items-center">
-                                Status de la matière
+                                Nom & prénoms du Professeur
                                 <a href="#">
                                     <span class="w-3 h-3 ms-1.5"><i class="fa-solid fa-filter"></i></span>
                                 </a>
@@ -110,7 +103,7 @@
                         </th>
                         <th scope="col" class="px-6 py-3">
                             <div class="flex items-center">
-                                Nom & prénoms du Professeur
+                                Actions
                                 <a href="#">
                                     <span class="w-3 h-3 ms-1.5"><i class="fa-solid fa-filter"></i></span>
                                 </a>
@@ -121,18 +114,11 @@
                     <tbody>
                     @foreach($getParentStudentSubject as $index => $parentStudentSubject)
                     <tr class="bg-white border-b hover:bg-gray-50">
-                        <td class="w-4 p-4">
-                            <div class="flex items-center">
-                                <input id="checkbox-table-search-1" type="checkbox"
-                                       class="w-4 h-4 border border-gray-300 rounded bg-white focus:ring-3 focus:ring-violet-300 focus:outline-none checked:bg-violet-600">
-                                <label for="checkbox-table-search-1" class="sr-only">checkbox</label>
-                            </div>
-                        </td>
                         <td class="px-6 py-4">
                             <span>{{ $index + 1 }}</span>
                         </td>
                         <td class="px-6 py-4">
-                            <span>{{ $parentStudentSubject -> subject_name }}</span>
+                            <span class="block bg-gray-200 text-gray-800 px-3 py-2 w-[200px] rounded">{{ $parentStudentSubject -> subject_name }}</span>
                         </td>
                         <td class="px-6 py-4">
                             @if($parentStudentSubject -> subject_type == 'theoretical')
@@ -144,20 +130,15 @@
                             @endif
                         </td>
                         <td class="px-6 py-4">
-                            @if($parentStudentSubject -> subject_status == 0)
-                            <div class="flex items-center">
-                                <div class="h-2.5 w-2.5 rounded-full bg-red-500 me-2"></div>
-                                Inactif
-                            </div>
-                            @elseif($parentStudentSubject -> subject_status == 1)
-                            <div class="flex items-center">
-                                <div class="h-2.5 w-2.5 rounded-full bg-green-500 me-2"></div>
-                                Actif
-                            </div>
-                            @endif
+                            {{ $parentStudentSubject -> teacher_name }} {{ $parentStudentSubject -> teacher_last_name }}
                         </td>
                         <td class="px-6 py-4">
-                            Professeur
+                            <a href="{{ url('parent/my_student/'. $parentStudentSubject -> class_id.'/subject/'. $parentStudentSubject -> subject_id.'/timetable/student/'.$getUser->id) }}"
+                               class="font-medium flex items-center justify-center space-x-2 py-2 text-white hover:bg-violet-600 rounded bg-violet-500 text-sm transition duration-700"
+                               title="Voir les horaires">
+                                <span><i class="fa-solid fa-eye"></i></span>
+                                <span>Horaire</span>
+                            </a>
                         </td>
 
                     </tr>

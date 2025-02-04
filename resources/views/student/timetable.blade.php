@@ -11,7 +11,7 @@
                     <a href="{{ url('student/dashboard') }}">Dashboard</a>
                 </span>
                 <span><i class="fa-solid fa-chevron-right"></i></span>
-                <span>Liste des cours et horaires disponibles</span>
+                <span>Liste des cours et horaires</span>
             </div>
         </div>
 

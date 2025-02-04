@@ -11,7 +11,7 @@
                     <span class="hover:underline hover:text-violet-500 transition-all duration-300"><a
                             href="{{ url('teacher/my_student') }}">Liste de mes élèves</a></span>
                     <span><i class="fa-solid fa-chevron-right"></i></span>
-                    <span>Mes Elèves</span>
+                    <span>Mes élèves</span>
                 </div>
             </div>
             <div class="">

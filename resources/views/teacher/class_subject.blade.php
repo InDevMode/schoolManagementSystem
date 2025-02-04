@@ -10,7 +10,7 @@
                 <span class="hover:underline hover:text-violet-500 transition-all duration-300"><a
                         href="{{ url('teacher/dashboard') }}">Dashboard</a></span>
                 <span><i class="fa-solid fa-chevron-right"></i></span>
-                <span>Liste de mes Classes et Matières</span>
+                <span>Liste de mes classes et matières</span>
             </div>
         </div>
         <div class="">

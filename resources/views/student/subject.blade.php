@@ -11,7 +11,7 @@
                     <span class="hover:underline hover:text-violet-500 transition-all duration-300"><a
                             href="{{ url('student/my_subject') }}">Liste de mes cours</a></span>
                     <span><i class="fa-solid fa-chevron-right"></i></span>
-                    <span>Mes Cours</span>
+                    <span>Mes cours</span>
                 </div>
             </div>
             <div class="">

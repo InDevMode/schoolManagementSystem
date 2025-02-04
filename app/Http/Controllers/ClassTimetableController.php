@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\ClassModel;
 use App\Models\ClassTimetableModel;
 use App\Models\SubjectModel;
+use App\Models\User;
 use App\Models\WeekModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -154,6 +155,40 @@ class ClassTimetableController extends Controller
 
         $data['getTeacherTimetable'] = $teacherTimetable;
         return view('teacher.timetable', $data);
+    }
+
+    public function parentStudentSubjectTimetable($class_id, $subject_id, $student_id): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
+    {
+        $data['header_title'] = "Ses horaires de cours";
+        $data['getClass'] = ClassModel::getSingle($class_id);
+        $data['getSubject'] = SubjectModel::getSingle($subject_id);
+        $data['getStudent'] = User::getSingle($student_id);
+        $getWeek = WeekModel::getAllWeek();
+        $week = array();
+
+        foreach ($getWeek as $weekValue) {
+            $dataWeek = array();
+            $dataWeek['week_id'] = $weekValue->id;
+            $dataWeek['week_name'] = $weekValue->name;
+            $classSubjectTimetable = ClassTimetableModel::getClassTimetable($class_id, $subject_id, $weekValue->id);
+
+            if (!empty($classSubjectTimetable)) {
+                $dataWeek['start_time'] = $classSubjectTimetable->start_time;
+                $dataWeek['end_time'] = $classSubjectTimetable->end_time;
+                $dataWeek['room_number'] = $classSubjectTimetable->room_number;
+            } else {
+                $dataWeek['start_time'] = '';
+                $dataWeek['end_time'] = '';
+                $dataWeek['room_number'] = '';
+            }
+            $week[] = $dataWeek;
+        }
+
+        $dataSubject['week'] = $week;
+        $teacherTimetable[] = $dataSubject;
+
+        $data['getTeacherTimetable'] = $teacherTimetable;
+        return view('parent.timetable', $data);
     }
 
 }
