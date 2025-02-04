@@ -31,7 +31,8 @@ class ClassTimetableModel extends Model
             ->first();
     }
 
-    static public function getSubject(int $class_id){
+    static public function getSubject(int $class_id)
+    {
         return ClassSubjectModel::select(
             'class_subject.*',
             'subject.name as subject_name',
@@ -44,6 +45,13 @@ class ClassTimetableModel extends Model
             ->where('class_subject.status', '=', 1)
             ->orderBy('class_subject.id', 'desc')
             ->get();
+
+    }
+
+    static public function getMyClassTimetable(int $class_id, int $subject_id)
+    {
+        $getWeek = WeekModel::getWeekUsingName(d('l'));
+        return ClassTimetableModel::getClassTimetable($class_id, $subject_id, $getWeek->id);
 
     }
 

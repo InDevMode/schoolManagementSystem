@@ -76,13 +76,6 @@
             <table class="w-full text-[12px] text-left rtl:text-right">
                 <thead class="text-[12px] text-white uppercase bg-violet-500">
                 <tr>
-                    <th scope="col" class="p-4">
-                        <div class="flex items-center">
-                            <input id="checkbox-all-search" type="checkbox"
-                                   class="w-4 h-4 border border-gray-300 rounded bg-white focus:ring-3 focus:ring-violet-300 focus:outline-none checked:bg-violet-600">
-                            <label for="checkbox-all-search" class="sr-only">checkbox</label>
-                        </div>
-                    </th>
                     <th scope="col" class="px-6 py-3">
                         <div class="flex items-center">
                             N°
@@ -102,6 +95,14 @@
                     <th scope="col" class="px-6 py-3">
                         <div class="flex items-center">
                             Nom de la matière
+                            <a href="#">
+                                <span class="w-3 h-3 ms-1.5"><i class="fa-solid fa-filter"></i></span>
+                            </a>
+                        </div>
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        <div class="flex items-center">
+                            Horaires
                             <a href="#">
                                 <span class="w-3 h-3 ms-1.5"><i class="fa-solid fa-filter"></i></span>
                             </a>
@@ -131,23 +132,27 @@
                             </a>
                         </div>
                     </th>
+                    <th scope="col" class="px-6 py-3">
+                        <div class="flex items-center">
+                            Actions
+                            <a href="#">
+                                <span class="w-3 h-3 ms-1.5"><i class="fa-solid fa-filter"></i></span>
+                            </a>
+                        </div>
+                    </th>
                 </tr>
                 </thead>
                 <tbody>
                 @foreach($getClassSubjectTeacher as $index => $classSubjectTeacher)
                 <tr class="bg-white border-b hover:bg-gray-50">
-                    <td class="w-4 p-4">
-                        <div class="flex items-center">
-                            <input name="ids[]" value="{{ $classSubjectTeacher->id }}" type="checkbox"
-                                   class="w-4 h-4 border border-gray-300 rounded bg-white focus:ring-3 focus:ring-violet-300 focus:outline-none checked:bg-violet-600">
-                            <label for="checkbox-table-search-{{ $index }}" class="sr-only">checkbox</label>
-                        </div>
-                    </td>
                     <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
                         {{ $index + 1 }}
                     </th>
-                    <td class="px-6 py-4">
+                    <td class="px-6 py-4 font-semibold">
                         {{ $classSubjectTeacher -> class_name }}
+                    </td>
+                    <td class="px-6 py-4">
+                        {{ $classSubjectTeacher -> subject_name }}
                     </td>
                     <td class="px-6 py-4">
                         {{ $classSubjectTeacher -> subject_name }}
@@ -166,6 +171,14 @@
                     </td>
                     <td class="px-6 py-4">
                         {{ \Carbon\Carbon::parse($classSubjectTeacher->updated_at)->format('d/m/Y H:i:s') }}
+                    </td>
+                    <td class="px-6 py-4">
+                        <a href="{{ url('teacher/class_subject/'. $classSubjectTeacher -> class_id.'/timetable/'. $classSubjectTeacher->subject_id) }}"
+                           class="font-medium flex items-center justify-center space-x-2 py-2 text-white hover:bg-violet-600 rounded bg-violet-500 text-sm transition duration-700"
+                           title="Voir mon horaire">
+                            <span><i class="fa-solid fa-eye"></i></span>
+                            <span>Horaire</span>
+                        </a>
                     </td>
                 </tr>
                 @endforeach

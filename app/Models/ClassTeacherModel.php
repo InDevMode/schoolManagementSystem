@@ -84,6 +84,8 @@ class ClassTeacherModel extends Model
         $results = ClassTeacherModel::select(
             'class_teacher.*',
             'class.name as class_name',
+            'class.id as class_id',
+            'subject.id as subject_id',
             'subject.name as subject_name',
             'subject.type as subject_type',
         )
@@ -100,6 +102,7 @@ class ClassTeacherModel extends Model
 
         $filters = [
             'class.name' => strtolower(Request::get('class_name')),
+            'subject.name' => strtolower(Request::get('subject_name')),
             'class_teacher.created_at' => strtolower(Request::get('created_at')),
             'class_teacher.updated_at' => strtolower(Request::get('updated_at')),
         ];
