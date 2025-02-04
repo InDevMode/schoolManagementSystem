@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -47,12 +48,4 @@ class ClassTimetableModel extends Model
             ->get();
 
     }
-
-    static public function getMyClassTimetable(int $class_id, int $subject_id)
-    {
-        $getWeek = WeekModel::getWeekUsingName(d('l'));
-        return ClassTimetableModel::getClassTimetable($class_id, $subject_id, $getWeek->id);
-
-    }
-
 }

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Request;
@@ -120,6 +121,14 @@ class ClassTeacherModel extends Model
 
         return $results->orderBy('class_teacher.id', 'desc')
             ->paginate($perPage);
+    }
+
+    static public function getMyClassTimetable(int $class_id, int $subject_id)
+    {
+        Carbon::setLocale('fr');
+        $dayName = Carbon::now()->translatedFormat('l');
+        $getWeek = WeekModel::getWeekUsingName($dayName);
+        return ClassTimetableModel::getClassTimetable($class_id, $subject_id, $getWeek->id);
     }
 
 }

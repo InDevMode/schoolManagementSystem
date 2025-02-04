@@ -22,7 +22,7 @@ class WeekModel extends Model
 
     static public function getWeekUsingName(string $weekName)
     {
-        return WeekModel::where('name', '=', $weekName)->first();
+        return WeekModel::where('name', $weekName)->first();
     }
 
 }
