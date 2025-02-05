@@ -1,5 +1,5 @@
 import jsVectorMap from "jsvectormap";
-import "../us-aea-en";
+import "../us-aea-en.js";
 
 const map01 = () => {
   const mapSelector = document.querySelectorAll("#mapOne");

@@ -28,107 +28,208 @@
     </style>
 </head>
 
-<body class="max-w-[640px] sm:max-w-[1640px] mx-auto h-screen backImage flex">
-<div id="animated-container"
-     class="lg:w-[800px] md:w-[600px] w-full rounded-lg flex items-center justify-center p-8 transform -translate-x-full transition-transform duration-1000 ease-out">
-    <div>
-        <div class="flex flex-col items-center gap-2">
-            <form action="{{ url('login') }}" method="post" class="bg-white border border-gray-200 shadow-2xl rounded-lg p-8">
-                @include('message')
-                {{ csrf_field() }}
-                <h2 class="lg:text-3xl sm:text-2xl font-bold uppercase text-center text-gray-700 mb-3">
-                    Connectez-vous</h2>
-                <div class="flex mb-5">
-                        <span
-                            class="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-100 border border-e-0 border-gray-300 rounded-s-md">
-                            <i class="fa-solid fa-envelope text-violet-600"></i>
-                        </span>
-                    <input type="email" id="email" name="email"
-                           class="rounded-none rounded-e-md bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2"
-                           placeholder="email..." required>
-                </div>
-                <div class="flex mb-5">
-                        <span
-                            class="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-100 border border-e-0 border-gray-300 rounded-s-md">
-                            <i class="fa-solid fa-lock text-violet-600"></i>
-                        </span>
-                    <input type="password" id="password" name="password"
-                           class="rounded-none rounded-e-md bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2"
-                           placeholder="mot de passe..." required>
-                </div>
+<body class=""
+      x-data="{ page: 'signin', 'loaded': true, 'darkMode': true, 'stickyMenu': false, 'sidebarToggle': false, 'scrollTop': false }"
+      x-init="
+          darkMode = JSON.parse(localStorage.getItem('darkMode'));
+          $watch('darkMode', value => localStorage.setItem('darkMode', JSON.stringify(value)))"
+      :class="{'dark text-bodydark bg-boxdark-2': darkMode === true}"
+>
+<!-- ===== Preloader Start ===== -->
+@include('layouts.partials.preloader')
+<!-- ===== Preloader End ===== -->
+
+<!-- ===== Page Wrapper Start ===== -->
+<div class="flex min-h-screen overflow-hidden">
+    <!-- ===== Content Area Start ===== -->
+    <div
+        class="relative flex flex-1 flex-col overflow-y-auto overflow-x-hidden"
+    >
+        <!-- ===== Main Content Start ===== -->
+        <main>
+            <div class="mx-auto max-w-screen-2xl px-4 py-36 md:p-18 lg:p-24">
+                <!-- Breadcrumb Start -->
                 <div
-                    class="flex flex-col sm:flex-row sm:items-center justify-between transition-all duration-300 ease-out mb-3">
-                        <span class="flex items-start mb-3 sm:mb-0">
-                            <div class="flex items-center h-5">
-                                <input id="remember_token" name="remember" type="checkbox"
-                                       class="w-4 h-4 border border-gray-300 rounded bg-gray-100 focus:ring-3 focus:ring-violet-300 focus:outline-none checked:bg-violet-600"
-                                />
-                            </div>
-                            <label for="remember_token"
-                                   class="ms-2 text-sm font-medium text-gray-700 dark:text-gray-300">Se
-                                souvenir
-                                de moi
-                            </label>
-                        </span>
-                    <button type="submit"
-                            class="text-white bg-violet-600 hover:bg-violet-800 focus:ring-4 focus:outline-none focus:ring-violet-300 font-medium rounded-md text-sm px-5 py-2.5 text-center transition-all duration-500 ease-out w-full sm:w-fit hover:scale-105">
+                    class="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"
+                >
+                    <h2 class="text-title-md2 font-bold text-black dark:text-white">
                         Connexion
-                    </button>
-                </div>
-                <div class="flex justify-between gap-8 items-center mb-3 text-sm">
-                    <hr class="border border-gray-400 w-1/2">
-                    <span class="text-violet-500 font-bold">Or</span>
-                    <hr class="border border-gray-400 w-1/2">
-                </div>
-                <button type="submit"
-                        class="flex items-center justify-center gap-x-3 text-violet-500 border border-gray-400 bg-gray-100 group focus:ring-4 focus:outline-none focus:ring-violet-300 font-medium rounded-md text-sm px-5 py-2.5 text-center w-full mb-3 transition-all ease-in-out duration-700 hover:-translate-y-2 hover:translate-x-2 hover:bg-violet-600 hover:border-violet-600">
-                    <i class="fa-brands fa-facebook text-violet-500 transition-colors duration-300 group-hover:text-white"></i>
-                    <span class="transition-colors duration-300 group-hover:text-white">
-                        Continuez avec Facebook
-                    </span>
-                </button>
-                <button type="submit"
-                        class="flex items-center justify-center gap-x-3 text-pink-500 border border-gray-400 bg-gray-100 group focus:ring-4 focus:outline-none focus:ring-pink-300 font-medium rounded-md text-sm px-5 py-2.5 text-center w-full mb-3 transition-all ease-in-out duration-700 hover:-translate-y-2 hover:translate-x-2 hover:bg-pink-600 hover:border-pink-600">
-                    <i class="fa-brands fa-google-plus-g text-pink-500 transition-colors duration-300 group-hover:text-white"></i>
-                    <span class="transition-colors duration-300 group-hover:text-white">
-                        Continuez avec Google
-                    </span>
-                </button>
-                <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center font-medium mt-5">
-                        <span class="block text-sm text-gray-700">
-                            <a href="{{ url('forgot-password') }}"
-                               class="hover:underline transition-all ease-in duration-300">Mot
-                                de passe oublié
-                            </a>
+                    </h2>
+
+                    <nav>
+                        <!-- Dark Mode Toggler -->
+                        <label
+                            :class="darkMode ? 'bg-primary' : 'bg-stroke'"
+                            class="relative m-0 block h-7.5 w-14 rounded-full"
+                        >
+                            <input
+                                type="checkbox"
+                                :value="darkMode"
+                                @change="darkMode = !darkMode"
+                                class="absolute top-0 z-50 m-0 h-full w-full cursor-pointer opacity-0"
+                            />
+                            <span
+                                :class="darkMode && '!right-1 !translate-x-full'"
+                                class="absolute left-1 top-1/2 flex h-6 w-6 -translate-y-1/2 translate-x-0 items-center justify-center rounded-full bg-white shadow-switcher duration-75 ease-linear"
+                            >
+                          <span class="dark:hidden">
+                         <i class="fa-solid fa-sun"></i>
+                          </span>
+                          <span class="hidden dark:inline-block">
+                          <i class="fa-solid fa-moon"></i>
+                          </span>
                         </span>
-                    <span class="block text-sm">
-                            <a href="{{ url('signup') }}"
-                               class="hover:underline text-violet-600 transition-all ease-in duration-500">Créer un
-                                compte
-                            </a>
-                        </span>
+                        </label>
+                        <!-- Dark Mode Toggler -->
+                    </nav>
                 </div>
-            </form>
-        </div>
+                <!-- Breadcrumb End -->
+
+                @include('message')
+                <!-- ====== Forms Section Start -->
+                <div
+                    class="roundedmd border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark"
+                >
+                    <div class="flex flex-wrap items-center">
+                        <div class="hidden w-full xl:block xl:w-1/2">
+                            <div class="px-26 py-17.5 text-center">
+                                <a class="mb-5.5 inline-block" href="{{ url('') }}">
+                                    <img
+                                        class="hidden dark:block"
+                                        src="{{ asset('public/images/logo.png') }}"
+                                        alt="Logo"
+                                    />
+                                    <img
+                                        class="dark:hidden"
+                                        src="{{ asset('public/images/logo.png') }}"
+                                        alt="Logo"
+                                    />
+                                </a>
+
+                                <p class="font-medium 2xl:px-20">
+                                    School Mangement System est une application de gestion totale d'une école.
+                                </p>
+
+                                <span class="mt-15 inline-block">
+                      <img
+                          src="{{ asset('public/images/illustration/illustration-03.svg') }}"
+                          alt="illustration"
+                      />
+                    </span>
+                            </div>
+                        </div>
+                        <div
+                            class="w-full border-stroke dark:border-strokedark xl:w-1/2 xl:border-l-2"
+                        >
+                            <div class="w-full p-4 sm:p-12.5 xl:p-17.5">
+                                <span class="mb-1.5 block font-medium">Connectez-vous</span>
+                                <h2
+                                    class="mb-9 text-2xl font-bold text-black dark:text-white sm:text-title-xl2 uppercase"
+                                >
+                                    School Management system
+                                </h2>
+
+                                <form action="{{ url('login') }}" method="post">
+                                    {{ csrf_field() }}
+                                    <div class="mb-4">
+                                        <label
+                                            class="mb-2.5 block font-medium text-black dark:text-white"
+                                        >Email</label
+                                        >
+                                        <div class="relative">
+                                            <input
+                                                type="email" name="email"
+                                                placeholder="Entrer votre email"
+                                                class="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 outline-none focus:border-violet-500 focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:focus:border-violet-500"
+                                            />
+                                            <span class="absolute right-4 top-4">
+                                                <span class="text-[22px]"><i
+                                                        class="fa-solid fa-envelope text-violet-600"></i></span>
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-6">
+                                        <label
+                                            class="mb-2.5 block font-medium text-black dark:text-white"
+                                        >Mot de Passe</label
+                                        >
+                                        <div class="relative">
+                                            <input
+                                                type="password" name="password"
+                                                placeholder="Entrez votre mot de passe"
+                                                class="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 outline-none focus:border-violet-500 focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:focus:border-violet-500"
+                                            />
+                                            <span class="absolute right-4 top-4">
+                                                <span class="text-[22px]"><i class="fa-solid fa-lock text-violet-600"></i></span>
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-5">
+                                        <button
+                                            type="submit"
+                                            class="w-full cursor-pointer rounded-lg border border-violet-600 bg-violet-600 p-4 font-medium text-white transition hover:bg-opacity-90"
+                                        >Connexion
+                                        </button>
+
+                                    </div>
+
+                                    <button
+                                        class="flex w-full items-center justify-center gap-3.5 rounded-lg border border-stroke bg-gray p-4 font-medium hover:bg-opacity-70 dark:border-strokedark dark:bg-meta-4 dark:hover:bg-opacity-70"
+                                    >
+                        <span>
+                          <svg
+                              width="20"
+                              height="20"
+                              viewBox="0 0 20 20"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <g clip-path="url(#clip0_191_13499)">
+                              <path
+                                  d="M19.999 10.2217C20.0111 9.53428 19.9387 8.84788 19.7834 8.17737H10.2031V11.8884H15.8266C15.7201 12.5391 15.4804 13.162 15.1219 13.7195C14.7634 14.2771 14.2935 14.7578 13.7405 15.1328L13.7209 15.2571L16.7502 17.5568L16.96 17.5774C18.8873 15.8329 19.9986 13.2661 19.9986 10.2217"
+                                  fill="#4285F4"
+                              />
+                              <path
+                                  d="M10.2055 19.9999C12.9605 19.9999 15.2734 19.111 16.9629 17.5777L13.7429 15.1331C12.8813 15.7221 11.7248 16.1333 10.2055 16.1333C8.91513 16.1259 7.65991 15.7205 6.61791 14.9745C5.57592 14.2286 4.80007 13.1801 4.40044 11.9777L4.28085 11.9877L1.13101 14.3765L1.08984 14.4887C1.93817 16.1456 3.24007 17.5386 4.84997 18.5118C6.45987 19.4851 8.31429 20.0004 10.2059 19.9999"
+                                  fill="#34A853"
+                              />
+                              <path
+                                  d="M4.39899 11.9777C4.1758 11.3411 4.06063 10.673 4.05807 9.99996C4.06218 9.32799 4.1731 8.66075 4.38684 8.02225L4.38115 7.88968L1.19269 5.4624L1.0884 5.51101C0.372763 6.90343 0 8.4408 0 9.99987C0 11.5589 0.372763 13.0963 1.0884 14.4887L4.39899 11.9777Z"
+                                  fill="#FBBC05"
+                              />
+                              <path
+                                  d="M10.2059 3.86663C11.668 3.84438 13.0822 4.37803 14.1515 5.35558L17.0313 2.59996C15.1843 0.901848 12.7383 -0.0298855 10.2059 -3.6784e-05C8.31431 -0.000477834 6.4599 0.514732 4.85001 1.48798C3.24011 2.46124 1.9382 3.85416 1.08984 5.51101L4.38946 8.02225C4.79303 6.82005 5.57145 5.77231 6.61498 5.02675C7.65851 4.28118 8.9145 3.87541 10.2059 3.86663Z"
+                                  fill="#EB4335"
+                              />
+                            </g>
+                            <defs>
+                              <clipPath id="clip0_191_13499">
+                                <rect width="20" height="20" fill="white"/>
+                              </clipPath>
+                            </defs>
+                          </svg>
+                        </span>
+                                        Connexion avec Google
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- ====== Forms Section End -->
+            </div>
+        </main>
+        <!-- ===== Main Content End ===== -->
     </div>
+    <!-- ===== Content Area End ===== -->
 </div>
+<!-- ===== Page Wrapper End ===== -->
 </body>
 
 
 <!--Script setup flowbite-->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
 <script src="https://kit.fontawesome.com/79fa04224e.js" crossorigin="anonymous"></script>
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const animatedContainer = document.getElementById('animated-container');
-        if (animatedContainer) {
-            setTimeout(() => {
-                animatedContainer.classList.remove('-translate-x-full');
-                animatedContainer.classList.add('translate-x-0');
-            }, 1000);
-        }
-    });
-
-</script>
-
 </html>
