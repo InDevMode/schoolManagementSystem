@@ -59,10 +59,6 @@ const chart01 = () => {
       width: [2, 2],
       curve: "straight",
     },
-
-    markers: {
-      size: 0,
-    },
     labels: {
       show: false,
       position: "top",
