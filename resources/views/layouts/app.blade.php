@@ -26,13 +26,13 @@ $watch('darkMode', value => localStorage.setItem('darkMode', JSON.stringify(valu
 :class="{'dark text-bodydark bg-boxdark-2': darkMode === true}"
 >
 <!-- ===== Preloader Start ===== -->
-@include('layouts.partials.preloader')
+@include('layouts.preloader')
 <!-- ===== Page Wrapper Start ===== -->
 <div class="flex h-screen overflow-hidden">
-    @include('layouts.partials.sidebar')
+    @include('layouts.sidebar')
     <!-- ===== Content Area Start ===== -->
     <div class="relative flex flex-1 flex-col overflow-y-auto overflow-x-hidden">
-        @include('layouts.partials.header')
+        @include('layouts.header')
         <!-- ===== Main Content Start ===== -->
         @yield('content')
     </div>

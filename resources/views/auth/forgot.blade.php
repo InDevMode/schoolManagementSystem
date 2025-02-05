@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <title>Mot de passe oublié</title>
+    <title>{{ !empty($header_title) ? $header_title : 'Mot de passe oublié' }} - School</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -19,63 +19,157 @@
         body {
             font-family: 'Poppins', sans-serif;
         }
-
-        .backImage {
-            background-image: url("public/images/back1.jpg");
-            background-size: cover;
-            background-repeat: no-repeat;
-        }
     </style>
 </head>
 
-<body class="max-w-[640px] sm:max-w-[1640px] mx-auto h-screen backImage flex">
-<div class="lg:w-[800px] md:w-[600px] w-full rounded-lg flex items-center justify-center p-8">
-    <div>
-        <div class="flex flex-col items-center gap-2">
-            <form action="" method="post" class="bg-white border border-gray-200 shadow-2xl rounded-lg p-8">
+<body class=""
+      x-data="{ page: 'signin', 'loaded': true, 'darkMode': true, 'stickyMenu': false, 'sidebarToggle': false, 'scrollTop': false }"
+      x-init="
+          darkMode = JSON.parse(localStorage.getItem('darkMode'));
+          $watch('darkMode', value => localStorage.setItem('darkMode', JSON.stringify(value)))"
+      :class="{'dark text-bodydark bg-boxdark-2': darkMode === true}"
+>
+<!-- ===== Preloader Start ===== -->
+@include('layouts.partials.preloader')
+<!-- ===== Preloader End ===== -->
+
+<!-- ===== Page Wrapper Start ===== -->
+<div class="flex min-h-screen overflow-hidden">
+    <!-- ===== Content Area Start ===== -->
+    <div
+        class="relative flex flex-1 flex-col overflow-y-auto overflow-x-hidden"
+    >
+        <!-- ===== Main Content Start ===== -->
+        <main>
+            <div class="mx-auto max-w-screen-2xl px-4 py-36 md:p-18 lg:p-18">
+                <!-- Breadcrumb Start -->
+                <div
+                    class="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"
+                >
+                    <h2 class="text-title-md2 font-bold text-black dark:text-white uppercase">
+                        Entrez votre email
+                    </h2>
+                    <nav>
+                        <!-- Dark Mode Toggler -->
+                        <label
+                            :class="darkMode ? 'bg-primary' : 'bg-stroke'"
+                            class="relative m-0 block h-7.5 w-14 rounded-full"
+                        >
+                            <input
+                                type="checkbox"
+                                :value="darkMode"
+                                @change="darkMode = !darkMode"
+                                class="absolute top-0 z-50 m-0 h-full w-full cursor-pointer opacity-0"
+                            />
+                            <span
+                                :class="darkMode && '!right-1 !translate-x-full'"
+                                class="absolute left-1 top-1/2 flex h-6 w-6 -translate-y-1/2 translate-x-0 items-center justify-center rounded-full bg-white shadow-switcher duration-75 ease-linear"
+                            >
+                          <span class="dark:hidden">
+                         <i class="fa-solid fa-sun"></i>
+                          </span>
+                          <span class="hidden dark:inline-block">
+                          <i class="fa-solid fa-moon"></i>
+                          </span>
+                        </span>
+                        </label>
+                        <!-- Dark Mode Toggler -->
+                    </nav>
+                </div>
+                <!-- Breadcrumb End -->
+
                 @include('message')
-                {{ csrf_field() }}
-                <h2 class="lg:text-2xl sm:text-2xl font-bold uppercase text-center text-gray-700 mb-3">Réinitialisez
-                    votre mot de passe</h2>
-                <div class="flex mt-5 sm:mb-1">
-                        <span
-                            class="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-100 border border-e-0 border-gray-300 rounded-s-md">
-                            <i class="fa-solid fa-envelope text-violet-600"></i>
-                        </span>
-                    <input type="email" id="email" name="email"
-                           class="rounded-none rounded-e-md bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2"
-                           placeholder="email..." required>
+                <!-- ====== Forms Section Start -->
+                <div
+                    class="roundedmd border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark"
+                >
+                    <div class="flex flex-wrap items-center">
+                        <div class="hidden w-full xl:block xl:w-1/2">
+                            <div class="px-26 py-17.5 text-center">
+                                <a class="mb-5.5 inline-block" href="{{ url('') }}">
+                                    <img
+                                        class="hidden dark:block"
+                                        src="{{ asset('public/images/logo.png') }}"
+                                        alt="Logo"
+                                    />
+                                    <img
+                                        class="dark:hidden"
+                                        src="{{ asset('public/images/logo.png') }}"
+                                        alt="Logo"
+                                    />
+                                </a>
+
+                                <p class="font-medium text-left 2xl:px-20">
+                                    School Mangement System est une application de gestion totale d'une école.
+                                </p>
+
+                                <span class="mt-15 inline-block">
+                      <img
+                          src="{{ asset('public/images/illustration/illustration-03.svg') }}"
+                          alt="illustration"
+                      />
+                    </span>
+                            </div>
+                        </div>
+                        <div
+                            class="w-full border-stroke dark:border-strokedark xl:w-1/2 xl:border-l-2"
+                        >
+                            <div class="w-full p-4 sm:p-12.5 xl:p-17.5">
+                                <h2
+                                    class="mb-9 text-2xl font-bold text-black dark:text-white sm:text-title-xl2 uppercase"
+                                >
+                                    School Management system
+                                </h2>
+
+                                <form action="" method="post">
+                                    {{ csrf_field() }}
+                                    <div class="mb-4">
+                                        <label
+                                            class="mb-2.5 block font-medium text-black dark:text-white"
+                                        >Email</label
+                                        >
+                                        <div class="relative">
+                                            <input
+                                                type="email" name="email"
+                                                placeholder="Entrer votre email"
+                                                class="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 outline-none focus:border-violet-500 focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:focus:border-violet-500"
+                                            />
+                                            <span class="absolute right-4 top-4">
+                                                <span class="text-[22px]"><i
+                                                        class="fa-solid fa-envelope text-violet-600"></i></span>
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-5">
+                                        <button
+                                            type="submit"
+                                            class="w-full cursor-pointer rounded-lg border border-violet-600 bg-violet-600 p-4 font-medium text-white transition hover:bg-opacity-90"
+                                        >Envoyez
+                                        </button>
+                                        <div class="mt-6 text-center">
+                                            <p class="font-medium">
+                                                <a href="{{ url('') }}" class="hover:text-violet-500 transition duration-300 underline"> Connectez-vous </a>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <button type="submit"
-                        class="text-white bg-violet-500 hover:bg-violet-600 focus:ring-4 focus:outline-none focus:ring-violet-300 font-medium rounded-md text-sm px-5 py-2.5 mt-5 text-center transition-all duration-500 ease-out w-full hover:scale-105">
-                    Connexion
-                </button>
-                <div class="flex justify-between gap-8 items-center mt-5 sm:mt-8 text-sm">
-                    <hr class="border border-gray-400 w-1/2">
-                    <span class="text-violet-500 font-bold">Or</span>
-                    <hr class="border border-gray-400 w-1/2">
-                </div>
-                <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center font-medium mt-5">
-                        <span class="block text-sm text-gray-700">
-                            <a href="{{ url('') }}"
-                               class="hover:underline transition-all ease-in duration-300">Connectez-vous
-                            </a>
-                        </span>
-                    <span class="block text-sm">
-                            <a href="{{ url('signup') }}"
-                               class="hover:underline text-violet-600 transition-all ease-in duration-500">Créer un
-                                compte
-                            </a>
-                        </span>
-                </div>
-            </form>
-        </div>
+                <!-- ====== Forms Section End -->
+            </div>
+        </main>
+        <!-- ===== Main Content End ===== -->
     </div>
+    <!-- ===== Content Area End ===== -->
 </div>
+<!-- ===== Page Wrapper End ===== -->
 </body>
+
 
 <!--Script setup flowbite-->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
 <script src="https://kit.fontawesome.com/79fa04224e.js" crossorigin="anonymous"></script>
-
 </html>
