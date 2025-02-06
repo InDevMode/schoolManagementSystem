@@ -3,19 +3,26 @@
 <div class="m-5">
     <!-- Breadcrumb Start -->
     <div
-        class="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"
+        class="mb-6 mt-3 flex flex-col gap-3 sm:flex-row items-center justify-between"
     >
-        <h2 class="text-title-md uppercase font-bold text-black dark:text-white">
+        <h2 class="uppercase font-bold text-black dark:text-bodydark">
             Liste des administrateurs
         </h2>
         <nav>
             <ol class="flex items-center gap-2">
                 <li>
-                    <a class="font-medium" href="{{ url('admin/dashboard') }}">Dashboard</a>
+                    <span class="font-medium"><i class="fa-solid fa-house-chimney"></i></span>
+                </li>
+                <li>
+                    <a class="font-medium hover:text-violet-600 transition duration-300" href="{{ url('admin/dashboard') }}">/ Dashboard</a>
+                </li>
+                <li>
+                    <a class="font-medium hover:text-violet-600 transition duration-300" href="{{ url('admin/admin/add') }}">/ Créer un administrateur</a>
                 </li>
             </ol>
         </nav>
     </div>
+    @include('message')
     <div class="">
         <div class="mt-4">
             {{ $getAdmin->links('vendor.pagination.tailwind') }}
@@ -25,25 +32,25 @@
         class="rounded-sm border border-stroke bg-white px-5 pb-2.5 pt-6 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1"
     >
         <form action="" method="get">
-                <div class="mb-4.5 grid grid-cols-8 gap-3 items-center">
+                <div class="mb-4.5 grid grid-cols-2 xl:grid-cols-4 gap-3 items-center">
                     <div class="w-full xl:w-1/8">
                         <input
                             type="text" id="name" name="name" value="{{ Request::get('name') }}"
-                            placeholder="Recherchez par le nom"
+                            placeholder="nom..."
                             class="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 font-normal text-black outline-none transition focus:border-violet-600 active:border-violet-600 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-violet-600"
                         />
                     </div>
                     <div class="w-full xl:w-1/8">
                         <input
                             type="text" id="last_name" name="last_name" value="{{ Request::get('last_name') }}"
-                            placeholder="Recherchez par le prénom"
+                            placeholder="prénom..."
                             class="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 font-normal text-black outline-none transition focus:border-violet-600 active:border-violet-600 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-violet-600"
                         />
                     </div>
                     <div class="w-full xl:w-1/8">
                         <input
                             type="email" id="email" name="email" value="{{ Request::get('email') }}"
-                            placeholder="Recherchez par email"
+                            placeholder="email..."
                             class="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 font-normal text-black outline-none transition focus:border-violet-600 active:border-violet-600 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-violet-600"
                         />
                     </div>
@@ -58,7 +65,7 @@
                                 @change="isOptionSelected = true"
                             >
                                 <option value="" class="text-body">
-                                   Filtrez par statut
+                                   Statut...
                                 </option>
                                 <option  value="0" class="text-body" {{ Request::get('status') == '0' ? 'selected' : '' }}>Inactif</option>
                                 <option value="1" class="text-body" {{ Request::get('status') == '1' ? 'selected' : '' }}>Actif</option>
@@ -88,9 +95,9 @@
                     </div>
                     <div class="w-full xl:w-1/8">
                         <div class="relative">
-                            <input
+                            <input id="created_at" name="created_at" value="{{ Request::get('created_at') }}"
                                 class="form-datepicker w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 font-normal outline-none transition focus:border-violet-600 active:border-violet-600 dark:border-form-strokedark dark:bg-form-input dark:focus:border-violet-600"
-                                placeholder="j / m / a"
+                                placeholder="creation..."
                                 data-class="flatpickr-right"
                             />
 
@@ -114,9 +121,9 @@
                     </div>
                     <div class="w-full xl:w-1/8">
                         <div class="relative">
-                            <input
+                            <input id="updated_at" name="updated_at" value="{{ Request::get('updated_at') }}"
                                 class="form-datepicker w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 font-normal outline-none transition focus:border-violet-600 active:border-violet-600 dark:border-form-strokedark dark:bg-form-input dark:focus:border-violet-600"
-                                placeholder="j / m / a"
+                                placeholder="modification..."
                                 data-class="flatpickr-right"
                             />
 
@@ -152,7 +159,7 @@
                         <a href="{{ url('admin/admin/list') }}"
                             class="flex w-full justify-center rounded bg-bodydark2 p-3 font-medium text-gray hover:bg-opacity-90"
                         >
-                            Réïnitialisez les filtres
+                            Réïnitialisez
                         </a>
                     </div>
                 </div>
@@ -160,94 +167,92 @@
 
         <div class="flex flex-col">
             <div
-                class="grid grid-cols-3 rounded-sm bg-gray-2 dark:bg-meta-4 sm:grid-cols-7"
+                class="grid grid-cols-3 rounded-sm bg-gray-200 dark:bg-meta-4 sm:grid-cols-7"
             >
                 <div class="p-2.5 xl:p-5">
                     <h5 class="text-sm font-medium uppercase xsm:text-base">Nom</h5>
                 </div>
-                <div class="p-2.5 text-center xl:p-5">
+                <div class="p-2.5 xl:p-5">
                     <h5 class="text-sm font-medium uppercase xsm:text-base">Prénoms</h5>
                 </div>
-                <div class="p-2.5 text-center xl:p-5">
+                <div class="hidden p-2.5 3xl:block xl:p-5">
                     <h5 class="text-sm font-medium uppercase xsm:text-base">Email</h5>
                 </div>
-                <div class="hidden p-2.5 text-center sm:block xl:p-5">
+                <div class="p-2.5 xl:p-5">
                     <h5 class="text-sm font-medium uppercase xsm:text-base">Status</h5>
                 </div>
-                <div class="hidden p-2.5 text-center sm:block xl:p-5">
+                <div class="hidden p-2.5 3xl:block xl:p-5">
                     <h5 class="text-sm font-medium uppercase xsm:text-base">Date de Création</h5>
                 </div>
-                <div class="hidden p-2.5 text-center sm:block xl:p-5">
+                <div class="hidden p-2.5 3xl:block xl:p-5">
                     <h5 class="text-sm font-medium uppercase xsm:text-base">Date de Modification</h5>
                 </div>
-                <div class="hidden p-2.5 text-center sm:block xl:p-5">
+                <div class="hidden p-2.5 3xl:block xl:p-5">
                     <h5 class="text-sm font-medium uppercase xsm:text-base">Actions</h5>
                 </div>
             </div>
 
             @foreach($getAdmin as $index => $user)
-            <div class="grid grid-cols-3 sm:grid-cols-7">
-                <div class="flex items-center gap-3 p-2.5 xl:p-5">
-                    <p class="hidden font-medium text-black dark:text-white sm:block">
+            <div class="grid grid-cols-3 3xl:grid-cols-7 hover:bg-gray-2 dark:hover:bg-gray-700 transition duration-300">
+                <div class="flex gap-3 p-2.5 xl:p-5">
+                    <p class="font-medium text-sm text-black dark:text-white">
                         {{ $user -> name }}
                     </p>
                 </div>
-                <div class="flex items-center justify-center p-2.5 xl:p-5">
+                <div class="flex p-2.5 xl:p-5">
                     <p class="font-medium text-black dark:text-white"> {{ $user -> last_name }}</p>
                 </div>
 
-                <div class="flex items-center justify-center p-2.5 xl:p-5">
-                    <p class="font-medium me-2 px-2.5 py-0.5 rounded border border-gray-400">
+                <div class="hidden p-2.5 3xl:flex items-center xl:p-5">
+                    <p class="font-medium text-sm me-2 px-2.5 py-0.5 rounded bg-gray-2 dark:bg-gray-700">
                         {{ $user -> email }}</p>
                 </div>
 
                 @if($user->status == 0)
-                <div class="hidden items-center justify-center p-2.5 sm:flex xl:p-5">
-                    <p class="font-medium text-black dark:text-white">
+                <div class="flex items-center p-2.5 xl:p-5">
+                    <p class="font-medium text-sm text-black dark:text-white">
                     <div class="h-2.5 w-2.5 rounded-full bg-red-500 me-2"></div>
                     Inactif
                     </p>
                 </div>
                 @elseif($user->status == 1)
-                <div class="hidden items-center justify-center p-2.5 sm:flex xl:p-5">
-                    <p class="font-medium text-black dark:text-white">
+                <div class="flex items-center p-2.5 xl:p-5">
+                    <p class="font-medium text-sm text-black dark:text-white">
                     <div class="h-2.5 w-2.5 rounded-full bg-emerald-500 me-2"></div>
                     Actif
                     </p>
                 </div>
                 @endif
-
-                <div class="hidden items-center justify-center p-2.5 sm:flex xl:p-5">
-                    <p class="font-medium text-meta-5">
+                <div class="hidden p-2.5 3xl:flex xl:p-5">
+                    <p class="font-medium text-sm text-meta-5">
                         {{ \Carbon\Carbon::parse($user->created_at)->locale('fr')->translatedFormat('d M Y H:i:s') }}
                     </p>
                 </div>
-                <div class="hidden items-center justify-center p-2.5 sm:flex xl:p-5">
-                    <p class="font-medium text-meta-5">
+                <div class="hidden p-2.5 3xl:flex xl:p-5">
+                    <p class="font-medium text-sm text-meta-5">
                         {{ \Carbon\Carbon::parse($user->updated_at)->locale('fr')->translatedFormat('d M Y H:i:s') }}
                     </p>
                 </div>
-                <div class="hidden items-center justify-center p-2.5 sm:flex xl:p-5">
-                    <a href="{{ url('admin/admin/edit', $user -> id) }}" class="font-medium hover:text-violet-600"><i
-                            class="fa-solid fa-pen-to-square"></i></a>
-                    <a href="{{ url('admin/admin/delete', $user -> id) }}"
-                       class="font-medium hover:text-red-600 ms-3"><i class="fa-solid fa-trash"></i></a>
+                <div class="hidden p-2.5 3xl:flex space-x-1 xl:p-5">
+                    <a href="{{ url('admin/admin/edit', $user -> id) }}" title="Modifier cet administrateur" class="shadow w-full font-medium text-white bg-violet-600 py-1 px-5 hover:bg-opacity-90 transition duration-300 rounded">Modifier</a>
+                    <a href="{{ url('admin/admin/delete', $user -> id) }}" title="Supprimer cet administrateur"
+                       class="shadow font-medium text-white bg-red-600 py-1 px-5 hover:bg-opacity-90 transition duration-300 rounded w-full">Supprimer</a>
                 </div>
             </div>
             @endforeach
             @if($getAdmin->isEmpty())
-            <div class="grid grid-cols-3 sm:grid-cols-7">
-                <div> Aucun administrateur trouvé.</div>
+            <div class="flex justify-center">
+                <div class="py-3"> Aucun administrateur trouvé.</div>
             </div>
             @endif
             <div
-                class="mb-6 mt-3 border-t border-gray-200 pt-2 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"
+                class="mb-6 mt-3 border-t border-gray-200 pt-2 flex gap-3 items-center justify-between"
             >
                 <h2 class="text-title-sm uppercase font-bold text-black dark:text-white">
                     Total
                 </h2>
                 <nav>
-                    <ol class="flex items-center gap-2 bg-bodydark1 p-2 px-8 rounded">
+                    <ol class="flex items-center gap-2 bg-bodydark1 w-fit dark:bg-black p-2 px-8 rounded">
                         <li>
                             <p class="text-md font-medium">{{ $getAdmin->total() }}</p>
                         </li>

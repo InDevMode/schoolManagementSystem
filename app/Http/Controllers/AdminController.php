@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class AdminController extends Controller
 {
@@ -25,11 +26,11 @@ class AdminController extends Controller
     public function create(Request $request): \Illuminate\Foundation\Application|\Illuminate\Routing\Redirector|\Illuminate\Http\RedirectResponse|\Illuminate\Contracts\Foundation\Application
     {
         try {
-            $userMail = User::getEmailSingle($request->email);
+            $adminMail = User::getEmailSingle($request->email);
             $passwordLength = strlen($request->password);
             $regex = '/^[a-z0-9]+@[a-z0-9]+\.(fr|com|org|bj|io)$/';
 
-            if($userMail){
+            if($adminMail){
                 return redirect()->back()->with('error', 'Cet email a déjà été utilisé.');
             }
             if($passwordLength < 6){
@@ -40,14 +41,22 @@ class AdminController extends Controller
                 return redirect()->back()->with('error', 'Cet email est invalide. Assurez-vous qu\'il se termine par .fr, .com, .org, .bj ou .io.');
             }
 
-            $user = new User;
-            $user->name = trim($request->name);
-            $user->last_name = trim($request->last_name);
-            $user->email = trim($request->email);
-            $user->status = trim($request->status);
-            $user->password = Hash::make($request->password);
-            $user->user_type = 1;
-            $user->save();
+            $admin = new User;
+            if (!empty($request->file('profile_picture'))) {
+                $ext = $request->file('profile_picture')->getClientOriginalExtension();
+                $file = $request->file('profile_picture');
+                $randomStr = 'admin' . date('dmYhis') . Str::random(20);
+                $fileName = strtolower($randomStr) . '.' . $ext;
+                $file->move('upload/profile/', $fileName);
+                $admin->profile_picture = $fileName;
+            }
+            $admin->name = trim($request->name);
+            $admin->last_name = trim($request->last_name);
+            $admin->email = trim($request->email);
+            $admin->status = trim($request->status);
+            $admin->password = Hash::make($request->password);
+            $admin->user_type = 1;
+            $admin->save();
 
             return redirect('admin/admin/list')->with('success', 'Cet administrateur a été créé avec succès.');
         } catch (\Exception $e) {
@@ -62,6 +71,11 @@ class AdminController extends Controller
         $data['getAdmin'] = User::getSingle($id);
         if (!empty($data['getAdmin'])) {
             $data['header_title'] = "Modifier un administrateur";
+            if (!empty($data['getStudent']->profile_picture)) {
+                $data['profile_picture_url'] = User::getProfile($data['getAdmin']->profile_picture);
+            } else {
+                $data['profile_picture_url'] = asset('upload/default.jpg');
+            }
             return view('admin.admin.edit', $data);
         } else {
             abort(404);
@@ -71,16 +85,16 @@ class AdminController extends Controller
     public function update(Request $request, $id): \Illuminate\Foundation\Application|\Illuminate\Routing\Redirector|\Illuminate\Http\RedirectResponse|\Illuminate\Contracts\Foundation\Application
     {
         try {
-            $user = User::getSingle($id);
-            $userMail = User::checkEmailSingle($request->email, $id);
+            $admin = User::getSingle($id);
+            $adminMail = User::checkEmailSingle($request->email, $id);
             $passwordLength = strlen($request->password);
             $regex = '/^[a-z0-9]+@[a-z0-9]+\.(fr|com|org|bj|io)$/';
 
-            if (!$user) {
+            if (!$admin) {
                 return redirect()->back()->with('error', 'Cet administrateur est introuvable.');
             }
 
-            if ($userMail) {
+            if ($adminMail) {
                 return redirect()->back()->with('error', 'Cet email est déjà utilisé par un autre administrateur.');
             }
 
@@ -92,15 +106,29 @@ class AdminController extends Controller
                 return redirect()->back()->with('error', 'Votre mot de passe ne doit pas être de moins de 6 caractères.');
             }
 
-            $user->name = trim($request->name);
-            $user->last_name = trim($request->last_name);
-            $user->email = trim($request->email);
-            $user->status = trim($request->status);
+            $admin->name = trim($request->name);
+            $admin->last_name = trim($request->last_name);
+            $admin->email = trim($request->email);
+            $admin->status = trim($request->status);
             if (!empty($request->password)) {
-                $user->password = Hash::make($request->password);
+                $admin->password = Hash::make($request->password);
             }
-
-            $user->save();
+            if (!empty($request->file('profile_picture'))) {
+                $adminProfilePicture = $admin->profile_picture;
+                if (!empty($adminProfilePicture)) {
+                    $profilePictureUrl = User::getProfile($adminProfilePicture);
+                    if (!empty($profilePictureUrl)) {
+                        unlink('upload/profile/' . $adminProfilePicture);
+                    }
+                }
+                $ext = $request->file('profile_picture')->getClientOriginalExtension();
+                $file = $request->file('profile_picture');
+                $randomStr = 'admin' . date('dmYhis') . Str::random(20);
+                $fileName = strtolower($randomStr) . '.' . $ext;
+                $file->move('upload/profile/', $fileName);
+                $admin->profile_picture = $fileName;
+            }
+            $admin->save();
 
             return redirect('admin/admin/list')->with('success', 'Les informations de cet administrateur ont été modifiées avec succès.');
 
@@ -114,10 +142,10 @@ class AdminController extends Controller
 
     public function delete($id): \Illuminate\Foundation\Application|\Illuminate\Routing\Redirector|\Illuminate\Http\RedirectResponse|\Illuminate\Contracts\Foundation\Application
     {
-        $user = User::getSingle($id);
-        if ($user) {
-            $user->is_delete = 1;
-            $user->save();
+        $admin = User::getSingle($id);
+        if ($admin) {
+            $admin->is_delete = 1;
+            $admin->save();
             return redirect('admin/admin/list')->with('success', 'Cet administrateur a été supprimé avec succès.');
         } else {
             abort(404);
