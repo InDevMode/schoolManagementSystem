@@ -48,19 +48,5 @@ $watch('darkMode', value => localStorage.setItem('darkMode', JSON.stringify(valu
 <script src="{{ asset('public/js/components/map-01.js') }}"></script>
 <script src="{{ asset('public/js/us-aea-en.js') }}"></script>
 @yield('script')
-<script>
-    function toggleDropdown() {
-        let dropdown = document.getElementById("dropdown-assign");
-        let chevron = document.getElementById("chevron");
-
-        if (dropdown.style.maxHeight && dropdown.style.maxHeight !== "0px") {
-            dropdown.style.maxHeight = "0px";
-            chevron.style.transform = "rotate(0deg)";
-        } else {
-            dropdown.style.maxHeight = dropdown.scrollHeight + "px";
-            chevron.style.transform = "rotate(90deg)";
-        }
-    }
-</script>
 
 </html>

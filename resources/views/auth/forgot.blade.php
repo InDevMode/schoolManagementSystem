@@ -30,7 +30,7 @@
       :class="{'dark text-bodydark bg-boxdark-2': darkMode === true}"
 >
 <!-- ===== Preloader Start ===== -->
-@include('layouts.partials.preloader')
+@include('layouts.preloader')
 <!-- ===== Preloader End ===== -->
 
 <!-- ===== Page Wrapper Start ===== -->
