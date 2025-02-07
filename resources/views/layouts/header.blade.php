@@ -374,7 +374,7 @@
                                 class="flex items-center gap-3.5 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base"
                             >
                                 <span><i class="fa-solid fa-user"></i></span>
-                                Mon Profile
+                                Mon profile
                             </a>
                         </li>
                         <li>
@@ -383,7 +383,7 @@
                                 class="flex items-center gap-3.5 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base"
                             >
                                 <span><i class="fa-solid fa-lock"></i></span>
-                                Mon Mot de Passe
+                                Mon mot de passe
                             </a>
                         </li>
                         @elseif(Auth::user()->user_type === 2)
@@ -393,7 +393,7 @@
                                 class="flex items-center gap-3.5 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base"
                             >
                                 <span><i class="fa-solid fa-user"></i></span>
-                                Mon Profile
+                                Mon profile
                             </a>
                         </li>
                         <li>
@@ -402,7 +402,7 @@
                                 class="flex items-center gap-3.5 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base"
                             >
                                 <span><i class="fa-solid fa-lock"></i></span>
-                                Mon Mot de Passe
+                                Mon mot de passe
                             </a>
                         </li>
                         @elseif(Auth::user()->user_type === 3)
@@ -412,7 +412,7 @@
                                 class="flex items-center gap-3.5 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base"
                             >
                                 <span><i class="fa-solid fa-user"></i></span>
-                                Mon Profile
+                                Mon profile
                             </a>
                         </li>
                         <li>
@@ -421,7 +421,7 @@
                                 class="flex items-center gap-3.5 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base"
                             >
                                 <span><i class="fa-solid fa-lock"></i></span>
-                                Mon Mot de Passe
+                                Mon mot de passe
                             </a>
                         </li>
                         @elseif(Auth::user()->user_type === 4)
@@ -431,7 +431,7 @@
                                 class="flex items-center gap-3.5 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base"
                             >
                                 <span><i class="fa-solid fa-user"></i></span>
-                                Mon Profile
+                                Mon profile
                             </a>
                         </li>
                         <li>

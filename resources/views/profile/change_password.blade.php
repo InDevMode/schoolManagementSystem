@@ -1,5 +1,116 @@
 @extends('layouts.app')
 @section('content')
+<div class="m-5">
+    <main>
+        <div class="mx-auto max-w-screen-2xl p-4 md:p-6 2xl:p-10">
+            <div class="mx-auto max-w-242.5">
+                <div
+                    class="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"
+                >
+                    <h2 class="uppercase font-bold text-black dark:text-bodydark">
+                        Modifier votre mot de passe
+                    </h2>
+                    @if(Auth::user()->user_type == 1)
+                    <nav>
+                        <ol class="flex items-center gap-2">
+                            <li>
+                                <span class="font-medium text-emerald-400"><i
+                                        class="fa-solid fa-user-shield"></i></span>
+                            </li>
+                            <li>
+                                / <a class="font-medium hover:text-emerald-400" href="{{ url('admin/dashboard') }}">Dashboard</a>
+                            </li>
+                        </ol>
+                    </nav>
+                    @elseif(Auth::user()->user_type == 2)
+                    <nav>
+                        <ol class="flex items-center gap-2">
+                            <li>
+                                <span class="font-medium text-emerald-400"><i
+                                        class="fa-solid fa-user-shield"></i></span>
+                            </li>
+                            <li>
+                                / <a class="font-medium hover:text-emerald-400" href="{{ url('teacher/dashboard') }}">Dashboard</a>
+                            </li>
+                        </ol>
+                    </nav>
+                    @elseif(Auth::user()->user_type == 3)
+                    <nav>
+                        <ol class="flex items-center gap-2">
+                            <li>
+                                <span class="font-medium text-emerald-400"><i
+                                        class="fa-solid fa-user-shield"></i></span>
+                            </li>
+                            <li>
+                                / <a class="font-medium hover:text-emerald-400" href="{{ url('student/dashboard') }}">Dashboard</a>
+                            </li>
+                        </ol>
+                    </nav>
+                    @elseif(Auth::user()->user_type == 4)
+                    <nav>
+                        <ol class="flex items-center gap-2">
+                            <li>
+                                <span class="font-medium text-emerald-400"><i
+                                        class="fa-solid fa-user-shield"></i></span>
+                            </li>
+                            <li>
+                                / <a class="font-medium hover:text-emerald-400" href="{{ url('parent/dashboard') }}">Dashboard</a>
+                            </li>
+                        </ol>
+                    </nav>
+                    @endif
+                </div>
+                @include('message')
+                <div class="flex flex-col gap-9">
+                    <!-- Contact Form -->
+                    <div
+                        class="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark"
+                    >
+                        <form action="" method="post" enctype="multipart/form-data">
+                            {{ csrf_field() }}
+                            <div class="p-6.5">
+                                <div class="mb-4.5">
+                                    <label
+                                        class="mb-3 block text-sm font-medium text-black dark:text-white"
+                                    >
+                                        Mot de passe
+                                    </label>
+                                    <input
+                                        type="password" id="old_password" name="old_password" value="{{ old('old_password') }}"
+                                        placeholder="Entrez votre ancien mot de passe"
+                                        class="w-full rounded border-[1.5px] border-stroke bg-gray-100 px-5 py-3 font-normal text-black outline-none transition focus:border-emerald-400 active:border-emerald-400 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-emerald-400"
+                                    />
+                                </div>
+                                <div class="mb-4.5">
+                                    <label
+                                        class="mb-3 block text-sm font-medium text-black dark:text-white"
+                                    >
+                                        Mot de passe
+                                    </label>
+                                    <input
+                                        type="password" id="new_password" name="new_password" value="{{ old('new_password') }}"
+                                        placeholder="Entrez votre nouveau mot de passe"
+                                        class="w-full rounded border-[1.5px] border-stroke bg-gray-100 px-5 py-3 font-normal text-black outline-none transition focus:border-emerald-400 active:border-emerald-400 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-emerald-400"
+                                    />
+                                </div>
+                                <button type="submit"
+                                        class="flex w-full justify-center rounded bg-emerald-400 p-3 font-medium text-white hover:bg-opacity-90"
+                                >
+                                    Modifier
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+@endsection
+
+
+@extends('layouts.app')
+@section('content')
 <div class="p-4 sm:ml-64">
     <div class="p-4 rounded-lg mt-14">
         <div class="space-x-2 font-semibold">

@@ -1,264 +1,352 @@
 @extends('layouts.app')
 @section('content')
-<div class="p-4 sm:ml-64">
-    <div class="p-4 rounded-lg mt-14">
-        @include('message')
-        <div class="mb-10">
-            <div class="flex justify-between pt-2">
-                <div class="space-x-2 font-semibold mt-3">
-                    <span class="text-violet-500"><i class="fa-solid fa-person-breastfeeding"></i></span>
-                    <span><i class="fa-solid fa-chevron-right"></i></span>
-                    <span class="hover:underline hover:text-violet-500 transition-all duration-300"><a
-                            href="{{ url('teacher/my_student') }}">Liste de mes élèves</a></span>
-                    <span><i class="fa-solid fa-chevron-right"></i></span>
-                    <span>Mes élèves</span>
+<div class="m-5">
+    <!-- Breadcrumb Start -->
+    <div
+        class="mb-6 mt-3 flex flex-col gap-3 sm:flex-row items-center justify-between"
+    >
+        <h2 class="uppercase font-bold text-black dark:text-bodydark">
+            Liste de mes apprenants
+        </h2>
+        <nav>
+            <ol class="flex items-center gap-2">
+                <li>
+                    <span class="font-medium text-violet-600"><i class="fa-solid fa-house-chimney"></i></span>
+                </li>
+                <li>
+                    <a class="font-medium hover:text-violet-600 transition duration-300"
+                       href="{{ url('teacher/dashboard') }}">/ Dashboard</a>
+                </li>
+                <li>
+                    <a class="font-medium hover:text-violet-600 transition duration-300"
+                       href="{{ url('teacher/my_student') }}">/ Apprenants</a>
+                </li>
+            </ol>
+        </nav>
+    </div>
+    @include('message')
+    <div class="">
+        <div class="mt-4">
+            {{ $getTeacherStudent->links('vendor.pagination.tailwind') }}
+        </div>
+    </div>
+    <div
+        class="rounded-sm border border-stroke bg-white px-5 pb-2.5 pt-6 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1"
+    >
+        <form action="" method="get">
+            <div class="mb-4.5 grid grid-cols-2 xl:grid-cols-4 gap-3 items-center">
+                <div class="w-full xl:w-1/8">
+                    <input
+                        type="text" id="admission_number" name="admission_number"
+                        value="{{ Request::get('admission_number') }}"
+                        placeholder="numéro d'admission..."
+                        class="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 font-normal text-black outline-none transition focus:border-violet-600 active:border-violet-600 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-violet-600"
+                    />
                 </div>
-            </div>
-            <div class="">
-                <div class="mt-4">
-                    {{ $getTeacherStudent->links('vendor.pagination.tailwind') }}
+                <div class="w-full xl:w-1/8">
+                    <input
+                        type="text" id="name" name="name" value="{{ Request::get('name') }}"
+                        placeholder="nom..."
+                        class="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 font-normal text-black outline-none transition focus:border-violet-600 active:border-violet-600 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-violet-600"
+                    />
                 </div>
-            </div>
-            <form action="" method="get"
-                  class="my-5 shadow p-3 bg-white rounded border border-gray-300" id="searchForm">
-                {{ csrf_field() }}
-                <div class="grid grid-cols-6 gap-x-5 gap-y-2">
-                    <div class="">
-                        <input type="text" id="name" name="name" value="{{ Request::get('name') }}"
-                               class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2"
-                               placeholder="Rechercher par nom...">
-                    </div>
-                    <div class="">
-                        <input type="text" id="last_name" name="last_name" value="{{ Request::get('last_name') }}"
-                               class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2"
-                               placeholder="Rechercher par prénom...">
-                    </div>
-                    <div class="">
-                        <input type="email" id="email" name="email" value="{{ Request::get('email') }}"
-                               class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2"
-                               placeholder="Rechercher par email...">
-                    </div>
-                    <div>
+                <div class="w-full xl:w-1/8">
+                    <input
+                        type="text" id="last_name" name="last_name" value="{{ Request::get('last_name') }}"
+                        placeholder="prénom..."
+                        class="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 font-normal text-black outline-none transition focus:border-violet-600 active:border-violet-600 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-violet-600"
+                    />
+                </div>
+                <div class="w-full xl:w-1/8">
+                    <input
+                        type="email" id="email" name="email" value="{{ Request::get('email') }}"
+                        placeholder="email..."
+                        class="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 font-normal text-black outline-none transition focus:border-violet-600 active:border-violet-600 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-violet-600"
+                    />
+                </div>
+                <div class="w-full xl:w-1/8">
+                    <div
+                        x-data="{ isOptionSelected: false }"
+                        class="relative z-20 bg-transparent dark:bg-form-input"
+                    >
                         <select id="status" name="status"
-                                class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block text-sm p-2 w-full">
-                            <option value="">Filtrer par statut</option>
-                            <option value="1" {{ Request::get(
-                            'status') == '1' ? 'selected' : '' }}>Activée</option>
-                            <option value="0" {{ Request::get(
-                            'status') == '0' ? 'selected' : '' }}>Désactivée</option>
+                                class="relative z-20 w-full appearance-none rounded border border-stroke bg-transparent px-5 py-3 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                                :class="isOptionSelected && 'text-black dark:text-white'"
+                                @change="isOptionSelected = true"
+                        >
+                            <option value="" class="text-body">
+                                Statut...
+                            </option>
+                            <option value="0" class="text-body" {{ Request::get(
+                            'status') == '0' ? 'selected' : '' }}>Inactif</option>
+                            <option value="1" class="text-body" {{ Request::get(
+                            'status') == '1' ? 'selected' : '' }}>Actif</option>
                         </select>
+                        <span
+                            class="absolute right-4 top-1/2 z-30 -translate-y-1/2"
+                        >
+                            <svg
+                                class="fill-current"
+                                width="24"
+                                height="24"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <g opacity="0.8">
+                                <path
+                                    fill-rule="evenodd"
+                                    clip-rule="evenodd"
+                                    d="M5.29289 8.29289C5.68342 7.90237 6.31658 7.90237 6.70711 8.29289L12 13.5858L17.2929 8.29289C17.6834 7.90237 18.3166 7.90237 18.7071 8.29289C19.0976 8.68342 19.0976 9.31658 18.7071 9.70711L12.7071 15.7071C12.3166 16.0976 11.6834 16.0976 11.2929 15.7071L5.29289 9.70711C4.90237 9.31658 4.90237 8.68342 5.29289 8.29289Z"
+                                    fill=""
+                                ></path>
+                              </g>
+                            </svg>
+                          </span>
                     </div>
-                    <div class="">
-                        <input type="text" id="mobile_number" name="mobile_number"
-                               value="{{ Request::get('mobile_number') }}"
-                               class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block text-sm p-2 w-full"
-                               placeholder="Rechercher par numéro de téléphone...">
-                    </div>
-                    <div>
+                </div>
+                <div class="w-full xl:w-1/8">
+                    <div
+                        x-data="{ isOptionSelected: false }"
+                        class="relative z-20 bg-transparent dark:bg-form-input"
+                    >
                         <select id="gender" name="gender"
-                                class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block text-sm p-2 w-full">
-                            <option value="">Filtrer par genre</option>
-                            <option value="male" {{ Request::get(
+                                class="relative z-20 w-full appearance-none rounded border border-stroke bg-transparent px-5 py-3 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                                :class="isOptionSelected && 'text-black dark:text-white'"
+                                @change="isOptionSelected = true"
+                        >
+                            <option value="" class="text-body">
+                                Statut...
+                            </option>
+                            <option value="male" class="text-body" {{ Request::get(
                             'gender') == 'male' ? 'selected' : '' }}>Masculin</option>
-                            <option value="female" {{ Request::get(
+                            <option value="female" class="text-body" {{ Request::get(
                             'gender') == 'female' ? 'selected' : '' }}>Féminin</option>
-                            <option value="other" {{ Request::get(
+                            <option value="other" class="text-body" {{ Request::get(
                             'gender') == 'other' ? 'selected' : '' }}>Autre</option>
                         </select>
-                    </div>
-                    <div class="">
-                        <input type="date" id="created_at" name="created_at" value="{{ Request::get('created_at') }}"
-                               class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2"
-                               placeholder="Rechercher par date de création...">
-                    </div>
-                    <div class="">
-                        <input type="date" id="updated_at" name="updated_at" value="{{ Request::get('updated_at') }}"
-                               class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2"
-                               placeholder="Rechercher par date de modification...">
-                    </div>
-                    <button type="submit"
-                            class="flex justify-between text-white bg-violet-500 hover:bg-violet-600 focus:ring-4 focus:outline-none focus:ring-violet-300 font-medium rounded-full text-sm px-5 py-2.5 text-center transition-all duration-500 ease-out w-full hover:scale-105">
-                        Rechercher
                         <span
-                            class="inline-flex items-center px-3 text-sm text-gray-900">
-                            <i class="fa-solid fa-search text-white"></i>
-                        </span>
+                            class="absolute right-4 top-1/2 z-30 -translate-y-1/2"
+                        >
+                            <svg
+                                class="fill-current"
+                                width="24"
+                                height="24"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <g opacity="0.8">
+                                <path
+                                    fill-rule="evenodd"
+                                    clip-rule="evenodd"
+                                    d="M5.29289 8.29289C5.68342 7.90237 6.31658 7.90237 6.70711 8.29289L12 13.5858L17.2929 8.29289C17.6834 7.90237 18.3166 7.90237 18.7071 8.29289C19.0976 8.68342 19.0976 9.31658 18.7071 9.70711L12.7071 15.7071C12.3166 16.0976 11.6834 16.0976 11.2929 15.7071L5.29289 9.70711C4.90237 9.31658 4.90237 8.68342 5.29289 8.29289Z"
+                                    fill=""
+                                ></path>
+                              </g>
+                            </svg>
+                          </span>
+                    </div>
+                </div>
+                <div class="w-full xl:w-1/8">
+                    <div class="relative">
+                        <input id="date_of_birth" name="date_of_birth" value="{{ Request::get('date_of_birth') }}"
+                               class="form-datepicker w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 font-normal outline-none transition focus:border-violet-600 active:border-violet-600 dark:border-form-strokedark dark:bg-form-input dark:focus:border-violet-600"
+                               placeholder="date de naissance..."
+                               data-class="flatpickr-right"
+                        />
+
+                        <div
+                            class="pointer-events-none absolute inset-0 left-auto right-5 flex items-center"
+                        >
+                            <svg
+                                width="18"
+                                height="18"
+                                viewBox="0 0 18 18"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                            >
+                                <path
+                                    d="M15.7504 2.9812H14.2879V2.36245C14.2879 2.02495 14.0066 1.71558 13.641 1.71558C13.2754 1.71558 12.9941 1.99683 12.9941 2.36245V2.9812H4.97852V2.36245C4.97852 2.02495 4.69727 1.71558 4.33164 1.71558C3.96602 1.71558 3.68477 1.99683 3.68477 2.36245V2.9812H2.25039C1.29414 2.9812 0.478516 3.7687 0.478516 4.75308V14.5406C0.478516 15.4968 1.26602 16.3125 2.25039 16.3125H15.7504C16.7066 16.3125 17.5223 15.525 17.5223 14.5406V4.72495C17.5223 3.7687 16.7066 2.9812 15.7504 2.9812ZM1.77227 8.21245H4.16289V10.9968H1.77227V8.21245ZM5.42852 8.21245H8.38164V10.9968H5.42852V8.21245ZM8.38164 12.2625V15.0187H5.42852V12.2625H8.38164V12.2625ZM9.64727 12.2625H12.6004V15.0187H9.64727V12.2625ZM9.64727 10.9968V8.21245H12.6004V10.9968H9.64727ZM13.8379 8.21245H16.2285V10.9968H13.8379V8.21245ZM2.25039 4.24683H3.71289V4.83745C3.71289 5.17495 3.99414 5.48433 4.35977 5.48433C4.72539 5.48433 5.00664 5.20308 5.00664 4.83745V4.24683H13.0504V4.83745C13.0504 5.17495 13.3316 5.48433 13.6973 5.48433C14.0629 5.48433 14.3441 5.20308 14.3441 4.83745V4.24683H15.7504C16.0316 4.24683 16.2566 4.47183 16.2566 4.75308V6.94683H1.77227V4.75308C1.77227 4.47183 1.96914 4.24683 2.25039 4.24683ZM1.77227 14.5125V12.2343H4.16289V14.9906H2.25039C1.96914 15.0187 1.77227 14.7937 1.77227 14.5125ZM15.7504 15.0187H13.8379V12.2625H16.2285V14.5406C16.2566 14.7937 16.0316 15.0187 15.7504 15.0187Z"
+                                    fill="#64748B"
+                                />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                <div class="w-full xl:w-1/8">
+                    <div class="relative">
+                        <input id="created_at" name="created_at" value="{{ Request::get('created_at') }}"
+                               class="form-datepicker w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 font-normal outline-none transition focus:border-violet-600 active:border-violet-600 dark:border-form-strokedark dark:bg-form-input dark:focus:border-violet-600"
+                               placeholder="creation..."
+                               data-class="flatpickr-right"
+                        />
+
+                        <div
+                            class="pointer-events-none absolute inset-0 left-auto right-5 flex items-center"
+                        >
+                            <svg
+                                width="18"
+                                height="18"
+                                viewBox="0 0 18 18"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                            >
+                                <path
+                                    d="M15.7504 2.9812H14.2879V2.36245C14.2879 2.02495 14.0066 1.71558 13.641 1.71558C13.2754 1.71558 12.9941 1.99683 12.9941 2.36245V2.9812H4.97852V2.36245C4.97852 2.02495 4.69727 1.71558 4.33164 1.71558C3.96602 1.71558 3.68477 1.99683 3.68477 2.36245V2.9812H2.25039C1.29414 2.9812 0.478516 3.7687 0.478516 4.75308V14.5406C0.478516 15.4968 1.26602 16.3125 2.25039 16.3125H15.7504C16.7066 16.3125 17.5223 15.525 17.5223 14.5406V4.72495C17.5223 3.7687 16.7066 2.9812 15.7504 2.9812ZM1.77227 8.21245H4.16289V10.9968H1.77227V8.21245ZM5.42852 8.21245H8.38164V10.9968H5.42852V8.21245ZM8.38164 12.2625V15.0187H5.42852V12.2625H8.38164V12.2625ZM9.64727 12.2625H12.6004V15.0187H9.64727V12.2625ZM9.64727 10.9968V8.21245H12.6004V10.9968H9.64727ZM13.8379 8.21245H16.2285V10.9968H13.8379V8.21245ZM2.25039 4.24683H3.71289V4.83745C3.71289 5.17495 3.99414 5.48433 4.35977 5.48433C4.72539 5.48433 5.00664 5.20308 5.00664 4.83745V4.24683H13.0504V4.83745C13.0504 5.17495 13.3316 5.48433 13.6973 5.48433C14.0629 5.48433 14.3441 5.20308 14.3441 4.83745V4.24683H15.7504C16.0316 4.24683 16.2566 4.47183 16.2566 4.75308V6.94683H1.77227V4.75308C1.77227 4.47183 1.96914 4.24683 2.25039 4.24683ZM1.77227 14.5125V12.2343H4.16289V14.9906H2.25039C1.96914 15.0187 1.77227 14.7937 1.77227 14.5125ZM15.7504 15.0187H13.8379V12.2625H16.2285V14.5406C16.2566 14.7937 16.0316 15.0187 15.7504 15.0187Z"
+                                    fill="#64748B"
+                                />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                <div class="w-full xl:w-1/8">
+                    <div class="relative">
+                        <input id="updated_at" name="updated_at" value="{{ Request::get('updated_at') }}"
+                               class="form-datepicker w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 font-normal outline-none transition focus:border-violet-600 active:border-violet-600 dark:border-form-strokedark dark:bg-form-input dark:focus:border-violet-600"
+                               placeholder="modification..."
+                               data-class="flatpickr-right"
+                        />
+                        <div
+                            class="pointer-events-none absolute inset-0 left-auto right-5 flex items-center"
+                        >
+                            <svg
+                                width="18"
+                                height="18"
+                                viewBox="0 0 18 18"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                            >
+                                <path
+                                    d="M15.7504 2.9812H14.2879V2.36245C14.2879 2.02495 14.0066 1.71558 13.641 1.71558C13.2754 1.71558 12.9941 1.99683 12.9941 2.36245V2.9812H4.97852V2.36245C4.97852 2.02495 4.69727 1.71558 4.33164 1.71558C3.96602 1.71558 3.68477 1.99683 3.68477 2.36245V2.9812H2.25039C1.29414 2.9812 0.478516 3.7687 0.478516 4.75308V14.5406C0.478516 15.4968 1.26602 16.3125 2.25039 16.3125H15.7504C16.7066 16.3125 17.5223 15.525 17.5223 14.5406V4.72495C17.5223 3.7687 16.7066 2.9812 15.7504 2.9812ZM1.77227 8.21245H4.16289V10.9968H1.77227V8.21245ZM5.42852 8.21245H8.38164V10.9968H5.42852V8.21245ZM8.38164 12.2625V15.0187H5.42852V12.2625H8.38164V12.2625ZM9.64727 12.2625H12.6004V15.0187H9.64727V12.2625ZM9.64727 10.9968V8.21245H12.6004V10.9968H9.64727ZM13.8379 8.21245H16.2285V10.9968H13.8379V8.21245ZM2.25039 4.24683H3.71289V4.83745C3.71289 5.17495 3.99414 5.48433 4.35977 5.48433C4.72539 5.48433 5.00664 5.20308 5.00664 4.83745V4.24683H13.0504V4.83745C13.0504 5.17495 13.3316 5.48433 13.6973 5.48433C14.0629 5.48433 14.3441 5.20308 14.3441 4.83745V4.24683H15.7504C16.0316 4.24683 16.2566 4.47183 16.2566 4.75308V6.94683H1.77227V4.75308C1.77227 4.47183 1.96914 4.24683 2.25039 4.24683ZM1.77227 14.5125V12.2343H4.16289V14.9906H2.25039C1.96914 15.0187 1.77227 14.7937 1.77227 14.5125ZM15.7504 15.0187H13.8379V12.2625H16.2285V14.5406C16.2566 14.7937 16.0316 15.0187 15.7504 15.0187Z"
+                                    fill="#64748B"
+                                />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                <div class="w-full xl:w-1/8">
+                    <button
+                        class="flex w-full justify-between items-center rounded bg-violet-600 p-3 font-medium text-gray hover:bg-opacity-90"
+                    >
+                        Rechercher
+                        <span class="inline-flex items-center text-sm text-gray-900">
+                                    <i class="fa-solid fa-search text-white"></i>
+                                </span>
                     </button>
+                </div>
+                <div class="w-full xl:w-1/8">
                     <a href="{{ url('teacher/my_student') }}"
-                       class="text-gray-800 bg-gray-300 hover:bg-gray-400 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-full text-sm px-5 py-2.5 text-center transition-all duration-500 ease-out w-full hover:scale-105">
-                        Réinitialiser les filtres
+                       class="flex w-full justify-center rounded bg-bodydark2 p-3 font-medium text-gray hover:bg-opacity-90"
+                    >
+                        Réïnitialisez
                     </a>
                 </div>
-            </form>
-            <div class="relative overflow-visible shadow-md sm:rounded-lg border border-gray-300 z-10" id="results">
-                <table class="w-full text-[10px] text-left rtl:text-right">
-                    <thead class="text-[10px] text-white uppercase bg-violet-500">
-                    <tr>
-                        <th scope="col" class="p-4">
-                            <div class="flex items-center">
-                                <input id="checkbox-all-search" type="checkbox"
-                                       class="w-4 h-4 border border-gray-300 rounded bg-white focus:ring-3 focus:ring-violet-300 focus:outline-none checked:bg-violet-600">
-                                <label for="checkbox-all-search" class="sr-only">checkbox</label>
-                            </div>
-                        </th>
-                        <th scope="col" class="px-6 py-3">
-                            <div class="flex items-center">
-                                N° d'admission
-                                <a href="#">
-                                    <span class="w-3 h-3 ms-1.5"><i class="fa-solid fa-filter"></i></span>
-                                </a>
-                            </div>
-                        </th>
-                        <th scope="col" class="px-6 py-3">
-                            <div class="flex items-center">
-                                Nom et prénoms de l'élève
-                                <a href="#">
-                                    <span class="w-3 h-3 ms-1.5"><i class="fa-solid fa-filter"></i></span>
-                                </a>
-                            </div>
-                        </th>
-                        <th scope="col" class="px-6 py-3">
-                            <div class="flex items-center">
-                                Email
-                                <a href="#">
-                                    <span class="w-3 h-3 ms-1.5"><i class="fa-solid fa-filter"></i></span>
-                                </a>
-                            </div>
-                        </th>
-                        <th scope="col" class="px-6 py-3">
-                            <div class="flex items-center">
-                                Status
-                                <a href="#">
-                                    <span class="w-3 h-3 ms-1.5"><i class="fa-solid fa-filter"></i></span>
-                                </a>
-                            </div>
-                        </th>
-                        <th scope="col" class="px-6 py-3">
-                            <div class="flex items-center">
-                                Date de naissance
-                                <a href="#">
-                                    <span class="w-3 h-3 ms-1.5"><i class="fa-solid fa-filter"></i></span>
-                                </a>
-                            </div>
-                        </th>
-                        <th scope="col" class="px-6 py-3">
-                            <div class="flex items-center">
-                                Genre
-                                <a href="#">
-                                    <span class="w-3 h-3 ms-1.5"><i class="fa-solid fa-filter"></i></span>
-                                </a>
-                            </div>
-                        </th>
-                        <th scope="col" class="px-6 py-3">
-                            <div class="flex items-center">
-                                Classe
-                                <a href="#">
-                                    <span class="w-3 h-3 ms-1.5"><i class="fa-solid fa-filter"></i></span>
-                                </a>
-                            </div>
-                        </th>
-                        <th scope="col" class="px-6 py-3">
-                            <div class="flex items-center">
-                                Date de création
-                                <a href="#">
-                                    <span class="w-3 h-3 ms-1.5"><i class="fa-solid fa-filter"></i></span>
-                                </a>
-                            </div>
-                        </th>
-                        <th scope="col" class="px-6 py-3">
-                            <div class="flex items-center">
-                                Date de modification
-                                <a href="#">
-                                    <span class="w-3 h-3 ms-1.5"><i class="fa-solid fa-filter"></i></span>
-                                </a>
-                            </div>
-                        </th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    @foreach($getTeacherStudent as $index => $teacherStudent)
-                    <tr class="bg-white border-b hover:bg-gray-50">
-                        <td class="w-4 p-4">
-                            <div class="flex items-center">
-                                <input id="checkbox-table-search-1" type="checkbox"
-                                       class="w-4 h-4 border border-gray-300 rounded bg-white focus:ring-3 focus:ring-violet-300 focus:outline-none checked:bg-violet-600">
-                                <label for="checkbox-table-search-1" class="sr-only">checkbox</label>
-                            </div>
-                        </td>
-                        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-                            {{$teacherStudent -> admission_number }}
-                        </th>
-                        <td class="px-6 py-4">
-                            <span>{{ $teacherStudent -> name }}</span>
-                            <span>{{ $teacherStudent -> last_name }}</span>
-                        </td>
-                        <td class="px-6 py-4">
-                        <span
-                            class="bg-gray-100 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded border border-gray-400">{{ $teacherStudent -> email }}</span>
-                        </td>
-                        <td class="px-6 py-4">
-                            @if($teacherStudent->status == 0)
-                            <div class="flex items-center">
-                                <div class="h-2.5 w-2.5 rounded-full bg-red-500 me-2"></div>
-                                Inactif
-                            </div>
-                            @elseif($teacherStudent->status == 1)
-                            <div class="flex items-center">
-                                <div class="h-2.5 w-2.5 rounded-full bg-green-500 me-2"></div>
-                                Actif
-                            </div>
-                            @endif
-                        </td>
-                        <td class="px-6 py-4">
-                            {{ \Carbon\Carbon::parse($teacherStudent->date_of_birth)->format('d M Y') }}
-                        </td>
-                        <td class="px-6 py-4 text-center">
-                            @if($teacherStudent->gender == 'male')
-                            <div
-                                class="bg-pink-100 text-pink-800 font-medium text-xs me-2 px-2.5 py-0.5 rounded-full border border-pink-400">
-                                Masculin
-                            </div>
-                            @elseif($teacherStudent->gender == 'female')
-                            <div
-                                class="bg-violet-100 text-violet-800 font-medium text-xs me-2 px-2.5 py-0.5 rounded-full border border-violet-400">
-                                Féminin
-                            </div>
-                            @elseif($teacherStudent->gender == 'other')
-                            <div
-                                class="bg-slate-100 text-slate-800 font-medium text-xs me-2 px-2.5 py-0.5 rounded-full border border-slate-400">
-                                Autre
-                            </div>
-                            @endif
-                        </td>
-                        <td class="px-6 py-4">
-                            {{ $teacherStudent->class_name }}
-                        </td>
-                        <td class="px-6 py-4">
-                            {{ \Carbon\Carbon::parse($teacherStudent->created_at)->format('d/m/Y H:i:s') }}
-                        </td>
-                        <td class="px-6 py-4">
-                            {{ \Carbon\Carbon::parse($teacherStudent->updated_at)->format('d/m/Y H:i:s') }}
-                        </td>
-                    </tr>
-                    @endforeach
-                    @if($getTeacherStudent->isEmpty())
-                    <tr>
-                        <td colspan="10" class="p-6 text-center text-gray-500">
-                            Aucun élève assigné à ce professeur trouvé.
-                        </td>
-                    </tr>
-                    @endif
-                    </tbody>
-                </table>
-                <div class="text-center bg-white py-2">
-                    <div class="flex justify-between items-center mt-4">
-                    <span
-                        class="text-violet-500 font-bold text-md ps-5 uppercase">Total : {{ $getTeacherStudent->total() }}</span>
-                    </div>
+            </div>
+        </form>
+
+        <div class="flex flex-col">
+            <div
+                class="grid grid-cols-2 sm:grid-cols-4 3xl:grid-cols-8 rounded-sm bg-gray-200 dark:bg-meta-4"
+            >
+                <div class="hidden 3xl:block p-2.5 3xl:p-5">
+                    <h5 class="text-sm font-medium uppercase xsm:text-base">N°</h5>
                 </div>
+                <div class="p-2.5 3xl:p-5">
+                    <h5 class="text-sm font-medium uppercase xsm:text-base">Nom & Prénoms</h5>
+                </div>
+                <div class="hidden 3xl:block p-2.5 3xl:p-5">
+                    <h5 class="text-sm font-medium uppercase xsm:text-base">Email</h5>
+                </div>
+                <div class="hidden sm:block p-2.5 3xl:p-5">
+                    <h5 class="text-sm font-medium uppercase xsm:text-base">Status</h5>
+                </div>
+                <div class="p-2.5 3xl:p-5">
+                    <h5 class="text-sm font-medium uppercase xsm:text-base">Classe</h5>
+                </div>
+                <div class="hidden sm:block p-2.5 3xl:p-5">
+                    <h5 class="text-sm font-medium uppercase xsm:text-base">Genre</h5>
+                </div>
+                <div class="hidden 3xl:block p-2.5 3xl:p-5">
+                    <h5 class="text-sm font-medium uppercase xsm:text-base">Date de Naissance</h5>
+                </div>
+                <div class="hidden 3xl:block p-2.5 3xl:p-5">
+                    <h5 class="text-sm font-medium uppercase xsm:text-base">Date de Création</h5>
+                </div>
+            </div>
+            @foreach($getTeacherStudent as $index => $teacherStudent)
+            <div
+                class="grid grid-cols-2 sm:grid-cols-4 3xl:grid-cols-8 hover:bg-gray-2 dark:hover:bg-gray-700 transition duration-300">
+                <div class="hidden p-2.5 3xl:p-5 3xl:flex items-center">
+                    <p class="font-medium text-sm text-black dark:text-white">
+                        {{ $teacherStudent->admission_number }}
+                    </p>
+                </div>
+                <div class="flex items-center p-2.5 3xl:p-5">
+                    <p class="font-medium text-black dark:text-white">
+                        {{ $teacherStudent->name }} {{ $teacherStudent->last_name }}
+                    </p>
+                </div>
+                <div class="hidden p-2.5 3xl:p-5 3xl:flex items-center">
+                    <p class="font-medium text-sm me-2 px-2.5 py-0.5 rounded bg-gray-2 dark:bg-gray-700">
+                        {{ $teacherStudent -> email }}</p>
+                </div>
+                <div class="hidden sm:flex items-center p-2.5 3xl:p-5">
+                    <p class="font-medium text-sm text-black dark:text-white flex items-center">
+                    <div
+                        class="h-2.5 w-2.5 rounded-full {{ $teacherStudent->status == 1 ? 'bg-emerald-500' : 'bg-red-500' }} me-2"></div>
+                    {{ $teacherStudent->status == 1 ? 'Actif' : 'Inactif' }}
+                    </p>
+                </div>
+                <div class="flex p-2.5 3xl:p-5">
+                    <p class="font-medium text-sm text-black dark:text-white">
+                        {{ $teacherStudent->class_name }}
+                    </p>
+                </div>
+                <div class="hidden sm:flex items-center p-2.5 3xl:p-5">
+                    <p class="font-medium text-sm px-4 py-1 rounded-full dark:text-white
+                {{ $teacherStudent->gender == 'male' ? 'text-violet-700 bg-violet-100 dark:bg-violet-900' : ($teacherStudent->gender == 'female' ? 'text-red-700 bg-red-100 dark:bg-red-900' : 'text-pink-700 bg-pink-100 dark:bg-pink-900') }}">
+                        {{ $teacherStudent->gender == 'male' ? 'Masculin' : ($teacherStudent->gender == 'female' ? 'Féminin' : 'Autre')
+                        }}
+                    </p>
+                </div>
+                <div class="hidden 3xl:flex p-2.5 3xl:p-5">
+                    <p class="font-medium text-sm text-meta-5">
+                        {{ \Carbon\Carbon::parse($teacherStudent->date_of_birth)->locale('fr')->translatedFormat('d M Y')
+                        }}
+                    </p>
+                </div>
+                <div class="hidden 3xl:flex p-2.5  3xl:p-5">
+                    <p class="font-medium text-sm text-meta-5">
+                        {{ \Carbon\Carbon::parse($teacherStudent->created_at)->locale('fr')->translatedFormat('d M Y H:i:s')
+                        }}
+                    </p>
+                </div>
+            </div>
+            @endforeach
+
+            @if($getTeacherStudent->isEmpty())
+            <div class="flex justify-center">
+                <div class="py-3"> Aucun apprenant assigné.</div>
+            </div>
+            @endif
+            <div
+                class="mb-6 mt-3 border-t border-gray-200 pt-2 flex gap-3 items-center justify-between"
+            >
+                <h2 class="text-title-sm uppercase font-bold text-black dark:text-white">
+                    Total
+                </h2>
+                <nav>
+                    <ol class="flex items-center gap-2 bg-bodydark1 w-fit dark:bg-black p-2 px-8 rounded">
+                        <li>
+                            <p class="text-md font-medium">{{ $getTeacherStudent->total() }}</p>
+                        </li>
+                    </ol>
+                </nav>
             </div>
         </div>
     </div>
 </div>
 @endsection
+
 

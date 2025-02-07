@@ -13,7 +13,7 @@
                     <nav>
                         <ol class="flex items-center gap-2">
                             <li>
-                                <span class="font-medium"><i class="fa-solid fa-user-shield"></i></span>
+                                <span class="font-medium text-violet-600"><i class="fa-solid fa-user-shield"></i></span>
                             </li>
                             <li>
                                 <a class="font-medium hover:text-violet-600 transition duration-300"
@@ -26,9 +26,9 @@
                 <div class="flex flex-col gap-9">
                     <!-- Contact Form -->
                     <div
-                        class="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark"
+                        class="rounded-lg border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark"
                     >
-                        <form action="{{ url('admin/admin/add') }}" method="post">
+                        <form action="{{ url('admin/admin/add') }}" method="post" enctype="multipart/form-data">
                             {{ csrf_field() }}
                             <div class="p-6.5">
                                 <div class="mb-4.5">
@@ -54,7 +54,7 @@
                                         <input id="name" name="name" value="{{ old('name') }}" required
                                                type="text"
                                                placeholder="Entrez un nom"
-                                               class="w-full rounded border-[1.5px] border-stroke bg-gray-100 px-5 py-3 font-normal text-black outline-none transition focus:border-violet-600 active:border-violet-600 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-violet-600"
+                                               class="w-full rounded-lg border-[1.5px] border-stroke bg-gray-100 px-5 py-2.5 font-normal text-black outline-none transition focus:border-violet-600 active:border-violet-600 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-violet-600"
                                         />
                                     </div>
 
@@ -67,7 +67,7 @@
                                         <input id="last_name" name="last_name" value="{{ old('last_name') }}" required
                                                type="text"
                                                placeholder="Entrez un prénom"
-                                               class="w-full rounded border-[1.5px] border-stroke bg-gray-100 px-5 py-3 font-normal text-black outline-none transition focus:border-violet-600 active:border-violet-600 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-violet-600"
+                                               class="w-full rounded-lg border-[1.5px] border-stroke bg-gray-100 px-5 py-2.5 font-normal text-black outline-none transition focus:border-violet-600 active:border-violet-600 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-violet-600"
                                         />
                                     </div>
                                 </div>
@@ -81,7 +81,7 @@
                                     <input
                                         type="email" id="email" name="email" value="{{ old('email') }}" required
                                         placeholder="Entrez votre un adresse email"
-                                        class="w-full rounded border-[1.5px] border-stroke bg-gray-100 px-5 py-3 font-normal text-black outline-none transition focus:border-violet-600 active:border-violet-600 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-violet-600"
+                                        class="w-full rounded-lg border-[1.5px] border-stroke bg-gray-100 px-5 py-2.5 font-normal text-black outline-none transition focus:border-violet-600 active:border-violet-600 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-violet-600"
                                     />
                                 </div>
                                 <div class="mb-4.5">
@@ -94,7 +94,7 @@
                                         type="password" id="password" name="password" value="{{ old('password') }}"
                                         required
                                         placeholder="Entrez votre un mot de passe"
-                                        class="w-full rounded border-[1.5px] border-stroke bg-gray-100 px-5 py-3 font-normal text-black outline-none transition focus:border-violet-600 active:border-violet-600 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-violet-600"
+                                        class="w-full rounded-lg border-[1.5px] border-stroke bg-gray-100 px-5 py-2.5 font-normal text-black outline-none transition focus:border-violet-600 active:border-violet-600 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-violet-600"
                                     />
                                 </div>
                                 <div class="mb-4.5">
@@ -108,7 +108,7 @@
                                         class="relative z-20 bg-gray-100 dark:bg-form-input"
                                     >
                                         <select id="status" name="status" required
-                                                class="relative z-20 w-full appearance-none rounded border border-stroke bg-gray-100 px-5 py-3 outline-none transition focus:border-violet-600 active:border-violet-600 dark:border-form-strokedark dark:bg-form-input dark:focus:border-violet-600"
+                                                class="relative z-20 w-full appearance-none rounded-lg border border-stroke bg-gray-100 px-5 py-2.5 outline-none transition focus:border-violet-600 active:border-violet-600 dark:border-form-strokedark dark:bg-form-input dark:focus:border-violet-600"
                                                 :class="isOptionSelected && 'text-black dark:text-white'"
                                                 @change="isOptionSelected = true"
                                         >
@@ -144,7 +144,7 @@
                                     </div>
                                 </div>
                                 <button type="submit"
-                                        class="flex w-full justify-center rounded bg-violet-600 p-3 font-medium text-gray hover:bg-opacity-90"
+                                        class="flex w-full justify-center rounded-lg bg-violet-600 p-3 font-medium text-gray hover:bg-opacity-90"
                                 >
                                     Créer
                                 </button>
@@ -153,13 +153,8 @@
                     </div>
                 </div>
             </div>
-
-
         </div>
     </main>
-
-
 </div>
-
 @endsection
 

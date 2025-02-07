@@ -50,6 +50,8 @@ class TeacherController extends Controller
             $teacher->permanent_address = trim($request->permanent_address);
             $teacher->qualification = trim($request->qualification);
             $teacher->work_experience = trim($request->work_experience);
+            $teacher->admission_date = trim($request->admission_date);
+            $teacher->date_of_birth = trim($request->date_of_birth);
             $teacher->note = trim($request->note);
             if (!empty($request->mobile_number)) {
                 $mobileNumber = trim($request->mobile_number);

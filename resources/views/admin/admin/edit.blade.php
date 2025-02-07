@@ -13,10 +13,10 @@
                     <nav>
                         <ol class="flex items-center gap-2">
                             <li>
-                                <span class="font-medium"><i class="fa-solid fa-user-shield"></i></span>
+                                <span class="font-medium text-emerald-400"><i class="fa-solid fa-user-shield"></i></span>
                             </li>
                             <li>
-                                <a class="font-medium" href="{{ url('admin/admin/list') }}">/ Administrateurs</a>
+                                /<a class="font-medium hover:text-emerald-400" href="{{ url('admin/admin/list') }}"> Administrateurs</a>
                             </li>
                         </ol>
                     </nav>
@@ -25,9 +25,9 @@
                 <div class="flex flex-col gap-9">
                     <!-- Contact Form -->
                     <div
-                        class="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark"
+                        class="rounded-lg border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark"
                     >
-                        <form action="" method="post">
+                        <form action="" method="post" enctype="multipart/form-data">
                             {{ csrf_field() }}
                             <div class="p-6.5">
                                 <div class="mb-4.5">
@@ -39,13 +39,13 @@
                                         </label>
                                         <input
                                             type="file" id="profile_picture" name="profile_picture"
-                                            class="w-full cursor-pointer rounded-lg border-[1.5px] border-stroke bg-gray-100 font-normal outline-none transition file:mr-5 file:border-collapse file:cursor-pointer file:border-0 file:border-r file:border-solid file:border-stroke file:bg-whiter file:px-5 file:py-3 file:hover:bg-violet-600 file:hover:bg-opacity-10 focus:border-violet-600 active:border-violet-600 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:file:border-form-strokedark dark:file:bg-white/30 dark:file:text-white dark:focus:border-violet-600"
+                                            class="w-full cursor-pointer rounded-lg border-[1.5px] border-stroke bg-gray-100 font-normal outline-none transition file:mr-5 file:border-collapse file:cursor-pointer file:border-0 file:border-r file:border-solid file:border-stroke file:bg-whiter file:px-5 file:py-3 file:hover:bg-emerald-400 file:hover:bg-opacity-10 focus:border-emerald-400 active:border-emerald-400 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:file:border-form-strokedark dark:file:bg-white/30 dark:file:text-white dark:focus:border-emerald-400"
                                         />
                                     </div>
                                     <img
                                         src="{{ $profile_picture_url }}"
                                         alt="profile cover"
-                                        class="h-48 w-48 mt-3 rounded-full object-cover object-center"
+                                        class="w-32 mt-3 rounded-full object-cover object-center"
                                     />
                                 </div>
                                 <div class="mb-4.5 flex flex-col gap-6 xl:flex-row">
@@ -58,7 +58,7 @@
                                         <input id="name" name="name" value="{{ old('name', $getAdmin->name) }}" required
                                                type="text"
                                                placeholder="Entrez un nom"
-                                               class="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 font-normal text-black outline-none transition focus:border-violet-600 active:border-violet-600 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-violet-600"
+                                               class="w-full rounded-lg border-[1.5px] border-stroke bg-gray-100 px-5 py-2.5 font-normal text-black outline-none transition focus:border-emerald-400 active:border-emerald-400 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-emerald-400"
                                         />
                                     </div>
 
@@ -71,7 +71,7 @@
                                         <input id="last_name" name="last_name" value="{{ old('last_name', $getAdmin->last_name) }}" required
                                                type="text"
                                                placeholder="Entrez un prénom"
-                                               class="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 font-normal text-black outline-none transition focus:border-violet-600 active:border-violet-600 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-violet-600"
+                                               class="w-full rounded-lg border-[1.5px] border-stroke bg-gray-100 px-5 py-2.5 font-normal text-black outline-none transition focus:border-emerald-400 active:border-emerald-400 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-emerald-400"
                                         />
                                     </div>
                                 </div>
@@ -85,7 +85,7 @@
                                     <input
                                         type="email" id="email" name="email" value="{{ old('email', $getAdmin->email) }}" required
                                         placeholder="Entrez votre un adresse email"
-                                        class="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 font-normal text-black outline-none transition focus:border-violet-600 active:border-violet-600 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-violet-600"
+                                        class="w-full rounded-lg border-[1.5px] border-stroke bg-gray-100 px-5 py-2.5 font-normal text-black outline-none transition focus:border-emerald-400 active:border-emerald-400 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-emerald-400"
                                     />
                                 </div>
                                 <div class="mb-4.5">
@@ -97,7 +97,7 @@
                                     <input
                                         type="password" id="password" name="password" value="{{ old('password') }}"
                                         placeholder="Entrez votre un mot de passe"
-                                        class="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 font-normal text-black outline-none transition focus:border-violet-600 active:border-violet-600 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-violet-600"
+                                        class="w-full rounded-lg border-[1.5px] border-stroke bg-gray-100 px-5 py-2.5 font-normal text-black outline-none transition focus:border-emerald-400 active:border-emerald-400 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-emerald-400"
                                     />
                                     <p class="mb-5 text-red-600 text-[12px]">Est-ce que vous voulez changer le mot de passe ? Si oui
                                         veuillez ajouter le nouveau</p>
@@ -110,10 +110,10 @@
                                     </label>
                                     <div
                                         x-data="{ isOptionSelected: false }"
-                                        class="relative z-20 bg-transparent dark:bg-form-input"
+                                        class="relative z-20 bg-gray-100 dark:bg-form-input"
                                     >
                                         <select  id="status" name="status" required
-                                                 class="relative z-20 w-full appearance-none rounded border border-stroke bg-transparent px-5 py-3 outline-none transition focus:border-violet-600 active:border-violet-600 dark:border-form-strokedark dark:bg-form-input dark:focus:border-violet-600"
+                                                 class="relative z-20 w-full appearance-none rounded-lg border border-stroke bg-gray-100 px-5 py-2.5 outline-none transition focus:border-emerald-400 active:border-emerald-400 dark:border-form-strokedark dark:bg-form-input dark:focus:border-emerald-400"
                                                  :class="isOptionSelected && 'text-black dark:text-white'"
                                                  @change="isOptionSelected = true"
                                         >
@@ -147,22 +147,17 @@
                                     </div>
                                 </div>
                                 <button type="submit"
-                                        class="flex w-full justify-center rounded bg-violet-600 p-3 font-medium text-gray hover:bg-opacity-90"
+                                        class="flex w-full justify-center rounded-lg bg-emerald-400 p-3 font-medium text-white hover:bg-opacity-90"
                                 >
-                                    Créer
+                                    Modifier
                                 </button>
                             </div>
                         </form>
                     </div>
                 </div>
             </div>
-
-
         </div>
     </main>
-
-
 </div>
-
 @endsection
 

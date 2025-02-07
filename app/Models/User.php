@@ -321,9 +321,11 @@ class User extends Authenticatable
             ->where('users.is_delete', '=', 0);
 
         $filters = [
+            'users.admission_number' => strtolower(Request::get('admission_number')),
             'users.name' => strtolower(Request::get('name')),
             'users.last_name' => strtolower(Request::get('last_name')),
             'users.email' => strtolower(Request::get('email')),
+            'users.date_of_birth' => strtolower(Request::get('date_of_birth')),
             'users.created_at' => strtolower(Request::get('created_at')),
             'users.updated_at' => strtolower(Request::get('updated_at')),
         ];
@@ -332,6 +334,15 @@ class User extends Authenticatable
             if (!empty($value)) {
                 $results->where($column, 'like', '%' . $value . '%');
             }
+        }
+
+        $status = Request::get('status');
+        if (in_array($status, ['0', '1'], true)) {
+            $results->where('users.status', $status);
+        }
+        $gender = Request::get('gender');
+        if (in_array($gender, ['male', 'female', 'other'], true)) {
+            $results->where('users.gender', $gender);
         }
 
         return $results
