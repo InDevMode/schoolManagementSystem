@@ -140,7 +140,7 @@
                                         href="{{ url('admin/assign_class/list') }}"
                                     >
                                         <span
-                                            class="text-[18px] py-1 px-2 rounded {{ Request::Segment(2) == 'assign_class' ? 'group-hover:text-bodydark1 text-violet-600' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}"><i
+                                            class="text-[18px] py-1 px-2 rounded {{ Request::Segment(2) == 'assign_class' ? 'group-hover:text-bodydark1 text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}"><i
                                                 class="fa-solid fa-chevron-right"></i></span>
                                         <span
                                             class="{{ Request::Segment(2) == 'assign_class' ? 'group-hover:text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}">Classes</span>
@@ -152,7 +152,7 @@
                                         href="{{ url('admin/assign_subject/list') }}"
                                     >
                                         <span
-                                            class="text-[18px] py-1 px-2 rounded {{ Request::Segment(2) == 'assign_subject' ? 'group-hover:text-bodydark1 text-violet-600' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}"><i
+                                            class="text-[18px] py-1 px-2 rounded {{ Request::Segment(2) == 'assign_subject' ? 'group-hover:text-bodydark1 text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}"><i
                                                 class="fa-solid fa-chevron-right"></i></span>
                                         <span
                                             class="{{ Request::Segment(2) == 'assign_subject' ? 'group-hover:text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}">Matières</span>
@@ -164,7 +164,7 @@
                                         href="{{ url('admin/class_timetable/list') }}"
                                     >
                                         <span
-                                            class="text-[18px] py-1 px-2 rounded {{ Request::Segment(2) == 'class_timetable' ? 'group-hover:text-bodydark1 text-violet-600' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}"><i
+                                            class="text-[18px] py-1 px-2 rounded {{ Request::Segment(2) == 'class_timetable' ? 'group-hover:text-bodydark1 text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}"><i
                                                 class="fa-solid fa-chevron-right"></i></span>
                                         <span
                                             class="{{ Request::Segment(2) == 'class_timetable' ? 'group-hover:text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}">Horaires</span>
@@ -200,7 +200,7 @@
                                         href="{{ url('admin/assign_class/list') }}"
                                     >
                                         <span
-                                            class="text-[18px] py-1 px-2 rounded {{ Request::Segment(2) == 'assign_class' ? 'group-hover:text-bodydark1 text-violet-600' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}"><i
+                                            class="text-[18px] py-1 px-2 rounded {{ Request::Segment(2) == 'assign_class' ? 'group-hover:text-bodydark1 text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}"><i
                                                 class="fa-solid fa-chevron-right"></i></span>
                                         <span
                                             class="{{ Request::Segment(2) == 'assign_class' ? 'group-hover:text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}">Classes</span>
@@ -212,7 +212,7 @@
                                         href="{{ url('admin/assign_subject/list') }}"
                                     >
                                         <span
-                                            class="text-[18px] py-1 px-2 rounded {{ Request::Segment(2) == 'assign_subject' ? 'group-hover:text-bodydark1 text-violet-600' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}"><i
+                                            class="text-[18px] py-1 px-2 rounded {{ Request::Segment(2) == 'assign_subject' ? 'group-hover:text-bodydark1 text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}"><i
                                                 class="fa-solid fa-chevron-right"></i></span>
                                         <span
                                             class="{{ Request::Segment(2) == 'assign_subject' ? 'group-hover:text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}">Matières</span>
@@ -224,7 +224,7 @@
                                         href="{{ url('admin/class_timetable/list') }}"
                                     >
                                         <span
-                                            class="text-[18px] py-1 px-2 rounded {{ Request::Segment(2) == 'class_timetable' ? 'group-hover:text-bodydark1 text-violet-600' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}"><i
+                                            class="text-[18px] py-1 px-2 rounded {{ Request::Segment(2) == 'class_timetable' ? 'group-hover:text-bodydark1 text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}"><i
                                                 class="fa-solid fa-chevron-right"></i></span>
                                         <span
                                             class="{{ Request::Segment(2) == 'class_timetable' ? 'group-hover:text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}">Horaires</span>

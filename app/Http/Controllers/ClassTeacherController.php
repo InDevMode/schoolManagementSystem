@@ -110,7 +110,7 @@ class ClassTeacherController extends Controller
             $data['getTeacher'] = User::getTeacher();
             $data['getAssignClass'] = ClassTeacherModel::getAssignTeacher($editExisting->class_id);
             $data['header_title'] = "Modifier une assignation";
-            return view('admin.assign_subject.edit_single', $data);
+            return view('admin.assign_class.edit_single', $data);
         } else {
             abort(404);
         }

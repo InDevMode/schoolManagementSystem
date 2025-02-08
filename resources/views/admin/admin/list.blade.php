@@ -25,10 +25,8 @@
         </nav>
     </div>
     @include('message')
-    <div class="">
-        <div class="mt-4">
-            {{ $getAdmin->links('vendor.pagination.tailwind') }}
-        </div>
+    <div class="my-4">
+        {{ $getAdmin->links('vendor.pagination.tailwind') }}
     </div>
     <div
         class="rounded-lg border border-stroke bg-white px-5 pb-2.5 pt-6 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1"
@@ -194,98 +192,100 @@
                 </tr>
                 </thead>
                 <tbody>
-                    @foreach($getAdmin as $index => $admin)
-                        <tr class="hover:bg-violet-100 dark:hover:bg-gray-700 transition duration-300 border-b dark:border-gray-600 hover:border-violet-400 dark:text-gray-200 text-gray-500">
-                            <td class="px-6 py-3">
-                                {{ $admin -> name }} {{ $admin -> last_name }}
-                            </td>
-                            <td class="px-6 py-3 font-semibold">
-                                {{ $admin -> email }}
-                            </td>
-                            <td class="px-6 py-3">
-                                <div class="flex items-center">
-                                    <P class="h-2.5 w-2.5 rounded-full {{ $admin->status == 1 ? 'bg-emerald-500' : 'bg-red-500' }} me-2"></P>
-                                    <p>{{ $admin->status == 1 ? 'Actif' : 'Inactif' }}</p>
-                                </div>
-                            </td>
-                            <td class="px-6 py-3">
-                                {{ \Carbon\Carbon::parse($admin->created_at)->locale('fr')->translatedFormat('d M Y H:i:s') }}
-                            </td>
-                            <td class="px-6 py-3">
-                                {{ \Carbon\Carbon::parse($admin->updated_at)->locale('fr')->translatedFormat('d M Y H:i:s') }}
-                            </td>
-                            <td class="px-6 py-3">
-                                <div class="relative inline-block text-left" x-data="{ open: false }">
-                                    <div>
-                                        <button
-                                            type="button"
-                                            class="group inline-flex w-full justify-center gap-x-1.5 rounded-lg shadow-md bg-white dark:bg-gray-800 border dark:border-gray-600 dark:hover:text-violet-600 px-3 py-2 text-sm font-semibold text-gray-700 hover:text-violet-600 dark:text-gray-200 hover:bg-gray-100"
-                                            @click="open = !open"
-                                            id="menu-button"
-                                            aria-expanded="true"
-                                            aria-haspopup="true">
-                                            Actions
-                                            <svg class="-mr-1 size-5 group-hover:text-violet-600 text-gray-400" viewBox="0 0 20 20" fill="currentColor"
-                                                 aria-hidden="true">
-                                                <path fill-rule="evenodd"
-                                                      d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z"
-                                                      clip-rule="evenodd"/>
-                                            </svg>
-                                        </button>
-                                    </div>
-                                    <div
-                                        class="absolute right-0 z-50 mt-2 w-56 origin-top-right rounded-md bg-white dark:bg-gray-800 ring-1 shadow-lg ring-black/5 focus:outline-hidden"
-                                        role="menu"
-                                        aria-orientation="vertical"
-                                        aria-labelledby="menu-button"
-                                        tabindex="{{ $index + 1 }}"
-                                        x-show="open"
-                                        @click.away="open = false"
-                                        x-transition
-                                    >
-                                        <div class="py-1">
-                                            <a href="{{ url('admin/account') }}"
-                                               class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:text-violet-600 dark:hover:text-violet-400"
-                                               role="menuitem">Profile</a>
-                                            <a href="{{ url('admin/admin/edit', $admin->id) }}"
-                                               class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:text-emerald-400 dark:hover:text-emerald-400"
-                                               role="menuitem">Modifier</a>
-                                            <form method="get" action="" role="none">
-                                                <button type="submit"
-                                                        class="block w-full px-4 py-2 text-left text-sm text-gray-700 dark:text-gray-200 hover:text-red-400 dark:hover:text-red-400"
-                                                        role="menuitem">
-                                                    Supprimer
-                                                </button>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>
-                    @endforeach
-                    @if($getAdmin->isEmpty())
-                        <tr class="text-center text-gray-700">
-                            <td colspan="6" class="py-3"> Aucun administrateur trouvé.</td>
-                        </tr>
-                    @endif
-                    <tr class="">
-                        <td colspan="6"
-                            class="px-6 py-3"
-                        >
-                            <div class="mt-3 mb-3 flex items-center justify-between">
-                                <h2 class="text-title-sm uppercase font-bold text-black dark:text-white">
-                                    Total
-                                </h2>
-                                <nav>
-                                    <ol class="flex items-center bg-white shadow-lg border border-gray-200 dark:border-gray-600 w-fit dark:bg-black py-2 px-8 rounded">
-                                        <li>
-                                            <p class="text-md font-semibold text-gray-700 dark:text-gray-200">{{ $getAdmin->total() }}</p>
-                                        </li>
-                                    </ol>
-                                </nav>
+                @foreach($getAdmin as $index => $admin)
+                <tr class="hover:bg-violet-100 dark:hover:bg-gray-700 transition duration-300 border-b dark:border-gray-600 hover:border-violet-400 dark:text-gray-200 text-gray-500">
+                    <td class="px-6 py-3">
+                        {{ $admin -> name }} {{ $admin -> last_name }}
+                    </td>
+                    <td class="px-6 py-3 font-semibold">
+                        {{ $admin -> email }}
+                    </td>
+                    <td class="px-6 py-3">
+                        <div class="flex items-center">
+                            <P class="h-2.5 w-2.5 rounded-full {{ $admin->status == 1 ? 'bg-emerald-500' : 'bg-red-500' }} me-2"></P>
+                            <p>{{ $admin->status == 1 ? 'Actif' : 'Inactif' }}</p>
+                        </div>
+                    </td>
+                    <td class="px-6 py-3">
+                        {{ \Carbon\Carbon::parse($admin->created_at)->locale('fr')->translatedFormat('d M Y H:i:s') }}
+                    </td>
+                    <td class="px-6 py-3">
+                        {{ \Carbon\Carbon::parse($admin->updated_at)->locale('fr')->translatedFormat('d M Y H:i:s') }}
+                    </td>
+                    <td class="px-6 py-3">
+                        <div class="relative inline-block text-left" x-data="{ open: false }">
+                            <div>
+                                <button
+                                    type="button"
+                                    class="group inline-flex w-full justify-center gap-x-1.5 rounded-lg shadow-md bg-white dark:bg-gray-800 border dark:border-gray-600 dark:hover:text-violet-600 px-3 py-2 text-sm font-semibold text-gray-700 hover:text-violet-600 dark:text-gray-200 hover:bg-gray-100"
+                                    @click="open = !open"
+                                    id="menu-button"
+                                    aria-expanded="true"
+                                    aria-haspopup="true">
+                                    Actions
+                                    <svg class="-mr-1 size-5 group-hover:text-violet-600 text-gray-400"
+                                         viewBox="0 0 20 20" fill="currentColor"
+                                         aria-hidden="true">
+                                        <path fill-rule="evenodd"
+                                              d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z"
+                                              clip-rule="evenodd"/>
+                                    </svg>
+                                </button>
                             </div>
-                        </td>
-                    </tr>
+                            <div
+                                class="absolute right-0 z-50 mt-2 w-56 origin-top-right rounded-md bg-white dark:bg-gray-800 ring-1 shadow-lg ring-black/5 focus:outline-hidden"
+                                role="menu"
+                                aria-orientation="vertical"
+                                aria-labelledby="menu-button"
+                                tabindex="{{ $index + 1 }}"
+                                x-show="open"
+                                @click.away="open = false"
+                                x-transition
+                            >
+                                <div class="py-1">
+                                    <a href="{{ url('admin/account') }}"
+                                       class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:text-violet-600 dark:hover:text-violet-400"
+                                       role="menuitem">Profile</a>
+                                    <a href="{{ url('admin/admin/edit', $admin->id) }}"
+                                       class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:text-emerald-400 dark:hover:text-emerald-400"
+                                       role="menuitem">Modifier</a>
+                                    <form method="get" action="" role="none">
+                                        <button type="submit"
+                                                class="block w-full px-4 py-2 text-left text-sm text-gray-700 dark:text-gray-200 hover:text-red-400 dark:hover:text-red-400"
+                                                role="menuitem">
+                                            Supprimer
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                @endforeach
+                @if($getAdmin->isEmpty())
+                <tr class="text-center text-gray-700">
+                    <td colspan="6" class="py-3"> Aucun administrateur trouvé.</td>
+                </tr>
+                @endif
+                <tr class="">
+                    <td colspan="6"
+                        class="px-6 py-3"
+                    >
+                        <div class="mt-3 mb-3 flex items-center justify-between">
+                            <h2 class="text-title-sm uppercase font-bold text-black dark:text-white">
+                                Total
+                            </h2>
+                            <nav>
+                                <ol class="flex items-center bg-white shadow-lg border border-gray-200 dark:border-gray-600 w-fit dark:bg-black py-2 px-8 rounded">
+                                    <li>
+                                        <p class="text-md font-semibold text-gray-700 dark:text-gray-200">
+                                            {{ $getAdmin->total() }}</p>
+                                    </li>
+                                </ol>
+                            </nav>
+                        </div>
+                    </td>
+                </tr>
                 </tbody>
             </table>
         </div>
