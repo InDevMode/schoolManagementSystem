@@ -25,10 +25,8 @@
         </nav>
     </div>
     @include('message')
-    <div class="">
-        <div class="mt-4">
-            {{ $getTeacher->links('vendor.pagination.tailwind') }}
-        </div>
+    <div class="my-5">
+        {{ $getTeacher->links('vendor.pagination.tailwind') }}
     </div>
     <div
         class="rounded-lg border border-stroke bg-white px-5 pb-2.5 pt-6 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1"
@@ -389,25 +387,26 @@
                 @endforeach
                 @if($getTeacher->isEmpty())
                 <tr class="text-center text-gray-700">
-                    <td colspan="9"  class="px-6 py-3"> Aucun professeur trouvé.</td>
+                    <td colspan="9" class="px-6 py-3"> Aucun professeur trouvé.</td>
                 </tr>
                 @endif
                 <tr class="">
                     <td colspan="9"
                         class="px-6 py-3"
                     >
-                    <div class="mt-3 mb-3 flex items-center justify-between">
-                        <h2 class="text-title-sm uppercase font-bold text-black dark:text-white">
-                            Total
-                        </h2>
-                        <nav>
-                            <ol class="flex items-center bg-white shadow-lg border border-gray-200 dark:border-gray-600 w-fit dark:bg-black py-2 px-8 rounded">
-                                <li>
-                                    <p class="text-md font-semibold text-gray-700 dark:text-gray-200">{{ $getTeacher->total() }}</p>
-                                </li>
-                            </ol>
-                        </nav>
-                    </div>
+                        <div class="mt-3 mb-3 flex items-center justify-between">
+                            <h2 class="text-title-sm uppercase font-bold text-black dark:text-white">
+                                Total
+                            </h2>
+                            <nav>
+                                <ol class="flex items-center bg-white shadow-lg border border-gray-200 dark:border-gray-600 w-fit dark:bg-black py-2 px-8 rounded">
+                                    <li>
+                                        <p class="text-md font-semibold text-gray-700 dark:text-gray-200">
+                                            {{ $getTeacher->total() }}</p>
+                                    </li>
+                                </ol>
+                            </nav>
+                        </div>
                     </td>
                 </tr>
                 </tbody>

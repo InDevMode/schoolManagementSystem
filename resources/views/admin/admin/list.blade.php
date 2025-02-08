@@ -25,7 +25,7 @@
         </nav>
     </div>
     @include('message')
-    <div class="my-4">
+    <div class="my-5">
         {{ $getAdmin->links('vendor.pagination.tailwind') }}
     </div>
     <div

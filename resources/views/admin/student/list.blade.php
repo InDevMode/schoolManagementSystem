@@ -25,10 +25,8 @@
         </nav>
     </div>
     @include('message')
-    <div class="">
-        <div class="mt-4">
-            {{ $getStudent ->links('vendor.pagination.tailwind') }}
-        </div>
+    <div class="my-5">
+        {{ $getStudent ->links('vendor.pagination.tailwind') }}
     </div>
     <div
         class="rounded-lg border border-stroke bg-white px-5 pb-2.5 pt-6 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1"
@@ -37,7 +35,8 @@
             <div class="mb-4.5 grid grid-cols-2 xl:grid-cols-4 gap-3 items-center">
                 <div class="w-full">
                     <input
-                        type="text" id="admission_number" name="admission_number" value="{{ Request::get('admission_number') }}"
+                        type="text" id="admission_number" name="admission_number"
+                        value="{{ Request::get('admission_number') }}"
                         placeholder="numéro d'admission..."
                         class="w-full rounded-lg border-[1.5px] border-stroke bg-gray-100 px-5 py-2.5 font-normal text-black outline-none transition focus:border-violet-600 active:border-violet-600 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-violet-600"
                     />
@@ -456,7 +455,7 @@
                 @endforeach
                 @if($getStudent->isEmpty())
                 <tr class="text-center text-gray-700">
-                    <td colspan="9"  class="px-6 py-3"> Aucun apprenant trouvé.</td>
+                    <td colspan="9" class="px-6 py-3"> Aucun apprenant trouvé.</td>
                 </tr>
                 @endif
                 <tr class="">
@@ -470,7 +469,8 @@
                             <nav>
                                 <ol class="flex items-center bg-white shadow-lg border border-gray-200 dark:border-gray-600 w-fit dark:bg-black py-2 px-8 rounded">
                                     <li>
-                                        <p class="text-md font-semibold text-gray-700 dark:text-gray-200">{{ $getStudent->total() }}</p>
+                                        <p class="text-md font-semibold text-gray-700 dark:text-gray-200">
+                                            {{ $getStudent->total() }}</p>
                                     </li>
                                 </ol>
                             </nav>

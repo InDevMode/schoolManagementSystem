@@ -76,7 +76,7 @@
                                 class="text-[18px] py-1 px-2 rounded {{ Request::Segment(2) == 'student' ? 'bg-violet-100 text-violet-600' : 'bg-violet-100 text-violet-600'}}"><i
                                     class="fa-solid fa-user-graduate"></i></span>
                             <span
-                                class="{{ Request::Segment(2) == 'student' ? 'group-hover:text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}">Elèves</span>
+                                class="{{ Request::Segment(2) == 'student' ? 'group-hover:text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}">Apprenants</span>
                         </a>
                     </li>
                     <li>
