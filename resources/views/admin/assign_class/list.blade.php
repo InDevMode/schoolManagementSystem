@@ -11,7 +11,7 @@
         <nav>
             <ol class="flex items-center gap-2">
                 <li>
-                    <span class="font-medium text-violet-600"><i class="fa-solid fa-user-tie"></i></span>
+                    <span class="font-medium text-violet-600"><i class="fa-solid fa-arrows-spin"></i></span>
                 </li>
                 <li>
                     /<a class="font-medium hover:text-violet-600 transition duration-300"
@@ -243,7 +243,7 @@
                                        role="menuitem">Modifier une assignation</a>
                                     <a href="{{ url('admin/assign_class/edit', $classTeacher -> id) }}"
                                        class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:text-emerald-400 dark:hover:text-emerald-400"
-                                       role="menuitem">Modifier plusieurs assignation</a>
+                                       role="menuitem">Modifier plusieurs assignations</a>
                                     <form method="get" action="" role="none">
                                         <button type="submit"
                                                 class="block w-full px-4 py-2 text-left text-sm text-gray-700 dark:text-gray-200 hover:text-red-400 dark:hover:text-red-400"

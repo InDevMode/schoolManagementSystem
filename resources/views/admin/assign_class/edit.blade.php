@@ -8,7 +8,7 @@
                     class="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"
                 >
                     <h2 class="uppercase font-bold text-black dark:text-bodydark">
-                        Assignez une classe à un ou des professeur(s)
+                        Modifier cette classe assignée à un ou des professeur(s)
                     </h2>
                     <nav>
                         <ol class="flex items-center gap-2">
