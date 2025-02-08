@@ -86,13 +86,17 @@ class ClassSubjectModel extends Model
             'class.name as class_name',
             'subject.name as subject_name',
             'subject.type as subject_type',
-            'subject.status as subject_status')
+            'subject.status as subject_status',
+            'teacher.name as teacher_name',
+            'teacher.last_name as teacher_last_name'
+        )
             ->join('subject', 'subject.id', '=', 'class_subject.subject_id')
             ->join('class', 'class.id', '=', 'class_subject.class_id')
-            ->join('users', 'users.id', '=', 'class_subject.created_by')
+            ->join('class_teacher', 'class_teacher.class_id', '=', 'class.id')
+            ->join('users as teacher', 'teacher.id', '=', 'class_teacher.teacher_id')
             ->where('class_subject.class_id', '=', $class_id)
             ->where('class_subject.is_delete', '=', 0)
-            ->where('class_subject.status', '=', 0);
+            ->where('class_subject.status', '=', 1);
 
         $filters = [
             'class.name' => strtolower(Request::get('class_name')),

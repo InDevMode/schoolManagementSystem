@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -31,7 +32,8 @@ class ClassTimetableModel extends Model
             ->first();
     }
 
-    static public function getSubject(int $class_id){
+    static public function getSubject(int $class_id)
+    {
         return ClassSubjectModel::select(
             'class_subject.*',
             'subject.name as subject_name',
@@ -46,5 +48,4 @@ class ClassTimetableModel extends Model
             ->get();
 
     }
-
 }

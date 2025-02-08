@@ -137,6 +137,7 @@ Route::group(['middleware' => 'teacher'], function () {
 
     // Teacher class subject url
     Route::get('teacher/class_subject', [ClassTeacherController::class, 'myClassSubject']);
+    Route::get('teacher/class_subject/{class_id}/timetable/{subject_id}/', [ClassTimetableController::class, 'myClassSubjectTimetable']);
 
     // Teacher student url
     Route::get('teacher/my_student', [StudentController::class, 'myStudent']);
@@ -174,4 +175,8 @@ Route::group(['middleware' => 'parent'], function () {
     // Parent route side show student
     Route::get('parent/my_student', [ParentController::class, 'parentStudent']);
     Route::get('parent/my_student/{student_id}/subject', [SubjectController::class, 'parentStudentSubject']);
+
+    // Parent student class timetable
+    Route::get('parent/my_student/{class_id}/subject/{subject_id}/timetable/student/{student_id}', [ClassTimetableController::class, 'parentStudentSubjectTimetable']);
+
 });

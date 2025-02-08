@@ -10,7 +10,7 @@
                 <span class="hover:underline hover:text-violet-500 transition-all duration-300"><a
                         href="{{ url('teacher/dashboard') }}">Dashboard</a></span>
                 <span><i class="fa-solid fa-chevron-right"></i></span>
-                <span>Liste de mes Classes et Matières</span>
+                <span>Liste de mes classes et matières</span>
             </div>
         </div>
         <div class="">
@@ -28,6 +28,13 @@
                     <input type="text" id="class_name" name="class_name" value="{{ Request::get('class_name') }}"
                            class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2"
                            placeholder="Rechercher par le nom de la classe...">
+                </div>
+
+                <!-- Nom de la classe -->
+                <div>
+                    <input type="text" id="subject_name" name="subject_name" value="{{ Request::get('subject_name') }}"
+                           class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2"
+                           placeholder="Rechercher par le nom de la matière...">
                 </div>
 
                 <!-- Type -->
@@ -76,13 +83,6 @@
             <table class="w-full text-[12px] text-left rtl:text-right">
                 <thead class="text-[12px] text-white uppercase bg-violet-500">
                 <tr>
-                    <th scope="col" class="p-4">
-                        <div class="flex items-center">
-                            <input id="checkbox-all-search" type="checkbox"
-                                   class="w-4 h-4 border border-gray-300 rounded bg-white focus:ring-3 focus:ring-violet-300 focus:outline-none checked:bg-violet-600">
-                            <label for="checkbox-all-search" class="sr-only">checkbox</label>
-                        </div>
-                    </th>
                     <th scope="col" class="px-6 py-3">
                         <div class="flex items-center">
                             N°
@@ -102,6 +102,14 @@
                     <th scope="col" class="px-6 py-3">
                         <div class="flex items-center">
                             Nom de la matière
+                            <a href="#">
+                                <span class="w-3 h-3 ms-1.5"><i class="fa-solid fa-filter"></i></span>
+                            </a>
+                        </div>
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        <div class="flex items-center">
+                            Heures
                             <a href="#">
                                 <span class="w-3 h-3 ms-1.5"><i class="fa-solid fa-filter"></i></span>
                             </a>
@@ -131,27 +139,39 @@
                             </a>
                         </div>
                     </th>
+                    <th scope="col" class="px-6 py-3">
+                        <div class="flex items-center">
+                            Actions
+                            <a href="#">
+                                <span class="w-3 h-3 ms-1.5"><i class="fa-solid fa-filter"></i></span>
+                            </a>
+                        </div>
+                    </th>
                 </tr>
                 </thead>
                 <tbody>
                 @foreach($getClassSubjectTeacher as $index => $classSubjectTeacher)
                 <tr class="bg-white border-b hover:bg-gray-50">
-                    <td class="w-4 p-4">
-                        <div class="flex items-center">
-                            <input name="ids[]" value="{{ $classSubjectTeacher->id }}" type="checkbox"
-                                   class="w-4 h-4 border border-gray-300 rounded bg-white focus:ring-3 focus:ring-violet-300 focus:outline-none checked:bg-violet-600">
-                            <label for="checkbox-table-search-{{ $index }}" class="sr-only">checkbox</label>
-                        </div>
-                    </td>
                     <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
                         {{ $index + 1 }}
                     </th>
-                    <td class="px-6 py-4">
+                    <td class="px-6 py-4 font-semibold">
                         {{ $classSubjectTeacher -> class_name }}
                     </td>
                     <td class="px-6 py-4">
                         {{ $classSubjectTeacher -> subject_name }}
                     </td>
+                    <td class="px-6 py-4">
+                        @php
+                        $timetable = \App\Models\ClassTeacherModel::getMyClassTimetable($classSubjectTeacher->class_id, $classSubjectTeacher->subject_id);
+                        @endphp
+                        @if ($timetable)
+                        <span class="bg-gray-200 flex justify-center border border-gray-500 py-2 px-3 rounded">{{ \Carbon\Carbon::parse($timetable->start_time)->format('G\h i\m\i\n') }} à {{ \Carbon\Carbon::parse($timetable->end_time)->format('G\h i\m\i\n') }}</span>
+                        @else
+                        <p>Aucune heure disponible pour cette matière.</p>
+                        @endif
+                    </td>
+
                     <td class="px-6 py-4">
                         @if($classSubjectTeacher -> subject_type == 'theoretical')
                         <span
@@ -166,6 +186,14 @@
                     </td>
                     <td class="px-6 py-4">
                         {{ \Carbon\Carbon::parse($classSubjectTeacher->updated_at)->format('d/m/Y H:i:s') }}
+                    </td>
+                    <td class="px-6 py-4">
+                        <a href="{{ url('teacher/class_subject/'. $classSubjectTeacher -> class_id.'/timetable/'. $classSubjectTeacher->subject_id) }}"
+                           class="font-medium flex items-center justify-center space-x-2 py-2 text-white hover:bg-violet-600 rounded bg-violet-500 text-sm transition duration-700"
+                           title="Voir mon horaire">
+                            <span><i class="fa-solid fa-eye"></i></span>
+                            <span>Horaire</span>
+                        </a>
                     </td>
                 </tr>
                 @endforeach

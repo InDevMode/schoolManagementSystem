@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\ClassModel;
-use App\Models\ClassSubjectModel;
 use App\Models\ClassTimetableModel;
+use App\Models\SubjectModel;
+use App\Models\User;
 use App\Models\WeekModel;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 class ClassTimetableController extends Controller
@@ -33,13 +35,12 @@ class ClassTimetableController extends Controller
 
             if (!empty($request->class_id) && !empty($request->subject_id)) {
                 $classSubjectTimetable = ClassTimetableModel::getClassTimetable($request->class_id, $request->subject_id, $weekValue->id);
-                if ($classSubjectTimetable) {
+                if (!empty($classSubjectTimetable)) {
                     $weekEntry['start_time'] = $classSubjectTimetable->start_time;
                     $weekEntry['end_time'] = $classSubjectTimetable->end_time;
                     $weekEntry['room_number'] = $classSubjectTimetable->room_number;
                 }
             }
-
             $week[] = $weekEntry;
         }
         $data['week'] = $week;
@@ -91,23 +92,103 @@ class ClassTimetableController extends Controller
 
     public function studentTimetable(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
     {
-        $data['header_title'] = "Horaire de cours de l'élève";
+        $data['header_title'] = "Mes horaires de cours";
+        $getTimetable = ClassTimetableModel::getSubject(Auth::user()->class_id);
+
+        $studentTimetable = array();
+        foreach ($getTimetable as $timetable) {
+            $dataSubject['name'] = $timetable->subject_name;
+            $getWeek = WeekModel::getAllWeek();
+
+            $week = array();
+            foreach ($getWeek as $weekValue) {
+                $dataWeek = array();
+                $dataWeek['week_id'] = $weekValue->id;
+                $dataWeek['week_name'] = $weekValue->name;
+                $classSubjectTimetable = ClassTimetableModel::getClassTimetable($timetable->class_id, $timetable->subject_id, $weekValue->id);
+                if (!empty($classSubjectTimetable)) {
+                    $dataWeek['start_time'] = $classSubjectTimetable->start_time;
+                    $dataWeek['end_time'] = $classSubjectTimetable->end_time;
+                    $dataWeek['room_number'] = $classSubjectTimetable->room_number;
+                } else {
+                    $dataWeek['start_time'] = '';
+                    $dataWeek['end_time'] = '';
+                    $dataWeek['room_number'] = '';
+                }
+                $week[] = $dataWeek;
+            }
+            $dataSubject['week'] = $week;
+            $studentTimetable[] = $dataSubject;
+        }
+        $data['getStudentTimetable'] = $studentTimetable;
         return view('student.timetable', $data);
     }
 
-    public function create()
+    public function myClassSubjectTimetable($class_id, $subject_id): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
     {
+        $data['header_title'] = "Mes horaires de cours";
+        $data['getClass'] = ClassModel::getSingle($class_id);
+        $data['getSubject'] = SubjectModel::getSingle($subject_id);
+        $getWeek = WeekModel::getAllWeek();
+        $week = array();
+
+        foreach ($getWeek as $weekValue) {
+            $dataWeek = array();
+            $dataWeek['week_id'] = $weekValue->id;
+            $dataWeek['week_name'] = $weekValue->name;
+            $classSubjectTimetable = ClassTimetableModel::getClassTimetable($class_id, $subject_id, $weekValue->id);
+
+            if (!empty($classSubjectTimetable)) {
+                $dataWeek['start_time'] = $classSubjectTimetable->start_time;
+                $dataWeek['end_time'] = $classSubjectTimetable->end_time;
+                $dataWeek['room_number'] = $classSubjectTimetable->room_number;
+            } else {
+                $dataWeek['start_time'] = '';
+                $dataWeek['end_time'] = '';
+                $dataWeek['room_number'] = '';
+            }
+            $week[] = $dataWeek;
+        }
+
+        $dataSubject['week'] = $week;
+        $teacherTimetable[] = $dataSubject;
+
+        $data['getTeacherTimetable'] = $teacherTimetable;
+        return view('teacher.timetable', $data);
     }
 
-    public function edit()
+    public function parentStudentSubjectTimetable($class_id, $subject_id, $student_id): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
     {
+        $data['header_title'] = "Ses horaires de cours";
+        $data['getClass'] = ClassModel::getSingle($class_id);
+        $data['getSubject'] = SubjectModel::getSingle($subject_id);
+        $data['getStudent'] = User::getSingle($student_id);
+        $getWeek = WeekModel::getAllWeek();
+        $week = array();
+
+        foreach ($getWeek as $weekValue) {
+            $dataWeek = array();
+            $dataWeek['week_id'] = $weekValue->id;
+            $dataWeek['week_name'] = $weekValue->name;
+            $classSubjectTimetable = ClassTimetableModel::getClassTimetable($class_id, $subject_id, $weekValue->id);
+
+            if (!empty($classSubjectTimetable)) {
+                $dataWeek['start_time'] = $classSubjectTimetable->start_time;
+                $dataWeek['end_time'] = $classSubjectTimetable->end_time;
+                $dataWeek['room_number'] = $classSubjectTimetable->room_number;
+            } else {
+                $dataWeek['start_time'] = '';
+                $dataWeek['end_time'] = '';
+                $dataWeek['room_number'] = '';
+            }
+            $week[] = $dataWeek;
+        }
+
+        $dataSubject['week'] = $week;
+        $teacherTimetable[] = $dataSubject;
+
+        $data['getTeacherTimetable'] = $teacherTimetable;
+        return view('parent.timetable', $data);
     }
 
-    public function update()
-    {
-    }
-
-    public function delete()
-    {
-    }
 }

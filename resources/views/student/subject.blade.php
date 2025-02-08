@@ -11,7 +11,7 @@
                     <span class="hover:underline hover:text-violet-500 transition-all duration-300"><a
                             href="{{ url('student/my_subject') }}">Liste de mes cours</a></span>
                     <span><i class="fa-solid fa-chevron-right"></i></span>
-                    <span>Mes Cours</span>
+                    <span>Mes cours</span>
                 </div>
             </div>
             <div class="">
@@ -74,13 +74,6 @@
                 <table class="w-full text-[10px] text-left rtl:text-right">
                     <thead class="text-[10px] text-white uppercase bg-violet-500">
                     <tr>
-                        <th scope="col" class="p-4">
-                            <div class="flex items-center">
-                                <input id="checkbox-all-search" type="checkbox"
-                                       class="w-4 h-4 border border-gray-300 rounded bg-white focus:ring-3 focus:ring-violet-300 focus:outline-none checked:bg-violet-600">
-                                <label for="checkbox-all-search" class="sr-only">checkbox</label>
-                            </div>
-                        </th>
                         <th scope="col" class="px-6 py-3">
                             <div class="flex items-center">
                                 N°
@@ -107,14 +100,6 @@
                         </th>
                         <th scope="col" class="px-6 py-3">
                             <div class="flex items-center">
-                                Status de la matière
-                                <a href="#">
-                                    <span class="w-3 h-3 ms-1.5"><i class="fa-solid fa-filter"></i></span>
-                                </a>
-                            </div>
-                        </th>
-                        <th scope="col" class="px-6 py-3">
-                            <div class="flex items-center">
                                 Nom & prénoms du Professeur
                                 <a href="#">
                                     <span class="w-3 h-3 ms-1.5"><i class="fa-solid fa-filter"></i></span>
@@ -126,13 +111,6 @@
                     <tbody>
                     @foreach($getStudentSubject as $index => $mySubject)
                     <tr class="bg-white border-b hover:bg-gray-50">
-                        <td class="w-4 p-4">
-                            <div class="flex items-center">
-                                <input id="checkbox-table-search-1" type="checkbox"
-                                       class="w-4 h-4 border border-gray-300 rounded bg-white focus:ring-3 focus:ring-violet-300 focus:outline-none checked:bg-violet-600">
-                                <label for="checkbox-table-search-1" class="sr-only">checkbox</label>
-                            </div>
-                        </td>
                         <td class="px-6 py-4">
                             <span>{{ $index + 1 }}</span>
                         </td>
@@ -149,20 +127,7 @@
                             @endif
                         </td>
                         <td class="px-6 py-4">
-                            @if($mySubject -> subject_status == 0)
-                            <div class="flex items-center">
-                                <div class="h-2.5 w-2.5 rounded-full bg-red-500 me-2"></div>
-                                Inactif
-                            </div>
-                            @elseif($mySubject -> subject_status == 1)
-                            <div class="flex items-center">
-                                <div class="h-2.5 w-2.5 rounded-full bg-green-500 me-2"></div>
-                                Actif
-                            </div>
-                            @endif
-                        </td>
-                        <td class="px-6 py-4">
-                            Professeur
+                            {{ $mySubject->teacher_name }} {{ $mySubject->teacher_last_name }}
                         </td>
 
                     </tr>

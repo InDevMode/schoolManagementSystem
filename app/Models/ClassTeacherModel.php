@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Request;
@@ -84,6 +85,8 @@ class ClassTeacherModel extends Model
         $results = ClassTeacherModel::select(
             'class_teacher.*',
             'class.name as class_name',
+            'class.id as class_id',
+            'subject.id as subject_id',
             'subject.name as subject_name',
             'subject.type as subject_type',
         )
@@ -100,6 +103,7 @@ class ClassTeacherModel extends Model
 
         $filters = [
             'class.name' => strtolower(Request::get('class_name')),
+            'subject.name' => strtolower(Request::get('subject_name')),
             'class_teacher.created_at' => strtolower(Request::get('created_at')),
             'class_teacher.updated_at' => strtolower(Request::get('updated_at')),
         ];
@@ -117,6 +121,14 @@ class ClassTeacherModel extends Model
 
         return $results->orderBy('class_teacher.id', 'desc')
             ->paginate($perPage);
+    }
+
+    static public function getMyClassTimetable(int $class_id, int $subject_id)
+    {
+        Carbon::setLocale('fr');
+        $dayName = Carbon::now()->translatedFormat('l');
+        $getWeek = WeekModel::getWeekUsingName($dayName);
+        return ClassTimetableModel::getClassTimetable($class_id, $subject_id, $getWeek->id);
     }
 
 }

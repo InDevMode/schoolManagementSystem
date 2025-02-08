@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\ClassModel;
 use App\Models\ClassTeacherModel;
+use App\Models\ClassTimetableModel;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -109,7 +110,7 @@ class ClassTeacherController extends Controller
             $data['getTeacher'] = User::getTeacher();
             $data['getAssignClass'] = ClassTeacherModel::getAssignTeacher($editExisting->class_id);
             $data['header_title'] = "Modifier une assignation";
-            return view('admin.assign_subject.edit_single', $data);
+            return view('admin.assign_class.edit_single', $data);
         } else {
             abort(404);
         }
@@ -124,7 +125,7 @@ class ClassTeacherController extends Controller
                 $classClassAlreadyExist->save();
 
                 return redirect('admin/assign_class/list')->with('success', 'Le status de cette assignation a été modifié avec succès.');
-            }else{
+            } else {
                 $classClass = ClassTeacherModel::getSingle($id);;
                 $classClass->class_id = $request->class_id;
                 $classClass->teacher_id = $request->teacher_id;
@@ -158,6 +159,10 @@ class ClassTeacherController extends Controller
         $data['header_title'] = "Mes Classes";
         $teacher_id = Auth::user()->id;
         $data['getClassSubjectTeacher'] = ClassTeacherModel::getMyClassSubject(10, $teacher_id);
+        $data['timetables'] = [];
+        foreach ($data['getClassSubjectTeacher'] as $classSubjectTeacher) {
+            $classSubjectTeacher->timetables = ClassTeacherModel::getMyClassTimetable($classSubjectTeacher->class_id, $classSubjectTeacher->subject_id);
+        }
         return view('teacher.class_subject', $data);
     }
 
