@@ -1,155 +1,216 @@
 @extends('layouts.app')
 @section('content')
-<div class="p-4 sm:ml-64">
-    <div class="p-4 rounded-lg mt-14">
-        @include('message')
-        <div class="mb-10">
-            <div class="flex justify-between pt-2">
-                <div class="space-x-2 font-semibold mt-3">
-                    <span class="text-violet-500"><i class="fa-solid fa-book-open-reader"></i></span>
-                    <span><i class="fa-solid fa-chevron-right"></i></span>
-                    <span class="hover:underline hover:text-violet-500 transition-all duration-300"><a
-                            href="{{ url('student/my_subject') }}">Liste de mes cours</a></span>
-                    <span><i class="fa-solid fa-chevron-right"></i></span>
-                    <span>Mes cours</span>
+<div class="m-5">
+    <!-- Breadcrumb Start -->
+    <div
+        class="mb-6 mt-3 flex flex-col gap-3 sm:flex-row items-center justify-between"
+    >
+        <h2 class="uppercase font-bold text-black dark:text-bodydark">
+            Liste de mes cours
+        </h2>
+        <nav>
+            <ol class="flex items-center gap-2">
+                <li>
+                    <span class="font-medium text-violet-600"><i class="fa-solid fa-landmark"></i></span>
+                </li>
+                <li>
+                    /<a class="font-medium hover:text-violet-600 transition duration-300"
+                        href="{{ url('student/dashboard') }}"> Dashboard</a>
+                </li>
+            </ol>
+        </nav>
+    </div>
+    @include('message')
+    <div class="my-5">
+        {{ $getStudentSubject ->links('vendor.pagination.tailwind') }}
+    </div>
+    <div
+        class="rounded-lg border border-stroke bg-white px-5 pb-2.5 pt-6 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1"
+    >
+        <form action="" method="get">
+            <div class="mb-4.5 grid grid-cols-2 xl:grid-cols-4 gap-3 items-center">
+                <div class="w-full">
+                    <input
+                        type="text" id="subject_name" name="subject_name" value="{{ Request::get('subject_name') }}"
+                        placeholder="nom de la matière..."
+                        class="w-full rounded-lg border-[1.5px] border-stroke bg-gray-100 px-5 py-2.5 font-normal text-black outline-none transition focus:border-violet-600 active:border-violet-600 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-violet-600"
+                    />
                 </div>
-            </div>
-            <div class="">
-                <div class="mt-4">
-                    {{ $getStudentSubject->links('vendor.pagination.tailwind') }}
-                </div>
-            </div>
-            <form action="" method="get"
-                  class="my-5 shadow p-3 bg-white rounded border border-gray-300" id="searchForm">
-                {{ csrf_field() }}
-                <div class="grid grid-cols-5 gap-x-5 gap-y-2">
-                    <div class="">
-                        <input type="text" id="subject_name" name="subject_name" value="{{ Request::get('subject_name') }}"
-                               class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2"
-                               placeholder="Rechercher par nom de la matière...">
-                    </div>
-                    <div class="">
-                        <input type="text" id="subject_type" name="subject_type" value="{{ Request::get('subject_type') }}"
-                               class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2"
-                               placeholder="Rechercher par type de matière...">
-                    </div>
-                    <div class="">
-                        <input type="text" id="teacher_name" name="teacher_name" value="{{ Request::get('teacher_name') }}"
-                               class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2"
-                               placeholder="Rechercher par email...">
-                    </div>
-                    <div>
+                <div class="w-full">
+                    <div
+                        x-data="{ isOptionSelected: false }"
+                        class="relative z-20 bg-gray-100 dark:bg-form-input"
+                    >
                         <select id="subject_type" name="subject_type"
-                                class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2">
-                            <option value="">Filtrer par type de matière</option>
-                            <option value="theoretical" {{ Request::get('subject_type') == 'theoretical' ? 'selected' : '' }}>Théorique</option>
-                            <option value="practical" {{ Request::get('subject_type') == 'practical' ? 'selected' : '' }}>Pratique</option>
+                                class="relative z-20 w-full appearance-none rounded-lg border border-stroke bg-gray-100 px-5 py-2.5 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                                :class="isOptionSelected && 'text-black dark:text-white'"
+                                @change="isOptionSelected = true"
+                        >
+                            <option value="" class="text-body">
+                                Type...
+                            </option>
+                            <option value="0" class="text-body" {{ Request::get(
+                            'subject_type') == 'theoretical' ? 'selected' : '' }}>Théorique</option>
+                            <option value="1" class="text-body" {{ Request::get(
+                            'subject_type') == 'practical' ? 'selected' : '' }}>Pratique</option>
                         </select>
-                    </div>
-
-                    <!-- Statut -->
-                    <div>
-                        <select id="subject_status" name="subject_status"
-                                class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2">
-                            <option value="">Filtrer par statut</option>
-                            <option value="1" {{ Request::get('subject_status') == '1' ? 'selected' : '' }}>Active</option>
-                            <option value="0" {{ Request::get('subject_status') == '0' ? 'selected' : '' }}>Inactive</option>
-                        </select>
-                    </div>
-                    <button type="submit"
-                            class="flex justify-between text-white bg-violet-500 hover:bg-violet-600 focus:ring-4 focus:outline-none focus:ring-violet-300 font-medium rounded-full text-sm px-5 py-2.5 text-center transition-all duration-500 ease-out w-full hover:scale-105">
-                        Rechercher
                         <span
-                            class="inline-flex items-center px-3 text-sm text-gray-900">
-                            <i class="fa-solid fa-search text-white"></i>
-                        </span>
+                            class="absolute right-4 top-1/2 z-30 -translate-y-1/2"
+                        >
+                            <svg
+                                class="fill-current"
+                                width="24"
+                                height="24"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <g opacity="0.8">
+                                <path
+                                    fill-rule="evenodd"
+                                    clip-rule="evenodd"
+                                    d="M5.29289 8.29289C5.68342 7.90237 6.31658 7.90237 6.70711 8.29289L12 13.5858L17.2929 8.29289C17.6834 7.90237 18.3166 7.90237 18.7071 8.29289C19.0976 8.68342 19.0976 9.31658 18.7071 9.70711L12.7071 15.7071C12.3166 16.0976 11.6834 16.0976 11.2929 15.7071L5.29289 9.70711C4.90237 9.31658 4.90237 8.68342 5.29289 8.29289Z"
+                                    fill=""
+                                ></path>
+                              </g>
+                            </svg>
+                          </span>
+                    </div>
+                </div>
+                <div class="w-full">
+                    <div class="relative">
+                        <input id="created_at" name="created_at" value="{{ Request::get('created_at') }}"
+                               class="form-datepicker w-full rounded-lg border-[1.5px] border-stroke bg-gray-100 px-5 py-2.5 font-normal outline-none transition focus:border-violet-600 active:border-violet-600 dark:border-form-strokedark dark:bg-form-input dark:focus:border-violet-600"
+                               placeholder="creation..."
+                               data-class="flatpickr-right"
+                        />
+
+                        <div
+                            class="pointer-events-none absolute inset-0 left-auto right-5 flex items-center"
+                        >
+                            <svg
+                                width="18"
+                                height="18"
+                                viewBox="0 0 18 18"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                            >
+                                <path
+                                    d="M15.7504 2.9812H14.2879V2.36245C14.2879 2.02495 14.0066 1.71558 13.641 1.71558C13.2754 1.71558 12.9941 1.99683 12.9941 2.36245V2.9812H4.97852V2.36245C4.97852 2.02495 4.69727 1.71558 4.33164 1.71558C3.96602 1.71558 3.68477 1.99683 3.68477 2.36245V2.9812H2.25039C1.29414 2.9812 0.478516 3.7687 0.478516 4.75308V14.5406C0.478516 15.4968 1.26602 16.3125 2.25039 16.3125H15.7504C16.7066 16.3125 17.5223 15.525 17.5223 14.5406V4.72495C17.5223 3.7687 16.7066 2.9812 15.7504 2.9812ZM1.77227 8.21245H4.16289V10.9968H1.77227V8.21245ZM5.42852 8.21245H8.38164V10.9968H5.42852V8.21245ZM8.38164 12.2625V15.0187H5.42852V12.2625H8.38164V12.2625ZM9.64727 12.2625H12.6004V15.0187H9.64727V12.2625ZM9.64727 10.9968V8.21245H12.6004V10.9968H9.64727ZM13.8379 8.21245H16.2285V10.9968H13.8379V8.21245ZM2.25039 4.24683H3.71289V4.83745C3.71289 5.17495 3.99414 5.48433 4.35977 5.48433C4.72539 5.48433 5.00664 5.20308 5.00664 4.83745V4.24683H13.0504V4.83745C13.0504 5.17495 13.3316 5.48433 13.6973 5.48433C14.0629 5.48433 14.3441 5.20308 14.3441 4.83745V4.24683H15.7504C16.0316 4.24683 16.2566 4.47183 16.2566 4.75308V6.94683H1.77227V4.75308C1.77227 4.47183 1.96914 4.24683 2.25039 4.24683ZM1.77227 14.5125V12.2343H4.16289V14.9906H2.25039C1.96914 15.0187 1.77227 14.7937 1.77227 14.5125ZM15.7504 15.0187H13.8379V12.2625H16.2285V14.5406C16.2566 14.7937 16.0316 15.0187 15.7504 15.0187Z"
+                                    fill="#64748B"
+                                />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                <div class="w-full">
+                    <div class="relative">
+                        <input id="updated_at" name="updated_at" value="{{ Request::get('updated_at') }}"
+                               class="form-datepicker w-full rounded-lg border-[1.5px] border-stroke bg-gray-100 px-5 py-2.5 font-normal outline-none transition focus:border-violet-600 active:border-violet-600 dark:border-form-strokedark dark:bg-form-input dark:focus:border-violet-600"
+                               placeholder="modification..."
+                               data-class="flatpickr-right"
+                        />
+                        <div
+                            class="pointer-events-none absolute inset-0 left-auto right-5 flex items-center"
+                        >
+                            <svg
+                                width="18"
+                                height="18"
+                                viewBox="0 0 18 18"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                            >
+                                <path
+                                    d="M15.7504 2.9812H14.2879V2.36245C14.2879 2.02495 14.0066 1.71558 13.641 1.71558C13.2754 1.71558 12.9941 1.99683 12.9941 2.36245V2.9812H4.97852V2.36245C4.97852 2.02495 4.69727 1.71558 4.33164 1.71558C3.96602 1.71558 3.68477 1.99683 3.68477 2.36245V2.9812H2.25039C1.29414 2.9812 0.478516 3.7687 0.478516 4.75308V14.5406C0.478516 15.4968 1.26602 16.3125 2.25039 16.3125H15.7504C16.7066 16.3125 17.5223 15.525 17.5223 14.5406V4.72495C17.5223 3.7687 16.7066 2.9812 15.7504 2.9812ZM1.77227 8.21245H4.16289V10.9968H1.77227V8.21245ZM5.42852 8.21245H8.38164V10.9968H5.42852V8.21245ZM8.38164 12.2625V15.0187H5.42852V12.2625H8.38164V12.2625ZM9.64727 12.2625H12.6004V15.0187H9.64727V12.2625ZM9.64727 10.9968V8.21245H12.6004V10.9968H9.64727ZM13.8379 8.21245H16.2285V10.9968H13.8379V8.21245ZM2.25039 4.24683H3.71289V4.83745C3.71289 5.17495 3.99414 5.48433 4.35977 5.48433C4.72539 5.48433 5.00664 5.20308 5.00664 4.83745V4.24683H13.0504V4.83745C13.0504 5.17495 13.3316 5.48433 13.6973 5.48433C14.0629 5.48433 14.3441 5.20308 14.3441 4.83745V4.24683H15.7504C16.0316 4.24683 16.2566 4.47183 16.2566 4.75308V6.94683H1.77227V4.75308C1.77227 4.47183 1.96914 4.24683 2.25039 4.24683ZM1.77227 14.5125V12.2343H4.16289V14.9906H2.25039C1.96914 15.0187 1.77227 14.7937 1.77227 14.5125ZM15.7504 15.0187H13.8379V12.2625H16.2285V14.5406C16.2566 14.7937 16.0316 15.0187 15.7504 15.0187Z"
+                                    fill="#64748B"
+                                />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                <div class="w-full">
+                    <button
+                        class="flex w-full justify-between items-center rounded-lg bg-violet-600 px-5 py-2.5 font-medium text-gray hover:bg-opacity-90"
+                    >
+                        Rechercher
+                        <span class="inline-flex items-center text-sm text-gray-900">
+                                    <i class="fa-solid fa-search text-white"></i>
+                                </span>
                     </button>
+                </div>
+                <div class="w-full xl:w-1/8">
                     <a href="{{ url('student/my_subject', $student_id) }}"
-                       class="text-gray-800 bg-gray-300 hover:bg-gray-400 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-full text-sm px-5 py-2.5 text-center transition-all duration-500 ease-out w-full hover:scale-105">
-                        Réinitialiser les filtres
+                       class="flex w-full justify-center rounded-lg bg-gray-500 px-5 py-2.5 font-medium text-gray hover:bg-opacity-90"
+                    >
+                        Réïnitialisez
                     </a>
                 </div>
-            </form>
-            <div class="relative overflow-visible shadow-md sm:rounded-lg border border-gray-300 z-10" id="results">
-                <table class="w-full text-[10px] text-left rtl:text-right">
-                    <thead class="text-[10px] text-white uppercase bg-violet-500">
-                    <tr>
-                        <th scope="col" class="px-6 py-3">
-                            <div class="flex items-center">
-                                N°
-                                <a href="#">
-                                    <span class="w-3 h-3 ms-1.5"><i class="fa-solid fa-filter"></i></span>
-                                </a>
-                            </div>
-                        </th>
-                        <th scope="col" class="px-6 py-3">
-                            <div class="flex items-center">
-                                Nom du cours
-                                <a href="#">
-                                    <span class="w-3 h-3 ms-1.5"><i class="fa-solid fa-filter"></i></span>
-                                </a>
-                            </div>
-                        </th>
-                        <th scope="col" class="px-6 py-3">
-                            <div class="flex items-center">
-                                Type de matière
-                                <a href="#">
-                                    <span class="w-3 h-3 ms-1.5"><i class="fa-solid fa-filter"></i></span>
-                                </a>
-                            </div>
-                        </th>
-                        <th scope="col" class="px-6 py-3">
-                            <div class="flex items-center">
-                                Nom & prénoms du Professeur
-                                <a href="#">
-                                    <span class="w-3 h-3 ms-1.5"><i class="fa-solid fa-filter"></i></span>
-                                </a>
-                            </div>
-                        </th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    @foreach($getStudentSubject as $index => $mySubject)
-                    <tr class="bg-white border-b hover:bg-gray-50">
-                        <td class="px-6 py-4">
-                            <span>{{ $index + 1 }}</span>
-                        </td>
-                        <td class="px-6 py-4">
-                            <span>{{ $mySubject -> subject_name }}</span>
-                        </td>
-                        <td class="px-6 py-4">
-                            @if($mySubject -> subject_type == 'theoretical')
-                            <span
-                                    class="bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded">Théorique</span>
-                            @elseif($mySubject -> subject_type == 'practical')
-                            <span
-                                    class="bg-violet-100 text-violet-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded">Pratique</span>
-                            @endif
-                        </td>
-                        <td class="px-6 py-4">
-                            {{ $mySubject->teacher_name }} {{ $mySubject->teacher_last_name }}
-                        </td>
-
-                    </tr>
-                    @endforeach
-                    @if($getStudentSubject->isEmpty())
-                    <tr>
-                        <td colspan="10" class="p-6 text-center text-gray-500">
-                            Aucun cours disponible.
-                        </td>
-                    </tr>
-                    @endif
-                    </tbody>
-                </table>
-                <div class="text-center bg-white py-2">
-                    <div class="flex justify-between items-center mt-4">
-                    <span
-                        class="text-violet-500 font-bold text-md ps-5 uppercase">Total : {{ $getStudentSubject->total() }}</span>
-                    </div>
-                </div>
             </div>
+        </form>
+
+        <div class="relative overflow rounded-lg z-10">
+            <table class="w-full text-sm text-left rtl:text-right text-white dark:text-white">
+                <thead
+                    class="rounded-sm bg-violet-600 uppercase text-white dark:bg-meta-4"
+                >
+                <tr>
+                    <th scope="col" class="px-6 py-3">
+                        Matière
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Type
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Professeur
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach($getStudentSubject as $index => $mySubject)
+                <tr class="hover:bg-violet-100 dark:hover:bg-gray-700 transition duration-300 border-b dark:border-gray-600 hover:border-violet-400 dark:text-gray-200 text-gray-500">
+                    <td class="px-6 py-3">
+                        {{ $mySubject -> subject_name }}
+                    </td>
+                    <td class="px-6 py-3">
+                        <div class="flex items-center">
+                            <p class="px-6 py-1 rounded-full {{ $mySubject->subject_type == 'practical' ? 'text-violet-700 dark:text-gray-200 bg-violet-100 dark:bg-violet-900' : 'text-red-700 dark:text-gray-200 bg-red-100 dark:bg-red-900' }}">
+                                {{ $mySubject->subject_type == 'practical' ? 'Pratique' : 'Théorique' }}
+                            </p>
+                        </div>
+                    </td>
+                    <td class="px-6 py-3">
+                        {{ $mySubject->teacher_name }} {{ $mySubject->teacher_last_name }}
+                    </td>
+                </tr>
+                @endforeach
+                @if($getStudentSubject->isEmpty())
+                <tr class="text-center text-gray-700">
+                    <td colspan="9" class="px-6 py-3"> Aucun cours disponible.</td>
+                </tr>
+                @endif
+                <tr class="">
+                    <td colspan="10"
+                        class="px-6 py-3"
+                    >
+                        <div class="mt-3 mb-3 flex items-center justify-between">
+                            <h2 class="text-title-sm uppercase font-bold text-black dark:text-white">
+                                Total
+                            </h2>
+                            <nav>
+                                <ol class="flex items-center bg-white shadow-lg border border-gray-200 dark:border-gray-600 w-fit dark:bg-black py-2 px-8 rounded">
+                                    <li>
+                                        <p class="text-md font-semibold text-gray-700 dark:text-gray-200">
+                                            {{ $getStudentSubject->total() }}</p>
+                                    </li>
+                                </ol>
+                            </nav>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
         </div>
     </div>
-</div>
-@endsection
+    @endsection
 

@@ -121,7 +121,7 @@
                                                     @change="isOptionSelected = true"
                                             >
                                                 <option selected disabled class="text-body">
-                                                    Choisissez un genre pour ce professeur
+                                                    Choisissez un genre pour ce apprenant
                                                 </option>
                                                 <option class="text-body" value="male" {{ (old(
                                                 'gender') == 'male') ? 'selected' : ''
