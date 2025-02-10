@@ -6,7 +6,7 @@
         class="mb-6 mt-3 flex flex-col gap-3 sm:flex-row items-center justify-between"
     >
         <h2 class="uppercase font-bold text-black dark:text-bodydark">
-            Horaires de cours pour <span class="text-violet-600 bg-violet-100 rounded-full px-4 py-2 ms-5">{{ $getStudent->name }} {{ $getStudent->last_name }}</span>
+            Horaires de cours pour <span class="text-violet-600 bg-violet-100 dark:bg-violet-600 dark:text-white rounded-full px-4 py-2 ms-5">{{ $getStudent->name }} {{ $getStudent->last_name }}</span>
         </h2>
         <nav>
             <ol class="flex items-center gap-2">

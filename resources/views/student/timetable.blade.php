@@ -11,7 +11,7 @@
         <nav>
             <ol class="flex items-center gap-2">
                 <li>
-                    <span class="font-medium text-violet-600"><i class="fa-solid fa-landmark"></i></span>
+                    <span class="font-medium text-violet-600"><i class="fa-solid fa-clock"></i></span>
                 </li>
                 <li>
                     /<a class="font-medium hover:text-violet-600 transition duration-300"
