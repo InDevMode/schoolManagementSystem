@@ -7,6 +7,7 @@ use App\Http\Controllers\ClassSubjectController;
 use App\Http\Controllers\ClassTeacherController;
 use App\Http\Controllers\ClassTimetableController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ExaminationController;
 use App\Http\Controllers\ParentController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\SubjectController;
@@ -120,6 +121,15 @@ Route::group(['middleware' => 'admin'], function () {
     Route::get('admin/class_timetable/list', [ClassTimetableController::class, 'list']);
     Route::post('admin/class_timetable/subject', [ClassTimetableController::class, 'getSubject']);
     Route::post('admin/class_timetable/add', [ClassTimetableController::class, 'add']);
+
+    // Examinations url
+    Route::get('admin/examinations/exam/list', [ExaminationController::class, 'list']);
+    Route::get('admin/examinations/exam/add', [ExaminationController::class, 'add']);
+    Route::post('admin/examinations/exam/add', [ExaminationController::class, 'create']);
+    Route::get('admin/examinations/exam/edit/{id}', [ExaminationController::class, 'edit']);
+    Route::post('admin/examinations/exam/edit/{id}', [ExaminationController::class, 'update']);
+    Route::get('admin/examinations/exam/delete/{id}', [ExaminationController::class, 'delete']);
+
 
 
 });

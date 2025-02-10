@@ -24,7 +24,6 @@ class ClassController extends Controller
     public function create(Request $request): \Illuminate\Foundation\Application|\Illuminate\Routing\Redirector|\Illuminate\Http\RedirectResponse|\Illuminate\Contracts\Foundation\Application
     {
         try {
-
             $existingClass = ClassModel::getNameSingle($request->name);
 
             if ($existingClass) {

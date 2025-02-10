@@ -196,26 +196,26 @@
                             <ul class="mb-5.5 mt-4 flex flex-col gap-2.5 pl-8">
                                 <li>
                                     <a
-                                        class="group relative flex items-center gap-2.5 rounded-md px-4 py-2 font-medium duration-300 ease-in-out hover:bg-violet-700 text-bodydark1 dark:hover:bg-meta-4 {{ Request::Segment(2) == 'assign_class' ? 'bg-violet-600 text-bodydark1' : 'text-violet-600' }}"
-                                        href="{{ url('admin/assign_class/list') }}"
+                                        class="group relative flex items-center gap-2.5 rounded-md px-4 py-2 font-medium duration-300 ease-in-out hover:bg-violet-700 text-bodydark1 dark:hover:bg-meta-4 {{ Request::Segment(3) == 'exam' ? 'bg-violet-600 text-bodydark1' : 'text-violet-600' }}"
+                                        href="{{ url('admin/examinations/exam/list') }}"
                                     >
                                         <span
-                                            class="text-[18px] py-1 px-2 rounded {{ Request::Segment(2) == 'assign_class' ? 'group-hover:text-bodydark1 text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}"><i
+                                            class="text-[18px] py-1 px-2 rounded {{ Request::Segment(3) == 'exam' ? 'group-hover:text-bodydark1 text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}"><i
                                                 class="fa-solid fa-chevron-right"></i></span>
                                         <span
-                                            class="{{ Request::Segment(2) == 'assign_class' ? 'group-hover:text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}">Classes</span>
+                                            class="{{ Request::Segment(3) == 'exam' ? 'group-hover:text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}">Examens</span>
                                     </a>
                                 </li>
                                 <li>
                                     <a
-                                        class="group relative flex items-center gap-2.5 rounded-md px-4 py-2 font-medium duration-300 ease-in-out hover:bg-violet-700 text-bodydark1 dark:hover:bg-meta-4 {{ Request::Segment(2) == 'assign_subject' ? 'bg-violet-600 text-bodydark1' : 'text-violet-600' }}"
-                                        href="{{ url('admin/assign_subject/list') }}"
+                                        class="group relative flex items-center gap-2.5 rounded-md px-4 py-2 font-medium duration-300 ease-in-out hover:bg-violet-700 text-bodydark1 dark:hover:bg-meta-4 {{ Request::Segment(3) == 'schedule' ? 'bg-violet-600 text-bodydark1' : 'text-violet-600' }}"
+                                        href="{{ url('admin/examinations/schedule/list') }}"
                                     >
                                         <span
-                                            class="text-[18px] py-1 px-2 rounded {{ Request::Segment(2) == 'assign_subject' ? 'group-hover:text-bodydark1 text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}"><i
+                                            class="text-[18px] py-1 px-2 rounded {{ Request::Segment(3) == 'schedule' ? 'group-hover:text-bodydark1 text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}"><i
                                                 class="fa-solid fa-chevron-right"></i></span>
                                         <span
-                                            class="{{ Request::Segment(2) == 'assign_subject' ? 'group-hover:text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}">Matières</span>
+                                            class="{{ Request::Segment(3) == 'schedule' ? 'group-hover:text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}">Programmations</span>
                                     </a>
                                 </li>
                                 <li>

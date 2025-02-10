@@ -16,8 +16,8 @@
                                 <span class="font-medium text-violet-600"><i class="fa-solid fa-user-shield"></i></span>
                             </li>
                             <li>
-                                <a class="font-medium hover:text-violet-600 transition duration-300"
-                                   href="{{ url('admin/admin/list') }}">/ Administrateurs</a>
+                                /<a class="font-medium hover:text-violet-600 transition duration-300"
+                                   href="{{ url('admin/admin/list') }}"> Administrateurs</a>
                             </li>
                         </ol>
                     </nav>
