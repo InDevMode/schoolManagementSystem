@@ -140,7 +140,7 @@
                 </tr>
                 @endforeach
                 @if($getStudentSubject->isEmpty())
-                <tr class="text-center text-gray-700">
+                <tr class="text-center text-gray-700 dark:text-bodydark1">
                     <td colspan="3" class="px-6 py-3"> Aucun cours disponible.</td>
                 </tr>
                 @endif

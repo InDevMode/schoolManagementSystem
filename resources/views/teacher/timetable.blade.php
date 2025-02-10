@@ -52,7 +52,7 @@
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="3" class="p-6 text-center text-gray-500">
+                            <td colspan="3" class="p-6 text-center text-gray-700 dark:text-bodydark1">
                                 Aucun horaire défini.
                             </td>
                         </tr>
