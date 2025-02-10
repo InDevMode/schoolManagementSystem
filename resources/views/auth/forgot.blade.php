@@ -81,7 +81,7 @@
                 @include('message')
                 <!-- ====== Forms Section Start -->
                 <div
-                    class="roundedmd border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark"
+                    class="rounded-lg border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark"
                 >
                     <div class="flex flex-wrap items-center">
                         <div class="hidden w-full xl:block xl:w-1/2">

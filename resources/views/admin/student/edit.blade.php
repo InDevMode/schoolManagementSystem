@@ -336,14 +336,14 @@
                                                 <option selected disabled value="" class="text-body">
                                                     Choisissez un groupe sanguin pour cet apprenant
                                                 </option>
-                                                <option class="text-body" value="a+" {{ (old('blood_group', $getStudent->blood_group) == '1') ? 'selected' : '' }}>A+</option>
-                                                <option class="text-body" value="a-" {{ (old('blood_group', $getStudent->blood_group) == '0') ? 'selected' : '' }}>A-</option>
-                                                <option class="text-body" value="b+" {{ (old('blood_group', $getStudent->blood_group) == '0') ? 'selected' : '' }}>B+</option>
-                                                <option class="text-body" value="b-" {{ (old('blood_group', $getStudent->blood_group) == '0') ? 'selected' : '' }}>B-</option>
-                                                <option class="text-body" value="ab+" {{ (old('blood_group', $getStudent->blood_group) == '0') ? 'selected' : '' }}>AB+</option>
-                                                <option class="text-body" value="ab-" {{ (old('blood_group', $getStudent->blood_group) == '0') ? 'selected' : '' }}>AB-</option>
-                                                <option class="text-body" value="o+" {{ (old('blood_group', $getStudent->blood_group) == '0') ? 'selected' : '' }}>O+</option>
-                                                <option class="text-body" value="o-" {{ (old('blood_group', $getStudent->blood_group) == '0') ? 'selected' : '' }}>O-</option>
+                                                <option class="text-body" value="a+" {{ (old('blood_group', $getStudent->blood_group) == 'a+') ? 'selected' : '' }}>A+</option>
+                                                <option class="text-body" value="a-" {{ (old('blood_group', $getStudent->blood_group) == 'a-') ? 'selected' : '' }}>A-</option>
+                                                <option class="text-body" value="b+" {{ (old('blood_group', $getStudent->blood_group) == 'b+') ? 'selected' : '' }}>B+</option>
+                                                <option class="text-body" value="b-" {{ (old('blood_group', $getStudent->blood_group) == 'b-') ? 'selected' : '' }}>B-</option>
+                                                <option class="text-body" value="ab+" {{ (old('blood_group', $getStudent->blood_group) == 'ab+') ? 'selected' : '' }}>AB+</option>
+                                                <option class="text-body" value="ab-" {{ (old('blood_group', $getStudent->blood_group) == 'ab-') ? 'selected' : '' }}>AB-</option>
+                                                <option class="text-body" value="o+" {{ (old('blood_group', $getStudent->blood_group) == 'o+') ? 'selected' : '' }}>O+</option>
+                                                <option class="text-body" value="o-" {{ (old('blood_group', $getStudent->blood_group) == 'o') ? 'selected' : '' }}>O-</option>
                                             </select>
                                             <span
                                                 class="absolute right-4 top-1/2 z-30 -translate-y-1/2"
