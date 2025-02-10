@@ -130,6 +130,10 @@ Route::group(['middleware' => 'admin'], function () {
     Route::post('admin/examinations/exam/edit/{id}', [ExaminationController::class, 'update']);
     Route::get('admin/examinations/exam/delete/{id}', [ExaminationController::class, 'delete']);
 
+    // Schedule url
+    Route::get('admin/examinations/schedule/list', [ExaminationController::class, 'examSchedule']);
+
+
 
 
 });

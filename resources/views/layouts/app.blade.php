@@ -41,6 +41,7 @@ $watch('darkMode', value => localStorage.setItem('darkMode', JSON.stringify(valu
 </body>
 
 <script src="https://kit.fontawesome.com/79fa04224e.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 <script src="{{ asset('public/js/components/chart-01.js') }}"></script>
 <script src="{{ asset('public/js/components/chart-02.js') }}"></script>
 <script src="{{ asset('public/js/components/chart-03.js') }}"></script>

@@ -64,4 +64,13 @@ class ExaminationModel extends Model
             ->first();
     }
 
+    public static function getExams()
+    {
+        return ExaminationModel::select('exams.*')
+            ->join('users', 'users.id', '=', 'exams.created_by')
+            ->where('exams.is_delete', '=', 0)
+            ->orderBy('exams.id', 'desc')
+            ->get();
+    }
+
 }

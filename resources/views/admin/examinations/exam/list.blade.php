@@ -202,19 +202,17 @@
                                     <a href="{{ url('admin/examinations/exam/edit', $exam->id) }}"
                                        class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:text-emerald-400 dark:hover:text-emerald-400"
                                        role="menuitem">Modifier</a>
-                                    <form method="get" action="" role="none">
-                                        <button type="submit"
-                                                class="block w-full px-4 py-2 text-left text-sm text-gray-700 dark:text-gray-200 hover:text-red-400 dark:hover:text-red-400"
-                                                role="menuitem">
-                                            Supprimer
-                                        </button>
-                                    </form>
+                                    <button @click="openModal = true; deleteId = '{{ $exam->id }}'; deleteName = '{{ $exam->name }}'"
+                                            class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:text-red-400 dark:hover:text-red-400">
+                                        Supprimer
+                                    </button>
                                 </div>
                             </div>
                         </div>
                     </td>
                 </tr>
                 @endforeach
+                @include('admin.examinations.exam.delete')
                 @if($getExams->isEmpty())
                 <tr class="text-center text-gray-700 dark:text-bodydark1">
                     <td colspan="6" class="py-3"> Aucun examen trouvé.</td>

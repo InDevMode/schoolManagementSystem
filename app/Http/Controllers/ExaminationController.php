@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ClassModel;
+use App\Models\ClassSubjectModel;
 use App\Models\ExaminationModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -70,7 +72,7 @@ class ExaminationController extends Controller
             }
 
             $exam->name = trim($request->name);
-            $exam->status = intval($request->status);
+            $exam->note = trim($request->note);
             $exam->save();
             return redirect('admin/examinations/exam/list')->with('success', 'Cette évaluation a été modifiée avec succès.');
 
@@ -91,6 +93,18 @@ class ExaminationController extends Controller
         } else {
             abort(404);
         }
+    }
+
+    public function examSchedule(Request $request): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
+    {
+        $data['header_title'] = "Programmation des examens";
+        $data['getClass'] = ClassModel::getClass();
+        $data['getExams'] = ExaminationModel::getExams();
+        if (!empty($request->get('exam_id')) && !empty($request->get('class_id'))) {
+            $getSubject = ClassSubjectModel::studentStubject(10, $request->get('class_id'));
+            dd($getSubject);
+        }
+        return view('admin.examinations.schedule.list', $data);
     }
 
 }

@@ -125,6 +125,4 @@ class ClassSubjectModel extends Model
         return $results->orderBy('class_subject.id', 'desc')
             ->paginate($perPage);
     }
-
-
 }
