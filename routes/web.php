@@ -132,12 +132,7 @@ Route::group(['middleware' => 'admin'], function () {
 
     // Schedule url
     Route::get('admin/examinations/schedule/list', [ExaminationController::class, 'scheduleList']);
-    Route::get('admin/examinations/schedule/add', [ExaminationController::class, 'scheduleAdd']);
     Route::post('admin/examinations/schedule/add', [ExaminationController::class, 'scheduleCreate']);
-    Route::get('admin/examinations/schedule/edit/{id}', [ExaminationController::class, 'scheduleEdit']);
-
-
-
 
 });
 
@@ -176,6 +171,9 @@ Route::group(['middleware' => 'student'], function () {
     // Student route side show subject
     Route::get('student/my_subject', [SubjectController::class, 'studentSubject']);
     Route::get('student/my_timetable', [ClassTimetableController::class, 'studentTimetable']);
+
+    // Student side exam timetable
+    Route::get('student/my_exam_timetable', [ExaminationController::class, 'myExamTimetable']);
 });
 
 Route::group(['middleware' => 'parent'], function () {

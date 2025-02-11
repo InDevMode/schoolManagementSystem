@@ -47,24 +47,24 @@ class ExaminationModel extends Model
             ->paginate($perPage);
     }
 
-    public static function getSingle(int $id): ?ExaminationModel
+    static public function getSingle(int $id): ?ExaminationModel
     {
         return ExaminationModel::find($id);
     }
 
-    public static function getNameSingle(string $name): ?ExaminationModel
+    static public function getNameSingle(string $name): ?ExaminationModel
     {
         return ExaminationModel::where('name', $name)->first();
     }
 
-    public static function checkNameSingle(string $name, int $id): ?ExaminationModel
+    static public function checkNameSingle(string $name, int $id): ?ExaminationModel
     {
         return ExaminationModel::where('name', $name)
             ->where('id', '!=', $id)
             ->first();
     }
 
-    public static function getExams()
+    static public function getExams()
     {
         return ExaminationModel::select('exams.*')
             ->join('users', 'users.id', '=', 'exams.created_by')

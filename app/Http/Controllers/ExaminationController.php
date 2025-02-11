@@ -7,6 +7,7 @@ use App\Models\ClassSubjectModel;
 use App\Models\ExaminationModel;
 use App\Models\ScheduleModel;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 class ExaminationController extends Controller
@@ -180,4 +181,33 @@ class ExaminationController extends Controller
             return redirect()->back()->with('error', 'Vos informations ne sont pas correctes. Veuillez réessayer.');
         }
     }
+
+    public function myExamTimetable(Request $request): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
+    {
+        $data['header_title'] = "Mon calendrier d'examens";
+        $class_id = Auth::user()->class_id;
+        $getExamSchedule = ScheduleModel::getExam($class_id);
+        $results = array();
+        foreach ($getExamSchedule as $examSchedule) {
+            $dataExam = array();
+            $dataExam['name'] = $examSchedule->exam_name;
+            $getExamTimetable = ScheduleModel::getExamTimetable($examSchedule->exam_id, $class_id);
+            foreach ($getExamTimetable as $examTimetable) {
+                $dataSchedule = array();
+                $dataSchedule['subject_name'] = $examTimetable->subject_name;
+                $dataSchedule['exam_date'] = $examTimetable->exam_date;
+                $dataSchedule['start_time'] = $examTimetable->start_time;
+                $dataSchedule['end_time'] = $examTimetable->end_time;
+                $dataSchedule['room_number'] = $examTimetable->room_number;
+                $dataSchedule['full_marks'] = $examTimetable->full_marks;
+                $dataSchedule['passing_marks'] = $examTimetable->passing_marks;
+                $results[] = $dataSchedule;
+            }
+            $dataExam['getExams'] = $results;
+            $result[] = $dataExam;
+        }
+        $data['getExamTimetable'] = $result;
+        return view('student.exam_timetable', $data);
+    }
+
 }

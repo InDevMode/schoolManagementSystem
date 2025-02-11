@@ -50,4 +50,24 @@ class ScheduleModel extends Model
             ->exists();
     }
 
+    static public function getExam(int $class_id)
+    {
+        return ScheduleModel::select('schedules.*', 'exams.name as exam_name')
+            ->join('exams', 'exams.id', '=', 'schedules.exam_id')
+            ->where('schedules.class_id', '=', $class_id)
+            ->groupBy('exam_id')
+            ->orderBy('schedules.id', 'desc')
+            ->get();
+    }
+
+    static public function getExamTimetable(int $exam_id, int $class_id)
+    {
+        return ScheduleModel::select('schedules.*', 'subject.name as subject_name', 'subject.type as subject_type')
+            ->join('subject', 'subject.id', '=', 'schedules.subject_id')
+            ->where('schedules.exam_id', '=', $exam_id)
+            ->where('schedules.class_id', '=', $class_id)
+            ->groupBy('exam_id')
+            ->get();
+    }
+
 }
