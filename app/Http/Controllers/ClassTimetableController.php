@@ -82,7 +82,7 @@ class ClassTimetableController extends Controller
                 }
             }
 
-            return redirect('admin/class_timetable/list')->with('success', 'Ces horaires de cours ont été bien crée à cette classe avec succès.');
+            return redirect('admin/class_timetable/list')->with('success', 'Ces horaires de cours ont été bien crée pour classe avec succès.');
         } catch (\Exception $e) {
             Log::error("Erreur lors de la création de ces horaires de cours. " . $e->getMessage());
 

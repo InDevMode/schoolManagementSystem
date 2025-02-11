@@ -125,4 +125,22 @@ class ClassSubjectModel extends Model
         return $results->orderBy('class_subject.id', 'desc')
             ->paginate($perPage);
     }
+
+    static public function getSubject(int $class_id)
+    {
+        return ClassSubjectModel::select(
+            'class_subject.*',
+            'class.name as class_name',
+            'subject.name as subject_name',
+            'subject.type as subject_type',
+            'subject.status as subject_status',
+        )
+            ->join('subject', 'subject.id', '=', 'class_subject.subject_id')
+            ->join('class', 'class.id', '=', 'class_subject.class_id')
+            ->where('class_subject.class_id', '=', $class_id)
+            ->where('class_subject.is_delete', '=', 0)
+            ->where('class_subject.status', '=', 1)
+            ->orderBy('class_subject.id', 'desc')
+            ->get();
+    }
 }
