@@ -141,7 +141,9 @@ class ExaminationController extends Controller
     public function scheduleCreate(Request $request): \Illuminate\Foundation\Application|\Illuminate\Routing\Redirector|\Illuminate\Http\RedirectResponse|\Illuminate\Contracts\Foundation\Application
     {
         try {
+            $existingSchedules = ScheduleModel::checkExamSchedule($request->exam_id, $request->class_id);
             ScheduleModel::deleteExamSchedule($request->exam_id, $request->class_id);
+            $isUpdated = $existingSchedules;
             if (!empty($request->schedule)) {
                 foreach ($request->schedule as $schedule) {
                     if (!empty($schedule['subject_id']) &&
@@ -167,7 +169,11 @@ class ExaminationController extends Controller
                     }
                 }
             }
-            return redirect('admin/examinations/schedule/list')->with('success', 'Ce programme d\'évaluation a été créé avec succès.');
+            $message = $isUpdated
+                ? 'Ce programme d\'évaluation a été modifié avec succès.'
+                : 'Ce programme d\'évaluation a été créé avec succès.';
+
+            return redirect('admin/examinations/schedule/list')->with('success', $message);
         } catch (\Exception $e) {
             Log::error("Erreur lors de la création de ce programme d'évaluation : " . $e->getMessage());
 

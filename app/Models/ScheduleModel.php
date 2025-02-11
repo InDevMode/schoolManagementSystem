@@ -43,4 +43,11 @@ class ScheduleModel extends Model
             ->delete();
     }
 
+    static public function checkExamSchedule(int $exam_id, int $class_id)
+    {
+        return ScheduleModel::where('exam_id', $exam_id)
+            ->where('class_id', $class_id)
+            ->exists();
+    }
+
 }
