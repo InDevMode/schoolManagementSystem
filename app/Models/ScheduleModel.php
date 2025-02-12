@@ -55,7 +55,7 @@ class ScheduleModel extends Model
         return ScheduleModel::select('schedules.*', 'exams.name as exam_name')
             ->join('exams', 'exams.id', '=', 'schedules.exam_id')
             ->where('schedules.class_id', '=', $class_id)
-            ->groupBy('exam_id')
+            ->groupBy('schedules.exam_id')
             ->orderBy('schedules.id', 'desc')
             ->get();
     }

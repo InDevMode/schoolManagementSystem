@@ -154,6 +154,9 @@ Route::group(['middleware' => 'teacher'], function () {
     // Teacher student url
     Route::get('teacher/my_student', [StudentController::class, 'myStudent']);
 
+    // Teacher side exam timetable
+    Route::get('teacher/my_exam_timetable', [ExaminationController::class, 'myExamTimetableTeacher']);
+
 
 });
 
@@ -173,7 +176,7 @@ Route::group(['middleware' => 'student'], function () {
     Route::get('student/my_timetable', [ClassTimetableController::class, 'studentTimetable']);
 
     // Student side exam timetable
-    Route::get('student/my_exam_timetable', [ExaminationController::class, 'myExamTimetable']);
+    Route::get('student/my_exam_timetable', [ExaminationController::class, 'myExamTimetableStudent']);
 });
 
 Route::group(['middleware' => 'parent'], function () {
