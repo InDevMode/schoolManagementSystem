@@ -71,7 +71,7 @@
                 meridiem: false
             },
             events: events,
-            initialView: 'timeGridWeek',
+            initialView: 'timeGridWeek'
         });
         calendar.render();
     });
