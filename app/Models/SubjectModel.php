@@ -54,6 +54,7 @@ class SubjectModel extends Model
 
         return $results->where('subject.is_delete', 0)
             ->orderBy('subject.id', 'desc')
+            ->groupBy('subject.id')
             ->paginate($perPage);
     }
 

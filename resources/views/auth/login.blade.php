@@ -207,7 +207,7 @@
                                     </button>
                                     <div class="mt-6 text-center">
                                         <p class="font-medium">
-                                            <a href="{{ url('forgot-password') }}" class="hover:text-violet-500 transition duration-300 underline"> Mot de passe oublié ?</a>
+                                            <a href="{{ url('forgot_password') }}" class="hover:text-violet-500 transition duration-300 underline"> Mot de passe oublié ?</a>
                                         </p>
                                     </div>
                                 </form>

@@ -123,6 +123,7 @@ class ClassSubjectModel extends Model
 
 
         return $results->orderBy('class_subject.id', 'desc')
+            ->groupBy('class_subject.id')
             ->paginate($perPage);
     }
 

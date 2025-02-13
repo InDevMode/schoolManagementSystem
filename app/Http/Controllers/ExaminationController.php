@@ -7,6 +7,7 @@ use App\Models\ClassSubjectModel;
 use App\Models\ClassTeacherModel;
 use App\Models\ExaminationModel;
 use App\Models\ScheduleModel;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -247,4 +248,35 @@ class ExaminationController extends Controller
         $data['getExamTimetable'] = $result;
         return view('teacher.exam_timetable', $data);
     }
+
+    public function parentStudentExamTimetable($student_id): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
+    {
+        $data['header_title'] = "Son calendrier d'examens";
+        $getStudent = User::getSingle($student_id);
+        $class_id =  $getStudent->class_id;
+        $getExamSchedule = ScheduleModel::getExam($class_id);
+        $results = array();
+        foreach ($getExamSchedule as $examSchedule) {
+            $dataExam = array();
+            $dataExam['name'] = $examSchedule->exam_name;
+            $getExamTimetable = ScheduleModel::getExamTimetable($examSchedule->exam_id, $class_id);
+            foreach ($getExamTimetable as $examTimetable) {
+                $dataSchedule = array();
+                $dataSchedule['subject_name'] = $examTimetable->subject_name;
+                $dataSchedule['exam_date'] = $examTimetable->exam_date;
+                $dataSchedule['start_time'] = $examTimetable->start_time;
+                $dataSchedule['end_time'] = $examTimetable->end_time;
+                $dataSchedule['room_number'] = $examTimetable->room_number;
+                $dataSchedule['full_marks'] = $examTimetable->full_marks;
+                $dataSchedule['passing_marks'] = $examTimetable->passing_marks;
+                $results[] = $dataSchedule;
+            }
+            $dataExam['getExams'] = $results;
+            $result[] = $dataExam;
+        }
+        $data['getExamTimetable'] = $result;
+        $data['getStudent'] = $getStudent;
+        return view('parent.exam_timetable', $data);
+    }
+
 }

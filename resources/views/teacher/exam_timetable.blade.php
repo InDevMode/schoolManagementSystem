@@ -25,12 +25,14 @@
     <div class="grid grid-cols-2 gap-4 mt-5">
         @forelse($getExamTimetable as $examTimetable)
         <div class="bg-white shadow-md rounded-lg border border-gray-300 p-4 dark:border-strokedark dark:bg-boxdark">
-            <div class="font-bold text-md mb-3 text-center bg-violet-100 dark:bg-violet-950 text-violet-800 dark:text-violet-100 py-2 rounded">
-                {{ $examTimetable['class_name'] }}
+            <div class="flex justify-between font-bold text-md mb-3 bg-violet-100 dark:bg-violet-950 text-violet-800 dark:text-violet-100 px-4 py-3 rounded">
+                 <span class="uppercase">Classe :</span>
+                 <span class="font-semibold">{{ $examTimetable['class_name'] }}</span>
             </div>
             @forelse($examTimetable['getExams'] as $exams)
-            <div class="font-bold text-md  my-3 text-center bg-violet-100 text-violet-800 dark:bg-gray-800 dark:text-gray-200 py-2 rounded">
-                {{ $exams['exam_name'] }}
+            <div class="flex justify-between font-bold text-md my-3 bg-violet-100 text-violet-800 dark:bg-gray-800 dark:text-gray-200 px-4 py-3 rounded">
+                <span class="uppercase"> Evaluation :</span>
+                <span class="font-semibold">{{ $exams['exam_name'] }}</span>
             </div>
             <div class="relative overflow-x-auto">
                 <table class="w-full text-sm text-left border border-gray-200 dark:border-strokedark rounded-lg">

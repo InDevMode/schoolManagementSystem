@@ -162,6 +162,7 @@ class User extends Authenticatable
         }
 
         return $results->orderBy('users.id', 'desc')
+            ->groupBy('users.id')
             ->paginate($perPage);
     }
 
@@ -197,6 +198,7 @@ class User extends Authenticatable
         }
 
         return $results->orderBy('users.id', 'desc')
+            ->groupBy('users.id')
             ->paginate($perPage);
     }
 
@@ -237,6 +239,7 @@ class User extends Authenticatable
 
         return $results->where('users.is_delete', '=', 0)
             ->orderBy('users.id', 'desc')
+            ->groupBy('users.id')
             ->paginate($perPage);
     }
 
@@ -272,10 +275,11 @@ class User extends Authenticatable
 
         return $results->where('users.is_delete', '=', 0)
             ->orderBy('users.id', 'desc')
+            ->groupBy('users.id')
             ->paginate($perPage);
     }
 
-    static public function getMyStudent(int $parent_id, int $perPage)
+    static public function  getMyStudent(int $perPage, int $parent_id,)
     {
         $results = User::select('users.*', 'class.name as class_name', 'teacher.name as teacher_name','teacher.last_name as teacher_last_name')
             ->join('users as parent', 'parent.id', '=', 'users.parent_id', 'left')
@@ -309,6 +313,7 @@ class User extends Authenticatable
 
         return $results->where('users.is_delete', '=', 0)
             ->orderBy('users.id', 'desc')
+            ->groupBy('users.id')
             ->paginate($perPage);
     }
 

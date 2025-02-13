@@ -63,6 +63,7 @@ class ClassTeacherModel extends Model
         }
 
         return $results->orderBy('class_teacher.id', 'desc')
+            ->groupBy('class_teacher.id')
             ->paginate($perPage);
     }
 
@@ -120,6 +121,7 @@ class ClassTeacherModel extends Model
         }
 
         return $results->orderBy('class_teacher.id', 'desc')
+            ->groupBy('class_teacher.id')
             ->paginate($perPage);
     }
 

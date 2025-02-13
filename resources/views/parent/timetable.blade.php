@@ -15,7 +15,7 @@
                 </li>
                 <li>
                     /<a class="font-medium hover:text-violet-600 transition duration-300"
-                        href="{{ url('parent/my_student/'.$getStudent->id.'/subject') }}"> Liste des cours </a>
+                        href="{{ url('parent/my_student/'.$getStudent->id.'/subject') }}"> Cours </a>
                 </li>
             </ol>
         </nav>

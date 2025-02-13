@@ -29,8 +29,8 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [AuthController::class, 'login']);
 Route::post('login', [AuthController::class, 'authenticate']);
 Route::get('logout', [AuthController::class, 'logout']);
-Route::get('forgot-password', [AuthController::class, 'forgotPassword']);
-Route::post('forgot-password', [AuthController::class, 'changePassword']);
+Route::get('forgot_password', [AuthController::class, 'forgotPassword']);
+Route::post('forgot_password', [AuthController::class, 'changePassword']);
 Route::get('reset/{token}', [AuthController::class, 'resetPassword']);
 Route::post('reset/{token}', [AuthController::class, 'resetAndChangePassword']);
 Route::get('signup', [AuthController::class, 'signup']);
@@ -193,6 +193,7 @@ Route::group(['middleware' => 'parent'], function () {
     // Parent route side show student
     Route::get('parent/my_student', [ParentController::class, 'parentStudent']);
     Route::get('parent/my_student/{student_id}/subject', [SubjectController::class, 'parentStudentSubject']);
+    Route::get('parent/my_student/exam_timetable/{student_id}/subject', [ExaminationController::class, 'parentStudentExamTimetable']);
 
     // Parent student class timetable
     Route::get('parent/my_student/{class_id}/subject/{subject_id}/timetable/student/{student_id}', [ClassTimetableController::class, 'parentStudentSubjectTimetable']);

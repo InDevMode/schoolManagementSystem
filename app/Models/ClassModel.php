@@ -61,6 +61,7 @@ class ClassModel extends Model
 
         return $results->where('class.is_delete', 0)
             ->orderBy('class.id', 'desc')
+            ->groupBy('class.id')
             ->paginate($perPage);
     }
 

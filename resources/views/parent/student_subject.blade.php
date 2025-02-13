@@ -15,7 +15,7 @@
                 </li>
                 <li>
                     /<a class="font-medium hover:text-violet-600 transition duration-300"
-                        href="{{ url('parent/my_student') }}"> Liste des mes apprenants</a>
+                        href="{{ url('parent/my_student') }}"> Apprenants</a>
                 </li>
             </ol>
         </nav>

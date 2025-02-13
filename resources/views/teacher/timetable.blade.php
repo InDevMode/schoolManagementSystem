@@ -16,7 +16,7 @@
                 </li>
                 <li>
                     /<a class="font-medium hover:text-violet-600 transition duration-300"
-                        href="{{ url('teacher/class_subject') }}"> Liste des cours et horaires </a>
+                        href="{{ url('teacher/class_subject') }}"> Cours et Horaires </a>
                 </li>
             </ol>
         </nav>

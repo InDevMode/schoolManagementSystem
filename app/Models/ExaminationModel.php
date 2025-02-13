@@ -44,6 +44,7 @@ class ExaminationModel extends Model
 
         return $results->where('exams.is_delete', 0)
             ->orderBy('exams.id', 'desc')
+            ->groupBy('exams.id')
             ->paginate($perPage);
     }
 

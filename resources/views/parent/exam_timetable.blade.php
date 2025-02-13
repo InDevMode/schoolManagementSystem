@@ -6,7 +6,7 @@
         class="mb-6 mt-3 flex flex-col gap-3 sm:flex-row items-center justify-between"
     >
         <h2 class="uppercase font-bold text-black dark:text-bodydark">
-            Mon calendrier d'examens
+            Son calendrier d'examens
         </h2>
         <nav>
             <ol class="flex items-center gap-2">
@@ -15,7 +15,7 @@
                 </li>
                 <li>
                     /<a class="font-medium hover:text-violet-600 transition duration-300"
-                        href="{{ url('student/dashboard') }}"> Dashboard</a>
+                        href="{{ url('parent/my_student') }}"> Apprenants</a>
                 </li>
             </ol>
         </nav>
