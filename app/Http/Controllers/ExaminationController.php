@@ -209,6 +209,7 @@ class ExaminationController extends Controller
             $result[] = $dataExam;
         }
         $data['getExamTimetable'] = $result;
+//        dd($data['getExamTimetable']);
         return view('student.exam_timetable', $data);
     }
 

@@ -39,6 +39,7 @@
                     <thead class="text-white uppercase bg-violet-500">
                     <tr>
                         <th scope="col" class="px-4 py-3">Matière</th>
+                        <th scope="col" class="px-4 py-3">Jour</th>
                         <th scope="col" class="px-4 py-3">Date</th>
                         <th scope="col" class="px-4 py-3">Heures</th>
                         <th scope="col" class="px-4 py-3">Salle</th>
@@ -50,6 +51,12 @@
                     @forelse($exams['subjectSchedule'] as $exam)
                     <tr class="border-b hover:bg-violet-100 dark:hover:bg-gray-700">
                         <td class="px-4 py-3">{{ $exam['subject_name'] }}</td>
+                        <td class="px-4 py-3">
+                            {{ $exam['exam_date'] ? \Carbon\Carbon::parse($exam['exam_date'])->locale('fr')->translatedFormat('l') : '-' }}
+                        </td>
+                        <td class="px-4 py-3">
+                            {{ $exam['exam_date'] ? \Carbon\Carbon::parse($exam['exam_date'])->locale('fr')->translatedFormat('d M Y') : '-' }}
+                        </td>
                         <td class="px-4 py-3">
                             {{ $exam['exam_date'] ? \Carbon\Carbon::parse($exam['exam_date'])->locale('fr')->translatedFormat('d M Y') : '-' }}
                         </td>

@@ -40,7 +40,7 @@ class ScheduleModel extends Model
     {
         return ScheduleModel::where('exam_id', '=', $exam_id)
             ->where('class_id', '=', $class_id)
-            ->delete();
+            ->update(['is_delete' => 1]);
     }
 
     static public function checkExamSchedule(int $exam_id, int $class_id)
@@ -55,6 +55,8 @@ class ScheduleModel extends Model
         return ScheduleModel::select('schedules.*', 'exams.name as exam_name')
             ->join('exams', 'exams.id', '=', 'schedules.exam_id')
             ->where('schedules.class_id', '=', $class_id)
+            ->where('exams.is_delete', '=', 0)
+            ->where('schedules.is_delete', '=', 0)
             ->groupBy('schedules.exam_id')
             ->orderBy('schedules.id', 'desc')
             ->get();
@@ -66,7 +68,9 @@ class ScheduleModel extends Model
             ->join('subject', 'subject.id', '=', 'schedules.subject_id')
             ->where('schedules.exam_id', '=', $exam_id)
             ->where('schedules.class_id', '=', $class_id)
-            ->groupBy('schedules.id')
+            ->where('schedules.is_delete', '=', 0)
+            ->where('subject.is_delete', '=', 0)
+            ->groupBy('exam_id')
             ->get();
     }
 
