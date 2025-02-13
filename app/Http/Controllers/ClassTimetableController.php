@@ -105,6 +105,7 @@ class ClassTimetableController extends Controller
                 $dataWeek = array();
                 $dataWeek['week_id'] = $weekValue->id;
                 $dataWeek['week_name'] = $weekValue->name;
+                $dataWeek['day'] = $weekValue->day;
                 $classSubjectTimetable = ClassTimetableModel::getClassTimetable($timetable->class_id, $timetable->subject_id, $weekValue->id);
                 if (!empty($classSubjectTimetable)) {
                     $dataWeek['start_time'] = $classSubjectTimetable->start_time;

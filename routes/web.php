@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\ClassController;
 use App\Http\Controllers\ClassSubjectController;
 use App\Http\Controllers\ClassTeacherController;
@@ -166,6 +167,9 @@ Route::group(['middleware' => 'student'], function () {
     // Student Change Password url
     Route::get('student/change_password', [UserController::class, 'changePassword']);
     Route::post('student/change_password', [UserController::class, 'updatePassword']);
+
+    // Student calendar url
+    Route::get('student/my_calendar', [CalendarController::class, 'myCalendar']);
 
     // Student account url
     Route::get('student/account', [UserController::class, 'myAccount']);
