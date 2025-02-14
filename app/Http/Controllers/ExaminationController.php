@@ -189,11 +189,12 @@ class ExaminationController extends Controller
         $data['header_title'] = "Mon calendrier d'examens";
         $class_id = Auth::user()->class_id;
         $getExamSchedule = ScheduleModel::getExam($class_id);
-        $results = array();
+        $result = array();
         foreach ($getExamSchedule as $examSchedule) {
             $dataExam = array();
             $dataExam['name'] = $examSchedule->exam_name;
             $getExamTimetable = ScheduleModel::getExamTimetable($examSchedule->exam_id, $class_id);
+            $results = array();
             foreach ($getExamTimetable as $examTimetable) {
                 $dataSchedule = array();
                 $dataSchedule['subject_name'] = $examTimetable->subject_name;
@@ -209,7 +210,6 @@ class ExaminationController extends Controller
             $result[] = $dataExam;
         }
         $data['getExamTimetable'] = $result;
-//        dd($data['getExamTimetable']);
         return view('student.exam_timetable', $data);
     }
 
@@ -217,6 +217,7 @@ class ExaminationController extends Controller
     {
         $data['header_title'] = "Mon calendrier d'examens";
         $getClass = ExaminationModel::getMyClassSubjectGroup(Auth::user()->id);
+        $result = array();
 
         foreach ($getClass as $class) {
             $dataClass = array();
@@ -254,13 +255,16 @@ class ExaminationController extends Controller
     {
         $data['header_title'] = "Son calendrier d'examens";
         $getStudent = User::getSingle($student_id);
-        $class_id =  $getStudent->class_id;
+        $class_id = $getStudent->class_id;
         $getExamSchedule = ScheduleModel::getExam($class_id);
-        $results = array();
+        $result = array();
+
         foreach ($getExamSchedule as $examSchedule) {
             $dataExam = array();
             $dataExam['name'] = $examSchedule->exam_name;
             $getExamTimetable = ScheduleModel::getExamTimetable($examSchedule->exam_id, $class_id);
+            $results = array();
+
             foreach ($getExamTimetable as $examTimetable) {
                 $dataSchedule = array();
                 $dataSchedule['subject_name'] = $examTimetable->subject_name;
