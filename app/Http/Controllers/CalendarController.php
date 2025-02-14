@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\ClassSubjectModel;
 use App\Models\ClassTimetableModel;
 use App\Models\ExaminationModel;
+use App\Models\ScheduleModel;
 use App\Models\WeekModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -14,12 +15,19 @@ class CalendarController extends Controller
 
     public function myCalendar(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
     {
-
         $data['header_title'] = "Mon Calendrier";
+        $data['getMyTimetable'] = $this->getTimetable(Auth::user()->class_id);
+        $data['getExamTimetable'] = $this->getExamTimetable(Auth::user()->class_id);
+        return view('student.calendar', $data);
+    }
 
+    public function getTimetable($class_id): array
+    {
         $result = array();
-        $getCalendar = ClassSubjectModel::getSubject(Auth::user()->class_id);
+        $getCalendar = ClassSubjectModel::getSubject($class_id);
+
         foreach ($getCalendar as $calendar) {
+            $dataCalendar = array();
             $dataCalendar['name'] = $calendar->subject_name;
 
             $getWeek = WeekModel::getAllWeek();
@@ -44,8 +52,33 @@ class CalendarController extends Controller
             $dataCalendar['weeks'] = $week;
             $result[] = $dataCalendar;
         }
-        $data['getMyCalendar'] = $result;
-        return view('student.calendar', $data);
+        return $result;
+    }
+
+    public function getExamTimetable($class_id): array
+    {
+        $getExamSchedule = ScheduleModel::getExam($class_id);
+        $result = array();
+        foreach ($getExamSchedule as $examSchedule) {
+            $dataExam = array();
+            $dataExam['name'] = $examSchedule->exam_name;
+            $getExamTimetable = ScheduleModel::getExamTimetable($examSchedule->exam_id, $class_id);
+            $results = array();
+            foreach ($getExamTimetable as $examTimetable) {
+                $dataSchedule = array();
+                $dataSchedule['subject_name'] = $examTimetable->subject_name;
+                $dataSchedule['exam_date'] = $examTimetable->exam_date;
+                $dataSchedule['start_time'] = $examTimetable->start_time;
+                $dataSchedule['end_time'] = $examTimetable->end_time;
+                $dataSchedule['room_number'] = $examTimetable->room_number;
+                $dataSchedule['full_marks'] = $examTimetable->full_marks;
+                $dataSchedule['passing_marks'] = $examTimetable->passing_marks;
+                $results[] = $dataSchedule;
+            }
+            $dataExam['exams'] = $results;
+            $result[] = $dataExam;
+        }
+        return $result;
     }
 
 }
