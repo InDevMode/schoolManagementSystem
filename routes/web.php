@@ -198,6 +198,7 @@ Route::group(['middleware' => 'parent'], function () {
     Route::get('parent/my_student', [ParentController::class, 'parentStudent']);
     Route::get('parent/my_student/{student_id}/subject', [SubjectController::class, 'parentStudentSubject']);
     Route::get('parent/my_student/exam_timetable/{student_id}/subject', [ExaminationController::class, 'parentStudentExamTimetable']);
+    Route::get('parent/my_student/calendar/{student_id}/subject', [CalendarController::class, 'parentStudentExamCalendar']);
 
     // Parent student class timetable
     Route::get('parent/my_student/{class_id}/subject/{subject_id}/timetable/student/{student_id}', [ClassTimetableController::class, 'parentStudentSubjectTimetable']);

@@ -1,12 +1,20 @@
 @extends('layouts.app')
 @section('content')
+@section('style')
+<style type="text/css">
+    .fc-daygrid-event {
+        white-space: normal;
+    }
+</style>
+@endsection
+
 <div class="m-5">
     <!-- Breadcrumb Start -->
     <div
         class="mb-6 mt-3 flex flex-col gap-3 sm:flex-row items-center justify-between"
     >
         <h2 class="uppercase font-bold text-black dark:text-bodydark">
-            Mon calendrier
+            Son calendrier
         </h2>
         <nav>
             <ol class="flex items-center gap-2">
@@ -15,7 +23,10 @@
                 </li>
                 <li>
                     /<a class="font-medium hover:text-violet-600 transition duration-300"
-                        href="{{ url('student/dashboard') }}"> Dashboard</a>
+                        href="{{ url('parent/my_student') }}"> Apprenants</a>
+                </li>
+                <li>
+                    /<span class="font-semibold text-violet-600 transition duration-300"> {{ $getStudent->name }} {{ $getStudent->last_name }}</span>
                 </li>
             </ol>
         </nav>
@@ -30,7 +41,7 @@
 <script src="{{ url('public/fullcalendar/index.global.min.js') }}"></script>
 
 <script type="text/javascript">
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
 
         const events = new Array();
 
@@ -49,8 +60,8 @@
         @foreach($getExamTimetable as $valueExam)
         @foreach($valueExam['exams'] as $exam)
             <?php
-                $startTime = date('G\h i\m\i\n', strtotime($exam['start_time']));
-                $endTime = date('G\h i\m\i\n', strtotime($exam['end_time']));
+            $startTime = date('G\h i\m\i\n', strtotime($exam['start_time']));
+            $endTime = date('G\h i\m\i\n', strtotime($exam['end_time']));
             ?>
             events.push({
                 event_id: 1,
@@ -59,9 +70,10 @@
                 end: '{{ $exam['exam_date'] }}',
                 color: '#34d399',
                 url : '{{ url('student/my_exam_timetable') }}'
-        });
+            });
         @endforeach
         @endforeach
+
 
         const calendarID = document.getElementById("calendar");
         const calendar = new FullCalendar.Calendar(calendarID, {
@@ -75,11 +87,11 @@
                 right: 'dayGridMonth,timeGridWeek,timeGridDay,listMonth'
             },
             buttonText: {
-                today:    'Aujourd\'hui',
-                month:    'Mois',
-                week:     'Semaine',
-                day:      'Jour',
-                list:     'Liste'
+                today: 'Aujourd\'hui',
+                month: 'Mois',
+                week: 'Semaine',
+                day: 'Jour',
+                list: 'Liste'
             },
             allDayText: 'Jour',
             eventDisplay: 'block',

@@ -6,6 +6,7 @@ use App\Models\ClassSubjectModel;
 use App\Models\ClassTimetableModel;
 use App\Models\ExaminationModel;
 use App\Models\ScheduleModel;
+use App\Models\User;
 use App\Models\WeekModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -79,6 +80,16 @@ class CalendarController extends Controller
             $result[] = $dataExam;
         }
         return $result;
+    }
+
+    public function parentStudentExamCalendar($student_id): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
+    {
+        $data['header_title'] = "Son Calendrier";
+        $getStudent = User::getSingle($student_id);
+        $data['getStudent'] = $getStudent;
+        $data['getMyTimetable'] = $this->getTimetable($getStudent->class_id);
+        $data['getExamTimetable'] = $this->getExamTimetable($getStudent->class_id);
+        return view('parent.calendar', $data);
     }
 
 }
