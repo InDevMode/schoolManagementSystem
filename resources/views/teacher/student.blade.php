@@ -36,28 +36,28 @@
                         type="text" id="admission_number" name="admission_number"
                         value="{{ Request::get('admission_number') }}"
                         placeholder="numéro d'admission..."
-                        class="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 font-normal text-black outline-none transition focus:border-violet-600 active:border-violet-600 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-violet-600"
+                        class="w-full rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-2.5 font-normal text-black outline-none transition focus:border-violet-600 active:border-violet-600 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-violet-600"
                     />
                 </div>
                 <div class="w-full xl:w-1/8">
                     <input
                         type="text" id="name" name="name" value="{{ Request::get('name') }}"
                         placeholder="nom..."
-                        class="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 font-normal text-black outline-none transition focus:border-violet-600 active:border-violet-600 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-violet-600"
+                        class="w-full rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-2.5 font-normal text-black outline-none transition focus:border-violet-600 active:border-violet-600 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-violet-600"
                     />
                 </div>
                 <div class="w-full xl:w-1/8">
                     <input
                         type="text" id="last_name" name="last_name" value="{{ Request::get('last_name') }}"
                         placeholder="prénom..."
-                        class="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 font-normal text-black outline-none transition focus:border-violet-600 active:border-violet-600 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-violet-600"
+                        class="w-full rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-2.5 font-normal text-black outline-none transition focus:border-violet-600 active:border-violet-600 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-violet-600"
                     />
                 </div>
                 <div class="w-full xl:w-1/8">
                     <input
                         type="email" id="email" name="email" value="{{ Request::get('email') }}"
                         placeholder="email..."
-                        class="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 font-normal text-black outline-none transition focus:border-violet-600 active:border-violet-600 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-violet-600"
+                        class="w-full rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-2.5 font-normal text-black outline-none transition focus:border-violet-600 active:border-violet-600 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-violet-600"
                     />
                 </div>
                 <div class="w-full xl:w-1/8">
@@ -66,7 +66,7 @@
                         class="relative z-20 bg-transparent dark:bg-form-input"
                     >
                         <select id="status" name="status"
-                                class="relative z-20 w-full appearance-none rounded border border-stroke bg-transparent px-5 py-3 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                                class="relative z-20 w-full appearance-none rounded-lg border border-stroke bg-transparent px-5 py-2.5 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                                 :class="isOptionSelected && 'text-black dark:text-white'"
                                 @change="isOptionSelected = true"
                         >
@@ -107,7 +107,7 @@
                         class="relative z-20 bg-transparent dark:bg-form-input"
                     >
                         <select id="gender" name="gender"
-                                class="relative z-20 w-full appearance-none rounded border border-stroke bg-transparent px-5 py-3 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                                class="relative z-20 w-full appearance-none rounded-lg border border-stroke bg-transparent px-5 py-2.5 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                                 :class="isOptionSelected && 'text-black dark:text-white'"
                                 @change="isOptionSelected = true"
                         >
@@ -147,7 +147,7 @@
                 <div class="w-full xl:w-1/8">
                     <div class="relative">
                         <input id="date_of_birth" name="date_of_birth" value="{{ Request::get('date_of_birth') }}"
-                               class="form-datepicker w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 font-normal outline-none transition focus:border-violet-600 active:border-violet-600 dark:border-form-strokedark dark:bg-form-input dark:focus:border-violet-600"
+                               class="form-datepicker w-full rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-2.5 font-normal outline-none transition focus:border-violet-600 active:border-violet-600 dark:border-form-strokedark dark:bg-form-input dark:focus:border-violet-600"
                                placeholder="date de naissance..."
                                data-class="flatpickr-right"
                         />
@@ -172,7 +172,7 @@
                 </div>
                 <div class="w-full xl:w-1/8">
                     <button
-                        class="flex w-full justify-between items-center rounded bg-violet-600 p-3 font-medium text-gray hover:bg-opacity-90"
+                        class="flex w-full justify-between items-center rounded-lg bg-violet-600 p-3 font-medium text-gray hover:bg-opacity-90"
                     >
                         Rechercher
                         <span class="inline-flex items-center text-sm text-gray-900">
@@ -182,7 +182,7 @@
                 </div>
                 <div class="w-full xl:w-1/8">
                     <a href="{{ url('teacher/my_student') }}"
-                       class="flex w-full justify-center rounded bg-bodydark2 p-3 font-medium text-gray hover:bg-opacity-90"
+                       class="flex w-full justify-center rounded-lg bg-bodydark2 p-3 font-medium text-gray hover:bg-opacity-90"
                     >
                         Réïnitialisez
                     </a>

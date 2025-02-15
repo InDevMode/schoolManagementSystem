@@ -74,4 +74,23 @@ class ScheduleModel extends Model
             ->get();
     }
 
+    static public function getExamTimetableTeacher(int $teacher_id)
+    {
+        return ScheduleModel::select('schedules.*', 'class.name as class_name', 'subject.name as subject_name', 'exams.name as exam_name')
+            ->join('class_teacher', 'class_teacher.class_id', '=', 'schedules.class_id')
+            ->join('class', 'class.id', '=', 'schedules.class_id')
+            ->join('subject', 'subject.id', '=', 'schedules.subject_id')
+            ->join('exams', 'subject.id', '=', 'schedules.exam_id')
+            ->where('class_teacher.teacher_id', '=', $teacher_id)
+            ->where('schedules.is_delete', 0)
+            ->where('class_teacher.is_delete', 0)
+            ->where('class_teacher.status', 1)
+            ->where('class.is_delete', 0)
+            ->where('class.status', 1)
+            ->where('subject.is_delete', 0)
+            ->where('subject.status', 1)
+            ->where('exams.is_delete', 0)
+            ->get();
+    }
+
 }

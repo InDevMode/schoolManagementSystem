@@ -98,6 +98,7 @@ class CalendarController extends Controller
         $data['header_title'] = "Mon calendrier";
         $teacher_id = Auth::user()->id;
         $data['getClassTeacherTimetable'] = ClassTeacherModel::getTeacherCalendar($teacher_id);
+        $data['getExamTimetableTeacher'] = ScheduleModel::getExamTimetableTeacher($teacher_id);
         return view('teacher.calendar', $data);
     }
 

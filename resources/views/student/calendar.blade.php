@@ -36,30 +36,35 @@
 
         @foreach($getMyTimetable as $value)
         @foreach($value['weeks'] as $week)
+                <?php
+                /** @var TYPE_NAME $week */
+                $startTime = date('G\h i\m\i\n', strtotime($week['start_time']));
+                $endTime = date('G\h i\m\i\n', strtotime($week['end_time']));
+                ?>
             events.push({
                 title: '{{ $value['name'] }}',
                 daysOfWeek: [ {{ $week['day'] }} ],
-                startTime: '{{ $week['start_time'] }}',
-                endTime: '{{ $week['end_time'] }}',
+                startTime: '{{ $startTime }}',
+                endTime: '{{ $endTime }}',
                 color: '#7c3aed',
-        });
+                url : '{{ url('student/my_exam_timetable') }}'
+            });
         @endforeach
         @endforeach
 
         @foreach($getExamTimetable as $valueExam)
         @foreach($valueExam['exams'] as $exam)
             <?php
+                /** @var TYPE_NAME $exam */
                 $startTime = date('G\h i\m\i\n', strtotime($exam['start_time']));
                 $endTime = date('G\h i\m\i\n', strtotime($exam['end_time']));
             ?>
             events.push({
-                event_id: 1,
                 title: '{{ $valueExam['name'] }} => {{ $exam['subject_name'] }} de {{ $startTime }} à  {{ $endTime }}',
                 start: '{{ $exam['exam_date'] }}',
                 end: '{{ $exam['exam_date'] }}',
                 color: '#34d399',
-                url : '{{ url('student/my_exam_timetable') }}'
-        });
+            });
         @endforeach
         @endforeach
 

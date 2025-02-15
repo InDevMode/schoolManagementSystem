@@ -42,7 +42,12 @@ class ClassTeacherModel extends Model
             ->join('class', 'class.id', '=', 'class_teacher.class_id')
             ->join('users as teacher', 'teacher.id', '=', 'class_teacher.teacher_id')
             ->join('users', 'users.id', '=', 'class_teacher.created_by')
-            ->where('class_teacher.is_delete', 0);
+            ->where('class_teacher.is_delete', 0)
+            ->where('class_teacher.status', 1)
+            ->where('class.is_delete', 0)
+            ->where('class.status', 1)
+            ->where('users.is_delete', 0)
+            ->where('users.status', 1);
 
         $filters = [
             'class.name' => strtolower(Request::get('class_name')),
@@ -63,7 +68,6 @@ class ClassTeacherModel extends Model
         }
 
         return $results->orderBy('class_teacher.id', 'desc')
-            ->groupBy('class_teacher.id')
             ->paginate($perPage);
     }
 
@@ -100,6 +104,8 @@ class ClassTeacherModel extends Model
             ->where('subject.status', 1)
             ->where('class_subject.is_delete', 0)
             ->where('class_subject.status', 1)
+            ->where('class.is_delete', 0)
+            ->where('class.status', 1)
             ->where('class_teacher.teacher_id', '=', $teacher_id);
 
         $filters = [
@@ -121,7 +127,6 @@ class ClassTeacherModel extends Model
         }
 
         return $results->orderBy('class_teacher.id', 'desc')
-            ->groupBy('class_teacher.id')
             ->paginate($perPage);
     }
 

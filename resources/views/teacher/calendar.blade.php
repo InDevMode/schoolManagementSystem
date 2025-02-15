@@ -44,8 +44,8 @@
 
         @foreach($getClassTeacherTimetable as $valueClassTeacher)
             <?php
-        /** @var TYPE_NAME $valueClassTeacher */
-        $startTime = date('G\h i\m\i\n', strtotime($valueClassTeacher->start_time));
+            /** @var TYPE_NAME $valueClassTeacher */
+            $startTime = date('G\h i\m\i\n', strtotime($valueClassTeacher->start_time));
             $endTime = date('G\h i\m\i\n', strtotime($valueClassTeacher->end_time));
             ?>
             events.push({
@@ -54,7 +54,21 @@
                 startTime: '{{$valueClassTeacher->start_time }}',
                 endTime: '{{ $valueClassTeacher->end_time }}',
                 color: '#7c3aed',
-                url : '{{ url('teacher/my_exam_timetable') }}'
+            });
+        @endforeach
+
+        @foreach($getExamTimetableTeacher as $valueExam)
+            <?php
+            /** @var TYPE_NAME $valueExam */
+            $startTime = date('G\h i\m\i\n', strtotime($valueExam['start_time']));
+            $endTime = date('G\h i\m\i\n', strtotime($valueExam['end_time']));
+            ?>
+            events.push({
+                title: '{{ $valueExam->class_name }} => {{ $valueExam->exam_name }} => {{ $valueExam->subject_name }} de {{ $startTime }} à  {{ $endTime }}',
+                start: '{{ $valueExam->exam_date }}',
+                end: '{{ $valueExam->exam_date }}',
+                color: '#34d399',
+                url : '{{ url('teacher/my_exam_timetable') }}',
             });
         @endforeach
 

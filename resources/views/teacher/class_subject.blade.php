@@ -21,11 +21,10 @@
         </nav>
     </div>
     @include('message')
-    <div class="">
-        <div class="mt-4">
-            {{ $getClassSubjectTeacher->links('vendor.pagination.tailwind') }}
-        </div>
+    <div class="my-5">
+        {{ $getClassSubjectTeacher->links('vendor.pagination.tailwind') }}
     </div>
+
     <div
         class="rounded-sm border border-stroke bg-white px-5 pb-2.5 pt-6 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1"
     >
@@ -35,14 +34,14 @@
                     <input
                         type="text" id="class_name" name="class_name" value="{{ Request::get('class_name') }}"
                         placeholder="classe..."
-                        class="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 font-normal text-black outline-none transition focus:border-violet-600 active:border-violet-600 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-violet-600"
+                        class="w-full rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-2.5 font-normal text-black outline-none transition focus:border-violet-600 active:border-violet-600 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-violet-600"
                     />
                 </div>
                 <div class="w-full">
                     <input
                         type="text" id="subject_name" name="subject_name" value="{{ Request::get('subject_name') }}"
                         placeholder="matière..."
-                        class="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 font-normal text-black outline-none transition focus:border-violet-600 active:border-violet-600 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-violet-600"
+                        class="w-full rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-2.5 font-normal text-black outline-none transition focus:border-violet-600 active:border-violet-600 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-violet-600"
                     />
                 </div>
                 <div class="w-full">
@@ -51,7 +50,7 @@
                         class="relative z-20 bg-transparent dark:bg-form-input"
                     >
                         <select id="subject_type" name="subject_type"
-                                class="relative z-20 w-full appearance-none rounded border border-stroke bg-transparent px-5 py-3 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                                class="relative z-20 w-full appearance-none rounded-lg border border-stroke bg-transparent px-5 py-2.5 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                                 :class="isOptionSelected && 'text-black dark:text-white'"
                                 @change="isOptionSelected = true"
                         >
@@ -88,7 +87,7 @@
                 </div>
                 <div class="w-full">
                     <button
-                        class="flex w-full justify-between items-center rounded bg-violet-600 p-3 font-medium text-gray hover:bg-opacity-90"
+                        class="flex w-full justify-between items-center rounded-lg bg-violet-600 p-3 font-medium text-gray hover:bg-opacity-90"
                     >
                         Rechercher
                         <span class="inline-flex items-center text-sm text-gray-900">
@@ -98,7 +97,7 @@
                 </div>
                 <div class="w-full">
                     <a href="{{ url('teacher/class_subject') }}"
-                       class="flex w-full justify-center rounded bg-bodydark2 p-3 font-medium text-gray hover:bg-opacity-90"
+                       class="flex w-full justify-center rounded-lg bg-bodydark2 p-3 font-medium text-gray hover:bg-opacity-90"
                     >
                         Réïnitialisez
                     </a>
@@ -138,14 +137,16 @@
                     <td class="px-6 py-3">
                         {{ $classSubjectTeacher -> subject_name }}
                     </td>
-                    <td class="px-6 py-3 font-semibold">
+                    <td class="px-6 py-3">
                         @php
-                        $timetable = \App\Models\ClassTeacherModel::getMyClassTimetable($classSubjectTeacher->class_id, $classSubjectTeacher->subject_id);
+                        $timetable = \App\Models\ClassTeacherModel::getMyClassTimetable($classSubjectTeacher->class_id,
+                        $classSubjectTeacher->subject_id);
                         @endphp
                         @if ($timetable)
-                        <span class="bg-gray-200 dark:bg-gray-700 flex justify-center border border-gray-500 dark:border-gray-700 py-2 px-3 rounded">{{ \Carbon\Carbon::parse($timetable->start_time)->format('G\h i\m\i\n') }} à {{ \Carbon\Carbon::parse($timetable->end_time)->format('G\h i\m\i\n') }}</span>
+                        <span
+                            class="bg-gray-200 dark:bg-gray-700 border border-gray-500 dark:border-gray-700 py-2 px-3 rounded">{{ \Carbon\Carbon::parse($timetable->start_time)->format('G\h i\m\i\n') }} à {{ \Carbon\Carbon::parse($timetable->end_time)->format('G\h i\m\i\n') }}</span>
                         @else
-                        <p>Aucune heure disponible pour cette matière.</p>
+                        <p>Aucune heure disponible pour cette matière aujourd'hui.</p>
                         @endif
                     </td>
                     <td class="px-6 py-3">
