@@ -135,6 +135,11 @@ Route::group(['middleware' => 'admin'], function () {
     Route::get('admin/examinations/schedule/list', [ExaminationController::class, 'scheduleList']);
     Route::post('admin/examinations/schedule/add', [ExaminationController::class, 'scheduleCreate']);
 
+    // Exams register marks url
+    Route::get('admin/examinations/marks_register/list', [ExaminationController::class, 'marksRegister']);
+
+
+
 });
 
 Route::group(['middleware' => 'teacher'], function () {

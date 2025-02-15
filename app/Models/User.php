@@ -126,7 +126,10 @@ class User extends Authenticatable
             ->join('users as parent', 'parent.id', '=', 'users.parent_id', 'left')
             ->join('class', 'class.id', '=', 'users.class_id')
             ->where('users.user_type', 3)
-            ->where('users.is_delete', '=', 0);
+            ->where('users.is_delete', '=', 0)
+            ->where('users.status', '=', 1)
+            ->where('class.is_delete', '=', 0)
+            ->where('class.status', '=', 1);
 
         $filters = [
             'users.admission_number' => strtolower(Request::get('admission_number')),
@@ -162,7 +165,6 @@ class User extends Authenticatable
         }
 
         return $results->orderBy('users.id', 'desc')
-            ->groupBy('users.id')
             ->paginate($perPage);
     }
 
@@ -170,6 +172,8 @@ class User extends Authenticatable
     {
         $results = User::select('users.*')
             ->where('users.user_type', 4)
+            ->where('users.is_delete', '=', 0)
+            ->where('users.status', '=', 1)
             ->where('users.is_delete', '=', 0);
 
         $filters = [
@@ -198,7 +202,6 @@ class User extends Authenticatable
         }
 
         return $results->orderBy('users.id', 'desc')
-            ->groupBy('users.id')
             ->paginate($perPage);
     }
 
@@ -257,6 +260,10 @@ class User extends Authenticatable
             ->join('users as parent', 'parent.id', '=', 'users.parent_id', 'left')
             ->join('class', 'class.id', '=', 'users.class_id', 'left')
             ->where('users.user_type', '=', 3)
+            ->where('users.is_delete', '=', 0)
+            ->where('users.status', '=', 1)
+            ->where('class.is_delete', '=', 0)
+            ->where('class.status', '=', 1)
             ->whereNull('users.parent_id');
 
         $filters = [
@@ -275,17 +282,22 @@ class User extends Authenticatable
 
         return $results->where('users.is_delete', '=', 0)
             ->orderBy('users.id', 'desc')
-            ->groupBy('users.id')
             ->paginate($perPage);
     }
 
-    static public function  getMyStudent(int $perPage, int $parent_id,)
+    static public function getMyStudent(int $perPage, int $parent_id,)
     {
-        $results = User::select('users.*', 'class.name as class_name', 'teacher.name as teacher_name','teacher.last_name as teacher_last_name')
+        $results = User::select('users.*', 'class.name as class_name', 'teacher.name as teacher_name', 'teacher.last_name as teacher_last_name')
             ->join('users as parent', 'parent.id', '=', 'users.parent_id', 'left')
             ->join('class', 'class.id', '=', 'users.class_id', 'left')
             ->join('class_teacher', 'class_teacher.class_id', '=', 'class.id', 'left')
             ->join('users as teacher', 'teacher.id', '=', 'class_teacher.teacher_id', 'left')
+            ->where('users.is_delete', '=', 0)
+            ->where('users.status', '=', 1)
+            ->where('class.is_delete', '=', 0)
+            ->where('class.status', '=', 1)
+            ->where('class_teacher.is_delete', '=', 0)
+            ->where('class_teacher.status', '=', 1)
             ->where('users.parent_id', '=', $parent_id)
             ->where('users.user_type', '=', 3);
 
@@ -313,7 +325,6 @@ class User extends Authenticatable
 
         return $results->where('users.is_delete', '=', 0)
             ->orderBy('users.id', 'desc')
-            ->groupBy('users.id')
             ->paginate($perPage);
     }
 
@@ -334,6 +345,10 @@ class User extends Authenticatable
             ->where('class_teacher.teacher_id', '=', $teacher_id)
             ->where('class_teacher.status', '=', 1)
             ->where('class_teacher.is_delete', '=', 0)
+            ->where('users.is_delete', '=', 0)
+            ->where('users.status', '=', 1)
+            ->where('class.is_delete', '=', 0)
+            ->where('class.status', '=', 1)
             ->where('users.user_type', '=', 3)
             ->where('users.is_delete', '=', 0);
 
@@ -364,8 +379,18 @@ class User extends Authenticatable
 
         return $results
             ->orderBy('users.id', 'desc')
-            ->groupBy('users.id')
             ->paginate($perPage);
+    }
+
+    static public function getStudent(int $class_id)
+    {
+        return User::select('users.*')
+            ->where('users.is_delete', '=', 0)
+            ->where('users.status', '=', 1)
+            ->where('users.user_type', '=', 3)
+            ->where('users.class_id', '=', $class_id)
+            ->orderBy('users.id', 'desc')
+            ->get();
     }
 
 }

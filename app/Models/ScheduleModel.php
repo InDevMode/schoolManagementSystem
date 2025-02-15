@@ -70,6 +70,19 @@ class ScheduleModel extends Model
             ->where('schedules.class_id', '=', $class_id)
             ->where('schedules.is_delete', '=', 0)
             ->where('subject.is_delete', '=', 0)
+            ->where('subject.status', '=', 1)
+            ->groupBy('exam_id')
+            ->get();
+    }
+
+    static public function getSubject(int $exam_id, int $class_id)
+    {
+        return ScheduleModel::select('schedules.*', 'subject.name as subject_name', 'subject.type as subject_type')
+            ->join('subject', 'subject.id', '=', 'schedules.subject_id')
+            ->where('schedules.exam_id', '=', $exam_id)
+            ->where('schedules.class_id', '=', $class_id)
+            ->where('schedules.is_delete', '=', 0)
+            ->where('subject.status', '=', 1)
             ->groupBy('exam_id')
             ->get();
     }

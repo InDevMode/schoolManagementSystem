@@ -284,4 +284,18 @@ class ExaminationController extends Controller
         return view('parent.exam_timetable', $data);
     }
 
+    public function marksRegister(Request $request): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
+    {
+        $data['header_title'] = "Registre des notes";
+        $data['getClass'] = ClassModel::getClass();
+        $data['getExams'] = ExaminationModel::getExams();
+
+        if(!empty($request->exam_id) && !empty($request->class_id)){
+            $data['getSubject'] = ScheduleModel::getSubject($request->exam_id, $request->class_id);
+            $data['getStudent'] = User::getStudent($request->class_id);
+        }
+
+        return view('admin.examinations.marks_register.list', $data);
+    }
+
 }
