@@ -82,11 +82,11 @@ class ClassTeacherModel extends Model
         return ClassTeacherModel::where('class_id', '=', $class_id)->delete();
     }
 
-    static public function getMyClassSubject(int $perPage, int $teacher_id){
+    static public function getMyClassSubject(int $perPage, int $teacher_id)
+    {
         $results = ClassTeacherModel::select(
             'class_teacher.*',
             'class.name as class_name',
-            'class.id as class_id',
             'subject.id as subject_id',
             'subject.name as subject_name',
             'subject.type as subject_type',
@@ -131,6 +131,32 @@ class ClassTeacherModel extends Model
         $dayName = Carbon::now()->translatedFormat('l');
         $getWeek = WeekModel::getWeekUsingName($dayName);
         return ClassTimetableModel::getClassTimetable($class_id, $subject_id, $getWeek->id);
+    }
+
+    static public function getTeacherCalendar($teacher_id)
+    {
+        return ClassTeacherModel::select(
+            'class_timetable.*',
+            'class.name as class_name',
+            'subject.name as subject_name',
+            'week.name as week_name',
+            'week.day as week_day'
+        )
+            ->join('class', 'class.id', '=', 'class_teacher.class_id')
+            ->join('class_subject', 'class_subject.class_id', '=', 'class.id')
+            ->join('class_timetable', 'class_timetable.subject_id', '=', 'class_subject.subject_id')
+            ->join('subject', 'subject.id', '=', 'class_timetable.subject_id')
+            ->join('week', 'week.id', '=', 'class_timetable.week_id')
+            ->where('class_teacher.teacher_id', '=', $teacher_id)
+            ->where('class_teacher.is_delete', 0)
+            ->where('class_teacher.status', 1)
+            ->where('class.is_delete', 0)
+            ->where('class.status', 1)
+            ->where('subject.is_delete', 0)
+            ->where('subject.status', 1)
+            ->where('class_subject.is_delete', 0)
+            ->where('class_subject.status', 1)
+            ->get();
     }
 
 }

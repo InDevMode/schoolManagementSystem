@@ -23,10 +23,7 @@
                 </li>
                 <li>
                     /<a class="font-medium hover:text-violet-600 transition duration-300"
-                        href="{{ url('parent/my_student') }}"> Apprenants</a>
-                </li>
-                <li>
-                    /<span class="font-semibold text-violet-600 transition duration-300"> {{ $getStudent->name }} {{ $getStudent->last_name }}</span>
+                        href="{{ url('teacher/dashboard') }}"> Dashboard</a>
                 </li>
             </ol>
         </nav>
@@ -45,32 +42,20 @@
 
         const events = new Array();
 
-        @foreach($getMyTimetable as $value)
-        @foreach($value['weeks'] as $week)
-            events.push({
-                title: '{{ $value['name'] }}',
-                daysOfWeek: [ {{ $week['day'] }} ],
-                startTime: '{{ $week['start_time'] }}',
-                endTime: '{{ $week['end_time'] }}',
-                color: '#7c3aed',
-        });
-        @endforeach
-        @endforeach
-
-        @foreach($getExamTimetable as $valueExam)
-        @foreach($valueExam['exams'] as $exam)
+        @foreach($getClassTeacherTimetable as $valueClassTeacher)
             <?php
-            $startTime = date('G\h i\m\i\n', strtotime($exam['start_time']));
-            $endTime = date('G\h i\m\i\n', strtotime($exam['end_time']));
+        /** @var TYPE_NAME $valueClassTeacher */
+        $startTime = date('G\h i\m\i\n', strtotime($valueClassTeacher->start_time));
+            $endTime = date('G\h i\m\i\n', strtotime($valueClassTeacher->end_time));
             ?>
             events.push({
-                title: '{{ $valueExam['name'] }} => {{ $exam['subject_name'] }} de {{ $startTime }} à  {{ $endTime }}',
-                start: '{{ $exam['exam_date'] }}',
-                end: '{{ $exam['exam_date'] }}',
-                color: '#34d399',
-                url : '{{ url('student/my_exam_timetable') }}'
+                title: '{{ $valueClassTeacher->class_name }} => {{ $valueClassTeacher->subject_name }}',
+                daysOfWeek: [ {{ $valueClassTeacher->week_day }} ],
+                startTime: '{{$valueClassTeacher->start_time }}',
+                endTime: '{{ $valueClassTeacher->end_time }}',
+                color: '#7c3aed',
+                url : '{{ url('teacher/my_exam_timetable') }}'
             });
-        @endforeach
         @endforeach
 
 
@@ -94,13 +79,9 @@
             },
             allDayText: 'Jour',
             eventDisplay: 'block',
-            eventTimeFormat: {
-                hour: '2-digit',
-                minute: '2-digit',
-                meridiem: false
-            },
+
             events: events,
-            initialView: 'dayGridMonth'
+            initialView: 'timeGridWeek'
         });
         calendar.render();
     });

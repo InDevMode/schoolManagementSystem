@@ -22,7 +22,7 @@
     </div>
 
 
-    <div class="grid grid-cols-2 gap-4 mt-5">
+    <div class="grid grid-cols-1 gap-4 mt-5">
         @forelse($getExamTimetable as $examTimetable)
         <div class="bg-white shadow-md rounded-lg border border-gray-300 p-4 dark:border-strokedark dark:bg-boxdark">
             <div class="flex justify-between font-bold text-md mb-3 bg-violet-100 dark:bg-violet-950 text-violet-800 dark:text-violet-100 px-4 py-3 rounded">
@@ -53,9 +53,6 @@
                         <td class="px-4 py-3">{{ $exam['subject_name'] }}</td>
                         <td class="px-4 py-3">
                             {{ $exam['exam_date'] ? \Carbon\Carbon::parse($exam['exam_date'])->locale('fr')->translatedFormat('l') : '-' }}
-                        </td>
-                        <td class="px-4 py-3">
-                            {{ $exam['exam_date'] ? \Carbon\Carbon::parse($exam['exam_date'])->locale('fr')->translatedFormat('d M Y') : '-' }}
                         </td>
                         <td class="px-4 py-3">
                             {{ $exam['exam_date'] ? \Carbon\Carbon::parse($exam['exam_date'])->locale('fr')->translatedFormat('d M Y') : '-' }}

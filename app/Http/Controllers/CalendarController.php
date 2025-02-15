@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\ClassSubjectModel;
+use App\Models\ClassTeacherModel;
 use App\Models\ClassTimetableModel;
 use App\Models\ExaminationModel;
 use App\Models\ScheduleModel;
@@ -90,6 +91,14 @@ class CalendarController extends Controller
         $data['getMyTimetable'] = $this->getTimetable($getStudent->class_id);
         $data['getExamTimetable'] = $this->getExamTimetable($getStudent->class_id);
         return view('parent.calendar', $data);
+    }
+
+    public function myTeacherCalendar(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
+    {
+        $data['header_title'] = "Mon calendrier";
+        $teacher_id = Auth::user()->id;
+        $data['getClassTeacherTimetable'] = ClassTeacherModel::getTeacherCalendar($teacher_id);
+        return view('teacher.calendar', $data);
     }
 
 }
