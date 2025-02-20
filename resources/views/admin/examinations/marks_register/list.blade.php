@@ -134,12 +134,13 @@
                     <th scope="col" class="px-6 py-3">
                         Apprenants
                     </th>
+                    @foreach($getSubject as $subject)
                     <th scope="col" class="px-6 py-3">
-                       Matière
+                        {{ $subject->subject_name }} <span
+                            class="bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200 rounded text-sm  py-1 px-2"> {{ $subject->subject_type == 'practical' ? 'Pratique' : 'Théorique' }}</span>
+                        ({{ $subject->passing_marks }} / {{ $subject->full_marks }})
                     </th>
-                    <th scope="col" class="px-6 py-3">
-                       Notes
-                    </th>
+                    @endforeach
                     </th>
                     <th scope="col" class="px-6 py-3">
                         Actions
@@ -147,16 +148,70 @@
                 </tr>
                 </thead>
                 <tbody>
-                @foreach($getSubject as $subject)
+                @if(!empty($getStudent) && !empty($getStudent->count()))
+                @foreach($getStudent as $student)
                 <tr class="hover:bg-violet-100 dark:hover:bg-gray-700 transition duration-300 border-b dark:border-gray-600 hover:border-violet-400 dark:text-gray-200 text-gray-500">
                     <td class="px-6 py-3">
-                        {{ $subject->subject_name }}
+                        {{ $student->name }} {{ $student->last_name }}
                     </td>
+                    @foreach($getSubject as $subject)
                     <td class="px-6 py-3">
-                        {{ $subject->passing_marks }} / {{ $subject->full_marks }}
+                        <div>
+                            <label
+                                class="mb-3 block text-sm font-medium text-black dark:text-white"
+                            >
+                                Travail de classe <span class="text-meta-1">*</span>
+                                <input type="text"
+                                       id=""
+                                       name=""
+                                       value=""
+                                       placeholder="Entrez une note de classe"
+                                       class="w-full rounded-lg border-[1.5px] border-stroke bg-gray-100 px-5 py-2.5 font-normal text-black outline-none transition focus:border-violet-600 active:border-violet-600 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-violet-600">
+                        </div>
+                        <div>
+                            <label
+                                class="mb-3 block text-sm font-medium text-black dark:text-white"
+                            >
+                                Travail de maison <span class="text-meta-1">*</span>
+                                <input type="text"
+                                       id=""
+                                       name=""
+                                       value=""
+                                       placeholder="Entrez une note de classe"
+                                       class="w-full rounded-lg border-[1.5px] border-stroke bg-gray-100 px-5 py-2.5 font-normal text-black outline-none transition focus:border-violet-600 active:border-violet-600 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-violet-600">
+                        </div>
+                        <div>
+                            <label
+                                class="mb-3 block text-sm font-medium text-black dark:text-white"
+                            >
+                                Travail d'examens <span class="text-meta-1">*</span>
+                                <input type="text"
+                                       id=""
+                                       name=""
+                                       value=""
+                                       placeholder="Entrez une note de classe"
+                                       class="w-full rounded-lg border-[1.5px] border-stroke bg-gray-100 px-5 py-2.5 font-normal text-black outline-none transition focus:border-violet-600 active:border-violet-600 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-violet-600">
+                        </div>
+                        <div>
+                            <label
+                                class="mb-3 block text-sm font-medium text-black dark:text-white"
+                            >
+                                Travaux d'essai <span class="text-meta-1">*</span>
+                                <input type="text"
+                                       id=""
+                                       name=""
+                                       value=""
+                                       placeholder="Entrez une note de classe"
+                                       class="w-full rounded-lg border-[1.5px] border-stroke bg-gray-100 px-5 py-2.5 font-normal text-black outline-none transition focus:border-violet-600 active:border-violet-600 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-violet-600">
+                        </div>
                     </td>
+                    @endforeach
                     <td class="px-6 py-3">
-                        Actions
+                        <button type="submit"
+                                class="flex w-full justify-center rounded-lg bg-violet-600 p-3 font-medium text-gray hover:bg-opacity-90"
+                        >
+                            Ajouter
+                        </button>
                     </td>
                 </tr>
                 @endforeach
@@ -164,6 +219,7 @@
                 <tr class="text-center text-gray-700 dark:text-bodydark1">
                     <td colspan="7" class="py-3"> Aucune évaluation programmée.</td>
                 </tr>
+                @endif
                 @endif
                 </tbody>
             </table>

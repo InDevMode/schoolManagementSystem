@@ -384,7 +384,7 @@ class User extends Authenticatable
 
     static public function getStudent(int $class_id)
     {
-        return User::select('users.*')
+        return User::select('users.id', 'users.name', 'users.last_name')
             ->where('users.is_delete', '=', 0)
             ->where('users.status', '=', 1)
             ->where('users.user_type', '=', 3)

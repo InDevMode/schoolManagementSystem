@@ -138,8 +138,6 @@ Route::group(['middleware' => 'admin'], function () {
     // Exams register marks url
     Route::get('admin/examinations/marks_register/list', [ExaminationController::class, 'marksRegister']);
 
-
-
 });
 
 Route::group(['middleware' => 'teacher'], function () {

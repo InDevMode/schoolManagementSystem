@@ -83,7 +83,6 @@ class ScheduleModel extends Model
             ->where('schedules.class_id', '=', $class_id)
             ->where('schedules.is_delete', '=', 0)
             ->where('subject.status', '=', 1)
-            ->groupBy('exam_id')
             ->get();
     }
 
