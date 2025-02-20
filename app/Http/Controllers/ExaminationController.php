@@ -6,6 +6,7 @@ use App\Models\ClassModel;
 use App\Models\ClassSubjectModel;
 use App\Models\ClassTeacherModel;
 use App\Models\ExaminationModel;
+use App\Models\MarkRegisterModel;
 use App\Models\ScheduleModel;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -290,12 +291,56 @@ class ExaminationController extends Controller
         $data['getClass'] = ClassModel::getClass();
         $data['getExams'] = ExaminationModel::getExams();
 
-        if(!empty($request->exam_id) && !empty($request->class_id)){
+        if (!empty($request->exam_id) && !empty($request->class_id)) {
             $data['getSubject'] = ScheduleModel::getSubject($request->exam_id, $request->class_id);
             $data['getStudent'] = User::getStudent($request->class_id);
         }
 
         return view('admin.examinations.marks_register.list', $data);
+    }
+
+    public function addMarksRegister(Request $request): \Illuminate\Http\JsonResponse
+    {
+        try {
+            $isUpdate = false;
+            if (!empty($request->marks)) {
+                foreach ($request->marks as $mark) {
+                    $class_work = !empty($mark['class_work']) ? $mark['class_work'] : 0;
+                    $home_work = !empty($mark['home_work']) ? $mark['home_work'] : 0;
+                    $test_work = !empty($mark['test_work']) ? $mark['test_work'] : 0;
+                    $exam_work = !empty($mark['exam_work']) ? $mark['exam_work'] : 0;
+
+                    $getMarks = MarkRegisterModel::checkAlreadyMarks($request->student_id, $request->exam_id, $request->class_id, $mark['subject_id']);
+                    if (!empty($getMarks)) {
+                        $marksRegister = $getMarks;
+                        $isUpdate = true;
+                    } else {
+                        $marksRegister = new MarkRegisterModel;
+                        $marksRegister->created_by = Auth::user()->id;
+                    }
+
+                    $marksRegister->student_id = $request->student_id;
+                    $marksRegister->class_id = $request->class_id;
+                    $marksRegister->exam_id = $request->exam_id;
+                    $marksRegister->subject_id = $mark['subject_id'];
+                    $marksRegister->class_work = $class_work;
+                    $marksRegister->home_work = $home_work;
+                    $marksRegister->test_work = $test_work;
+                    $marksRegister->exam_work = $exam_work;
+
+                    $marksRegister->save();
+                }
+            }
+            if ($isUpdate) {
+                return response()->json(['success' => true, 'message' => 'Ces registres de notes pour ces évaluations ont été modifiées avec succès.']);
+            } else {
+                return response()->json(['success' => true, 'message' => 'Ces registres de notes pour ces évaluations ont été ajoutées avec succès.']);
+            }
+        } catch (\Exception $e) {
+            Log::error("Erreur lors de la création de ce registre de notes. " . $e->getMessage());
+
+            return response()->json(['success' => false, 'message' => 'Vos informations ne sont pas correctes. Veuillez réessayer.']);
+        }
     }
 
 }

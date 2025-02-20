@@ -126,10 +126,7 @@ class User extends Authenticatable
             ->join('users as parent', 'parent.id', '=', 'users.parent_id', 'left')
             ->join('class', 'class.id', '=', 'users.class_id')
             ->where('users.user_type', 3)
-            ->where('users.is_delete', '=', 0)
-            ->where('users.status', '=', 1)
-            ->where('class.is_delete', '=', 0)
-            ->where('class.status', '=', 1);
+            ->where('users.is_delete', '=', 0);
 
         $filters = [
             'users.admission_number' => strtolower(Request::get('admission_number')),

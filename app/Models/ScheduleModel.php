@@ -18,13 +18,13 @@ class ScheduleModel extends Model
         'room_number',
         'full_marks',
         'passing_marks',
-        'created_by',
     ];
 
     protected $hidden = [
         'exam_id',
         'class_id',
         'subject_id',
+        'created_by',
         'is_delete'
     ];
 
@@ -103,6 +103,10 @@ class ScheduleModel extends Model
             ->where('subject.status', 1)
             ->where('exams.is_delete', 0)
             ->get();
+    }
+
+    static public function getMarks(int $student_id, int $exam_id, int $class_id, int $subject_id){
+        return MarkRegisterModel::checkAlreadyMarks($student_id, $exam_id, $class_id, $subject_id);
     }
 
 }
