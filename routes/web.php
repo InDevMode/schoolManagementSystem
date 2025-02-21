@@ -138,6 +138,7 @@ Route::group(['middleware' => 'admin'], function () {
     // Exams register marks url
     Route::get('admin/examinations/marks_register/list', [ExaminationController::class, 'marksRegister']);
     Route::post('admin/examinations/marks_register/add', [ExaminationController::class, 'addMarksRegister']);
+    Route::post('admin/examinations/marks_register/addSingleSubject', [ExaminationController::class, 'addSingleMarksRegister']);
 
 });
 

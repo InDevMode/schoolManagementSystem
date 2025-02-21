@@ -301,6 +301,16 @@ class ExaminationController extends Controller
 
     public function addMarksRegister(Request $request): \Illuminate\Http\JsonResponse
     {
+        return $this->saveMarks($request, 'Ces registres de notes pour ces évaluations ont été ajoutées avec succès.', 'Ces registres de notes pour ces évaluations ont été modifiées avec succès.');
+    }
+
+    public function addSingleMarksRegister(Request $request): \Illuminate\Http\JsonResponse
+    {
+        return $this->saveMarks($request, 'Ces registres de notes pour cette matière ont été ajoutées avec succès.', 'Ces registres de notes pour cette matière ont été modifiées avec succès.');
+    }
+
+    private function saveMarks(Request $request, string $addMessage, string $updateMessage): \Illuminate\Http\JsonResponse
+    {
         try {
             $isUpdate = false;
             if (!empty($request->marks)) {
@@ -331,16 +341,16 @@ class ExaminationController extends Controller
                     $marksRegister->save();
                 }
             }
-            if ($isUpdate) {
-                return response()->json(['success' => true, 'message' => 'Ces registres de notes pour ces évaluations ont été modifiées avec succès.']);
-            } else {
-                return response()->json(['success' => true, 'message' => 'Ces registres de notes pour ces évaluations ont été ajoutées avec succès.']);
-            }
+
+            $message = $isUpdate ? $updateMessage : $addMessage;
+
+            return response()->json(['success' => true, 'message' => $message]);
         } catch (\Exception $e) {
             Log::error("Erreur lors de la création de ce registre de notes. " . $e->getMessage());
 
             return response()->json(['success' => false, 'message' => 'Vos informations ne sont pas correctes. Veuillez réessayer.']);
         }
     }
+
 
 }
