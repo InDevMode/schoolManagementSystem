@@ -45,6 +45,7 @@ class ClassTimetableModel extends Model
             ->where('class_subject.is_delete', '=', 0)
             ->where('class_subject.status', '=', 1)
             ->orderBy('class_subject.id', 'desc')
+            ->groupBy('class_subject.id')
             ->get();
 
     }

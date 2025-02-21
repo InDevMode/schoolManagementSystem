@@ -13,6 +13,8 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
+    protected $table = 'users';
+
     /**
      * The attributes that are mass assignable.
      *
@@ -167,6 +169,8 @@ class User extends Authenticatable
     {
         $results = User::select('users.*')
             ->where('users.user_type', 4)
+            ->where('users.is_delete', '=', 0)
+            ->where('users.status', '=', 1)
             ->where('users.is_delete', '=', 0);
 
         $filters = [
@@ -235,6 +239,7 @@ class User extends Authenticatable
 
         return $results->where('users.is_delete', '=', 0)
             ->orderBy('users.id', 'desc')
+            ->groupBy('users.id')
             ->paginate($perPage);
     }
 
@@ -252,6 +257,10 @@ class User extends Authenticatable
             ->join('users as parent', 'parent.id', '=', 'users.parent_id', 'left')
             ->join('class', 'class.id', '=', 'users.class_id', 'left')
             ->where('users.user_type', '=', 3)
+            ->where('users.is_delete', '=', 0)
+            ->where('users.status', '=', 1)
+            ->where('class.is_delete', '=', 0)
+            ->where('class.status', '=', 1)
             ->whereNull('users.parent_id');
 
         $filters = [
@@ -273,18 +282,29 @@ class User extends Authenticatable
             ->paginate($perPage);
     }
 
-    static public function getMyStudent(int $parent_id, int $perPage)
+    static public function getMyStudent(int $perPage, int $parent_id,)
     {
-        $results = User::select('users.*', 'class.name as class_name', 'parent.name as parent_name', 'parent.last_name as parent_last_name')
+        $results = User::select('users.*', 'class.name as class_name', 'teacher.name as teacher_name', 'teacher.last_name as teacher_last_name')
             ->join('users as parent', 'parent.id', '=', 'users.parent_id', 'left')
             ->join('class', 'class.id', '=', 'users.class_id', 'left')
+            ->join('class_teacher', 'class_teacher.class_id', '=', 'class.id', 'left')
+            ->join('users as teacher', 'teacher.id', '=', 'class_teacher.teacher_id', 'left')
+            ->where('users.is_delete', '=', 0)
+            ->where('users.status', '=', 1)
+            ->where('class.is_delete', '=', 0)
+            ->where('class.status', '=', 1)
+            ->where('class_teacher.is_delete', '=', 0)
+            ->where('class_teacher.status', '=', 1)
             ->where('users.parent_id', '=', $parent_id)
             ->where('users.user_type', '=', 3);
 
         $filters = [
-            'users.name' => strtolower(Request::get('name')),
-            'users.last_name' => strtolower(Request::get('last_name')),
+            'users.admission_number' => strtolower(Request::get('admission_number')),
+            'users.name' => strtolower(Request::get('student_name')),
+            'teacher.name' => strtolower(Request::get('teacher_name')),
+            'class.name' => strtolower(Request::get('class_name')),
             'users.email' => strtolower(Request::get('email')),
+            'users.date_of_birth' => strtolower(Request::get('date_of_birth')),
             'users.created_at' => strtolower(Request::get('created_at')),
             'users.updated_at' => strtolower(Request::get('updated_at')),
         ];
@@ -293,6 +313,11 @@ class User extends Authenticatable
             if (!empty($value)) {
                 $results->where($column, 'like', '%' . $value . '%');
             }
+        }
+
+        $gender = Request::get('gender');
+        if (in_array($gender, ['male', 'female', 'other'], true)) {
+            $results->where('users.gender', $gender);
         }
 
         return $results->where('users.is_delete', '=', 0)
@@ -317,6 +342,10 @@ class User extends Authenticatable
             ->where('class_teacher.teacher_id', '=', $teacher_id)
             ->where('class_teacher.status', '=', 1)
             ->where('class_teacher.is_delete', '=', 0)
+            ->where('users.is_delete', '=', 0)
+            ->where('users.status', '=', 1)
+            ->where('class.is_delete', '=', 0)
+            ->where('class.status', '=', 1)
             ->where('users.user_type', '=', 3)
             ->where('users.is_delete', '=', 0);
 
@@ -347,8 +376,18 @@ class User extends Authenticatable
 
         return $results
             ->orderBy('users.id', 'desc')
-            ->groupBy('users.id')
             ->paginate($perPage);
+    }
+
+    static public function getStudent(int $class_id)
+    {
+        return User::select('users.id', 'users.name', 'users.last_name')
+            ->where('users.is_delete', '=', 0)
+            ->where('users.status', '=', 1)
+            ->where('users.user_type', '=', 3)
+            ->where('users.class_id', '=', $class_id)
+            ->orderBy('users.id', 'desc')
+            ->get();
     }
 
 }

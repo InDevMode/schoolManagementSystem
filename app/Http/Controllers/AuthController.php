@@ -30,22 +30,30 @@ class AuthController extends Controller
 
     public function authenticate(Request $request): \Illuminate\Foundation\Application|\Illuminate\Routing\Redirector|\Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse
     {
-        $remember = !empty($request->remember) ? true : false;
+        $remember = !empty($request->remember);
 
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password], $remember)) {
-            if (Auth::user()->user_type == 1) {
+            $user = Auth::user();
+
+            if ($user->status != 1) {
+                Auth::logout();
+                return redirect()->back()->with('error', 'Cet utilisateur n\'est pas activé.');
+            }
+
+            if ($user->user_type == 1) {
                 return redirect('admin/dashboard');
-            } else if (Auth::user()->user_type == 2) {
+            } elseif ($user->user_type == 2) {
                 return redirect('teacher/dashboard');
-            } else if (Auth::user()->user_type == 3) {
+            } elseif ($user->user_type == 3) {
                 return redirect('student/dashboard');
-            } else if (Auth::user()->user_type == 4) {
+            } elseif ($user->user_type == 4) {
                 return redirect('parent/dashboard');
             }
-        } else {
-            return redirect()->back()->with('error', 'Email et mot de passe incorrect');
+
+            return redirect(url(''));
         }
-        return redirect(url(''));
+
+        return redirect()->back()->with('error', 'Email et mot de passe incorrect.');
     }
 
     public function forgotPassword(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application

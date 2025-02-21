@@ -41,13 +41,13 @@
     >
         <!-- ===== Main Content Start ===== -->
         <main>
-            <div class="mx-auto max-w-screen-2xl px-4 py-36 md:p-18 lg:p-18">
+            <div class="mx-auto max-w-screen-2xl px-4 py-36 md:p-18 lg:p-36">
                 <!-- Breadcrumb Start -->
                 <div
                     class="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"
                 >
                     <h2 class="text-title-md2 font-bold text-black dark:text-white uppercase">
-                        Entrez votre email
+                        Envoyez votre email
                     </h2>
                     <nav>
                         <!-- Dark Mode Toggler -->
@@ -81,34 +81,17 @@
                 @include('message')
                 <!-- ====== Forms Section Start -->
                 <div
-                    class="roundedmd border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark"
+                    class="rounded-lg border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark"
                 >
                     <div class="flex flex-wrap items-center">
                         <div class="hidden w-full xl:block xl:w-1/2">
                             <div class="px-26 py-17.5 text-center">
-                                <a class="mb-5.5 inline-block" href="{{ url('') }}">
-                                    <img
-                                        class="hidden dark:block"
-                                        src="{{ asset('public/images/logo.png') }}"
-                                        alt="Logo"
-                                    />
-                                    <img
-                                        class="dark:hidden"
-                                        src="{{ asset('public/images/logo.png') }}"
-                                        alt="Logo"
-                                    />
-                                </a>
-
-                                <p class="font-medium text-left 2xl:px-20">
-                                    School Mangement System est une application de gestion totale d'une école.
-                                </p>
-
                                 <span class="mt-15 inline-block">
-                      <img
-                          src="{{ asset('public/images/illustration/illustration-03.svg') }}"
-                          alt="illustration"
-                      />
-                    </span>
+                                  <img
+                                      src="{{ asset('public/images/connexion.png') }}"
+                                      alt="illustration"
+                                  />
+                                </span>
                             </div>
                         </div>
                         <div
@@ -116,7 +99,7 @@
                         >
                             <div class="w-full p-4 sm:p-12.5 xl:p-17.5">
                                 <h2
-                                    class="mb-9 text-2xl font-bold text-black dark:text-white sm:text-title-xl2 uppercase"
+                                    class="mb-9 text-2xl font-bold text-black dark:text-white sm:text-3xl uppercase"
                                 >
                                     School Management system
                                 </h2>

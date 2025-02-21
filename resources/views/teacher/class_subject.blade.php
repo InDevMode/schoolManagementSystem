@@ -1,228 +1,244 @@
 @extends('layouts.app')
 @section('content')
-<div class="p-4 sm:ml-64">
-    <div class="p-4 rounded-lg dark:border-gray-700 mt-14">
-        @include('message')
-        <div class="flex justify-between pt-2">
-            <div class="space-x-2 font-semibold mt-3">
-                <span class="text-violet-500"><i class="fa-solid fa-landmark"></i></span>
-                <span><i class="fa-solid fa-chevron-right"></i></span>
-                <span class="hover:underline hover:text-violet-500 transition-all duration-300"><a
-                        href="{{ url('teacher/dashboard') }}">Dashboard</a></span>
-                <span><i class="fa-solid fa-chevron-right"></i></span>
-                <span>Liste de mes classes et matières</span>
+<div class="m-5">
+    <!-- Breadcrumb Start -->
+    <div
+        class="mb-6 mt-3 flex flex-col gap-3 sm:flex-row items-center justify-between"
+    >
+        <h2 class="uppercase font-bold text-black dark:text-bodydark">
+            Liste de mes classes et matières
+        </h2>
+        <nav>
+            <ol class="flex items-center gap-2">
+                <li>
+                    <span class="font-medium text-violet-600"><i class="fa-solid fa-landmark"></i></span>
+                </li>
+                <li>
+                    <a class="font-medium hover:text-violet-600 transition duration-300"
+                       href="{{ url('teacher/dashboard') }}">/ Dashboard</a>
+                </li>
+            </ol>
+        </nav>
+    </div>
+    @include('message')
+    <div class="my-5">
+        {{ $getClassSubjectTeacher->links('vendor.pagination.tailwind') }}
+    </div>
+
+    <div
+        class="rounded-sm border border-stroke bg-white px-5 pb-2.5 pt-6 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1"
+    >
+        <form action="" method="get">
+            <div class="mb-4.5 grid grid-cols-2 xl:grid-cols-4 gap-3 items-center">
+                <div class="w-full">
+                    <input
+                        type="text" id="class_name" name="class_name" value="{{ Request::get('class_name') }}"
+                        placeholder="classe..."
+                        class="w-full rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-2.5 font-normal text-black outline-none transition focus:border-violet-600 active:border-violet-600 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-violet-600"
+                    />
+                </div>
+                <div class="w-full">
+                    <input
+                        type="text" id="subject_name" name="subject_name" value="{{ Request::get('subject_name') }}"
+                        placeholder="matière..."
+                        class="w-full rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-2.5 font-normal text-black outline-none transition focus:border-violet-600 active:border-violet-600 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-violet-600"
+                    />
+                </div>
+                <div class="w-full">
+                    <div
+                        x-data="{ isOptionSelected: false }"
+                        class="relative z-20 bg-transparent dark:bg-form-input"
+                    >
+                        <select id="subject_type" name="subject_type"
+                                class="relative z-20 w-full appearance-none rounded-lg border border-stroke bg-transparent px-5 py-2.5 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                                :class="isOptionSelected && 'text-black dark:text-white'"
+                                @change="isOptionSelected = true"
+                        >
+                            <option value="" class="text-body">
+                                Type...
+                            </option>
+                            <option value="practical" class="text-body" {{ Request::get(
+                            'subject_type') == 'practical' ? 'selected' : '' }}>Pratique</option>
+                            <option value="theoretical" class="text-body" {{ Request::get(
+                            'subject_type') == 'theoretical' ? 'selected' : '' }}>Théorique</option>
+                        </select>
+                        <span
+                            class="absolute right-4 top-1/2 z-30 -translate-y-1/2"
+                        >
+                            <svg
+                                class="fill-current"
+                                width="24"
+                                height="24"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <g opacity="0.8">
+                                <path
+                                    fill-rule="evenodd"
+                                    clip-rule="evenodd"
+                                    d="M5.29289 8.29289C5.68342 7.90237 6.31658 7.90237 6.70711 8.29289L12 13.5858L17.2929 8.29289C17.6834 7.90237 18.3166 7.90237 18.7071 8.29289C19.0976 8.68342 19.0976 9.31658 18.7071 9.70711L12.7071 15.7071C12.3166 16.0976 11.6834 16.0976 11.2929 15.7071L5.29289 9.70711C4.90237 9.31658 4.90237 8.68342 5.29289 8.29289Z"
+                                    fill=""
+                                ></path>
+                              </g>
+                            </svg>
+                          </span>
+                    </div>
+                </div>
+                <div class="w-full">
+                    <button
+                        class="flex w-full justify-between items-center rounded-lg bg-violet-600 p-3 font-medium text-gray hover:bg-opacity-90"
+                    >
+                        Rechercher
+                        <span class="inline-flex items-center text-sm text-gray-900">
+                                    <i class="fa-solid fa-search text-white"></i>
+                                </span>
+                    </button>
+                </div>
+                <div class="w-full">
+                    <a href="{{ url('teacher/class_subject') }}"
+                       class="flex w-full justify-center rounded-lg bg-bodydark2 p-3 font-medium text-gray hover:bg-opacity-90"
+                    >
+                        Réïnitialisez
+                    </a>
+                </div>
             </div>
-        </div>
-        <div class="">
-            <div class="mt-4">
-                {{ $getClassSubjectTeacher->links('vendor.pagination.tailwind') }}
-            </div>
-        </div>
-        <form action="" method="get"
-              class="flex justify-between my-5 shadow p-3 bg-white rounded border border-gray-300" id="searchForm">
-            {{ csrf_field() }}
-
-            <div class="grid grid-cols-6 gap-x-5 gap-y-2">
-                <!-- Nom de la classe -->
-                <div>
-                    <input type="text" id="class_name" name="class_name" value="{{ Request::get('class_name') }}"
-                           class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2"
-                           placeholder="Rechercher par le nom de la classe...">
-                </div>
-
-                <!-- Nom de la classe -->
-                <div>
-                    <input type="text" id="subject_name" name="subject_name" value="{{ Request::get('subject_name') }}"
-                           class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2"
-                           placeholder="Rechercher par le nom de la matière...">
-                </div>
-
-                <!-- Type -->
-                <div>
-                    <select id="subject_type" name="subject_type"
-                            class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2">
-                        <option value="">Filtrer par type de matière</option>
-                        <option value="theoretical" {{ Request::get(
-                        'type') == 'theoretical' ? 'selected' : '' }}>Théorique</option>
-                        <option value="practical" {{ Request::get(
-                        'type') == 'practical' ? 'selected' : '' }}>Pratique</option>
-                    </select>
-                </div>
-
-                <!-- Date de création -->
-                <div>
-                    <input type="date" id="created_at" name="created_at" value="{{ Request::get('created_at') }}"
-                           class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2"
-                           placeholder="Date de création...">
-                </div>
-
-                <!-- Date de modification -->
-                <div>
-                    <input type="date" id="updated_at" name="updated_at" value="{{ Request::get('updated_at') }}"
-                           class="rounded-full ps-5 bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm p-2"
-                           placeholder="Date de modification...">
-                </div>
-
-                <!-- Boutons -->
-                <button type="submit"
-                        class="flex justify-between text-white bg-violet-500 hover:bg-violet-600 focus:ring-4 focus:outline-none focus:ring-violet-300 font-medium rounded-full text-sm px-5 py-2.5 text-center transition-all duration-500 ease-out w-full hover:scale-105">
-                    Rechercher
-                    <span class="inline-flex items-center px-3 text-sm text-gray-900">
-                        <i class="fa-solid fa-search text-white"></i>
-                    </span>
-                </button>
-                <a href="{{ url('teacher/class_subject') }}"
-                   class="text-gray-800 bg-gray-300 hover:bg-gray-400 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-full text-sm px-5 py-2.5 text-center transition-all duration-500 ease-out w-full hover:scale-105">
-                    Réinitialiser les filtres
-                </a>
-            </div>
-
         </form>
 
-        <div class="relative overflow-visible shadow-md sm:rounded-lg border border-gray-300 z-10" id="results">
-            <table class="w-full text-[12px] text-left rtl:text-right">
-                <thead class="text-[12px] text-white uppercase bg-violet-500">
+        <div class="relative overflow rounded-lg z-10">
+            <table class="w-full text-sm text-left rtl:text-right text-white dark:text-white">
+                <thead
+                    class="rounded-sm bg-violet-600 uppercase text-white dark:bg-meta-4"
+                >
                 <tr>
                     <th scope="col" class="px-6 py-3">
-                        <div class="flex items-center">
-                            N°
-                            <a href="#">
-                                <span class="w-3 h-3 ms-1.5"><i class="fa-solid fa-filter"></i></span>
-                            </a>
-                        </div>
+                        Classe
                     </th>
                     <th scope="col" class="px-6 py-3">
-                        <div class="flex items-center">
-                            Nom de la classe
-                            <a href="#">
-                                <span class="w-3 h-3 ms-1.5"><i class="fa-solid fa-filter"></i></span>
-                            </a>
-                        </div>
+                        Matière
                     </th>
                     <th scope="col" class="px-6 py-3">
-                        <div class="flex items-center">
-                            Nom de la matière
-                            <a href="#">
-                                <span class="w-3 h-3 ms-1.5"><i class="fa-solid fa-filter"></i></span>
-                            </a>
-                        </div>
+                        Heures
                     </th>
                     <th scope="col" class="px-6 py-3">
-                        <div class="flex items-center">
-                            Heures
-                            <a href="#">
-                                <span class="w-3 h-3 ms-1.5"><i class="fa-solid fa-filter"></i></span>
-                            </a>
-                        </div>
+                        Type
                     </th>
                     <th scope="col" class="px-6 py-3">
-                        <div class="flex items-center">
-                            Type de matière
-                            <a href="#">
-                                <span class="w-3 h-3 ms-1.5"><i class="fa-solid fa-filter"></i></span>
-                            </a>
-                        </div>
-                    </th>
-                    <th scope="col" class="px-6 py-3">
-                        <div class="flex items-center">
-                            Date de création
-                            <a href="#">
-                                <span class="w-3 h-3 ms-1.5"><i class="fa-solid fa-filter"></i></span>
-                            </a>
-                        </div>
-                    </th>
-                    <th scope="col" class="px-6 py-3">
-                        <div class="flex items-center">
-                            Date de modification
-                            <a href="#">
-                                <span class="w-3 h-3 ms-1.5"><i class="fa-solid fa-filter"></i></span>
-                            </a>
-                        </div>
-                    </th>
-                    <th scope="col" class="px-6 py-3">
-                        <div class="flex items-center">
-                            Actions
-                            <a href="#">
-                                <span class="w-3 h-3 ms-1.5"><i class="fa-solid fa-filter"></i></span>
-                            </a>
-                        </div>
+                        Actions
                     </th>
                 </tr>
                 </thead>
                 <tbody>
                 @foreach($getClassSubjectTeacher as $index => $classSubjectTeacher)
-                <tr class="bg-white border-b hover:bg-gray-50">
-                    <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-                        {{ $index + 1 }}
-                    </th>
-                    <td class="px-6 py-4 font-semibold">
+                <tr class="hover:bg-violet-100 dark:hover:bg-gray-700 transition duration-300 border-b dark:border-gray-600 hover:border-violet-400 dark:text-gray-200 text-gray-500">
+                    <td class="px-6 py-3">
                         {{ $classSubjectTeacher -> class_name }}
                     </td>
-                    <td class="px-6 py-4">
+                    <td class="px-6 py-3">
                         {{ $classSubjectTeacher -> subject_name }}
                     </td>
-                    <td class="px-6 py-4">
+                    <td class="px-6 py-3">
                         @php
-                        $timetable = \App\Models\ClassTeacherModel::getMyClassTimetable($classSubjectTeacher->class_id, $classSubjectTeacher->subject_id);
+                        $timetable = \App\Models\ClassTeacherModel::getMyClassTimetable($classSubjectTeacher->class_id,
+                        $classSubjectTeacher->subject_id);
                         @endphp
                         @if ($timetable)
-                        <span class="bg-gray-200 flex justify-center border border-gray-500 py-2 px-3 rounded">{{ \Carbon\Carbon::parse($timetable->start_time)->format('G\h i\m\i\n') }} à {{ \Carbon\Carbon::parse($timetable->end_time)->format('G\h i\m\i\n') }}</span>
+                        <span
+                            class="bg-gray-200 dark:bg-gray-700 border border-gray-500 dark:border-gray-700 py-2 px-3 rounded">{{ \Carbon\Carbon::parse($timetable->start_time)->format('G\h i\m\i\n') }} à {{ \Carbon\Carbon::parse($timetable->end_time)->format('G\h i\m\i\n') }}</span>
                         @else
-                        <p>Aucune heure disponible pour cette matière.</p>
+                        <p>Aucune heure disponible pour cette matière aujourd'hui.</p>
                         @endif
+                    </td>
+                    <td class="px-6 py-3">
+                        <div class="flex items-center">
+                            <p class="px-6 py-1 rounded-full {{ $classSubjectTeacher->subject_type == 'practical' ? 'text-violet-700 dark:text-gray-200 bg-violet-100 dark:bg-violet-900' : 'text-red-700 dark:text-gray-200 bg-red-100 dark:bg-red-900' }}">
+                                {{ $classSubjectTeacher->subject_type == 'practical' ? 'Pratique' : 'Théorique' }}
+                            </p>
+                        </div>
+                    </td>
+                    <td class="px-6 py-3">
+                        <div class="relative inline-block text-left" x-data="{ open: false }">
+                            <div>
+                                <button
+                                    type="button"
+                                    class="group inline-flex w-full justify-center gap-x-1.5 rounded-lg shadow-md bg-white dark:bg-gray-800 border dark:border-gray-600 dark:hover:text-violet-600 px-3 py-2 text-sm font-semibold text-gray-700 hover:text-violet-600 dark:text-gray-200 hover:bg-gray-100"
+                                    @click="open = !open"
+                                    id="menu-button"
+                                    aria-expanded="true"
+                                    aria-haspopup="true">
+                                    Actions
+                                    <svg class="-mr-1 size-5 group-hover:text-violet-600 text-gray-400"
+                                         viewBox="0 0 20 20" fill="currentColor"
+                                         aria-hidden="true">
+                                        <path fill-rule="evenodd"
+                                              d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z"
+                                              clip-rule="evenodd"/>
+                                    </svg>
+                                </button>
+                            </div>
+                            <div
+                                class="absolute right-0 z-50 mt-2 w-56 origin-top-right rounded-md bg-white dark:bg-gray-800 ring-1 shadow-lg ring-black/5 focus:outline-hidden"
+                                role="menu"
+                                aria-orientation="vertical"
+                                aria-labelledby="menu-button"
+                                tabindex="{{ $index + 1 }}"
+                                x-show="open"
+                                @click.away="open = false"
+                                x-transition
+                            >
+                                <div class="py-1">
+                                    <a href="{{ url('teacher/class_subject/'. $classSubjectTeacher -> class_id.'/timetable/'. $classSubjectTeacher->subject_id) }}"
+                                       class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:text-emerald-400 dark:hover:text-emerald-400"
+                                       role="menuitem">Horaire de cours</a>
+                                </div>
+                            </div>
+                        </div>
                     </td>
 
-                    <td class="px-6 py-4">
-                        @if($classSubjectTeacher -> subject_type == 'theoretical')
-                        <span
-                            class="bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded">Théorique</span>
-                        @elseif($classSubjectTeacher -> subject_type == 'practical')
-                        <span
-                            class="bg-violet-100 text-violet-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded">Pratique</span>
-                        @endif
-                    </td>
-                    <td class="px-6 py-4">
-                        {{ \Carbon\Carbon::parse($classSubjectTeacher->created_at)->format('d/m/Y H:i:s') }}
-                    </td>
-                    <td class="px-6 py-4">
-                        {{ \Carbon\Carbon::parse($classSubjectTeacher->updated_at)->format('d/m/Y H:i:s') }}
-                    </td>
-                    <td class="px-6 py-4">
-                        <a href="{{ url('teacher/class_subject/'. $classSubjectTeacher -> class_id.'/timetable/'. $classSubjectTeacher->subject_id) }}"
-                           class="font-medium flex items-center justify-center space-x-2 py-2 text-white hover:bg-violet-600 rounded bg-violet-500 text-sm transition duration-700"
-                           title="Voir mon horaire">
-                            <span><i class="fa-solid fa-eye"></i></span>
-                            <span>Horaire</span>
-                        </a>
-                    </td>
                 </tr>
                 @endforeach
                 @if($getClassSubjectTeacher->isEmpty())
-                <tr>
-                    <td colspan="9" class="p-6 text-center text-gray-500">
-                        Aucune classe assignée trouvée.
-                    </td>
+                <tr class="text-center text-gray-700 dark:text-bodydark1">
+                    <td colspan="9" class="px-6 py-3"> Aucun classes et matières assignées.</td>
                 </tr>
                 @endif
+                <tr class="">
+                    <td colspan="9"
+                        class="px-6 py-3"
+                    >
+                        <div class="mt-3 mb-3 flex items-center justify-between">
+                            <h2 class="text-title-sm uppercase font-bold text-black dark:text-white">
+                                Total
+                            </h2>
+                            <nav>
+                                <ol class="flex items-center bg-white shadow-lg border border-gray-200 dark:border-gray-600 w-fit dark:bg-black py-2 px-8 rounded">
+                                    <li>
+                                        <p class="text-md font-semibold text-gray-700 dark:text-gray-200">
+                                            {{ $getClassSubjectTeacher->total() }}</p>
+                                    </li>
+                                </ol>
+                            </nav>
+                        </div>
+                    </td>
+                </tr>
                 </tbody>
             </table>
-            <div class="text-center bg-white p-2">
-                <div class="flex justify-between items-center mt-4">
-                        <span
-                            class="text-violet-500 font-bold text-md ps-3.5 uppercase">Total : {{ $getClassSubjectTeacher->total() }}</span>
-                </div>
-            </div>
         </div>
     </div>
 </div>
 @endsection
+
 <script>
-    document.querySelectorAll('[data-dropdown-toggle]').forEach(button => {
-        button.addEventListener('click', () => {
-            const dropdownId = button.getAttribute('data-dropdown-toggle');
-            const dropdown = document.getElementById(dropdownId);
-            dropdown.classList.toggle('hidden');
-        });
+    function toggleMenu(event, index) {
+        event.stopPropagation();
+        document.querySelectorAll('.relative .hidden').forEach(menu => menu.classList.add('hidden'));
+        const menu = document.getElementById('dropdown-menu-' + index);
+        menu.classList.toggle('hidden');
+    }
+
+    document.addEventListener('click', function () {
+        document.querySelectorAll('.relative .hidden').forEach(menu => menu.classList.add('hidden'));
     });
 </script>
+
 

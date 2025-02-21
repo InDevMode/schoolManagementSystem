@@ -5,7 +5,6 @@ namespace App\Models;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Request;
 
 class ClassModel extends Model
@@ -62,6 +61,7 @@ class ClassModel extends Model
 
         return $results->where('class.is_delete', 0)
             ->orderBy('class.id', 'desc')
+            ->groupBy('class.id')
             ->paginate($perPage);
     }
 

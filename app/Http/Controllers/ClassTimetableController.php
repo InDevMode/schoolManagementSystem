@@ -82,7 +82,7 @@ class ClassTimetableController extends Controller
                 }
             }
 
-            return redirect('admin/class_timetable/list')->with('success', 'Ces horaires de cours ont été bien crée à cette classe avec succès.');
+            return redirect('admin/class_timetable/list')->with('success', 'Ces horaires de cours ont été bien crée pour classe avec succès.');
         } catch (\Exception $e) {
             Log::error("Erreur lors de la création de ces horaires de cours. " . $e->getMessage());
 
@@ -105,6 +105,7 @@ class ClassTimetableController extends Controller
                 $dataWeek = array();
                 $dataWeek['week_id'] = $weekValue->id;
                 $dataWeek['week_name'] = $weekValue->name;
+                $dataWeek['day'] = $weekValue->day;
                 $classSubjectTimetable = ClassTimetableModel::getClassTimetable($timetable->class_id, $timetable->subject_id, $weekValue->id);
                 if (!empty($classSubjectTimetable)) {
                     $dataWeek['start_time'] = $classSubjectTimetable->start_time;

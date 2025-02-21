@@ -306,7 +306,7 @@
                 </tr>
                 @endforeach
                 @if($getStudentList->isEmpty())
-                <tr class="text-center text-gray-700">
+                <tr class="text-center text-gray-700 dark:text-bodydark1">
                     <td colspan="6" class="px-6 py-3"> Aucun apprenant trouvé.</td>
                 </tr>
                 @endif
@@ -630,7 +630,7 @@
                 </tr>
                 @endforeach
                 @if($getMyStudent->isEmpty())
-                <tr class="text-center text-gray-700">
+                <tr class="text-center text-gray-700 dark:text-bodydark1">
                     <td colspan="9" class="px-6 py-3"> Aucun apprenant assigné trouvé..</td>
                 </tr>
                 @endif

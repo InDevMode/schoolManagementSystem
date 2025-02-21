@@ -166,7 +166,7 @@ class ParentController extends Controller
         $data['parent_id'] = $id;
         $data['getParent'] = User::getSingle($id);
         $data['getStudentList'] = User::getStudentList(5);
-        $data['getMyStudent'] = User::getMyStudent($id, 5);
+        $data['getMyStudent'] = User::getMyStudent(5, $id);
         $data['header_title'] = "Listes des élèves du parent";
         return view('admin.parent.student', $data);
     }
@@ -203,7 +203,7 @@ class ParentController extends Controller
     {
         $id = Auth::user()->id;
         $data['parent_id'] = User::getSingle($id);
-        $data['getMyStudent'] = User::getMyStudent($id, 5);
+        $data['getMyStudent'] = User::getMyStudent(5, $id);
         $data['header_title'] = "Mes élèves";
         return view('parent.student', $data);
     }

@@ -25,7 +25,7 @@
                 <div class="flex flex-col gap-9">
                     <!-- Contact Form -->
                     <div
-                        class="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark"
+                        class="rounded-lg border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark"
                     >
                         <form action="" method="post" enctype="multipart/form-data">
                             {{ csrf_field() }}
@@ -59,7 +59,7 @@
                                                required
                                                type="text"
                                                placeholder="Entrez un nom"
-                                               class="w-full rounded border-[1.5px] border-stroke bg-gray-100 px-5 py-3 font-normal text-black outline-none transition focus:border-emerald-400 active:border-emerald-400 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-emerald-400"
+                                               class="w-full rounded-lg border-[1.5px] border-stroke bg-gray-100 px-5 py-2.5 font-normal text-black outline-none transition focus:border-emerald-400 active:border-emerald-400 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-emerald-400"
                                         />
                                     </div>
 
@@ -73,7 +73,7 @@
                                                value="{{ old('last_name', $getUserData->last_name) }}" required
                                                type="text"
                                                placeholder="Entrez un prénom"
-                                               class="w-full rounded border-[1.5px] border-stroke bg-gray-100 px-5 py-3 font-normal text-black outline-none transition focus:border-emerald-400 active:border-emerald-400 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-emerald-400"
+                                               class="w-full rounded-lg border-[1.5px] border-stroke bg-gray-100 px-5 py-2.5 font-normal text-black outline-none transition focus:border-emerald-400 active:border-emerald-400 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-emerald-400"
                                         />
                                     </div>
                                 </div>
@@ -89,7 +89,7 @@
                                             class="relative z-20 bg-transparent dark:bg-form-input"
                                         >
                                             <select id="gender" name="gender" required
-                                                    class="relative z-20 w-full appearance-none rounded border border-stroke bg-gray-100 px-5 py-3 outline-none transition focus:border-emerald-400 active:border-emerald-400 dark:border-form-strokedark dark:bg-form-input dark:focus:border-emerald-400"
+                                                    class="relative z-20 w-full appearance-none rounded-lg border border-stroke bg-gray-100 px-5 py-2.5 outline-none transition focus:border-emerald-400 active:border-emerald-400 dark:border-form-strokedark dark:bg-form-input dark:focus:border-emerald-400"
                                                     :class="isOptionSelected && 'text-black dark:text-white'"
                                                     @change="isOptionSelected = true"
                                             >
@@ -141,7 +141,7 @@
                                                    required
                                                    data-class="flatpickr-right"
                                                    placeholder="Entrez une date de naissance"
-                                                   class="form-datepicker w-full rounded border-[1.5px] border-stroke bg-gray-100 px-5 py-3 font-normal text-black outline-none transition focus:border-emerald-400 active:border-emerald-400 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-emerald-400"
+                                                   class="form-datepicker w-full rounded-lg border-[1.5px] border-stroke bg-gray-100 px-5 py-2.5 font-normal text-black outline-none transition focus:border-emerald-400 active:border-emerald-400 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-emerald-400"
                                             />
                                             <div
                                                 class="pointer-events-none absolute inset-0 left-auto right-5 flex items-center"
@@ -174,7 +174,7 @@
                                                required
                                                type="text"
                                                placeholder="Entrez un numéro de téléphone"
-                                               class="w-full rounded border-[1.5px] border-stroke bg-gray-100 px-5 py-3 font-normal text-black outline-none transition focus:border-emerald-400 active:border-emerald-400 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-emerald-400"
+                                               class="w-full rounded-lg border-[1.5px] border-stroke bg-gray-100 px-5 py-2.5 font-normal text-black outline-none transition focus:border-emerald-400 active:border-emerald-400 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-emerald-400"
                                         />
                                     </div>
                                     <div class="w-full xl:w-1/2">
@@ -188,7 +188,7 @@
                                                required
                                                type="text"
                                                placeholder="Entrez un prénom"
-                                               class="w-full rounded border-[1.5px] border-stroke bg-gray-100 px-5 py-3 font-normal text-black outline-none transition focus:border-emerald-400 active:border-emerald-400 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-emerald-400"
+                                               class="w-full rounded-lg border-[1.5px] border-stroke bg-gray-100 px-5 py-2.5 font-normal text-black outline-none transition focus:border-emerald-400 active:border-emerald-400 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-emerald-400"
                                         />
                                     </div>
                                 </div>
@@ -202,7 +202,7 @@
                                         <textarea
                                             rows="1" id="address" name="address"
                                             placeholder="Entrez un adresse actuelle"
-                                            class="w-full rounded border-[1.5px] border-stroke bg-gray-100 px-5 py-3 font-normal text-black outline-none transition focus:border-emerald-400 active:border-emerald-400 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-emerald-400"
+                                            class="w-full rounded-lg border-[1.5px] border-stroke bg-gray-100 px-5 py-2.5 font-normal text-black outline-none transition focus:border-emerald-400 active:border-emerald-400 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-emerald-400"
                                         >{{ old('address', $getUserData->address) }}</textarea>
                                     </div>
                                     <div class="w-full xl:w-1/2">
@@ -214,7 +214,7 @@
                                         <textarea
                                             rows="1" id="permanent_address" name="permanent_address"
                                             placeholder="Entrez un adresse permanent"
-                                            class="w-full rounded border-[1.5px] border-stroke bg-gray-100 px-5 py-3 font-normal text-black outline-none transition focus:border-emerald-400 active:border-emerald-400 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-emerald-400"
+                                            class="w-full rounded-lg border-[1.5px] border-stroke bg-gray-100 px-5 py-2.5 font-normal text-black outline-none transition focus:border-emerald-400 active:border-emerald-400 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-emerald-400"
                                         >{{ old('permanent_address', $getUserData->permanent_address) }}</textarea>
                                     </div>
                                 </div>
@@ -228,7 +228,7 @@
                                         <textarea
                                             rows="1" id="work_experience" name="work_experience"
                                             placeholder="Entrez une expérience"
-                                            class="w-full rounded border-[1.5px] border-stroke bg-gray-100 px-5 py-3 font-normal text-black outline-none transition focus:border-emerald-400 active:border-emerald-400 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-emerald-400"
+                                            class="w-full rounded-lg border-[1.5px] border-stroke bg-gray-100 px-5 py-2.5 font-normal text-black outline-none transition focus:border-emerald-400 active:border-emerald-400 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-emerald-400"
                                         >{{ old('work_experience', $getUserData->work_experience) }}</textarea>
                                     </div>
                                     <div class="w-full xl:w-1/2">
@@ -240,7 +240,7 @@
                                         <textarea
                                             rows="1" id="note" name="note"
                                             placeholder="Entrez une note"
-                                            class="w-full rounded border-[1.5px] border-stroke bg-gray-100 px-5 py-3 font-normal text-black outline-none transition focus:border-emerald-400 active:border-emerald-400 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-emerald-400"
+                                            class="w-full rounded-lg border-[1.5px] border-stroke bg-gray-100 px-5 py-2.5 font-normal text-black outline-none transition focus:border-emerald-400 active:border-emerald-400 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-emerald-400"
                                         >{{ old('note', $getUserData->note) }}</textarea>
                                     </div>
                                 </div>
@@ -253,7 +253,7 @@
                                     <textarea
                                         rows="1" id="qualification" name="qualification"
                                         placeholder="Entrez une qualification"
-                                        class="w-full rounded border-[1.5px] border-stroke bg-gray-100 px-5 py-3 font-normal text-black outline-none transition focus:border-emerald-400 active:border-emerald-400 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-emerald-400"
+                                        class="w-full rounded-lg border-[1.5px] border-stroke bg-gray-100 px-5 py-2.5 font-normal text-black outline-none transition focus:border-emerald-400 active:border-emerald-400 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-emerald-400"
                                     >{{ old('qualification', $getUserData->qualification) }}</textarea>
                                 </div>
                                 <div class="border-t border-gray-200 pb-4.5"></div>
@@ -267,7 +267,7 @@
                                         type="email" id="email" name="email"
                                         value="{{ old('email', $getUserData->email) }}" required
                                         placeholder="Entrez votre un adresse email"
-                                        class="w-full rounded border-[1.5px] border-stroke bg-gray-100 px-5 py-3 font-normal text-black outline-none transition focus:border-emerald-400 active:border-emerald-400 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-emerald-400"
+                                        class="w-full rounded-lg border-[1.5px] border-stroke bg-gray-100 px-5 py-2.5 font-normal text-black outline-none transition focus:border-emerald-400 active:border-emerald-400 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-emerald-400"
                                     />
                                 </div>
                                 <button type="submit"

@@ -196,38 +196,38 @@
                             <ul class="mb-5.5 mt-4 flex flex-col gap-2.5 pl-8">
                                 <li>
                                     <a
-                                        class="group relative flex items-center gap-2.5 rounded-md px-4 py-2 font-medium duration-300 ease-in-out hover:bg-violet-700 text-bodydark1 dark:hover:bg-meta-4 {{ Request::Segment(2) == 'assign_class' ? 'bg-violet-600 text-bodydark1' : 'text-violet-600' }}"
-                                        href="{{ url('admin/assign_class/list') }}"
+                                        class="group relative flex items-center gap-2.5 rounded-md px-4 py-2 font-medium duration-300 ease-in-out hover:bg-violet-700 text-bodydark1 dark:hover:bg-meta-4 {{ Request::Segment(3) == 'exam' ? 'bg-violet-600 text-bodydark1' : 'text-violet-600' }}"
+                                        href="{{ url('admin/examinations/exam/list') }}"
                                     >
                                         <span
-                                            class="text-[18px] py-1 px-2 rounded {{ Request::Segment(2) == 'assign_class' ? 'group-hover:text-bodydark1 text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}"><i
+                                            class="text-[18px] py-1 px-2 rounded {{ Request::Segment(3) == 'exam' ? 'group-hover:text-bodydark1 text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}"><i
                                                 class="fa-solid fa-chevron-right"></i></span>
                                         <span
-                                            class="{{ Request::Segment(2) == 'assign_class' ? 'group-hover:text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}">Classes</span>
+                                            class="{{ Request::Segment(3) == 'exam' ? 'group-hover:text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}">Examens</span>
                                     </a>
                                 </li>
                                 <li>
                                     <a
-                                        class="group relative flex items-center gap-2.5 rounded-md px-4 py-2 font-medium duration-300 ease-in-out hover:bg-violet-700 text-bodydark1 dark:hover:bg-meta-4 {{ Request::Segment(2) == 'assign_subject' ? 'bg-violet-600 text-bodydark1' : 'text-violet-600' }}"
-                                        href="{{ url('admin/assign_subject/list') }}"
+                                        class="group relative flex items-center gap-2.5 rounded-md px-4 py-2 font-medium duration-300 ease-in-out hover:bg-violet-700 text-bodydark1 dark:hover:bg-meta-4 {{ Request::Segment(3) == 'schedule' ? 'bg-violet-600 text-bodydark1' : 'text-violet-600' }}"
+                                        href="{{ url('admin/examinations/schedule/list') }}"
                                     >
                                         <span
-                                            class="text-[18px] py-1 px-2 rounded {{ Request::Segment(2) == 'assign_subject' ? 'group-hover:text-bodydark1 text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}"><i
+                                            class="text-[18px] py-1 px-2 rounded {{ Request::Segment(3) == 'schedule' ? 'group-hover:text-bodydark1 text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}"><i
                                                 class="fa-solid fa-chevron-right"></i></span>
                                         <span
-                                            class="{{ Request::Segment(2) == 'assign_subject' ? 'group-hover:text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}">Matières</span>
+                                            class="{{ Request::Segment(3) == 'schedule' ? 'group-hover:text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}">Programmations</span>
                                     </a>
                                 </li>
                                 <li>
                                     <a
-                                        class="group relative flex items-center gap-2.5 rounded-md px-4 py-2 font-medium duration-300 ease-in-out hover:bg-violet-700 text-bodydark1 dark:hover:bg-meta-4 {{ Request::Segment(2) == 'class_timetable' ? 'bg-violet-600 text-bodydark1' : 'text-violet-600' }}"
-                                        href="{{ url('admin/class_timetable/list') }}"
+                                        class="group relative flex items-center gap-2.5 rounded-md px-4 py-2 font-medium duration-300 ease-in-out hover:bg-violet-700 text-bodydark1 dark:hover:bg-meta-4 {{ Request::Segment(3) == 'marks_register' ? 'bg-violet-600 text-bodydark1' : 'text-violet-600' }}"
+                                        href="{{ url('admin/examinations/marks_register/list') }}"
                                     >
                                         <span
-                                            class="text-[18px] py-1 px-2 rounded {{ Request::Segment(2) == 'class_timetable' ? 'group-hover:text-bodydark1 text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}"><i
+                                            class="text-[18px] py-1 px-2 rounded {{ Request::Segment(3) == 'marks_register' ? 'group-hover:text-bodydark1 text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}"><i
                                                 class="fa-solid fa-chevron-right"></i></span>
                                         <span
-                                            class="{{ Request::Segment(2) == 'class_timetable' ? 'group-hover:text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}">Horaires</span>
+                                            class="{{ Request::Segment(3) == 'marks_register' ? 'group-hover:text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}">Registres</span>
                                     </a>
                                 </li>
 
@@ -271,7 +271,7 @@
                                 class="text-[18px] py-1 px-2 rounded {{ Request::Segment(2) == 'my_student' ? 'bg-violet-100 text-violet-600' : 'bg-violet-100 text-violet-600'}}"><i
                                     class="fa-solid fa-user-graduate"></i></span>
                             <span
-                                class="{{ Request::Segment(2) == 'my_student' ? 'group-hover:text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}">Mes Elèves</span>
+                                class="{{ Request::Segment(2) == 'my_student' ? 'group-hover:text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}">Mes Apprenants</span>
                         </a>
                     </li>
                     <li>
@@ -284,6 +284,29 @@
                                     class="fa-solid fa-landmark"></i></span>
                             <span
                                 class="{{ Request::Segment(2) == 'class_subject' ? 'group-hover:text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}">Classes & Matières</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a
+                            class="group relative flex items-center gap-2.5 rounded-md px-4 py-2 font-medium duration-300 ease-in-out hover:bg-violet-700 text-bodydark1 dark:hover:bg-meta-4 {{ Request::Segment(2) == 'my_exam_timetable' ? 'bg-violet-600 text-bodydark1' : 'text-violet-600' }}"
+                            href="{{ url('teacher/my_exam_timetable') }}"
+                        >
+                            <span
+                                class="text-[18px] py-1 px-2 rounded {{ Request::Segment(2) == 'my_exam_timetable' ? 'bg-violet-100 text-violet-600' : 'bg-violet-100 text-violet-600'}}"><i class="fa-solid fa-flask-vial"></i></span>
+                            <span
+                                class="{{ Request::Segment(2) == 'my_exam_timetable' ? 'group-hover:text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}">Examens</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a
+                            class="group relative flex items-center gap-2.5 rounded-md px-4 py-2 font-medium duration-300 ease-in-out hover:bg-violet-700 text-bodydark1 dark:hover:bg-meta-4 {{ Request::Segment(2) == 'my_calendar' ? 'bg-violet-600 text-bodydark1' : 'text-violet-600' }}"
+                            href="{{ url('teacher/my_calendar') }}"
+                        >
+                            <span
+                                class="text-[18px] py-1 px-2 rounded {{ Request::Segment(2) == 'my_calendar' ? 'bg-violet-100 text-violet-600' : 'bg-violet-100 text-violet-600'}}"><i
+                                    class="fa-solid fa-calendar-days"></i></span>
+                            <span
+                                class="{{ Request::Segment(2) == 'my_calendar' ? 'group-hover:text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}">Mon Calendrier</span>
                         </a>
                     </li>
                     @elseif(Auth::user()->user_type === 3)
@@ -299,6 +322,18 @@
                                 class="{{ Request::Segment(2) == 'dashboard' ? 'group-hover:text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}">Dashboard</span>
                             <span
                                 class="inline-flex items-center justify-center me-2 px-2.5 py-0.5 rounded text-xs font-medium {{ Request::Segment(2) == 'dashboard' ? 'bg-violet-100 text-violet-600' : 'bg-violet-100'}}">{{ Request::Segment(1) }}</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a
+                            class="group relative flex items-center gap-2.5 rounded-md px-4 py-2 font-medium duration-300 ease-in-out hover:bg-violet-700 text-bodydark1 dark:hover:bg-meta-4 {{ Request::Segment(2) == 'my_calendar' ? 'bg-violet-600 text-bodydark1' : 'text-violet-600' }}"
+                            href="{{ url('student/my_calendar') }}"
+                        >
+                            <span
+                                class="text-[18px] py-1 px-2 rounded {{ Request::Segment(2) == 'my_calendar' ? 'bg-violet-100 text-violet-600' : 'bg-violet-100 text-violet-600'}}"><i
+                                    class="fa-solid fa-calendar-days"></i></span>
+                            <span
+                                class="{{ Request::Segment(2) == 'my_calendar' ? 'group-hover:text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}">Mon Calendrier</span>
                         </a>
                     </li>
                     <li>
@@ -331,9 +366,20 @@
                             href="{{ url('student/my_timetable') }}"
                         >
                             <span
-                                class="text-[18px] py-1 px-2 rounded {{ Request::Segment(2) == 'my_timetable' ? 'bg-violet-100 text-violet-600' : 'bg-violet-100 text-violet-600'}}"><i class="fa-solid fa-calendar-days"></i></span>
+                                class="text-[18px] py-1 px-2 rounded {{ Request::Segment(2) == 'my_timetable' ? 'bg-violet-100 text-violet-600' : 'bg-violet-100 text-violet-600'}}"><i class="fa-solid fa-clock"></i></span>
                             <span
                                 class="{{ Request::Segment(2) == 'my_timetable' ? 'group-hover:text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}">Mes Programmes</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a
+                            class="group relative flex items-center gap-2.5 rounded-md px-4 py-2 font-medium duration-300 ease-in-out hover:bg-violet-700 text-bodydark1 dark:hover:bg-meta-4 {{ Request::Segment(2) == 'my_exam_timetable' ? 'bg-violet-600 text-bodydark1' : 'text-violet-600' }}"
+                            href="{{ url('student/my_exam_timetable') }}"
+                        >
+                            <span
+                                class="text-[18px] py-1 px-2 rounded {{ Request::Segment(2) == 'my_exam_timetable' ? 'bg-violet-100 text-violet-600' : 'bg-violet-100 text-violet-600'}}"><i class="fa-solid fa-flask-vial"></i></span>
+                            <span
+                                class="{{ Request::Segment(2) == 'my_exam_timetable' ? 'group-hover:text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}">Mes Examens</span>
                         </a>
                     </li>
                     @elseif(Auth::user()->user_type === 4)
@@ -372,7 +418,7 @@
                                 class="text-[18px] py-1 px-2 rounded {{ Request::Segment(2) == 'my_student' ? 'bg-violet-100 text-violet-600' : 'bg-violet-100 text-violet-600'}}"><i
                                     class="fa-solid fa-user-graduate"></i></span>
                             <span
-                                class="{{ Request::Segment(2) == 'my_student' ? 'group-hover:text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}">Mes Elèves</span>
+                                class="{{ Request::Segment(2) == 'my_student' ? 'group-hover:text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}">Mes Apprenants</span>
                         </a>
                     </li>
                     @endif
