@@ -28,6 +28,11 @@ class ScheduleModel extends Model
         'is_delete'
     ];
 
+    static public function getSingle(int $id)
+    {
+        return ScheduleModel::find($id);
+    }
+
     static public function getExamSchedule(int $exam_id, int $class_id, int $subject_id)
     {
         return ScheduleModel::where('exam_id', '=', $exam_id)

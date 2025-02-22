@@ -20,33 +20,15 @@
             </ol>
         </nav>
     </div>
-    <div style="display:none;" id="alert-border-3"
-         class="flex items-center p-4 mb-4 text-green-800 border-t-4 border-green-300 bg-green-50 dark:text-green-400 dark:bg-gray-800 dark:border-green-800"
-         role="alert">
-        <svg class="flex-shrink-0 w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
-             viewBox="0 0 20 20">
-            <path
-                d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
-        </svg>
-        <div id="success-message" class="ms-3 text-sm font-medium">
-        </div>
-        <button type="button"
-                class="ms-auto -mx-1.5 -my-1.5 bg-green-50 text-emerald-600 rounded-lg focus:ring-2 focus:ring-green-400 p-1.5 hover:bg-emerald-200 inline-flex items-center justify-center h-8 w-8 dark:bg-gray-800 dark:text-emerald-400 dark:hover:bg-gray-700"
-                data-dismiss-target="#alert-border-3" aria-label="Close">
-            <span class="sr-only">Dismiss</span>
-            <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
-            </svg>
-        </button>
+    @include('message')
+    <div class="pb-3 text-red-500 dark:text-red-400 font-semibold text-sm">Choisissez une évaluation et une classe pour
+        voir le
+        registre des notes
     </div>
     <div
-        class="rounded-lg border border-stroke bg-white px-5 pb-2.5 pt-6 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1"
+        class="rounded-lg border border-stroke bg-white px-5 pb-2.5 pt-6 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5"
     >
         <form action="" method="get">
-            <div class="pb-3 text-gray-700 dark:text-gray-200">Choisissez une évaluation et une classe pour voir le
-                registre des notes
-            </div>
             <div class="mb-4.5 grid grid-cols-2 xl:grid-cols-4 gap-3 items-center">
                 <div class="w-full">
                     <div
@@ -60,8 +42,7 @@
                         >
                             <option selected disabled value="" class="text-body">Choisissez une évaluation</option>
                             @foreach($getExams as $exams)
-                            <option value="{{ $exams -> id }}" class="text-body" {{ (Request::get(
-                            'exam_id') == $exams->id) ? 'selected' : '' }}>{{ $exams -> name }}</option>
+                            <option value="{{ $exams -> id }}" class="text-body" {{ ( Request::get('exam_id') == $exams->id) ? 'selected' : '' }}>{{ $exams -> name }}</option>
                             @endforeach
                         </select>
                         <span
@@ -99,8 +80,7 @@
                         >
                             <option disabled selected value="" class="text-body">Choisissez une classe</option>
                             @foreach($getClass as $class)
-                            <option value="{{ $class -> id }}" class="text-body" {{ Request::get(
-                            'class_id') == $class->id ? 'selected' : '' }}>{{ $class -> name }}</option>
+                            <option value="{{ $class -> id }}" class="text-body" {{ ( Request::get('class_id') == $class->id) ? 'selected' : '' }}>{{ $class -> name }}</option>
                             @endforeach
                         </select>
                         <span
@@ -175,6 +155,7 @@
                 @if(!empty($getStudent) && !empty($getStudent->count()))
                 @foreach($getStudent as $student)
                 <form name="post" class="SubmitForm">
+                    <input type="hidden" name="_token" value="{{ csrf_token() }}">
                     <input type="hidden" name="student_id" value="{{ $student->id }}">
                     <input type="hidden" name="exam_id" value="{{ Request::get('exam_id') }}">
                     <input type="hidden" name="class_id" value="{{ Request::get('class_id') }}">
@@ -188,8 +169,13 @@
                         @endphp
                         @foreach($getSubject as $index => $subject)
                         @php
+                        $totalMark = 0;
                         $getMark = \App\Models\ScheduleModel::getMarks($student->id, Request::get('exam_id'),
                         Request::get('class_id'), $subject->subject_id);
+                        if(!empty($getMark)){
+                        $totalMark = $getMark->class_work + $getMark->home_work + $getMark->exam_work +
+                        $getMark->test_work;
+                        }
                         @endphp
                         <td class="px-6 py-3">
                             <div>
@@ -197,6 +183,8 @@
                                     class="mb-3 block text-sm font-medium text-black dark:text-white"
                                 >
                                     Travail de classe <span class="text-meta-1">*</span>
+                                    <input type="hidden" name="marks[{{ $index }}][id]"
+                                           value="{{ $subject->id }}">
                                     <input type="hidden" name="marks[{{ $index }}][subject_id]"
                                            value="{{ $subject->subject_id }}">
                                     <input type="text"
@@ -242,33 +230,30 @@
                                            placeholder="Entrez une note de classe"
                                            class="w-full rounded-lg border-[1.5px] border-stroke bg-gray-100 px-5 py-2.5 font-normal text-black outline-none transition focus:border-violet-600 active:border-violet-600 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-violet-600">
                             </div>
-                            <button type="submit" id="{{ $student->id }}"
+                            <button type="submit"
+                                    data-student="{{ $student->id }}"
                                     data-exam="{{ Request::get('exam_id') }}"
                                     data-class="{{ Request::get('class_id') }}"
-                                    class="saveSingleSubject flex w-fit justify-center rounded-lg bg-violet-600 p-3 font-medium text-gray hover:bg-opacity-90"
-                            >
+                                    data-subject="{{ $subject->id }}"
+                                    class="saveSingleSubject flex w-fit justify-center rounded-lg bg-violet-600 p-3 font-medium text-gray hover:bg-opacity-90">
                                 Sauvegarder
                             </button>
+                            <p class="w-fit bg-gray-100 dark:bg-gray-800 text-md font-semibold text-gray-700 dark:text-gray-200 py-2 px-4 my-1 rounded-lg">
+                                {{ $totalMark }}</p>
                         </td>
                         @php
                         $i = 1;
                         @endphp
                         @endforeach
                         <td class="px-6 py-3">
-                            <button type="submit"
-                                    class="flex w-full justify-center rounded-lg bg-emerald-400 p-3 font-medium text-gray hover:bg-opacity-90"
-                            >
+                            <button type="submit" id="addMarksRegister" data-action="saveAll"
+                                    class="flex w-full justify-center rounded-lg bg-emerald-400 p-3 font-medium text-gray hover:bg-opacity-90"">
                                 Ajouter
                             </button>
                         </td>
                     </tr>
                 </form>
                 @endforeach
-                @if(empty($getSubject))
-                <tr class="text-center text-gray-700 dark:text-bodydark1">
-                    <td colspan="7" class="py-3"> Aucune évaluation programmée.</td>
-                </tr>
-                @endif
                 @endif
                 </tbody>
             </table>
@@ -279,25 +264,35 @@
 @endsection
 
 @section('script')
-<script type="text/javascript">
-    document.querySelectorAll('.SubmitForm').forEach(function (form) {
-        form.addEventListener('submit', function (e) {
-            e.preventDefault();
-            handleFormSubmit(form);
-        });
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        setupFormHandlers();
+        setupSingleSubjectHandlers();
     });
 
-    document.querySelectorAll('.saveSingleSubject').forEach(function (button) {
-        button.addEventListener('click', function (e) {
-            e.preventDefault();
-            let student_id = this.getAttribute('id');
-            let exam_id = this.getAttribute('data-exam');
-            let class_id = this.getAttribute('data-class');
-            let td = this.closest('td');
-
-            handleSingleSubjectSubmit(td, student_id, exam_id, class_id);
+    function setupFormHandlers() {
+        document.querySelectorAll('.SubmitForm').forEach(function (form) {
+            form.addEventListener('submit', function (e) {
+                e.preventDefault();
+                handleFormSubmit(form);
+            });
         });
-    });
+    }
+
+    function setupSingleSubjectHandlers() {
+        document.querySelectorAll('.saveSingleSubject').forEach(function (button) {
+            button.addEventListener('click', function (e) {
+                e.preventDefault();
+                let student_id = button.getAttribute('data-student');
+                let exam_id = button.getAttribute('data-exam');
+                let class_id = button.getAttribute('data-class');
+                let td = button.closest('td');
+
+                handleSingleSubjectSubmit(td, student_id, exam_id, class_id);
+            });
+        });
+    }
 
     function handleFormSubmit(form) {
         let formData = new FormData(form);
@@ -305,11 +300,18 @@
 
         let xhr = new XMLHttpRequest();
         xhr.open('POST', "{{ url('admin/examinations/marks_register/add') }}", true);
+
         xhr.onreadystatechange = function () {
-            if (xhr.readyState === 4 && xhr.status === 200) {
-                handleResponse(xhr.responseText, 'Ces registres de notes pour ces évaluations ont été ajoutées avec succès.');
+            if (xhr.readyState === XMLHttpRequest.DONE) {
+                if (xhr.status === 200) {
+                    let response = JSON.parse(xhr.responseText);
+                    if (response.redirect) {
+                        window.location.href = response.redirect;
+                    }
+                }
             }
         };
+
         xhr.send(formData);
     }
 
@@ -317,37 +319,36 @@
         let formData = new FormData();
         td.querySelectorAll('input').forEach(function (input) {
             if (input.type === 'text' || input.type === 'hidden') {
-                formData.append('student_id', student_id);
-                formData.append('exam_id', exam_id);
-                formData.append('class_id', class_id);
-                formData.append('_token', '{{ csrf_token() }}');
                 formData.append(input.name, input.value);
             }
         });
 
+        formData.append('student_id', student_id);
+        formData.append('exam_id', exam_id);
+        formData.append('class_id', class_id);
+        formData.append('_token', '{{ csrf_token() }}');
+
         let xhr = new XMLHttpRequest();
         xhr.open('POST', "{{ url('admin/examinations/marks_register/addSingleSubject') }}", true);
+
         xhr.onreadystatechange = function () {
-            if (xhr.readyState === 4 && xhr.status === 200) {
-                handleResponse(xhr.responseText, 'Ces registres de notes pour cette matière ont été ajoutées avec succès.');
+            if (xhr.readyState === XMLHttpRequest.DONE) {
+                if (xhr.status === 200) {
+                    let response = JSON.parse(xhr.responseText);
+                    if (response.redirect) {
+                        window.location.href = response.redirect;
+                    }
+                }
             }
         };
+
         xhr.send(formData);
     }
-
-    function handleResponse(responseText, successMessage) {
-        let response = JSON.parse(responseText);
-        let alertElement = document.getElementById('alert-border-3');
-        if (response.success) {
-            alertElement.innerText = successMessage;
-            alertElement.style.display = 'block';
-        } else {
-            alertElement.innerText = 'Une erreur s\'est produite. Veuillez réessayer.';
-            alertElement.style.display = 'block';
-            alertElement.style.color = 'red';
-        }
-    }
 </script>
+
+
+
+
 @endsection
 
 
