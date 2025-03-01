@@ -42,7 +42,8 @@
                         >
                             <option selected disabled value="" class="text-body">Choisissez une évaluation</option>
                             @foreach($getExams as $exams)
-                            <option value="{{ $exams -> id }}" class="text-body" {{ ( Request::get('exam_id') == $exams->id) ? 'selected' : '' }}>{{ $exams -> name }}</option>
+                            <option value="{{ $exams -> id }}" class="text-body" {{ ( Request::get(
+                            'exam_id') == $exams->id) ? 'selected' : '' }}>{{ $exams -> name }}</option>
                             @endforeach
                         </select>
                         <span
@@ -80,7 +81,8 @@
                         >
                             <option disabled selected value="" class="text-body">Choisissez une classe</option>
                             @foreach($getClass as $class)
-                            <option value="{{ $class -> id }}" class="text-body" {{ ( Request::get('class_id') == $class->id) ? 'selected' : '' }}>{{ $class -> name }}</option>
+                            <option value="{{ $class -> id }}" class="text-body" {{ ( Request::get(
+                            'class_id') == $class->id) ? 'selected' : '' }}>{{ $class -> name }}</option>
                             @endforeach
                         </select>
                         <span
@@ -126,16 +128,12 @@
             </div>
         </form>
 
-        @if(!empty($getSubject) && !empty($getSubject->count()))
+        @if(!empty($getSubject) && $getSubject->count() > 0)
         <div class="relative overflow rounded-lg z-10">
             <table class="w-full text-sm text-left rtl:text-right text-white dark:text-white">
-                <thead
-                    class="rounded-sm bg-violet-600 uppercase text-white dark:bg-meta-4"
-                >
+                <thead class="rounded-sm bg-violet-600 uppercase text-white dark:bg-meta-4">
                 <tr>
-                    <th scope="col" class="px-6 py-3">
-                        Apprenants
-                    </th>
+                    <th scope="col" class="px-6 py-3">Apprenants</th>
                     @foreach($getSubject as $subject)
                     <th scope="col" class="px-6 py-3">
                         {{ $subject->subject_name }}
@@ -145,14 +143,11 @@
                         </span>
                     </th>
                     @endforeach
-                    </th>
-                    <th scope="col" class="px-6 py-3">
-                        Actions
-                    </th>
+                    <th scope="col" class="px-6 py-3">Actions</th>
                 </tr>
                 </thead>
                 <tbody>
-                @if(!empty($getStudent) && !empty($getStudent->count()))
+                @if(!empty($getStudent) && $getStudent->count() > 0)
                 @foreach($getStudent as $student)
                 <form name="post" class="SubmitForm">
                     <input type="hidden" name="_token" value="{{ csrf_token() }}">
@@ -161,21 +156,27 @@
                     <input type="hidden" name="class_id" value="{{ Request::get('class_id') }}">
                     {{ csrf_field() }}
                     <tr class="hover:bg-violet-100 dark:hover:bg-gray-700 transition duration-300 border-b dark:border-gray-600 hover:border-violet-400 dark:text-gray-200 text-gray-500">
-                        <td class="px-6 py-3">
-                            {{ $student->name }} {{ $student->last_name }}
-                        </td>
+                        <td class="px-6 py-3">{{ $student->name }} {{ $student->last_name }}</td>
                         @php
                         $i = 1;
+                        $totalStudentMark =0;
+                        $totalFullMarks = 0;
+                        $totalPassingMarks = 0;
                         @endphp
                         @foreach($getSubject as $index => $subject)
                         @php
+
                         $totalMark = 0;
+                        $totalFullMarks = $totalFullMarks + $subject->full_marks;
+                        $totalPassingMarks = $totalPassingMarks + $subject->passing_marks;
+
                         $getMark = \App\Models\ScheduleModel::getMarks($student->id, Request::get('exam_id'),
                         Request::get('class_id'), $subject->subject_id);
-                        if(!empty($getMark)){
+                        if(!empty($getMark)) {
                         $totalMark = $getMark->class_work + $getMark->home_work + $getMark->exam_work +
                         $getMark->test_work;
                         }
+                        $totalStudentMark = $totalStudentMark + $totalMark;
                         @endphp
                         <td class="px-6 py-3">
                             <div>
@@ -228,8 +229,26 @@
                                            name="marks[{{ $index }}][test_work]"
                                            value="{{ $getMark ? $getMark->test_work : '' }}"
                                            placeholder="Entrez une note de classe"
-                                           class="w-full rounded-lg border-[1.5px] border-stroke bg-gray-100 px-5 py-2.5 font-normal text-black outline-none transition focus:border-violet-600 active:border-violet-600 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-violet-600">
+                                           class="w-full rounded-lg border-[1.5px] border-stroke bg-gray-100 px-5 py-2.5 font-normal text-black outline-none transition focus:border-violet-600 active:border-violet-600 disabled:cursor-default disabled:bg-white dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-violet-600">
                             </div>
+                            @if(!empty($getMark))
+                            <div>
+                                <label
+                                    class="mb-3 block text-sm font-medium text-black dark:text-white"
+                                >
+                                    Résultats
+                                    <div
+                                        class="mb-3 w-full rounded-lg border-[1.5px] border-stroke bg-gray-100 px-5 py-2.5 font-normal text-black outline-none transition disabled:cursor-default disabled:bg-white dark:border-form-strokedark dark:bg-form-input dark:text-white">
+                                        <p class="flex justify-between"><span>Note totale =></span><span>{{ $totalMark }}</span>
+                                        </p>
+                                        <p class="flex justify-between">
+                                            <span>Note de passage =></span><span>{{ $subject->passing_marks}}</span></p>
+                                        <p class="flex justify-between">
+                                            <span>Décision =></span><span>{{ ($totalMark >= $subject->passing_marks ) ? 'Admis' : 'Refusé'}}</span>
+                                        </p>
+                                    </div>
+                            </div>
+                            @endif
                             <button type="submit"
                                     data-student="{{ $student->id }}"
                                     data-exam="{{ Request::get('exam_id') }}"
@@ -238,8 +257,6 @@
                                     class="saveSingleSubject flex w-fit justify-center rounded-lg bg-violet-600 p-3 font-medium text-gray hover:bg-opacity-90">
                                 Sauvegarder
                             </button>
-                            <p class="w-fit bg-gray-100 dark:bg-gray-800 text-md font-semibold text-gray-700 dark:text-gray-200 py-2 px-4 my-1 rounded-lg">
-                                {{ $totalMark }}</p>
                         </td>
                         @php
                         $i = 1;
@@ -247,24 +264,42 @@
                         @endforeach
                         <td class="px-6 py-3">
                             <button type="submit" id="addMarksRegister" data-action="saveAll"
-                                    class="flex w-full justify-center rounded-lg bg-emerald-400 p-3 font-medium text-gray hover:bg-opacity-90"">
+                                    class="flex w-full justify-center rounded-lg bg-emerald-400 p-3 font-medium text-gray hover:bg-opacity-90 mb-3">
                                 Ajouter
                             </button>
+                            @php
+                            $percentage = ($totalStudentMark * 100) / $totalFullMarks;
+                            @endphp
+                            <div
+                                class="w-full rounded-lg border-[1.5px] border-stroke bg-gray-100 px-5 py-2.5 font-normal text-black outline-none transition disabled:cursor-default disabled:bg-white dark:border-form-strokedark dark:bg-form-input dark:text-white">
+                                <p>Note totale de l'apprenant => {{ $totalStudentMark }}</p>
+                                <p>Note totale => {{ $totalFullMarks }}</p>
+                                <p>Note de passage => {{ $totalPassingMarks }}</p>
+                                <p>Pourcentage => {{ round($percentage, 2) }} %</p>
+                                <p>Décision => {{ ($totalStudentMark >= $totalPassingMarks) ? 'Admis ' : 'Refusé' }}</p>
+                            </div>
                         </td>
                     </tr>
                 </form>
                 @endforeach
+                @else
+                <tr>
+                    <td colspan="{{ count($getSubject) + 2 }}"
+                        class="px-6 py-3 text-center dark:text-gray-400 font-medium">Aucun résultat disponible
+                    </td>
+                </tr>
                 @endif
                 </tbody>
             </table>
         </div>
+        @else
+        <p class="text-center dark:text-gray-400 font-medium py-3">Aucun résultat disponible</p>
         @endif
     </div>
 </div>
 @endsection
 
 @section('script')
-
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         setupFormHandlers();
@@ -303,11 +338,10 @@
 
         xhr.onreadystatechange = function () {
             if (xhr.readyState === XMLHttpRequest.DONE) {
-                if (xhr.status === 200) {
-                    let response = JSON.parse(xhr.responseText);
-                    if (response.redirect) {
-                        window.location.href = response.redirect;
-                    }
+                let response = JSON.parse(xhr.responseText);
+                displayMessage(response);
+                if (xhr.status === 200 && response.success) {
+                    window.location.reload();
                 }
             }
         };
@@ -333,22 +367,33 @@
 
         xhr.onreadystatechange = function () {
             if (xhr.readyState === XMLHttpRequest.DONE) {
-                if (xhr.status === 200) {
-                    let response = JSON.parse(xhr.responseText);
-                    if (response.redirect) {
-                        window.location.href = response.redirect;
-                    }
+                let response = JSON.parse(xhr.responseText);
+                displayMessage(response);
+                if (xhr.status === 200 && response.success) {
+                    window.location.reload();
                 }
             }
         };
-
         xhr.send(formData);
     }
+
+    function displayMessage(response) {
+        let messageBox = document.createElement('div');
+        messageBox.className = 'message-box';
+        messageBox.innerHTML = response.message;
+
+        if (response.success) {
+            messageBox.classList.add('message-success');
+        } else {
+            messageBox.classList.add('message-error');
+        }
+
+        document.body.appendChild(messageBox);
+        setTimeout(function () {
+            messageBox.remove();
+        }, 5000);
+    }
 </script>
-
-
-
-
 @endsection
 
 

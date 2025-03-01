@@ -215,3 +215,23 @@ span.flatpickr-weekday,
 [x-cloak] {
     display: none !important;
 }
+
+.message-box {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 10px 20px;
+    border-radius: 5px;
+    z-index: 1000;
+}
+
+.message-success {
+    background-color: #34d399;
+    color: white;
+}
+
+.message-error {
+    background-color: #e4696a;
+    color: white;
+}
+

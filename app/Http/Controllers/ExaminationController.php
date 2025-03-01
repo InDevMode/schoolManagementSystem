@@ -340,7 +340,7 @@ class ExaminationController extends Controller
                         $message = $isUpdate ? 'Notes modifiées avec succès' : 'Notes ajoutées avec succès';
                         return response()->json(['success' => true, 'message' => $message]);
                     } else {
-                        return response()->json(['error' => false, 'message' => 'Le total des notes est plus grande que la note totale de passage']);
+                        return response()->json(['error' => false, 'message' => 'Le total des notes de l\'apprenant est plus grande que la note totale']);
                     }
                 }
             } else {
@@ -394,7 +394,7 @@ class ExaminationController extends Controller
                         $message = $isUpdate ? 'Notes modifiées avec succès' : 'Notes ajoutées avec succès';
                         return response()->json(['success' => true, 'message' => $message]);
                     } else {
-                        return response()->json(['error' => false, 'message' => 'Le total des notes est plus grande que la note totale de passage']);
+                        return response()->json(['error' => false, 'message' => 'Le total des notes de l\'apprenant est plus grande que la note totale']);
                     }
                 }
             } else {
