@@ -3,7 +3,7 @@
 <div class="m-5">
     <!-- Breadcrumb Start -->
     <div
-        class="mb-6 mt-3 flex flex-col gap-3 sm:flex-row items-center justify-between"
+        class="mb-3 mt-3 flex flex-col gap-3 sm:flex-row items-center justify-between"
     >
         <h2 class="uppercase font-bold text-black dark:text-bodydark">
             Liste des horaires de cours
