@@ -95,7 +95,7 @@
                                             <div class="relative z-30 inline-block w-full">
                                                 <div class="relative flex flex-col items-center">
                                                     <div @click="open" class="w-full">
-                                                        <div class="mb-2 flex rounded-lg border border-stroke py-2 pl-3 pr-3 outline-none transition focus:border-violet-600 active:border-violet-600 dark:border-form-strokedark dark:bg-form-input">
+                                                        <div class="mb-2 flex rounded-lg border border-stroke py-2 pl-3 pr-3 outline-none transition bg-gray-100 focus:border-violet-600 active:border-violet-600 dark:border-form-strokedark dark:bg-form-input">
                                                             <div class="flex flex-auto flex-wrap gap-3">
                                                                 <template x-for="(option,index) in selected" :key="index">
                                                                     <div class="my-1.5 flex items-center justify-center rounded border-[.5px] border-stroke bg-gray px-2.5 py-1.5 text-sm font-medium dark:border-strokedark dark:bg-white/30">

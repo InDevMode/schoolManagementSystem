@@ -89,7 +89,7 @@
                                         x-data="{ isOptionSelected: false }"
                                         class="relative z-20 bg-gray-100 dark:bg-form-input"
                                     >
-                                        <select id="class_id" name="class_id" required
+                                        <select id="subject_id" name="subject_id" required
                                                 class="relative z-20 w-full appearance-none rounded-lg border border-stroke bg-gray-100 px-5 py-2.5 outline-none transition focus:border-emerald-400 active:border-emerald-400 dark:border-form-strokedark dark:bg-form-input dark:focus:border-emerald-400"
                                                 :class="isOptionSelected && 'text-black dark:text-white'"
                                                 @change="isOptionSelected = true"
