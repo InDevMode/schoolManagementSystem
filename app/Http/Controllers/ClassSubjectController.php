@@ -14,7 +14,6 @@ class ClassSubjectController extends Controller
     public function list(Request $request): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
     {
         $data['getClassSubject'] = ClassSubjectModel::getAllClassSubject(10);
-
         $data['header_title'] = "Listes des matières assignées";
         return view('admin.assign_subject.list', $data);
     }
