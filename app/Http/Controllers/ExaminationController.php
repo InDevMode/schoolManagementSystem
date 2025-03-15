@@ -421,7 +421,7 @@ class ExaminationController extends Controller
         return view('teacher.marks_register', $data);
     }
 
-    public function addTeacherMarkRegister(Request $request)
+    public function addTeacherMarkRegister(Request $request): \Illuminate\Http\JsonResponse
     {
         try {
             $isUpdate = false;
