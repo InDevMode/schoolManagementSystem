@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\ClassModel;
 use App\Models\ClassSubjectModel;
-use App\Models\ClassTeacherModel;
 use App\Models\ExaminationModel;
 use App\Models\MarkRegisterModel;
 use App\Models\ScheduleModel;
@@ -356,7 +355,7 @@ class ExaminationController extends Controller
 
     public function addSingleMarksRegister(Request $request): \Illuminate\Http\JsonResponse
     {
-        try{
+        try {
             $isUpdate = false;
             if (!empty($request->marks)) {
                 foreach ($request->marks as $mark) {
@@ -407,8 +406,129 @@ class ExaminationController extends Controller
 
             return response()->json(['success' => false, 'message' => 'Vos informations ne sont pas correctes. Veuillez réessayer.']);
         }
-
     }
 
+    public function teacherMarkRegister(Request $request): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
+    {
+        $data['header_title'] = "Registre des notes";
+        $data['getClass'] = ExaminationModel::getMyClassSubjectGroup(Auth::user()->id);
+        $data['getExams'] = ScheduleModel::getExamTeacher(Auth::user()->id);
+        if (!empty($request->exam_id) && !empty($request->class_id)) {
+            $data['getSubject'] = ScheduleModel::getSubject($request->exam_id, $request->class_id);
+            $data['getStudent'] = User::getStudent($request->class_id);
+        }
+
+        return view('teacher.marks_register', $data);
+    }
+
+    public function addTeacherMarkRegister(Request $request)
+    {
+        try {
+            $isUpdate = false;
+
+            if (!empty($request->marks)) {
+                foreach ($request->marks as $mark) {
+                    $getExamSchedule = ScheduleModel::getSingle($mark['id']);
+                    $full_marks = $getExamSchedule->full_marks;
+
+                    $class_work = !empty($mark['class_work']) ? $mark['class_work'] : 0;
+                    $home_work = !empty($mark['home_work']) ? $mark['home_work'] : 0;
+                    $test_work = !empty($mark['test_work']) ? $mark['test_work'] : 0;
+                    $exam_work = !empty($mark['exam_work']) ? $mark['exam_work'] : 0;
+
+                    $total_marks = $class_work + $home_work + $test_work + $exam_work;
+
+                    if ($getExamSchedule && $full_marks >= $total_marks) {
+                        $getMarks = MarkRegisterModel::checkAlreadyMarks($request->student_id, $request->exam_id, $request->class_id, $mark['subject_id']);
+                        if (!empty($getMarks)) {
+                            $marksRegister = $getMarks;
+                            $isUpdate = true;
+                        } else {
+                            $marksRegister = new MarkRegisterModel;
+                            $marksRegister->created_by = Auth::user()->id;
+                        }
+
+                        $marksRegister->student_id = $request->student_id;
+                        $marksRegister->class_id = $request->class_id;
+                        $marksRegister->exam_id = $request->exam_id;
+                        $marksRegister->subject_id = $mark['subject_id'];
+                        $marksRegister->class_work = $class_work;
+                        $marksRegister->home_work = $home_work;
+                        $marksRegister->test_work = $test_work;
+                        $marksRegister->exam_work = $exam_work;
+
+                        $marksRegister->save();
+
+                        $message = $isUpdate ? 'Notes modifiées avec succès' : 'Notes ajoutées avec succès';
+                        return response()->json(['success' => true, 'message' => $message]);
+                    } else {
+                        return response()->json(['error' => false, 'message' => 'Le total des notes de l\'apprenant est plus grande que la note totale']);
+                    }
+                }
+            } else {
+                return response()->json(['error' => false, 'message' => '']);
+            }
+            return response()->json(['success' => true, 'message' => 'Opération effectuée avec succès']);
+
+        } catch (\Exception $e) {
+            Log::error("Erreur lors de la création de ce registre de notes. " . $e->getMessage());
+            return response()->json(['success' => false, 'message' => 'Vos informations ne sont pas correctes. Veuillez réessayer.']);
+        }
+    }
+
+    public function addSingleTeacherMarkRegister(Request $request): \Illuminate\Http\JsonResponse
+    {
+        try {
+            $isUpdate = false;
+            if (!empty($request->marks)) {
+                foreach ($request->marks as $mark) {
+                    $getExamSchedule = ScheduleModel::getSingle($mark['id']);
+                    $full_marks = $getExamSchedule->full_marks;
+
+                    $class_work = !empty($mark['class_work']) ? $mark['class_work'] : 0;
+                    $home_work = !empty($mark['home_work']) ? $mark['home_work'] : 0;
+                    $test_work = !empty($mark['test_work']) ? $mark['test_work'] : 0;
+                    $exam_work = !empty($mark['exam_work']) ? $mark['exam_work'] : 0;
+
+                    $total_marks = $class_work + $home_work + $test_work + $exam_work;
+
+                    if ($getExamSchedule && $full_marks >= $total_marks) {
+                        $getMarks = MarkRegisterModel::checkAlreadyMarks($request->student_id, $request->exam_id, $request->class_id, $mark['subject_id']);
+                        if (!empty($getMarks)) {
+                            $marksRegister = $getMarks;
+                            $isUpdate = true;
+                        } else {
+                            $marksRegister = new MarkRegisterModel;
+                            $marksRegister->created_by = Auth::user()->id;
+                        }
+
+                        $marksRegister->student_id = $request->student_id;
+                        $marksRegister->class_id = $request->class_id;
+                        $marksRegister->exam_id = $request->exam_id;
+                        $marksRegister->subject_id = $mark['subject_id'];
+                        $marksRegister->class_work = $class_work;
+                        $marksRegister->home_work = $home_work;
+                        $marksRegister->test_work = $test_work;
+                        $marksRegister->exam_work = $exam_work;
+
+                        $marksRegister->save();
+
+                        $message = $isUpdate ? 'Notes modifiées avec succès' : 'Notes ajoutées avec succès';
+                        return response()->json(['success' => true, 'message' => $message]);
+                    } else {
+                        return response()->json(['error' => false, 'message' => 'Le total des notes de l\'apprenant est plus grande que la note totale']);
+                    }
+                }
+            } else {
+                return response()->json(['error' => false, 'message' => '']);
+            }
+            return response()->json(['success' => true, 'message' => 'Opération effectuée avec succès']);
+
+        } catch (\Exception $e) {
+            Log::error("Erreur lors de la création de ce registre de notes. " . $e->getMessage());
+
+            return response()->json(['success' => false, 'message' => 'Vos informations ne sont pas correctes. Veuillez réessayer.']);
+        }
+    }
 
 }
