@@ -68,18 +68,3 @@ The Laravel framework is open-sourced software licensed under the [MIT license](
 
 Authentification : 
 
-Email: admintech@domain.bj 
-Mot de passe: admintech
-
-Email: adminmain@domain.bj
-Mot de passe: adminmain
-
-Email: teacherblack@gmail.com
-Mot de passe: teacherblack
-
-Email: studentblack@gmail.com
-Mot de passe: studentblack
-
-Email: parentblack@gmail.com
-Mot de passe: parentblack
-

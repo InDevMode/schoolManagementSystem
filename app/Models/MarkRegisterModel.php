@@ -36,4 +36,30 @@ class MarkRegisterModel extends Model
             ->first();
     }
 
+    static public function getExam(int $student_id)
+    {
+        return MarkRegisterModel::select('marks_register.*', 'exams.name as exam_name')
+            ->join('exams', 'exam_id', '=', 'marks_register.exam_id')
+            ->where('marks_register.student_id', '=', $student_id)
+            ->where('marks_register.is_delete', '=', 0)
+            ->where('exams.is_delete', '=', 0)
+            ->groupBy('marks_register.exam_id')
+            ->get();
+
+    }
+
+    static public function getExamSubject(int $exam_id, int $student_id)
+    {
+        return MarkRegisterModel::select('marks_register.*', 'exams.name as exam_name', 'subject.name as subject_name')
+            ->join('exams', 'exams.id', '=', 'marks_register.exam_id')
+            ->join('subject', 'subject.id', '=', 'marks_register.subject_id')
+            ->where('marks_register.exam_id', '=', $exam_id)
+            ->where('marks_register.student_id', '=', $student_id)
+            ->where('marks_register.is_delete', '=', 0)
+            ->where('exams.is_delete', '=', 0)
+            ->where('subject.is_delete', '=', 0)
+            ->where('subject.status', '=', 1)
+            ->get();
+    }
+
 }

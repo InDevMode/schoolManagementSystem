@@ -394,6 +394,19 @@
                                 class="{{ Request::Segment(2) == 'my_exam_timetable' ? 'group-hover:text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}">Mes Examens</span>
                         </a>
                     </li>
+                    <li>
+                        <a
+                            class="group relative flex items-center gap-2.5 rounded-md px-4 py-2 font-medium duration-300 ease-in-out hover:bg-violet-700 text-bodydark1 dark:hover:bg-meta-4 {{ Request::Segment(2) == 'my_exam_result' ? 'bg-violet-600 text-bodydark1' : 'text-violet-600' }}"
+                            href="{{ url('student/my_exam_result') }}"
+                        >
+                            <span
+                                class="text-[18px] py-1 px-2 rounded {{ Request::Segment(2) == 'my_exam_result' ? 'bg-violet-100 text-violet-600' : 'bg-violet-100 text-violet-600'}}">
+                                <i class="fa-solid fa-square-poll-horizontal"></i>
+                            </span>
+                            <span
+                                class="{{ Request::Segment(2) == 'my_exam_result' ? 'group-hover:text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}">Mes Résultats</span>
+                        </a>
+                    </li>
                     @elseif(Auth::user()->user_type === 4)
                     <li>
                         <a

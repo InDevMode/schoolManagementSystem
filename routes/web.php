@@ -194,6 +194,7 @@ Route::group(['middleware' => 'student'], function () {
 
     // Student side exam timetable
     Route::get('student/my_exam_timetable', [ExaminationController::class, 'myExamTimetableStudent']);
+    Route::get('student/my_exam_result', [ExaminationController::class, 'myExamResultStudent']);
 });
 
 Route::group(['middleware' => 'parent'], function () {

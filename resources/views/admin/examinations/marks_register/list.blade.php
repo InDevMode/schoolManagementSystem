@@ -184,6 +184,10 @@
                                     class="mb-3 block text-sm font-medium text-black dark:text-white"
                                 >
                                     Travail de classe <span class="text-meta-1">*</span>
+                                    <input type="hidden" name="marks[{{ $index }}][passing_marks]"
+                                           value="{{ $subject->passing_marks }}">
+                                    <input type="hidden" name="marks[{{ $index }}][full_marks]"
+                                           value="{{ $subject->full_marks }}">
                                     <input type="hidden" name="marks[{{ $index }}][id]"
                                            value="{{ $subject->id }}">
                                     <input type="hidden" name="marks[{{ $index }}][subject_id]"
