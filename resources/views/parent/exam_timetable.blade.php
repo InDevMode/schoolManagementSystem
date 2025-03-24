@@ -29,7 +29,7 @@
                 {{ $examTimetable['name'] }}
             </div>
             <div class="relative overflow-x-auto">
-                <table class="w-full text-sm text-left border border-gray-200 dark:border-strokedark rounded-lg">
+                <table class="w-full text-[12px] text-left border border-gray-200 dark:border-strokedark rounded-lg">
                     <thead class="text-white uppercase bg-violet-500">
                     <tr>
                         <th scope="col" class="px-4 py-3">Matière</th>

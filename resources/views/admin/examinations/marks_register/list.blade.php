@@ -130,7 +130,7 @@
 
         @if(!empty($getSubject) && $getSubject->count() > 0)
         <div class="relative overflow rounded-lg z-10">
-            <table class="w-full text-sm text-left rtl:text-right text-white dark:text-white">
+            <table class="w-full text-[12px] text-left rtl:text-right text-white dark:text-white">
                 <thead class="rounded-sm bg-violet-600 uppercase text-white dark:bg-meta-4">
                 <tr>
                     <th scope="col" class="px-6 py-3">Apprenants</th>
@@ -293,7 +293,7 @@
             </table>
         </div>
         @else
-        <p class="text-center dark:text-gray-400 font-medium py-3">Aucun résultat disponible</p>
+        <p class="text-center dark:text-gray-400 font-medium py-3 text-sm">Aucun résultat disponible</p>
         @endif
     </div>
 </div>
