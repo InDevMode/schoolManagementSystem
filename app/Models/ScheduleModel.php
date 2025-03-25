@@ -73,6 +73,8 @@ class ScheduleModel extends Model
             ->join('exams', 'exams.id', '=', 'schedules.exam_id')
             ->join('class_teacher', 'class_teacher.class_id', '=', 'schedules.class_id')
             ->where('class_teacher.teacher_id', '=', $teacher_id)
+            ->where('class_teacher.status', '=', 1)
+            ->where('class_teacher.is_delete', '=', 0)
             ->where('exams.is_delete', '=', 0)
             ->where('schedules.is_delete', '=', 0)
             ->groupBy('schedules.exam_id')
