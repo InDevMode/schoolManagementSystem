@@ -49,10 +49,13 @@
                         Travaux d'essai
                     </th>
                     <th scope="col" class="px-6 py-3">
-                        Score
+                        Note obtenue
                     </th>
                     <th scope="col" class="px-6 py-3">
-                        Note de passage & totale
+                        Note de passage / totale
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Résultat
                     </th>
                 </tr>
                 </thead>
@@ -62,9 +65,19 @@
                     <td colspan="7" class="py-3"> Aucun résultat examen trouvé.</td>
                 </tr>
                 @else
+                @php
+                $total_score = 0;
+                $passing_marks = 0;
+                $full_marks = 0;
+                @endphp
                 @foreach($examResult['subject'] as $subjectValue)
+                @php
+                $total_score = $total_score + $subjectValue['score_marks'];
+                $passing_marks = $passing_marks + $subjectValue['passing_marks'];
+                $full_marks = $full_marks + $subjectValue['full_marks'];
+                @endphp
                 <tr class="hover:bg-violet-100 dark:hover:bg-gray-700 transition duration-300 border-b dark:border-gray-600 hover:border-violet-400 dark:text-gray-200 text-gray-500">
-                    <td class="px-6 py-3">
+                    <td class="font-semibold px-6 py-3">
                         {{ $subjectValue['subject_name'] }}
                     </td>
                     <td class="px-6 py-3">
@@ -79,14 +92,39 @@
                     <td class="px-6 py-3">
                         {{ $subjectValue['exam_work'] }}
                     </td>
-                    <td class="px-6 py-3">
-                        {{ $subjectValue['score_marks'] }}
+                    <td class="font-semibold px-6 py-3">
+                        <span class="bg-gray-50 px-2 py-1">{{ $subjectValue['score_marks'] }}</span>
                     </td>
                     <td class="px-6 py-3">
                         {{ $subjectValue['passing_marks'] }} / {{ $subjectValue['full_marks'] }}
                     </td>
+                    <td class="px-6 py-3">
+                        @if($subjectValue['score_marks'] >= $subjectValue['passing_marks'])
+                        <span class="bg-emerald-100 text-emerald-700 rounded-full px-3 py-1">Validé</span>
+                        @else
+                        <span class="bg-red-100 text-red-700 rounded-full px-3 py-1">Non validé</span>
+                        @endif
+                    </td>
                 </tr>
                 @endforeach
+                <tr class="bg-violet-100 text-violet-700">
+                    <td colspan="2" class="px-6 py-3">
+                        <span class="font-semibold uppercase">Total : </span>
+                        <span class="font-semibold">{{ $total_score }}</span> /
+                        <span class="font-semibold">{{ $full_marks }}</span>
+                    </td>
+                    <td colspan="5" class="px-6 py-3">
+                        <span class="font-semibold uppercase">Pourcentage : </span>
+                        <span class="font-semibold">{{ round(($total_score * 100) / $full_marks, 2) }} %</span>
+                    </td>
+                    <td colspan="2" class="px-6 py-3">
+                        @if($total_score >= $passing_marks)
+                        <span class="bg-emerald-100 text-emerald-700 rounded-full px-3 py-1">Validé</span>
+                        @else
+                        <span class="bg-red-100 text-red-700 rounded-full px-3 py-1">Non validé</span>
+                        @endif
+                    </td>
+                </tr>
                 @endif
                 </tbody>
             </table>
