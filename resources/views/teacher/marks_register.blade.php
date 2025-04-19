@@ -42,8 +42,8 @@
                         >
                             <option selected disabled value="" class="text-body">Choisissez une évaluation</option>
                             @foreach($getExams as $exams)
-                            <option value="{{ $exams -> id }}" class="text-body" {{ ( Request::get(
-                            'exam_id') == $exams->id) ? 'selected' : '' }}>{{ $exams -> name }}</option>
+                            <option value="{{ $exams -> exam_id }}" class="text-body" {{ ( Request::get(
+                            'exam_id') == $exams->exam_id) ? 'selected' : '' }}>{{ $exams -> exam_name }}</option>
                             @endforeach
                         </select>
                         <span
@@ -81,8 +81,8 @@
                         >
                             <option disabled selected value="" class="text-body">Choisissez une classe</option>
                             @foreach($getClass as $class)
-                            <option value="{{ $class -> id }}" class="text-body" {{ ( Request::get(
-                            'class_id') == $class->id) ? 'selected' : '' }}>{{ $class -> name }}</option>
+                            <option value="{{ $class -> class_id }}" class="text-body" {{ ( Request::get(
+                            'class_id') == $class->class_id) ? 'selected' : '' }}>{{ $class -> class_name }}</option>
                             @endforeach
                         </select>
                         <span
@@ -185,7 +185,7 @@
                                 >
                                     Travail de classe <span class="text-meta-1">*</span>
                                     <input type="hidden" name="marks[{{ $index }}][passing_marks]"
-                                           value="{{ $subject->passing_marks }}">
+                                    value="{{ $subject->passing_marks }}">
                                     <input type="hidden" name="marks[{{ $index }}][full_marks]"
                                            value="{{ $subject->full_marks }}">
                                     <input type="hidden" name="marks[{{ $index }}][id]"
@@ -297,7 +297,7 @@
             </table>
         </div>
         @else
-        <p class="text-center dark:text-gray-400 font-medium py-3 text-sm">Aucun résultat disponible</p>
+        <p class="text-center dark:text-gray-400 font-medium py-3">Aucun résultat disponible</p>
         @endif
     </div>
 </div>
@@ -338,7 +338,7 @@
         formData.append('_token', '{{ csrf_token() }}');
 
         let xhr = new XMLHttpRequest();
-        xhr.open('POST', "{{ url('admin/examinations/marks_register/add') }}", true);
+        xhr.open('POST', "{{ url('teacher/add_marks_register') }}", true);
 
         xhr.onreadystatechange = function () {
             if (xhr.readyState === XMLHttpRequest.DONE) {
@@ -367,7 +367,7 @@
         formData.append('_token', '{{ csrf_token() }}');
 
         let xhr = new XMLHttpRequest();
-        xhr.open('POST', "{{ url('admin/examinations/marks_register/addSingleSubject') }}", true);
+        xhr.open('POST', "{{ url('teacher/add_single_marks_register') }}", true);
 
         xhr.onreadystatechange = function () {
             if (xhr.readyState === XMLHttpRequest.DONE) {

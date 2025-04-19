@@ -214,7 +214,7 @@
         </form>
 
         <div class="relative overflow rounded-lg z-10">
-            <table class="w-full text-sm text-left rtl:text-right text-white dark:text-white">
+            <table class="w-full text-[12px] text-left rtl:text-right text-white dark:text-white">
                 <thead
                     class="rounded-sm bg-violet-600 uppercase text-white dark:bg-meta-4"
                 >
@@ -336,7 +336,7 @@
     </div>
 </div>
 
-<div class="mt-10">
+<div class="m-5">
     <!-- Breadcrumb Start -->
     <div
         class="mb-6 mt-3 flex flex-col gap-3 sm:flex-row items-center justify-between"

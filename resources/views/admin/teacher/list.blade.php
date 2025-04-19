@@ -270,7 +270,7 @@
         </form>
 
         <div class="relative overflow rounded-lg z-10">
-            <table class="w-full text-sm text-left rtl:text-right text-white dark:text-white">
+            <table class="w-full text-[12px] text-left rtl:text-right text-white dark:text-white">
                 <thead
                     class="rounded-sm bg-violet-600 uppercase text-white dark:bg-meta-4"
                 >

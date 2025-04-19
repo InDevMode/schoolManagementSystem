@@ -166,6 +166,12 @@ Route::group(['middleware' => 'teacher'], function () {
     // Student calendar url
     Route::get('teacher/my_calendar', [CalendarController::class, 'myTeacherCalendar']);
 
+    // Teacher Marks register url
+    Route::get('teacher/marks_register', [ExaminationController::class, 'teacherMarkRegister']);
+    Route::post('teacher/add_marks_register', [ExaminationController::class, 'addTeacherMarkRegister']);
+    Route::post('teacher/add_single_marks_register', [ExaminationController::class, 'addSingleTeacherMarkRegister']);
+
+
 });
 
 Route::group(['middleware' => 'student'], function () {
@@ -188,6 +194,7 @@ Route::group(['middleware' => 'student'], function () {
 
     // Student side exam timetable
     Route::get('student/my_exam_timetable', [ExaminationController::class, 'myExamTimetableStudent']);
+    Route::get('student/my_exam_result', [ExaminationController::class, 'myExamResultStudent']);
 });
 
 Route::group(['middleware' => 'parent'], function () {
