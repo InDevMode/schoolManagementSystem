@@ -66,12 +66,20 @@
                 </tr>
                 @else
                 @php
+                $total_class_work = 0;
+                $total_home_work = 0;
+                $total_test_work = 0;
+                $total_exam_work = 0;
                 $total_score = 0;
                 $passing_marks = 0;
                 $full_marks = 0;
                 @endphp
                 @foreach($examResult['subject'] as $subjectValue)
                 @php
+                $total_class_work = $total_class_work + $subjectValue['class_work'];
+                $total_home_work = $total_home_work + $subjectValue['home_work'];
+                $total_test_work = $total_test_work + $subjectValue['test_work'];
+                $total_exam_work = $total_exam_work + $subjectValue['exam_work'];
                 $total_score = $total_score + $subjectValue['score_marks'];
                 $passing_marks = $passing_marks + $subjectValue['passing_marks'];
                 $full_marks = $full_marks + $subjectValue['full_marks'];
@@ -93,7 +101,7 @@
                         {{ $subjectValue['exam_work'] }}
                     </td>
                     <td class="font-semibold px-6 py-3">
-                        <span class="bg-gray-50 px-2 py-1">{{ $subjectValue['score_marks'] }}</span>
+                        {{ $subjectValue['score_marks'] }}
                     </td>
                     <td class="px-6 py-3">
                         {{ $subjectValue['passing_marks'] }} / {{ $subjectValue['full_marks'] }}
@@ -108,17 +116,30 @@
                 </tr>
                 @endforeach
                 <tr class="bg-violet-100 text-violet-700">
-                    <td colspan="2" class="px-6 py-3">
-                        <span class="font-semibold uppercase">Total : </span>
-                        <span class="font-semibold">{{ $total_score }}</span> /
-                        <span class="font-semibold">{{ $full_marks }}</span>
+                    <td class="px-6 py-3">
+                        <span
+                            class="font-semibold uppercase">Pourcentage : {{ round(($total_score * 100) / $full_marks, 2) }} %</span>
                     </td>
-                    <td colspan="5" class="px-6 py-3">
-                        <span class="font-semibold uppercase">Pourcentage : </span>
-                        <span class="font-semibold">{{ round(($total_score * 100) / $full_marks, 2) }} %</span>
+                    <td class="px-6 py-3">
+                        <span class="font-semibold uppercase">{{ $total_class_work }} </span>
                     </td>
-                    <td colspan="2" class="px-6 py-3">
-                        @if($total_score >= $passing_marks)
+                    <td class="px-6 py-3">
+                        <span class="font-semibold uppercase">{{ $total_home_work }} </span>
+                    </td>
+                    <td class="px-6 py-3">
+                        <span class="font-semibold uppercase">{{ $total_test_work }} </span>
+                    </td>
+                    <td class="px-6 py-3">
+                        <span class="font-semibold uppercase">{{ $total_exam_work }} </span>
+                    </td>
+                    <td class="px-6 py-3">
+                        <span class="font-semibold uppercase">{{ $total_score }} </span>
+                    </td>
+                    <td class="px-6 py-3">
+                        <span class="font-semibold uppercase">{{ $passing_marks }} / {{ $full_marks }} </span>
+                    </td>
+                    <td class="px-6 py-3">
+                        @if($subjectValue['score_marks'] >= $subjectValue['passing_marks'])
                         <span class="bg-emerald-100 text-emerald-700 rounded-full px-3 py-1">Validé</span>
                         @else
                         <span class="bg-red-100 text-red-700 rounded-full px-3 py-1">Non validé</span>
