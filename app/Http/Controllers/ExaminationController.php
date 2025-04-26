@@ -635,4 +635,35 @@ class ExaminationController extends Controller
         return view('student.exam_result', $data);
     }
 
+    public function parentStudentExamResult($student_id): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
+    {
+        $data['getStudent'] = User::getSingle($student_id);
+        $result = array();
+        $getExam = MarkRegisterModel::getExam($student_id);
+        foreach ($getExam as $examValue) {
+            $dataExam = array();
+            $dataExam['exam_name'] = $examValue->exam_name;
+            $getExamSubject = MarkRegisterModel::getExamSubject($examValue->exam_id, $student_id);
+            $dataSubject = array();
+            foreach ($getExamSubject as $examSubject) {
+                $totol_score =  $examSubject['class_work'] + $examSubject['test_work'] + $examSubject['home_work'] + $examSubject['exam_work'];
+                $dataSub = array();
+                $dataSub['subject_name'] = $examSubject['subject_name'];
+                $dataSub['class_work'] = $examSubject['class_work'];
+                $dataSub['test_work'] = $examSubject['test_work'];
+                $dataSub['home_work'] = $examSubject['home_work'];
+                $dataSub['exam_work'] = $examSubject['exam_work'];
+                $dataSub['score_marks'] = $totol_score;
+                $dataSub['passing_marks'] = $examSubject['passing_marks'];
+                $dataSub['full_marks'] = $examSubject['full_marks'];
+                $dataSubject[] = $dataSub;
+            }
+            $dataExam['subject'] = $dataSubject;
+            $result[] = $dataExam;
+        }
+        $data['getExamResultStudent'] = $result;
+        $data['header_title'] = "Ses résultats d'examens";
+        return view('parent.exam_result', $data);
+    }
+
 }

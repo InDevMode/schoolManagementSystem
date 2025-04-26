@@ -322,6 +322,7 @@ class User extends Authenticatable
 
         return $results->where('users.is_delete', '=', 0)
             ->orderBy('users.id', 'desc')
+            ->groupBy('users.id')
             ->paginate($perPage);
     }
 
