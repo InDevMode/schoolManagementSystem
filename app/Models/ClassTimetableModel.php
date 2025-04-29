@@ -16,12 +16,12 @@ class ClassTimetableModel extends Model
         'start_time',
         'end_time',
         'room_number',
-    ];
-
-    protected $hidden = [
         'class_id',
         'subject_id',
         'week_id',
+    ];
+
+    protected $hidden = [
     ];
 
     static public function getClassTimetable(int $class_id, int $subject_id, int $week_id)

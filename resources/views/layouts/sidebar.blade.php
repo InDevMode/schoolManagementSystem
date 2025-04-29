@@ -175,6 +175,7 @@
                         </div>
                         <!-- Dropdown Menu End -->
                     </li>
+
                     <li>
                         <a
                             class="group relative flex items-center gap-2.5 rounded-md px-4 py-2 font-medium text-violet-600 duration-300 ease-in-out hover:bg-violet-600 dark:hover:bg-meta-4"
@@ -230,7 +231,18 @@
                                             class="{{ Request::Segment(3) == 'marks_register' ? 'group-hover:text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}">Registres</span>
                                     </a>
                                 </li>
-
+                                <li>
+                                    <a
+                                        class="group relative flex items-center gap-2.5 rounded-md px-4 py-2 font-medium duration-300 ease-in-out hover:bg-violet-700 text-bodydark1 dark:hover:bg-meta-4 {{ Request::Segment(3) == 'marks_grade' ? 'bg-violet-600 text-bodydark1' : 'text-violet-600' }}"
+                                        href="{{ url('admin/examinations/marks_grade/list') }}"
+                                    >
+                                        <span
+                                            class="text-[18px] py-1 px-2 rounded {{ Request::Segment(3) == 'marks_grade' ? 'group-hover:text-bodydark1 text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}"><i
+                                                class="fa-solid fa-chevron-right"></i></span>
+                                        <span
+                                            class="{{ Request::Segment(3) == 'marks_grade' ? 'group-hover:text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}">Notes</span>
+                                    </a>
+                                </li>
                             </ul>
                         </div>
                         <!-- Dropdown Menu End -->
@@ -320,7 +332,6 @@
                                 class="{{ Request::Segment(2) == 'marks_register' ? 'group-hover:text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}">Registres</span>
                         </a>
                     </li>
-
                     @elseif(Auth::user()->user_type === 3)
                     <li>
                         <a

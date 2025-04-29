@@ -249,7 +249,7 @@
             </div>
         </form>
         @else
-        <div class="flex justify-center py-3">
+        <div class="flex justify-center py-3 text-gray-700 dark:text-bodydark1 text-sm">
             Cette assignation n'est pas active
         </div>
         @endif

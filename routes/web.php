@@ -140,6 +140,14 @@ Route::group(['middleware' => 'admin'], function () {
     Route::post('admin/examinations/marks_register/add', [ExaminationController::class, 'addMarksRegister']);
     Route::post('admin/examinations/marks_register/addSingleSubject', [ExaminationController::class, 'addSingleMarksRegister']);
 
+    // Marks grade url
+    Route::get('admin/examinations/marks_grade/list', [ExaminationController::class, 'listMarksGrade']);
+    Route::get('admin/examinations/marks_grade/add', [ExaminationController::class, 'addMarksGrade']);
+    Route::post('admin/examinations/marks_grade/add', [ExaminationController::class, 'createMarksGrade']);
+    Route::get('admin/examinations/marks_grade/edit/{id}', [ExaminationController::class, 'editMarksGrade']);
+    Route::post('admin/examinations/marks_grade/edit/{id}', [ExaminationController::class, 'updateMarksGrade']);
+    Route::get('admin/examinations/marks_grade/delete/{id}', [ExaminationController::class, 'deleteMarksGrade']);
+
 });
 
 Route::group(['middleware' => 'teacher'], function () {

@@ -44,6 +44,9 @@ class User extends Authenticatable
         'marital_status',
         'permanent_address',
         'profile_picture',
+        'class_id',
+        'parent_id',
+        'teacher_id',
     ];
 
     /**
@@ -54,9 +57,6 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'user_type',
-        'class_id',
-        'parent_id',
-        'teacher_id',
         'is_delete',
         'remember_token',
     ];

@@ -273,6 +273,7 @@
                             </button>
                             @php
                             $percentage = ($totalStudentMark * 100) / $totalFullMarks;
+                            $getGrade = \App\Models\MarksGradeModel::getGrade($percentage);
                             @endphp
                             <div
                                 class="w-full rounded-lg border-[1.5px] border-stroke bg-gray-100 px-5 py-2.5 font-normal text-black outline-none transition disabled:cursor-default disabled:bg-white dark:border-form-strokedark dark:bg-form-input dark:text-white">
@@ -280,7 +281,12 @@
                                 <p>Note totale => {{ $totalFullMarks }}</p>
                                 <p>Note de passage => {{ $totalPassingMarks }}</p>
                                 <p>Pourcentage => {{ round($percentage, 2) }} %</p>
-                                <p>Décision => {{ ($totalStudentMark >= $totalPassingMarks) ? 'Admis ' : 'Refusé' }}</p>
+                                @if(!empty($getGrade))
+                                <p>Note => {{ $getGrade }}
+                                @endif
+                                <p class="{{ $totalStudentMark >= $totalPassingMarks ? 'text-emerald-400' : 'text-red-500 font-bold' }}">
+                                    Décision => {{ $totalStudentMark >= $totalPassingMarks ? 'Admis' : 'Refusé' }}
+                                </p>
                             </div>
                         </td>
                     </tr>
@@ -303,7 +309,6 @@
 </div>
 @endsection
 
-@section('script')
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         setupFormHandlers();
@@ -398,6 +403,6 @@
         }, 5000);
     }
 </script>
-@endsection
+
 
 
