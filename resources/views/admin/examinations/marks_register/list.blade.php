@@ -177,6 +177,8 @@
                         $getMark->test_work;
                         }
                         $totalStudentMark = $totalStudentMark + $totalMark;
+                        $percentage = ($totalStudentMark * 100) / $totalFullMarks;
+                        $getGrade = \App\Models\MarksGradeModel::getGrade($percentage);
                         @endphp
                         <td class="px-6 py-3">
                             <div>
@@ -247,8 +249,13 @@
                                         </p>
                                         <p class="flex justify-between">
                                             <span>Note de passage =></span><span>{{ $subject->passing_marks}}</span></p>
+                                        @if(!empty($getGrade))
+                                        <p>Grade => {{ $getGrade }}
+                                        @endif
                                         <p class="flex justify-between">
-                                            <span>Décision =></span><span>{{ ($totalMark >= $subject->passing_marks ) ? 'Admis' : 'Refusé'}}</span>
+                                            <span>Décision =></span><span class="{{ $totalMark >= $subject->passing_marks
+                                            ? 'font-bold text-emerald-500'
+                                            : 'text-red-500 font-bold' }}">{{ ($totalMark >= $subject->passing_marks ) ? 'Admis' : 'Refusé'}}</span>
                                         </p>
                                     </div>
                             </div>
@@ -282,9 +289,9 @@
                                 <p>Note de passage => {{ $totalPassingMarks }}</p>
                                 <p>Pourcentage => {{ round($percentage, 2) }} %</p>
                                 @if(!empty($getGrade))
-                                <p>Note => {{ $getGrade }}
+                                <p>Grade => {{ $getGrade }}
                                 @endif
-                                <p class="{{ $totalStudentMark >= $totalPassingMarks ? 'text-emerald-400' : 'text-red-500 font-bold' }}">
+                                <p class="{{ $totalStudentMark >= $totalPassingMarks ? 'text-emerald-400 font-bold' : 'text-red-500 font-bold' }}">
                                     Décision => {{ $totalStudentMark >= $totalPassingMarks ? 'Admis' : 'Refusé' }}
                                 </p>
                             </div>

@@ -83,6 +83,8 @@
                 $total_score = $total_score + $subjectValue['score_marks'];
                 $passing_marks = $passing_marks + $subjectValue['passing_marks'];
                 $full_marks = $full_marks + $subjectValue['full_marks'];
+                $percentage = ($total_score * 100) / $full_marks;
+                $getGrade = \App\Models\MarksGradeModel::getGrade($percentage);
                 @endphp
                 <tr class="hover:bg-violet-100 dark:hover:bg-gray-700 transition duration-300 border-b dark:border-gray-600 hover:border-violet-400 dark:text-gray-200 text-gray-500">
                     <td class="font-semibold px-6 py-3">
@@ -117,8 +119,17 @@
                 @endforeach
                 <tr class="bg-violet-100 text-violet-700">
                     <td class="px-6 py-3">
-                        <span
-                            class="font-semibold uppercase">Pourcentage : {{ round(($total_score * 100) / $full_marks, 2) }} %</span>
+                        <div class="flex flex-col space-y-2">
+                            <span class="font-semibold uppercase">
+                                Pourcentage : {{ round(($total_score * 100) / $full_marks, 2) }} %
+                            </span>
+
+                            <hr class="border-t border-gray-300">
+
+                            <span class="text-sm text-gray-700">
+                                Grade : {{ $getGrade }}
+                            </span>
+                        </div>
                     </td>
                     <td class="px-6 py-3">
                         <span class="font-semibold uppercase">{{ $total_class_work }} </span>
