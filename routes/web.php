@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\ClassController;
@@ -147,6 +148,9 @@ Route::group(['middleware' => 'admin'], function () {
     Route::get('admin/examinations/marks_grade/edit/{id}', [ExaminationController::class, 'editMarksGrade']);
     Route::post('admin/examinations/marks_grade/edit/{id}', [ExaminationController::class, 'updateMarksGrade']);
     Route::get('admin/examinations/marks_grade/delete/{id}', [ExaminationController::class, 'deleteMarksGrade']);
+
+    // Attendance student url
+    Route::get('admin/attendance/student/list', [AttendanceController::class, 'attendanceStudent']);
 
 });
 
