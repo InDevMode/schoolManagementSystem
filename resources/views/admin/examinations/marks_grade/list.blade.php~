@@ -1,0 +1,170 @@
+@extends('layouts.app')
+@section('content')
+<div class="m-5">
+    <!-- Breadcrumb Start -->
+    <div
+        class="mb-6 mt-3 flex flex-col gap-3 sm:flex-row items-center justify-between"
+    >
+        <h2 class="uppercase font-bold text-black dark:text-bodydark">
+            Liste des notes
+        </h2>
+        <nav>
+            <ol class="flex items-center gap-2">
+                <li>
+                    <span class="font-medium text-violet-600"><i class="fa-solid fa-flask-vial"></i></span>
+                </li>
+                <li>
+                    /<a class="font-medium hover:text-violet-600 transition duration-300"
+                        href="{{ url('admin/dashboard') }}"> Dashboard</a>
+                </li>
+                <li>
+                    /<a class="font-medium hover:text-violet-600 transition duration-300"
+                        href="{{ url('admin/examinations/marks_grade/add') }}"> Créer une note</a>
+                </li>
+            </ol>
+        </nav>
+    </div>
+    @include('message')
+    <div
+        class="rounded-lg border border-stroke bg-white px-5 pb-2.5 pt-6 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1"
+    >
+        <div class="relative overflow rounded-lg z-10">
+            <table class="w-full text-[12px] text-left rtl:text-right text-white dark:text-white">
+                <thead
+                    class="rounded-sm bg-violet-600 uppercase text-white dark:bg-meta-4"
+                >
+                <tr>
+                    <th scope="col" class="px-6 py-3">
+                        Nom
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Pourcentage de
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Pourcentage à
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Crée par
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Date de Création
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Date de Modification
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Actions
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach($getMarksGrade as $marksGrade)
+                <tr class="hover:bg-violet-100 dark:hover:bg-gray-700 transition duration-300 border-b dark:border-gray-600 hover:border-violet-400 dark:text-gray-200 text-gray-500">
+                    <td class="px-6 py-3">
+                        {{ $marksGrade->name }}
+                    </td>
+                    <td class="px-6 py-3">
+                        {{ $marksGrade->percent_from }}
+                    </td>
+                    <td class="px-6 py-3">
+                        {{ $marksGrade->percent_to }}
+                    </td>
+                    <td class="px-6 py-3">
+                        {{ $marksGrade->created_name }}
+                    </td>
+                    <td class="px-6 py-3">
+                        {{ \Carbon\Carbon::parse($marksGrade->created_at)->locale('fr')->translatedFormat('d M Y H:i:s') }}
+                    </td>
+                    <td class="px-6 py-3">
+                        {{ \Carbon\Carbon::parse($marksGrade->updated_at)->locale('fr')->translatedFormat('d M Y H:i:s') }}
+                    </td>
+                    <td class="px-6 py-3">
+                        <div class="relative inline-block text-left" x-data="{ open: false }">
+                            <div>
+                                <button
+                                    type="button"
+                                    class="group inline-flex w-full justify-center gap-x-1.5 rounded-lg shadow-md bg-white dark:bg-gray-800 border dark:border-gray-600 dark:hover:text-violet-600 px-3 py-2 text-sm font-semibold text-gray-700 hover:text-violet-600 dark:text-gray-200 hover:bg-gray-100"
+                                    @click="open = !open"
+                                    id="menu-button"
+                                    aria-expanded="true"
+                                    aria-haspopup="true">
+                                    Actions
+                                    <svg class="-mr-1 size-5 group-hover:text-violet-600 text-gray-400"
+                                         viewBox="0 0 20 20" fill="currentColor"
+                                         aria-hidden="true">
+                                        <path fill-rule="evenodd"
+                                              d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z"
+                                              clip-rule="evenodd"/>
+                                    </svg>
+                                </button>
+                            </div>
+                            <div
+                                class="absolute right-0 z-50 mt-2 w-56 origin-top-right rounded-md bg-white dark:bg-gray-800 ring-1 shadow-lg ring-black/5 focus:outline-hidden"
+                                role="menu"
+                                aria-orientation="vertical"
+                                aria-labelledby="menu-button"
+                                tabindex=""
+                                x-show="open"
+                                @click.away="open = false"
+                                x-transition
+                            >
+                                <div class="py-1">
+                                    <a href="{{ url('admin/examinations/marks_grade/edit', $marksGrade->id) }}"
+                                       class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:text-emerald-400 dark:hover:text-emerald-400"
+                                       role="menuitem">Modifier</a>
+                                    <button
+                                        class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:text-red-400 dark:hover:text-red-400">
+                                        Supprimer
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                @endforeach
+                @if($getMarksGrade->isEmpty())
+                <tr class="text-center text-gray-700 dark:text-bodydark1">
+                    <td colspan="6" class="py-3"> Aucune note trouvée.</td>
+                </tr>
+                @endif
+                <tr class="">
+                    <td colspan="7"
+                        class="px-6 py-3"
+                    >
+                        <div class="mt-3 mb-3 flex items-center justify-between">
+                            <h2 class="text-title-sm uppercase font-bold text-black dark:text-white">
+                                Total
+                            </h2>
+                            <nav>
+                                <ol class="flex items-center bg-white shadow-lg border border-gray-200 dark:border-gray-600 w-fit dark:bg-black py-2 px-8 rounded">
+                                    <li>
+                                        <p class="text-md font-semibold text-gray-700 dark:text-gray-200">
+                                            {{ $getMarksGrade->total() }}
+                                        </p>
+                                    </li>
+                                </ol>
+                            </nav>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+@endsection
+
+<script>
+    function toggleMenu(event, index) {
+        event.stopPropagation();
+        document.querySelectorAll('.relative .hidden').forEach(menu => menu.classList.add('hidden'));
+        const menu = document.getElementById('dropdown-menu-' + index);
+        menu.classList.toggle('hidden');
+    }
+
+    document.addEventListener('click', function () {
+        document.querySelectorAll('.relative .hidden').forEach(menu => menu.classList.add('hidden'));
+    });
+</script>
+
+

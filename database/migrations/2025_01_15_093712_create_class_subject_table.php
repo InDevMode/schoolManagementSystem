@@ -16,8 +16,8 @@ return new class extends Migration
             $table->Integer('class_id')->unsigned()->foreign('class_id')->references('id')->on('class')->onDelete('cascade');
             $table->Integer('subject_id')->unsigned()->foreign('subject_id')->references('id')->on('subject')->onDelete('cascade');
             $table->Integer('created_by')->unsigned()->foreign('created_by')->references('id')->on('users')->onDelete('cascade');
-            $table->tinyInteger('status')->default(0)->comment('0: Inactive, 1: Active');;
-            $table->tinyInteger('is_delete')->default(0)->comment('0: isntDeleted, 1: Deleted');;
+            $table->tinyInteger('status')->default(0)->comment('0: Inactive, 1: Active');
+            $table->tinyInteger('is_delete')->default(0)->comment('0: isntDeleted, 1: Deleted');
             $table->timestamps();
         });
     }

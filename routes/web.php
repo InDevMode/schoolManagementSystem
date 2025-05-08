@@ -151,6 +151,9 @@ Route::group(['middleware' => 'admin'], function () {
 
     // Attendance student url
     Route::get('admin/attendance/student/list', [AttendanceController::class, 'attendanceStudent']);
+    Route::post('admin/attendance/student/save', [AttendanceController::class, 'attendanceStudentSave']);
+    // Attendance report url
+    Route::get('admin/attendance/report/list', [AttendanceController::class, 'attendanceReport']);
 
 });
 
