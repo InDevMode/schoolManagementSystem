@@ -61,6 +61,7 @@ class AttendanceController extends Controller
     {
         $data['header_title'] = 'Rapport de présences';
         $data['getClass'] = ClassModel::getClass();
+        $data['getStudentAttendance'] = StudentAttendanceModel::getStudentAttendance(10);
         return view('admin.attendance.report', $data);
     }
 
