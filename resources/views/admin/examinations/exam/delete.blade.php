@@ -8,13 +8,13 @@
 
             <!-- Buttons -->
             <div class="mt-4 flex justify-end space-x-3">
-                <button @click="openModal = false"
+                <button 
                         class="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400">
                     Annuler
                 </button>
 
                 <!-- ✅ Correction : Utilisation de x-bind:href -->
-                <a :href="'{{ url('admin/examinations/exam/delete') }}/' + deleteId"
+                <a :href=""
                    class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700">
                     Oui
                 </a>

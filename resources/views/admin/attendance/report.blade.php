@@ -108,7 +108,7 @@
                             <option value="1" class="text-body" {{ ( Request::get('attendance_type') == 1) ? 'selected' : '' }}>Présent(e)</option>
                             <option value="2" class="text-body" {{ ( Request::get('attendance_type') == 2) ? 'selected' : '' }}>Absent(e)</option>
                             <option value="3" class="text-body" {{ ( Request::get('attendance_type') == 3) ? 'selected' : '' }}>Retard</option>
-                            <option value="4" class="text-body" {{ ( Request::get('attendance_type') == 4') ? 'selected' : '' }}>Demi-journée</option>
+                            <option value="4" class="text-body" {{ ( Request::get('attendance_type') == 4) ? 'selected' : '' }}>Demi-journée</option>
                         </select>
                         <span
                             class="absolute right-4 top-1/2 z-30 -translate-y-1/2"
