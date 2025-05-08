@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\ClassController;
@@ -140,6 +141,20 @@ Route::group(['middleware' => 'admin'], function () {
     Route::post('admin/examinations/marks_register/add', [ExaminationController::class, 'addMarksRegister']);
     Route::post('admin/examinations/marks_register/addSingleSubject', [ExaminationController::class, 'addSingleMarksRegister']);
 
+    // Marks grade url
+    Route::get('admin/examinations/marks_grade/list', [ExaminationController::class, 'listMarksGrade']);
+    Route::get('admin/examinations/marks_grade/add', [ExaminationController::class, 'addMarksGrade']);
+    Route::post('admin/examinations/marks_grade/add', [ExaminationController::class, 'createMarksGrade']);
+    Route::get('admin/examinations/marks_grade/edit/{id}', [ExaminationController::class, 'editMarksGrade']);
+    Route::post('admin/examinations/marks_grade/edit/{id}', [ExaminationController::class, 'updateMarksGrade']);
+    Route::get('admin/examinations/marks_grade/delete/{id}', [ExaminationController::class, 'deleteMarksGrade']);
+
+    // Attendance student url
+    Route::get('admin/attendance/student/list', [AttendanceController::class, 'attendanceStudent']);
+    Route::post('admin/attendance/student/save', [AttendanceController::class, 'attendanceStudentSave']);
+    // Attendance report url
+    Route::get('admin/attendance/report/list', [AttendanceController::class, 'attendanceReport']);
+
 });
 
 Route::group(['middleware' => 'teacher'], function () {
@@ -218,4 +233,6 @@ Route::group(['middleware' => 'parent'], function () {
     // Parent student class timetable
     Route::get('parent/my_student/{class_id}/subject/{subject_id}/timetable/student/{student_id}', [ClassTimetableController::class, 'parentStudentSubjectTimetable']);
 
+    // Parent student exam result url
+    Route::get('parent/my_student/exam_result/{student_id}/result', [ExaminationController::class, 'parentStudentExamResult']);
 });

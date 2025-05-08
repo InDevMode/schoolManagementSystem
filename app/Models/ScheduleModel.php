@@ -18,13 +18,13 @@ class ScheduleModel extends Model
         'room_number',
         'full_marks',
         'passing_marks',
-    ];
-
-    protected $hidden = [
         'exam_id',
         'class_id',
         'subject_id',
         'created_by',
+    ];
+
+    protected $hidden = [
         'is_delete'
     ];
 

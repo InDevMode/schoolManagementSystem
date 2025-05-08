@@ -391,7 +391,7 @@ class User extends Authenticatable
             ->get();
     }
 
-    static public function getAttendance(int $student_id, int $class_id, string $date)
+    static public function getAttendance(int $student_id, int $class_id, string $date): void
     {
         return StudentAttendanceModel::checkAlreadyAttendance($student_id, $class_id, $date);
     }

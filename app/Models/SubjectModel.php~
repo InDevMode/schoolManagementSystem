@@ -17,10 +17,10 @@ class SubjectModel extends Model
         'name',
         'type',
         'status',
+        'created_by',
     ];
 
     protected $hidden = [
-        'created_by',
         'is_delete',
     ];
 

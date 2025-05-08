@@ -250,6 +250,9 @@
                                     <a href="{{ url('parent/my_student/exam_timetable/'.$myStudent -> id.'/subject' ) }}"
                                        class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:text-violet-600 dark:hover:text-violet-600"
                                        role="menuitem">Ses Examens</a>
+                                    <a href="{{ url('parent/my_student/exam_result/'.$myStudent -> id.'/result' ) }}"
+                                       class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:text-violet-600 dark:hover:text-violet-600"
+                                       role="menuitem">Ses Résultats</a>
                                     <a href="{{ url('parent/my_student/calendar/'.$myStudent -> id.'/subject' ) }}"
                                        class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:text-violet-600 dark:hover:text-violet-600"
                                        role="menuitem">Son Calendrier</a>

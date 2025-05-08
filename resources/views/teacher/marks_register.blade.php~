@@ -293,7 +293,7 @@
                                 <p>Pourcentage => {{ round($percentage, 2) }} %</p>
                                 @if(!empty($getGrade))
                                 <p>Note => {{ $getGrade }}
-                                @endif
+                                    @endif
                                 <p class="{{ $totalStudentMark >= $totalPassingMarks ? 'text-emerald-400 font-bold' : 'text-red-500 font-bold' }}">
                                     Décision => {{ $totalStudentMark >= $totalPassingMarks ? 'Admis' : 'Refusé' }}
                                 </p>

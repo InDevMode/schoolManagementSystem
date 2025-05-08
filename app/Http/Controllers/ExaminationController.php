@@ -6,6 +6,7 @@ use App\Models\ClassModel;
 use App\Models\ClassSubjectModel;
 use App\Models\ExaminationModel;
 use App\Models\MarkRegisterModel;
+use App\Models\MarksGradeModel;
 use App\Models\ScheduleModel;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -615,7 +616,7 @@ class ExaminationController extends Controller
             $getExamSubject = MarkRegisterModel::getExamSubject($examValue->exam_id, Auth::user()->id);
             $dataSubject = array();
             foreach ($getExamSubject as $examSubject) {
-                $totol_score =  $examSubject['class_work'] + $examSubject['test_work'] + $examSubject['home_work'] + $examSubject['exam_work'];
+                $totol_score = $examSubject['class_work'] + $examSubject['test_work'] + $examSubject['home_work'] + $examSubject['exam_work'];
                 $dataSub = array();
                 $dataSub['subject_name'] = $examSubject['subject_name'];
                 $dataSub['class_work'] = $examSubject['class_work'];
@@ -635,4 +636,116 @@ class ExaminationController extends Controller
         return view('student.exam_result', $data);
     }
 
+    public function parentStudentExamResult($student_id): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
+    {
+        $data['getStudent'] = User::getSingle($student_id);
+        $result = array();
+        $getExam = MarkRegisterModel::getExam($student_id);
+        foreach ($getExam as $examValue) {
+            $dataExam = array();
+            $dataExam['exam_name'] = $examValue->exam_name;
+            $getExamSubject = MarkRegisterModel::getExamSubject($examValue->exam_id, $student_id);
+            $dataSubject = array();
+            foreach ($getExamSubject as $examSubject) {
+                $totol_score = $examSubject['class_work'] + $examSubject['test_work'] + $examSubject['home_work'] + $examSubject['exam_work'];
+                $dataSub = array();
+                $dataSub['subject_name'] = $examSubject['subject_name'];
+                $dataSub['class_work'] = $examSubject['class_work'];
+                $dataSub['test_work'] = $examSubject['test_work'];
+                $dataSub['home_work'] = $examSubject['home_work'];
+                $dataSub['exam_work'] = $examSubject['exam_work'];
+                $dataSub['score_marks'] = $totol_score;
+                $dataSub['passing_marks'] = $examSubject['passing_marks'];
+                $dataSub['full_marks'] = $examSubject['full_marks'];
+                $dataSubject[] = $dataSub;
+            }
+            $dataExam['subject'] = $dataSubject;
+            $result[] = $dataExam;
+        }
+        $data['getExamResultStudent'] = $result;
+        $data['header_title'] = "Ses résultats d'examens";
+        return view('parent.exam_result', $data);
+    }
+
+    public function listMarksGrade(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
+    {
+        $data['header_title'] = "Liste des notes";
+        $data['getMarksGrade'] = MarksGradeModel::getMarksGrade(10);
+        return view('admin.examinations.marks_grade.list', $data);
+    }
+
+    public function addMarksGrade(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
+    {
+        $data['header_title'] = "Créer une note";
+        return view('admin.examinations.marks_grade.add', $data);
+    }
+
+    public function createMarksGrade(Request $request): \Illuminate\Http\RedirectResponse
+    {
+        try {
+            $existingMarksGradeName = MarksGradeModel::getNameSingle($request->name);
+
+            if ($existingMarksGradeName) {
+                return redirect()->back()->with('error', 'Une note avec ce nom existe déjà.');
+            }
+
+            $marksGrade = new MarksGradeModel();
+            $marksGrade->name = trim($request->name);
+            $marksGrade->percent_from = trim($request->percent_from);
+            $marksGrade->percent_to = trim($request->percent_to);
+            $marksGrade->created_by = auth()->user()->id;
+            $marksGrade->save();
+
+            return redirect('admin/examinations/marks_grade/list')->with('success', 'Cette note a été créé avec succès.');
+        } catch (\Exception $e) {
+            Log::error("Erreur lors de la création d'une note : " . $e->getMessage());
+
+            return redirect()->back()->with('error', 'Vos informations ne sont pas correctes. Veuillez réessayer.');
+        }
+
+    }
+
+    public function editMarksGrade($id): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
+    {
+        $data['header_title'] = "Modifier une note";
+        $data['getMarksGrade'] = MarksGradeModel::getSingle($id);
+        return view('admin.examinations.marks_grade.edit', $data);
+    }
+
+    public function updateMarksGrade(Request $request, $id): \Illuminate\Http\RedirectResponse
+    {
+        try {
+            $existingMarksGradeName = MarksGradeModel::checkNameSingle($request->name, $id);
+
+            if ($existingMarksGradeName) {
+                return redirect()->back()->with('error', 'Une note avec ce nom existe déjà.');
+            }
+
+            $marksGrade = MarksGradeModel::getSingle($id);
+            $marksGrade->name = trim($request->name);
+            $marksGrade->percent_from = trim($request->percent_from);
+            $marksGrade->percent_to = trim($request->percent_to);
+            $marksGrade->save();
+
+            return redirect('admin/examinations/marks_grade/list')->with('success', 'Cette note a été modifiée avec succès.');
+        } catch (\Exception $e) {
+            Log::error("Erreur lors de la modification d'une note : " . $e->getMessage());
+
+            return redirect()->back()->with('error', 'Vos informations ne sont pas correctes. Veuillez réessayer.');
+        }
+    }
+
+    public function deleteMarksGrade($id): \Illuminate\Http\RedirectResponse
+    {
+        try {
+            $marksGrade = MarksGradeModel::getSingle($id);
+            $marksGrade->delete();
+
+            return redirect('admin/examinations/marks_grade/list')->with('success', 'Cette note a été supprimée avec succès.');
+        } catch (\Exception $e) {
+            Log::error("Erreur lors de la suppression d'une note : " . $e->getMessage());
+
+            return redirect()->back()->with('error', 'Vos informations ne sont pas correctes. Veuillez réessayer.');
+        }
+    }
 }

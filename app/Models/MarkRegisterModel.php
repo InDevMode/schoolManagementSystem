@@ -16,14 +16,14 @@ class MarkRegisterModel extends Model
         'exam_work',
         'home_work',
         'class_work',
-    ];
-
-    protected $hidden = [
         'student_id',
         'exam_id',
         'class_id',
         'subject_id',
         'created_by',
+    ];
+
+    protected $hidden = [
         'is_delete'
     ];
 
