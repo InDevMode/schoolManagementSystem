@@ -186,6 +186,10 @@ Route::group(['middleware' => 'teacher'], function () {
     Route::post('teacher/add_marks_register', [ExaminationController::class, 'addTeacherMarkRegister']);
     Route::post('teacher/add_single_marks_register', [ExaminationController::class, 'addSingleTeacherMarkRegister']);
 
+    // Student attendance url
+    Route::get('teacher/attendance/student/list', [AttendanceController::class, 'attendanceStudentTeacher']);
+    Route::post('teacher/attendance/student/save', [AttendanceController::class, 'attendanceStudentTeacherSave']);
+
 
 });
 

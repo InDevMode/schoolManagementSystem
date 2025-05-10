@@ -15,7 +15,7 @@
                 </li>
                 <li>
                     /<a class="font-medium hover:text-violet-600 transition duration-300"
-                        href="{{ url('admin/dashboard') }}"> Dashboard</a>
+                        href="{{ url('teacher/dashboard') }}"> Dashboard</a>
                 </li>
             </ol>
         </nav>
@@ -41,8 +41,8 @@
                         >
                             <option selected disabled value="" class="text-body">Choisissez une classe</option>
                             @foreach($getClass as $class)
-                            <option value="{{ $class -> id }}" class="text-body" {{ ( Request::get(
-                            'class_id') == $class->id) ? 'selected' : '' }}>{{ $class -> name }}</option>
+                            <option value="{{ $class -> class_id }}" class="text-body" {{ ( Request::get(
+                            'class_id') == $class->class_id) ? 'selected' : '' }}>{{ $class -> class_name }}</option>
                             @endforeach
                         </select>
                         <span
@@ -106,7 +106,7 @@
                     </button>
                 </div>
                 <div class="w-full">
-                    <a href="{{ url('admin/attendance/student/list') }}"
+                    <a href="{{ url('teacher/attendance/student/list') }}"
                        class="flex w-full justify-center rounded-lg bg-gray-500 px-3 py-2.5 font-medium text-gray hover:bg-opacity-90"
                     >
                         Réïnitialisez
@@ -205,7 +205,7 @@
                 formData.append('attendance_date', attendance_date);
                 formData.append('class_id', class_id);
 
-                fetch("{{ url('admin/attendance/student/save') }}", {
+                fetch("{{ url('teacher/attendance/student/save') }}", {
                     method: "POST",
                     headers: {"Accept": "application/json"}, // Ajout pour éviter les erreurs de format JSON
                     body: formData,

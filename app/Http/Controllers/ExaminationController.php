@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\ClassModel;
 use App\Models\ClassSubjectModel;
+use App\Models\ClassTeacherModel;
 use App\Models\ExaminationModel;
 use App\Models\MarkRegisterModel;
 use App\Models\MarksGradeModel;
@@ -217,7 +218,7 @@ class ExaminationController extends Controller
     public function myExamTimetableTeacher(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
     {
         $data['header_title'] = "Mon calendrier d'examens";
-        $getClass = ExaminationModel::getMyClassSubjectGroup(Auth::user()->id);
+        $getClass = ClassTeacherModel::getMyClassSubjectGroup(Auth::user()->id);
         $result = array();
 
         foreach ($getClass as $class) {
@@ -449,7 +450,7 @@ class ExaminationController extends Controller
     public function teacherMarkRegister(Request $request): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
     {
         $data['header_title'] = "Registre des notes";
-        $data['getClass'] = ExaminationModel::getMyClassSubjectGroup(Auth::user()->id);
+        $data['getClass'] = ClassTeacherModel::getMyClassSubjectGroup(Auth::user()->id);
         $data['getExams'] = ScheduleModel::getExamTeacher(Auth::user()->id);
         if (!empty($request->exam_id) && !empty($request->class_id)) {
             $data['getSubject'] = ScheduleModel::getSubject($request->exam_id, $request->class_id);

@@ -163,4 +163,19 @@ class ClassTeacherModel extends Model
             ->get();
     }
 
+        static public function getMyClassSubjectGroup(int $teacher_id)
+    {
+        return ClassTeacherModel::select(
+            'class_teacher.*',
+            'class.id as class_id',
+            'class.name as class_name',
+        )
+            ->join('class', 'class.id', '=', 'class_teacher.class_id')
+            ->where('class_teacher.is_delete', 0)
+            ->where('class_teacher.status', 1)
+            ->where('class_teacher.teacher_id', '=', $teacher_id)
+            ->groupBy('class_teacher.id')
+            ->get();
+    }
+
 }
