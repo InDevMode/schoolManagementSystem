@@ -31,14 +31,21 @@
         class="rounded-lg border border-stroke bg-white px-5 pb-2.5 pt-6 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5"
     >
         <form action="" method="get">
-            <div class="mb-4.5 grid grid-cols-2 xl:grid-cols-6 gap-3 items-center">
+            <div class="mb-4.5 grid grid-cols-2 xl:grid-cols-5 gap-3 items-center">
                   <div class="w-full">
                         <input
                             type="text" id="student_name" name="student_name" value="{{ Request::get('student_name') }}"
-                            placeholder="nom et prénoms..."
+                            placeholder="nom..."
                             class="w-full rounded-lg border-[1.5px] border-stroke bg-gray-100 px-5 py-2.5 font-normal text-black outline-none transition focus:border-violet-600 active:border-violet-600 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-violet-600"
                         />
-                    </div>
+                  </div>
+                  <div class="w-full">
+                    <input
+                        type="text" id="student_last_name" name="student_last_name" value="{{ Request::get('student_last_name') }}"
+                        placeholder="prénoms...."
+                        class="w-full rounded-lg border-[1.5px] border-stroke bg-gray-100 px-5 py-2.5 font-normal text-black outline-none transition focus:border-violet-600 active:border-violet-600 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-violet-600"
+                    />
+              </div>
                 <div class="w-full">
                     <div
                         x-data="{ isOptionSelected: false }"

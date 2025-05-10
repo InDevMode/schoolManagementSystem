@@ -43,18 +43,12 @@ class StudentAttendanceModel extends Model
             ->where('class.status', '=', 1);
 
         $filters = [
-            'class.name' => strtolower(Request::get('class_id')),
+            'student.name' => strtolower(Request::get('student_name')),
+            'student.last_name' => strtolower(Request::get('student_last_name')),
+            'attendances.class_id' => strtolower(Request::get('class_id')),
             'attendances.attendance_date' => strtolower(Request::get('attendance_date')),
             'attendances.created_at' => strtolower(Request::get('created_at')),
         ];
-
-        if(!empty(Request::get('student_name'))){
-            $student_name = Request::get('student_name');
-           $results->where(function ($query) use ($student_name) {
-                $query->where('student.name', 'like', '%' . $student_name . '%')
-                    ->orWhere('student.last_name', 'like', '%' . $student_name . '%');
-            });
-        }
 
         foreach ($filters as $column => $value) {
             if (!empty($value)) {
@@ -62,12 +56,12 @@ class StudentAttendanceModel extends Model
             }
         }
 
-        $attendanceType = Request::get('atendance_type');
+        $attendanceType = Request::get('attendance_type');
         if (in_array($attendanceType, ['1', '2', '3', '4'], true)) {
             $results->where('attendances.attendance_type', $attendanceType);
         }
 
-       return $results->orderBy('attendances.id', 'desc')
+        return $results->orderBy('attendances.id', 'desc')
             ->paginate($perpage);
     }
 

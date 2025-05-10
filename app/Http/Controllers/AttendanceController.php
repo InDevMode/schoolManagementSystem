@@ -29,9 +29,9 @@ class AttendanceController extends Controller
 
             $checkAttendance = StudentAttendanceModel::checkAlreadyAttendance($request->student_id, $request->class_id, $request->attendance_date);
 
-            if(!empty($checkAttendance)){
+            if (!empty($checkAttendance)) {
                 $attendance = $checkAttendance;
-            }else{
+            } else {
                 // Création d'une nouvelle entrée dans la base de données
                 $attendance = new StudentAttendanceModel();
                 $attendance->student_id = $request->student_id;
