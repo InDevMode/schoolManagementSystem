@@ -152,7 +152,8 @@ Route::group(['middleware' => 'admin'], function () {
     // Attendance student url
     Route::get('admin/attendance/student/list', [AttendanceController::class, 'attendanceStudent']);
     Route::post('admin/attendance/student/save', [AttendanceController::class, 'attendanceStudentSave']);
-    // Attendance report url
+
+    // Attendance report admin url
     Route::get('admin/attendance/report', [AttendanceController::class, 'attendanceReport']);
 
 });
@@ -190,6 +191,8 @@ Route::group(['middleware' => 'teacher'], function () {
     Route::get('teacher/attendance/student/list', [AttendanceController::class, 'attendanceStudentTeacher']);
     Route::post('teacher/attendance/student/save', [AttendanceController::class, 'attendanceStudentTeacherSave']);
 
+      // Attendance report teacher url
+    Route::get('teacher/attendance/report', [AttendanceController::class, 'attendanceReportTeacher']);
 
 });
 

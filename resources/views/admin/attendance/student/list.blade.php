@@ -21,7 +21,7 @@
         </nav>
     </div>
     @include('message')
-    <div class="pb-3 text-red-500 dark:text-red-400 font-semibold text-sm">Choisissez une classe et une date pour voir
+    <div class="pb-3 text-red-500 dark:text-red-400 font-semibold text-sm">Choisissez une classe et une date pour définir
         la présence d'un apprenant
     </div>
     <div

@@ -45,8 +45,7 @@ class ClassTeacherModel extends Model
             ->where('class_teacher.is_delete', 0)
             ->where('class.is_delete', 0)
             ->where('class.status', 1)
-            ->where('users.is_delete', 0)
-            ->where('users.status', 1);
+            ->where('users.is_delete', 0);
 
         $filters = [
             'class.name' => strtolower(Request::get('class_name')),

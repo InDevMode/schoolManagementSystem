@@ -110,4 +110,17 @@ class AttendanceController extends Controller
         }
     }
 
+        public function attendanceReportTeacher(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
+    {
+        $data['header_title'] = 'Rapport de présences';
+         $getClass = ClassTeacherModel::getMyClassSubjectGroup(Auth::user()->id);
+         $classArray = array();
+        foreach ($getClass as $class) {
+            $classArray[] = $class->class_id;
+        }
+        $data['getClass'] = $getClass;
+        $data['getStudentAttendance'] = StudentAttendanceModel::getStudentAttendanceTeacher(10, $classArray);
+        return view('teacher.attendance.report', $data);
+    }
+
 }
