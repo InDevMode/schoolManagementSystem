@@ -1,0 +1,30 @@
+services:
+  - type: web
+    name: schoolManagementSystem
+    env : php
+    buildCommand: |
+      composer install --no-dev --optimize-autoloader
+      php artisan config:cache
+      php artisan route:cache
+    startCommand: php artisan serve --host 0.0.0.0 --port 10000
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_KEY
+        generateValue: true
+      - key: APP_DEBUG
+        value: "false"
+      - key: DB_CONNECTION
+        value: ps
+      - key: DB_HOST
+        value: ton-host.planetscale.com
+      - key: DB_PORT
+        value: 3306
+      - key: DB_DATABASE
+        value: ton-nom-bdd
+      - key: DB_USERNAME
+        value: ton-username
+      - key: DB_PASSWORD
+        value: ton-password
+      - key: DB_SSL_MODE
+        value: "true"
