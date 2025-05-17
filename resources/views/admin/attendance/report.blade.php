@@ -21,6 +21,9 @@
         </nav>
     </div>
     @include('message')
+    <div class="my-5">
+      {{ $getStudentAttendance->links('vendor.pagination.tailwind') }}
+  </div>
     <div class="pb-3 text-red-500 dark:text-red-400 font-semibold text-sm">Choisissez une classe et une date pour voir
         la présence d'un apprenant
     </div>
@@ -28,13 +31,27 @@
         class="rounded-lg border border-stroke bg-white px-5 pb-2.5 pt-6 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5"
     >
         <form action="" method="get">
-            <div class="mb-4.5 grid grid-cols-2 xl:grid-cols-4 gap-3 items-center">
+            <div class="mb-4.5 grid grid-cols-2 xl:grid-cols-5 gap-3 items-center">
+                  <div class="w-full">
+                        <input
+                            type="text" id="student_name" name="student_name" value="{{ Request::get('student_name') }}"
+                            placeholder="nom..."
+                            class="w-full rounded-lg border-[1.5px] border-stroke bg-gray-100 px-5 py-2.5 font-normal text-black outline-none transition focus:border-violet-600 active:border-violet-600 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-violet-600"
+                        />
+                  </div>
+                  <div class="w-full">
+                    <input
+                        type="text" id="student_last_name" name="student_last_name" value="{{ Request::get('student_last_name') }}"
+                        placeholder="prénoms...."
+                        class="w-full rounded-lg border-[1.5px] border-stroke bg-gray-100 px-5 py-2.5 font-normal text-black outline-none transition focus:border-violet-600 active:border-violet-600 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-violet-600"
+                    />
+              </div>
                 <div class="w-full">
                     <div
                         x-data="{ isOptionSelected: false }"
                         class="relative z-20 bg-gray-100 dark:bg-form-input"
                     >
-                        <select id="class_id" name="class_id" required
+                        <select id="class_id" name="class_id"
                                 class="relative z-20 w-full appearance-none rounded-lg border border-stroke bg-gray-100 px-5 py-2.5 outline-none transition focus:border-violet-600 active:border-violet-600 dark:border-form-strokedark dark:bg-form-input dark:focus:border-violet-600"
                                 :class="isOptionSelected && 'text-black dark:text-white'"
                                 @change="isOptionSelected = true"
@@ -99,15 +116,15 @@
                         x-data="{ isOptionSelected: false }"
                         class="relative z-20 bg-gray-100 dark:bg-form-input"
                     >
-                        <select id="attendance_type" name="attendance_type" required
+                        <select id="attendance_type" name="attendance_type"
                                 class="relative z-20 w-full appearance-none rounded-lg border border-stroke bg-gray-100 px-5 py-2.5 outline-none transition focus:border-violet-600 active:border-violet-600 dark:border-form-strokedark dark:bg-form-input dark:focus:border-violet-600"
                                 :class="isOptionSelected && 'text-black dark:text-white'"
                                 @change="isOptionSelected = true"
                         >
-                            <option selected disabled value="" class="text-body">Choisissez le type de présence</option>
+                            <option selected disabled value="" class="text-body">Choisissez la présence</option>
                             <option value="1" class="text-body" {{ ( Request::get('attendance_type') == 1) ? 'selected' : '' }}>Présent(e)</option>
-                            <option value="2" class="text-body" {{ ( Request::get('attendance_type') == 2) ? 'selected' : '' }}>Absent(e)</option>
-                            <option value="3" class="text-body" {{ ( Request::get('attendance_type') == 3) ? 'selected' : '' }}>Retard</option>
+                            <option value="2" class="text-body" {{ ( Request::get('attendance_type') == 2) ? 'selected' : '' }}>Retard</option>
+                            <option value="3" class="text-body" {{ ( Request::get('attendance_type') == 3) ? 'selected' : '' }}>Absent(e)</option>
                             <option value="4" class="text-body" {{ ( Request::get('attendance_type') == 4) ? 'selected' : '' }}>Demi-journée</option>
                         </select>
                         <span
@@ -144,7 +161,7 @@
                     </button>
                 </div>
                 <div class="w-full">
-                    <a href="{{ url('admin/attendance/student/list') }}"
+                    <a href="{{ url('admin/attendance/report') }}"
                        class="flex w-full justify-center rounded-lg bg-gray-500 px-3 py-2.5 font-medium text-gray hover:bg-opacity-90"
                     >
                         Réïnitialisez
@@ -157,7 +174,7 @@
     <div class="mt-5">
         <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
             <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                <thead class="text-xs text-white uppercase bg-violet-500 dark:bg-gray-700 dark:text-gray-400">
                 <tr>
                     <th scope="col" class="px-6 py-3">
                         Nom
@@ -175,43 +192,74 @@
                         Date de présence
                     </th>
                     <th scope="col" class="px-6 py-3">
-                        Date de création
+                        Créé par
                     </th>
+                    <th scope="col" class="px-6 py-3">
+                        Date de création
+                    </th
                 </tr>
                 </thead>
                 <tbody>
-                @if(!empty($getStudent) && $getStudent->count() > 0)
-                @foreach($getStudent as $student)
+                @if(!empty($getStudentAttendance) && $getStudentAttendance->count() > 0)
+                @foreach($getStudentAttendance as $studentAttendance)
+
                 <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                     <tD scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                        {{ $student->name }}
+                        {{ $studentAttendance->student_name }}
                     </tD>
                     <td class="px-6 py-4">
-                        {{ $student->last_name }}
+                        {{ $studentAttendance->student_last_name }}
                     </td>
                     <td class="px-6 py-4">
-                        <div class="flex items-center space-x-4">
-                            <label class="inline-flex items-center">
-                                <input type="radio" name="attendance-{{$student->id}}" value="present" class="form-radio text-green-500 h-4 w-4">
-                                <span class="ml-2">Présent</span>
-                            </label>
-                            <label class="inline-flex items-center">
-                                <input type="radio" name="attendance-{{$student->id}}" value="absent" class="form-radio text-red-500 h-4 w-4">
-                                <span class="ml-2">Absent</span>
-                            </label>
-                            <label class="inline-flex items-center">
-                                <input type="radio" name="attendance-{{$student->id}}" value="retard" class="form-radio text-yellow-500 h-4 w-4">
-                                <span class="ml-2">Retard</span>
-                            </label>
-                            <label class="inline-flex items-center">
-                                <input type="radio" name="attendance-{{$student->id}}" value="demi-journee" class="form-radio text-blue-500 h-4 w-4">
-                                <span class="ml-2">Demi-journée</span>
-                            </label>
-                        </div>
+                        {{ $studentAttendance->class_name }}
+                    </td>
+                    <td class="px-6 py-4">
+                        <span class="
+                              {{ $studentAttendance->attendance_type == 1 ? 'bg-emerald-200 text-emerald-800 rounded-full px-2 py-1' :
+                                    ($studentAttendance->attendance_type == 2 ? 'bg-yellow-200 text-yellow-800 rounded-full px-2 py-1' :
+                                    ($studentAttendance->attendance_type == 3 ? 'bg-red-200 text-red-800 rounded-full px-2 py-1' :
+                                    ($studentAttendance->attendance_type == 4 ? 'bg-blue-200 text-blue-800 rounded-full px-2 py-1' : ''))) }}">
+                              {{ $studentAttendance->attendance_type == 1 ? 'Présent(e)' :
+                                    ($studentAttendance->attendance_type == 2 ? 'Retard' :
+                                    ($studentAttendance->attendance_type == 3 ? 'Absent(e)' :
+                                    ($studentAttendance->attendance_type == 4 ? 'Demi-journée' : 'Non défini'))) }}
+                              </span>
+                    </td>
+                    <td class="px-6 py-4">
+                        {{ \Carbon\Carbon::parse($studentAttendance-> attendance_date)->locale('fr')->translatedFormat('d M Y') }}
+                    </td>
+                    <td class="px-6 py-4">
+                        {{ $studentAttendance-> created_by_name }}
+                    </td>
+                    <td class="px-6 py-4">
+                        {{ \Carbon\Carbon::parse($studentAttendance-> created_at)->locale('fr')->translatedFormat('d M Y H:i:s') }}
                     </td>
                 </tr>
                 @endforeach
+                @else
+                <tr class="p-4 text-gray-700 font-semibold rounded-lg shadow-md text-center">
+                    <td colspan="8" class="px-6 py-3">  Aucun apprenant n'appartient à cette classe.</td>
+                </tr>
                 @endif
+                <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                    <td colspan="9"
+                        class="px-6 py-3"
+                    >
+                        <div class="mt-3 mb-3 flex items-center justify-between">
+                            <h2 class="text-title-sm uppercase font-bold text-black dark:text-white">
+                                Total
+                            </h2>
+                            <nav>
+                                <ol class="flex items-center bg-white shadow-lg border border-gray-200 dark:border-gray-600 w-fit dark:bg-black py-2 px-8 rounded">
+                                    <li>
+                                        <p class="text-md font-semibold text-gray-700 dark:text-gray-200">
+                                            {{ $getStudentAttendance->total() }}</p>
+                                    </li>
+                                </ol>
+                            </nav>
+                        </div>
+                    </td>
+                </tr>
                 </tbody>
             </table>
         </div>

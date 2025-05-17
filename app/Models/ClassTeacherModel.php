@@ -45,8 +45,7 @@ class ClassTeacherModel extends Model
             ->where('class_teacher.is_delete', 0)
             ->where('class.is_delete', 0)
             ->where('class.status', 1)
-            ->where('users.is_delete', 0)
-            ->where('users.status', 1);
+            ->where('users.is_delete', 0);
 
         $filters = [
             'class.name' => strtolower(Request::get('class_name')),
@@ -160,6 +159,21 @@ class ClassTeacherModel extends Model
             ->where('subject.status', 1)
             ->where('class_subject.is_delete', 0)
             ->where('class_subject.status', 1)
+            ->get();
+    }
+
+        static public function getMyClassSubjectGroup(int $teacher_id)
+    {
+        return ClassTeacherModel::select(
+            'class_teacher.*',
+            'class.id as class_id',
+            'class.name as class_name',
+        )
+            ->join('class', 'class.id', '=', 'class_teacher.class_id')
+            ->where('class_teacher.is_delete', 0)
+            ->where('class_teacher.status', 1)
+            ->where('class_teacher.teacher_id', '=', $teacher_id)
+            ->groupBy('class_teacher.id')
             ->get();
     }
 
