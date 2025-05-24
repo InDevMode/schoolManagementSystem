@@ -3,17 +3,29 @@
     class="absolute left-0 top-0 z-9999 flex h-screen w-72.5 flex-col overflow-y-hidden bg-white duration-300 ease-linear dark:bg-boxdark lg:static lg:translate-x-0"
     @click.outside="sidebarToggle = false">
     <!-- SIDEBAR HEADER -->
-    <div class="flex items-center justify-between gap-2 px-6 py-5.5">
-        <a href="{{ url('admin/dashboard') }}">
-            <img src="{{ asset('public/images/managment.png') }}" alt="Logo"/>
-        </a>
-        <button
-            class="block lg:hidden"
-            @click.stop="sidebarToggle = !sidebarToggle"
-        >
-            <span class="text-[20px]"><i class="fa-solid fa-arrow-left"></i></span>
-        </button>
-    </div>
+    @php
+    $links = [
+        1 => url('admin/dashboard'), // Admin
+        2 => url('teacher/dashboard'), // Teacher
+        3 => url('student/dashboard'), // Student
+        4 => url('parent/dashboard'), // Parent
+    ];
+    $link = $links[Auth::user()->user_type] ?? url('login'); // Lien de secours
+@endphp
+
+<div class="flex items-center justify-between gap-2 px-6 py-5.5">
+    <a href="{{ $link }}">
+        <img src="{{ asset('public/images/managment.png') }}" alt="Logo"/>
+    </a>
+
+    <button
+        class="block lg:hidden"
+        @click.stop="sidebarToggle = !sidebarToggle"
+    >
+        <span class="text-[20px]"><i class="fa-solid fa-arrow-left"></i></span>
+    </button>
+</div>
+
     <!-- SIDEBAR HEADER -->
     <div class="no-scrollbar flex flex-col overflow-y-auto duration-300 ease-linear">
         <!-- Sidebar Menu -->
@@ -35,12 +47,12 @@
                             href="{{ url('admin/dashboard') }}"
                         >
                             <span
-                                class="text-[18px] py-1 px-2 rounded {{ Request::Segment(2) == 'dashboard' ? ' bg-violet-100 text-violet-600' : 'bg-violet-100 text-violet-600'}}"><i
-                                    class="fa-solid fa-house-chimney"></i></span>
+                                class="w-10 h-10 flex items-center justify-center rounded  {{ Request::Segment(2) == 'dashboard' ? ' bg-violet-100 text-violet-600' : 'bg-violet-100 text-violet-600'}}"><i
+                                    class="fa-solid fa-house-chimney  text-[18px]"></i></span>
                             <span
                                 class="{{ Request::Segment(2) == 'dashboard' ? 'group-hover:text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}">Dashboard</span>
                             <span
-                                class="inline-flex items-center justify-center me-2 px-2.5 py-0.5 rounded text-xs font-medium {{ Request::Segment(2) == 'dashboard' ? 'bg-violet-100 text-violet-600' : 'bg-violet-100'}}">{{ Request::Segment(1) }}</span>
+                                class="inline-flex items-center justify-center me-2 px-1 py-0.5 rounded text-xs font-medium {{ Request::Segment(2) == 'dashboard' ? 'bg-violet-100 text-violet-600' : 'bg-violet-100'}}">{{ Request::Segment(1) }}</span>
                         </a>
                     </li>
                     <li>
@@ -49,8 +61,8 @@
                             href="{{ url('admin/admin/list') }}"
                         >
                             <span
-                                class="text-[18px] py-1 px-2 rounded {{ Request::Segment(2) == 'admin' ? 'bg-violet-100 text-violet-600' : 'bg-violet-100 text-violet-600'}}"><i
-                                    class="fa-solid fa-user-shield"></i></span>
+                                class="w-10 h-10 flex items-center justify-center rounded {{ Request::Segment(2) == 'admin' ? 'bg-violet-100 text-violet-600' : 'bg-violet-100 text-violet-600'}}"><i
+                                    class="fa-solid fa-user-shield text-[18px]"></i></span>
                             <span
                                 class="{{ Request::Segment(2) == 'admin' ? 'group-hover:text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}">Administrateurs</span>
                         </a>
@@ -61,8 +73,8 @@
                             href="{{ url('admin/teacher/list') }}"
                         >
                             <span
-                                class="text-[18px] py-1 px-2 rounded {{ Request::Segment(2) == 'teacher' ? 'bg-violet-100 text-violet-600' : 'bg-violet-100 text-violet-600'}}"><i
-                                    class="fa-solid fa-user-tie"></i></span>
+                                class="w-10 h-10 flex items-center justify-center rounded {{ Request::Segment(2) == 'teacher' ? 'bg-violet-100 text-violet-600' : 'bg-violet-100 text-violet-600'}}"><i
+                                    class="fa-solid fa-user-tie text-[18px]"></i></span>
                             <span
                                 class="{{ Request::Segment(2) == 'teacher' ? 'group-hover:text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}">Professeurs</span>
                         </a>
@@ -73,8 +85,8 @@
                             href="{{ url('admin/student/list') }}"
                         >
                             <span
-                                class="text-[18px] py-1 px-2 rounded {{ Request::Segment(2) == 'student' ? 'bg-violet-100 text-violet-600' : 'bg-violet-100 text-violet-600'}}"><i
-                                    class="fa-solid fa-user-graduate"></i></span>
+                                class="w-10 h-10 flex items-center justify-center rounded {{ Request::Segment(2) == 'student' ? 'bg-violet-100 text-violet-600' : 'bg-violet-100 text-violet-600'}}"><i
+                                    class="fa-solid fa-user-graduate text-[18px]"></i></span>
                             <span
                                 class="{{ Request::Segment(2) == 'student' ? 'group-hover:text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}">Apprenants</span>
                         </a>
@@ -85,8 +97,8 @@
                             href="{{ url('admin/parent/list') }}"
                         >
                             <span
-                                class="text-[18px] py-1 px-2 rounded {{ Request::Segment(2) == 'parent' ? 'bg-violet-100 text-violet-600' : 'bg-violet-100 text-violet-600'}}"><i
-                                    class="fa-solid fa-person-breastfeeding"></i></span>
+                                class="w-10 h-10 flex items-center justify-center rounded {{ Request::Segment(2) == 'parent' ? 'bg-violet-100 text-violet-600' : 'bg-violet-100 text-violet-600'}}"><i
+                                    class="fa-solid fa-person-breastfeeding text-[18px]"></i></span>
                             <span
                                 class="{{ Request::Segment(2) == 'parent' ? 'group-hover:text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}">Parents</span>
                         </a>
@@ -97,8 +109,8 @@
                             href="{{ url('admin/class/list') }}"
                         >
                             <span
-                                class="text-[18px] py-1 px-2 rounded {{ Request::Segment(2) == 'class' ? 'bg-violet-100 text-violet-600' : 'bg-violet-100 text-violet-600'}}"><i
-                                    class="fa-solid fa-landmark"></i></span>
+                                class="w-10 h-10 flex items-center justify-center rounded {{ Request::Segment(2) == 'class' ? 'bg-violet-100 text-violet-600' : 'bg-violet-100 text-violet-600'}}"><i
+                                    class="fa-solid fa-landmark text-[18px]"></i></span>
                             <span
                                 class="{{ Request::Segment(2) == 'class' ? 'group-hover:text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}">Classes</span>
                         </a>
@@ -109,8 +121,8 @@
                             href="{{ url('admin/subject/list') }}"
                         >
                             <span
-                                class="text-[18px] py-1 px-2 rounded {{ Request::Segment(2) == 'subject' ? 'bg-violet-100 text-violet-600' : 'bg-violet-100 text-violet-600'}}"><i
-                                    class="fa-solid fa-book-open-reader"></i></span>
+                                class="w-10 h-10 flex items-center justify-center rounded {{ Request::Segment(2) == 'subject' ? 'bg-violet-100 text-violet-600' : 'bg-violet-100 text-violet-600'}}"><i
+                                    class="fa-solid fa-book-open-reader text-[18px]"></i></span>
                             <span
                                 class="{{ Request::Segment(2) == 'subject' ? 'group-hover:text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}">Matières</span>
                         </a>
@@ -122,7 +134,7 @@
                             @click.prevent="selected = (selected === 'assign' ? '':'assign')"
                             :class="{ 'bg-gray-100 dark:bg-meta-4': (selected === 'assign')}"
                         >
-                            <span class="text-[18px] py-1 px-2 rounded bg-violet-100 text-violet-600"><i class="fa-solid fa-arrows-spin"></i></span>
+                            <span class="w-10 h-10 flex items-center justify-center rounded bg-violet-100 text-violet-600"><i class="fa-solid fa-arrows-spin text-[18px]"></i></span>
                             <span class="group-hover:text-bodydark1 dark:text-bodydark1">Assignations</span>
                             <span class="text-[18px] py-1 px-2 rounded bg-violet-100 text-violet-600 transition duration-700 absolute right-4 top-1/2 -translate-y-1/2 fill-current"
                                   :class="{ 'rotate-180 transition duration-700': (selected === 'assign') }"><i
@@ -182,7 +194,7 @@
                             @click.prevent="selected = (selected === 'examinations' ? '':'examinations')"
                             :class="{ 'bg-gray-100 dark:bg-meta-4': (selected === 'examinations')}"
                         >
-                            <span class="text-[18px] py-1 px-2 rounded bg-violet-100 text-violet-600"><i class="fa-solid fa-flask-vial"></i></span>
+                            <span class="w-10 h-10 flex items-center justify-center rounded bg-violet-100 text-violet-600"><i class="fa-solid fa-flask-vial text-[18px]"></i></span>
                             <span class="group-hover:text-bodydark1 dark:text-bodydark1">Evaluations</span>
                             <span class="text-[18px] py-1 px-2 rounded bg-violet-100 text-violet-600 transition duration-700 absolute right-4 top-1/2 -translate-y-1/2 fill-current"
                                   :class="{ 'rotate-180 transition duration-700': (selected === 'examinations') }"><i
@@ -253,7 +265,7 @@
                             @click.prevent="selected = (selected === 'attendance' ? '':'attendance')"
                             :class="{ 'bg-gray-100 dark:bg-meta-4': (selected === 'attendance')}"
                         >
-                            <span class="text-[18px] py-1 px-2 rounded bg-violet-100 text-violet-600"><i class="fa-solid fa-user-check"></i></span>
+                            <span class="w-10 h-10 flex items-center justify-center rounded bg-violet-100 text-violet-600"><i class="fa-solid fa-user-check text-[18px]"></i></span>
                             <span class="group-hover:text-bodydark1 dark:text-bodydark1">Présence</span>
                             <span class="text-[18px] py-1 px-2 rounded bg-violet-100 text-violet-600 transition duration-700 absolute right-4 top-1/2 -translate-y-1/2 fill-current"
                                   :class="{ 'rotate-180 transition duration-700': (selected === 'attendance') }"><i
@@ -289,30 +301,6 @@
                                             class="{{ Request::Segment(3) == 'report' ? 'group-hover:text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}">Rapports</span>
                                     </a>
                                 </li>
-                                <li>
-                                    <a
-                                        class="group relative flex items-center gap-2.5 rounded-md px-4 py-2 font-medium duration-300 ease-in-out hover:bg-violet-700 text-bodydark1 dark:hover:bg-meta-4 {{ Request::Segment(3) == 'marks_register' ? 'bg-violet-600 text-bodydark1' : 'text-violet-600' }}"
-                                        href="{{ url('admin/attendance/marks_register/list') }}"
-                                    >
-                                        <span
-                                            class="text-[18px] py-1 px-2 rounded {{ Request::Segment(3) == 'marks_register' ? 'group-hover:text-bodydark1 text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}"><i
-                                                class="fa-solid fa-chevron-right"></i></span>
-                                        <span
-                                            class="{{ Request::Segment(3) == 'marks_register' ? 'group-hover:text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}">Registres</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a
-                                        class="group relative flex items-center gap-2.5 rounded-md px-4 py-2 font-medium duration-300 ease-in-out hover:bg-violet-700 text-bodydark1 dark:hover:bg-meta-4 {{ Request::Segment(3) == 'marks_grade' ? 'bg-violet-600 text-bodydark1' : 'text-violet-600' }}"
-                                        href="{{ url('admin/attendance/marks_grade/list') }}"
-                                    >
-                                        <span
-                                            class="text-[18px] py-1 px-2 rounded {{ Request::Segment(3) == 'marks_grade' ? 'group-hover:text-bodydark1 text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}"><i
-                                                class="fa-solid fa-chevron-right"></i></span>
-                                        <span
-                                            class="{{ Request::Segment(3) == 'marks_grade' ? 'group-hover:text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}">Notes</span>
-                                    </a>
-                                </li>
                             </ul>
                         </div>
                         <!-- Dropdown Menu End -->
@@ -324,12 +312,12 @@
                             href="{{ url('teacher/dashboard') }}"
                         >
                             <span
-                                class="text-[18px] py-1 px-2 rounded {{ Request::Segment(2) == 'dashboard' ? 'bg-violet-100 text-violet-600' : 'bg-violet-100 text-violet-600'}}"><i
-                                    class="fa-solid fa-house-chimney"></i></span>
+                                class="w-10 h-10 flex items-center justify-center rounded {{ Request::Segment(2) == 'dashboard' ? 'bg-violet-100 text-violet-600' : 'bg-violet-100 text-violet-600'}}"><i
+                                    class="fa-solid fa-house-chimney text-[18px]"></i></span>
                             <span
                                 class="{{ Request::Segment(2) == 'dashboard' ? 'group-hover:text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}">Dashboard</span>
                             <span
-                                class="inline-flex items-center justify-center me-2 px-2.5 py-0.5 rounded text-xs font-medium {{ Request::Segment(2) == 'dashboard' ? 'bg-violet-100 text-violet-600' : 'bg-violet-100'}}">{{ Request::Segment(1) }}</span>
+                                class="inline-flex items-center justify-center me-2 px-1 py-0.5 rounded text-xs font-medium {{ Request::Segment(2) == 'dashboard' ? 'bg-violet-100 text-violet-600' : 'bg-violet-100'}}">{{ Request::Segment(1) }}</span>
                         </a>
                     </li>
                     <li>
@@ -338,8 +326,8 @@
                             href="{{ url('teacher/account') }}"
                         >
                             <span
-                                class="text-[18px] py-1 px-2 rounded {{ Request::Segment(2) == 'account' ? 'bg-violet-100 text-violet-600' : 'bg-violet-100 text-violet-600'}}"><i
-                                    class="fa-solid fa-circle-user"></i></span>
+                                class="w-10 h-10 flex items-center justify-center rounded {{ Request::Segment(2) == 'account' ? 'bg-violet-100 text-violet-600' : 'bg-violet-100 text-violet-600'}}"><i
+                                    class="fa-solid fa-circle-user text-[18px]"></i></span>
                             <span
                                 class="{{ Request::Segment(2) == 'account' ? 'group-hover:text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}">Mon Profile</span>
                         </a>
@@ -350,8 +338,8 @@
                             href="{{ url('teacher/my_student') }}"
                         >
                             <span
-                                class="text-[18px] py-1 px-2 rounded {{ Request::Segment(2) == 'my_student' ? 'bg-violet-100 text-violet-600' : 'bg-violet-100 text-violet-600'}}"><i
-                                    class="fa-solid fa-user-graduate"></i></span>
+                                class="w-10 h-10 flex items-center justify-center rounded {{ Request::Segment(2) == 'my_student' ? 'bg-violet-100 text-violet-600' : 'bg-violet-100 text-violet-600'}}"><i
+                                    class="fa-solid fa-user-graduate text-[18px]"></i></span>
                             <span
                                 class="{{ Request::Segment(2) == 'my_student' ? 'group-hover:text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}">Mes Apprenants</span>
                         </a>
@@ -362,8 +350,8 @@
                             href="{{ url('teacher/class_subject') }}"
                         >
                             <span
-                                class="text-[18px] py-1 px-2 rounded {{ Request::Segment(2) == 'class_subject' ? 'bg-violet-100 text-violet-600' : 'bg-violet-100 text-violet-600'}}"><i
-                                    class="fa-solid fa-landmark"></i></span>
+                                class="w-10 h-10 flex items-center justify-center rounded {{ Request::Segment(2) == 'class_subject' ? 'bg-violet-100 text-violet-600' : 'bg-violet-100 text-violet-600'}}"><i
+                                    class="fa-solid fa-landmark text-[18px]"></i></span>
                             <span
                                 class="{{ Request::Segment(2) == 'class_subject' ? 'group-hover:text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}">Classes & Matières</span>
                         </a>
@@ -374,7 +362,7 @@
                             href="{{ url('teacher/my_exam_timetable') }}"
                         >
                             <span
-                                class="text-[18px] py-1 px-2 rounded {{ Request::Segment(2) == 'my_exam_timetable' ? 'bg-violet-100 text-violet-600' : 'bg-violet-100 text-violet-600'}}"><i class="fa-solid fa-flask-vial"></i></span>
+                                class="w-10 h-10 flex items-center justify-center rounded {{ Request::Segment(2) == 'my_exam_timetable' ? 'bg-violet-100 text-violet-600' : 'bg-violet-100 text-violet-600'}}"><i class="fa-solid fa-flask-vial text-[18px]"></i></span>
                             <span
                                 class="{{ Request::Segment(2) == 'my_exam_timetable' ? 'group-hover:text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}">Examens</span>
                         </a>
@@ -385,8 +373,8 @@
                             href="{{ url('teacher/my_calendar') }}"
                         >
                             <span
-                                class="text-[18px] py-1 px-2 rounded {{ Request::Segment(2) == 'my_calendar' ? 'bg-violet-100 text-violet-600' : 'bg-violet-100 text-violet-600'}}"><i
-                                    class="fa-solid fa-calendar-days"></i></span>
+                                class="w-10 h-10 flex items-center justify-center rounded {{ Request::Segment(2) == 'my_calendar' ? 'bg-violet-100 text-violet-600' : 'bg-violet-100 text-violet-600'}}"><i
+                                    class="fa-solid fa-calendar-days text-[18px]"></i></span>
                             <span
                                 class="{{ Request::Segment(2) == 'my_calendar' ? 'group-hover:text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}">Mon Calendrier</span>
                         </a>
@@ -397,7 +385,7 @@
                             href="{{ url('teacher/marks_register') }}"
                         >
                             <span
-                                class="text-[18px] py-1 px-2 rounded {{ Request::Segment(2) == 'marks_register' ? 'bg-violet-100 text-violet-600' : 'bg-violet-100 text-violet-600'}}"><i class="fa-solid fa-registered"></i></span>
+                                class="w-10 h-10 flex items-center justify-center rounded {{ Request::Segment(2) == 'marks_register' ? 'bg-violet-100 text-violet-600' : 'bg-violet-100 text-violet-600'}}"><i class="fa-solid fa-registered text-[18px]"></i></span>
                             <span
                                 class="{{ Request::Segment(2) == 'marks_register' ? 'group-hover:text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}">Registres</span>
                         </a>
@@ -409,7 +397,7 @@
                             @click.prevent="selected = (selected === 'attendance' ? '':'attendance')"
                             :class="{ 'bg-gray-100 dark:bg-meta-4': (selected === 'attendance')}"
                         >
-                            <span class="text-[18px] py-1 px-2 rounded bg-violet-100 text-violet-600"><i class="fa-solid fa-user-check"></i></span>
+                            <span class="w-10 h-10 flex items-center justify-center rounded bg-violet-100 text-violet-600"><i class="fa-solid fa-user-check text-[18px]"></i></span>
                             <span class="group-hover:text-bodydark1 dark:text-bodydark1">Présence</span>
                             <span class="text-[18px] py-1 px-2 rounded bg-violet-100 text-violet-600 transition duration-700 absolute right-4 top-1/2 -translate-y-1/2 fill-current"
                                   :class="{ 'rotate-180 transition duration-700': (selected === 'attendance') }"><i
@@ -443,18 +431,6 @@
                                                 class="fa-solid fa-chevron-right"></i></span>
                                         <span
                                             class="{{ Request::Segment(3) == 'report' ? 'group-hover:text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}">Rapports</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a
-                                        class="group relative flex items-center gap-2.5 rounded-md px-4 py-2 font-medium duration-300 ease-in-out hover:bg-violet-700 text-bodydark1 dark:hover:bg-meta-4 {{ Request::Segment(3) == 'marks_register' ? 'bg-violet-600 text-bodydark1' : 'text-violet-600' }}"
-                                        href="{{ url('teacher/attendance/marks_register/list') }}"
-                                    >
-                                        <span
-                                            class="text-[18px] py-1 px-2 rounded {{ Request::Segment(3) == 'marks_register' ? 'group-hover:text-bodydark1 text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}"><i
-                                                class="fa-solid fa-chevron-right"></i></span>
-                                        <span
-                                            class="{{ Request::Segment(3) == 'marks_register' ? 'group-hover:text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}">Registres</span>
                                     </a>
                                 </li>
                             </ul>
@@ -567,12 +543,12 @@
                             href="{{ url('parent/dashboard') }}"
                         >
                             <span
-                                class="text-[18px] py-1 px-2 rounded {{ Request::Segment(2) == 'dashboard' ? 'bg-violet-100 text-violet-600' : 'bg-violet-100 text-violet-600'}}"><i
-                                    class="fa-solid fa-house-chimney"></i></span>
+                                class="w-10 h-10 flex items-center justify-center rounded {{ Request::Segment(2) == 'dashboard' ? 'bg-violet-100 text-violet-600' : 'bg-violet-100 text-violet-600'}}"><i
+                                    class="fa-solid fa-house-chimney text-[18px]"></i></span>
                             <span
                                 class="{{ Request::Segment(2) == 'dashboard' ? 'group-hover:text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}">Dashboard</span>
                             <span
-                                class="inline-flex items-center justify-center me-2 px-2.5 py-0.5 rounded text-xs font-medium {{ Request::Segment(2) == 'dashboard' ? 'bg-violet-100 text-violet-600' : 'bg-violet-100'}}">{{ Request::Segment(1) }}</span>
+                                class="inline-flex items-center justify-center me-2 px-1 py-0.5 rounded text-xs font-medium {{ Request::Segment(2) == 'dashboard' ? 'bg-violet-100 text-violet-600' : 'bg-violet-100'}}">{{ Request::Segment(1) }}</span>
                         </a>
                     </li>
                     <li>
@@ -581,8 +557,8 @@
                             href="{{ url('parent/account') }}"
                         >
                             <span
-                                class="text-[18px] py-1 px-2 rounded {{ Request::Segment(2) == 'account' ? 'bg-violet-100 text-violet-600' : 'bg-violet-100 text-violet-600'}}"><i
-                                    class="fa-solid fa-circle-user"></i></span>
+                                class="w-10 h-10 flex items-center justify-center rounded {{ Request::Segment(2) == 'account' ? 'bg-violet-100 text-violet-600' : 'bg-violet-100 text-violet-600'}}"><i
+                                    class="fa-solid fa-circle-user text-[18px]"></i></span>
                             <span
                                 class="{{ Request::Segment(2) == 'account' ? 'group-hover:text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}">Mon Profile</span>
                         </a>
@@ -593,8 +569,8 @@
                             href="{{ url('parent/my_student') }}"
                         >
                             <span
-                                class="text-[18px] py-1 px-2 rounded {{ Request::Segment(2) == 'my_student' ? 'bg-violet-100 text-violet-600' : 'bg-violet-100 text-violet-600'}}"><i
-                                    class="fa-solid fa-user-graduate"></i></span>
+                                class="w-10 h-10 flex items-center justify-center rounded {{ Request::Segment(2) == 'my_student' ? 'bg-violet-100 text-violet-600' : 'bg-violet-100 text-violet-600'}}"><i
+                                    class="fa-solid fa-user-graduate text-[18px]"></i></span>
                             <span
                                 class="{{ Request::Segment(2) == 'my_student' ? 'group-hover:text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}">Mes Apprenants</span>
                         </a>
@@ -605,8 +581,8 @@
                             <a href="{{ url('logout') }}"
                                class="flex items-center px-4 py-2 text-white rounded-md border-2 border-violet-600 dark:border-gray-800 dark:hover:bg-gray-900 hover:text-white hover:bg-violet-700 bg-violet-600 dark:bg-gray-800 group transition-all duration-300 ease-out">
                                 <span
-                                    class="flex-shrink-0 transition group-hover:border-white duration-75 group-hover:text-violet-600 text-[18px] py-1 px-2 rounded bg-violet-100 text-violet-600">
-                                    <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                                    class="flex items-center justify-center transition group-hover:border-white duration-75 group-hover:text-violet-600 w-10 h-10 py-1 px-2 rounded bg-violet-100 text-violet-600">
+                                    <i class="fa-solid fa-arrow-right-from-bracket text-[18px]"></i>
                                 </span>
                                 <span
                                     class="flex-1 ms-3 whitespace-nowrap group-hover:text-white dark:group-hover:text-white">Déconnexion</span>

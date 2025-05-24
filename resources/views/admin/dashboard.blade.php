@@ -283,7 +283,7 @@
 
                 <div>
                     <a
-                        href="messages.html"
+                        href=""
                         class="flex items-center gap-5 px-7.5 py-3 hover:bg-gray-3 dark:hover:bg-meta-4"
                     >
                         <div class="relative h-14 w-14 rounded-full">
@@ -314,7 +314,7 @@
                         </div>
                     </a>
                     <a
-                        href="messages.html"
+                        href=""
                         class="flex items-center gap-5 px-7.5 py-3 hover:bg-gray-3 dark:hover:bg-meta-4"
                     >
                         <div class="relative h-14 w-14 rounded-full">
@@ -337,7 +337,7 @@
                         </div>
                     </a>
                     <a
-                        href="messages.html"
+                        href=""
                         class="flex items-center gap-5 px-7.5 py-3 hover:bg-gray-3 dark:hover:bg-meta-4"
                     >
                         <div class="relative h-14 w-14 rounded-full">
@@ -360,7 +360,7 @@
                         </div>
                     </a>
                     <a
-                        href="messages.html"
+                        href=""
                         class="flex items-center gap-5 px-7.5 py-3 hover:bg-gray-3 dark:hover:bg-meta-4"
                     >
                         <div class="relative h-14 w-14 rounded-full">
@@ -391,7 +391,7 @@
                         </div>
                     </a>
                     <a
-                        href="messages.html"
+                        href=""
                         class="flex items-center gap-5 px-7.5 py-3 hover:bg-gray-3 dark:hover:bg-meta-4"
                     >
                         <div class="relative h-14 w-14 rounded-full">
@@ -414,7 +414,7 @@
                         </div>
                     </a>
                     <a
-                        href="messages.html"
+                        href=""
                         class="flex items-center gap-5 px-7.5 py-3 hover:bg-gray-3 dark:hover:bg-meta-4"
                     >
                         <div class="relative h-14 w-14 rounded-full">

@@ -245,4 +245,7 @@ Route::group(['middleware' => 'parent'], function () {
 
     // Parent student exam result url
     Route::get('parent/my_student/exam_result/{student_id}/result', [ExaminationController::class, 'parentStudentExamResult']);
+
+    // Parent student attendance url
+    Route::get('parent/my_student/attendance/{student_id}', [AttendanceController::class, 'parentStudentAttendance']);
 });

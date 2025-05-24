@@ -4,48 +4,36 @@
         <!-- Breadcrumb Start -->
         <div class="mb-6 mt-3 flex flex-col gap-3 sm:flex-row items-center justify-between">
             <h2 class="uppercase font-bold text-black dark:text-bodydark">
-                Rapport de présence
+               Le rapport de présence de<span class="text-violet-600 bg-violet-100 rounded-full px-4 py-2 ms-5">{{ $getStudent->name }} {{ $getStudent->last_name }}</span>
             </h2>
             <nav>
                 <ol class="flex items-center gap-2">
                     <li>
-                        <span class="font-medium text-violet-600"><i class="fa-solid fa-user-check"></i></span>
+                        <span class="font-medium text-violet-600"><iconify-icon
+                                icon="mdi:calendar-check"></iconify-icon></span>
                     </li>
                     <li>
                         /<a class="font-medium hover:text-violet-600 transition duration-300"
-                            href="{{ url('admin/dashboard') }}"> Dashboard</a>
+                            href="{{ url('student/dashboard') }}"> Dashboard</a>
                     </li>
                 </ol>
             </nav>
         </div>
         @include('message')
         <div class="my-5">
-            {{ $getStudentAttendance->links('vendor.pagination.tailwind') }}
-        </div>
-        <div class="pb-3 text-red-500 dark:text-red-400 font-semibold text-sm">Choisissez une classe et une date pour voir
-            la présence d'un apprenant
+            {{ $getParentStudentAttendance->links('vendor.pagination.tailwind') }}
         </div>
         <div
             class="rounded-lg border border-stroke bg-white px-5 pb-2.5 pt-6 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5">
             <form action="" method="get">
                 <div class="mb-4.5 grid grid-cols-2 xl:grid-cols-5 gap-3 items-center">
                     <div class="w-full">
-                        <input type="text" id="student_name" name="student_name" value="{{ Request::get('student_name') }}"
-                            placeholder="nom..."
-                            class="w-full rounded-lg border-[1.5px] border-stroke bg-gray-100 px-5 py-2.5 font-normal text-black outline-none transition focus:border-violet-600 active:border-violet-600 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-violet-600" />
-                    </div>
-                    <div class="w-full">
-                        <input type="text" id="student_last_name" name="student_last_name"
-                            value="{{ Request::get('student_last_name') }}" placeholder="prénoms...."
-                            class="w-full rounded-lg border-[1.5px] border-stroke bg-gray-100 px-5 py-2.5 font-normal text-black outline-none transition focus:border-violet-600 active:border-violet-600 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-violet-600" />
-                    </div>
-                    <div class="w-full">
                         <div x-data="{ isOptionSelected: false }" class="relative z-20 bg-gray-100 dark:bg-form-input">
                             <select id="class_id" name="class_id"
                                 class="relative z-20 w-full appearance-none rounded-lg border border-stroke bg-gray-100 px-5 py-2.5 outline-none transition focus:border-violet-600 active:border-violet-600 dark:border-form-strokedark dark:bg-form-input dark:focus:border-violet-600"
                                 :class="isOptionSelected && 'text-black dark:text-white'" @change="isOptionSelected = true">
                                 <option selected disabled value="" class="text-body">Choisissez une classe</option>
-                                @foreach($getClass as $class)
+                                @foreach($getClassStudent as $class)
                                     <option value="{{ $class->class_id }}" class="text-body" {{ (Request::get('class_id') == $class->class_id) ? 'selected' : '' }}>
                                         {{ $class->class_name }}
                                     </option>
@@ -128,7 +116,7 @@
                         </button>
                     </div>
                     <div class="w-full">
-                        <a href="{{ url('teacher/attendance/report') }}"
+                        <a href="{{ url('parent/my_student/attendance', $getStudent->id) }}"
                             class="flex w-full justify-center rounded-lg bg-gray-500 px-3 py-2.5 font-medium text-gray hover:bg-opacity-90">
                             Réïnitialisez
                         </a>
@@ -136,18 +124,11 @@
                 </div>
             </form>
         </div>
-
         <div class="mt-5">
             <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
                 <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
                     <thead class="text-xs text-white uppercase bg-violet-500 dark:bg-gray-700 dark:text-gray-400">
                         <tr>
-                            <th scope="col" class="px-6 py-3">
-                                Nom
-                            </th>
-                            <th scope="col" class="px-6 py-3">
-                                Prénoms
-                            </th>
                             <th scope="col" class="px-6 py-3">
                                 Classe
                             </th>
@@ -158,57 +139,44 @@
                                 Date de présence
                             </th>
                             <th scope="col" class="px-6 py-3">
-                                Créé par
-                            </th>
-                            <th scope="col" class="px-6 py-3">
                                 Date de création
                             </th </tr>
                     </thead>
                     <tbody>
-                        @if(!empty($getStudentAttendance))
-                            @if(!empty($getStudentAttendance) && $getStudentAttendance->count() > 0)
-                                @foreach($getStudentAttendance as $studentAttendance)
+                        @if(!empty($getParentStudentAttendance) && $getParentStudentAttendance->count() > 0)
+                            @foreach($getParentStudentAttendance as $parentStudentAttendance)
                                         <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                                            <tD scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                {{ $studentAttendance->student_name }}
-                                            </tD>
                                             <td class="px-6 py-4">
-                                                {{ $studentAttendance->student_last_name }}
-                                            </td>
-                                            <td class="px-6 py-4">
-                                                {{ $studentAttendance->class_name }}
+                                                {{ $parentStudentAttendance->class_name }}
                                             </td>
                                             <td class="px-6 py-4">
                                                 <span
                                                     class="
-                                                                      {{ $studentAttendance->attendance_type == 1 ? 'bg-emerald-200 text-emerald-800 rounded-full px-2 py-1' :
-                                    ($studentAttendance->attendance_type == 2 ? 'bg-yellow-200 text-yellow-800 rounded-full px-2 py-1' :
-                                        ($studentAttendance->attendance_type == 3 ? 'bg-red-200 text-red-800 rounded-full px-2 py-1' :
-                                            ($studentAttendance->attendance_type == 4 ? 'bg-blue-200 text-blue-800 rounded-full px-2 py-1' : ''))) }}">
-                                                    {{ $studentAttendance->attendance_type == 1 ? 'Présent(e)' :
-                                    ($studentAttendance->attendance_type == 2 ? 'Retard' :
-                                        ($studentAttendance->attendance_type == 3 ? 'Absent(e)' :
-                                            ($studentAttendance->attendance_type == 4 ? 'Demi-journée' : 'Non défini'))) }}
+                                                                                          {{ $parentStudentAttendance->attendance_type == 1 ? 'bg-emerald-200 text-emerald-800 rounded-full px-2 py-1' :
+                                ($parentStudentAttendance->attendance_type == 2 ? 'bg-yellow-200 text-yellow-800 rounded-full px-2 py-1' :
+                                    ($parentStudentAttendance->attendance_type == 3 ? 'bg-red-200 text-red-800 rounded-full px-2 py-1' :
+                                        ($parentStudentAttendance->attendance_type == 4 ? 'bg-blue-200 text-blue-800 rounded-full px-2 py-1' : ''))) }}">
+                                                    {{ $parentStudentAttendance->attendance_type == 1 ? 'Présent(e)' :
+                                ($parentStudentAttendance->attendance_type == 2 ? 'Retard' :
+                                    ($parentStudentAttendance->attendance_type == 3 ? 'Absent(e)' :
+                                        ($parentStudentAttendance->attendance_type == 4 ? 'Demi-journée' : 'Non défini'))) }}
                                                 </span>
                                             </td>
                                             <td class="px-6 py-4">
-                                                {{ \Carbon\Carbon::parse($studentAttendance->attendance_date)->locale('fr')->translatedFormat('d M Y') }}
+                                                {{ \Carbon\Carbon::parse($parentStudentAttendance->attendance_date)->locale('fr')->translatedFormat('d M Y') }}
                                             </td>
                                             <td class="px-6 py-4">
-                                                {{ $studentAttendance->created_by_name }}
-                                            </td>
-                                            <td class="px-6 py-4">
-                                                {{ \Carbon\Carbon::parse($studentAttendance->created_at)->locale('fr')->translatedFormat('d M Y H:i:s') }}
+                                                {{ \Carbon\Carbon::parse($parentStudentAttendance->created_at)->locale('fr')->translatedFormat('d M Y H:i:s') }}
                                             </td>
                                         </tr>
-                                @endforeach
-                            @else
+                            @endforeach
+                            @if(empty($getParentStudentAttendance) && !$getParentStudentAttendance->isEmpty())
                                 <tr class="p-4 text-gray-700 font-semibold rounded-lg shadow-md text-center">
-                                    <td colspan="8" class="px-6 py-3"> Aucun apprenant n'appartient à cette classe.</td>
+                                    <td colspan="8" class="px-6 py-3"> Aucune donnée trouvée.</td>
                                 </tr>
                             @endif
                             <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                                <td colspan="9" class="px-6 py-3">
+                                <td colspan="4" class="px-6 py-3">
                                     <div class="mt-3 mb-3 flex items-center justify-between">
                                         <h2 class="text-title-sm uppercase font-bold text-black dark:text-white">
                                             Total
@@ -218,7 +186,7 @@
                                                 class="flex items-center bg-white shadow-lg border border-gray-200 dark:border-gray-600 w-fit dark:bg-black py-2 px-8 rounded">
                                                 <li>
                                                     <p class="text-md font-semibold text-gray-700 dark:text-gray-200">
-                                                        {{ $getStudentAttendance->total() }}
+                                                        {{ $getParentStudentAttendance->total() }}
                                                     </p>
                                                 </li>
                                             </ol>
@@ -228,14 +196,13 @@
                             </tr>
                         @else
                             <tr class="p-4 text-gray-700 font-semibold rounded-lg shadow-md text-center">
-                                <td colspan="8" class="px-6 py-3"> Aucun rapport d'apprenant trouvé.</td>
+                                <td colspan="8" class="px-6 py-3"> Aucune donnée trouvée.</td>
                             </tr>
                         @endif
                     </tbody>
                 </table>
             </div>
         </div>
-
     </div>
 @endsection
 

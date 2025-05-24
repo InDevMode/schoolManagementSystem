@@ -15,14 +15,14 @@ class StudentController extends Controller
 {
     public function list(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
     {
-        $data['header_title'] = "Liste des Elèves";
+        $data['header_title'] = "Liste des apprenants";
         $data['getStudent'] = User::getAllStudent(10);
         return view('admin.student.list', $data);
     }
 
     public function add(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
     {
-        $data['header_title'] = "Créer un nouvel élève";
+        $data['header_title'] = "Créer un nouvel apprenant";
         $data['getClass'] = ClassModel::getClass();
         return view('admin.student.add', $data);
     }
@@ -35,7 +35,7 @@ class StudentController extends Controller
             $regex = '/^[a-z0-9]+@[a-z0-9]+\.(fr|com|org|bj|io)$/';
 
             if ($studentMail) {
-                return redirect()->back()->with('error', 'Cet email a déjà été utilisé par un autre élève');
+                return redirect()->back()->with('error', 'Cet email a déjà été utilisé par un autre apprenant');
             }
             if (!empty($request->password) && $passwordLength < 6) {
                 return redirect()->back()->with('error', 'Votre mot de passe ne doit pas être de moins de 6 caractères.');
@@ -58,7 +58,7 @@ class StudentController extends Controller
                 $minimumAge = 2;
                 $age = $dateOfBirth->diffInYears(Carbon::now());
                 if ($age < $minimumAge) {
-                    return redirect()->back()->with('error', 'L\'élève doit avoir au moins 2 ans.');
+                    return redirect()->back()->with('error', 'L\'apprenant doit avoir au moins 2 ans.');
                 }
                 $student->date_of_birth = $dateOfBirth;
             }
@@ -92,9 +92,9 @@ class StudentController extends Controller
             $student->user_type = 3;
             $student->save();
 
-            return redirect('admin/student/list')->with('success', 'Cet élève a été créé avec succès.');
+            return redirect('admin/student/list')->with('success', 'Cet apprenant a été créé avec succès.');
         } catch (\Exception $e) {
-            Log::error("Erreur lors de la création d'un élève' : " . $e->getMessage());
+            Log::error("Erreur lors de la création d'un apprenant' : " . $e->getMessage());
 
             return redirect()->back()->with('error', 'Vos informations ne sont pas correctes. Veuillez réessayer.');
         }
@@ -103,7 +103,7 @@ class StudentController extends Controller
     public function edit($id)
     {
         $data['getStudent'] = User::getSingle($id);
-        $data['header_title'] = "Modifier un élève";
+        $data['header_title'] = "Modifier un apprenants";
         if (!empty($data['getStudent'])) {
             $data['getClass'] = ClassModel::getClass();
             if (!empty($data['getStudent']->profile_picture)) {
@@ -129,7 +129,7 @@ class StudentController extends Controller
             }
 
             if ($studentMail) {
-                return redirect()->back()->with('error', 'Cet email a déjà été utilisé par un autre élève');
+                return redirect()->back()->with('error', 'Cet email a déjà été utilisé par un autre apprenant');
             }
             if (!empty($request->password) && $passwordLength < 6) {
                 return redirect()->back()->with('error', 'Votre mot de passe ne doit pas être de moins de 6 caractères.');
@@ -151,7 +151,7 @@ class StudentController extends Controller
                 $minimumAge = 2;
                 $age = $dateOfBirth->diffInYears(Carbon::now());
                 if ($age < $minimumAge) {
-                    return redirect('admin/student/add')->with('error', 'L\'élève doit avoir au moins 2 ans.');
+                    return redirect('admin/student/add')->with('error', 'L\'apprenant doit avoir au moins 2 ans.');
                 }
                 $student->date_of_birth = $dateOfBirth;
             }
@@ -191,9 +191,9 @@ class StudentController extends Controller
             }
             $student->save();
 
-            return redirect('admin/student/list')->with('success', 'Cet élève a été modifié avec succès.');
+            return redirect('admin/student/list')->with('success', 'Cet apprenant a été modifié avec succès.');
         } catch (\Exception $e) {
-            Log::error("Erreur lors de la modification d'un élève' : " . $e->getMessage());
+            Log::error("Erreur lors de la modification d'un apprenant' : " . $e->getMessage());
 
             return redirect()->back()->with('error', 'Vos informations ne sont pas correctes. Veuillez réessayer.');
         }
@@ -205,7 +205,7 @@ class StudentController extends Controller
         if ($student) {
             $student->is_delete = 1;
             $student->save();
-            return redirect('admin/student/list')->with('success', 'Cet élève a été supprimé avec succès.');
+            return redirect('admin/student/list')->with('success', 'Cet apprenant a été supprimé avec succès.');
         } else {
             abort(404);
         }
@@ -213,7 +213,7 @@ class StudentController extends Controller
 
     public function myStudent(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
     {
-        $data['header_title'] = "Mes Elèves";
+        $data['header_title'] = "Mes apprenants";
         $teacher_id = Auth::user()->id;
         $data['getTeacherStudent'] = User::getTeacherStudent(10, $teacher_id);
         return view('teacher.student', $data);

@@ -293,8 +293,6 @@ class User extends Authenticatable
             ->where('users.status', '=', 1)
             ->where('class.is_delete', '=', 0)
             ->where('class.status', '=', 1)
-            ->where('class_teacher.is_delete', '=', 0)
-            ->where('class_teacher.status', '=', 1)
             ->where('users.parent_id', '=', $parent_id)
             ->where('users.user_type', '=', 3);
 
