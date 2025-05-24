@@ -39,7 +39,7 @@ $watch('darkMode', value => localStorage.setItem('darkMode', JSON.stringify(valu
 </div>
 
 </body>
-
+<script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
 <script src="https://kit.fontawesome.com/79fa04224e.js" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 <script src="{{ asset('public/js/components/chart-01.js') }}"></script>

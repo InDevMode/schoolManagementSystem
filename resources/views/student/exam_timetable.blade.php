@@ -11,7 +11,7 @@
         <nav>
             <ol class="flex items-center gap-2">
                 <li>
-                    <span class="font-medium text-violet-600"><i class="fa-solid fa-calendar-days"></i></span>
+                    <span class="font-medium text-violet-600"><iconify-icon icon="mdi:test-tube"></iconify-icon></span>
                 </li>
                 <li>
                     /<a class="font-medium hover:text-violet-600 transition duration-300"

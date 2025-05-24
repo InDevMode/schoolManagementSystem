@@ -123,4 +123,11 @@ class AttendanceController extends Controller
         return view('teacher.attendance.report', $data);
     }
 
+    public function myAttendance(){
+        $data['header_title'] = 'Ma Présence';
+        $data['getMyAttendance'] = StudentAttendanceModel::getMyAttendance(Auth::user()->id, 10);
+        $data['getClassStudent'] = StudentAttendanceModel::getClassStudent(Auth::user()->id);
+        return view('student.attendance', $data);
+    }
+
 }
