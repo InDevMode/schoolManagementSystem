@@ -8,6 +8,7 @@ use App\Http\Controllers\ClassController;
 use App\Http\Controllers\ClassSubjectController;
 use App\Http\Controllers\ClassTeacherController;
 use App\Http\Controllers\ClassTimetableController;
+use App\Http\Controllers\CommunicateController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ExaminationController;
 use App\Http\Controllers\ParentController;
@@ -155,6 +156,12 @@ Route::group(['middleware' => 'admin'], function () {
 
     // Attendance report admin url
     Route::get('admin/attendance/report', [AttendanceController::class, 'attendanceReport']);
+
+    // Communicate url
+    Route::get('admin/communicate/noticeboard/list', [CommunicateController::class, 'list']);
+    Route::get('admin/communicate/noticeboard/add', [CommunicateController::class, 'add']);
+    Route::post('admin/communicate/noticeboard/add', [CommunicateController::class, 'create']);
+    Route::get('admin/communicate/noticeboard/edit', [CommunicateController::class, 'edit']);
 
 });
 

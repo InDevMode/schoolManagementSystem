@@ -11,11 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('marks_grade', function (Blueprint $table) {
+        Schema::create('communicates', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->integer('percent_from');
-            $table->integer('percent_to');
+            $table->string('title');
+            $table->date('notice_date');
+            $table->date('publish_date');
+            $table->string('message');
             $table->Integer('created_by')->unsigned()->nullable()->foreign('created_by')->references('id')->on('users')->onDelete('cascade');
             $table->tinyInteger('is_delete')->default(0)->comment('0: isntDeleted, 1: Deleted');
             $table->timestamps();
@@ -27,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('marks_grade');
+        Schema::dropIfExists('communicates');
     }
 };

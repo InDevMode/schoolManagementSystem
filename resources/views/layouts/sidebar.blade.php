@@ -305,6 +305,53 @@
                         </div>
                         <!-- Dropdown Menu End -->
                     </li>
+                    <li>
+                        <a
+                            class="group relative flex items-center gap-2.5 rounded-md px-4 py-2 font-medium text-violet-600 duration-300 ease-in-out hover:bg-violet-600 dark:hover:bg-meta-4"
+                            href="#"
+                            @click.prevent="selected = (selected === 'communicate' ? '':'communicate')"
+                            :class="{ 'bg-gray-100 dark:bg-meta-4': (selected === 'communicate')}"
+                        >
+                            <span class="w-10 h-10 flex items-center justify-center rounded bg-violet-100 text-violet-600"><iconify-icon icon="mdi:chat" width="24" height="24"></iconify-icon></span>
+                            <span class="group-hover:text-bodydark1 dark:text-bodydark1">Discussions</span>
+                            <span class="text-[18px] py-1 px-2 rounded bg-violet-100 text-violet-600 transition duration-700 absolute right-4 top-1/2 -translate-y-1/2 fill-current"
+                                  :class="{ 'rotate-180 transition duration-700': (selected === 'communicate') }"><i
+                                    class="fa-solid fa-chevron-down"></i></span>
+                        </a>
+                        <!-- Dropdown Menu Start -->
+                        <div
+                            class="translate transform overflow-hidden transition duration-700"
+                            :class="(selected === 'communicate') ? 'block' :'hidden'"
+                        >
+                            <ul class="mb-5.5 mt-4 flex flex-col gap-2.5 pl-8">
+                                <li>
+                                    <a
+                                        class="group relative flex items-center gap-2.5 rounded-md px-4 py-2 font-medium duration-300 ease-in-out hover:bg-violet-700 text-bodydark1 dark:hover:bg-meta-4 {{ Request::Segment(3) == 'noticeboard' ? 'bg-violet-600 text-bodydark1' : 'text-violet-600' }}"
+                                        href="{{ url('admin/communicate/noticeboard/list') }}"
+                                    >
+                                        <span
+                                            class="text-[18px] py-1 px-2 rounded {{ Request::Segment(3) == 'noticeboard' ? 'group-hover:text-bodydark1 text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}"><i
+                                                class="fa-solid fa-chevron-right"></i></span>
+                                        <span
+                                            class="{{ Request::Segment(3) == 'noticeboard' ? 'group-hover:text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}">Affichages</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a
+                                        class="group relative flex items-center gap-2.5 rounded-md px-4 py-2 font-medium duration-300 ease-in-out hover:bg-violet-700 text-bodydark1 dark:hover:bg-meta-4 {{ Request::Segment(3) == 'report' ? 'bg-violet-600 text-bodydark1' : 'text-violet-600' }}"
+                                        href="{{ url('admin/communicate/report') }}"
+                                    >
+                                        <span
+                                            class="text-[18px] py-1 px-2 rounded {{ Request::Segment(3) == 'report' ? 'group-hover:text-bodydark1 text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}"><i
+                                                class="fa-solid fa-chevron-right"></i></span>
+                                        <span
+                                            class="{{ Request::Segment(3) == 'report' ? 'group-hover:text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}">Rapports</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                        <!-- Dropdown Menu End -->
+                    </li>
                     @elseif(Auth::user()->user_type === 2)
                     <li>
                         <a
