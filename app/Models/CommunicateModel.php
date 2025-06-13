@@ -23,6 +23,11 @@ class CommunicateModel extends Model
         'is_delete',
     ];
 
+    static public function getSingle($id)
+    {
+        return CommunicateModel::find($id);
+    }
+
     static public function getNoticeBoard(int $perpage)
     {
         return CommunicateModel::select('communicates.*', 'users.name as created_by_name')
@@ -37,5 +42,9 @@ class CommunicateModel extends Model
         return CommunicateModel::hasMany(NoticeBoardMessageModel::class, 'communicates_id');
     }
 
+    public function getMessageToSingle($message_to, int $noticeBoardId)
+    {
+        return NoticeBoardMessageModel::where('message_to', '=', $message_to)->where('communicates_id', '=', $noticeBoardId)->first();
+    }
 
 }

@@ -20,4 +20,9 @@ class NoticeBoardMessageModel extends Model
     protected $hidden = [
         '',
     ];
+
+    static public function deleteNoticeBoardMessage(int $id){
+        return NoticeBoardMessageModel::where('communicates_id', $id)->delete();
+    }
+
 }

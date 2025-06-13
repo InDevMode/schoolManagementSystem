@@ -54,4 +54,59 @@ class CommunicateController extends Controller
         }
 
     }
+
+    public function edit($id)
+    {
+        $data['getNoticeBoard'] = CommunicateModel::getSingle($id);
+        $data['header_title'] = 'Modifier un message de notification';
+        return view('admin.communicate.noticeboard.edit', $data);
+    }
+
+    public function update(Request $request, $id)
+    {
+        try {
+            $existingNoticeBoard = CommunicateModel::getSingle($id);
+            if (empty($data['getNoticeBoard'])) {
+                return redirect('admin/communicate/noticeboard/list')->with('error', 'Ce message n\'existe pas.');
+            }
+            $existingNoticeBoard->title = $request->title;
+            $existingNoticeBoard->notice_date = $request->notice_date;
+            $existingNoticeBoard->publish_date = $request->publish_date;
+            $existingNoticeBoard->message = $request->message;
+            $existingNoticeBoard->save();
+
+            NoticeBoardMessageModel::deleteNoticeBoardMessage($id);
+            if (!empty($request->message_to)) {
+                foreach ($request->message_to as $message_to) {
+                    $noticeBoardMessage = new NoticeBoardMessageModel;
+                    $noticeBoardMessage->communicates_id = $existingNoticeBoard->id;
+                    $noticeBoardMessage->message_to = $message_to;
+                    $noticeBoardMessage->save();
+                }
+            }
+
+            return redirect('admin/communicate/noticeboard/list')->with('success', 'Ce message a été modifié avec succès.');
+
+        } catch (\Exception $e) {
+            Log::error("Erreur lors de la mise à jour d'un message : " . $e->getMessage());
+
+            return redirect()->back()->with('error', 'Vos informations ne sont pas correctes. Veuillez réessayer.');
+        }
+
+    }
+
+    public function delete($id)
+    {
+        try {
+            $noticeBoard = CommunicateModel::getSingle($id);
+            $noticeBoard->delete();
+
+            NoticeBoardMessageModel::deleteNoticeBoardMessage($id);
+            return redirect('admin/communicate/noticeboard/list')->with('success', 'Ce message a été supprimé avec succès.');
+        } catch (\Exception $e) {
+            Log::error("Erreur lors de la suppression d'un message : " . $e->getMessage());
+            return redirect()->back()->with('error', 'Vos informations ne sont pas correctes. Veuillez réessayer.');
+        }
+    }
+
 }
