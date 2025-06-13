@@ -23,7 +23,8 @@ class CommunicateModel extends Model
         'is_delete',
     ];
 
-    static public function getNoticeBoard(int $perpage) {
+    static public function getNoticeBoard(int $perpage)
+    {
         return CommunicateModel::select('communicates.*', 'users.name as created_by_name')
             ->join('users', 'users.id', '=', 'communicates.created_by')
             ->where('communicates.is_delete', 0)
@@ -31,7 +32,8 @@ class CommunicateModel extends Model
             ->paginate($perpage);
     }
 
-    static public function getNoticeBoardMessage(){
+    public function getNoticeBoardMessage()
+    {
         return CommunicateModel::hasMany(NoticeBoardMessageModel::class, 'communicates_id');
     }
 

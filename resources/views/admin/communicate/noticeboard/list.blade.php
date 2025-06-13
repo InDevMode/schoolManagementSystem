@@ -33,6 +33,9 @@
                                 Titre
                             </th>
                             <th scope="col" class="px-6 py-3">
+                                Envoyé aux
+                            </th>
+                            <th scope="col" class="px-6 py-3">
                                 Date d'affichage
                             </th>
                             <th scope="col" class="px-6 py-3">
@@ -53,17 +56,38 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @php
-                            $getNoticeMessage = \App\Models\NoticeBoardMessageModel::getNoticeMessage()
-                        @endphp
                         @forelse ($getNoticeBoard as $index => $noticeBoard)
                             <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                                 <td scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                   {{ $noticeBoard->title }}
+                                    {{ $noticeBoard->title }}
                                 </td>
                                 <td class="px-6 py-4">
-                                    @foreach ($getNoticeMessage as $message )
-                                    {{ $message->message_to }}
+                                    @foreach ($noticeBoard->getNoticeBoardMessage as $message)
+                                        @php
+                                            $label = '';
+                                            $class = '';
+                                            switch ($message->message_to) {
+                                                case '2':
+                                                    $label = 'Professeurs';
+                                                    $class = 'text-violet-700 dark:text-gray-200 bg-violet-100 dark:bg-violet-900 my-1';
+                                                    break;
+                                                case '3':
+                                                    $label = 'Apprenants';
+                                                    $class = 'text-red-700 dark:text-gray-200 bg-red-100 dark:bg-red-900 my-1';
+                                                    break;
+                                                case '4':
+                                                    $label = 'Parents';
+                                                    $class = 'text-pink-700 dark:text-gray-200 bg-pink-100 dark:bg-pink-900 my-1';
+                                                    break;
+                                                default:
+                                                    $label = 'Autres';
+                                                    $class = 'text-gray-700 dark:text-gray-200 bg-gray-100 dark:bg-gray-800 my-1';
+                                                    break;
+                                            }
+                                        @endphp
+                                        <p class="px-6 py-1 rounded-full {{ $class }}">
+                                            {{ $label }}
+                                        </p>
                                     @endforeach
                                 </td>
                                 <td class="px-6 py-4">
@@ -84,41 +108,30 @@
                                 <td class="px-6 py-3">
                                     <div class="relative inline-block text-left" x-data="{ open: false }">
                                         <div>
-                                            <button
-                                                type="button"
+                                            <button type="button"
                                                 class="group inline-flex w-full justify-center gap-x-1.5 rounded-lg shadow-md bg-white dark:bg-gray-800 border dark:border-gray-600 dark:hover:text-violet-600 px-3 py-2 text-sm font-semibold text-gray-700 hover:text-violet-600 dark:text-gray-200 hover:bg-gray-100"
-                                                @click="open = !open"
-                                                id="menu-button"
-                                                aria-expanded="true"
+                                                @click="open = !open" id="menu-button" aria-expanded="true"
                                                 aria-haspopup="true">
                                                 Actions
                                                 <svg class="-mr-1 size-5 group-hover:text-violet-600 text-gray-400"
-                                                     viewBox="0 0 20 20" fill="currentColor"
-                                                     aria-hidden="true">
+                                                    viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                                                     <path fill-rule="evenodd"
-                                                          d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z"
-                                                          clip-rule="evenodd"/>
+                                                        d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z"
+                                                        clip-rule="evenodd" />
                                                 </svg>
                                             </button>
                                         </div>
-                                        <div
-                                            class="absolute right-0 z-50 mt-2 w-56 origin-top-right rounded-md bg-white dark:bg-gray-800 ring-1 shadow-lg ring-black/5 focus:outline-hidden"
-                                            role="menu"
-                                            aria-orientation="vertical"
-                                            aria-labelledby="menu-button"
-                                            tabindex="{{ $index + 1 }}"
-                                            x-show="open"
-                                            @click.away="open = false"
-                                            x-transition
-                                        >
+                                        <div class="absolute right-0 z-50 mt-2 w-56 origin-top-right rounded-md bg-white dark:bg-gray-800 ring-1 shadow-lg ring-black/5 focus:outline-hidden"
+                                            role="menu" aria-orientation="vertical" aria-labelledby="menu-button"
+                                            tabindex="{{ $index + 1 }}" x-show="open" @click.away="open = false" x-transition>
                                             <div class="py-1">
                                                 <a href="{{ url('admin/communicate/noticeboard/edit', $noticeBoard->id) }}"
-                                                   class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:text-emerald-400 dark:hover:text-emerald-400"
-                                                   role="menuitem">Modifier</a>
+                                                    class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:text-emerald-400 dark:hover:text-emerald-400"
+                                                    role="menuitem">Modifier</a>
                                                 <form method="get" action="" role="none">
                                                     <button type="submit"
-                                                            class="block w-full px-4 py-2 text-left text-sm text-gray-700 dark:text-gray-200 hover:text-red-400 dark:hover:text-red-400"
-                                                            role="menuitem">
+                                                        class="block w-full px-4 py-2 text-left text-sm text-gray-700 dark:text-gray-200 hover:text-red-400 dark:hover:text-red-400"
+                                                        role="menuitem">
                                                         Supprimer
                                                     </button>
                                                 </form>
@@ -128,11 +141,11 @@
                                 </td>
                             </tr>
                         @empty
-                        <tr>
-                            <td colspan="7" class="p-6 text-center text-gray-500">
-                                Aucun message de notification trouvé.
-                            </td>
-                        </tr>
+                            <tr>
+                                <td colspan="7" class="p-6 text-center text-gray-500">
+                                    Aucun message de notification trouvé.
+                                </td>
+                            </tr>
                         @endforelse
                     </tbody>
                 </table>
