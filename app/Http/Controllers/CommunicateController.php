@@ -64,10 +64,12 @@ class CommunicateController extends Controller
 
     public function update(Request $request, $id)
     {
+
         try {
+
             $existingNoticeBoard = CommunicateModel::getSingle($id);
-            if (empty($data['getNoticeBoard'])) {
-                return redirect('admin/communicate/noticeboard/list')->with('error', 'Ce message n\'existe pas.');
+            if (!empty($data['getNoticeBoard'])) {
+                redirect()->back()->with('error', 'Ce message n\existe pas');
             }
             $existingNoticeBoard->title = $request->title;
             $existingNoticeBoard->notice_date = $request->notice_date;

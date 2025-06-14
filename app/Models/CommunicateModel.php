@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Request;
 
 class CommunicateModel extends Model
 {
@@ -23,17 +24,45 @@ class CommunicateModel extends Model
         'is_delete',
     ];
 
-    static public function getSingle($id)
+    static public function getSingle(int $id)
     {
         return CommunicateModel::find($id);
     }
 
     static public function getNoticeBoard(int $perpage)
     {
-        return CommunicateModel::select('communicates.*', 'users.name as created_by_name')
+        $results = CommunicateModel::select('communicates.*', 'users.name as created_by_name')
             ->join('users', 'users.id', '=', 'communicates.created_by')
-            ->where('communicates.is_delete', 0)
-            ->orderBy('communicates.id', 'desc')
+            ->where('communicates.is_delete', 0);
+
+            $filters = [
+                'communicates.title' => strtolower(Request::get('title')),
+            ];
+
+            foreach ($filters as $column => $value) {
+                if (!empty($value)) {
+                    $results->where($column, 'like', '%' . $value . '%');
+                }
+            }
+
+            if(!empty(Request::get('date_notice_to')) && !empty(Request::get('date_notice_from'))) {
+                $results->whereBetween('communicates.notice_date', [Request::get('date_notice_to'), Request::get('date_notice_from')]);
+            }
+
+            if (!empty(Request::get('publish_date_to')) && !empty(Request::get('publish_date_from'))) {
+                $results->whereBetween('communicates.publish_date', [Request::get('publish_date_to'), Request::get('publish_date_from')]);
+            }
+
+            if (!empty(Request::get('publish_date_to')) && !empty(Request::get('publish_date_from'))) {
+                $results->whereBetween('communicates.publish_date', [Request::get('publish_date_to'), Request::get('publish_date_from')]);
+            }
+
+            if ($messageTos = Request::get('message_to')) {
+                $results->join('noticeboard_messages', 'noticeboard_messages.communicates_id', '=', 'communicates.id')
+                      ->whereIn('noticeboard_messages.message_to', array_map('intval', $messageTos));
+            }
+
+            return $results->orderBy('communicates.id', 'desc')
             ->paginate($perpage);
     }
 
@@ -42,9 +71,9 @@ class CommunicateModel extends Model
         return CommunicateModel::hasMany(NoticeBoardMessageModel::class, 'communicates_id');
     }
 
-    public function getMessageToSingle($message_to, int $noticeBoardId)
+    public function getMessageToSingle(int $noticeBoardId, int $receiverId)
     {
-        return NoticeBoardMessageModel::where('message_to', '=', $message_to)->where('communicates_id', '=', $noticeBoardId)->first();
+        return NoticeBoardMessageModel::where('communicates_id', $noticeBoardId)->where('message_to', $receiverId)->first();
     }
 
 }
