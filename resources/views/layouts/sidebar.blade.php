@@ -336,18 +336,6 @@
                                             class="{{ Request::Segment(3) == 'noticeboard' ? 'group-hover:text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}">Affichages</span>
                                     </a>
                                 </li>
-                                <li>
-                                    <a
-                                        class="group relative flex items-center gap-2.5 rounded-md px-4 py-2 font-medium duration-300 ease-in-out hover:bg-violet-700 text-bodydark1 dark:hover:bg-meta-4 {{ Request::Segment(3) == 'report' ? 'bg-violet-600 text-bodydark1' : 'text-violet-600' }}"
-                                        href="{{ url('admin/communicate/report') }}"
-                                    >
-                                        <span
-                                            class="text-[18px] py-1 px-2 rounded {{ Request::Segment(3) == 'report' ? 'group-hover:text-bodydark1 text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}"><i
-                                                class="fa-solid fa-chevron-right"></i></span>
-                                        <span
-                                            class="{{ Request::Segment(3) == 'report' ? 'group-hover:text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}">Rapports</span>
-                                    </a>
-                                </li>
                             </ul>
                         </div>
                         <!-- Dropdown Menu End -->
@@ -581,6 +569,19 @@
                             </span>
                             <span
                                 class="{{ Request::Segment(2) == 'my_attendance' ? 'group-hover:text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}">Ma Présence</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a
+                            class="group relative flex items-center gap-2.5 rounded-md px-4 py-2 font-medium duration-300 ease-in-out hover:bg-violet-700 text-bodydark1 dark:hover:bg-meta-4 {{ Request::Segment(2) == 'my_noticeboard' ? 'bg-violet-600 text-bodydark1' : 'text-violet-600' }}"
+                            href="{{ url('student/my_noticeboard') }}"
+                        >
+                            <span
+                                class="w-10 h-10 flex items-center justify-center rounded {{ Request::Segment(2) == 'my_noticeboard' ? 'bg-violet-100 text-violet-600' : 'bg-violet-100 text-violet-600'}}">
+                                <iconify-icon icon="mdi:clipboard-text-outline" width="24" height="24"></iconify-icon>
+                            </span>
+                            <span
+                                class="{{ Request::Segment(2) == 'my_noticeboard' ? 'group-hover:text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}">Mes Notifications</span>
                         </a>
                     </li>
                     @elseif(Auth::user()->user_type === 4)

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\CommunicateModel;
 use App\Models\NoticeBoardMessageModel;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 class CommunicateController extends Controller
@@ -109,6 +110,12 @@ class CommunicateController extends Controller
             Log::error("Erreur lors de la suppression d'un message : " . $e->getMessage());
             return redirect()->back()->with('error', 'Vos informations ne sont pas correctes. Veuillez réessayer.');
         }
+    }
+
+    public function myNoticeBoard(){
+        $data['header_title'] = 'Mes notifications';
+        $data['getStudentNoticeboard'] = CommunicateModel::getStudentNoticeBoard(3, 5);
+        return view('student.notice_board', $data);
     }
 
 }

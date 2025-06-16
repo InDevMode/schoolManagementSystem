@@ -35,34 +35,34 @@ class CommunicateModel extends Model
             ->join('users', 'users.id', '=', 'communicates.created_by')
             ->where('communicates.is_delete', 0);
 
-            $filters = [
-                'communicates.title' => strtolower(Request::get('title')),
-            ];
+        $filters = [
+            'communicates.title' => strtolower(Request::get('title')),
+        ];
 
-            foreach ($filters as $column => $value) {
-                if (!empty($value)) {
-                    $results->where($column, 'like', '%' . $value . '%');
-                }
+        foreach ($filters as $column => $value) {
+            if (!empty($value)) {
+                $results->where($column, 'like', '%' . $value . '%');
             }
+        }
 
-            if(!empty(Request::get('date_notice_to')) && !empty(Request::get('date_notice_from'))) {
-                $results->whereBetween('communicates.notice_date', [Request::get('date_notice_to'), Request::get('date_notice_from')]);
-            }
+        if (!empty(Request::get('date_notice_to')) && !empty(Request::get('date_notice_from'))) {
+            $results->whereBetween('communicates.notice_date', [Request::get('date_notice_to'), Request::get('date_notice_from')]);
+        }
 
-            if (!empty(Request::get('publish_date_to')) && !empty(Request::get('publish_date_from'))) {
-                $results->whereBetween('communicates.publish_date', [Request::get('publish_date_to'), Request::get('publish_date_from')]);
-            }
+        if (!empty(Request::get('publish_date_to')) && !empty(Request::get('publish_date_from'))) {
+            $results->whereBetween('communicates.publish_date', [Request::get('publish_date_to'), Request::get('publish_date_from')]);
+        }
 
-            if (!empty(Request::get('publish_date_to')) && !empty(Request::get('publish_date_from'))) {
-                $results->whereBetween('communicates.publish_date', [Request::get('publish_date_to'), Request::get('publish_date_from')]);
-            }
+        if (!empty(Request::get('publish_date_to')) && !empty(Request::get('publish_date_from'))) {
+            $results->whereBetween('communicates.publish_date', [Request::get('publish_date_to'), Request::get('publish_date_from')]);
+        }
 
-            if ($messageTos = Request::get('message_to')) {
-                $results->join('noticeboard_messages', 'noticeboard_messages.communicates_id', '=', 'communicates.id')
-                      ->whereIn('noticeboard_messages.message_to', array_map('intval', $messageTos));
-            }
+        if ($messageTos = Request::get('message_to')) {
+            $results->join('noticeboard_messages', 'noticeboard_messages.communicates_id', '=', 'communicates.id')
+                ->whereIn('noticeboard_messages.message_to', array_map('intval', $messageTos));
+        }
 
-            return $results->orderBy('communicates.id', 'desc')
+        return $results->orderBy('communicates.id', 'desc')
             ->paginate($perpage);
     }
 
@@ -74,6 +74,33 @@ class CommunicateModel extends Model
     public function getMessageToSingle(int $noticeBoardId, int $receiverId)
     {
         return NoticeBoardMessageModel::where('communicates_id', $noticeBoardId)->where('message_to', $receiverId)->first();
+    }
+
+    static public function getStudentNoticeBoard(int $message_to, int $perpage) {
+        $results = CommunicateModel::select('communicates.*', 'users.name as created_by_name')
+            ->join('users', 'users.id', '=', 'communicates.created_by')
+            ->join('noticeboard_messages', 'noticeboard_messages.communicates_id', '=', 'communicates.id')
+            ->where('noticeboard_messages.message_to', '=', $message_to)
+            ->where('communicates.is_delete', 0);
+
+            $filters = [
+                'communicates.title' => strtolower(Request::get('title')),
+            ];
+
+            foreach ($filters as $column => $value) {
+                if (!empty($value)) {
+                    $results->where($column, 'like', '%' . $value . '%');
+                }
+            }
+
+            if (!empty(Request::get('date_notice_from')) && !empty(Request::get('date_notice_to'))) {
+                $results->whereBetween('communicates.notice_date', [Request::get('date_notice_from'), Request::get('date_notice_to')]);
+            }
+
+           $results =  $results->orderBy('communicates.id', 'desc')
+            ->paginate($perpage);
+
+        return $results;
     }
 
 }

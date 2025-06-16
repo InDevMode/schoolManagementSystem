@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id();
             $table->Integer('communicates_id')->unsigned()->nullable()->foreign('communicates_id')->references('id')->on('communicates')->onDelete('cascade');
             $table->tinyInteger('message_to')->comment('user_type');
-            $table->Integer('created_by')->unsigned()->nullable()->foreign('created_by')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
         });
     }
