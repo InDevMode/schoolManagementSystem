@@ -6,17 +6,17 @@
                 <div class="mx-auto max-w-242.5">
                     <div class="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                         <h2 class="uppercase font-bold text-black dark:text-bodydark">
-                            Modifier un message
+                            Modifier une notification
                         </h2>
                         <nav>
                             <ol class="flex items-center gap-2">
                                 <li>
-                                    <span class="font-medium text-emerald-400"><iconify-icon
-                                            icon="mdi:bulletin-board"></iconify-icon></span>
+                                    <span class="font-medium text-emerald-400"><iconify-icon icon="mdi:bell-outline" width="24" height="24"></iconify-icon>
                                 </li>
+                                <p>/</p>
                                 <li>
-                                    /<a class="font-medium hover:text-emerald-400 transition duration-300"
-                                        href="{{ url('admin/communicate/noticeboard/list') }}"> Discussions</a>
+                                    <a class="font-medium hover:text-emerald-400 transition duration-300"
+                                        href="{{ url('admin/communicate/noticeboard/list') }}"> Notifications</a>
                                 </li>
                             </ol>
                         </nav>
@@ -77,7 +77,7 @@
                                     @endphp
                                     <div class="w-full mb-5">
                                         <h3 class="mb-4 font-semibold text-gray-900 dark:text-white">Envoyer à : <span class="text-meta-1">*</span></h3>
-                                      
+
                                         <ul
                                             class="items-center w-full text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg sm:flex dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                                             <li
@@ -119,19 +119,17 @@
                                             required>{{ old('message', $getNoticeBoard->message) }}</textarea>
                                     </div>
 
-                                </div>
-
-                                <button type="submit"
+                                    <button type="submit"
                                     class="flex w-full justify-center rounded-lg bg-emerald-400 p-3 font-medium text-gray hover:bg-opacity-90">
                                     Modifier
                                 </button>
+                                </div>
                         </div>
                         </form>
                     </div>
                 </div>
             </div>
-    </div>
-    </main>
+        </main>
     </div>
 @endsection
 

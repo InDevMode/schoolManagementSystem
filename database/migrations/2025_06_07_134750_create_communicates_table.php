@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('title');
             $table->date('notice_date');
             $table->date('publish_date');
-            $table->string('message');
+            $table->longText('message');
             $table->Integer('created_by')->unsigned()->nullable()->foreign('created_by')->references('id')->on('users')->onDelete('cascade');
             $table->tinyInteger('is_delete')->default(0)->comment('0: isntDeleted, 1: Deleted');
             $table->timestamps();

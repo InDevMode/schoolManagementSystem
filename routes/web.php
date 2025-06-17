@@ -203,6 +203,9 @@ Route::group(['middleware' => 'teacher'], function () {
       // Attendance report teacher url
     Route::get('teacher/attendance/report', [AttendanceController::class, 'attendanceReportTeacher']);
 
+    // Teacher noticeboard url
+    Route::get('teacher/my_noticeboard', [CommunicateController::class, 'teacherNoticeBoard']);
+
 });
 
 Route::group(['middleware' => 'student'], function () {
@@ -261,4 +264,8 @@ Route::group(['middleware' => 'parent'], function () {
 
     // Parent student attendance url
     Route::get('parent/my_student/attendance/{student_id}', [AttendanceController::class, 'parentStudentAttendance']);
+
+    // Parent notice board url
+    Route::get('parent/my_noticeboard', [CommunicateController::class, 'parentNoticeBoard']);
+
 });

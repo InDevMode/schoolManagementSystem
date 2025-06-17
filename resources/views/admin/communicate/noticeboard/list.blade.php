@@ -3,21 +3,21 @@
     <div class="m-5">
         <!-- Breadcrumb Start -->
         <div class="mb-6 mt-3 flex flex-col gap-3 sm:flex-row items-center justify-between">
-            <h2 class="uppercase font-bold text-black dark:text-bodydark">
+            <h2 class="text-3xl font-bold text-gray-900  dark:text-bodydark">
                 Affichage de la liste des notifications
             </h2>
             <nav>
                 <ol class="flex items-center gap-2">
                     <li>
-                        <span class="font-medium text-violet-600"><iconify-icon
-                                icon="mdi:bulletin-board"></iconify-icon></span>
+                        <span class="font-medium text-violet-600"><iconify-icon icon="mdi:bell-outline" width="24" height="24"></iconify-icon>
+                        </span>
                     </li>
                     <li>
-                        /<a class="font-medium hover:text-violet-600 transition duration-300"
+                        /<a class="text-xl font-medium hover:text-violet-600 transition duration-300"
                             href="{{ url('admin/dashboard') }}"> Dashboard</a>
                     </li>
                     <li>
-                        /<a class="font-medium hover:text-violet-600 transition duration-300"
+                        /<a class="text-xl font-medium hover:text-violet-600 transition duration-300"
                             href="{{ url('admin/communicate/noticeboard/add') }}"> Créer un message</a>
                     </li>
                 </ol>

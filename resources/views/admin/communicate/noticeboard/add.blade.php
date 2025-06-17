@@ -11,8 +11,9 @@
                         <nav>
                             <ol class="flex items-center gap-2">
                                 <li>
-                                    <span class="font-medium text-violet-600"><iconify-icon
-                                            icon="mdi:bulletin-board"></iconify-icon></span>
+                                    <span class="font-medium text-violet-600"><iconify-icon icon="mdi:bell-outline"
+                                            width="24" height="24"></iconify-icon>
+                                    </span>
                                 </li>
                                 <li>
                                     /<a class="font-medium hover:text-violet-600 transition duration-300"
@@ -30,7 +31,6 @@
                                 enctype="multipart/form-data">
                                 {{ csrf_field() }}
                                 <div class="p-6.5">
-
                                     <div class="w-full mb-5">
                                         <label class="mb-3 block text-sm font-medium text-black dark:text-white">
                                             Titre <span class="text-meta-1">*</span>
@@ -78,7 +78,18 @@
                                             <li
                                                 class="w-full border-b border-gray-200 sm:border-b-0 sm:border-r dark:border-gray-600">
                                                 <div class="flex items-center ps-3">
-                                                    <input id="message_to_students" type="checkbox" value="3" name="message_to[]"
+                                                    <input id="message_to_teachers" type="checkbox" value="2"
+                                                        name="message_to[]"
+                                                        class="w-4 h-4 text-violet-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-violet-500 dark:focus:ring-violet-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
+                                                    <label for="message_to_teachers"
+                                                        class="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Professeurs</label>
+                                                </div>
+                                            </li>
+                                            <li
+                                                class="w-full border-b border-gray-200 sm:border-b-0 sm:border-r dark:border-gray-600">
+                                                <div class="flex items-center ps-3">
+                                                    <input id="message_to_students" type="checkbox" value="3"
+                                                        name="message_to[]"
                                                         class="w-4 h-4 text-violet-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-violet-500 dark:focus:ring-violet-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
                                                     <label for="message_to_students"
                                                         class="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Apprenants</label>
@@ -87,24 +98,15 @@
                                             <li
                                                 class="w-full border-b border-gray-200 sm:border-b-0 sm:border-r dark:border-gray-600">
                                                 <div class="flex items-center ps-3">
-                                                    <input id="message_to_parents" type="checkbox" value="4" name="message_to[]"
+                                                    <input id="message_to_parents" type="checkbox" value="4"
+                                                        name="message_to[]"
                                                         class="w-4 h-4 text-violet-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-violet-500 dark:focus:ring-violet-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
                                                     <label for="message_to_parents"
                                                         class="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Parents</label>
                                                 </div>
                                             </li>
-                                            <li
-                                                class="w-full border-b border-gray-200 sm:border-b-0 sm:border-r dark:border-gray-600">
-                                                <div class="flex items-center ps-3">
-                                                    <input id="message_to_teachers" type="checkbox" value="2" name="message_to[]"
-                                                        class="w-4 h-4 text-violet-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-violet-500 dark:focus:ring-violet-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
-                                                    <label for="message_to_teachers"
-                                                        class="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Professeurs</label>
-                                                </div>
-                                            </li>
                                         </ul>
                                     </div>
-
                                     <div class="mb-4.5">
                                         <label class="mb-3 block text-sm font-medium text-black dark:text-white">
                                             Message <span class="text-meta-1">*</span>
@@ -113,20 +115,17 @@
                                             class="w-full rounded-lg border-[1.5px] border-stroke bg-gray-100 text-gray-200 placeholder-gray-200 px-5 py-2.5 font-normal outline-none transition focus:border-violet-600 active:border-violet-600 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-violet-600"
                                             required>{{ old('message') }}</textarea>
                                     </div>
-
+                                    <button type="submit"
+                                        class="flex w-full justify-center rounded-lg bg-violet-600 p-3 font-medium text-gray hover:bg-opacity-90">
+                                        Créer
+                                    </button>
                                 </div>
-
-                                <button type="submit"
-                                    class="flex w-full justify-center rounded-lg bg-violet-600 p-3 font-medium text-gray hover:bg-opacity-90">
-                                    Créer
-                                </button>
                         </div>
                         </form>
                     </div>
                 </div>
             </div>
-    </div>
-    </main>
+        </main>
     </div>
 @endsection
 

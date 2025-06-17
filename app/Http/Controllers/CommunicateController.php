@@ -12,7 +12,7 @@ class CommunicateController extends Controller
 {
     public function list()
     {
-        $data['header_title'] = 'Message de notification';
+        $data['header_title'] = 'Message de notifications';
         $data['getNoticeBoard'] = CommunicateModel::getNoticeBoard(10);
         return view('admin.communicate.noticeboard.list', $data);
     }
@@ -41,15 +41,14 @@ class CommunicateController extends Controller
                     $noticeBoardMessage = new NoticeBoardMessageModel;
                     $noticeBoardMessage->communicates_id = $noticeBoard->id;
                     $noticeBoardMessage->message_to = $message_to;
-                    $noticeBoardMessage->created_by = auth()->user()->id;
                     $noticeBoardMessage->save();
                 }
             }
 
-            return redirect('admin/communicate/noticeboard/list')->with('success', 'Ce message a été créé avec succès.');
+            return redirect('admin/communicate/noticeboard/list')->with('success', 'Ce message de notification a été créé avec succès.');
 
         } catch (\Exception $e) {
-            Log::error("Erreur lors de la création d'un message : " . $e->getMessage());
+            Log::error("Erreur lors de la création d'un  message de notification : " . $e->getMessage());
 
             return redirect()->back()->with('error', 'Vos informations ne sont pas correctes. Veuillez réessayer.');
         }
@@ -88,10 +87,10 @@ class CommunicateController extends Controller
                 }
             }
 
-            return redirect('admin/communicate/noticeboard/list')->with('success', 'Ce message a été modifié avec succès.');
+            return redirect('admin/communicate/noticeboard/list')->with('success', 'Ce  message de notification a été modifié avec succès.');
 
         } catch (\Exception $e) {
-            Log::error("Erreur lors de la mise à jour d'un message : " . $e->getMessage());
+            Log::error("Erreur lors de la mise à jour d'un  message de notification : " . $e->getMessage());
 
             return redirect()->back()->with('error', 'Vos informations ne sont pas correctes. Veuillez réessayer.');
         }
@@ -105,17 +104,31 @@ class CommunicateController extends Controller
             $noticeBoard->delete();
 
             NoticeBoardMessageModel::deleteNoticeBoardMessage($id);
-            return redirect('admin/communicate/noticeboard/list')->with('success', 'Ce message a été supprimé avec succès.');
+            return redirect('admin/communicate/noticeboard/list')->with('success', 'Ce  message de notification a été supprimé avec succès.');
         } catch (\Exception $e) {
-            Log::error("Erreur lors de la suppression d'un message : " . $e->getMessage());
+            Log::error("Erreur lors de la suppression d'un  message de notification : " . $e->getMessage());
             return redirect()->back()->with('error', 'Vos informations ne sont pas correctes. Veuillez réessayer.');
         }
     }
 
     public function myNoticeBoard(){
         $data['header_title'] = 'Mes notifications';
-        $data['getStudentNoticeboard'] = CommunicateModel::getStudentNoticeBoard(3, 5);
+        $data['getStudentNoticeboard'] = CommunicateModel::getNoticeBoardWithUserType(Auth::user()->user_type, 5);
         return view('student.notice_board', $data);
     }
+
+    public function teacherNoticeBoard(){
+        $data['header_title'] = 'Mes notifications';
+        $data['getTeacherNoticeboard'] = CommunicateModel::getNoticeBoardWithUserType(Auth::user()->user_type, 5);
+        return view('teacher.notice_board', $data);
+    }
+
+    public function parentNoticeBoard(){
+        $data['header_title'] = 'Mes notifications';
+        $data['getParentNoticeboard'] = CommunicateModel::getNoticeBoardWithUserType(Auth::user()->user_type, 5);
+        return view('parent.notice_board', $data);
+    }
+
+
 
 }

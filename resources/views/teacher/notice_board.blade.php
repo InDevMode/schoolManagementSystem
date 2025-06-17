@@ -13,15 +13,22 @@
                     </li>
                     <li>
                         /<a class="text-xl font-bold text-gray-900 hover:text-violet-600 transition duration-300 dark:text-bodydark"
-                            href="{{ url('student/dashboard') }}"> Dashboard</a>
+                            href="{{ url('teacher/dashboard') }}"> Dashboard</a>
                     </li>
                 </ol>
             </nav>
         </div>
         @include('message')
         <div class="my-4">
-            {{ $getStudentNoticeboard->links('vendor.pagination.tailwind') }}
+            {{ $getTeacherNoticeboard->links('vendor.pagination.tailwind') }}
         </div>
+
+        @php
+            $totalNotifications = $getTeacherNoticeboard->count();
+            $teacherCount = $getTeacherNoticeboard->filter(function ($notification) {
+                return $notification->getNoticeBoardMessage->contains('message_to', '2');
+            })->count();
+        @endphp
 
         <!-- Header -->
         <div class="flex items-center justify-between mb-4">
@@ -30,9 +37,9 @@
                     Notifications
                 </h2>
                 <p class="text-gray-600 dark:text-gray-400 mt-1">
-                    {{ $getStudentNoticeboard->count() }}
-                    notification{{ $getStudentNoticeboard->count() > 1 ? 's' : '' }}
-                    trouvée{{ $getStudentNoticeboard->count() > 1 ? 's' : '' }}
+                    {{ $getTeacherNoticeboard->count() }}
+                    notification{{ $getTeacherNoticeboard->count() > 1 ? 's' : '' }}
+                    trouvée{{ $getTeacherNoticeboard->count() > 1 ? 's' : '' }}
                 </p>
             </div>
         </div>
@@ -52,6 +59,7 @@
                                 value="{{ Request::get('date_notice_from') }}"
                                 class="form-datepicker w-full rounded-lg border-[1.5px] border-stroke bg-gray-100 px-5 py-2.5 font-normal outline-none transition focus:border-violet-600 active:border-violet-600 dark:border-form-strokedark dark:bg-form-input dark:focus:border-violet-600"
                                 placeholder="date d'affichage de..." data-class="flatpickr-right" required />
+
                             <div class="pointer-events-none absolute inset-0 left-auto right-5 flex items-center">
                                 <iconify-icon icon="lucide:calendar" width="24" height="24"></iconify-icon>
                             </div>
@@ -78,7 +86,7 @@
                         </button>
                     </div>
                     <div class="w-full">
-                        <a href="{{ url('student/my_noticeboard') }}"
+                        <a href="{{ url('teacher/my_noticeboard') }}"
                             class="flex w-full justify-center rounded-lg bg-gray-500 px-3 py-2.5 font-medium text-gray hover:bg-opacity-90">
                             Réïnitialisez
                         </a>
@@ -89,8 +97,9 @@
 
         <!-- Notifications Grid -->
         <div class="space-y-6 fade-in" style="animation-delay: 0.3s;">
+
             <!-- Grid or Empty State -->
-            @if($getStudentNoticeboard->isEmpty())
+            @if($getTeacherNoticeboard->isEmpty())
                 <div class="text-center py-12">
                     <div
                         class="mx-auto h-24 w-24 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mb-4">
@@ -101,7 +110,7 @@
                 </div>
             @else
                 <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-                    @foreach($getStudentNoticeboard as $studentNoticeboard)
+                    @foreach($getTeacherNoticeboard as $teacherNoticeboard)
                         @php
                             $formatDate = function ($dateString, $includeTime = false) {
                                 $date = \Carbon\Carbon::parse($dateString)->locale('fr');
@@ -127,15 +136,15 @@
                                     <div class="flex-1">
                                         <h3
                                             class="bg-violet-600 text-lg font-semibold py-4 rounded-t-lg px-6 text-white dark:text-white duration-200">
-                                            {{ $studentNoticeboard->title }}
+                                            {{ $teacherNoticeboard->title }}
                                         </h3>
                                         <div
                                             class="px-6 flex items-center justify-between gap-4 mt-2 text-sm text-gray-500 dark:text-gray-400">
                                             <div class="flex items-center gap-1 bg-gray-100 dark:bg-gray-950 p-3 rounded-lg shadow-lg">
-                                                <span>Affiché le {{ $formatDate($studentNoticeboard->notice_date) }}</span>
+                                                <span>Affiché le {{ $formatDate($teacherNoticeboard->notice_date) }}</span>
                                             </div>
                                             <div class="flex items-center gap-1 bg-gray-100 dark:bg-gray-950 p-3 rounded-lg shadow-lg">
-                                                <span>Publié le {{ $formatDate($studentNoticeboard->publish_date) }}</span>
+                                                <span>Publié le {{ $formatDate($teacherNoticeboard->publish_date) }}</span>
                                             </div>
                                         </div>
                                         <div class="border-t border-gray-100 dark:border-gray-700 my-2"></div>
@@ -152,11 +161,11 @@
                                     <div x-data="{ expanded: false }">
                                         <div class="text-gray-600 dark:text-gray-400 leading-relaxed">
                                             <template x-if="!expanded" x-transition.duration.300ms x-cloak>
-                                                <div>{!! $truncateMessage($studentNoticeboard->message, 15) !!}</div>
+                                                <div>{!! $truncateMessage($teacherNoticeboard->message, 15) !!}</div>
                                             </template>
                                             <template x-if="expanded">
                                                 <div class="prose prose-sm dark:prose-invert max-w-none">
-                                                    {!! $studentNoticeboard->message !!}
+                                                    {!! $teacherNoticeboard->message !!}
                                                 </div>
                                             </template>
                                         </div>
@@ -173,10 +182,10 @@
                                 <div class="flex items-center justify-between text-sm text-gray-500 dark:text-gray-400">
                                     <div class="flex items-center gap-1">
                                         <span>Créé par <span
-                                                class="font-medium text-gray-700 dark:text-gray-300">{{ $studentNoticeboard->created_by_name }}</span></span>
+                                                class="font-medium text-gray-700 dark:text-gray-300">{{ $teacherNoticeboard->created_by_name }}</span></span>
                                     </div>
                                     <div class="flex items-center gap-1">
-                                        <span>{{ $formatDate($studentNoticeboard->created_at, true) }}</span>
+                                        <span>{{ $formatDate($teacherNoticeboard->created_at, true) }}</span>
                                     </div>
                                 </div>
                             </div>
@@ -188,6 +197,7 @@
     </div>
     </div>
 @endsection
+
 
 <script>
     // Animation d'apparition progressive des éléments
