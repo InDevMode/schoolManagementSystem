@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\SendMailUserMail;
 use App\Models\CommunicateModel;
 use App\Models\NoticeBoardMessageModel;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 class CommunicateController extends Controller
 {
@@ -69,7 +72,7 @@ class CommunicateController extends Controller
 
             $existingNoticeBoard = CommunicateModel::getSingle($id);
             if (!empty($data['getNoticeBoard'])) {
-                redirect()->back()->with('error', 'Ce message n\existe pas');
+                redirect()->back()->with('error', 'Ce message de notification n\existe pas');
             }
             $existingNoticeBoard->title = $request->title;
             $existingNoticeBoard->notice_date = $request->notice_date;
@@ -111,22 +114,57 @@ class CommunicateController extends Controller
         }
     }
 
-    public function myNoticeBoard(){
+    public function myNoticeBoard()
+    {
         $data['header_title'] = 'Mes notifications';
         $data['getStudentNoticeboard'] = CommunicateModel::getNoticeBoardWithUserType(Auth::user()->user_type, 5);
         return view('student.notice_board', $data);
     }
 
-    public function teacherNoticeBoard(){
+    public function teacherNoticeBoard()
+    {
         $data['header_title'] = 'Mes notifications';
         $data['getTeacherNoticeboard'] = CommunicateModel::getNoticeBoardWithUserType(Auth::user()->user_type, 5);
         return view('teacher.notice_board', $data);
     }
 
-    public function parentNoticeBoard(){
+    public function parentNoticeBoard()
+    {
         $data['header_title'] = 'Mes notifications';
         $data['getParentNoticeboard'] = CommunicateModel::getNoticeBoardWithUserType(Auth::user()->user_type, 5);
         return view('parent.notice_board', $data);
+    }
+
+    public function sendMail()
+    {
+        $data['header_title'] = 'Envoyer un mail';
+        $data['getUsers'] = User::getUsers();
+        return view('admin.communicate.send_mail', $data);
+    }
+
+    public function sendMailCreate(Request $request)
+    {
+        try {
+            if (!empty($request->user_id)) {
+                foreach ($request->user_id as $userId) {
+                    $user = User::getSingle($userId);
+
+                    if ($user && $user->email) {
+                        // Ajouter dynamiquement les données nécessaires pour l'email
+                        $user->send_message = $request->message;
+                        $user->send_subject = $request->subject;
+
+                        // Envoi du mail
+                        Mail::to($user->email)->send(new SendMailUserMail($user));
+                    }
+                }
+            }
+
+            return redirect()->back()->with('success', 'Les mails ont été envoyés avec succès.');
+        } catch (\Exception $e) {
+            Log::error("Erreur lors de l'envoi du mail : " . $e->getMessage());
+            return redirect()->back()->with('error', 'Erreur lors de l\'envoi. Veuillez réessayer.');
+        }
     }
 
 

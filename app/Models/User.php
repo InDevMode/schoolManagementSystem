@@ -282,7 +282,7 @@ class User extends Authenticatable
             ->paginate($perPage);
     }
 
-    static public function getMyStudent(int $perPage, int $parent_id,)
+    static public function getMyStudent(int $perPage, int $parent_id, )
     {
         $results = User::select('users.*', 'class.name as class_name', 'teacher.name as teacher_name', 'teacher.last_name as teacher_last_name')
             ->join('users as parent', 'parent.id', '=', 'users.parent_id', 'left')
@@ -393,5 +393,29 @@ class User extends Authenticatable
     {
         return StudentAttendanceModel::checkAlreadyAttendance($student_id, $class_id, $date);
     }
+
+    static public function getUsers()
+    {
+        return User::whereIn('user_type', [1, 2, 3, 4])
+            ->select('id', 'name', 'last_name', 'user_type')
+            ->where('status', 1)
+            ->where('is_delete', 0)
+            ->get()
+            ->map(function ($user) {
+                $suffix = match ((int) $user->user_type) {
+                    1 => 'Admin',
+                    2 => 'Professeur',
+                    3 => 'Apprenant',
+                    4 => 'Parent',
+                    default => '',
+                };
+
+                $user->suffix = $suffix;
+                $user->full_name = "{$user->name} {$user->last_name} - {$suffix}";
+                return $user;
+            });
+    }
+
+
 
 }

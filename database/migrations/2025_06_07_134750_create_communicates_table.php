@@ -13,10 +13,10 @@ return new class extends Migration
     {
         Schema::create('communicates', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
-            $table->date('notice_date');
-            $table->date('publish_date');
-            $table->longText('message');
+            $table->string('title')->nullable();
+            $table->date('notice_date')->nullable();
+            $table->date('publish_date')->nullable();
+            $table->longText('message')->nullable();
             $table->Integer('created_by')->unsigned()->nullable()->foreign('created_by')->references('id')->on('users')->onDelete('cascade');
             $table->tinyInteger('is_delete')->default(0)->comment('0: isntDeleted, 1: Deleted');
             $table->timestamps();

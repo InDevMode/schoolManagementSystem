@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Request;
+use Carbon\Carbon;
 
 class CommunicateModel extends Model
 {
@@ -80,8 +81,8 @@ class CommunicateModel extends Model
         $results = CommunicateModel::select('communicates.*', 'users.name as created_by_name')
             ->join('users', 'users.id', '=', 'communicates.created_by')
             ->join('noticeboard_messages', 'noticeboard_messages.communicates_id', '=', 'communicates.id')
-            ->where('noticeboard_messages.message_to', '=', $message_to)
-            ->where('communicates.is_delete', 0);
+            ->where('noticeboard_messages.message_to', '=', $message_to);   // TODO 
+            // ->where('communicates.is_delete', 0)->whereDate('communicates.publish_date', '<=', Carbon::today()->toDateString());
 
             $filters = [
                 'communicates.title' => strtolower(Request::get('title')),

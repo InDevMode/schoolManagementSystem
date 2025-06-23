@@ -165,6 +165,10 @@ Route::group(['middleware' => 'admin'], function () {
     Route::post('admin/communicate/noticeboard/edit/{id}', [CommunicateController::class, 'update']);
     Route::post('admin/communicate/noticeboard/delete/{id}', [CommunicateController::class, 'delete']);
 
+    // Send mail url
+    Route::get('admin/communicate/send_mail', [CommunicateController::class, 'sendMail']);
+    Route::post('admin/communicate/send_mail', [CommunicateController::class, 'sendMailCreate']);
+
 });
 
 Route::group(['middleware' => 'teacher'], function () {
