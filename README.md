@@ -100,4 +100,13 @@ mysqldump -u root -p schoolManagementSystem > schoolManagementSystem.sql
 
 Souhaites-tu maintenant la commande complète pour migrer ce fichier `.sql` vers PostgreSQL ?
 
+MAIL_MAILER=smtp
+MAIL_HOST=smtp.gmail.com
+MAIL_PORT=587
+MAIL_USERNAME=regisattolou19@gmail.com
+MAIL_PASSWORD=lzuzlrazbwwaygbr
+MAIL_ENCRYPTION=tls
+MAIL_FROM_ADDRESS=devlead20@gmail.com
+MAIL_FROM_NAME="${APP_NAME}"
+
 

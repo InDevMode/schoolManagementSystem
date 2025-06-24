@@ -12,7 +12,7 @@
                             <ol class="flex items-center gap-2">
                                 <li>
                                     <span class="font-medium text-violet-600">
-                                        <iconify-icon icon="mdi:email-send""></iconify-icon>
+                                        <iconify-icon icon="mdi:email-send"></iconify-icon>
                                     </span>
                                 </li>
                                 <li>
