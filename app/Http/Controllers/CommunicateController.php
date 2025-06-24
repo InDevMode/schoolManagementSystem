@@ -153,9 +153,25 @@ class CommunicateController extends Controller
                         // Ajouter dynamiquement les données nécessaires pour l'email
                         $user->send_message = $request->message;
                         $user->send_subject = $request->subject;
-
                         // Envoi du mail
                         Mail::to($user->email)->send(new SendMailUserMail($user));
+                    }
+
+                    if (!empty($request->message_to)) {
+                        foreach ($request->message_to as $user_type) {
+                            $getUser = User::getUserByUserType($user_type);
+                            if (!empty($getUser)) {
+                                foreach ($getUser as $user) {
+                                    if ($user && $user->email) {
+                                        // Ajouter dynamiquement les données nécessaires pour l'email
+                                        $user->send_message = $request->message;
+                                        $user->send_subject = $request->subject;
+                                        // Envoi du mail
+                                        Mail::to($user->email)->send(new SendMailUserMail($user));
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
