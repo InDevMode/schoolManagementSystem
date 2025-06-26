@@ -85,7 +85,6 @@ class StudentAttendanceModel extends Model
                 'student.name' => strtolower(Request::get('student_name')),
                 'student.last_name' => strtolower(Request::get('student_last_name')),
                 'attendances.class_id' => strtolower(Request::get('class_id')),
-                'attendances.attendance_date' => strtolower(Request::get('attendance_date')),
                 'attendances.created_at' => strtolower(Request::get('created_at')),
             ];
 
@@ -93,6 +92,10 @@ class StudentAttendanceModel extends Model
                 if (!empty($value)) {
                     $results->where($column, 'like', '%' . $value . '%');
                 }
+            }
+
+            if (!empty(Request::get('start_attendance_date')) && !empty(Request::get('end_attendance_date'))) {
+                $results->whereBetween('attendances.attendance_date', [Request::get('start_attendance_date'), Request::get('end_attendance_date')]);
             }
 
             $attendanceType = Request::get('attendance_type');
@@ -105,6 +108,51 @@ class StudentAttendanceModel extends Model
         } else {
             return "";
         }
+    }
+
+    static public function getMyAttendance(int $student_id, int $perpage)
+    {
+        $results = StudentAttendanceModel::select('attendances.*', 'class.name as class_name')
+            ->join('class', 'class.id', '=', 'attendances.class_id')
+            ->where('class.is_delete', '=', 0)
+            ->where('class.status', '=', 1)
+            ->where('attendances.student_id', '=', $student_id);
+
+        $filters = [
+            'attendances.class_id' => strtolower(Request::get('class_id')),
+            'attendances.created_at' => strtolower(Request::get('created_at')),
+        ];
+
+        foreach ($filters as $column => $value) {
+            if (!empty($value)) {
+                $results->where($column, 'like', '%' . $value . '%');
+            }
+        }
+
+        if (!empty(Request::get('start_attendance_date')) && !empty(Request::get('end_attendance_date'))) {
+            $results->whereBetween('attendances.attendance_date', [Request::get('start_attendance_date'), Request::get('end_attendance_date')]);
+        }
+
+        $attendanceType = Request::get('attendance_type');
+        if (in_array($attendanceType, ['1', '2', '3', '4'], true)) {
+            $results->where('attendances.attendance_type', $attendanceType);
+        }
+
+        $results = $results->orderBy('attendances.id', 'desc')
+            ->paginate($perpage);
+
+        return $results;
+    }
+
+    static public function getClassStudent(int $student_id)
+    {
+        return StudentAttendanceModel::select('attendances.*', 'class.name as class_name')
+            ->join('class', 'class.id', '=', 'attendances.class_id')
+            ->where('attendances.student_id', '=', $student_id)
+            ->where('class.is_delete', '=', 0)
+            ->where('class.status', '=', 1)
+            ->groupBy('attendances.class_id')
+            ->get();
     }
 
 }

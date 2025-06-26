@@ -8,6 +8,7 @@ use App\Http\Controllers\ClassController;
 use App\Http\Controllers\ClassSubjectController;
 use App\Http\Controllers\ClassTeacherController;
 use App\Http\Controllers\ClassTimetableController;
+use App\Http\Controllers\CommunicateController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ExaminationController;
 use App\Http\Controllers\ParentController;
@@ -15,6 +16,7 @@ use App\Http\Controllers\StudentController;
 use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\TeacherController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\WorkController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -156,6 +158,27 @@ Route::group(['middleware' => 'admin'], function () {
     // Attendance report admin url
     Route::get('admin/attendance/report', [AttendanceController::class, 'attendanceReport']);
 
+    // Communicate url
+    Route::get('admin/communicate/noticeboard/list', [CommunicateController::class, 'list']);
+    Route::get('admin/communicate/noticeboard/add', [CommunicateController::class, 'add']);
+    Route::post('admin/communicate/noticeboard/add', [CommunicateController::class, 'create']);
+    Route::get('admin/communicate/noticeboard/edit/{id}', [CommunicateController::class, 'edit']);
+    Route::post('admin/communicate/noticeboard/edit/{id}', [CommunicateController::class, 'update']);
+    Route::post('admin/communicate/noticeboard/delete/{id}', [CommunicateController::class, 'delete']);
+
+    // Send mail url
+    Route::get('admin/communicate/send_mail', [CommunicateController::class, 'sendMail']);
+    Route::post('admin/communicate/send_mail', [CommunicateController::class, 'sendMailCreate']);
+
+    // Practical works url
+    Route::get('admin/practicalworks/homework/list', [WorkController::class, 'practicalWorksList']);
+    Route::get('admin/practicalworks/homework/add', [WorkController::class, 'practicalWorksAdd']);
+    Route::get('admin/practicalworks/homework/getSubjectByClassId/{id}', [WorkController::class, 'getSubjectByClassId']);
+    Route::post('admin/practicalworks/homework/add', [WorkController::class, 'practicalWorksCreate']);
+    Route::get('admin/practicalworks/homework/edit/{id}', [WorkController::class, 'practicalWorksEdit']);
+    Route::post('admin/practicalworks/homework/edit/{id}', [WorkController::class, 'practicalWorksUpdate']);
+    Route::get('admin/practicalworks/homework/delete/{id}', [WorkController::class, 'practicalWorksDelete']);
+
 });
 
 Route::group(['middleware' => 'teacher'], function () {
@@ -194,6 +217,9 @@ Route::group(['middleware' => 'teacher'], function () {
       // Attendance report teacher url
     Route::get('teacher/attendance/report', [AttendanceController::class, 'attendanceReportTeacher']);
 
+    // Teacher noticeboard url
+    Route::get('teacher/my_noticeboard', [CommunicateController::class, 'teacherNoticeBoard']);
+
 });
 
 Route::group(['middleware' => 'student'], function () {
@@ -217,6 +243,13 @@ Route::group(['middleware' => 'student'], function () {
     // Student side exam timetable
     Route::get('student/my_exam_timetable', [ExaminationController::class, 'myExamTimetableStudent']);
     Route::get('student/my_exam_result', [ExaminationController::class, 'myExamResultStudent']);
+
+    // Student attendance url
+    Route::get('student/my_attendance', [AttendanceController::class, 'myAttendance']);
+
+    //  Student notice board url
+    Route::get('student/my_noticeboard', [CommunicateController::class, 'myNoticeBoard']);
+
 });
 
 Route::group(['middleware' => 'parent'], function () {
@@ -242,4 +275,11 @@ Route::group(['middleware' => 'parent'], function () {
 
     // Parent student exam result url
     Route::get('parent/my_student/exam_result/{student_id}/result', [ExaminationController::class, 'parentStudentExamResult']);
+
+    // Parent student attendance url
+    Route::get('parent/my_student/attendance/{student_id}', [AttendanceController::class, 'parentStudentAttendance']);
+
+    // Parent notice board url
+    Route::get('parent/my_noticeboard', [CommunicateController::class, 'parentNoticeBoard']);
+
 });

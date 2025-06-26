@@ -41,6 +41,7 @@
         "flatpickr": "^4.6.13",
         "jsvectormap": "^1.6.0",
         "primeicons": "^7.0.0",
-        "primevue": "^3.50.0"
+        "primevue": "^3.50.0",
+        "summernote": "^0.8.20"
     }
 }

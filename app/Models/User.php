@@ -71,12 +71,12 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
-    static public function getSingle(int $id)
+    public static function getSingle(int $id)
     {
         return User::find($id);
     }
 
-    static public function getAllAdmin(int $perPage)
+    public static function getAllAdmin(int $perPage)
     {
         $results = User::select('users.*')
             ->where('user_type', '=', 1);
@@ -105,12 +105,12 @@ class User extends Authenticatable
             ->paginate($perPage);
     }
 
-    static public function getEmailSingle(string $email)
+    public static function getEmailSingle(string $email)
     {
         return User::where('email', '=', $email)->first();
     }
 
-    static public function checkEmailSingle(string $email, int $id)
+    public static function checkEmailSingle(string $email, int $id)
     {
         return User::where('email', $email)->where('id', '!=', $id)->first();
     }
@@ -120,7 +120,7 @@ class User extends Authenticatable
         return User::where('remember_token', '=', $token)->first();
     }
 
-    static public function getAllStudent(int $perPage)
+    public static function getAllStudent(int $perPage)
     {
         $results = User::select('users.*', 'class.name as class_name', 'parent.name as parent_name', 'parent.last_name as parent_last_name')
             ->join('users as parent', 'parent.id', '=', 'users.parent_id', 'left')
@@ -165,7 +165,7 @@ class User extends Authenticatable
             ->paginate($perPage);
     }
 
-    static public function getAllParent(int $perPage)
+    public static function getAllParent(int $perPage)
     {
         $results = User::select('users.*')
             ->where('users.user_type', 4)
@@ -202,7 +202,7 @@ class User extends Authenticatable
             ->paginate($perPage);
     }
 
-    static public function getAllTeacher(int $perPage)
+    public static function getAllTeacher(int $perPage)
     {
         $results = User::select('users.*')
             ->where('users.user_type', 2);
@@ -243,7 +243,7 @@ class User extends Authenticatable
             ->paginate($perPage);
     }
 
-    static public function getProfile(string $profilePicture): string
+    public static function getProfile(string $profilePicture): string
     {
         if (!empty($profilePicture) && file_exists('upload/profile/' . $profilePicture)) {
             return url('upload/profile/' . $profilePicture);
@@ -251,7 +251,7 @@ class User extends Authenticatable
         return url('');
     }
 
-    static public function getStudentList(int $perPage)
+    public static function getStudentList(int $perPage)
     {
         $results = User::select('users.*', 'class.name as class_name', 'parent.name as parent_name', 'parent.last_name as parent_last_name')
             ->join('users as parent', 'parent.id', '=', 'users.parent_id', 'left')
@@ -282,7 +282,7 @@ class User extends Authenticatable
             ->paginate($perPage);
     }
 
-    static public function getMyStudent(int $perPage, int $parent_id,)
+    public static function getMyStudent(int $perPage, int $parent_id, )
     {
         $results = User::select('users.*', 'class.name as class_name', 'teacher.name as teacher_name', 'teacher.last_name as teacher_last_name')
             ->join('users as parent', 'parent.id', '=', 'users.parent_id', 'left')
@@ -293,8 +293,6 @@ class User extends Authenticatable
             ->where('users.status', '=', 1)
             ->where('class.is_delete', '=', 0)
             ->where('class.status', '=', 1)
-            ->where('class_teacher.is_delete', '=', 0)
-            ->where('class_teacher.status', '=', 1)
             ->where('users.parent_id', '=', $parent_id)
             ->where('users.user_type', '=', 3);
 
@@ -326,7 +324,7 @@ class User extends Authenticatable
             ->paginate($perPage);
     }
 
-    static public function getTeacher()
+    public static function getTeacher()
     {
         $results = User::select('users.*')
             ->where('users.user_type', '=', 2)
@@ -335,7 +333,7 @@ class User extends Authenticatable
             ->get();
     }
 
-    static public function getTeacherStudent(int $perPage, int $teacher_id)
+   public static  function getTeacherStudent(int $perPage, int $teacher_id)
     {
         $results = User::select('users.*', 'class.name as class_name')
             ->join('class', 'class.id', '=', 'users.class_id')
@@ -380,7 +378,7 @@ class User extends Authenticatable
             ->paginate($perPage);
     }
 
-    static public function getStudent(int $class_id)
+    public static function getStudent(int $class_id)
     {
         return User::select('users.id', 'users.name', 'users.last_name')
             ->where('users.is_delete', '=', 0)
@@ -391,9 +389,42 @@ class User extends Authenticatable
             ->get();
     }
 
-    static public function getAttendance(int $student_id, int $class_id, string $date)
+    public static function getAttendance(int $student_id, int $class_id, string $date)
     {
         return StudentAttendanceModel::checkAlreadyAttendance($student_id, $class_id, $date);
     }
+
+    public static function getUsers()
+    {
+        return User::select('id', 'name', 'last_name', 'user_type')
+            ->whereIn('user_type', [1, 2, 3, 4])
+            ->where('status', 1)
+            ->where('is_delete', 0)
+            ->get()
+            ->map(function ($user) {
+                $suffix = match ((int) $user->user_type) {
+                    1 => 'Admin',
+                    2 => 'Professeur',
+                    3 => 'Apprenant',
+                    4 => 'Parent',
+                    default => '',
+                };
+
+                $user->suffix = $suffix;
+                $user->full_name = "{$user->name} {$user->last_name} - {$suffix}";
+                return $user;
+            });
+    }
+
+    public static function getUserByUserType(int $user_type)
+    {
+        return User::select('users.*')
+            ->where('user_type', $user_type)
+            ->where('is_delete', 0)
+            ->where('status', 1)
+            ->get();
+    }
+
+
 
 }

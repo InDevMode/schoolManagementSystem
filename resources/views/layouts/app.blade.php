@@ -10,7 +10,7 @@
     <link rel="shortcut icon" href="{{ asset('public/images/logo.png') }}" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
+<link
         href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
         rel="stylesheet">
     @yield('style')
@@ -39,7 +39,7 @@ $watch('darkMode', value => localStorage.setItem('darkMode', JSON.stringify(valu
 </div>
 
 </body>
-
+<script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
 <script src="https://kit.fontawesome.com/79fa04224e.js" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 <script src="{{ asset('public/js/components/chart-01.js') }}"></script>
@@ -48,6 +48,15 @@ $watch('darkMode', value => localStorage.setItem('darkMode', JSON.stringify(valu
 <script src="{{ asset('public/js/components/chart-04.js') }}"></script>
 <script src="{{ asset('public/js/components/map-01.js') }}"></script>
 <script src="{{ asset('public/js/us-aea-en.js') }}"></script>
+<!-- jQuery (obligatoire) -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- Summernote CSS & JS -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.20/summernote-lite.min.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.20/summernote-lite.min.js"></script>
+
+<!-- Select2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script
+
 @yield('script')
 
 </html>

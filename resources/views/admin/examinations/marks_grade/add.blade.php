@@ -88,5 +88,5 @@
 @endsection
 <script>
 
-</scrip>
+</script>
 

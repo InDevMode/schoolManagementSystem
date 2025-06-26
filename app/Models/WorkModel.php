@@ -1,0 +1,63 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Request;
+
+class WorkModel extends Model
+{
+    use HasFactory;
+
+    protected $table = 'works';
+
+    protected $fillable = [
+        'class_id',
+        'subject_id',
+        'work_date',
+        'submission_date',
+        'document_file',
+        'description',
+        'created_by',
+    ];
+
+    protected $hidden = [
+        'is_delete',
+    ];
+
+    public static function getSingle($id)
+    {
+        return WorkModel::find($id);
+    }
+
+    public static function getWorks(int $perpage)
+    {
+        $results = WorkModel::select('works.*', 'class.name as class_name', 'subject.name as subject_name', 'users.name as created_by_name')
+            ->join('class', 'class.id', '=', 'works.class_id')
+            ->join('subject', 'subject.id', '=', 'works.subject_id')
+            ->join('users', 'users.id', '=', 'works.created_by')
+            ->where('works.is_delete', 0);
+
+        $filters = [
+            'works.class_id' => strtolower(Request::get('class_id')),
+            'works.subject_id' => strtolower(Request::get('subject_id')),
+            'works.work_date' => strtolower(Request::get('work_date')),
+            'works.submission_date' => strtolower(Request::get('submission_date')),
+            'works.created_at' => strtolower(Request::get('created_at')),
+            'works.updated_at' => strtolower(Request::get('updated_at')),
+        ];
+
+        foreach ($filters as $column => $value) {
+            if (!empty($value)) {
+                $results->where($column, 'like', '%' . $value . '%');
+            }
+        }
+
+        return $results->orderBy('works.id', 'desc')
+            ->groupBy('works.id')
+            ->paginate($perpage);
+    }
+
+
+}

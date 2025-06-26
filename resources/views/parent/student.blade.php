@@ -256,6 +256,9 @@
                                     <a href="{{ url('parent/my_student/calendar/'.$myStudent -> id.'/subject' ) }}"
                                        class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:text-violet-600 dark:hover:text-violet-600"
                                        role="menuitem">Son Calendrier</a>
+                                       <a href="{{ url('parent/my_student/attendance',$myStudent -> id ) }}"
+                                        class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:text-violet-600 dark:hover:text-violet-600"
+                                        role="menuitem">Sa Présence</a>
                                 </div>
                             </div>
                         </div>

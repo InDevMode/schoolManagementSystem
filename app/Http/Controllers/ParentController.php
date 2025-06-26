@@ -176,7 +176,7 @@ class ParentController extends Controller
         $student = User::getSingle($student_id);
         $student->parent_id = $parent_id;
         $student->save();
-        return redirect()->back()->with('success', 'Cet élève a été assignée à un parent avec succès.');
+        return redirect()->back()->with('success', 'Cet apprenant a été assignée à un parent avec succès.');
     }
 
     public function desAssignStudentParent($student_id): \Illuminate\Http\RedirectResponse
@@ -184,7 +184,7 @@ class ParentController extends Controller
         $student = User::getSingle($student_id);
         $student->parent_id = null;
         $student->save();
-        return redirect()->back()->with('success', 'Cet élève a été désassignée à un parent avec succès.');
+        return redirect()->back()->with('success', 'Cet apprenant a été désassignée à un parent avec succès.');
     }
 
     public function delete($id)
@@ -204,7 +204,7 @@ class ParentController extends Controller
         $id = Auth::user()->id;
         $data['parent_id'] = User::getSingle($id);
         $data['getMyStudent'] = User::getMyStudent(5, $id);
-        $data['header_title'] = "Mes élèves";
+        $data['header_title'] = "Mes apprenants";
         return view('parent.student', $data);
     }
 
