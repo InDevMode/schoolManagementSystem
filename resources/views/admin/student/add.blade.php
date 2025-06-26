@@ -481,3 +481,6 @@
     </main>
 </div>
 @endsection
+<script>
+    
+</script>

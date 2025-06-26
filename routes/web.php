@@ -16,6 +16,7 @@ use App\Http\Controllers\StudentController;
 use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\TeacherController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\WorkController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -168,6 +169,15 @@ Route::group(['middleware' => 'admin'], function () {
     // Send mail url
     Route::get('admin/communicate/send_mail', [CommunicateController::class, 'sendMail']);
     Route::post('admin/communicate/send_mail', [CommunicateController::class, 'sendMailCreate']);
+
+    // Practical works url
+    Route::get('admin/practicalworks/homework/list', [WorkController::class, 'practicalWorksList']);
+    Route::get('admin/practicalworks/homework/add', [WorkController::class, 'practicalWorksAdd']);
+    Route::get('admin/practicalworks/homework/getSubjectByClassId/{id}', [WorkController::class, 'getSubjectByClassId']);
+    Route::post('admin/practicalworks/homework/add', [WorkController::class, 'practicalWorksCreate']);
+    Route::get('admin/practicalworks/homework/edit/{id}', [WorkController::class, 'practicalWorksEdit']);
+    Route::post('admin/practicalworks/homework/edit/{id}', [WorkController::class, 'practicalWorksUpdate']);
+    Route::get('admin/practicalworks/homework/delete/{id}', [WorkController::class, 'practicalWorksDelete']);
 
 });
 

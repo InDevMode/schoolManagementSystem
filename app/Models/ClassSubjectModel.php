@@ -24,12 +24,12 @@ class ClassSubjectModel extends Model
         'is_delete',
     ];
 
-    static public function getSingle(int $id)
+    public static function getSingle(int $id)
     {
         return ClassSubjectModel::find($id);
     }
 
-    static public function getAllClassSubject(int $perPage): LengthAwarePaginator
+    public static function getAllClassSubject(int $perPage): LengthAwarePaginator
     {
         $results = ClassSubjectModel::select(
             'class_subject.*',
@@ -64,22 +64,22 @@ class ClassSubjectModel extends Model
             ->paginate($perPage);
     }
 
-    static public function getAlreadyExist($class_id, $subject_id)
+    public static function getAlreadyExist($class_id, $subject_id)
     {
         return ClassSubjectModel::where('class_id', '=', $class_id)->where('subject_id', '=', $subject_id)->first();
     }
 
-    static public function getAssignSubject($class_id)
+    public static function getAssignSubject($class_id)
     {
         return ClassSubjectModel::where('class_id', '=', $class_id)->where('is_delete', 0)->get();
     }
 
-    static public function deleteSubjectAssign($class_id)
+    public static function deleteSubjectAssign($class_id)
     {
         return ClassSubjectModel::where('class_id', '=', $class_id)->delete();
     }
 
-    static public function studentStubject(int $perPage, int $class_id)
+    public static function studentStubject(int $perPage, int $class_id)
     {
         $results = ClassSubjectModel::select(
             'class_subject.*',
@@ -127,7 +127,7 @@ class ClassSubjectModel extends Model
             ->paginate($perPage);
     }
 
-    static public function getSubject(int $class_id)
+    public static function getSubject(int $class_id)
     {
         return ClassSubjectModel::select(
             'class_subject.*',

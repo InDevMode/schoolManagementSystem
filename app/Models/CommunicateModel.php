@@ -25,12 +25,12 @@ class CommunicateModel extends Model
         'is_delete',
     ];
 
-    static public function getSingle(int $id)
+    public static function getSingle(int $id)
     {
         return CommunicateModel::find($id);
     }
 
-    static public function getNoticeBoard(int $perpage)
+    public static function getNoticeBoard(int $perpage)
     {
         $results = CommunicateModel::select('communicates.*', 'users.name as created_by_name')
             ->join('users', 'users.id', '=', 'communicates.created_by')
@@ -77,11 +77,11 @@ class CommunicateModel extends Model
         return NoticeBoardMessageModel::where('communicates_id', $noticeBoardId)->where('message_to', $receiverId)->first();
     }
 
-    static public function getNoticeBoardWithUserType(int $message_to, int $perpage) {
+    public static function getNoticeBoardWithUserType(int $message_to, int $perpage) {
         $results = CommunicateModel::select('communicates.*', 'users.name as created_by_name')
             ->join('users', 'users.id', '=', 'communicates.created_by')
             ->join('noticeboard_messages', 'noticeboard_messages.communicates_id', '=', 'communicates.id')
-            ->where('noticeboard_messages.message_to', '=', $message_to);   // TODO 
+            ->where('noticeboard_messages.message_to', '=', $message_to);   // TODO
             // ->where('communicates.is_delete', 0)->whereDate('communicates.publish_date', '<=', Carbon::today()->toDateString());
 
             $filters = [

@@ -24,12 +24,12 @@ class SubjectModel extends Model
         'is_delete',
     ];
 
-    static public function getSingle(int $id): ?SubjectModel
+    public static function getSingle(int $id): ?SubjectModel
     {
         return SubjectModel::find($id);
     }
 
-    static public function getAllSubject(int $perPage): LengthAwarePaginator
+    public static function getAllSubject(int $perPage): LengthAwarePaginator
     {
         $results = SubjectModel::select('subject.*', 'users.name as created_by_name')
             ->join('users', 'users.id', '=', 'subject.created_by');
@@ -58,7 +58,7 @@ class SubjectModel extends Model
             ->paginate($perPage);
     }
 
-    static public function getSubject()
+    public static function getSubject()
     {
         return SubjectModel::select('subject.*')
             ->join('users', 'users.id', '=', 'subject.created_by')
@@ -67,12 +67,12 @@ class SubjectModel extends Model
             ->get();
     }
 
-    static public function getNameSingle(string $name): ?SubjectModel
+    public static function getNameSingle(string $name): ?SubjectModel
     {
         return SubjectModel::where('name', $name)->first();
     }
 
-    static public function checkNameSingle(string $name, int $id): ?SubjectModel
+    public static function checkNameSingle(string $name, int $id): ?SubjectModel
     {
         return SubjectModel::where('name', $name)
             ->where('id', '!=', $id)

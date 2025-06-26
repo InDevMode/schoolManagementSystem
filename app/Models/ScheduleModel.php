@@ -28,12 +28,12 @@ class ScheduleModel extends Model
         'is_delete'
     ];
 
-    static public function getSingle(int $id)
+    public static function getSingle(int $id)
     {
         return ScheduleModel::find($id);
     }
 
-    static public function getExamSchedule(int $exam_id, int $class_id, int $subject_id)
+    public static function getExamSchedule(int $exam_id, int $class_id, int $subject_id)
     {
         return ScheduleModel::where('exam_id', '=', $exam_id)
             ->where('class_id', '=', $class_id)
@@ -41,21 +41,21 @@ class ScheduleModel extends Model
             ->first();
     }
 
-    static public function deleteExamSchedule(int $exam_id, int $class_id)
+    public static function deleteExamSchedule(int $exam_id, int $class_id)
     {
         return ScheduleModel::where('exam_id', '=', $exam_id)
             ->where('class_id', '=', $class_id)
             ->update(['is_delete' => 1]);
     }
 
-    static public function checkExamSchedule(int $exam_id, int $class_id)
+    public static function checkExamSchedule(int $exam_id, int $class_id)
     {
         return ScheduleModel::where('exam_id', $exam_id)
             ->where('class_id', $class_id)
             ->exists();
     }
 
-    static public function getExam(int $class_id)
+    public static function getExam(int $class_id)
     {
         return ScheduleModel::select('schedules.*', 'exams.name as exam_name')
             ->join('exams', 'exams.id', '=', 'schedules.exam_id')
@@ -67,7 +67,7 @@ class ScheduleModel extends Model
             ->get();
     }
 
-    static public function getExamTeacher(int $teacher_id)
+    public static function getExamTeacher(int $teacher_id)
     {
         return ScheduleModel::select('schedules.*', 'exams.name as exam_name')
             ->join('exams', 'exams.id', '=', 'schedules.exam_id')
@@ -82,7 +82,7 @@ class ScheduleModel extends Model
             ->get();
     }
 
-    static public function getExamTimetable(int $exam_id, int $class_id)
+    public static function getExamTimetable(int $exam_id, int $class_id)
     {
         return ScheduleModel::select('schedules.*', 'subject.name as subject_name', 'subject.type as subject_type')
             ->join('subject', 'subject.id', '=', 'schedules.subject_id')
@@ -95,7 +95,7 @@ class ScheduleModel extends Model
             ->get();
     }
 
-    static public function getSubject(int $exam_id, int $class_id)
+    public static function getSubject(int $exam_id, int $class_id)
     {
         return ScheduleModel::select('schedules.*', 'subject.name as subject_name', 'subject.type as subject_type')
             ->join('subject', 'subject.id', '=', 'schedules.subject_id')
@@ -106,7 +106,7 @@ class ScheduleModel extends Model
             ->get();
     }
 
-    static public function getExamTimetableTeacher(int $teacher_id)
+    public static function getExamTimetableTeacher(int $teacher_id)
     {
         return ScheduleModel::select('schedules.*', 'class.name as class_name', 'subject.name as subject_name', 'exams.name as exam_name')
             ->join('class_teacher', 'class_teacher.class_id', '=', 'schedules.class_id')
@@ -125,7 +125,7 @@ class ScheduleModel extends Model
             ->get();
     }
 
-    static public function getMarks(int $student_id, int $exam_id, int $class_id, int $subject_id){
+    public static function getMarks(int $student_id, int $exam_id, int $class_id, int $subject_id){
         return MarkRegisterModel::checkAlreadyMarks($student_id, $exam_id, $class_id, $subject_id);
     }
 

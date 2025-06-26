@@ -104,7 +104,8 @@ class CommunicateController extends Controller
     {
         try {
             $noticeBoard = CommunicateModel::getSingle($id);
-            $noticeBoard->delete();
+            $noticeBoard->is_delete = 1;
+            $noticeBoard->save();
 
             NoticeBoardMessageModel::deleteNoticeBoardMessage($id);
             return redirect('admin/communicate/noticeboard/list')->with('success', 'Ce  message de notification a été supprimé avec succès.');
