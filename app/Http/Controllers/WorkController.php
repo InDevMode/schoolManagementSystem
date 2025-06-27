@@ -15,8 +15,7 @@ class WorkController extends Controller
     public function practicalWorksList()
     {
         $data['header_title'] = 'Liste des travaux';
-        $data['getWorks'] = WorkModel::getWorks(10);
-        dd($data['getWorks']);
+        $data['getWorks'] = WorkModel::getWorks(5);
         return view('admin.practicalworks.list', $data);
     }
 
@@ -70,7 +69,9 @@ class WorkController extends Controller
     public function practicalWorksEdit($id)
     {
         $data['header_title'] = 'Modifier un travail';
+        $data['getClass'] = ClassModel::getClass();
         $data['getWorks'] = WorkModel::getSingle($id);
+        $data['getSubject'] = ClassSubjectModel::getSubject($data['getWorks']->class_id);
         return view('admin.practicalworks.edit', $data);
     }
 
@@ -79,12 +80,21 @@ class WorkController extends Controller
 
         try {
             $work = WorkModel::getSingle($id);
-            $work->class_id = $request->class_id;
-            $work->subject_id = $request->subject_id;
-            $work->work_date = $request->work_date;
-            $work->submission_date = $request->submission_date;
-            $work->document_file = $request->document_file;
-            $work->description = $request->description;
+            $work->class_id = intval($request->class_id);
+            $work->subject_id = intval($request->subject_id);
+            $work->work_date = trim($request->work_date);
+            $work->submission_date = trim($request->submission_date);
+            $work->description = trim($request->description);
+
+            if (!empty($request->file('document_file'))) {
+                $ext = $request->file('document_file')->getClientOriginalExtension();
+                $file = $request->file('document_file');
+                $randomStr = 'homework' . date('dmYhis') . Str::random(20);
+                $fileName = strtolower($randomStr) . '.' . $ext;
+                $file->move('upload/practicalworks/', $fileName);
+                $work->document_file = $fileName;
+            }
+
             $work->save();
 
             return redirect('admin/practicalworks/homework/list')->with('success', 'Ce travail de maison a été modifié avec succès.');

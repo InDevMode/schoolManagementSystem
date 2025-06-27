@@ -37,11 +37,11 @@ class WorkModel extends Model
             ->join('class', 'class.id', '=', 'works.class_id')
             ->join('subject', 'subject.id', '=', 'works.subject_id')
             ->join('users', 'users.id', '=', 'works.created_by')
-            ->where('works.is_delete', 0);
+            ->where('works.is_delete', '=', 0);
 
         $filters = [
-            'works.class_id' => strtolower(Request::get('class_id')),
-            'works.subject_id' => strtolower(Request::get('subject_id')),
+            'class.name' => strtolower(Request::get('class_name')),
+            'subject.name' => strtolower(Request::get('subject_name')),
             'works.work_date' => strtolower(Request::get('work_date')),
             'works.submission_date' => strtolower(Request::get('submission_date')),
             'works.created_at' => strtolower(Request::get('created_at')),
@@ -55,7 +55,6 @@ class WorkModel extends Model
         }
 
         return $results->orderBy('works.id', 'desc')
-            ->groupBy('works.id')
             ->paginate($perpage);
     }
 

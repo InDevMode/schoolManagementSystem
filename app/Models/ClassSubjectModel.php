@@ -132,6 +132,7 @@ class ClassSubjectModel extends Model
         return ClassSubjectModel::select(
             'class_subject.*',
             'class.name as class_name',
+            'subject.id as subject_id',
             'subject.name as subject_name',
             'subject.type as subject_type',
             'subject.status as subject_status',
