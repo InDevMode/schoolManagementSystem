@@ -78,11 +78,16 @@
                             <div class="relative">
                                 <select id="subject_id" name="subject_id" required
                                     class="custom-select w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-green-500 focus:border-green-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-green-500 dark:focus:border-green-500 transition-all duration-200">
-                                    <option selected disabled value="">Veuillez choisir une classe d'abord
-                                    </option>
-                                     @foreach($getSubject as $subject)
-                                        <option class="text-body" value="{{ $subject->id }}" {{ old('subject_id', $getWorks->subject_id) == $subject->id ? 'selected' : '' }}>{{ $subject->name }}</option>
-                                    @endforeach
+                                    @if (!empty($getSubject))
+                                        <option disabled value="">Choisissez une matière</option>
+                                        @foreach($getSubject as $subject)
+                                            <option value="{{ $subject->subject_id }}" {{ old('subject_id', $getWorks->subject_id) == $subject->subject_id ? 'selected' : '' }}>
+                                                {{ $subject->subject_name }}
+                                            </option>
+                                        @endforeach
+                                    @else
+                                        <option selected disabled value="">Veuillez choisir une classe d'abord</option>
+                                    @endif
                                 </select>
                                 <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
                                     <iconify-icon icon="mdi:chevron-down" class="text-gray-400" width="20"
