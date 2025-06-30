@@ -1,6 +1,6 @@
 @extends('layouts.app')
 @section('content')
-    <div class="m-5">
+    <div class="m-3">
         <div class="container mx-auto px-4 py-8 max-w-6xl">
             <!-- Header Section -->
             <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
@@ -47,7 +47,7 @@
             <!-- Main Form Section -->
             <div class="bg-white rounded-xl shadow-md overflow-hidden dark:bg-gray-800 transition-colors duration-300">
                 <div class="p-6 md:p-8">
-                    <form action="{{ url('admin/practicalworks/homework/add') }}" method="post"
+                    <form action="{{ url('admin/practicalworks/homework/edit/' . $getWorks->id) }}" method="post"
                         enctype="multipart/form-data">
                         {{ csrf_field() }}
                         <!-- Class Selection -->
@@ -137,15 +137,36 @@
                                             height="32"></iconify-icon>
                                         <p class="mb-2 text-sm text-gray-500 dark:text-gray-400"><span
                                                 class="font-semibold">Cliquez pour télécharger</span> ou glissez-déposez</p>
-                                        <p class="text-xs text-gray-500 dark:text-gray-400">PDF, DOCX, XLSX, PNG, JPG (MAX.
-                                            10MB)</p>
+                                        <p class="text-xs text-gray-500 dark:text-gray-400">PDF, Word (DOC, DOCX), Excel
+                                            (XLS, XLSX), PowerPoint (PPT, PPTX), Images (JPG, PNG, GIF) - MAX. 10MB</p>
                                         <span id="file-name"
-                                            class="mt-2 text-sm text-green-600 dark:text-green-400 font-medium hidden"></span>
+                                            class="mt-2 text-sm text-violet-600 dark:text-violet-400 font-medium hidden"></span>
                                     </div>
 
                                     <input id="dropzone-file" type="file" name="document_file" class="hidden" />
                                 </label>
                             </div>
+                            <!-- Message d'erreur pour la taille du fichier -->
+                            <div id="file-size-error" class="mt-2 text-sm text-red-600 dark:text-red-400 hidden">
+                                Le fichier est trop volumineux. La taille maximale autorisée est de 10 MB.
+                            </div>
+                            <!-- Message d'erreur pour le type de fichier -->
+                            <div id="file-type-error" class="mt-2 text-sm text-red-600 dark:text-red-400 hidden">
+                                Type de fichier non autorisé. Veuillez sélectionner un fichier PDF, Word, Excel, PowerPoint
+                                ou une image.
+                            </div>
+
+                            <!-- 📄 Aperçu PDF -->
+                            <iframe id="preview-pdf" class="mt-4 w-full h-64 border rounded hidden"
+                                frameborder="0"></iframe>
+
+                            <!-- 🖼️ Aperçu Image -->
+                            <img id="preview-image"
+                                class="mt-4 w-full h-auto max-h-64 object-contain rounded border hidden" />
+
+                            <!-- 📑 Aperçu Office -->
+                            <iframe id="preview-office" class="mt-4 w-full h-64 border rounded hidden"
+                                frameborder="0"></iframe>
                         </div>
                         <div class="text-sm text-gray-900 dark:text-white mb-3">
                             @if (!empty($getWorks->document_file))
@@ -184,7 +205,6 @@
 @endsection
 
     <script>
-
         // Initialize Summernote
         document.addEventListener("DOMContentLoaded", function () {
             const textarea = document.getElementById("compose-textarea");
@@ -201,9 +221,101 @@
                     ]
                 });
             }
+
+            // Gestion du téléchargement de fichier
+            const dropzoneFile = document.getElementById('dropzone-file');
+            const fileName = document.getElementById('file-name');
+            const previewPdf = document.getElementById('preview-pdf');
+            const previewImage = document.getElementById('preview-image');
+            const previewOffice = document.getElementById('preview-office');
+            const fileIcon = document.getElementById('file-icon');
+            const fileSizeError = document.getElementById('file-size-error');
+            const fileTypeError = document.getElementById('file-type-error');
+            const maxFileSize = 10 * 1024 * 1024; // 10 MB en bytes
+            const allowedTypes = {
+                'application/pdf': { icon: 'mdi:file-pdf-box', preview: 'pdf' },
+                'application/msword': { icon: 'mdi:file-word-box', preview: 'office' },
+                'application/vnd.openxmlformats-officedocument.wordprocessingml.document': { icon: 'mdi:file-word-box', preview: 'office' },
+                'application/vnd.ms-excel': { icon: 'mdi:file-excel-box', preview: 'office' },
+                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': { icon: 'mdi:file-excel-box', preview: 'office' },
+                'application/vnd.ms-powerpoint': { icon: 'mdi:file-powerpoint-box', preview: 'office' },
+                'application/vnd.openxmlformats-officedocument.presentationml.presentation': { icon: 'mdi:file-powerpoint-box', preview: 'office' },
+                'image/jpeg': { icon: 'mdi:file-image', preview: 'image' },
+                'image/png': { icon: 'mdi:file-image', preview: 'image' },
+                'image/gif': { icon: 'mdi:file-image', preview: 'image' }
+            };
+
+            function resetFileUpload(keepErrors = false) {
+                dropzoneFile.value = '';
+                fileName.textContent = '';
+                fileName.classList.add('hidden');
+                previewPdf.classList.add('hidden');
+                previewImage.classList.add('hidden');
+                previewOffice.classList.add('hidden');
+                fileIcon.setAttribute('icon', 'mdi:cloud-upload-outline');
+
+                if (!keepErrors) {
+                    fileSizeError.classList.add('hidden');
+                    fileTypeError.classList.add('hidden');
+                }
+            }
+
+            dropzoneFile.addEventListener('change', function (e) {
+                const file = e.target.files[0];
+
+                // Cacher les messages d'erreur
+                fileSizeError.classList.add('hidden');
+                fileTypeError.classList.add('hidden');
+
+                if (file) {
+                    // Vérification de la taille du fichier
+                    if (file.size > maxFileSize) {
+                        resetFileUpload(true);
+                        fileSizeError.classList.remove('hidden');
+                        return;
+                    }
+
+                    // Vérification du type de fichier
+                    if (!allowedTypes[file.type]) {
+                        resetFileUpload(true);
+                        fileTypeError.classList.remove('hidden');
+                        return;
+                    }
+
+                    // Réinitialiser complètement si le fichier est valide
+                    resetFileUpload();
+
+                    // Affichage du nom du fichier
+                    fileName.textContent = file.name;
+                    fileName.classList.remove('hidden');
+
+                    // Mise à jour de l'icône
+                    const fileTypeInfo = allowedTypes[file.type];
+                    fileIcon.setAttribute('icon', fileTypeInfo.icon);
+
+                    // Gestion de l'aperçu
+                    const fileURL = URL.createObjectURL(file);
+                    switch (fileTypeInfo.preview) {
+                        case 'pdf':
+                            previewPdf.src = fileURL;
+                            previewPdf.classList.remove('hidden');
+                            break;
+                        case 'image':
+                            previewImage.src = fileURL;
+                            previewImage.classList.remove('hidden');
+                            break;
+                        case 'office':
+                            // Utiliser Google Docs Viewer pour les fichiers Office
+                            const encodedUrl = encodeURIComponent(fileURL);
+                            previewOffice.src = `https://docs.google.com/viewer?url=${encodedUrl}&embedded=true`;
+                            previewOffice.classList.add('hidden');
+                            break;
+                    }
+                }
+            });
         });
 
-        // Initialize date pickers (you would replace this with your actual date picker library)
+        // Initialize date pickers
         document.querySelectorAll('.form-datepicker').forEach(input => {
             input.addEventListener('focus', function () {
                 this.type = 'date';
@@ -214,69 +326,6 @@
                     this.type = 'text';
                 }
             });
-        });
-
-        // File upload handling
-        const fileInput = document.getElementById('dropzone-file');
-        const fileNameSpan = document.getElementById('file-name');
-        const previewImage = document.getElementById('preview-image');
-        const previewPdf = document.getElementById('preview-pdf');
-        const fileIcon = document.getElementById('file-icon');
-
-        const iconMap = {
-            'application/pdf': 'mdi:file-pdf-box',
-            'application/msword': 'mdi:file-word-box',
-            'application/vnd.openxmlformats-officedocument.wordprocessingml.document': 'mdi:file-word-box',
-            'application/vnd.ms-excel': 'mdi:file-excel-box',
-            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': 'mdi:file-excel-box',
-            'image/png': 'mdi:file-image',
-            'image/jpeg': 'mdi:file-image',
-            'default': 'mdi:file-outline'
-        };
-
-        fileInput.addEventListener('change', () => {
-            const file = fileInput.files[0];
-
-            if (file) {
-                const type = file.type;
-                fileNameSpan.textContent = file.name;
-                fileNameSpan.classList.remove('hidden');
-
-                // Mise à jour de l'icône
-                fileIcon.setAttribute('icon', iconMap[type] || iconMap['default']);
-
-                // Image preview
-                if (type.startsWith('image/')) {
-                    const reader = new FileReader();
-                    reader.onload = (e) => {
-                        previewImage.src = e.target.result;
-                        previewImage.classList.remove('hidden');
-                        previewPdf.classList.add('hidden');
-                    };
-                    reader.readAsDataURL(file);
-                }
-                // PDF preview
-                else if (type === 'application/pdf') {
-                    const reader = new FileReader();
-                    reader.onload = (e) => {
-                        previewPdf.src = e.target.result;
-                        previewPdf.classList.remove('hidden');
-                        previewImage.classList.add('hidden');
-                    };
-                    reader.readAsDataURL(file);
-                }
-                // Autres types : masquer les aperçus
-                else {
-                    previewImage.classList.add('hidden');
-                    previewPdf.classList.add('hidden');
-                }
-            } else {
-                fileNameSpan.classList.add('hidden');
-                fileNameSpan.textContent = '';
-                previewImage.classList.add('hidden');
-                previewPdf.classList.add('hidden');
-                fileIcon.setAttribute('icon', 'mdi:cloud-upload-outline');
-            }
         });
 
         function loadSubjects(classId) {
@@ -292,9 +341,7 @@
                             const option = document.createElement("option");
                             option.value = subject.subject_id;
                             option.text = subject.subject_name;
-                            console.log(subject.subject_id, subject.subject_name);
                             subjectSelect.appendChild(option);
-                            console.log(subjectSelect);
                         });
                     } else {
                         subjectSelect.innerHTML = '<option value="">Aucune matière trouvée</option>';
@@ -305,6 +352,4 @@
                     subjectSelect.innerHTML = '<option value="">Erreur lors du chargement</option>';
                 });
         }
-
-
     </script>
