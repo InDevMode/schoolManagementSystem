@@ -19,7 +19,8 @@
                         <li class="inline-flex items-center">
                             <a href="{{ url('admin/dashboard') }}"
                                 class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-violet-600 dark:text-gray-400 dark:hover:text-white">
-                                <iconify-icon icon="mdi:home-outline" class="mr-2" width="16" height="16"></iconify-icon>
+                                <iconify-icon icon="mdi:home-outline" class="mr-2" width="16"
+                                    height="16"></iconify-icon>
                                 Tableau de bord
                             </a>
                         </li>
@@ -60,7 +61,7 @@
                                     class="custom-select w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-violet-500 focus:border-violet-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500 transition-all duration-200">
                                     <option selected disabled value="">Choisissez une classe pour cet travail de maion
                                     </option>
-                                    @foreach($getClass as $class)
+                                    @foreach ($getClass as $class)
                                         <option class="text-body" value="{{ $class->id }}">{{ $class->name }}</option>
                                     @endforeach
                                 </select>
@@ -186,11 +187,12 @@
 
 
         </div>
-@endsection
+    @endsection
 
     <script>
+        
         // Initialize Summernote
-        document.addEventListener("DOMContentLoaded", function () {
+        document.addEventListener("DOMContentLoaded", function() {
             const textarea = document.getElementById("compose-textarea");
             if (textarea) {
                 window.jQuery(textarea).summernote({
@@ -207,105 +209,113 @@
             }
 
             // Gestion du téléchargement de fichier
-            document.addEventListener("DOMContentLoaded", function () {
-                const dropzoneFile = document.getElementById('dropzone-file');
-                const fileName = document.getElementById('file-name');
-                const previewPdf = document.getElementById('preview-pdf');
-                const previewImage = document.getElementById('preview-image');
-                const previewOffice = document.getElementById('preview-office');
-                const fileIcon = document.getElementById('file-icon');
-                const fileSizeError = document.getElementById('file-size-error');
-                const fileTypeError = document.getElementById('file-type-error');
-                const maxFileSize = 10 * 1024 * 1024; // 10 MB
+            const dropzoneFile = document.getElementById('dropzone-file');
+            const fileNameSpan = document.getElementById('file-name');
+            const previewPDF = document.getElementById('preview-pdf');
+            const previewImage = document.getElementById('preview-image');
+            const previewOffice = document.getElementById('preview-office');
+            const fileIcon = document.getElementById('file-icon');
+            const errorSize = document.getElementById('file-size-error');
+            const errorType = document.getElementById('file-type-error');
+            const MAX_SIZE = 10 * 1024 * 1024;
 
-                const allowedTypes = {
-                    'application/pdf': { icon: 'mdi:file-pdf-box', preview: 'pdf' },
-                    'application/msword': { icon: 'mdi:file-word-box', preview: 'office' },
-                    'application/vnd.openxmlformats-officedocument.wordprocessingml.document': { icon: 'mdi:file-word-box', preview: 'office' },
-                    'application/vnd.ms-excel': { icon: 'mdi:file-excel-box', preview: 'office' },
-                    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': { icon: 'mdi:file-excel-box', preview: 'office' },
-                    'application/vnd.ms-powerpoint': { icon: 'mdi:file-powerpoint-box', preview: 'office' },
-                    'application/vnd.openxmlformats-officedocument.presentationml.presentation': { icon: 'mdi:file-powerpoint-box', preview: 'office' },
-                    'image/jpeg': { icon: 'mdi:file-image', preview: 'image' },
-                    'image/png': { icon: 'mdi:file-image', preview: 'image' },
-                    'image/gif': { icon: 'mdi:file-image', preview: 'image' }
-                };
+            const types = {
+                'application/pdf': {
+                    icon: 'mdi:file-pdf-box',
+                    view: 'pdf'
+                },
+                'image/jpeg': {
+                    icon: 'mdi:file-image',
+                    view: 'image'
+                },
+                'image/png': {
+                    icon: 'mdi:file-image',
+                    view: 'image'
+                },
+                'image/gif': {
+                    icon: 'mdi:file-image',
+                    view: 'image'
+                },
+                'application/msword': {
+                    icon: 'mdi:file-word-box',
+                    view: 'none'
+                },
+                'application/vnd.openxmlformats-officedocument.wordprocessingml.document': {
+                    icon: 'mdi:file-word-box',
+                    view: 'none'
+                },
+                'application/vnd.ms-excel': {
+                    icon: 'mdi:file-excel-box',
+                    view: 'none'
+                },
+                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': {
+                    icon: 'mdi:file-excel-box',
+                    view: 'none'
+                },
+                'application/vnd.ms-powerpoint': {
+                    icon: 'mdi:file-powerpoint-box',
+                    view: 'none'
+                },
+                'application/vnd.openxmlformats-officedocument.presentationml.presentation': {
+                    icon: 'mdi:file-powerpoint-box',
+                    view: 'none'
+                },
+            };
 
-                function clearPreviews() {
-                    fileName.textContent = '';
-                    fileName.classList.add('hidden');
-                    previewPdf.classList.add('hidden');
-                    previewImage.classList.add('hidden');
-                    previewOffice.classList.add('hidden');
-                    fileIcon.setAttribute('icon', 'mdi:cloud-upload-outline');
+            dropzoneFile.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+
+                // Reset affichage
+                errorSize.classList.add('hidden');
+                errorType.classList.add('hidden');
+                previewPDF.classList.add('hidden');
+                previewImage.classList.add('hidden');
+                previewOffice.classList.add('hidden');
+                fileNameSpan.classList.add('hidden');
+                fileIcon.setAttribute('icon', 'mdi:cloud-upload-outline');
+
+                if (!file) return;
+
+                if (file.size > MAX_SIZE) {
+                    errorSize.classList.remove('hidden');
+                    return;
                 }
 
-                function showError(type) {
-                    if (type === 'size') fileSizeError.classList.remove('hidden');
-                    if (type === 'type') fileTypeError.classList.remove('hidden');
+                const typeInfo = types[file.type];
+                if (!typeInfo) {
+                    errorType.classList.remove('hidden');
+                    return;
                 }
 
-                function hideErrors() {
-                    fileSizeError.classList.add('hidden');
-                    fileTypeError.classList.add('hidden');
+                fileNameSpan.textContent = file.name;
+                fileNameSpan.classList.remove('hidden');
+                fileIcon.setAttribute('icon', typeInfo.icon);
+
+                const fileURL = URL.createObjectURL(file);
+                switch (typeInfo.view) {
+                    case 'pdf':
+                        previewPDF.src = fileURL;
+                        previewPDF.classList.remove('hidden');
+                        break;
+                    case 'image':
+                        previewImage.src = fileURL;
+                        previewImage.classList.remove('hidden');
+                        break;
+                    case 'none':
+                        // Option : afficher résumé ou fiche (nom, type, poids)
+                        break;
                 }
-
-                dropzoneFile.addEventListener('change', function (e) {
-                    const file = e.target.files[0];
-                    hideErrors();
-                    clearPreviews();
-
-                    if (file) {
-                        // Taille
-                        if (file.size > maxFileSize) {
-                            showError('size');
-                            return;
-                        }
-
-                        // Type
-                        if (!allowedTypes[file.type]) {
-                            showError('type');
-                            return;
-                        }
-
-                        // Affichage du nom
-                        fileName.textContent = file.name;
-                        fileName.classList.remove('hidden');
-
-                        // Icône
-                        const fileTypeInfo = allowedTypes[file.type];
-                        fileIcon.setAttribute('icon', fileTypeInfo.icon);
-
-                        // Aperçu
-                        const fileURL = URL.createObjectURL(file);
-                        switch (fileTypeInfo.preview) {
-                            case 'pdf':
-                                previewPdf.src = fileURL;
-                                previewPdf.classList.remove('hidden');
-                                break;
-                            case 'image':
-                                previewImage.src = fileURL;
-                                previewImage.classList.remove('hidden');
-                                break;
-                            case 'office':
-                                const encodedUrl = encodeURIComponent(fileURL);
-                                previewOffice.src = `https://docs.google.com/viewer?url=${encodedUrl}&embedded=true`;
-                                previewOffice.classList.remove('hidden');
-                                break;
-                        }
-                    }
-                });
             });
 
         });
 
         // Initialize date pickers
         document.querySelectorAll('.form-datepicker').forEach(input => {
-            input.addEventListener('focus', function () {
+            input.addEventListener('focus', function() {
                 this.type = 'date';
             });
 
-            input.addEventListener('blur', function () {
+            input.addEventListener('blur', function() {
                 if (!this.value) {
                     this.type = 'text';
                 }
@@ -328,7 +338,8 @@
                             subjectSelect.appendChild(option);
                         });
                     } else {
-                        subjectSelect.innerHTML = '<option value="">Les matières de cette classe ne sont pas active</option>';
+                        subjectSelect.innerHTML =
+                            '<option value="">Les matières de cette classe ne sont pas active</option>';
                     }
                 })
                 .catch(error => {

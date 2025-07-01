@@ -207,7 +207,7 @@
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="text-sm text-gray-900 dark:text-white">
                                         @if (!empty($works->document_file))
-                                            <a href="{{ url('upload/practicalworks/' . $works->document_file) }}" target="_blank"
+                                            <a href="{{ url('upload/practicalworks/admin/' . $works->document_file) }}" target="_blank"
                                                 class="flex items-center justify-center bg-violet-600 text-white px-2.5 py-1.5 rounded-md text-sm font-medium"><iconify-icon
                                                     icon="mdi:file-download-outline" width="24" height="24"
                                                     class="text-white"></iconify-icon>

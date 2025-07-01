@@ -10,7 +10,7 @@
                             height="28"></iconify-icon>
                         Modifier un travail de maison
                     </h1>
-                    <p class="text-gray-600 dark:text-gray-300 mt-1">Remplissez les détails pour créer un nouveau
+                    <p class="text-gray-600 dark:text-gray-300 mt-1">Remplissez les détails pour modifier ce
                         travail de maison</p>
                 </div>
 
@@ -19,7 +19,8 @@
                         <li class="inline-flex items-center">
                             <a href="{{ url('admin/dashboard') }}"
                                 class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-green-600 dark:text-gray-400 dark:hover:text-white">
-                                <iconify-icon icon="mdi:home-outline" class="mr-2" width="16" height="16"></iconify-icon>
+                                <iconify-icon icon="mdi:home-outline" class="mr-2" width="16"
+                                    height="16"></iconify-icon>
                                 Tableau de bord
                             </a>
                         </li>
@@ -60,8 +61,10 @@
                                     class="custom-select w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-green-500 focus:border-green-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-green-500 dark:focus:border-green-500 transition-all duration-200">
                                     <option selected disabled value="">Choisissez une classe pour cet travail de maion
                                     </option>
-                                    @foreach($getClass as $class)
-                                        <option class="text-body" value="{{ $class->id }}" {{ old('class_id', $getWorks->class_id) == $class->id ? 'selected' : '' }}>{{ $class->name }}</option>
+                                    @foreach ($getClass as $class)
+                                        <option class="text-body" value="{{ $class->id }}"
+                                            {{ old('class_id', $getWorks->class_id) == $class->id ? 'selected' : '' }}>
+                                            {{ $class->name }}</option>
                                     @endforeach
                                 </select>
                                 <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
@@ -80,13 +83,15 @@
                                     class="custom-select w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-green-500 focus:border-green-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-green-500 dark:focus:border-green-500 transition-all duration-200">
                                     @if (!empty($getSubject))
                                         <option disabled value="">Choisissez une matière</option>
-                                        @foreach($getSubject as $subject)
-                                            <option value="{{ $subject->subject_id }}" {{ old('subject_id', $getWorks->subject_id) == $subject->subject_id ? 'selected' : '' }}>
+                                        @foreach ($getSubject as $subject)
+                                            <option value="{{ $subject->subject_id }}"
+                                                {{ old('subject_id', $getWorks->subject_id) == $subject->subject_id ? 'selected' : '' }}>
                                                 {{ $subject->subject_name }}
                                             </option>
                                         @endforeach
                                     @else
-                                        <option selected disabled value="">Veuillez choisir une classe d'abord</option>
+                                        <option selected disabled value="">Veuillez choisir une classe d'abord
+                                        </option>
                                     @endif
                                 </select>
                                 <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
@@ -136,7 +141,8 @@
                                             class="text-gray-500 dark:text-gray-400 mb-2" width="32"
                                             height="32"></iconify-icon>
                                         <p class="mb-2 text-sm text-gray-500 dark:text-gray-400"><span
-                                                class="font-semibold">Cliquez pour télécharger</span> ou glissez-déposez</p>
+                                                class="font-semibold">Cliquez pour télécharger</span> ou glissez-déposez
+                                        </p>
                                         <p class="text-xs text-gray-500 dark:text-gray-400">PDF, Word (DOC, DOCX), Excel
                                             (XLS, XLSX), PowerPoint (PPT, PPTX), Images (JPG, PNG, GIF) - MAX. 10MB</p>
                                         <span id="file-name"
@@ -170,7 +176,8 @@
                         </div>
                         <div class="text-sm text-gray-900 dark:text-white mb-3">
                             @if (!empty($getWorks->document_file))
-                                <a href="{{ url('upload/practicalworks/' . $getWorks->document_file) }}" target="_blank"
+                                <a href="{{ url('upload/practicalworks/admin/' . $getWorks->document_file) }}"
+                                    target="_blank"
                                     class="flex items-center justify-center bg-green-600 text-white px-2.5 py-1.5 rounded-md text-sm font-medium"><iconify-icon
                                         icon="mdi:file-download-outline" width="24" height="24"
                                         class="text-white"></iconify-icon>
@@ -202,11 +209,11 @@
 
 
         </div>
-@endsection
+    @endsection
 
     <script>
         // Initialize Summernote
-        document.addEventListener("DOMContentLoaded", function () {
+        document.addEventListener("DOMContentLoaded", function() {
             const textarea = document.getElementById("compose-textarea");
             if (textarea) {
                 window.jQuery(textarea).summernote({
@@ -224,104 +231,112 @@
 
             // Gestion du téléchargement de fichier
             const dropzoneFile = document.getElementById('dropzone-file');
-            const fileName = document.getElementById('file-name');
-            const previewPdf = document.getElementById('preview-pdf');
+            const fileNameSpan = document.getElementById('file-name');
+            const previewPDF = document.getElementById('preview-pdf');
             const previewImage = document.getElementById('preview-image');
             const previewOffice = document.getElementById('preview-office');
             const fileIcon = document.getElementById('file-icon');
-            const fileSizeError = document.getElementById('file-size-error');
-            const fileTypeError = document.getElementById('file-type-error');
-            const maxFileSize = 10 * 1024 * 1024; // 10 MB en bytes
-            const allowedTypes = {
-                'application/pdf': { icon: 'mdi:file-pdf-box', preview: 'pdf' },
-                'application/msword': { icon: 'mdi:file-word-box', preview: 'office' },
-                'application/vnd.openxmlformats-officedocument.wordprocessingml.document': { icon: 'mdi:file-word-box', preview: 'office' },
-                'application/vnd.ms-excel': { icon: 'mdi:file-excel-box', preview: 'office' },
-                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': { icon: 'mdi:file-excel-box', preview: 'office' },
-                'application/vnd.ms-powerpoint': { icon: 'mdi:file-powerpoint-box', preview: 'office' },
-                'application/vnd.openxmlformats-officedocument.presentationml.presentation': { icon: 'mdi:file-powerpoint-box', preview: 'office' },
-                'image/jpeg': { icon: 'mdi:file-image', preview: 'image' },
-                'image/png': { icon: 'mdi:file-image', preview: 'image' },
-                'image/gif': { icon: 'mdi:file-image', preview: 'image' }
+            const errorSize = document.getElementById('file-size-error');
+            const errorType = document.getElementById('file-type-error');
+            const MAX_SIZE = 2 * 1024 * 1024;
+
+            const types = {
+                'application/pdf': {
+                    icon: 'mdi:file-pdf-box',
+                    view: 'pdf'
+                },
+                'image/jpeg': {
+                    icon: 'mdi:file-image',
+                    view: 'image'
+                },
+                'image/png': {
+                    icon: 'mdi:file-image',
+                    view: 'image'
+                },
+                'image/gif': {
+                    icon: 'mdi:file-image',
+                    view: 'image'
+                },
+                'application/msword': {
+                    icon: 'mdi:file-word-box',
+                    view: 'none'
+                },
+                'application/vnd.openxmlformats-officedocument.wordprocessingml.document': {
+                    icon: 'mdi:file-word-box',
+                    view: 'none'
+                },
+                'application/vnd.ms-excel': {
+                    icon: 'mdi:file-excel-box',
+                    view: 'none'
+                },
+                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': {
+                    icon: 'mdi:file-excel-box',
+                    view: 'none'
+                },
+                'application/vnd.ms-powerpoint': {
+                    icon: 'mdi:file-powerpoint-box',
+                    view: 'none'
+                },
+                'application/vnd.openxmlformats-officedocument.presentationml.presentation': {
+                    icon: 'mdi:file-powerpoint-box',
+                    view: 'none'
+                },
             };
 
-            function resetFileUpload(keepErrors = false) {
-                dropzoneFile.value = '';
-                fileName.textContent = '';
-                fileName.classList.add('hidden');
-                previewPdf.classList.add('hidden');
-                previewImage.classList.add('hidden');
-                previewOffice.classList.add('hidden');
-                fileIcon.setAttribute('icon', 'mdi:cloud-upload-outline');
-
-                if (!keepErrors) {
-                    fileSizeError.classList.add('hidden');
-                    fileTypeError.classList.add('hidden');
-                }
-            }
-
-            dropzoneFile.addEventListener('change', function (e) {
+            dropzoneFile.addEventListener('change', function(e) {
                 const file = e.target.files[0];
 
-                // Cacher les messages d'erreur
-                fileSizeError.classList.add('hidden');
-                fileTypeError.classList.add('hidden');
+                // Reset affichage
+                errorSize.classList.add('hidden');
+                errorType.classList.add('hidden');
+                previewPDF.classList.add('hidden');
+                previewImage.classList.add('hidden');
+                previewOffice.classList.add('hidden');
+                fileNameSpan.classList.add('hidden');
+                fileIcon.setAttribute('icon', 'mdi:cloud-upload-outline');
 
-                if (file) {
-                    // Vérification de la taille du fichier
-                    if (file.size > maxFileSize) {
-                        resetFileUpload(true);
-                        fileSizeError.classList.remove('hidden');
-                        return;
-                    }
+                if (!file) return;
 
-                    // Vérification du type de fichier
-                    if (!allowedTypes[file.type]) {
-                        resetFileUpload(true);
-                        fileTypeError.classList.remove('hidden');
-                        return;
-                    }
+                if (file.size > MAX_SIZE) {
+                    errorSize.classList.remove('hidden');
+                    return;
+                }
 
-                    // Réinitialiser complètement si le fichier est valide
-                    resetFileUpload();
+                const typeInfo = types[file.type];
+                if (!typeInfo) {
+                    errorType.classList.remove('hidden');
+                    return;
+                }
 
-                    // Affichage du nom du fichier
-                    fileName.textContent = file.name;
-                    fileName.classList.remove('hidden');
+                fileNameSpan.textContent = file.name;
+                fileNameSpan.classList.remove('hidden');
+                fileIcon.setAttribute('icon', typeInfo.icon);
 
-                    // Mise à jour de l'icône
-                    const fileTypeInfo = allowedTypes[file.type];
-                    fileIcon.setAttribute('icon', fileTypeInfo.icon);
-
-                    // Gestion de l'aperçu
-                    const fileURL = URL.createObjectURL(file);
-                    switch (fileTypeInfo.preview) {
-                        case 'pdf':
-                            previewPdf.src = fileURL;
-                            previewPdf.classList.remove('hidden');
-                            break;
-                        case 'image':
-                            previewImage.src = fileURL;
-                            previewImage.classList.remove('hidden');
-                            break;
-                        case 'office':
-                            // Utiliser Google Docs Viewer pour les fichiers Office
-                            const encodedUrl = encodeURIComponent(fileURL);
-                            previewOffice.src = `https://docs.google.com/viewer?url=${encodedUrl}&embedded=true`;
-                            previewOffice.classList.add('hidden');
-                            break;
-                    }
+                const fileURL = URL.createObjectURL(file);
+                switch (typeInfo.view) {
+                    case 'pdf':
+                        previewPDF.src = fileURL;
+                        previewPDF.classList.remove('hidden');
+                        break;
+                    case 'image':
+                        previewImage.src = fileURL;
+                        previewImage.classList.remove('hidden');
+                        break;
+                    case 'none':
+                        // Option : afficher résumé ou fiche (nom, type, poids)
+                        break;
                 }
             });
+
         });
 
         // Initialize date pickers
         document.querySelectorAll('.form-datepicker').forEach(input => {
-            input.addEventListener('focus', function () {
+            input.addEventListener('focus', function() {
                 this.type = 'date';
             });
 
-            input.addEventListener('blur', function () {
+            input.addEventListener('blur', function() {
                 if (!this.value) {
                     this.type = 'text';
                 }
@@ -344,7 +359,8 @@
                             subjectSelect.appendChild(option);
                         });
                     } else {
-                        subjectSelect.innerHTML = '<option value="">Les matières de cette classe ne sont pas active</option>';
+                        subjectSelect.innerHTML =
+                            '<option value="">Les matières de cette classe ne sont pas active</option>';
                     }
                 })
                 .catch(error => {
