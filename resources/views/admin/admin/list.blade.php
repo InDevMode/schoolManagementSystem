@@ -20,7 +20,10 @@
                             <i class="fas fa-home mr-1"></i>
                             Dashboard
                         </a>
-                        <span class="mx-2 text-gray-400">/</span>
+                        <span class="mx-2 text-gray-400">
+                             <iconify-icon icon="mdi:chevron-right" class="text-gray-400" width="16"
+                                    height="16"></iconify-icon>
+                        </span>
                     </li>
                     <li class="flex items-center">
                         <a href="{{ url('admin/admin/add') }}"

@@ -193,7 +193,7 @@
                                 class="w-full flex justify-center items-center py-3 px-4 bg-gradient-to-r from-green-600 to-green-500 hover:from-green-700 hover:to-green-600 text-white font-medium rounded-lg shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 transition-all duration-300">
                                 <iconify-icon icon="mdi:content-save-check-outline" class="mr-2" width="20"
                                     height="20"></iconify-icon>
-                                Modifier le travail de classe
+                                Modifier ce travail de classe
                             </button>
                         </div>
                     </form>
@@ -332,7 +332,7 @@
             const subjectSelect = document.getElementById("subject_id");
             subjectSelect.innerHTML = '<option value="">Chargement...</option>';
 
-            fetch(`{{ url('admin/practicalworks/homework/getSubjectByClassId/${classId}') }}`)
+            fetch(`{{ url('teacher/practicalworks/homework/getSubjectByClassId/${classId}') }}`)
                 .then(response => response.json())
                 .then(data => {
                     subjectSelect.innerHTML = '<option selected disabled value="">Choisissez une matière</option>';

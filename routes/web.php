@@ -220,6 +220,15 @@ Route::group(['middleware' => 'teacher'], function () {
     // Teacher noticeboard url
     Route::get('teacher/my_noticeboard', [CommunicateController::class, 'teacherNoticeBoard']);
 
+        // Practical works url
+    Route::get('teacher/practicalworks/homework/list', [WorkController::class, 'teacherPracticalWorksList']);
+    Route::get('teacher/practicalworks/homework/add', [WorkController::class, 'teacherPracticalWorksAdd']);
+    Route::get('teacher/practicalworks/homework/getSubjectByClassId/{id}', [WorkController::class, 'getSubjectByClassId']);
+    Route::post('teacher/practicalworks/homework/add', [WorkController::class, 'teacherPracticalWorksCreate']);
+    Route::get('teacher/practicalworks/homework/edit/{id}', [WorkController::class, 'teacherPracticalWorksEdit']);
+    Route::post('teacher/practicalworks/homework/edit/{id}', [WorkController::class, 'teacherPracticalWorksUpdate']);
+    Route::get('teacher/practicalworks/homework/delete/{id}', [WorkController::class, 'teacherPracticalWorksDelete']);
+
 });
 
 Route::group(['middleware' => 'student'], function () {

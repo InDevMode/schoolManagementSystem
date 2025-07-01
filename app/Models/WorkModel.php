@@ -58,5 +58,33 @@ class WorkModel extends Model
             ->paginate($perpage);
     }
 
+        public static function getWorksTeacher(int $perpage, $class_ids)
+    {
+        $results = WorkModel::select('works.*', 'class.name as class_name', 'subject.name as subject_name', 'users.name as created_by_name')
+            ->join('class', 'class.id', '=', 'works.class_id')
+            ->join('subject', 'subject.id', '=', 'works.subject_id')
+            ->join('users', 'users.id', '=', 'works.created_by')
+            ->whereIn('works.class_id', $class_ids)
+            ->where('works.is_delete', '=', 0);
+
+        $filters = [
+            'class.name' => strtolower(Request::get('class_name')),
+            'subject.name' => strtolower(Request::get('subject_name')),
+            'works.work_date' => strtolower(Request::get('work_date')),
+            'works.submission_date' => strtolower(Request::get('submission_date')),
+            'works.created_at' => strtolower(Request::get('created_at')),
+            'works.updated_at' => strtolower(Request::get('updated_at')),
+        ];
+
+        foreach ($filters as $column => $value) {
+            if (!empty($value)) {
+                $results->where($column, 'like', '%' . $value . '%');
+            }
+        }
+
+        return $results->orderBy('works.id', 'desc')
+            ->paginate($perpage);
+    }
+
 
 }

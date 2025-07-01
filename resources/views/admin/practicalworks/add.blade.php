@@ -207,96 +207,96 @@
             }
 
             // Gestion du téléchargement de fichier
-            const dropzoneFile = document.getElementById('dropzone-file');
-            const fileName = document.getElementById('file-name');
-            const previewPdf = document.getElementById('preview-pdf');
-            const previewImage = document.getElementById('preview-image');
-            const previewOffice = document.getElementById('preview-office');
-            const fileIcon = document.getElementById('file-icon');
-            const fileSizeError = document.getElementById('file-size-error');
-            const fileTypeError = document.getElementById('file-type-error');
-            const maxFileSize = 10 * 1024 * 1024; // 10 MB en bytes
-            const allowedTypes = {
-                'application/pdf': { icon: 'mdi:file-pdf-box', preview: 'pdf' },
-                'application/msword': { icon: 'mdi:file-word-box', preview: 'office' },
-                'application/vnd.openxmlformats-officedocument.wordprocessingml.document': { icon: 'mdi:file-word-box', preview: 'office' },
-                'application/vnd.ms-excel': { icon: 'mdi:file-excel-box', preview: 'office' },
-                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': { icon: 'mdi:file-excel-box', preview: 'office' },
-                'application/vnd.ms-powerpoint': { icon: 'mdi:file-powerpoint-box', preview: 'office' },
-                'application/vnd.openxmlformats-officedocument.presentationml.presentation': { icon: 'mdi:file-powerpoint-box', preview: 'office' },
-                'image/jpeg': { icon: 'mdi:file-image', preview: 'image' },
-                'image/png': { icon: 'mdi:file-image', preview: 'image' },
-                'image/gif': { icon: 'mdi:file-image', preview: 'image' }
-            };
+            document.addEventListener("DOMContentLoaded", function () {
+                const dropzoneFile = document.getElementById('dropzone-file');
+                const fileName = document.getElementById('file-name');
+                const previewPdf = document.getElementById('preview-pdf');
+                const previewImage = document.getElementById('preview-image');
+                const previewOffice = document.getElementById('preview-office');
+                const fileIcon = document.getElementById('file-icon');
+                const fileSizeError = document.getElementById('file-size-error');
+                const fileTypeError = document.getElementById('file-type-error');
+                const maxFileSize = 10 * 1024 * 1024; // 10 MB
 
-            function resetFileUpload(keepErrors = false) {
-                dropzoneFile.value = '';
-                fileName.textContent = '';
-                fileName.classList.add('hidden');
-                previewPdf.classList.add('hidden');
-                previewImage.classList.add('hidden');
-                previewOffice.classList.add('hidden');
-                fileIcon.setAttribute('icon', 'mdi:cloud-upload-outline');
+                const allowedTypes = {
+                    'application/pdf': { icon: 'mdi:file-pdf-box', preview: 'pdf' },
+                    'application/msword': { icon: 'mdi:file-word-box', preview: 'office' },
+                    'application/vnd.openxmlformats-officedocument.wordprocessingml.document': { icon: 'mdi:file-word-box', preview: 'office' },
+                    'application/vnd.ms-excel': { icon: 'mdi:file-excel-box', preview: 'office' },
+                    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': { icon: 'mdi:file-excel-box', preview: 'office' },
+                    'application/vnd.ms-powerpoint': { icon: 'mdi:file-powerpoint-box', preview: 'office' },
+                    'application/vnd.openxmlformats-officedocument.presentationml.presentation': { icon: 'mdi:file-powerpoint-box', preview: 'office' },
+                    'image/jpeg': { icon: 'mdi:file-image', preview: 'image' },
+                    'image/png': { icon: 'mdi:file-image', preview: 'image' },
+                    'image/gif': { icon: 'mdi:file-image', preview: 'image' }
+                };
 
-                if (!keepErrors) {
+                function clearPreviews() {
+                    fileName.textContent = '';
+                    fileName.classList.add('hidden');
+                    previewPdf.classList.add('hidden');
+                    previewImage.classList.add('hidden');
+                    previewOffice.classList.add('hidden');
+                    fileIcon.setAttribute('icon', 'mdi:cloud-upload-outline');
+                }
+
+                function showError(type) {
+                    if (type === 'size') fileSizeError.classList.remove('hidden');
+                    if (type === 'type') fileTypeError.classList.remove('hidden');
+                }
+
+                function hideErrors() {
                     fileSizeError.classList.add('hidden');
                     fileTypeError.classList.add('hidden');
                 }
-            }
 
-            dropzoneFile.addEventListener('change', function(e) {
-                const file = e.target.files[0];
+                dropzoneFile.addEventListener('change', function (e) {
+                    const file = e.target.files[0];
+                    hideErrors();
+                    clearPreviews();
 
-                // Cacher les messages d'erreur
-                fileSizeError.classList.add('hidden');
-                fileTypeError.classList.add('hidden');
+                    if (file) {
+                        // Taille
+                        if (file.size > maxFileSize) {
+                            showError('size');
+                            return;
+                        }
 
-                if (file) {
-                    // Vérification de la taille du fichier
-                    if (file.size > maxFileSize) {
-                        resetFileUpload(true);
-                        fileSizeError.classList.remove('hidden');
-                        return;
+                        // Type
+                        if (!allowedTypes[file.type]) {
+                            showError('type');
+                            return;
+                        }
+
+                        // Affichage du nom
+                        fileName.textContent = file.name;
+                        fileName.classList.remove('hidden');
+
+                        // Icône
+                        const fileTypeInfo = allowedTypes[file.type];
+                        fileIcon.setAttribute('icon', fileTypeInfo.icon);
+
+                        // Aperçu
+                        const fileURL = URL.createObjectURL(file);
+                        switch (fileTypeInfo.preview) {
+                            case 'pdf':
+                                previewPdf.src = fileURL;
+                                previewPdf.classList.remove('hidden');
+                                break;
+                            case 'image':
+                                previewImage.src = fileURL;
+                                previewImage.classList.remove('hidden');
+                                break;
+                            case 'office':
+                                const encodedUrl = encodeURIComponent(fileURL);
+                                previewOffice.src = `https://docs.google.com/viewer?url=${encodedUrl}&embedded=true`;
+                                previewOffice.classList.remove('hidden');
+                                break;
+                        }
                     }
-
-                    // Vérification du type de fichier
-                    if (!allowedTypes[file.type]) {
-                        resetFileUpload(true);
-                        fileTypeError.classList.remove('hidden');
-                        return;
-                    }
-
-                    // Réinitialiser complètement si le fichier est valide
-                    resetFileUpload();
-
-                    // Affichage du nom du fichier
-                    fileName.textContent = file.name;
-                    fileName.classList.remove('hidden');
-
-                    // Mise à jour de l'icône
-                    const fileTypeInfo = allowedTypes[file.type];
-                    fileIcon.setAttribute('icon', fileTypeInfo.icon);
-
-                    // Gestion de l'aperçu
-                    const fileURL = URL.createObjectURL(file);
-                    switch (fileTypeInfo.preview) {
-                        case 'pdf':
-                            previewPdf.src = fileURL;
-                            previewPdf.classList.remove('hidden');
-                            break;
-                        case 'image':
-                            previewImage.src = fileURL;
-                            previewImage.classList.remove('hidden');
-                            break;
-                        case 'office':
-                            // Utiliser Google Docs Viewer pour les fichiers Office
-                            const encodedUrl = encodeURIComponent(fileURL);
-                            previewOffice.src = `https://docs.google.com/viewer?url=${encodedUrl}&embedded=true`;
-                            previewOffice.classList.add('hidden');
-                            break;
-                    }
-                }
+                });
             });
+
         });
 
         // Initialize date pickers
@@ -328,7 +328,7 @@
                             subjectSelect.appendChild(option);
                         });
                     } else {
-                        subjectSelect.innerHTML = '<option value="">Aucune matière trouvée</option>';
+                        subjectSelect.innerHTML = '<option value="">Les matières de cette classe ne sont pas active</option>';
                     }
                 })
                 .catch(error => {

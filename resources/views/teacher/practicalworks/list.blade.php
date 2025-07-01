@@ -6,7 +6,7 @@
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
             <div>
                 <h1 class="text-2xl font-bold text-gray-800 dark:text-white flex items-center gap-2">
-                    <iconify-icon icon="mdi:home-edit" width="24" height="24"></iconify-icon>
+                    <iconify-icon icon="home-edit-outline" width="24" height="24"></iconify-icon>
                     Liste des travaux de maison
                 </h1>
                 <p class="text-gray-600 dark:text-gray-300 mt-1">Gérez la liste des travaux de maion de votre plateforme</p>
@@ -15,15 +15,15 @@
             <nav class="flex items-center text-sm">
                 <ol class="flex items-center space-x-2">
                     <li class="flex items-center">
-                        <a href="{{ url('admin/dashboard') }}"
+                        <a href="{{ url('teacher/dashboard') }}"
                             class="text-primary-600 hover:text-violet-600 transition-colors">
                             <i class="fas fa-home mr-1"></i>
                             Dashboard
                         </a>
-                        <span class="mx-2 text-gray-400"> ></span>
+                        <span class="mx-2 text-gray-400">/</span>
                     </li>
                     <li class="flex items-center">
-                        <a href="{{ url('admin/practicalworks/homework/add') }}"
+                        <a href="{{ url('teacher/practicalworks/homework/add') }}"
                             class="text-primary-600 hover:text-violet-600 transition-colors">
                             <i class="fas fa-plus-circle mr-1"></i>
                             Créer un travail de maison
@@ -207,7 +207,7 @@
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="text-sm text-gray-900 dark:text-white">
                                         @if (!empty($works->document_file))
-                                            <a href="{{ url('upload/practicalworks/' . $works->document_file) }}" target="_blank"
+                                            <a href="{{ url('upload/practicalworks/teacher/' . $works->document_file) }}" target="_blank"
                                                 class="flex items-center justify-center bg-violet-600 text-white px-2.5 py-1.5 rounded-md text-sm font-medium"><iconify-icon
                                                     icon="mdi:file-download-outline" width="24" height="24"
                                                     class="text-white"></iconify-icon>
@@ -242,7 +242,7 @@
                                             role="menu" aria-orientation="vertical" aria-labelledby="menu-button"
                                             tabindex="{{ $index + 1 }}" x-show="open" @click.away="open = false" x-transition>
                                             <div class="py-1">
-                                                <a href="{{ url('admin/practicalworks/homework/edit', $works->id) }}"
+                                                <a href="{{ url('teacher/practicalworks/homework/edit', $works->id) }}"
                                                     class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:text-emerald-400 dark:hover:text-emerald-400"
                                                     role="menuitem"><i class="fas fa-edit mr-2"></i>Modifier</a>
                                                 <div x-data="{ showConfirm: false }">
@@ -287,7 +287,7 @@
                                                                         class="block px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-sm rounded hover:bg-gray-300 dark:hover:bg-gray-600">
                                                                         Annuler
                                                                     </button>
-                                                                    <a href="{{ url('admin/practicalworks/homework/delete', $works->id) }}"
+                                                                    <a href="{{ url('teacher/practicalworks/homework/delete', $works->id) }}"
                                                                         class="block px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 text-sm">
                                                                         Oui supprimer
                                                                     </a>
