@@ -10,7 +10,7 @@
                             height="28"></iconify-icon>
                         Modifier un travail de maison
                     </h1>
-                    <p class="text-gray-600 dark:text-gray-300 mt-1">Remplissez les détails pour créer un nouveau
+                    <p class="text-gray-600 dark:text-gray-300 mt-1">Remplissez les détails pour modifier un
                         travail de maison</p>
                 </div>
 
@@ -189,7 +189,7 @@
 
                         <!-- Submit Button -->
                         <div class="mt-8">
-                            <button type="submit"
+                            <button type="submit" id="submit-button"
                                 class="w-full flex justify-center items-center py-3 px-4 bg-gradient-to-r from-green-600 to-green-500 hover:from-green-700 hover:to-green-600 text-white font-medium rounded-lg shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 transition-all duration-300">
                                 <iconify-icon icon="mdi:content-save-check-outline" class="mr-2" width="20"
                                     height="20"></iconify-icon>
@@ -224,93 +224,104 @@
 
             // Gestion du téléchargement de fichier
             const dropzoneFile = document.getElementById('dropzone-file');
-            const fileName = document.getElementById('file-name');
-            const previewPdf = document.getElementById('preview-pdf');
+            const fileNameSpan = document.getElementById('file-name');
+            const previewPDF = document.getElementById('preview-pdf');
             const previewImage = document.getElementById('preview-image');
             const previewOffice = document.getElementById('preview-office');
             const fileIcon = document.getElementById('file-icon');
-            const fileSizeError = document.getElementById('file-size-error');
-            const fileTypeError = document.getElementById('file-type-error');
-            const maxFileSize = 10 * 1024 * 1024; // 10 MB en bytes
-            const allowedTypes = {
-                'application/pdf': { icon: 'mdi:file-pdf-box', preview: 'pdf' },
-                'application/msword': { icon: 'mdi:file-word-box', preview: 'office' },
-                'application/vnd.openxmlformats-officedocument.wordprocessingml.document': { icon: 'mdi:file-word-box', preview: 'office' },
-                'application/vnd.ms-excel': { icon: 'mdi:file-excel-box', preview: 'office' },
-                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': { icon: 'mdi:file-excel-box', preview: 'office' },
-                'application/vnd.ms-powerpoint': { icon: 'mdi:file-powerpoint-box', preview: 'office' },
-                'application/vnd.openxmlformats-officedocument.presentationml.presentation': { icon: 'mdi:file-powerpoint-box', preview: 'office' },
-                'image/jpeg': { icon: 'mdi:file-image', preview: 'image' },
-                'image/png': { icon: 'mdi:file-image', preview: 'image' },
-                'image/gif': { icon: 'mdi:file-image', preview: 'image' }
+            const errorSize = document.getElementById('file-size-error');
+            const errorType = document.getElementById('file-type-error');
+            const submitButton = document.getElementById('submit-button');
+            const MAX_SIZE = 10 * 1024 * 1024;
+
+            const types = {
+                'application/pdf': {
+                    icon: 'mdi:file-pdf-box',
+                    view: 'pdf'
+                },
+                'image/jpeg': {
+                    icon: 'mdi:file-image',
+                    view: 'image'
+                },
+                'image/png': {
+                    icon: 'mdi:file-image',
+                    view: 'image'
+                },
+                'image/gif': {
+                    icon: 'mdi:file-image',
+                    view: 'image'
+                },
+                'application/msword': {
+                    icon: 'mdi:file-word-box',
+                    view: 'none'
+                },
+                'application/vnd.openxmlformats-officedocument.wordprocessingml.document': {
+                    icon: 'mdi:file-word-box',
+                    view: 'none'
+                },
+                'application/vnd.ms-excel': {
+                    icon: 'mdi:file-excel-box',
+                    view: 'none'
+                },
+                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': {
+                    icon: 'mdi:file-excel-box',
+                    view: 'none'
+                },
+                'application/vnd.ms-powerpoint': {
+                    icon: 'mdi:file-powerpoint-box',
+                    view: 'none'
+                },
+                'application/vnd.openxmlformats-officedocument.presentationml.presentation': {
+                    icon: 'mdi:file-powerpoint-box',
+                    view: 'none'
+                },
             };
-
-            function resetFileUpload(keepErrors = false) {
-                dropzoneFile.value = '';
-                fileName.textContent = '';
-                fileName.classList.add('hidden');
-                previewPdf.classList.add('hidden');
-                previewImage.classList.add('hidden');
-                previewOffice.classList.add('hidden');
-                fileIcon.setAttribute('icon', 'mdi:cloud-upload-outline');
-
-                if (!keepErrors) {
-                    fileSizeError.classList.add('hidden');
-                    fileTypeError.classList.add('hidden');
-                }
-            }
 
             dropzoneFile.addEventListener('change', function (e) {
                 const file = e.target.files[0];
 
-                // Cacher les messages d'erreur
-                fileSizeError.classList.add('hidden');
-                fileTypeError.classList.add('hidden');
+                // Reset affichage
+                errorSize.classList.add('hidden');
+                errorType.classList.add('hidden');
+                previewPDF.classList.add('hidden');
+                previewImage.classList.add('hidden');
+                previewOffice.classList.add('hidden');
+                fileNameSpan.classList.add('hidden');
+                fileIcon.setAttribute('icon', 'mdi:cloud-upload-outline');
+                submitButton.disabled = false;
 
-                if (file) {
-                    // Vérification de la taille du fichier
-                    if (file.size > maxFileSize) {
-                        resetFileUpload(true);
-                        fileSizeError.classList.remove('hidden');
-                        return;
-                    }
+                if (!file) return;
 
-                    // Vérification du type de fichier
-                    if (!allowedTypes[file.type]) {
-                        resetFileUpload(true);
-                        fileTypeError.classList.remove('hidden');
-                        return;
-                    }
+                if (file.size > MAX_SIZE) {
+                    errorSize.classList.remove('hidden');
+                    submitButton.disabled = true;
+                    return;
+                }
 
-                    // Réinitialiser complètement si le fichier est valide
-                    resetFileUpload();
+                const typeInfo = types[file.type];
+                if (!typeInfo) {
+                    errorType.classList.remove('hidden');
+                    submitButton.disabled = true;
+                    return;
+                }
 
-                    // Affichage du nom du fichier
-                    fileName.textContent = file.name;
-                    fileName.classList.remove('hidden');
+                fileNameSpan.textContent = file.name;
+                fileNameSpan.classList.remove('hidden');
+                fileIcon.setAttribute('icon', typeInfo.icon);
 
-                    // Mise à jour de l'icône
-                    const fileTypeInfo = allowedTypes[file.type];
-                    fileIcon.setAttribute('icon', fileTypeInfo.icon);
-
-                    // Gestion de l'aperçu
-                    const fileURL = URL.createObjectURL(file);
-                    switch (fileTypeInfo.preview) {
-                        case 'pdf':
-                            previewPdf.src = fileURL;
-                            previewPdf.classList.remove('hidden');
-                            break;
-                        case 'image':
-                            previewImage.src = fileURL;
-                            previewImage.classList.remove('hidden');
-                            break;
-                        case 'office':
-                            // Utiliser Google Docs Viewer pour les fichiers Office
-                            const encodedUrl = encodeURIComponent(fileURL);
-                            previewOffice.src = `https://docs.google.com/viewer?url=${encodedUrl}&embedded=true`;
-                            previewOffice.classList.add('hidden');
-                            break;
-                    }
+                const fileURL = URL.createObjectURL(file);
+                switch (typeInfo.view) {
+                    case 'pdf':
+                        previewPDF.src = fileURL;
+                        previewPDF.classList.remove('hidden');
+                        break;
+                    case 'image':
+                        previewImage.src = fileURL;
+                        previewImage.classList.remove('hidden');
+                        break;
+                    case 'none':
+                        // Option : afficher résumé ou fiche (nom, type, poids)
+                        break;
                 }
             });
         });

@@ -196,7 +196,7 @@
 
                         <!-- Submit Button -->
                         <div class="mt-8">
-                            <button type="submit"
+                            <button type="submit" id="submit-button"
                                 class="w-full flex justify-center items-center py-3 px-4 bg-gradient-to-r from-green-600 to-green-500 hover:from-green-700 hover:to-green-600 text-white font-medium rounded-lg shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 transition-all duration-300">
                                 <iconify-icon icon="mdi:content-save-check-outline" class="mr-2" width="20"
                                     height="20"></iconify-icon>
@@ -238,7 +238,8 @@
             const fileIcon = document.getElementById('file-icon');
             const errorSize = document.getElementById('file-size-error');
             const errorType = document.getElementById('file-type-error');
-            const MAX_SIZE = 2 * 1024 * 1024;
+            const submitButton = document.getElementById('submit-button');
+            const MAX_SIZE = 10 * 1024 * 1024;
 
             const types = {
                 'application/pdf': {
@@ -294,17 +295,20 @@
                 previewOffice.classList.add('hidden');
                 fileNameSpan.classList.add('hidden');
                 fileIcon.setAttribute('icon', 'mdi:cloud-upload-outline');
+                submitButton.disabled = false;
 
                 if (!file) return;
 
                 if (file.size > MAX_SIZE) {
                     errorSize.classList.remove('hidden');
+                    submitButton.disabled = true;
                     return;
                 }
 
                 const typeInfo = types[file.type];
                 if (!typeInfo) {
                     errorType.classList.remove('hidden');
+                    submitButton.disabled = true;
                     return;
                 }
 

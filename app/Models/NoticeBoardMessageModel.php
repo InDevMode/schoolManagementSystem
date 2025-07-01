@@ -21,7 +21,7 @@ class NoticeBoardMessageModel extends Model
         '',
     ];
 
-    static public function deleteNoticeBoardMessage(int $id){
+    public static function deleteNoticeBoardMessage(int $id){
         return NoticeBoardMessageModel::where('communicates_id', $id)->delete();
     }
 

@@ -35,9 +35,6 @@ class WorkController extends Controller
 
     public function practicalWorksCreate(Request $request)
     {
-
-        dd($request->all());
-
         try {
 
             $work = new WorkModel();
@@ -51,9 +48,9 @@ class WorkController extends Controller
             if (!empty($request->file('document_file'))) {
                 $ext = $request->file('document_file')->getClientOriginalExtension();
                 $file = $request->file('document_file');
-                $randomStr = 'homework' . date('dmYhis') . Str::random(20);
+                $randomStr = 'homework_admin' . date('dmYhis') . Str::random(20);
                 $fileName = strtolower($randomStr) . '.' . $ext;
-                $file->move('upload/practicalworks/admin', $fileName);
+                $file->move('upload/practicalworks/', $fileName);
                 $work->document_file = $fileName;
             }
 
@@ -91,9 +88,9 @@ class WorkController extends Controller
             if (!empty($request->file('document_file'))) {
                 $ext = $request->file('document_file')->getClientOriginalExtension();
                 $file = $request->file('document_file');
-                $randomStr = 'homework' . date('dmYhis') . Str::random(20);
+                $randomStr = 'homework_admin' . date('dmYhis') . Str::random(20);
                 $fileName = strtolower($randomStr) . '.' . $ext;
-                $file->move('upload/practicalworks/admin/', $fileName);
+                $file->move('upload/practicalworks/', $fileName);
                 $work->document_file = $fileName;
             }
 
@@ -156,9 +153,9 @@ class WorkController extends Controller
             if (!empty($request->file('document_file'))) {
                 $ext = $request->file('document_file')->getClientOriginalExtension();
                 $file = $request->file('document_file');
-                $randomStr = 'homework' . date('dmYhis') . Str::random(20);
+                $randomStr = 'homework_teacher' . date('dmYhis') . Str::random(20);
                 $fileName = strtolower($randomStr) . '.' . $ext;
-                $file->move('upload/practicalworks/teacher/', $fileName);
+                $file->move('upload/practicalworks/', $fileName);
                 $work->document_file = $fileName;
             }
 
@@ -195,9 +192,9 @@ class WorkController extends Controller
             if (!empty($request->file('document_file'))) {
                 $ext = $request->file('document_file')->getClientOriginalExtension();
                 $file = $request->file('document_file');
-                $randomStr = 'homework' . date('dmYhis') . Str::random(20);
+                $randomStr = 'homework_teacher' . date('dmYhis') . Str::random(20);
                 $fileName = strtolower($randomStr) . '.' . $ext;
-                $file->move('upload/practicalworks/teacher/', $fileName);
+                $file->move('upload/practicalworks/', $fileName);
                 $work->document_file = $fileName;
             }
 
