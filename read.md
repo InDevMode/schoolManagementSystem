@@ -1,6 +1,6 @@
-Key .......................................................................................... base64:tSry9IZXFFE6JYBWxxqfW1Dl2PxGIYLzE52+/qfCE9Y=
-Cipher ............................................................................................................................... AES-256-CBC
-Encrypted file .............................................................................. C:\laragon\www\schoolManagementSystem\.env.encrypted
+  Key .......................................................................................... base64:0cmuJEjzbkMDI7vrIkmNO7EHp6J4CYFCERyBztWXhyY=  
+  Cipher ............................................................................................................................... AES-256-CBC  
+  Encrypted file .............................................................................. C:\laragon\www\schoolManagementSystem\.env.encrypted  
 
 
 Pour empêcher les développeurs d'envoyer leur code directement sur la branche `main` sur GitHub, vous pouvez mettre en place une **protection de branche** et une **règle d'interdiction de push**.
