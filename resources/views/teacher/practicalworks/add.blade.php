@@ -6,7 +6,7 @@
             <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
                 <div class="mb-4 md:mb-0">
                     <h1 class="text-2xl font-bold text-gray-800 dark:text-white flex items-center">
-                        <iconify-icon icon="mdi:notebook-edit-outline" class="text-violet-600 mr-2" width="28"
+                        <iconify-icon icon="mdi:notebook-edit" class="text-violet-600 mr-2" width="28"
                             height="28"></iconify-icon>
                         Créer un travail de maison
                     </h1>
@@ -17,10 +17,9 @@
                 <nav class="flex" aria-label="Breadcrumb">
                     <ol class="inline-flex items-center space-x-1 md:space-x-3">
                         <li class="inline-flex items-center">
-                            <a href="{{ url('admin/dashboard') }}"
+                            <a href="{{ url('teacher/dashboard') }}"
                                 class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-violet-600 dark:text-gray-400 dark:hover:text-white">
-                                <iconify-icon icon="mdi:home-outline" class="mr-2" width="16"
-                                    height="16"></iconify-icon>
+                                <iconify-icon icon="mdi:home-outline" class="mr-2" width="16" height="16"></iconify-icon>
                                 Tableau de bord
                             </a>
                         </li>
@@ -28,7 +27,7 @@
                             <div class="flex items-center">
                                 <iconify-icon icon="mdi:chevron-right" class="text-gray-400" width="16"
                                     height="16"></iconify-icon>
-                                <a href="{{ url('admin/practicalworks/homework/list ') }}"
+                                <a href="{{ url('teacher/practicalworks/homework/list ') }}"
                                     class="ml-1 text-sm font-medium text-gray-700 hover:text-violet-600 md:ml-2 dark:text-gray-400 dark:hover:text-white">Travaux
                                     de maison</a>
                             </div>
@@ -48,7 +47,7 @@
             <!-- Main Form Section -->
             <div class="bg-white rounded-xl shadow-md overflow-hidden dark:bg-gray-800 transition-colors duration-300">
                 <div class="p-6 md:p-8">
-                    <form action="{{ url('admin/practicalworks/homework/add') }}" method="post"
+                    <form action="{{ url('teacher/practicalworks/homework/add') }}" method="post"
                         enctype="multipart/form-data">
                         {{ csrf_field() }}
                         <!-- Class Selection -->
@@ -61,8 +60,9 @@
                                     class="custom-select w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-violet-500 focus:border-violet-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500 transition-all duration-200">
                                     <option selected disabled value="">Choisissez une classe pour cet travail de maion
                                     </option>
-                                    @foreach ($getClass as $class)
-                                        <option class="text-body" value="{{ $class->id }}">{{ $class->name }}</option>
+                                    @foreach($getClass as $class)
+                                        <option class="text-body" value="{{ $class->class_id }}">{{ $class->class_name }}
+                                        </option>
                                     @endforeach
                                 </select>
                                 <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
@@ -175,7 +175,7 @@
                         <!-- Submit Button -->
                         <div class="mt-8">
                             <button type="submit" id="submit-button"
-                                class="w-full flex justify-center items-center py-3 px-4 bg-gradient-to-r from-violet-600 to-violet-500 hover:from-violet-700 hover:to-violet-600 text-white font-medium rounded-lg shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-opacity-50 transition-all duration-300">
+                                class="disabled w-full flex justify-center items-center py-3 px-4 bg-gradient-to-r from-violet-600 to-violet-500 hover:from-violet-700 hover:to-violet-600 text-white font-medium rounded-lg shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-opacity-50 transition-all duration-300">
                                 <iconify-icon icon="mdi:content-save-check-outline" class="mr-2" width="20"
                                     height="20"></iconify-icon>
                                 Créer le travail de maison
@@ -187,12 +187,11 @@
 
 
         </div>
-    @endsection
+@endsection
 
     <script>
-
         // Initialize Summernote
-        document.addEventListener("DOMContentLoaded", function() {
+        document.addEventListener("DOMContentLoaded", function () {
             const textarea = document.getElementById("compose-textarea");
             if (textarea) {
                 window.jQuery(textarea).summernote({
@@ -263,7 +262,7 @@
                 },
             };
 
-            dropzoneFile.addEventListener('change', function(e) {
+            dropzoneFile.addEventListener('change', function (e) {
                 const file = e.target.files[0];
 
                 // Reset affichage
@@ -310,16 +309,15 @@
                         break;
                 }
             });
-
         });
 
         // Initialize date pickers
         document.querySelectorAll('.form-datepicker').forEach(input => {
-            input.addEventListener('focus', function() {
+            input.addEventListener('focus', function () {
                 this.type = 'date';
             });
 
-            input.addEventListener('blur', function() {
+            input.addEventListener('blur', function () {
                 if (!this.value) {
                     this.type = 'text';
                 }
@@ -330,7 +328,7 @@
             const subjectSelect = document.getElementById("subject_id");
             subjectSelect.innerHTML = '<option value="">Chargement...</option>';
 
-            fetch(`{{ url('admin/practicalworks/homework/getSubjectByClassId/${classId}') }}`)
+            fetch(`{{ url('teacher/practicalworks/homework/getSubjectByClassId/${classId}') }}`)
                 .then(response => response.json())
                 .then(data => {
                     subjectSelect.innerHTML = '<option selected disabled value="">Choisissez une matière</option>';
@@ -342,8 +340,7 @@
                             subjectSelect.appendChild(option);
                         });
                     } else {
-                        subjectSelect.innerHTML =
-                            '<option value="">Les matières de cette classe ne sont pas active</option>';
+                        subjectSelect.innerHTML = '<option value="">Les matières de cette classe ne sont pas active</option>';
                     }
                 })
                 .catch(error => {

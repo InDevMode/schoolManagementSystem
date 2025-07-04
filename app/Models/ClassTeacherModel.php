@@ -24,12 +24,12 @@ class ClassTeacherModel extends Model
         'is_delete',
     ];
 
-    static public function getSingle(int $id)
+    public static function getSingle(int $id)
     {
         return ClassTeacherModel::find($id);
     }
 
-    static public function getAllClassTeacher(int $perPage)
+    public static function getAllClassTeacher(int $perPage)
     {
         $results = ClassTeacherModel::select(
             'class_teacher.*',
@@ -69,22 +69,22 @@ class ClassTeacherModel extends Model
             ->paginate($perPage);
     }
 
-    static public function getAlreadyExist($class_id, $teacher_id)
+    public static function getAlreadyExist($class_id, $teacher_id)
     {
         return ClassTeacherModel::where('class_id', '=', $class_id)->where('teacher_id', '=', $teacher_id)->first();
     }
 
-    static public function getAssignTeacher($class_id)
+    public static function getAssignTeacher($class_id)
     {
         return ClassTeacherModel::where('class_id', '=', $class_id)->where('is_delete', 0)->get();
     }
 
-    static public function deleteClassAssign($class_id)
+    public static function deleteClassAssign($class_id)
     {
         return ClassTeacherModel::where('class_id', '=', $class_id)->delete();
     }
 
-    static public function getMyClassSubject(int $perPage, int $teacher_id)
+    public static function getMyClassSubject(int $perPage, int $teacher_id)
     {
         $results = ClassTeacherModel::select(
             'class_teacher.*',
@@ -128,7 +128,7 @@ class ClassTeacherModel extends Model
             ->paginate($perPage);
     }
 
-    static public function getMyClassTimetable(int $class_id, int $subject_id)
+    public static function getMyClassTimetable(int $class_id, int $subject_id)
     {
         Carbon::setLocale('fr');
         $dayName = Carbon::now()->translatedFormat('l');
@@ -136,7 +136,7 @@ class ClassTeacherModel extends Model
         return ClassTimetableModel::getClassTimetable($class_id, $subject_id, $getWeek->id);
     }
 
-    static public function getTeacherCalendar($teacher_id)
+    public static function getTeacherCalendar($teacher_id)
     {
         return ClassTeacherModel::select(
             'class_timetable.*',
@@ -162,7 +162,7 @@ class ClassTeacherModel extends Model
             ->get();
     }
 
-        static public function getMyClassSubjectGroup(int $teacher_id)
+    public static function getMyClassSubjectGroup(int $teacher_id)
     {
         return ClassTeacherModel::select(
             'class_teacher.*',

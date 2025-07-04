@@ -219,6 +219,7 @@ class User extends Authenticatable
             'users.marital_status' => strtolower(Request::get('marital_status')),
             'users.work_experience' => strtolower(Request::get('work_experience')),
             'users.admission_date' => strtolower(Request::get('admission_date')),
+            'users.date_of_birth' => strtolower(Request::get('date_of_birth')),
             'users.created_at' => strtolower(Request::get('created_at')),
             'users.updated_at' => strtolower(Request::get('updated_at')),
         ];

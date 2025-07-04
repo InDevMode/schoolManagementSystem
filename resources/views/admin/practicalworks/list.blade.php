@@ -1,12 +1,12 @@
 @extends('layouts.app')
 @section('content')
 
-    <div class="container mx-auto px-4 py-8">
+    <div class="container mx-auto p-4">
         @include('message')
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
             <div>
                 <h1 class="text-2xl font-bold text-gray-800 dark:text-white flex items-center gap-2">
-                    <iconify-icon icon="home-edit-outline" width="24" height="24"></iconify-icon>
+                    <iconify-icon icon="mdi:home-edit" width="24" height="24"></iconify-icon>
                     Liste des travaux de maison
                 </h1>
                 <p class="text-gray-600 dark:text-gray-300 mt-1">Gérez la liste des travaux de maion de votre plateforme</p>
@@ -20,7 +20,7 @@
                             <i class="fas fa-home mr-1"></i>
                             Dashboard
                         </a>
-                        <span class="mx-2 text-gray-400">/</span>
+                        <span class="mx-2 text-gray-400"> ></span>
                     </li>
                     <li class="flex items-center">
                         <a href="{{ url('admin/practicalworks/homework/add') }}"
@@ -44,26 +44,26 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                     <!-- Classe Input -->
                     <div>
-                        <label for="class_id"
+                        <label for="class_name"
                             class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Classe</label>
                         <div class="relative">
                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                 <i class="fas fa-user text-gray-400"></i>
                             </div>
-                            <input type="text" id="class_id" name="class_id" value="{{ Request::get('class_id') }}"
+                            <input type="text" id="class_name" name="class_name" value="{{ Request::get('class_name') }}"
                                 placeholder="Entrez une classe..."
                                 class="pl-10 w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-primary-600 focus:border-primary-600 p-2.5">
                         </div>
                     </div>
 
                     <div>
-                        <label for="subject_id"
+                        <label for="subject_name"
                             class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Matière</label>
                         <div class="relative">
                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                 <i class="fas fa-user text-gray-400"></i>
                             </div>
-                            <input type="text" id="subject_id" name="subject_id" value="{{ Request::get('subject_id') }}"
+                            <input type="text" id="subject_name" name="subject_name" value="{{ Request::get('subject_name') }}"
                                 placeholder="Entrez une matière..."
                                 class="pl-10 w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-primary-600 focus:border-primary-600 p-2.5">
                         </div>
@@ -140,7 +140,7 @@
             </form>
         </div>
 
-        <div class="my-5">
+        <div class="my-3">
             {{ $getWorks->links('vendor.pagination.tailwind') }}
         </div>
         <!-- Results Section -->
@@ -172,6 +172,10 @@
                             </th>
                             <th scope="col"
                                 class="px-6 py-3 text-left text-xs font-medium text-white dark:text-gray-300 uppercase tracking-wider">
+                                Description
+                            </th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-white dark:text-gray-300 uppercase tracking-wider">
                                 Crée par
                             </th>
                             <th scope="col"
@@ -195,13 +199,25 @@
                                     <div class="text-sm text-gray-900 dark:text-white">{{ $works->subject_name }}</div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm text-gray-900 dark:text-white">{{ $works->work_date }}</div>
+                                    <div class="text-sm text-gray-900 dark:text-white">{{ \Carbon\Carbon::parse($works->work_date)->locale('fr')->translatedFormat('d M Y') }}</div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm text-gray-900 dark:text-white">{{ $works->submission_date }}</div>
+                                    <div class="text-sm text-gray-900 dark:text-white">{{ \Carbon\Carbon::parse($works->submission_date)->locale('fr')->translatedFormat('d M Y') }}</div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm text-gray-900 dark:text-white">{{ $works->submission_date }}</div>
+                                    <div class="text-sm text-gray-900 dark:text-white">
+                                        @if (!empty($works->document_file))
+                                            <a href="{{ url('upload/practicalworks/' . $works->document_file) }}" target="_blank"
+                                                class="flex items-center justify-center bg-violet-600 text-white px-2.5 py-1.5 rounded-md text-sm font-medium"><iconify-icon
+                                                    icon="mdi:file-download-outline" width="24" height="24"
+                                                    class="text-white"></iconify-icon>
+                                                Télécharger</a>
+                                        @endif
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm text-gray-900 dark:text-white">
+                                        {{ \Illuminate\Support\Str::words(strip_tags($works->description), 5, '...') }}</div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="text-sm text-gray-900 dark:text-white">{{ $works->created_by_name }}</div>

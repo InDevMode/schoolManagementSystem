@@ -1,6 +1,6 @@
 @extends('layouts.app')
 @section('content')
-< class="m-5">
+<div class="m-5">
     <!-- Breadcrumb Start -->
     <div
         class="mb-6 mt-3 flex flex-col gap-3 sm:flex-row items-center justify-between"
