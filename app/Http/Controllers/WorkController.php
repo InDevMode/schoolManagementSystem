@@ -224,6 +224,25 @@ class WorkController extends Controller
         }
     }
 
+    public function myHomework()
+    {
+        $data['header_title'] = 'Mes travaux';
+        $data['getWorks'] = WorkModel::getWorksStudent(Auth::user()->class_id, 5);
+        return view('student.practicalworks.list', $data);
+    }
 
+    public function myHomeworkDetails($id)
+    {
+        $data['header_title'] = 'Détails d\'un travail';
+        $data['getWorks'] = WorkModel::getSingle($id);
+        return view('student.practicalworks.details', $data);
+    }
+
+    public function myHomeworkSubmission($work_id)
+    {
+            $data['getWorks'] = WorkModel::getSingle($work_id);
+            $data['header_title'] = 'Soumettre un travail de maison';
+            return view('student.practicalworks.submission', $data);
+    }
 
 }

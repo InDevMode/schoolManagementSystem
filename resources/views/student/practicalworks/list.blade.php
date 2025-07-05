@@ -9,27 +9,16 @@
                     <iconify-icon  icon="mdi:home-edit" width="24" height="24"></iconify-icon>
                     Liste des travaux de maison
                 </h1>
-                <p class="text-gray-600 dark:text-gray-300 mt-1">Gérez la liste des travaux de maion de votre plateforme</p>
+                <p class="text-gray-600 dark:text-gray-300 mt-1">Voir la liste des travaux de maion qui vous sont assignés</p>
             </div>
 
             <nav class="flex items-center text-sm">
                 <ol class="flex items-center space-x-2">
                     <li class="flex items-center">
-                        <a href="{{ url('teacher/dashboard') }}"
+                        <a href="{{ url('student/dashboard') }}"
                             class="text-primary-600 hover:text-violet-600 transition-colors">
                             <i class="fas fa-home mr-1"></i>
                             Dashboard
-                        </a>
-                        <span class="mx-2 text-gray-400">
-                              <iconify-icon icon="mdi:chevron-right" class="text-gray-400" width="16"
-                                    height="16"></iconify-icon>
-                        </span>
-                    </li>
-                    <li class="flex items-center">
-                        <a href="{{ url('teacher/practicalworks/homework/add') }}"
-                            class="text-primary-600 hover:text-violet-600 transition-colors">
-                            <i class="fas fa-plus-circle mr-1"></i>
-                            Créer un travail de maison
                         </a>
                     </li>
                 </ol>
@@ -186,8 +175,8 @@
                                 Crée le
                             </th>
                             <th scope="col"
-                                class="px-6 py-3 text-right text-xs font-medium text-white dark:text-gray-300 uppercase tracking-wider">
-                                Actions
+                                class="px-6 py-3 text-left text-xs font-medium text-white dark:text-gray-300 uppercase tracking-wider">
+                               Actions
                             </th>
                         </tr>
                     </thead>
@@ -228,79 +217,11 @@
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                                     {{ \Carbon\Carbon::parse($works->created_at)->locale('fr')->translatedFormat('d M Y H:i:s') }}
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                    <div class="relative inline-block text-left" x-data="{ open: false }">
-                                        <div>
-                                            <button type="button"
-                                                class="group inline-flex w-full justify-center gap-x-1.5 rounded-lg shadow-md bg-white dark:bg-gray-800 border dark:border-gray-600 dark:hover:text-violet-600 px-3 py-2 text-sm font-semibold text-gray-700 hover:text-violet-600 dark:text-gray-200 hover:bg-gray-100"
-                                                @click="open = !open" id="menu-button" aria-expanded="true"
-                                                aria-haspopup="true">
-                                                Actions
-                                                <span
-                                                    class="-mr-1 size-5 group-hover:text-violet-600 text-gray-400"><iconify-icon
-                                                        icon="mdi:chevron-down" width="22" height="22"></iconify-icon></span>
-                                            </button>
-                                        </div>
-                                        <div class="absolute right-0 z-50 mt-2 w-56 origin-top-right rounded-md bg-white dark:bg-gray-800 ring-1 shadow-lg ring-black/5 focus:outline-hidden"
-                                            role="menu" aria-orientation="vertical" aria-labelledby="menu-button"
-                                            tabindex="{{ $index + 1 }}" x-show="open" @click.away="open = false" x-transition>
-                                            <div class="py-1">
-                                                <a href="{{ url('teacher/practicalworks/homework/edit', $works->id) }}"
-                                                    class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:text-emerald-400 dark:hover:text-emerald-400"
-                                                    role="menuitem"><i class="fas fa-edit mr-2"></i>Modifier</a>
-                                                <div x-data="{ showConfirm: false }">
-                                                    <!-- Bouton initial -->
-                                                    <button type="button" @click="showConfirm = true"
-                                                        class="block w-full px-4 py-2 text-left text-sm text-gray-700 dark:text-gray-200 hover:text-red-400 dark:hover:text-red-400">
-                                                        <i class="fas fa-trash mr-2"></i> Supprimer
-                                                    </button>
-
-                                                    <!-- Modal de confirmation -->
-                                                    <template x-if="showConfirm">
-                                                        <div
-                                                            class="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
-                                                            <div
-                                                                class="bg-white dark:bg-gray-800 rounded-lg shadow-lg border-b dark:border-gray-400 w-[30%] h-auto">
-                                                                <div
-                                                                    class="flex items-center justify-between p-4 border-b dakr:border-gray-600 border-gray-200 rounded-t bg-violet-500 dark:bg-gray-700">
-                                                                    <h3
-                                                                        class="text-lg font-semibold text-white dark:text-white">
-                                                                        Supprimer un travail de maison
-                                                                    </h3>
-                                                                    <button type="button" @click="showConfirm = false"
-                                                                        class="text-white hover:text-gray-900 dark:hover:text-white rounded-lg text-sm w-8 h-8 inline-flex justify-center items-center">
-                                                                        <iconify-icon icon="mdi:close" width="20"
-                                                                            height="20"></iconify-icon>
-                                                                    </button>
-                                                                </div>
-
-                                                                <!-- Message -->
-                                                                <div class="p-4">
-                                                                    <div
-                                                                        class="text-center text-lg text-gray-800 dark:text-gray-200">
-                                                                        <p> Êtes-vous sûr de vouloir supprimer ce travail de
-                                                                            maison ?
-                                                                        </p>
-                                                                    </div>
-                                                                </div>
-
-                                                                <!-- Pied du modal -->
-                                                                <div class="flex justify-between px-4 py-3 rounded-b">
-                                                                    <button @click="showConfirm = false"
-                                                                        class="block px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-sm rounded hover:bg-gray-300 dark:hover:bg-gray-600">
-                                                                        Annuler
-                                                                    </button>
-                                                                    <a href="{{ url('teacher/practicalworks/homework/delete', $works->id) }}"
-                                                                        class="block px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 text-sm">
-                                                                        Oui supprimer
-                                                                    </a>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </template>
-                                                </div>
-                                            </div>
-                                        </div>
+                                 <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm text-gray-900 dark:text-white">
+                                            <a href="{{ url('student/my_homework/submission', $works->id) }}"
+                                                class="flex items-center justify-center bg-emerald-600 text-white px-2.5 py-1.5 rounded-md text-sm font-medium"><iconify-icon icon="mdi:check-bold" width="24" height="24"></iconify-icon>
+                                                Soumettre</a>
                                     </div>
                                 </td>
                             </tr>

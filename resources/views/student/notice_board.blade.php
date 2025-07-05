@@ -1,24 +1,31 @@
 @extends('layouts.app')
 @section('content')
-    <div class="m-5">
+    <div class="container mx-auto p-4">
+        @include('message')
         <!-- Breadcrumb Start -->
-        <div class="mb-6 mt-3 flex flex-col gap-3 sm:flex-row items-center justify-between">
-            <h2 class="text-3xl font-bold text-gray-900  dark:text-bodydark">
-                Tableau de bord des notifications
-            </h2>
-            <nav>
-                <ol class="flex items-center gap-2">
-                    <li>
-                        <span class="font-medium text-violet-600"><iconify-icon icon="mdi:bell-outline" width="24" height="24"></iconify-icon>
-                    </li>
-                    <li>
-                        /<a class="text-xl font-bold text-gray-900 hover:text-violet-600 transition duration-300 dark:text-bodydark"
-                            href="{{ url('student/dashboard') }}"> Dashboard</a>
+
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+            <div>
+                <h1 class="text-2xl font-bold text-gray-800 dark:text-white flex items-center gap-2">
+                   <iconify-icon icon="mdi:bell" width="24" height="24"></iconify-icon>
+                    Liste de vos notifications
+                </h1>
+                <p class="text-gray-600 dark:text-gray-300 mt-1">Voir la liste des notifications qui vous sont assignés</p>
+            </div>
+
+            <nav class="flex items-center text-sm">
+                <ol class="flex items-center space-x-2">
+                    <li class="flex items-center">
+                        <a href="{{ url('student/dashboard') }}"
+                            class="text-primary-600 hover:text-violet-600 transition-colors">
+                            <i class="fas fa-home mr-1"></i>
+                            Dashboard
+                        </a>
                     </li>
                 </ol>
             </nav>
         </div>
-        @include('message')
+
         <div class="my-4">
             {{ $getStudentNoticeboard->links('vendor.pagination.tailwind') }}
         </div>
@@ -37,50 +44,92 @@
             </div>
         </div>
 
-        <div
-            class="rounded-lg border border-stroke bg-white px-5 pb-2.5 pt-6 mb-4 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5">
-            <form action="" method="get">
-                <div class="mb-4.5 grid grid-cols-2 xl:grid-cols-5 gap-3 items-center">
-                    <div class="w-full">
-                        <input type="text" id="title" name="title" value="{{ Request::get('title') }}"
-                            placeholder="titre..."
-                            class="w-full rounded-lg border-[1.5px] border-stroke bg-gray-100 px-5 py-2.5 font-normal text-black outline-none transition focus:border-violet-600 active:border-violet-600 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-violet-600" />
-                    </div>
-                    <div class="w-full">
-                        <div class="relative">
-                            <input id="date_notice_from" name="date_notice_from"
-                                value="{{ Request::get('date_notice_from') }}"
-                                class="form-datepicker w-full rounded-lg border-[1.5px] border-stroke bg-gray-100 px-5 py-2.5 font-normal outline-none transition focus:border-violet-600 active:border-violet-600 dark:border-form-strokedark dark:bg-form-input dark:focus:border-violet-600"
-                                placeholder="date d'affichage de..." data-class="flatpickr-right" required />
-                            <div class="pointer-events-none absolute inset-0 left-auto right-5 flex items-center">
-                                <iconify-icon icon="lucide:calendar" width="24" height="24"></iconify-icon>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="w-full">
-                        <div class="relative">
-                            <input id="date_notice_to" name="date_notice_to" value="{{ Request::get('date_notice_to') }}"
-                                class="form-datepicker w-full rounded-lg border-[1.5px] border-stroke bg-gray-100 px-5 py-2.5 font-normal outline-none transition focus:border-violet-600 active:border-violet-600 dark:border-form-strokedark dark:bg-form-input dark:focus:border-violet-600"
-                                placeholder=" à ..." data-class="flatpickr-right" required />
+         <!-- Filter Section -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-8">
+            <h2 class="text-lg font-semibold text-gray-800 dark:text-white mb-4 flex items-center gap-2">
+                <i class="fas fa-filter text-primary-600"></i>
+                Filtres de recherche
+            </h2>
 
-                            <div class="pointer-events-none absolute inset-0 left-auto right-5 flex items-center">
-                                <iconify-icon icon="lucide:calendar" width="24" height="24"></iconify-icon>
+            <form>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <!-- Titre Input -->
+                    <div>
+                        <label for="title"
+                            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Titre</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-user text-gray-400"></i>
                             </div>
+                            <input type="text" id="title" name="title" value="{{ Request::get('title') }}"
+                                placeholder="Entrez un titre..."
+                                class="pl-10 w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-primary-600 focus:border-primary-600 p-2.5">
                         </div>
                     </div>
-                    <div class="w-full">
-                        <button
-                            class="flex w-full justify-between items-center rounded-lg bg-violet-600 px-3 py-2.5 font-medium text-gray hover:bg-opacity-90">
-                            Rechercher
-                            <span class="inline-flex items-center text-sm text-gray-900">
-                                <i class="fa-solid fa-search text-white"></i>
-                            </span>
-                        </button>
+
+                    <!-- Date notice from Input -->
+                    <div>
+                        <label for="date_notice_from" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Date de notification de</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-calendar-plus text-gray-400"></i>
+                            </div>
+                            <input type="date" id="date_notice_from" name="date_notice_from" value="{{ Request::get('date_notice_from') }}"
+                                class="pl-10 w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-primary-600 focus:border-primary-600 p-2.5">
+                        </div>
                     </div>
-                    <div class="w-full">
+
+                    <!-- Date notice to Input -->
+                    <div>
+                        <label for="date_notice_to"
+                            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Date de notification à</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-calendar-check text-gray-400"></i>
+                            </div>
+                            <input type="date" id="date_notice_to" name="date_notice_to"
+                                value="{{ Request::get('date_notice_to') }}"
+                                class="pl-10 w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-primary-600 focus:border-primary-600 p-2.5">
+                        </div>
+                    </div>
+
+                    <!-- Date publish from Input -->
+                    <div>
+                        <label for="date_publish_from" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Date de publication de</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-calendar-plus text-gray-400"></i>
+                            </div>
+                            <input type="date" id="date_publish_from" name="date_publish_from" value="{{ Request::get('date_publish_from') }}"
+                                class="pl-10 w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-primary-600 focus:border-primary-600 p-2.5">
+                        </div>
+                    </div>
+
+                    <!-- Date publish Input -->
+                    <div>
+                        <label for="date_publish_to"
+                            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Date de publication à</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-calendar-check text-gray-400"></i>
+                            </div>
+                            <input type="date" id="date_publish_to" name="date_publish_to"
+                                value="{{ Request::get('date_publish_to') }}"
+                                class="pl-10 w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-primary-600 focus:border-primary-600 p-2.5">
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="flex items-end gap-2">
+                        <button type="submit"
+                            class="w-full bg-violet-600 hover:bg-violet-700 text-white font-medium rounded-lg px-4 py-2.5 flex items-center justify-center gap-2 transition-colors">
+                            <i class="fas fa-search"></i>
+                            Rechercher
+                        </button>
                         <a href="{{ url('student/my_noticeboard') }}"
-                            class="flex w-full justify-center rounded-lg bg-gray-500 px-3 py-2.5 font-medium text-gray hover:bg-opacity-90">
-                            Réïnitialisez
+                            class="w-full bg-gray-200 hover:bg-gray-300 dark:bg-gray-600 dark:hover:bg-gray-700 text-gray-800 dark:text-white font-medium rounded-lg px-4 py-2.5 flex items-center justify-center gap-2 transition-colors">
+                            <i class="fas fa-sync-alt"></i>
+                            Réinitialiser
                         </a>
                     </div>
                 </div>

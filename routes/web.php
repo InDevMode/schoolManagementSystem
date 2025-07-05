@@ -259,6 +259,10 @@ Route::group(['middleware' => 'student'], function () {
     //  Student notice board url
     Route::get('student/my_noticeboard', [CommunicateController::class, 'myNoticeBoard']);
 
+    // Student Homework
+    Route::get('student/my_homework', [WorkController::class, 'myHomework']);
+    Route::get('student/my_homework/submission/{id}', [WorkController::class, 'myHomeworkSubmission']);
+
 });
 
 Route::group(['middleware' => 'parent'], function () {

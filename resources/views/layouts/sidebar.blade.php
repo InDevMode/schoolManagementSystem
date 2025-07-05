@@ -597,11 +597,23 @@
                                 href="{{ url('student/my_noticeboard') }}">
                                 <span
                                     class="w-10 h-10 flex items-center justify-center rounded {{ Request::Segment(2) == 'my_noticeboard' ? 'bg-violet-100 text-violet-600' : 'bg-violet-100 text-violet-600'}}">
-                                    <iconify-icon icon="mdi:bell-outline" width="24" height="24"></iconify-icon>
+                                    <iconify-icon icon="mdi:bell" width="24" height="24"></iconify-icon>
                                 </span>
                                 <span
                                     class="{{ Request::Segment(2) == 'my_noticeboard' ? 'group-hover:text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}">Mes
                                     Notifications</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="group relative flex items-center gap-2.5 rounded-md px-4 py-2 font-medium duration-300 ease-in-out hover:bg-violet-700 text-bodydark1 dark:hover:bg-meta-4 {{ Request::Segment(2) == 'my_homework' ? 'bg-violet-600 text-bodydark1' : 'text-violet-600' }}"
+                                href="{{ url('student/my_homework') }}">
+                                <span
+                                    class="w-10 h-10 flex items-center justify-center rounded {{ Request::Segment(2) == 'my_homework' ? 'bg-violet-100 text-violet-600' : 'bg-violet-100 text-violet-600'}}">
+                                    <iconify-icon icon="mdi:home-edit" width="24" height="24"></iconify-icon>
+                                </span>
+                                <span
+                                    class="{{ Request::Segment(2) == 'my_homework' ? 'group-hover:text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}">Mes
+                                    Travaux</span>
                             </a>
                         </li>
                     @elseif(Auth::user()->user_type === 4)
