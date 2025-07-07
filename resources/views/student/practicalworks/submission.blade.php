@@ -28,8 +28,9 @@
                             <div class="flex items-center">
                                 <iconify-icon icon="mdi:chevron-right" class="text-gray-400" width="16"
                                     height="16"></iconify-icon>
-                                <a href="{{ url('student/practicalworks/list ') }}"
-                                    class="ml-1 text-sm font-medium text-gray-700 hover:text-violet-600 md:ml-2 dark:text-gray-400 dark:hover:text-white">Travaux
+                                <a href="{{ url('student/my_homework') }}"
+                                    class="ml-1 text-sm font-medium text-gray-700 hover:text-violet-600 md:ml-2 dark:text-gray-400 dark:hover:text-white">Mes
+                                    travaux
                                     de maison</a>
                             </div>
                         </li>
@@ -48,7 +49,7 @@
             <!-- Main Form Section -->
             <div class="bg-white rounded-xl shadow-md overflow-hidden dark:bg-gray-800 transition-colors duration-300">
                 <div class="p-6 md:p-8">
-                    <form action="{{ url('student/practicalworks/submit') }}" method="post"
+                    <form action="" method="post"
                         enctype="multipart/form-data">
                         {{ csrf_field() }}
 

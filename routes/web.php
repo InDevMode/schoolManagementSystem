@@ -262,6 +262,7 @@ Route::group(['middleware' => 'student'], function () {
     // Student Homework
     Route::get('student/my_homework', [WorkController::class, 'myHomework']);
     Route::get('student/my_homework/submission/{id}', [WorkController::class, 'myHomeworkSubmission']);
+    Route::post('student/my_homework/submission/{id}', [WorkController::class, 'myHomeworkSubmissionCreate']);
 
 });
 

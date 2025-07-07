@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\ClassModel;
 use App\Models\ClassSubjectModel;
 use App\Models\ClassTeacherModel;
+use App\Models\HomeworkModel;
 use App\Models\WorkModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -227,7 +228,7 @@ class WorkController extends Controller
     public function myHomework()
     {
         $data['header_title'] = 'Mes travaux';
-        $data['getWorks'] = WorkModel::getWorksStudent(Auth::user()->class_id, 5);
+        $data['getWorks'] = WorkModel::getWorksStudent(Auth::user()->class_id, Auth::user()->id, 5);
         return view('student.practicalworks.list', $data);
     }
 
@@ -240,9 +241,38 @@ class WorkController extends Controller
 
     public function myHomeworkSubmission($work_id)
     {
-            $data['getWorks'] = WorkModel::getSingle($work_id);
-            $data['header_title'] = 'Soumettre un travail de maison';
-            return view('student.practicalworks.submission', $data);
+        $data['getWorks'] = WorkModel::getSingle($work_id);
+        $data['header_title'] = 'Soumettre un travail de maison';
+        return view('student.practicalworks.submission', $data);
+    }
+
+    public function myHomeworkSubmissionCreate(Request $request, $work_id)
+    {
+
+        try {
+            $homework = new HomeworkModel();
+            $homework->work_id = intval($work_id);
+            $homework->student_id =  Auth::user()->id;
+            $homework->description = trim($request->description);
+
+            if (!empty($request->file('document_file'))) {
+                $ext = $request->file('document_file')->getClientOriginalExtension();
+                $file = $request->file('document_file');
+                $randomStr = 'homework_student' . date('dmYhis') . Str::random(20);
+                $fileName = strtolower($randomStr) . '.' . $ext;
+                $file->move('upload/practicalworks/', $fileName);
+                $homework->document_file = $fileName;
+            }
+
+            $homework->save();
+
+            return redirect('student/my_homework')->with('success', 'Ce travail de maison a été soumis avec succès.');
+
+        } catch (\Exception $e) {
+            Log::error("Erreur lors de la soumission d'un travail de maison : " . $e->getMessage());
+
+            return redirect()->back()->with('error', 'Vos informations ne sont pas correctes. Veuillez réessayer.');
+        }
     }
 
 }
