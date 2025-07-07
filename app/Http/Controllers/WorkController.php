@@ -228,15 +228,17 @@ class WorkController extends Controller
     public function myHomework()
     {
         $data['header_title'] = 'Mes travaux';
-        $data['getWorks'] = WorkModel::getWorksStudent(Auth::user()->class_id, Auth::user()->id, 5);
+        $data['getWorks'] = WorkModel::getWorksWithStudentStatus(Auth::user()->class_id, Auth::user()->id, 5);
         return view('student.practicalworks.list', $data);
     }
 
+
+    //  TODO LATER
     public function myHomeworkDetails($id)
     {
         $data['header_title'] = 'Détails d\'un travail';
         $data['getWorks'] = WorkModel::getSingle($id);
-        return view('student.practicalworks.details', $data);
+        return view('student.practicalworks.list', $data);
     }
 
     public function myHomeworkSubmission($work_id)
@@ -252,15 +254,16 @@ class WorkController extends Controller
         try {
             $homework = new HomeworkModel();
             $homework->work_id = intval($work_id);
-            $homework->student_id =  Auth::user()->id;
+            $homework->student_id = Auth::user()->id;
             $homework->description = trim($request->description);
+            $homework->status = 'submitted';
 
             if (!empty($request->file('document_file'))) {
                 $ext = $request->file('document_file')->getClientOriginalExtension();
                 $file = $request->file('document_file');
                 $randomStr = 'homework_student' . date('dmYhis') . Str::random(20);
                 $fileName = strtolower($randomStr) . '.' . $ext;
-                $file->move('upload/practicalworks/', $fileName);
+                $file->move('upload/homeworks/', $fileName);
                 $homework->document_file = $fileName;
             }
 
@@ -273,6 +276,13 @@ class WorkController extends Controller
 
             return redirect()->back()->with('error', 'Vos informations ne sont pas correctes. Veuillez réessayer.');
         }
+    }
+
+    public function myHomeworkSubmissionDetails($id)
+    {
+        $data['header_title'] = 'Détails d\'un travail de maison soumis';
+        $data['getHomeworks'] = HomeworkModel::getSingle($id);
+        return view('student.practicalworks.list', $data);
     }
 
 }

@@ -6,10 +6,11 @@
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
             <div>
                 <h1 class="text-2xl font-bold text-gray-800 dark:text-white flex items-center gap-2">
-                    <iconify-icon  icon="mdi:home-edit" width="24" height="24"></iconify-icon>
+                    <iconify-icon icon="mdi:home-edit" width="24" height="24"></iconify-icon>
                     Liste des travaux de maison
                 </h1>
-                <p class="text-gray-600 dark:text-gray-300 mt-1">Voir la liste des travaux de maion qui vous sont assignés</p>
+                <p class="text-gray-600 dark:text-gray-300 mt-1">Voir la liste des travaux de maion qui vous sont assignés
+                </p>
             </div>
 
             <nav class="flex items-center text-sm">
@@ -55,8 +56,8 @@
                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                 <i class="fas fa-user text-gray-400"></i>
                             </div>
-                            <input type="text" id="subject_name" name="subject_name" value="{{ Request::get('subject_name') }}"
-                                placeholder="Entrez une matière..."
+                            <input type="text" id="subject_name" name="subject_name"
+                                value="{{ Request::get('subject_name') }}" placeholder="Entrez une matière..."
                                 class="pl-10 w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-primary-600 focus:border-primary-600 p-2.5">
                         </div>
                     </div>
@@ -168,6 +169,10 @@
                             </th>
                             <th scope="col"
                                 class="px-6 py-3 text-left text-xs font-medium text-white dark:text-gray-300 uppercase tracking-wider">
+                                Status
+                            </th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-white dark:text-gray-300 uppercase tracking-wider">
                                 Crée par
                             </th>
                             <th scope="col"
@@ -176,62 +181,170 @@
                             </th>
                             <th scope="col"
                                 class="px-6 py-3 text-left text-xs font-medium text-white dark:text-gray-300 uppercase tracking-wider">
-                               Actions
+                                Actions
                             </th>
                         </tr>
                     </thead>
-                    <tbody class="z-20 bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                        <!-- Sample Row 1 -->
-                        @foreach($getWorks as $index => $works)
-                            <tr class="hover:bg-violet-100 dark:hover:bg-gray-700 transition-colors">
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm text-gray-900 dark:text-white">{{ $works->class_name }}</div>
+                    <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                        @forelse($getWorks as $index => $works)
+                            @php
+                                $status = $works->homework_status;
+                                $badge = match ($status) {
+                                    'submitted' => ['Soumis', 'border border-blue-500 bg-blue-100 text-blue-700'],
+                                    'done' => ['Fait', 'border border-purple-500 bg-purple-100 text-purple-700'],
+                                    'processed' => ['Traité', 'border border-orange-500 bg-orange-100 text-orange-700'],
+                                    'resolved' => ['Résolu', 'border border-green-500 bg-green-100 text-green-700'],
+                                    default => ['En attente', 'border border-amber-500 bg-amber-100 text-amber-700'],
+                                };
+                            @endphp
+                            <tr class="hover:bg-violet-50 dark:hover:bg-gray-700 transition">
+                                <td class="px-6 py-4 text-sm text-gray-900 dark:text-white">{{ $works->class_name }}</td>
+                                <td class="px-6 py-4 text-sm text-gray-900 dark:text-white">{{ $works->subject_name }}</td>
+                                <td class="px-6 py-4 text-sm text-gray-900 dark:text-white">
+                                    {{ \Carbon\Carbon::parse($works->work_date)->locale('fr')->translatedFormat('d M Y') }}</td>
+                                <td class="px-6 py-4 text-sm text-gray-900 dark:text-white">
+                                    {{ \Carbon\Carbon::parse($works->submission_date)->locale('fr')->translatedFormat('d M Y') }}
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm text-gray-900 dark:text-white">{{ $works->subject_name }}</div>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm text-gray-900 dark:text-white">{{ \Carbon\Carbon::parse($works->work_date)->locale('fr')->translatedFormat('d M Y') }}</div>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm text-gray-900 dark:text-white">{{ \Carbon\Carbon::parse($works->submission_date)->locale('fr')->translatedFormat('d M Y') }}</div>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm text-gray-900 dark:text-white">
-                                        @if (!empty($works->document_file))
+                                <td class="px-6 py-4">
+                                    <div class="flex flex-col gap-2">
+                                        @if ($works->document_file)
                                             <a href="{{ url('upload/practicalworks/' . $works->document_file) }}" target="_blank"
-                                                class="flex items-center justify-center bg-violet-600 text-white px-2.5 py-1.5 rounded-md text-sm font-medium"><iconify-icon
-                                                    icon="mdi:file-download-outline" width="24" height="24"
-                                                    class="text-white"></iconify-icon>
-                                                Télécharger</a>
+                                                class="inline-flex items-center px-3 py-1.5 rounded-md bg-violet-600 text-white text-xs hover:bg-violet-700">
+                                                <iconify-icon icon="mdi:file-download-outline" class="mr-2" width="18"
+                                                    height="18"></iconify-icon>
+                                                Document original
+                                            </a>
+                                        @endif
+                                        @if ($works->homework_document_file)
+                                            <a href="{{ url('upload/homeworks/' . $works->homework_document_file) }}"
+                                                target="_blank"
+                                                class="inline-flex items-center px-3 py-1.5 rounded-md bg-emerald-600 text-white text-xs hover:bg-emerald-700">
+                                                <iconify-icon icon="mdi:file-check-outline" class="mr-2" width="18"
+                                                    height="18"></iconify-icon>
+                                                Travail soumis
+                                            </a>
                                         @endif
                                     </div>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm text-gray-900 dark:text-white">
-                                        {{ \Illuminate\Support\Str::words(strip_tags($works->description), 5, '...') }}</div>
+                                <td class="px-6 py-4 text-sm text-gray-700 dark:text-gray-300">
+                                    {!! \Illuminate\Support\Str::words(strip_tags($works->description), 5, '...') !!}
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm text-gray-900 dark:text-white">{{ $works->created_by_name }}</div>
+                                <td class="px-6 py-4">
+                                    <span
+                                        class="px-3 py-1 text-xs font-medium rounded-full {{ $badge[1] }}">{{ $badge[0] }}</span>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                                    {{ \Carbon\Carbon::parse($works->created_at)->locale('fr')->translatedFormat('d M Y H:i:s') }}
+                                <td class="px-6 py-4 text-sm text-gray-900 dark:text-white">{{ $works->created_by_name }}</td>
+                                <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
+                                    {{ \Carbon\Carbon::parse($works->created_at)->locale('fr')->translatedFormat('d M Y H:i') }}
                                 </td>
-                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm text-gray-900 dark:text-white">
-                                            <a href="{{ url('student/my_homework/submission', $works->id) }}"
-                                                class="flex items-center justify-center bg-emerald-600 text-white px-2.5 py-1.5 rounded-md text-sm font-medium"><iconify-icon icon="mdi:check-bold" width="24" height="24"></iconify-icon>
-                                                Soumettre</a>
+                                <td class="px-6 py-4 text-sm text-right">
+                                    <div x-data="{ open: false, showModal: false }" class="relative">
+                                        <button @click="open = !open"
+                                            class="flex items-center gap-1 px-3 py-2 rounded-lg shadow-md text-sm bg-white border dark:border-gray-600 dark:bg-gray-800 text-gray-700 dark:text-gray-200 hover:text-violet-600">
+                                            Actions
+                                            <iconify-icon icon="mdi:chevron-down" class="text-xl"></iconify-icon>
+                                        </button>
+
+                                        <div x-show="open" @click.away="open = false" x-transition
+                                            class="absolute right-0 mt-2 w-44 z-50 bg-white dark:bg-gray-800 rounded-md shadow-lg py-1">
+                                            @if ($works->homework_status)
+                                                <button @click="showModal = true; open = false"
+                                                    class="w-full px-4 py-2 text-left text-sm text-gray-700 dark:text-gray-200 hover:text-amber-400 dark:hover:text-amber-400 flex items-center">
+                                                    <iconify-icon icon="mdi:eye" class="mr-2" width="18"
+                                                        height="18"></iconify-icon>Voir
+                                                </button>
+                                            @else
+                                                <a href="{{ url('student/my_homework/submission', $works->id) }}"
+                                                    class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200  hover:text-emerald-400 dark:hover:text-emerald-400 flex items-center">
+                                                    <iconify-icon icon="mdi:check-bold" class="mr-2"
+                                                        width="20"></iconify-icon>Soumettre
+                                                </a>
+                                                <button @click="showModal = true; open = false"
+                                                    class="w-full px-4 py-2 text-left text-sm text-gray-700 dark:text-gray-200 hover:text-amber-400 dark:hover:text-amber-400 flex items-center">
+                                                    <iconify-icon icon="mdi:eye" class="mr-2" width="18"
+                                                        height="18"></iconify-icon>Voir
+                                                </button>
+                                            @endif
+                                        </div>
+
+                                        <!-- Modal -->
+                                        <div x-show="showModal" x-transition
+                                            class="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+                                            <div
+                                                class="bg-white dark:bg-gray-800 w-full max-w-2xl rounded-lg shadow-lg overflow-hidden">
+                                                <div
+                                                    class="flex justify-between items-center px-4 py-3 bg-violet-600 text-white">
+                                                    <h3 class="text-lg font-semibold">Détails du travail</h3>
+                                                    <button @click="showModal = false">
+                                                        <iconify-icon icon="mdi:close" width="20"></iconify-icon>
+                                                    </button>
+                                                </div>
+                                                <div class="p-5 space-y-4">
+                                                    <div class="flex justify-between text-sm">
+                                                        <span class="text-violet-600 font-medium">{{ $works->class_name }} –
+                                                            {{ $works->subject_name }}</span>
+                                                        <span class="text-gray-500 dark:text-gray-400">Créé par
+                                                            {{ $works->created_by_name }}</span>
+                                                    </div>
+                                                    @if ($works->document_file)
+                                                        <a href="{{ url('upload/practicalworks/' . $works->document_file) }}"
+                                                            target="_blank"
+                                                            class="inline-flex items-center px-3 py-2 bg-violet-600 text-white rounded-md hover:bg-violet-700 text-sm">
+                                                            <iconify-icon icon="mdi:file-download-outline"
+                                                                class="mr-2"></iconify-icon>
+                                                            Télécharger le document
+                                                        </a>
+                                                    @endif
+                                                    @if ($works->homework_document_file)
+                                                        <a href="{{ url('upload/practicalworks/' . $works->document_file) }}"
+                                                            target="_blank"
+                                                            class="inline-flex items-center px-3 py-2 bg-emerald-600 text-white rounded-md hover:bg-emerald-700 text-sm">
+                                                            <iconify-icon icon="mdi:file-download-outline"
+                                                                class="mr-2"></iconify-icon>
+                                                            Télécharger le document de l'apprenant
+                                                        </a>
+                                                    @endif
+                                                  <div class="space-y-6 max-h-[350px] overflow-y-auto prose dark:prose-invert">
+                                                    <!-- Description du professeur -->
+                                                    <div>
+                                                        <h4 class="text-base font-semibold text-violet-600 dark:text-violet-400 mb-2">Description du professeur</h4>
+                                                        <div class="text-start bg-gray-50 dark:bg-gray-700 p-3 rounded-md">
+                                                            {!! $works->description !!}
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- Description de l'apprenant (si disponible) -->
+                                                    @if(!empty($works->homework_description))
+                                                        <div>
+                                                            <h4 class="text-base font-semibold text-emerald-600 dark:text-emerald-400 mb-2">Description de l'apprenant</h4>
+                                                            <div class="text-start bg-gray-50 dark:bg-gray-700 p-3 rounded-md">
+                                                                {!! $works->homework_description !!}
+                                                            </div>
+                                                        </div>
+                                                    @endif
+                                                </div>
+                                                    <div
+                                                        class="text-sm text-gray-500 dark:text-gray-400 flex justify-between pt-2 border-t">
+                                                        <span>📌 Travail :
+                                                            {{ \Carbon\Carbon::parse($works->work_date)->locale('fr')->translatedFormat('d M Y') }}</span>
+                                                        <span>📤 Soumission :
+                                                            {{ \Carbon\Carbon::parse($works->submission_date)->locale('fr')->translatedFormat('d M Y') }}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </td>
                             </tr>
-                        @endforeach
-                        @if($getWorks->isEmpty())
-                            <tr class="text-center text-gray-700 dark:text-bodydark1">
-                                <td colspan="8" class="py-3"> Aucun travail de maison trouvé.</td>
+                        @empty
+                            <tr>
+                                <td colspan="10" class="text-center px-6 py-4 text-gray-500 dark:text-gray-400">
+                                    Aucun travail de maison trouvé.
+                                </td>
                             </tr>
-                        @endif
+                        @endforelse
                     </tbody>
+
                 </table>
             </div>
 
@@ -251,7 +364,7 @@
             </div>
         </div>
     </div>
-    </div>
+
 @endsection
 
 <script>

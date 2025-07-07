@@ -16,7 +16,7 @@ class StudentController extends Controller
     public function list(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
     {
         $data['header_title'] = "Liste des apprenants";
-        $data['getStudent'] = User::getAllStudent(10);
+        $data['getStudent'] = User::getAllStudent(5);
         return view('admin.student.list', $data);
     }
 
@@ -87,7 +87,7 @@ class StudentController extends Controller
             $student->weight = trim($request->weight);
             $student->status = intval($request->status);
             if (!empty($request->password)) {
-                $student->password = Hash::make($request->password);
+                $student->password = $request->password;
             }
             $student->user_type = 3;
             $student->save();
