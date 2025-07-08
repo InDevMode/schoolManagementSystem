@@ -28,6 +28,13 @@ class WorkController extends Controller
         return view('admin.practicalworks.add', $data);
     }
 
+    public function practicalWorksDetails($id)
+    {
+        $data['header_title'] = 'Détails du travail de maison';
+        $data['getWorks'] = WorkModel::getWorkIdWithHomeworks($id);
+        return view('admin.practicalworks.details', $data);
+    }
+
     public function getSubjectByClassId($classId)
     {
         $data['getSubject'] = ClassSubjectModel::getSubject($classId);
@@ -232,7 +239,6 @@ class WorkController extends Controller
         return view('student.practicalworks.list', $data);
     }
 
-
     //  TODO LATER
     public function myHomeworkDetails($id)
     {
@@ -283,6 +289,23 @@ class WorkController extends Controller
         $data['header_title'] = 'Détails d\'un travail de maison soumis';
         $data['getHomeworks'] = HomeworkModel::getSingle($id);
         return view('student.practicalworks.list', $data);
+    }
+
+    public function homeworkSubmission($work_id)
+    {
+        $homework = HomeworkModel::getSingle($work_id);
+        dd($homework);
+        if (!empty($homework)) {
+
+            $data['work_id'] = $work_id;
+            $data['header_title'] = 'Soumission d\'un travail de maison';
+            $data['getHomeworks'] = HomeworkModel::getHomeworks($work_id, 5);
+
+            return view('admin.practicalworks.submission', $data);
+        } else {
+             return redirect()->back()->with('error', 'Aucun travail de maison n\'a été soumis.');
+        }
+
     }
 
 }

@@ -172,12 +172,16 @@ Route::group(['middleware' => 'admin'], function () {
 
     // Practical works url
     Route::get('admin/practicalworks/homework/list', [WorkController::class, 'practicalWorksList']);
+    Route::get('admin/practicalworks/homework/details/{id}', [WorkController::class, 'practicalWorksDetails']);
     Route::get('admin/practicalworks/homework/add', [WorkController::class, 'practicalWorksAdd']);
     Route::get('admin/practicalworks/homework/getSubjectByClassId/{id}', [WorkController::class, 'getSubjectByClassId']);
     Route::post('admin/practicalworks/homework/add', [WorkController::class, 'practicalWorksCreate']);
     Route::get('admin/practicalworks/homework/edit/{id}', [WorkController::class, 'practicalWorksEdit']);
     Route::post('admin/practicalworks/homework/edit/{id}', [WorkController::class, 'practicalWorksUpdate']);
     Route::get('admin/practicalworks/homework/delete/{id}', [WorkController::class, 'practicalWorksDelete']);
+
+    // Practical works submitted url
+    Route::get('admin/practicalworks/homework/submission/{id}', [WorkController::class, 'homeworkSubmission']);
 
 });
 
@@ -214,13 +218,13 @@ Route::group(['middleware' => 'teacher'], function () {
     Route::get('teacher/attendance/student/list', [AttendanceController::class, 'attendanceStudentTeacher']);
     Route::post('teacher/attendance/student/save', [AttendanceController::class, 'attendanceStudentTeacherSave']);
 
-      // Attendance report teacher url
+    // Attendance report teacher url
     Route::get('teacher/attendance/report', [AttendanceController::class, 'attendanceReportTeacher']);
 
     // Teacher noticeboard url
     Route::get('teacher/my_noticeboard', [CommunicateController::class, 'teacherNoticeBoard']);
 
-        // Practical works url
+    // Practical works url
     Route::get('teacher/practicalworks/homework/list', [WorkController::class, 'teacherPracticalWorksList']);
     Route::get('teacher/practicalworks/homework/add', [WorkController::class, 'teacherPracticalWorksAdd']);
     Route::get('teacher/practicalworks/homework/getSubjectByClassId/{id}', [WorkController::class, 'getSubjectByClassId']);
@@ -228,6 +232,7 @@ Route::group(['middleware' => 'teacher'], function () {
     Route::get('teacher/practicalworks/homework/edit/{id}', [WorkController::class, 'teacherPracticalWorksEdit']);
     Route::post('teacher/practicalworks/homework/edit/{id}', [WorkController::class, 'teacherPracticalWorksUpdate']);
     Route::get('teacher/practicalworks/homework/delete/{id}', [WorkController::class, 'teacherPracticalWorksDelete']);
+
 
 });
 

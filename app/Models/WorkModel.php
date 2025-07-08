@@ -31,6 +31,28 @@ class WorkModel extends Model
         return WorkModel::find($id);
     }
 
+    public static function getWorkIdWithHomeworks(int $workId)
+    {
+        return WorkModel::select(
+            'works.*',
+            'class.name as class_name',
+            'subject.name as subject_name',
+            'users.name as created_by_name'
+        )
+            ->join('class', 'class.id', '=', 'works.class_id')
+            ->join('subject', 'subject.id', '=', 'works.subject_id')
+            ->join('users', 'users.id', '=', 'works.created_by')
+            ->where('works.id', $workId)
+            ->where('works.is_delete', 0)
+            ->with([
+                'homeworks' => function ($query) {
+                    $query->where('is_delete', 0);
+                }
+            ])
+            ->first();
+    }
+
+
     public static function getWorks(int $perpage)
     {
         $results = WorkModel::select('works.*', 'class.name as class_name', 'subject.name as subject_name', 'users.name as created_by_name')
@@ -126,6 +148,13 @@ class WorkModel extends Model
         return $results->orderBy('works.id', 'desc')
             ->paginate($perpage);
     }
+
+    // WorkModel.php
+    public function homeworks()
+    {
+        return $this->hasMany(HomeworkModel::class, 'work_id', 'id');
+    }
+
 
 
 }

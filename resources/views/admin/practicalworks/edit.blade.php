@@ -176,9 +176,9 @@
                         </div>
                         <div class="text-sm text-gray-900 dark:text-white mb-3">
                             @if (!empty($getWorks->document_file))
-                                <a href="{{ url('upload/practicalworks/admin/' . $getWorks->document_file) }}"
+                                <a href="{{ url('upload/practicalworks/' . $getWorks->document_file) }}"
                                     target="_blank"
-                                    class="flex items-center justify-center bg-green-600 text-white px-2.5 py-1.5 rounded-md text-sm font-medium"><iconify-icon
+                                    class="flex items-center justify-center bg-green-600 text-white px-2.5 py-2 rounded-md text-sm font-medium"><iconify-icon
                                         icon="mdi:file-download-outline" width="24" height="24"
                                         class="text-white"></iconify-icon>
                                     Télécharger</a>

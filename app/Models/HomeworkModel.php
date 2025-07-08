@@ -23,6 +23,11 @@ class HomeworkModel extends Model
         'is_delete'
     ];
 
+    public static function getSingle(int $id)
+    {
+        return HomeworkModel::find($id);
+    }
+
     public static function getHomeworkStudent($student_id, $perpage)
     {
         $results = HomeworkModel::select('homework.*', 'class.name as class_name', 'subject.name as subject_name', 'homework.description as homework_description', 'homework.document_file as homework_document_file')
@@ -61,6 +66,44 @@ class HomeworkModel extends Model
     public function getHomework()
     {
         return $this->belongsTo(WorkModel::class, 'work_id', );
+    }
+
+    public static function getHomeworks(int $work_id, int $perpage)
+    {
+        $results = HomeworkModel::select(
+            'homework.*',
+            'users.name as student_name',
+            'users.last_name as student_last_name',
+            'homework.description as homework_description',
+            'homework.document_file as homework_document_file'
+        )
+            ->join('works', 'works.id', '=', 'homework.work_id')
+            ->join('users', 'users.id', '=', 'homework.student_id')
+            ->where('homework.work_id', '=', $work_id)
+            ->where('homework.is_delete', '=', 0);
+
+
+        $filters = [
+            'users.name' => strtolower(Request::get('student_name')),
+            'users.last_name' => strtolower(Request::get('student_last_name')),
+            'homework.description' => strtolower(Request::get('description')),
+            'homework.created_at' => strtolower(Request::get('created_at')),
+            'homework.updated_at' => strtolower(Request::get('updated_at')),
+        ];
+
+        foreach ($filters as $column => $value) {
+            if (!empty($value)) {
+                $results->where($column, 'like', '%' . $value . '%');
+            }
+        }
+
+        return $results->orderBy('homework.id', 'desc')
+            ->paginate($perpage);
+    }
+
+    public function getStudent()
+    {
+        return $this->belongsTo(User::class, 'student_id');
     }
 
 }

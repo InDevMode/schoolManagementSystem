@@ -29,7 +29,7 @@
             <!-- Menu Group -->
             <div>
                 <h3 class="mb-4 ml-4 text-sm font-medium text-bodydark2">
-                    <span class="self-center uppercase font-bold whitespace-nowrap">{{ Auth::user()->name }}
+                    <span class="self-center font-bold whitespace-nowrap">{{ Auth::user()->name }}
                         {{ Auth::user()->last_name }}</span>
                 </h3>
                 <ul class="mb-6 flex flex-col gap-1.5">
@@ -267,7 +267,7 @@
                                 :class="{ 'bg-gray-100 dark:bg-meta-4': (selected === 'communicate')}">
                                 <span
                                     class="w-10 h-10 flex items-center justify-center rounded bg-violet-100 text-violet-600"><iconify-icon
-                                        icon="mdi:bell-outline" width="24" height="24"></iconify-icon>
+                                        icon="mdi:bell" width="24" height="24"></iconify-icon>
                                 </span>
                                 <span class="group-hover:text-bodydark1 dark:text-bodydark1">Notifications</span>
                                 <span
