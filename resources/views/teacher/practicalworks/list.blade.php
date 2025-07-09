@@ -299,6 +299,11 @@
                                                         </div>
                                                     </template>
                                                 </div>
+                                                  <a href="{{ url('teacher/practicalworks/homework/submission', $works->id) }}"
+                                                    class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200  hover:text-emerald-400 dark:hover:text-emerald-400 flex items-center">
+                                                    <iconify-icon icon="mdi:check-bold" class="mr-2"
+                                                        width="20"></iconify-icon>Soumission
+                                                </a>
                                             </div>
                                         </div>
                                     </div>

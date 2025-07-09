@@ -293,8 +293,7 @@ class WorkController extends Controller
 
     public function homeworkSubmission($work_id)
     {
-        $homework = HomeworkModel::getSingle($work_id);
-        dd($homework);
+        $homework = WorkModel::getSingle($work_id);
         if (!empty($homework)) {
 
             $data['work_id'] = $work_id;
@@ -303,9 +302,24 @@ class WorkController extends Controller
 
             return view('admin.practicalworks.submission', $data);
         } else {
-             return redirect()->back()->with('error', 'Aucun travail de maison n\'a été soumis.');
+            abort(404);
         }
 
+    }
+
+    public function teacherHomeworkSubmission($work_id)
+    {
+        $homework = WorkModel::getSingle($work_id);
+        if (!empty($homework)) {
+
+            $data['work_id'] = $work_id;
+            $data['header_title'] = 'Soumission d\'un travail de maison';
+            $data['getHomeworks'] = HomeworkModel::getHomeworks($work_id, 5);
+
+            return view('teacher.practicalworks.submission', $data);
+        } else {
+            abort(404);
+        }
     }
 
 }

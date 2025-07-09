@@ -16,7 +16,7 @@
             <nav class="flex items-center text-sm">
                 <ol class="flex items-center space-x-2">
                     <li class="flex items-center">
-                        <a href="{{ url('admin/dashboard') }}"
+                        <a href="{{ url('teacher/dashboard') }}"
                             class="text-primary-600 hover:text-violet-600 transition-colors">
                             <i class="fas fa-home mr-1"></i>
                             <i class="fas fa-home-edit mr-1"></i>
@@ -28,7 +28,7 @@
                         </span>
                     </li>
                     <li class="flex items-center">
-                        <a href="{{ url('admin/practicalworks/homework/list') }}"
+                        <a href="{{ url('teacher/practicalworks/homework/list') }}"
                             class="flex items-center text-primary-600 hover:text-violet-600 transition-colors">
                             <iconify-icon icon="mdi:home-edit" class="mr-1" width="18" height="18"></iconify-icon>
                             Traux de maison
@@ -39,7 +39,7 @@
                         </span>
                     </li>
                     <li class="flex items-center">
-                        <a href="{{ url('admin/practicalworks/homework/add') }}"
+                        <a href="{{ url('teacher/practicalworks/homework/add') }}"
                             class="text-primary-600 hover:text-violet-600 transition-colors">
                             <i class="fas fa-plus-circle mr-1"></i>
                             Créer un travail de maison
@@ -58,25 +58,22 @@
 
             <form>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-
                     <div>
                         <label for="student_name"
-                            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nom de
-                            l'apprenant</label>
+                            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nom de l'apprenant</label>
                         <div class="relative">
                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                 <i class="fas fa-user text-gray-400"></i>
                             </div>
-                            <input type="text" id="student_name" name="student_name"
-                                value="{{ Request::get('student_name') }}" placeholder="Entrez un nom..."
+                            <input type="text" id="student_name" name="student_name" value="{{ Request::get('student_name') }}"
+                                placeholder="Entrez un nom..."
                                 class="pl-10 w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-primary-600 focus:border-primary-600 p-2.5">
                         </div>
                     </div>
 
                     <div>
                         <label for="student_last_name"
-                            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Prénom de
-                            l'apprenant</label>
+                            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Prénom de l'apprenant</label>
                         <div class="relative">
                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                 <i class="fas fa-user text-gray-400"></i>
@@ -88,15 +85,13 @@
                     </div>
                     <!-- Date work Input -->
                     <div>
-                        <label for="submission_date_from"
-                            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Date
+                        <label for="submission_date_from" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Date
                             de soumission de</label>
                         <div class="relative">
                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                 <i class="fas fa-calendar-plus text-gray-400"></i>
                             </div>
-                            <input type="date" id="submission_date_from" name="submission_date_from"
-                                value="{{ Request::get('submission_date_from') }}"
+                            <input type="date" id="submission_date_from" name="submission_date_from" value="{{ Request::get('submission_date_from') }}"
                                 class="pl-10 w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-primary-600 focus:border-primary-600 p-2.5">
                         </div>
                     </div>
@@ -123,7 +118,7 @@
                             <i class="fas fa-search"></i>
                             Rechercher
                         </button>
-                        <a href="{{ url('admin/practicalworks/homework/submission/' . $work_id) }}"
+                        <a href="{{ url('teacher/practicalworks/homework/submission/' . $work_id) }}"
                             class="w-full bg-gray-200 hover:bg-gray-300 dark:bg-gray-600 dark:hover:bg-gray-700 text-gray-800 dark:text-white font-medium rounded-lg px-4 py-2.5 flex items-center justify-center gap-2 transition-colors">
                             <i class="fas fa-sync-alt"></i>
                             Réinitialiser
@@ -157,7 +152,7 @@
                             </th>
                             <th scope="col"
                                 class="px-6 py-3 text-left text-xs font-medium text-white dark:text-gray-300 uppercase tracking-wider">
-                                Crée par
+                                Crée le
                             </th>
                             <th scope="col"
                                 class="px-6 py-3 text-right text-xs font-medium text-white dark:text-gray-300 uppercase tracking-wider">

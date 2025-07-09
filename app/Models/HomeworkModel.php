@@ -75,7 +75,8 @@ class HomeworkModel extends Model
             'users.name as student_name',
             'users.last_name as student_last_name',
             'homework.description as homework_description',
-            'homework.document_file as homework_document_file'
+            'homework.document_file as homework_document_file',
+            'homework.status as homework_status',
         )
             ->join('works', 'works.id', '=', 'homework.work_id')
             ->join('users', 'users.id', '=', 'homework.student_id')
@@ -87,9 +88,18 @@ class HomeworkModel extends Model
             'users.name' => strtolower(Request::get('student_name')),
             'users.last_name' => strtolower(Request::get('student_last_name')),
             'homework.description' => strtolower(Request::get('description')),
-            'homework.created_at' => strtolower(Request::get('created_at')),
-            'homework.updated_at' => strtolower(Request::get('updated_at')),
         ];
+
+
+        if(!empty(Request::get('submission_date_from')))
+        {
+            $results->whereDate('submission_date', '>=', Request::get('submission_date_from'));
+        }
+
+        if(!empty(Request::get('submission_date_to')))
+        {
+            $results->whereDate('submission_date', '<=', Request::get('submission_date_to'));
+        }
 
         foreach ($filters as $column => $value) {
             if (!empty($value)) {

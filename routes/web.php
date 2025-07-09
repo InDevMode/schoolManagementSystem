@@ -233,6 +233,9 @@ Route::group(['middleware' => 'teacher'], function () {
     Route::post('teacher/practicalworks/homework/edit/{id}', [WorkController::class, 'teacherPracticalWorksUpdate']);
     Route::get('teacher/practicalworks/homework/delete/{id}', [WorkController::class, 'teacherPracticalWorksDelete']);
 
+    // Practical works submitted url
+    Route::get('teacher/practicalworks/homework/submission/{id}', [WorkController::class, 'teacherHomeworkSubmission']);
+
 
 });
 
