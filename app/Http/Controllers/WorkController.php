@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\ClassModel;
 use App\Models\ClassSubjectModel;
 use App\Models\ClassTeacherModel;
+use App\Models\HomeworkModel;
+use App\Models\User;
 use App\Models\WorkModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -25,6 +27,13 @@ class WorkController extends Controller
         $data['header_title'] = 'Ajouter un travail';
         $data['getClass'] = ClassModel::getClass();
         return view('admin.practicalworks.add', $data);
+    }
+
+    public function practicalWorksDetails($id)
+    {
+        $data['header_title'] = 'Détails du travail de maison';
+        $data['getWorks'] = WorkModel::getWorkIdWithHomeworks($id);
+        return view('admin.practicalworks.details', $data);
     }
 
     public function getSubjectByClassId($classId)
@@ -224,6 +233,102 @@ class WorkController extends Controller
         }
     }
 
+    public function myHomework()
+    {
+        $data['header_title'] = 'Mes travaux';
+        $data['getWorks'] = WorkModel::getWorksWithStudentStatus(Auth::user()->class_id, Auth::user()->id, 5);
+        return view('student.practicalworks.list', $data);
+    }
 
+    //  TODO LATER
+    public function myHomeworkDetails($id)
+    {
+        $data['header_title'] = 'Détails d\'un travail';
+        $data['getWorks'] = WorkModel::getSingle($id);
+        return view('student.practicalworks.list', $data);
+    }
+
+    public function myHomeworkSubmission($work_id)
+    {
+        $data['getWorks'] = WorkModel::getSingle($work_id);
+        $data['header_title'] = 'Soumettre un travail de maison';
+        return view('student.practicalworks.submission', $data);
+    }
+
+    public function myHomeworkSubmissionCreate(Request $request, $work_id)
+    {
+
+        try {
+            $homework = new HomeworkModel();
+            $homework->work_id = intval($work_id);
+            $homework->student_id = Auth::user()->id;
+            $homework->description = trim($request->description);
+            $homework->status = 'submitted';
+
+            if (!empty($request->file('document_file'))) {
+                $ext = $request->file('document_file')->getClientOriginalExtension();
+                $file = $request->file('document_file');
+                $randomStr = 'homework_student' . date('dmYhis') . Str::random(20);
+                $fileName = strtolower($randomStr) . '.' . $ext;
+                $file->move('upload/homeworks/', $fileName);
+                $homework->document_file = $fileName;
+            }
+
+            $homework->save();
+
+            return redirect('student/my_homework')->with('success', 'Ce travail de maison a été soumis avec succès.');
+
+        } catch (\Exception $e) {
+            Log::error("Erreur lors de la soumission d'un travail de maison : " . $e->getMessage());
+
+            return redirect()->back()->with('error', 'Vos informations ne sont pas correctes. Veuillez réessayer.');
+        }
+    }
+
+    public function myHomeworkSubmissionDetails($id)
+    {
+        $data['header_title'] = 'Détails d\'un travail de maison soumis';
+        $data['getHomeworks'] = HomeworkModel::getSingle($id);
+        return view('student.practicalworks.list', $data);
+    }
+
+    public function homeworkSubmission($work_id)
+    {
+        $homework = WorkModel::getSingle($work_id);
+        if (!empty($homework)) {
+
+            $data['work_id'] = $work_id;
+            $data['header_title'] = 'Soumission d\'un travail de maison';
+            $data['getHomeworks'] = HomeworkModel::getHomeworks($work_id, 5);
+
+            return view('admin.practicalworks.submission', $data);
+        } else {
+            abort(404);
+        }
+
+    }
+
+    public function teacherHomeworkSubmission($work_id)
+    {
+        $homework = WorkModel::getSingle($work_id);
+        if (!empty($homework)) {
+
+            $data['work_id'] = $work_id;
+            $data['header_title'] = 'Soumission d\'un travail de maison';
+            $data['getHomeworks'] = HomeworkModel::getHomeworks($work_id, 5);
+
+            return view('teacher.practicalworks.submission', $data);
+        } else {
+            abort(404);
+        }
+    }
+
+    public function parentHomeworkSubmission($student_id)
+    {
+        $data['getStudent'] = User::getSingle($student_id);
+        $data['header_title'] = 'Soumission d\'un travail de maison';
+        $data['getWorks'] = WorkModel::getWorksWithStudentStatus($data['getStudent']->class_id, $data['getStudent']->id, 5);
+        return view('parent.practicalworks.submission', $data);
+    }
 
 }

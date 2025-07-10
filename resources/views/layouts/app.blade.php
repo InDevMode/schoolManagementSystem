@@ -10,33 +10,36 @@
     <link rel="shortcut icon" href="{{ asset('public/images/logo.png') }}" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link
+    <link
         href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
         rel="stylesheet">
     @yield('style')
+    <style>
+        [x-cloak] {
+            display: none !important;
+        }
+    </style>
+
 </head>
 
-<body
-x-data="{ page: 'SchoolManagmentSystem', 'loaded': true, 'darkMode': true, 'stickyMenu': false, 'sidebarToggle': false,
+<body x-data="{ page: 'SchoolManagmentSystem', 'loaded': true, 'darkMode': true, 'stickyMenu': false, 'sidebarToggle': false,
 'scrollTop':
-false }"
-x-init="
+false }" x-init="
 darkMode = JSON.parse(localStorage.getItem('darkMode'));
 $watch('darkMode', value => localStorage.setItem('darkMode', JSON.stringify(value)))"
-:class="{'dark text-bodydark bg-boxdark-2': darkMode === true}"
->
-<!-- ===== Preloader Start ===== -->
-@include('layouts.preloader')
-<!-- ===== Page Wrapper Start ===== -->
-<div class="flex h-screen overflow-hidden">
-    @include('layouts.sidebar')
-    <!-- ===== Content Area Start ===== -->
-    <div class="relative flex flex-1 flex-col overflow-y-auto overflow-x-hidden">
-        @include('layouts.header')
-        <!-- ===== Main Content Start ===== -->
-        @yield('content')
+    :class="{'dark text-bodydark bg-boxdark-2': darkMode === true}">
+    <!-- ===== Preloader Start ===== -->
+    @include('layouts.preloader')
+    <!-- ===== Page Wrapper Start ===== -->
+    <div class="flex h-screen overflow-hidden">
+        @include('layouts.sidebar')
+        <!-- ===== Content Area Start ===== -->
+        <div class="relative flex flex-1 flex-col overflow-y-auto overflow-x-hidden">
+            @include('layouts.header')
+            <!-- ===== Main Content Start ===== -->
+            @yield('content')
+        </div>
     </div>
-</div>
 
 </body>
 <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>

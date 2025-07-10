@@ -184,6 +184,4 @@ class CommunicateController extends Controller
         }
     }
 
-
-
 }

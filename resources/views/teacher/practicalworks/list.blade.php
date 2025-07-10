@@ -6,7 +6,7 @@
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
             <div>
                 <h1 class="text-2xl font-bold text-gray-800 dark:text-white flex items-center gap-2">
-                    <iconify-icon icon="home-edit-outline" width="24" height="24"></iconify-icon>
+                    <iconify-icon  icon="mdi:home-edit" width="24" height="24"></iconify-icon>
                     Liste des travaux de maison
                 </h1>
                 <p class="text-gray-600 dark:text-gray-300 mt-1">Gérez la liste des travaux de maion de votre plateforme</p>
@@ -20,7 +20,10 @@
                             <i class="fas fa-home mr-1"></i>
                             Dashboard
                         </a>
-                        <span class="mx-2 text-gray-400">/</span>
+                        <span class="mx-2 text-gray-400">
+                              <iconify-icon icon="mdi:chevron-right" class="text-gray-400" width="16"
+                                    height="16"></iconify-icon>
+                        </span>
                     </li>
                     <li class="flex items-center">
                         <a href="{{ url('teacher/practicalworks/homework/add') }}"
@@ -48,7 +51,7 @@
                             class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Classe</label>
                         <div class="relative">
                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <i class="fas fa-user text-gray-400"></i>
+                                <i class="fas fa-landmark text-gray-400"></i>
                             </div>
                             <input type="text" id="class_name" name="class_name" value="{{ Request::get('class_name') }}"
                                 placeholder="Entrez une classe..."
@@ -61,7 +64,7 @@
                             class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Matière</label>
                         <div class="relative">
                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <i class="fas fa-user text-gray-400"></i>
+                                <i class="fas fa-book text-gray-400"></i>
                             </div>
                             <input type="text" id="subject_name" name="subject_name" value="{{ Request::get('subject_name') }}"
                                 placeholder="Entrez une matière..."
@@ -207,7 +210,7 @@
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="text-sm text-gray-900 dark:text-white">
                                         @if (!empty($works->document_file))
-                                            <a href="{{ url('upload/practicalworks/teacher/' . $works->document_file) }}" target="_blank"
+                                            <a href="{{ url('upload/practicalworks/' . $works->document_file) }}" target="_blank"
                                                 class="flex items-center justify-center bg-violet-600 text-white px-2.5 py-1.5 rounded-md text-sm font-medium"><iconify-icon
                                                     icon="mdi:file-download-outline" width="24" height="24"
                                                     class="text-white"></iconify-icon>
@@ -296,6 +299,11 @@
                                                         </div>
                                                     </template>
                                                 </div>
+                                                  <a href="{{ url('teacher/practicalworks/homework/submission', $works->id) }}"
+                                                    class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200  hover:text-emerald-400 dark:hover:text-emerald-400 flex items-center">
+                                                    <iconify-icon icon="mdi:check-bold" class="mr-2"
+                                                        width="20"></iconify-icon>Soumission
+                                                </a>
                                             </div>
                                         </div>
                                     </div>

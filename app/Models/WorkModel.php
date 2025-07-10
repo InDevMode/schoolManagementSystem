@@ -31,6 +31,28 @@ class WorkModel extends Model
         return WorkModel::find($id);
     }
 
+    public static function getWorkIdWithHomeworks(int $workId)
+    {
+        return WorkModel::select(
+            'works.*',
+            'class.name as class_name',
+            'subject.name as subject_name',
+            'users.name as created_by_name'
+        )
+            ->join('class', 'class.id', '=', 'works.class_id')
+            ->join('subject', 'subject.id', '=', 'works.subject_id')
+            ->join('users', 'users.id', '=', 'works.created_by')
+            ->where('works.id', $workId)
+            ->where('works.is_delete', 0)
+            ->with([
+                'homeworks' => function ($query) {
+                    $query->where('is_delete', 0);
+                }
+            ])
+            ->first();
+    }
+
+
     public static function getWorks(int $perpage)
     {
         $results = WorkModel::select('works.*', 'class.name as class_name', 'subject.name as subject_name', 'users.name as created_by_name')
@@ -58,7 +80,7 @@ class WorkModel extends Model
             ->paginate($perpage);
     }
 
-        public static function getWorksTeacher(int $perpage, $class_ids)
+    public static function getWorksTeacher(int $perpage, $class_ids)
     {
         $results = WorkModel::select('works.*', 'class.name as class_name', 'subject.name as subject_name', 'users.name as created_by_name')
             ->join('class', 'class.id', '=', 'works.class_id')
@@ -85,6 +107,54 @@ class WorkModel extends Model
         return $results->orderBy('works.id', 'desc')
             ->paginate($perpage);
     }
+
+    public static function getWorksWithStudentStatus(int $class_id, int $student_id, int $perpage)
+    {
+        $results = WorkModel::select(
+            'works.*',
+            'class.name as class_name',
+            'subject.name as subject_name',
+            'users.name as created_by_name',
+            'homework.status as homework_status',
+            'homework.description as homework_description',
+            'homework.document_file as homework_document_file'
+        )
+            ->join('class', 'class.id', '=', 'works.class_id')
+            ->join('subject', 'subject.id', '=', 'works.subject_id')
+            ->join('users', 'users.id', '=', 'works.created_by')
+            ->leftJoin('homework', function ($join) use ($student_id) {
+                $join->on('homework.work_id', '=', 'works.id')
+                    ->where('homework.student_id', '=', $student_id)
+                    ->where('homework.is_delete', '=', 0);
+            })
+            ->where('works.class_id', '=', $class_id)
+            ->where('works.is_delete', '=', 0);
+
+        $filters = [
+            'class.name' => strtolower(Request::get('class_name')),
+            'subject.name' => strtolower(Request::get('subject_name')),
+            'works.work_date' => strtolower(Request::get('work_date')),
+            'works.submission_date' => strtolower(Request::get('submission_date')),
+            'works.created_at' => strtolower(Request::get('created_at')),
+            'works.updated_at' => strtolower(Request::get('updated_at')),
+        ];
+
+        foreach ($filters as $column => $value) {
+            if (!empty($value)) {
+                $results->where($column, 'like', '%' . $value . '%');
+            }
+        }
+
+        return $results->orderBy('works.id', 'desc')
+            ->paginate($perpage);
+    }
+
+    // WorkModel.php
+    public function homeworks()
+    {
+        return $this->hasMany(HomeworkModel::class, 'work_id', 'id');
+    }
+
 
 
 }
