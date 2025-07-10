@@ -6,11 +6,11 @@
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
             <div>
                 <h1 class="text-2xl font-bold text-gray-800 dark:text-white flex items-center gap-2">
-                    <iconify-icon icon="mdi:home-edit" width="24" height="24"></iconify-icon>
-                    Liste des travaux de maison soumis par l'apprenant
+                    <iconify-icon icon="mdi:chart-box" width="24" height="24"></iconify-icon>
+                    Listes des rapports des travaux de maison
                 </h1>
-                <p class="text-gray-600 dark:text-gray-300 mt-1">Gérez la liste des travaux de maion soumis par l'apprenant
-                    de votre plateforme</p>
+                <p class="text-gray-600 dark:text-gray-300 mt-1">Gérez les listes des rapports des travaux de maison de
+                    votre plateforme</p>
             </div>
 
             <nav class="flex items-center text-sm">
@@ -86,6 +86,34 @@
                                 class="pl-10 w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-primary-600 focus:border-primary-600 p-2.5">
                         </div>
                     </div>
+
+                    <!-- Classe Input -->
+                    <div>
+                        <label for="class_name"
+                            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Classe</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-landmark text-gray-400"></i>
+                            </div>
+                            <input type="text" id="class_name" name="class_name" value="{{ Request::get('class_name') }}"
+                                placeholder="Entrez une classe..."
+                                class="pl-10 w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-primary-600 focus:border-primary-600 p-2.5">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="subject_name"
+                            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Matière</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-book text-gray-400"></i>
+                            </div>
+                            <input type="text" id="subject_name" name="subject_name"
+                                value="{{ Request::get('subject_name') }}" placeholder="Entrez une matière..."
+                                class="pl-10 w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-primary-600 focus:border-primary-600 p-2.5">
+                        </div>
+                    </div>
+
                     <!-- Date submission from Input -->
                     <div>
                         <label for="submission_date_from"
@@ -116,6 +144,19 @@
                         </div>
                     </div>
 
+                    <!-- Date Created Input -->
+                    <div>
+                        <label for="created_at" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Date
+                            de création</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-calendar-check text-gray-400"></i>
+                            </div>
+                            <input type="date" id="created_at" name="created_at" value="{{ Request::get('created_at') }}"
+                                class="pl-10 w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-primary-600 focus:border-primary-600 p-2.5">
+                        </div>
+                    </div>
+
                     <!-- Action Buttons -->
                     <div class="flex items-end gap-2">
                         <button type="submit"
@@ -123,7 +164,7 @@
                             <i class="fas fa-search"></i>
                             Rechercher
                         </button>
-                        <a href="{{ url('admin/practicalworks/homework/submission/' . $work_id) }}"
+                        <a href="{{ url('admin/practicalworks/homework/reports') }}"
                             class="w-full bg-gray-200 hover:bg-gray-300 dark:bg-gray-600 dark:hover:bg-gray-700 text-gray-800 dark:text-white font-medium rounded-lg px-4 py-2.5 flex items-center justify-center gap-2 transition-colors">
                             <i class="fas fa-sync-alt"></i>
                             Réinitialiser
@@ -134,7 +175,7 @@
         </div>
 
         <div class="my-3">
-            {{ $getHomeworks->links('vendor.pagination.tailwind') }}
+            {{ $getAllHomeworks->links('vendor.pagination.tailwind') }}
         </div>
         <!-- Results Section -->
         <div class="bg-white rounded-lg dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
@@ -145,11 +186,23 @@
                         <tr>
                             <th scope="col"
                                 class="px-6 py-3 text-left text-xs font-medium text-white dark:text-gray-300 uppercase tracking-wider">
-                                Nom & Prénoms de l'apprenant
+                                Apprenants
                             </th>
                             <th scope="col"
                                 class="px-6 py-3 text-left text-xs font-medium text-white dark:text-gray-300 uppercase tracking-wider">
-                                Document
+                                Classe
+                            </th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-white dark:text-gray-300 uppercase tracking-wider">
+                                Matière
+                            </th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-white dark:text-gray-300 uppercase tracking-wider">
+                                Date de travail
+                            </th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-white dark:text-gray-300 uppercase tracking-wider">
+                                Date de soumission
                             </th>
                             <th scope="col"
                                 class="px-6 py-3 text-left text-xs font-medium text-white dark:text-gray-300 uppercase tracking-wider">
@@ -157,7 +210,11 @@
                             </th>
                             <th scope="col"
                                 class="px-6 py-3 text-left text-xs font-medium text-white dark:text-gray-300 uppercase tracking-wider">
-                                Crée par
+                                Document
+                            </th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-white dark:text-gray-300 uppercase tracking-wider">
+                                Crée le
                             </th>
                             <th scope="col"
                                 class="px-6 py-3 text-right text-xs font-medium text-white dark:text-gray-300 uppercase tracking-wider">
@@ -167,9 +224,9 @@
                     </thead>
                     <tbody class="z-20 bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                         <!-- Sample Row 1 -->
-                        @foreach($getHomeworks as $index => $homeworks)
+                        @foreach($getAllHomeworks as $index => $allHomeworks)
                             @php
-                                $status = $homeworks->homework_status;
+                                $status = $allHomeworks->homework_status;
                                 $badge = match ($status) {
                                     'submitted' => ['Soumis', 'border border-blue-500 bg-blue-100 text-blue-700'],
                                     'done' => ['Fait', 'border border-purple-500 bg-purple-100 text-purple-700'],
@@ -183,16 +240,41 @@
                                     <div class="flex items-center">
                                         <div class="ml-4">
                                             <span
-                                                class="text-sm font-medium text-gray-900 dark:text-white">{{ $homeworks->student_name }}</span>
+                                                class="text-sm font-medium text-gray-900 dark:text-white">{{ $allHomeworks->student_name }}</span>
                                             <span
-                                                class="text-sm text-gray-500 dark:text-gray-400">{{ $homeworks->student_last_name }}</span>
+                                                class="text-sm text-gray-500 dark:text-gray-400">{{ $allHomeworks->student_last_name }}</span>
                                         </div>
                                     </div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="text-sm text-gray-900 dark:text-white">
-                                        @if (!empty($homeworks->homework_document_file))
-                                            <a href="{{ url('upload/practicalworks/' . $homeworks->homework_document_file) }}"
+                                        {{ $allHomeworks->class_name}}
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm text-gray-900 dark:text-white">
+                                        {{ $allHomeworks->subject_name}}
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm text-gray-900 dark:text-white">
+                                        {{ \Carbon\Carbon::parse($allHomeworks->work_date)->locale('fr')->translatedFormat('d M Y') }}
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm text-gray-900 dark:text-white">
+                                        {{ \Carbon\Carbon::parse($allHomeworks->submission_date)->locale('fr')->translatedFormat('d M Y') }}
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm text-gray-900 dark:text-white">
+                                        {{ \Illuminate\Support\Str::words(strip_tags($allHomeworks->description), 3, '...') }}
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm text-gray-900 dark:text-white">
+                                        @if (!empty($allHomeworks->document_file))
+                                            <a href="{{ url('upload/practicalworks/' . $allHomeworks->document_file) }}"
                                                 target="_blank"
                                                 class="flex items-center justify-center bg-violet-600 text-white px-2.5 py-1.5 rounded-md text-sm font-medium"><iconify-icon
                                                     icon="mdi:file-download-outline" width="24" height="24"
@@ -202,13 +284,8 @@
                                         @endif
                                     </div>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm text-gray-900 dark:text-white">
-                                        {{ \Illuminate\Support\Str::words(strip_tags($homeworks->homework_description), 3, '...') }}
-                                    </div>
-                                </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                                    {{ \Carbon\Carbon::parse($homeworks->created_at)->locale('fr')->translatedFormat('d M Y H:i:s') }}
+                                    {{ \Carbon\Carbon::parse($allHomeworks->created_at)->locale('fr')->translatedFormat('d M Y H:i:s') }}
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                     <div class="relative inline-block text-left" x-data="{ open: false, showModal: false }">
@@ -248,14 +325,14 @@
                                                             <div class="p-5 space-y-4">
                                                                 <div class="flex justify-between text-sm">
                                                                     <span
-                                                                        class="text-violet-600 font-medium">{{ $homeworks->student_name }}
+                                                                        class="text-violet-600 font-medium">{{ $allHomeworks->student_name }}
                                                                         –
-                                                                        {{ $homeworks->student_last_name }}</span>
+                                                                        {{ $allHomeworks->student_last_name }}</span>
                                                                     <span
                                                                         class="px-3 py-1 text-xs font-medium rounded-full {{ $badge[1] }}">{{ $badge[0] }}</span>
                                                                 </div>
-                                                                @if ($homeworks->document_file)
-                                                                    <a href="{{ url('upload/practicalworks/' . $homeworks->homework_document_file) }}"
+                                                                @if ($allHomeworks->document_file)
+                                                                    <a href="{{ url('upload/practicalworks/' . $allHomeworks->document_file) }}"
                                                                         target="_blank"
                                                                         class="inline-flex items-center px-3 py-2 bg-violet-600 text-white rounded-md hover:bg-violet-700 text-sm">
                                                                         <iconify-icon icon="mdi:file-download-outline"
@@ -263,29 +340,50 @@
                                                                         Télécharger le document
                                                                     </a>
                                                                 @endif
+                                                                @if ($allHomeworks->homework_document_file)
+                                                                    <a href="{{ url('upload/practicalworks/' . $allHomeworks->homework_document_file) }}"
+                                                                        target="_blank"
+                                                                        class="inline-flex items-center px-3 py-2 bg-emerald-600 text-white rounded-md hover:bg-emerald-700 text-sm">
+                                                                        <iconify-icon icon="mdi:file-download-outline"
+                                                                            class="mr-2"></iconify-icon>
+                                                                        Télécharger l'apprenant
+                                                                    </a>
+                                                                @endif
 
                                                                 <div
                                                                     class="space-y-6 max-h-[350px] overflow-y-auto prose dark:prose-invert">
+                                                                     <!-- Description du professeur -->
+                                                                    @if(!empty($allHomeworks->description))
+                                                                        <div>
+                                                                            <h4
+                                                                                class="text-base font-semibold text-violet-600 dark:text-violet-400 mb-2">
+                                                                                Description du professeur</h4>
+                                                                            <div
+                                                                                class="text-start bg-gray-50 dark:bg-gray-700 p-3 rounded-md">
+                                                                                {!! $allHomeworks->description !!}
+                                                                            </div>
+                                                                        </div>
+                                                                    @endif
 
                                                                     <!-- Description de l'apprenant (si disponible) -->
-                                                                    @if(!empty($homeworks->homework_description))
+                                                                    @if(!empty($allHomeworks->homework_description))
                                                                         <div>
                                                                             <h4
                                                                                 class="text-base font-semibold text-emerald-600 dark:text-emerald-400 mb-2">
                                                                                 Description de l'apprenant</h4>
                                                                             <div
                                                                                 class="text-start bg-gray-50 dark:bg-gray-700 p-3 rounded-md">
-                                                                                {!! $homeworks->homework_description !!}
+                                                                                {!! $allHomeworks->homework_description !!}
                                                                             </div>
                                                                         </div>
                                                                     @endif
                                                                 </div>
                                                                 <div
                                                                     class="text-sm text-gray-500 dark:text-gray-400 flex justify-between pt-2 border-t">
-                                                                    <span>📌 Soumis le :
-                                                                        {{ \Carbon\Carbon::parse($homeworks->created_at)->locale('fr')->translatedFormat('d M Y') }}</span>
-                                                                    <span>📤 Date du travail :
-                                                                        {{ \Carbon\Carbon::parse($homeworks->work_date)->locale('fr')->translatedFormat('d M Y') }}</span>
+                                                                    <span>📌 Crée par :
+                                                                        {{ $allHomeworks->created_by_name }}</span>
+                                                                    <span>📤 le :
+                                                                        {{ \Carbon\Carbon::parse($allHomeworks->created_at)->locale('fr')->translatedFormat('d M Y') }}</span>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -297,9 +395,9 @@
                                 </td>
                             </tr>
                         @endforeach
-                        @if($getHomeworks->isEmpty())
+                        @if($getAllHomeworks->isEmpty())
                             <tr class="text-center text-gray-700 dark:text-bodydark1">
-                                <td colspan="8" class="py-3"> Aucun travail de maison soumis trouvé.</td>
+                                <td colspan="9" class="py-3"> Aucun travail de maison trouvé.</td>
                             </tr>
                         @endif
                     </tbody>
@@ -310,14 +408,14 @@
             <div
                 class="px-6 py-4 border-t border-gray-200 dark:border-gray-700 flex flex-col sm:flex-row justify-between items-center gap-4">
                 <div class="text-sm text-gray-500 dark:text-gray-400">
-                    Total de <span class="font-medium">{{ $getHomeworks->total() }}</span><span
-                        class="">{{ $getHomeworks->total() > 1 ? ' travaux de maison' : ' travail de maison' }}</span>
-                    affiché<span class="">{{ $getHomeworks->total() > 1 ? 's' : '' }}</span>
+                    Total de <span class="font-medium">{{ $getAllHomeworks->total() }}</span><span
+                        class="">{{ $getAllHomeworks->total() > 1 ? ' travaux de maison' : ' travail de maison' }}</span>
+                    affiché<span class="">{{ $getAllHomeworks->total() > 1 ? 's' : '' }}</span>
                 </div>
 
                 <!-- Pagination -->
                 <nav class="flex items-center gap-5">
-                    {{ $getHomeworks->links('vendor.pagination.tailwind') }}
+                    {{ $getAllHomeworks->links('vendor.pagination.tailwind') }}
                 </nav>
             </div>
         </div>

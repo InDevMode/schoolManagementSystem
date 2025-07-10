@@ -183,6 +183,10 @@ Route::group(['middleware' => 'admin'], function () {
     // Practical works submitted url
     Route::get('admin/practicalworks/homework/submission/{id}', [WorkController::class, 'homeworkSubmission']);
 
+    // Practical works reports url
+    Route::get('admin/practicalworks/homework/reports', [WorkController::class, 'homeworkReportList']);
+    Route::get('admin/practicalworks/homework/reports/details/{id}', [WorkController::class, 'homeworkReportDetails']);
+
 });
 
 Route::group(['middleware' => 'teacher'], function () {

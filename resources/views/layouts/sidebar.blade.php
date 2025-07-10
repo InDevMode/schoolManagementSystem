@@ -311,7 +311,7 @@
                                     class="w-10 h-10 flex items-center justify-center rounded bg-violet-100 text-violet-600"><iconify-icon
                                         icon="mdi:home-edit" width="24" height="24"></iconify-icon>
                                 </span>
-                                <span class="group-hover:text-bodydark1 dark:text-bodydark1">Travaux </span>
+                                <span class="group-hover:text-bodydark1 dark:text-bodydark1">Devoirs </span>
                                 <span
                                     class="text-[18px] py-1 px-2 rounded bg-violet-100 text-violet-600 transition duration-700 absolute right-4 top-1/2 -translate-y-1/2 fill-current"
                                     :class="{ 'rotate-180 transition duration-700': (selected === 'practicalworks') }"><i
@@ -328,8 +328,17 @@
                                                 class="text-[18px] py-1 px-2 rounded {{ Request::Segment(3) == 'homework' ? 'group-hover:text-bodydark1 text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}"><i
                                                     class="fa-solid fa-chevron-right"></i></span>
                                             <span
-                                                class="{{ Request::Segment(3) == 'homework' ? 'group-hover:text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}">De
-                                                Maison</span>
+                                                class="{{ Request::Segment(3) == 'homework' ? 'group-hover:text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}">Travaux Maison</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="group relative flex items-center gap-2.5 rounded-md px-4 py-2 font-medium duration-300 ease-in-out hover:bg-violet-700 text-bodydark1 dark:hover:bg-meta-4 {{ Request::Segment(4) == 'reports' ? 'bg-violet-600 text-bodydark1' : 'text-violet-600' }}"
+                                            href="{{ url('admin/practicalworks/homework/reports') }}">
+                                            <span
+                                                class="text-[18px] py-1 px-2 rounded {{ Request::Segment(4) == 'reports' ? 'group-hover:text-bodydark1 text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}"><i
+                                                    class="fa-solid fa-chevron-right"></i></span>
+                                            <span
+                                                class="{{ Request::Segment(4) == 'reports' ? 'group-hover:text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}">Rapports</span>
                                         </a>
                                     </li>
                                 </ul>
