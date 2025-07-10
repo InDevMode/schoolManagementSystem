@@ -304,4 +304,6 @@ Route::group(['middleware' => 'parent'], function () {
     // Parent notice board url
     Route::get('parent/my_noticeboard', [CommunicateController::class, 'parentNoticeBoard']);
 
+    // Practical works submitted url
+    Route::get('parent/my_student/submission/{id}', [WorkController::class, 'parentHomeworkSubmission']);
 });

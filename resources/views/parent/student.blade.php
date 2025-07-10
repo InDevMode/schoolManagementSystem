@@ -1,299 +1,357 @@
 @extends('layouts.app')
 @section('content')
-<div class="m-5">
-    <!-- Breadcrumb Start -->
-    <div
-        class="mb-6 mt-3 flex flex-col gap-3 sm:flex-row items-center justify-between"
-    >
-        <h2 class="uppercase font-bold text-black dark:text-bodydark">
-            Liste de mes apprenants
-        </h2>
-        <nav>
-            <ol class="flex items-center gap-2">
-                <li>
-                    <span class="font-medium text-violet-600"><i class="fa-solid fa-landmark"></i></span>
-                </li>
-                <li>
-                    /<a class="font-medium hover:text-violet-600 transition duration-300"
-                        href="{{ url('parent/dashboard') }}"> Dashboard</a>
-                </li>
-            </ol>
-        </nav>
-    </div>
-    @include('message')
-    <div class="my-5">
-        {{ $getMyStudent ->links('vendor.pagination.tailwind') }}
-    </div>
-    <div
-        class="rounded-lg border border-stroke bg-white px-5 pb-2.5 pt-6 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1"
-    >
-        <form action="" method="get">
-            <div class="mb-4.5 grid grid-cols-2 3xl:grid-cols-5 gap-3 items-center">
-                <div class="w-full">
-                    <input
-                        type="text" id="admission_number" name="admission_number" value="{{ Request::get('admission_number') }}"
-                        placeholder="numéro d'admission..."
-                        class="w-full rounded-lg border-[1.5px] border-stroke bg-gray-100 px-5 py-2.5 font-normal text-black outline-none transition focus:border-violet-600 active:border-violet-600 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-violet-600"
-                    />
-                </div>
-                <div class="w-full">
-                    <input
-                        type="text" id="student_name" name="student_name" value="{{ Request::get('student_name') }}"
-                        placeholder="apprenant..."
-                        class="w-full rounded-lg border-[1.5px] border-stroke bg-gray-100 px-5 py-2.5 font-normal text-black outline-none transition focus:border-violet-600 active:border-violet-600 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-violet-600"
-                    />
-                </div>
-                <div class="w-full">
-                    <input
-                        type="email" id="email" name="email" value="{{ Request::get('email') }}"
-                        placeholder="email..."
-                        class="w-full rounded-lg border-[1.5px] border-stroke bg-gray-100 px-5 py-2.5 font-normal text-black outline-none transition focus:border-violet-600 active:border-violet-600 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-violet-600"
-                    />
-                </div>
-                <div class="w-full">
-                    <div
-                        x-data="{ isOptionSelected: false }"
-                        class="relative z-20 bg-gray-100 dark:bg-form-input"
-                    >
-                        <select id="gender" name="gender"
-                                class="relative z-20 w-full appearance-none rounded-lg border border-stroke bg-gray-100 px-5 py-2.5 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
-                                :class="isOptionSelected && 'text-black dark:text-white'"
-                                @change="isOptionSelected = true"
-                        >
-                            <option value="" class="text-body">
-                                Genre...
-                            </option>
-                            <option value="male" class="text-body" {{ Request::get(
-                            'gender') == 'male' ? 'selected' : '' }}>Masculin</option>
-                            <option value="female" class="text-body" {{ Request::get(
-                            'gender') == 'female' ? 'selected' : '' }}>Féminin</option>
-                            <option value="other" class="text-body" {{ Request::get(
-                            'gender') == 'other' ? 'selected' : '' }}>Autre</option>
-                        </select>
-                        <span
-                            class="absolute right-4 top-1/2 z-30 -translate-y-1/2"
-                        >
-                            <svg
-                                class="fill-current"
-                                width="24"
-                                height="24"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <g opacity="0.8">
-                                <path
-                                    fill-rule="evenodd"
-                                    clip-rule="evenodd"
-                                    d="M5.29289 8.29289C5.68342 7.90237 6.31658 7.90237 6.70711 8.29289L12 13.5858L17.2929 8.29289C17.6834 7.90237 18.3166 7.90237 18.7071 8.29289C19.0976 8.68342 19.0976 9.31658 18.7071 9.70711L12.7071 15.7071C12.3166 16.0976 11.6834 16.0976 11.2929 15.7071L5.29289 9.70711C4.90237 9.31658 4.90237 8.68342 5.29289 8.29289Z"
-                                    fill=""
-                                ></path>
-                              </g>
-                            </svg>
-                          </span>
-                    </div>
-                </div>
-                <div class="w-full">
-                    <input
-                        type="text" id="class_name" name="class_name" value="{{ Request::get('class_name') }}"
-                        placeholder="classe..."
-                        class="w-full rounded-lg border-[1.5px] border-stroke bg-gray-100 px-5 py-2.5 font-normal text-black outline-none transition focus:border-violet-600 active:border-violet-600 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-violet-600"
-                    />
-                </div>
-                <div class="w-full">
-                    <input
-                        type="text" id="teacher_name" name="teacher_name" value="{{ Request::get('teacher_name') }}"
-                        placeholder="nom du professeur..."
-                        class="w-full rounded-lg border-[1.5px] border-stroke bg-gray-100 px-5 py-2.5 font-normal text-black outline-none transition focus:border-violet-600 active:border-violet-600 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-violet-600"
-                    />
-                </div>
-                <div class="w-full">
-                    <div class="relative">
-                        <input id="date_of_birth" name="date_of_birth" value="{{ Request::get('date_of_birth') }}"
-                               class="form-datepicker w-full rounded-lg border-[1.5px] border-stroke bg-gray-100 px-5 py-2.5 font-normal outline-none transition focus:border-violet-600 active:border-violet-600 dark:border-form-strokedark dark:bg-form-input dark:focus:border-violet-600"
-                               placeholder="date de naissance..."
-                               data-class="flatpickr-right"
-                        />
-
-                        <div
-                            class="pointer-events-none absolute inset-0 left-auto right-5 flex items-center"
-                        >
-                            <svg
-                                width="18"
-                                height="18"
-                                viewBox="0 0 18 18"
-                                fill="none"
-                                xmlns="http://www.w3.org/2000/svg"
-                            >
-                                <path
-                                    d="M15.7504 2.9812H14.2879V2.36245C14.2879 2.02495 14.0066 1.71558 13.641 1.71558C13.2754 1.71558 12.9941 1.99683 12.9941 2.36245V2.9812H4.97852V2.36245C4.97852 2.02495 4.69727 1.71558 4.33164 1.71558C3.96602 1.71558 3.68477 1.99683 3.68477 2.36245V2.9812H2.25039C1.29414 2.9812 0.478516 3.7687 0.478516 4.75308V14.5406C0.478516 15.4968 1.26602 16.3125 2.25039 16.3125H15.7504C16.7066 16.3125 17.5223 15.525 17.5223 14.5406V4.72495C17.5223 3.7687 16.7066 2.9812 15.7504 2.9812ZM1.77227 8.21245H4.16289V10.9968H1.77227V8.21245ZM5.42852 8.21245H8.38164V10.9968H5.42852V8.21245ZM8.38164 12.2625V15.0187H5.42852V12.2625H8.38164V12.2625ZM9.64727 12.2625H12.6004V15.0187H9.64727V12.2625ZM9.64727 10.9968V8.21245H12.6004V10.9968H9.64727ZM13.8379 8.21245H16.2285V10.9968H13.8379V8.21245ZM2.25039 4.24683H3.71289V4.83745C3.71289 5.17495 3.99414 5.48433 4.35977 5.48433C4.72539 5.48433 5.00664 5.20308 5.00664 4.83745V4.24683H13.0504V4.83745C13.0504 5.17495 13.3316 5.48433 13.6973 5.48433C14.0629 5.48433 14.3441 5.20308 14.3441 4.83745V4.24683H15.7504C16.0316 4.24683 16.2566 4.47183 16.2566 4.75308V6.94683H1.77227V4.75308C1.77227 4.47183 1.96914 4.24683 2.25039 4.24683ZM1.77227 14.5125V12.2343H4.16289V14.9906H2.25039C1.96914 15.0187 1.77227 14.7937 1.77227 14.5125ZM15.7504 15.0187H13.8379V12.2625H16.2285V14.5406C16.2566 14.7937 16.0316 15.0187 15.7504 15.0187Z"
-                                    fill="#64748B"
-                                />
-                            </svg>
-                        </div>
-                    </div>
-                </div>
-                <div class="w-full">
-                    <button
-                        class="flex w-full justify-between items-center rounded-lg bg-violet-600 px-5 py-2.5 font-medium text-gray hover:bg-opacity-90"
-                    >
-                        Rechercher
-                        <span class="inline-flex items-center text-sm text-gray-900">
-                                    <i class="fa-solid fa-search text-white"></i>
-                                </span>
-                    </button>
-                </div>
-                <div class="w-full xl:w-1/8">
-                    <a href="{{ url('parent/my_student') }}"
-                       class="flex w-full justify-center rounded-lg bg-gray-500 px-5 py-2.5 font-medium text-gray hover:bg-opacity-90"
-                    >
-                        Réïnitialisez
-                    </a>
-                </div>
+    <div class="container mx-auto px-4 py-5">
+        @include('message')
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-5 gap-4">
+            <div>
+                <h1 class="text-2xl font-bold text-gray-800 dark:text-white flex items-center gap-2">
+                    <i class="fa-solid fa-user-graduate text-primary-600"></i>
+                    Liste de mes apprenants inscrits
+                </h1>
+                <p class="text-gray-600 dark:text-gray-300 mt-1">Gérez les comptes de vos apprenants inscrits sur cette
+                    plateforme</p>
             </div>
-        </form>
 
-        <div class="relative overflow rounded-lg z-10">
-            <table class="w-full text-[12px] text-left rtl:text-right text-white dark:text-white">
-                <thead
-                    class="rounded-sm bg-violet-600 uppercase text-white dark:bg-meta-4"
-                >
-                <tr>
-                    <th scope="col" class="px-6 py-3">
-                        N° d'Admission
-                    </th>
-                    <th scope="col" class="px-6 py-3">
-                        Elève
-                    </th>
-                    <th scope="col" class="px-6 py-3">
-                        Email
-                    </th>
-                    <th scope="col" class="px-6 py-3">
-                        Genre
-                    </th>
-                    <th scope="col" class="px-6 py-3">
-                        Classe
-                    </th>
-                    <th scope="col" class="px-6 py-3">
-                        Professeur
-                    </th>
-                    <th scope="col" class="px-6 py-3">
-                        Date de naissance
-                    </th>
-                    <th scope="col" class="px-6 py-3">
-                        Actions
-                    </th>
-                </tr>
-                </thead>
-                <tbody>
-                @foreach($getMyStudent as $index => $myStudent)
-                <tr class="hover:bg-violet-100 dark:hover:bg-gray-700 transition duration-300 border-b dark:border-gray-600 hover:border-violet-400 dark:text-gray-200 text-gray-500">
-                    <td class="px-6 py-3">
-                        {{ $myStudent -> admission_number }}
-                    </td>
-                    <td class="px-6 py-3">
-                        {{ $myStudent -> name }} {{ $myStudent -> last_name }}
-                    </td>
-                    <td class="px-6 py-3 font-semibold">
-                        {{ $myStudent -> email }}
-                    </td>
-                    <td class="px-6 py-3">
-                        <div class="flex items-center">
-                            <p class="px-6 py-1 rounded-full {{ $myStudent->gender == 'male' ? 'text-violet-700 dark:text-gray-200 bg-violet-100 dark:bg-violet-900' : ($myStudent->gender == 'female' ? 'text-red-700 dark:text-gray-200 bg-red-100 dark:bg-red-900' : 'text-pink-700 dark:text-gray-200 bg-pink-100 dark:bg-pink-900') }}">
-                                {{ $myStudent->gender == 'male' ? 'Masculin' : ($myStudent->gender == 'female' ? 'Féminin' : 'Autre')}}
-                            </p>
-                        </div>
-                    </td>
-                    <td class="px-6 py-3">
-                        {{ $myStudent->class_name }}
-                    </td>
-                    <td class="px-6 py-3">
-                        {{ $myStudent->teacher_name }} {{ $myStudent->teacher_last_name }}
-                    </td>
-                    <td class="px-6 py-3">
-                        {{ \Carbon\Carbon::parse($myStudent->date_of_birth)->locale('fr')->translatedFormat('d M Y') }}
-                    </td>
-                    <td class="px-6 py-3">
-                        <div class="relative inline-block text-left" x-data="{ open: false }">
-                            <div>
-                                <button
-                                    type="button"
-                                    class="group inline-flex w-full justify-center gap-x-1.5 rounded-lg shadow-md bg-white dark:bg-gray-800 border dark:border-gray-600 dark:hover:text-violet-600 px-3 py-2 text-sm font-semibold text-gray-700 hover:text-violet-600 dark:text-gray-200 hover:bg-gray-100"
-                                    @click="open = !open"
-                                    id="menu-button"
-                                    aria-expanded="true"
-                                    aria-haspopup="true">
-                                    Actions
-                                    <svg class="-mr-1 size-5 group-hover:text-violet-600 text-gray-400"
-                                         viewBox="0 0 20 20" fill="currentColor"
-                                         aria-hidden="true">
-                                        <path fill-rule="evenodd"
-                                              d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z"
-                                              clip-rule="evenodd"/>
-                                    </svg>
-                                </button>
-                            </div>
-                            <div
-                                class="absolute right-0 z-50 mt-2 w-56 origin-top-right rounded-md bg-white dark:bg-gray-800 ring-1 shadow-lg ring-black/5 focus:outline-hidden"
-                                role="menu"
-                                aria-orientation="vertical"
-                                aria-labelledby="menu-button"
-                                tabindex="{{ $index + 1 }}"
-                                x-show="open"
-                                @click.away="open = false"
-                                x-transition
-                            >
-                                <div class="py-1">
-                                    <a href="{{ url('parent/my_student/'.$myStudent -> id.'/subject' ) }}"
-                                       class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:text-violet-600 dark:hover:text-violet-600"
-                                       role="menuitem">Ses Cours</a>
-                                    <a href="{{ url('parent/my_student/exam_timetable/'.$myStudent -> id.'/subject' ) }}"
-                                       class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:text-violet-600 dark:hover:text-violet-600"
-                                       role="menuitem">Ses Examens</a>
-                                    <a href="{{ url('parent/my_student/exam_result/'.$myStudent -> id.'/result' ) }}"
-                                       class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:text-violet-600 dark:hover:text-violet-600"
-                                       role="menuitem">Ses Résultats</a>
-                                    <a href="{{ url('parent/my_student/calendar/'.$myStudent -> id.'/subject' ) }}"
-                                       class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:text-violet-600 dark:hover:text-violet-600"
-                                       role="menuitem">Son Calendrier</a>
-                                       <a href="{{ url('parent/my_student/attendance',$myStudent -> id ) }}"
-                                        class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:text-violet-600 dark:hover:text-violet-600"
-                                        role="menuitem">Sa Présence</a>
-                                </div>
-                            </div>
-                        </div>
-                    </td>
-                </tr>
-                @endforeach
-                @if($getMyStudent->isEmpty())
-                <tr class="text-center text-gray-700 dark:text-bodydark1">
-                    <td colspan="8" class="px-6 py-3"> Aucun apprenant disponible.</td>
-                </tr>
-                @endif
-                <tr class="">
-                    <td colspan="8"
-                        class="px-6 py-3"
-                    >
-                        <div class="mt-3 mb-3 flex items-center justify-between">
-                            <h2 class="text-title-sm uppercase font-bold text-black dark:text-white">
-                                Total
-                            </h2>
-                            <nav>
-                                <ol class="flex items-center bg-white shadow-lg border border-gray-200 dark:border-gray-600 w-fit dark:bg-black py-2 px-8 rounded">
-                                    <li>
-                                        <p class="text-md font-semibold text-gray-700 dark:text-gray-200">
-                                            {{ $getMyStudent->total() }}</p>
-                                    </li>
-                                </ol>
-                            </nav>
-                        </div>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
+            <nav class="flex items-center text-sm">
+                <ol class="flex items-center space-x-2">
+                    <li class="flex items-center">
+                        <a href="{{ url('parent/dashboard') }}"
+                            class="text-primary-600 hover:text-violet-600 transition-colors">
+                            <i class="fas fa-home mr-1"></i>
+                            Dashboard
+                        </a>
+                        <span class="mx-2 text-gray-400">
+                            <iconify-icon icon="mdi:chevron-right" class="text-gray-400" width="16"
+                                height="16"></iconify-icon>
+                        </span>
+                    </li>
+                    <li class="flex items-center">
+                        <span class="text-violet-600 transition-colors">
+                            <i class="fa-solid fa-user-graduate"></i>
+                            Apprenants
+                        </span>
+                    </li>
+                </ol>
+            </nav>
+        </div>
 
+        <!-- Filter Section -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-5">
+            <h2 class="text-lg font-semibold text-gray-800 dark:text-white mb-4 flex items-center gap-2">
+                <i class="fas fa-filter text-primary-600"></i>
+                Filtres de recherche
+            </h2>
+
+            <form>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <!-- Number admission Input -->
+                    <div>
+                        <label for="admission_number"
+                            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Numéro
+                            d'admission</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-hashtag text-gray-400"></i>
+                            </div>
+                            <input type="text" id="admission_number" name="admission_number"
+                                value="{{ Request::get('admission_number') }}" placeholder="Entrez un numéro d'admission..."
+                                class="pl-10 w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-primary-600 focus:border-primary-600 p-2.5">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="class_name"
+                            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Classe</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-landmark text-gray-400"></i>
+                            </div>
+                            <input type="text" id="class_name" name="class_name" value="{{ Request::get('class_name') }}"
+                                placeholder="Entrez une classe..."
+                                class="pl-10 w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-primary-600 focus:border-primary-600 p-2.5">
+                        </div>
+                    </div>
+
+                    <!-- student name Input -->
+                    <div>
+                        <label for="student_name"
+                            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nom de
+                            l'apprenant</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-user-tag text-gray-400"></i>
+                            </div>
+                            <input type="text" id="student_name" name="student_name"
+                                value="{{ Request::get('student_name') }}" placeholder="Entrez le nom de l'apprenant..."
+                                class="pl-10 w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-primary-600 focus:border-primary-600 p-2.5">
+                        </div>
+                    </div>
+
+                    <!-- teacher name Input -->
+                    <div>
+                        <label for="teacher_name"
+                            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nom du
+                            professeur</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-user-tag text-gray-400"></i>
+                            </div>
+                            <input type="text" id="teacher_name" name="teacher_name"
+                                value="{{ Request::get('teacher_name') }}" placeholder="Entrez le nom de l'apprenant..."
+                                class="pl-10 w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-primary-600 focus:border-primary-600 p-2.5">
+                        </div>
+                    </div>
+
+                    <!-- Email Input -->
+                    <div>
+                        <label for="email"
+                            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-envelope text-gray-400"></i>
+                            </div>
+                            <input type="email" id="email" name="email" value="{{ Request::get('email') }}"
+                                placeholder="Entrez un email..."
+                                class="pl-10 w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-primary-600 focus:border-primary-600 p-2.5">
+                        </div>
+                    </div>
+
+                    <!-- Gender Select -->
+                    <div>
+                        <label for="gender"
+                            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Genre</label>
+                        <div class="relative">
+                            <select id="gender" name="gender"
+                                class="appearance-none w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-primary-600 focus:border-primary-600 p-2.5 pr-8">
+                                <option value="" disabled selected>Tous les genres</option>
+                                <option value="male" {{ Request::get('gender') == 'male' ? 'selected' : '' }}>Masculin
+                                </option>
+                                <option value="female" {{ Request::get('gender') == 'female' ? 'selected' : '' }}>Féminin
+                                </option>
+                                <option value="other" {{ Request::get('gender') == 'other' ? 'selected' : '' }}>Autre
+                                </option>
+                            </select>
+                            <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                                <i class="fas fa-chevron-down text-gray-400"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Mobile Number Input -->
+                    <div>
+                        <label for="mobile_number"
+                            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Téléphone</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-phone text-gray-400"></i>
+                            </div>
+                            <input type="text" id="mobile_number" name="mobile_number"
+                                value="{{ Request::get('mobile_number') }}" placeholder="Entrez un téléphone..."
+                                class="pl-10 w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-primary-600 focus:border-primary-600 p-2.5">
+                        </div>
+                    </div>
+
+                    <!-- Date of birthday Input -->
+                    <div>
+                        <label for="date_of_birth"
+                            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Date
+                            de Naissance</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-calendar-plus text-gray-400"></i>
+                            </div>
+                            <input type="date" id="date_of_birth" name="date_of_birth"
+                                value="{{ Request::get('date_of_birth') }}"
+                                class="pl-10 w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-primary-600 focus:border-primary-600 p-2.5">
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="flex items-end gap-2">
+                        <button type="submit"
+                            class="w-full bg-violet-600 hover:bg-violet-700 text-white font-medium rounded-lg px-4 py-2.5 flex items-center justify-center gap-2 transition-colors">
+                            <i class="fas fa-search"></i>
+                            Rechercher
+                        </button>
+                        <a href="{{ url('parent/my_student') }}"
+                            class="w-full bg-gray-200 hover:bg-gray-300 dark:bg-gray-600 dark:hover:bg-gray-700 text-gray-800 dark:text-white font-medium rounded-lg px-4 py-2.5 flex items-center justify-center gap-2 transition-colors">
+                            <i class="fas fa-sync-alt"></i>
+                            Réinitialiser
+                        </a>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="my-5">
+            {{ $getMyStudent->links('vendor.pagination.tailwind') }}
+        </div>
+        <!-- Results Section -->
+        <div class="bg-white rounded-lg dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+            <!-- Table -->
+            <div class="relative overflow rounded-lg z-10">
+                <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                    <thead class="rounded-lg bg-violet-600 dark:bg-gray-700">
+                        <tr>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-white dark:text-gray-300 uppercase tracking-wider">
+                                Numéro d'admission
+                            </th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-white dark:text-gray-300 uppercase tracking-wider">
+                                Apprenants
+                            </th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-white dark:text-gray-300 uppercase tracking-wider">
+                                Email
+                            </th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-white dark:text-gray-300 uppercase tracking-wider">
+                                Genre
+                            </th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-white dark:text-gray-300 uppercase tracking-wider">
+                                Classe
+                            </th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-white dark:text-gray-300 uppercase tracking-wider">
+                                Date de Naissance
+                            </th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-white dark:text-gray-300 uppercase tracking-wider">
+                                Professeurs
+                            </th>
+                            <th scope="col"
+                                class="px-6 py-3 text-right text-xs font-medium text-white dark:text-gray-300 uppercase tracking-wider">
+                                Actions
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="z-20 bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                        <!-- Sample Row 1 -->
+                        @foreach ($getMyStudent as $index => $myStudent)
+                            <tr class="hover:bg-violet-100 dark:hover:bg-gray-700 transition-colors">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                                    {{ $myStudent->admission_number }}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center">
+                                        <div class="">
+                                            <span
+                                                class="text-sm font-medium text-gray-900 dark:text-white">{{ $myStudent->name }}</span>
+                                            <span
+                                                class="text-sm text-gray-500 dark:text-gray-400">{{ $myStudent->last_name }}</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm text-gray-900 dark:text-white">{{ $myStudent->email }}</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span
+                                        class="px-2 py-1 border w-24 inline-flex justify-center text-xs leading-5 font-semibold rounded-full {{ $myStudent->gender == 'male' ? 'bg-violet-100 border-violet-800 text-violet-800 dark:bg-violet-900 dark:text-violet-200' : ($myStudent->gender == 'female' ? 'bg-red-100 border-red-800 text-red-800 dark:bg-red-900 dark:text-red-200' : 'bg-pink-100 border-pink-800 text-pink-800 dark:bg-pink-900 dark:text-pink-200') }}">
+                                        {{ $myStudent->gender == 'male' ? 'Masculin' : ($myStudent->gender == 'female' ? 'Féminin' : 'Autre') }}
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                                    {{ $myStudent->class_name }}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                                    {{ \Carbon\Carbon::parse($myStudent->date_of_birth)->locale('fr')->translatedFormat('d M Y') }}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center">
+                                        <div class="">
+                                            <span
+                                                class="text-sm font-medium text-gray-900 dark:text-white">{{ $myStudent->teacher_name }}</span>
+                                            <span
+                                                class="text-sm text-gray-500 dark:text-gray-400">{{ $myStudent->teacher_last_name }}</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                    <div class="relative inline-block text-left" x-data="{ open: false }">
+                                        <div>
+                                            <button type="button"
+                                                class="group inline-flex w-full justify-center gap-x-1.5 rounded-lg shadow-md bg-white dark:bg-gray-800 border dark:border-gray-600 dark:hover:text-violet-600 px-3 py-2 text-sm font-semibold text-gray-700 hover:text-violet-600 dark:text-gray-200 hover:bg-gray-100"
+                                                @click="open = !open" id="menu-button" aria-expanded="true"
+                                                aria-haspopup="true">
+                                                Actions
+                                                <span
+                                                    class="-mr-1 size-5 group-hover:text-violet-600 text-gray-400"><iconify-icon
+                                                        icon="mdi:chevron-down" width="22" height="22"></iconify-icon></span>
+                                            </button>
+                                        </div>
+                                        <div class="absolute right-0 z-50 mt-2 w-56 origin-top-right rounded-md bg-white dark:bg-gray-800 ring-1 shadow-lg ring-black/5 focus:outline-hidden"
+                                            role="menu" aria-orientation="vertical" aria-labelledby="menu-button"
+                                            tabindex="{{ $index + 1 }}" x-show="open" @click.away="open = false" x-transition>
+                                            <div class="py-1">
+                                                <a href="{{ url('parent/my_student/' . $myStudent->id . '/subject') }}"
+                                                    class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:text-violet-600 dark:hover:text-violet-600"
+                                                    role="menuitem"><i class="fas fa-book mr-2"></i>Ses Cours</a>
+
+                                                <a href="{{ url('parent/my_student/exam_timetable/' . $myStudent->id . '/subject') }}"
+                                                    class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:text-violet-600 dark:hover:text-violet-600"
+                                                    role="menuitem"><i class="fas fa-calendar-alt mr-2"></i>Ses Examens</a>
+
+                                                <a href="{{ url('parent/my_student/exam_result/' . $myStudent->id . '/result') }}"
+                                                    class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:text-violet-600 dark:hover:text-violet-600"
+                                                    role="menuitem"><i class="fas fa-chart-bar mr-2"></i>Ses Résultats</a>
+
+                                                <a href="{{ url('parent/my_student/calendar/' . $myStudent->id . '/subject') }}"
+                                                    class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:text-violet-600 dark:hover:text-violet-600"
+                                                    role="menuitem"><i class="fas fa-calendar-day mr-2"></i>Son Calendrier</a>
+
+                                                <a href="{{ url('parent/my_student/attendance', $myStudent->id) }}"
+                                                    class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:text-violet-600 dark:hover:text-violet-600"
+                                                    role="menuitem"><i class="fas fa-user-check mr-2"></i>Sa Présence</a>
+                                                    <!-- Submission student -->
+                                                    <a href="{{ url('parent/my_student/submission', $myStudent->id) }}"
+                                                    class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:text-violet-600 dark:hover:text-violet-600"
+                                                    role="menuitem"><i class="fas fa-check mr-2"></i>Ses Soumission</a>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        @endforeach
+                        @if ($getMyStudent->isEmpty())
+                            <tr class="text-center text-gray-700 dark:text-bodydark1">
+                                <td colspan="10" class="py-3"> Aucun apprenant trouvé.</td>
+                            </tr>
+                        @endif
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Table Footer -->
+            <div
+                class="px-6 py-4 border-t border-gray-200 dark:border-gray-700 flex flex-col sm:flex-row justify-between items-center gap-4">
+                <div class="text-sm text-gray-500 dark:text-gray-400">
+                    Total de <span class="font-medium">{{ $getMyStudent->total() }}</span> apprenant<span
+                        class="">{{ $getMyStudent->total() > 1 ? 's' : '' }}</span> affiché<span
+                        class="">{{ $getMyStudent->total() > 1 ? 's' : '' }}</span>
+                </div>
+
+                <!-- Pagination -->
+                <nav class="flex items-center gap-5">
+                    {{ $getMyStudent->links('vendor.pagination.tailwind') }}
+                </nav>
+            </div>
         </div>
     </div>
-    @endsection
+@endsection
 
+<script>
+    function toggleMenu(event, index) {
+        event.stopPropagation();
+        document.querySelectorAll('.relative .hidden').forEach(menu => menu.classList.add('hidden'));
+        const menu = document.getElementById('dropdown-menu-' + index);
+        menu.classList.toggle('hidden');
+    }
 
+    document.addEventListener('click', function () {
+        document.querySelectorAll('.relative .hidden').forEach(menu => menu.classList.add('hidden'));
+    });
+</script>

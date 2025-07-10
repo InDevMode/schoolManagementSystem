@@ -656,7 +656,7 @@
                                 href="{{ url('parent/my_noticeboard') }}">
                                 <span
                                     class="w-10 h-10 flex items-center justify-center rounded {{ Request::Segment(2) == 'my_noticeboard' ? 'bg-violet-100 text-violet-600' : 'bg-violet-100 text-violet-600'}}">
-                                    <iconify-icon icon="mdi:bell-outline" width="24" height="24"></iconify-icon>
+                                    <iconify-icon icon="mdi:bell" width="24" height="24"></iconify-icon>
                                 </span>
                                 <span
                                     class="{{ Request::Segment(2) == 'my_noticeboard' ? 'group-hover:text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}">Mes

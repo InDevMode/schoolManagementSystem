@@ -41,7 +41,7 @@
                             class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Classe</label>
                         <div class="relative">
                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <i class="fas fa-user text-gray-400"></i>
+                                <i class="fas fa-book text-gray-400"></i>
                             </div>
                             <input type="text" id="class_name" name="class_name" value="{{ Request::get('class_name') }}"
                                 placeholder="Entrez une classe..."
@@ -54,7 +54,7 @@
                             class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Matière</label>
                         <div class="relative">
                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <i class="fas fa-user text-gray-400"></i>
+                                <i class="fas fa-book text-gray-400"></i>
                             </div>
                             <input type="text" id="subject_name" name="subject_name"
                                 value="{{ Request::get('subject_name') }}" placeholder="Entrez une matière..."

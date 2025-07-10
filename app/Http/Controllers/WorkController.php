@@ -6,6 +6,7 @@ use App\Models\ClassModel;
 use App\Models\ClassSubjectModel;
 use App\Models\ClassTeacherModel;
 use App\Models\HomeworkModel;
+use App\Models\User;
 use App\Models\WorkModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -320,6 +321,14 @@ class WorkController extends Controller
         } else {
             abort(404);
         }
+    }
+
+    public function parentHomeworkSubmission($student_id)
+    {
+        $data['getStudent'] = User::getSingle($student_id);
+        $data['header_title'] = 'Soumission d\'un travail de maison';
+        $data['getWorks'] = WorkModel::getWorksWithStudentStatus($data['getStudent']->class_id, $data['getStudent']->id, 5);
+        return view('parent.practicalworks.submission', $data);
     }
 
 }
