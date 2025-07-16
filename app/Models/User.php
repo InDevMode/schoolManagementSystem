@@ -285,8 +285,13 @@ class User extends Authenticatable
 
     public static function getMyStudent(int $perPage, int $parent_id, )
     {
-        $results = User::select('users.*', 'class.name as class_name', 'teacher.name as teacher_name', 'teacher.last_name as teacher_last_name')
+        $results = User::select('users.*',
+        'class.name as class_name',
+        'teacher.name as teacher_name', 'teacher.last_name as teacher_last_name',
+        'parent.name as parent_name', 'parent.last_name as parent_last_name',
+         'student.name as student_name', 'student.last_name as student_last_name')
             ->join('users as parent', 'parent.id', '=', 'users.parent_id', 'left')
+            ->join('users as student', 'student.id', '=', 'users.id', 'left')
             ->join('class', 'class.id', '=', 'users.class_id', 'left')
             ->join('class_teacher', 'class_teacher.class_id', '=', 'class.id', 'left')
             ->join('users as teacher', 'teacher.id', '=', 'class_teacher.teacher_id', 'left')
@@ -300,10 +305,13 @@ class User extends Authenticatable
         $filters = [
             'users.admission_number' => strtolower(Request::get('admission_number')),
             'users.name' => strtolower(Request::get('student_name')),
+            'student.last_name' => strtolower(Request::get('student_last_name')),
             'teacher.name' => strtolower(Request::get('teacher_name')),
+            'teacher.last_name' => strtolower(Request::get('teacher_last_name')),
+            'parent.name' => strtolower(Request::get('parent_name')),
+            'parent.last_name' => strtolower(Request::get('parent_last_name')),
             'class.name' => strtolower(Request::get('class_name')),
             'users.email' => strtolower(Request::get('email')),
-            'users.date_of_birth' => strtolower(Request::get('date_of_birth')),
             'users.created_at' => strtolower(Request::get('created_at')),
             'users.updated_at' => strtolower(Request::get('updated_at')),
         ];
