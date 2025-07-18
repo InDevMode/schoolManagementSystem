@@ -11,6 +11,7 @@ use App\Http\Controllers\ClassTimetableController;
 use App\Http\Controllers\CommunicateController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ExaminationController;
+use App\Http\Controllers\FeesCollectionController;
 use App\Http\Controllers\ParentController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\SubjectController;
@@ -186,6 +187,9 @@ Route::group(['middleware' => 'admin'], function () {
     // Practical works reports url
     Route::get('admin/practicalworks/homework/reports', [WorkController::class, 'homeworkReportList']);
     Route::get('admin/practicalworks/homework/reports/details/{id}', [WorkController::class, 'homeworkReportDetails']);
+
+    // Fees collection url
+    Route::get('admin/feescollection/collections/list', [FeesCollectionController::class, 'list']);
 
 });
 

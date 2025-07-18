@@ -1,6 +1,7 @@
 @extends('layouts.app')
 @section('content')
     <div class="m-2">
+        @include('message')
         <div class="container mx-auto px-4 py-8 max-w-6xl">
             <!-- Header Section -->
             <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8">

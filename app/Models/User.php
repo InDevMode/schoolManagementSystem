@@ -285,11 +285,16 @@ class User extends Authenticatable
 
     public static function getMyStudent(int $perPage, int $parent_id, )
     {
-        $results = User::select('users.*',
-        'class.name as class_name',
-        'teacher.name as teacher_name', 'teacher.last_name as teacher_last_name',
-        'parent.name as parent_name', 'parent.last_name as parent_last_name',
-         'student.name as student_name', 'student.last_name as student_last_name')
+        $results = User::select(
+            'users.*',
+            'class.name as class_name',
+            'teacher.name as teacher_name',
+            'teacher.last_name as teacher_last_name',
+            'parent.name as parent_name',
+            'parent.last_name as parent_last_name',
+            'student.name as student_name',
+            'student.last_name as student_last_name'
+        )
             ->join('users as parent', 'parent.id', '=', 'users.parent_id', 'left')
             ->join('users as student', 'student.id', '=', 'users.id', 'left')
             ->join('class', 'class.id', '=', 'users.class_id', 'left')
@@ -342,7 +347,7 @@ class User extends Authenticatable
             ->get();
     }
 
-   public static  function getTeacherStudent(int $perPage, int $teacher_id)
+    public static function getTeacherStudent(int $perPage, int $teacher_id)
     {
         $results = User::select('users.*', 'class.name as class_name')
             ->join('class', 'class.id', '=', 'users.class_id')
@@ -432,6 +437,33 @@ class User extends Authenticatable
             ->where('is_delete', 0)
             ->where('status', 1)
             ->get();
+    }
+
+    public static function getFeesCollectionStudent(int $perpage)
+    {
+        $results = User::select('users.*', 'class.name as class_name', 'class.amount as class_amount',  'users.name as created_by_name', 'users.name as student_name', 'users.last_name as student_last_name')
+            ->join('class', 'class.id', '=', 'users.class_id', 'left')
+            ->join('users as student', 'student.id', '=', 'users.id', 'left')
+              ->join('users as created_by_name', 'users.id', '=', 'class.created_by')
+            ->where('users.is_delete', 0)
+            ->where('users.status', 1)
+            ->where('users.user_type', 3);
+
+        $filters = [
+            'users.class_id' => strtolower(Request::get('class_id')),
+            'users.id' => strtolower(Request::get('student_id')),
+            'student.name' => strtolower(Request::get('student_name')),
+            'student.last_name' => strtolower(Request::get('student_last_name')),
+        ];
+
+        foreach ($filters as $column => $value) {
+            if (!empty($value)) {
+                $results->where($column, 'like', '%' . $value . '%');
+            }
+        }
+
+        return $results->orderBy('student.name', 'asc')
+            ->paginate($perpage);
     }
 
 

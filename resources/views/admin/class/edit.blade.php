@@ -1,155 +1,112 @@
 @extends('layouts.app')
 @section('content')
-<div class="m-5">
-    <main>
-        <div class="mx-auto max-w-screen-2xl p-4 md:p-6 2xl:p-10">
-            <div class="mx-auto max-w-242.5">
-                <div
-                    class="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"
-                >
-                    <h2 class="uppercase font-bold text-black dark:text-bodydark">
+    <div class="m-2">
+        @include('message')
+        <div class="container mx-auto px-4 py-8 max-w-6xl">
+            <!-- Header Section -->
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
+                <div class="mb-4 md:mb-0">
+                    <h1 class="text-2xl font-bold text-gray-800 dark:text-white flex items-center">
+                        <iconify-icon icon="fa-solid:landmark" class="text-green-600 mr-2" width="28"
+                            height="28"></iconify-icon>
                         Modifier cette classe
-                    </h2>
-                    <nav>
-                        <ol class="flex items-center gap-2">
-                            <li>
-                                <span class="font-medium text-emerald-400"><i class="fa-solid fa-landmark"></i></span>
-                            </li>
-                            <li>
-                                /<a class="font-medium hover:text-emerald-400 transition duration-300"
-                                    href="{{ url('admin/class/list') }}"> Liste des classes</a>
-                            </li>
-                        </ol>
-                    </nav>
+                    </h1>
+                    <p class="text-gray-600 dark:text-gray-300 mt-1">Remplissez les détails pour modifier cette classe
+                    </p>
                 </div>
-                @include('message')
-                <div class="flex flex-col gap-9">
-                    <!-- Contact Form -->
-                    <div
-                        class="rounded-lg border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark"
-                    >
-                        <form action="" method="post" enctype="multipart/form-data">
-                            {{ csrf_field() }}
-                            <div class="p-6.5">
-                                <div class="mb-4.5">
-                                    <label
-                                        class="mb-3 block text-sm font-medium text-black dark:text-white"
-                                    >
-                                        Nom <span class="text-meta-1">*</span>
-                                    </label>
-                                    <input id="name" name="name" value="{{ old('name', $getClass->name) }}" required
-                                           type="text"
-                                           placeholder="Entrez un nom d'une classe"
-                                           class="w-full rounded-lg border-[1.5px] border-stroke bg-gray-100 px-5 py-2.5 font-normal text-black outline-none transition focus:border-emerald-400 active:border-emerald-400 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-emerald-400"
-                                    />
-                                </div>
-                                <div class="mb-4.5">
-                                    <label
-                                        class="mb-3 block text-sm font-medium text-black dark:text-white"
-                                    >
-                                        Status <span class="text-meta-1">*</span>
-                                    </label>
-                                    <div
-                                        x-data="{ isOptionSelected: false }"
-                                        class="relative z-20 bg-gray-100 dark:bg-form-input"
-                                    >
-                                        <select id="status" name="status" required
-                                                class="relative z-20 w-full appearance-none rounded-lg border border-stroke bg-gray-100 px-5 py-2.5 outline-none transition focus:border-emerald-400 active:border-emerald-400 dark:border-form-strokedark dark:bg-form-input dark:focus:border-emerald-400"
-                                                :class="isOptionSelected && 'text-black dark:text-white'"
-                                                @change="isOptionSelected = true"
-                                        >
-                                            <option selected disabled value="" class="text-body">
-                                                Choisissez un statut pour cette classe
-                                            </option>
-                                            <option class="text-body" value="1" {{ (old(
-                                            'status', $getClass->status) == '1') ? 'selected' : '' }}>Activée</option>
-                                            <option class="text-body" value="0" {{ (old(
-                                            'status', $getClass->status) == '0') ? 'selected' : '' }}>Désactivée</option>
-                                        </select>
-                                        <span
-                                            class="absolute right-4 top-1/2 z-30 -translate-y-1/2"
-                                        >
-                                        <svg
-                                            class="fill-current"
-                                            width="24"
-                                            height="24"
-                                            viewBox="0 0 24 24"
-                                            fill="none"
-                                            xmlns="http://www.w3.org/2000/svg"
-                                        >
-                                          <g opacity="0.8">
-                                            <path
-                                                fill-rule="evenodd"
-                                                clip-rule="evenodd"
-                                                d="M5.29289 8.29289C5.68342 7.90237 6.31658 7.90237 6.70711 8.29289L12 13.5858L17.2929 8.29289C17.6834 7.90237 18.3166 7.90237 18.7071 8.29289C19.0976 8.68342 19.0976 9.31658 18.7071 9.70711L12.7071 15.7071C12.3166 16.0976 11.6834 16.0976 11.2929 15.7071L5.29289 9.70711C4.90237 9.31658 4.90237 8.68342 5.29289 8.29289Z"
-                                                fill=""
-                                            ></path>
-                                          </g>
-                                        </svg>
-                                      </span>
-                                    </div>
-                                </div>
-                                <button type="submit"
-                                        class="flex w-full justify-center rounded-lg bg-emerald-400 p-3 font-medium text-gray hover:bg-opacity-90"
-                                >
-                                    Modifier
-                                </button>
+
+                <nav class="flex" aria-label="Breadcrumb">
+                    <ol class="inline-flex items-center space-x-1 md:space-x-3">
+                        <li class="inline-flex items-center">
+                            <a href="{{ url('admin/dashboard') }}"
+                                class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-green-600 dark:text-gray-400 dark:hover:text-white">
+                                <iconify-icon icon="mdi:home" class="mr-2" width="16" height="16"></iconify-icon>
+                                Tableau de bord
+                            </a>
+                        </li>
+                        <li>
+                            <div class="flex items-center">
+                                <iconify-icon icon="mdi:chevron-right" class="text-gray-400" width="16"
+                                    height="16"></iconify-icon>
+                                <a href="{{ url('admin/class/list') }}"
+                                    class="ml-1 text-sm font-medium text-gray-700 hover:text-emerald-600 md:ml-2 dark:text-gray-400 dark:hover:text-white">Liste
+                                    des classes</a>
                             </div>
-                        </form>
-                    </div>
+                        </li>
+                        <li aria-current="page">
+                            <div class="flex items-center">
+                                <iconify-icon icon="mdi:chevron-right" class="text-gray-400" width="16"
+                                    height="16"></iconify-icon>
+                                <span
+                                    class="ml-1 text-sm font-medium text-emerald-600 md:ml-2 dark:text-gray-400">Modifier</span>
+                            </div>
+                        </li>
+                    </ol>
+                </nav>
+            </div>
+
+            <!-- Main Form Section -->
+            <div class="bg-white rounded-xl shadow-md overflow-hidden dark:bg-gray-800 transition-colors duration-300">
+                <div class="p-6 md:p-8">
+                    <form action="" method="post" enctype="multipart/form-data">
+                        {{ csrf_field() }}
+
+                        <!-- Name Class Selection -->
+                        <div class="mb-6">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                Nom de la classe <span class="text-red-500">*</span>
+                            </label>
+                            <div class="relative">
+                                <input type="text" id="name" name="name" value="{{ old('name', $getClass->name) }}" required
+                                    class="form-input w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-green-500 focus:border-green-400 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-green-500 dark:focus:border-green-500 transition-all duration-200"
+                                    placeholder="Entrez le nom de la classe">
+                            </div>
+                        </div>
+
+                        <div class="mb-6">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                Montant <span class="text-red-500">*</span>
+                            </label>
+                            <div class="relative">
+                                <input type="number" id="amount" name="amount" value="{{ old('amount', $getClass->amount) }}" required
+                                    class="form-input w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-emerald-500 dark:focus:border-violet-500 transition-all duration-200"
+                                    placeholder="Entrez le montant de la classe">
+                            </div>
+                        </div>
+
+                        <div class="mb-6">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                Statut <span class="text-red-500">*</span>
+                            </label>
+                            <div class="relative">
+                                <select id="status" name="status" required
+                                    class="custom-select w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-emerald-500 dark:focus:border-green-500 transition-all duration-200">
+                                    <option selected disabled value="">Veuillez choisir un status pour la classe
+                                    <option value="1" {{ (old('status', $getClass->status) == '1') ? 'selected' : '' }}>Active</option>
+                                    <option value="0" {{ (old('status', $getClass->status) == '0') ? 'selected' : '' }}>Inactive</option>
+                                </select>
+                                <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                                    <iconify-icon icon="mdi:chevron-down" class="text-gray-400" width="20"
+                                        height="20"></iconify-icon>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="mt-8">
+                            <button type="submit" id="submit-button"
+                                class="w-full flex justify-center items-center py-3 px-4 bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-700 hover:to-emerald-600 text-white font-medium rounded-lg shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-opacity-50 transition-all duration-300">
+                                <iconify-icon icon="mdi:content-save-check-outline" class="mr-2" width="20"
+                                    height="20"></iconify-icon>
+                                Modifier cette classe
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
-    </main>
-</div>
 @endsection
 
-
-
-
-@extends('layouts.app')
-@section('content')
-<div class="p-4 sm:ml-64">
-    <div class="p-4 rounded-lg mt-14">
-        <div class="space-x-2 font-semibold mt-3">
-            <span class="text-emerald-500"><i class="fa-solid fa-landmark"></i></span>
-            <span><i class="fa-solid fa-chevron-right"></i></span>
-            <span class="hover:underline hover:text-emerald-500 transition-all duration-300"><a
-                    href="{{ url('admin/class/list') }}">Liste des classes</a></span>
-            <span><i class="fa-solid fa-chevron-right"></i></span>
-            <span>Classe</span>
-        </div>
-        <div class="p-4 flex items-center justify-center">
-            <div class="w-full max-w-screen-md bg-white shadow-xl mt-24 rounded-md">
-                @include('message')
-                <h2 class="bg-emerald-500 font-bold uppercase text-center text-white rounded-t-lg py-3">
-                    Modifier cette classe</h2>
-                <form action="" method="post" class="p-5">
-                    {{ csrf_field() }}
-                    <div class="flex mb-5">
-                        <input type="text" id="name" name="name" value="{{ $getClass->name }}"
-                               class="rounded bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm ps-3"
-                               placeholder="nom de la classe..." required>
-                    </div>
-                    <div class="flex mb-5">
-                        <select id="status" name="status"
-                                class="rounded bg-gray-100 border border-gray-300 text-gray-900 focus:ring-violet-500 focus:border-violet-500 block w-full text-sm ps-3"
-                                required>
-                            <option disabled>Définissez un statut pour cette classe</option>
-                            <option value="1" name="status" {{ $getClass->status == 1 ? 'selected' : '' }}>Activée
-                            </option>
-                            <option value="0" name="status" {{ $getClass->status == 0 ? 'selected' : '' }}>Désactivée
-                            </option>
-                        </select>
-                    </div>
-                    <button type="submit"
-                            class="text-white bg-emerald-500 hover:bg-emerald-600 focus:ring-4 focus:outline-none focus:ring-emerald-300 font-medium rounded text-sm px-5 py-2.5 text-center transition-all duration-700 ease-out w-full">
-                        Modifier
-                    </button>
-            </div>
-            </form>
-        </div>
-    </div>
-</div>
-@endsection
+    <script>
+    </script>
 

@@ -33,6 +33,7 @@ class ClassController extends Controller
             $class = new ClassModel;
             $class->name = trim($request->name);
             $class->status = trim($request->status);
+            $class->amount = intval($request->amount);
             $class->created_by = auth()->user()->id;
             $class->save();
 
@@ -71,6 +72,7 @@ class ClassController extends Controller
 
             $class->name = trim($request->name);
             $class->status = intval($request->status);
+            $class->amount = intval($request->amount);
             $class->save();
             return redirect('admin/class/list')->with('success', 'Cette classe a été modifiée avec succès.');
 
