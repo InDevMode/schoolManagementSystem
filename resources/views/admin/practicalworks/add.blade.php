@@ -20,8 +20,7 @@
                         <li class="inline-flex items-center">
                             <a href="{{ url('admin/dashboard') }}"
                                 class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-violet-600 dark:text-gray-400 dark:hover:text-white">
-                                <iconify-icon icon="mdi:home" class="mr-2" width="16"
-                                    height="16"></iconify-icon>
+                                <iconify-icon icon="mdi:home" class="mr-2" width="16" height="16"></iconify-icon>
                                 Tableau de bord
                             </a>
                         </li>
@@ -188,12 +187,12 @@
 
 
         </div>
-    @endsection
+@endsection
 
     <script>
 
         // Initialize Summernote
-        document.addEventListener("DOMContentLoaded", function() {
+        document.addEventListener("DOMContentLoaded", function () {
             const textarea = document.getElementById("compose-textarea");
             if (textarea) {
                 window.jQuery(textarea).summernote({
@@ -264,7 +263,7 @@
                 },
             };
 
-            dropzoneFile.addEventListener('change', function(e) {
+            dropzoneFile.addEventListener('change', function (e) {
                 const file = e.target.files[0];
 
                 // Reset affichage
@@ -316,11 +315,11 @@
 
         // Initialize date pickers
         document.querySelectorAll('.form-datepicker').forEach(input => {
-            input.addEventListener('focus', function() {
+            input.addEventListener('focus', function () {
                 this.type = 'date';
             });
 
-            input.addEventListener('blur', function() {
+            input.addEventListener('blur', function () {
                 if (!this.value) {
                     this.type = 'text';
                 }

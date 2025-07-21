@@ -189,7 +189,9 @@ Route::group(['middleware' => 'admin'], function () {
     Route::get('admin/practicalworks/homework/reports/details/{id}', [WorkController::class, 'homeworkReportDetails']);
 
     // Fees collection url
-    Route::get('admin/feescollection/collections/list', [FeesCollectionController::class, 'list']);
+    Route::get('admin/feescollections/collections/list', [FeesCollectionController::class, 'list']);
+    Route::get('admin/feescollections/collections/addFees/{id}', [FeesCollectionController::class, 'addFees']);
+    Route::post('admin/feescollections/collections/addFees/{id}', [FeesCollectionController::class, 'createFees']);
 
 });
 

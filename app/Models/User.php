@@ -439,31 +439,43 @@ class User extends Authenticatable
             ->get();
     }
 
-    public static function getFeesCollectionStudent(int $perpage)
+    public static function getFeesCollectionStudent(int $perpage, array $filters = [])
     {
-        $results = User::select('users.*', 'class.name as class_name', 'class.amount as class_amount',  'users.name as created_by_name', 'users.name as student_name', 'users.last_name as student_last_name')
-            ->join('class', 'class.id', '=', 'users.class_id', 'left')
-            ->join('users as student', 'student.id', '=', 'users.id', 'left')
-              ->join('users as created_by_name', 'users.id', '=', 'class.created_by')
+        $results = User::select(
+            'users.*',
+            'class.name as class_name',
+            'class.amount as class_amount',
+            'users.name as created_by_name',
+            'users.name as student_name',
+            'users.last_name as student_last_name'
+        )
+            ->leftJoin('class', 'class.id', '=', 'users.class_id')
             ->where('users.is_delete', 0)
             ->where('users.status', 1)
             ->where('users.user_type', 3);
 
-        $filters = [
-            'users.class_id' => strtolower(Request::get('class_id')),
-            'users.id' => strtolower(Request::get('student_id')),
-            'student.name' => strtolower(Request::get('student_name')),
-            'student.last_name' => strtolower(Request::get('student_last_name')),
+        // Filtrage intelligent sans if explicites
+        $mapping = [
+            'class_id' => 'users.class_id',
+            'student_name' => 'users.name',
+            'student_last_name' => 'users.last_name',
         ];
 
-        foreach ($filters as $column => $value) {
-            if (!empty($value)) {
-                $results->where($column, 'like', '%' . $value . '%');
+        foreach ($filters as $key => $value) {
+            if (!empty($value) && isset($mapping[$key])) {
+                $results->where($mapping[$key], 'like', '%' . strtolower($value) . '%');
             }
         }
 
-        return $results->orderBy('student.name', 'asc')
-            ->paginate($perpage);
+        return $results->orderBy('users.name', 'asc')->paginate($perpage);
+    }
+
+    public static function getSingleClass(int $id)
+    {
+        return User::select('users.*', 'class.name as class_name', 'class.amount as class_amount')
+            ->join('class', 'class.id', '=', 'users.class_id')
+            ->where('users.id', $id)
+            ->first();
     }
 
 

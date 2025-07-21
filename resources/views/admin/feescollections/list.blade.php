@@ -2,9 +2,10 @@
 @section('content')
     <div class="container mx-auto px-4 py-5">
         @include('message')
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-5 gap-4">
+        <div class="relative flex flex-col md:flex-row justify-between items-start md:items-center mb-5 gap-4"
+            x-data="{ open: false, showConfirm: false }">
             <div>
-                <h1 class="text-2xl font-bold text-gray-800 dark:text-white flex items-center gap-2">
+                <h1 class=" text-2xl font-bold text-gray-800 dark:text-white flex items-center gap-2">
                     <i class="fa-solid fa-cash-register text-primary-600"></i>
                     Liste des contributions
                 </h1>
@@ -26,11 +27,10 @@
                         </span>
                     </li>
                     <li class="flex items-center">
-                        <a href="{{ url('admin/feescollections/add') }}"
-                            class="text-primary-600 hover:text-violet-600 transition-colors">
-                            <i class="fas fa-plus-circle mr-1"></i>
-                            Créer une contribution
-                        </a>
+                        <span class="text-primary-600 hover:text-violet-600 transition-colors">
+                            <i class="fas fa-cash-register mr-1"></i>
+                            Contributions
+                        </span>
                     </li>
                 </ol>
             </nav>
@@ -47,7 +47,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
 
                     <!-- Classe Name Input -->
-                    <div class="mb-6">
+                    <div class="mb-3">
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                             Classe <span class="text-red-500">*</span>
                         </label>
@@ -68,14 +68,33 @@
                         </div>
                     </div>
 
-                     <!-- Student Input -->
+                    <!-- Student Name Input -->
                     <div>
-                        <label for="student_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Apprenant </label>
+                        <label for="student_name"
+                            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nom de
+                            l'Apprenant
+                        </label>
                         <div class="relative">
                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <i class="fas fa-user-plus text-gray-400"></i>
+                                <i class="fas fa-user text-gray-400"></i>
                             </div>
-                            <input type="text" id="student_id" name="student_id" value="{{ Request::get('student_id') }}" placeholder="Nom, Prénom, Matricule"
+                            <input type="text" id="student_name" name="student_name"
+                                value="{{ Request::get('student_name') }}" placeholder="Nom"
+                                class="pl-10 w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-primary-600 focus:border-primary-600 p-2.5">
+                        </div>
+                    </div>
+
+                    <!-- Student last Name Input -->
+                    <div>
+                        <label for="student_last_name"
+                            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Prénoms de l'Apprenant
+                        </label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-user text-gray-400"></i>
+                            </div>
+                            <input type="text" id="student_last_name" name="student_last_name"
+                                value="{{ Request::get('student_last_name') }}" placeholder="Prénoms"
                                 class="pl-10 w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-primary-600 focus:border-primary-600 p-2.5">
                         </div>
                     </div>
@@ -101,8 +120,7 @@
                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                 <i class="fas fa-calendar-check text-gray-400"></i>
                             </div>
-                            <input type="date" id="updated_at" name="updated_at" placeholder="Jour/Mois/Année"
-                                value="{{ Request::get('updated_at') }}"
+                            <input type="date" id="updated_at" name="updated_at" value="{{ Request::get('updated_at') }}"
                                 class="pl-10 w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-primary-600 focus:border-primary-600 p-2.5">
                         </div>
                     </div>
@@ -124,10 +142,10 @@
             </form>
         </div>
 
-         @if (!empty($getFeescollections))
-        <div class="my-5">
-            {{ $getFeesCollections->links('vendor.pagination.tailwind') }}
-        </div>
+        @if (!empty($getFeescollections))
+            <div class="my-5">
+                {{ $getFeesCollections->links('vendor.pagination.tailwind') }}
+            </div>
         @endif
         <!-- Results Section -->
         <div class="bg-white rounded-lg dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
@@ -192,7 +210,7 @@
                                         <div class="flex items-center">
                                             <div class="">
                                                 <span
-                                                    class="text-sm font-medium text-gray-900 dark:text-white">{{ $feescollections->class_amount ? $feescollections->class_amount : '0' }}
+                                                    class="text-sm font-medium text-gray-900 dark:text-white">{{ $feescollections->class_amount ?? '0' }}
                                                     FCFA</span>
                                             </div>
                                         </div>
@@ -201,7 +219,7 @@
                                         <div class="flex items-center">
                                             <div class="">
                                                 <span
-                                                    class="text-sm font-medium text-gray-900 dark:text-white">{{ $feescollections->class_amount ? $feescollections->class_amount : '0' }}
+                                                    class="text-sm font-medium text-gray-900 dark:text-white">{{ $feescollections->class_amount ?? '0' }}
                                                     FCFA</span>
                                             </div>
                                         </div>
@@ -216,7 +234,7 @@
                                         {{ \Carbon\Carbon::parse($feescollections->updated_at)->locale('fr')->translatedFormat('d M Y H:i:s') }}
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                        <div class="relative inline-block text-left" x-data="{ open: false }">
+                                        <div class="relative inline-block text-left" x-data="{ open: false, showConfirm: false }">
                                             <div>
                                                 <button type="button"
                                                     class="group inline-flex w-full justify-center gap-x-1.5 rounded-lg shadow-md bg-white dark:bg-gray-800 border dark:border-gray-600 dark:hover:text-violet-600 px-3 py-2 text-sm font-semibold text-gray-700 hover:text-violet-600 dark:text-gray-200 hover:bg-gray-100"
@@ -232,62 +250,121 @@
                                                 role="menu" aria-orientation="vertical" aria-labelledby="menu-button"
                                                 tabindex="{{ $index + 1 }}" x-show="open" @click.away="open = false" x-transition>
                                                 <div class="py-1">
-                                                    <a href="{{ url('admin/class/edit', $feescollections->id) }}"
-                                                        class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:text-emerald-400 dark:hover:text-emerald-400"
-                                                        role="menuitem"><i class="fas fa-edit mr-2"></i>Modifier</a>
-                                                    <div x-data="{ showConfirm: false }">
-                                                        <!-- Bouton initial -->
+                                                    <div x-data="{ showConfirm: false, selectedStudent: null }">
                                                         <button type="button" @click="showConfirm = true"
-                                                            class="block w-full px-4 py-2 text-left text-sm text-gray-700 dark:text-gray-200 hover:text-red-400 dark:hover:text-red-400">
-                                                            <i class="fas fa-trash mr-2"></i> Supprimer
-                                                        </button>
-
-                                                        <!-- Modal de confirmation -->
-                                                        <template x-if="showConfirm">
+                                                            class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:text-violet-600 dark:hover:text-violet-600"
+                                                            role="menuitem"><i class="fas fa-cash-register mr-2"></i>Ajouter un
+                                                            frais</button>
+                                                        <!-- MODAL de confirmation -->
+                                                        <div x-show="showConfirm" x-transition x-cloak
+                                                            class="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
                                                             <div
-                                                                class="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
+                                                                class="bg-white dark:bg-gray-800 rounded-lg shadow-lg border-b dark:border-gray-400 w-[40%] h-auto">
                                                                 <div
-                                                                    class="bg-white dark:bg-gray-800 rounded-lg shadow-lg border-b dark:border-gray-400 w-[30%] h-auto">
-                                                                    <div
-                                                                        class="flex items-center justify-between p-4 border-b dakr:border-gray-600 border-gray-200 rounded-t bg-violet-500 dark:bg-gray-700">
-                                                                        <h3
-                                                                            class="text-lg font-semibold text-white dark:text-white">
-                                                                            Supprimer la contribution d'une classe
-                                                                        </h3>
-                                                                        <button type="button" @click="showConfirm = false"
-                                                                            class="text-white hover:text-gray-900 dark:hover:text-white rounded-lg text-sm w-8 h-8 inline-flex justify-center items-center">
-                                                                            <iconify-icon icon="mdi:close" width="20"
-                                                                                height="20"></iconify-icon>
-                                                                        </button>
-                                                                    </div>
+                                                                    class="flex items-center justify-between p-4 border-b border-gray-200 rounded-t bg-violet-500 dark:bg-gray-700">
+                                                                    <h3
+                                                                        class="text-lg font-semibold text-white dark:text-white text-center">
+                                                                        Ajouter une nouvelle
+                                                                        contribution pour <span
+                                                                            class="font-bold bg-white text-gray-900 py-1 rounded px-2 text-sm me-1">{{ $feescollections->student_name }}
+                                                                            {{ $feescollections->student_last_name }} </span>  de la
+                                                                        classe de <span class="font-bold bg-white text-gray-900 py-1 rounded px-2 text-sm">{{ $feescollections->class_name }}</span></h3>
+                                                                    <button type="button" @click="showConfirm = false"
+                                                                        class="text-white hover:text-gray-900 dark:hover:text-white rounded-lg text-sm w-8 h-8 inline-flex justify-center items-center">
+                                                                        <iconify-icon icon="mdi:close" width="20"
+                                                                            height="20"></iconify-icon>
+                                                                    </button>
+                                                                </div>
 
-                                                                    <!-- Message -->
-                                                                    <div class="p-4">
-                                                                        <div
-                                                                            class="text-center text-lg text-gray-800 dark:text-gray-200">
-                                                                            <p> Êtes-vous sûr de vouloir supprimer
-                                                                                cette contribution de cette classe
-                                                                                du nom de</p>
-                                                                            <p class="font-bold"> {{ $feescollections->name }}
-                                                                                ?
-                                                                            </p>
+                                                                <form
+                                                                    action="{{ url('admin/feescollections/collections/addFees') }}"
+                                                                    method="POST" class="m-5" enctype="multipart/form-data">
+                                                                    {{ csrf_field() }}
+
+                                                                    <div class="mb-6">
+                                                                        <label
+                                                                            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                                                            Montant total <span class="text-red-500">*</span>
+                                                                        </label>
+                                                                        <div class="relative">
+                                                                            <input type="text" id="amount_total" name="amount_total"
+                                                                                value="" x-model="selectedStudent.class_amount"
+                                                                                required disabled
+                                                                                class="form-input w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-violet-500 focus:border-violet-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500 transition-all duration-200"
+                                                                                placeholder="Montant total par défaut">
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="mb-6">
+                                                                        <label
+                                                                            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                                                            Montant Payé <span class="text-red-500">*</span>
+                                                                        </label>
+                                                                        <div class="relative">
+                                                                            <input type="text" id="amount_total" name="amount_total"
+                                                                                value="" required disabled
+                                                                                class="form-input w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-violet-500 focus:border-violet-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500 transition-all duration-200"
+                                                                                placeholder="Montant total par défaut">
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="mb-6">
+                                                                        <label
+                                                                            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                                                            Montant Restant <span class="text-red-500">*</span>
+                                                                        </label>
+                                                                        <div class="relative">
+                                                                            <input type="text" id="amount_total" name="amount_total"
+                                                                                value="" required disabled
+                                                                                class="form-input w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-violet-500 focus:border-violet-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500 transition-all duration-200"
+                                                                                placeholder="Montant total par défaut">
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="mb-6">
+                                                                        <label
+                                                                            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                                                            Montant <span class="text-red-500">*</span>
+                                                                        </label>
+                                                                        <div class="relative">
+                                                                            <input type="number" id="amount_total"
+                                                                                name="amount_total" value="" required
+                                                                                class="form-input w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-violet-500 focus:border-violet-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500 transition-all duration-200"
+                                                                                placeholder="Montant ">
                                                                         </div>
                                                                     </div>
 
-                                                                    <!-- Pied du modal -->
-                                                                    <div class="flex justify-between px-4 py-3 rounded-b">
+                                                                    <div class="mb-3">
+                                                                        <label
+                                                                            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                                                            Type de paiement <span class="text-red-500">*</span>
+                                                                        </label>
+                                                                        <div class="relative">
+                                                                            <select id="class_id" name="class_id" required
+                                                                                class="custom-select w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-violet-500 focus:border-violet-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500 transition-all duration-200">
+                                                                                <option selected disabled value="">Veuillez choisir
+                                                                                    un type de paiement
+
+                                                                            </select>
+                                                                            <div
+                                                                                class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                                                                                <iconify-icon icon="mdi:chevron-down"
+                                                                                    class="text-gray-400" width="20"
+                                                                                    height="20"></iconify-icon>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div class="flex justify-between py-3 rounded-b">
                                                                         <button @click="showConfirm = false"
-                                                                            class="block px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-sm rounded hover:bg-gray-300 dark:hover:bg-gray-600">
+                                                                            class="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-sm rounded hover:bg-gray-300 dark:hover:bg-gray-600">
                                                                             Annuler
                                                                         </button>
-                                                                        <a href="{{ url('admin/class/delete', $feescollections->id) }}"
-                                                                            class="block px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 text-sm">
-                                                                            Oui supprimer
+                                                                        <a href=""
+                                                                            class="px-4 py-2 bg-violet-600 text-white rounded hover:bg-violet-700">
+                                                                            Valider cet ajout contribution
                                                                         </a>
                                                                     </div>
-                                                                </div>
+                                                                </form>
                                                             </div>
-                                                        </template>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -309,19 +386,19 @@
 
             <!-- Table Footer -->
             @if (!empty($getFeescollections))
-            <div
-                class="px-6 py-4 border-t border-gray-200 dark:border-gray-700 flex flex-col sm:flex-row justify-between items-center gap-4">
-                <div class="text-sm text-gray-500 dark:text-gray-400">
-                    Total de <span class="font-medium">{{ $getFeescollections->total() }}</span> classe<span
-                        class="">{{ $getFeescollections->total() > 1 ? 's' : '' }}</span> affiché<span
-                        class="">{{ $getFeescollections->total() > 1 ? 's' : '' }}</span>
-                </div>
+                <div
+                    class="px-6 py-4 border-t border-gray-200 dark:border-gray-700 flex flex-col sm:flex-row justify-between items-center gap-4">
+                    <div class="text-sm text-gray-500 dark:text-gray-400">
+                        Total de <span class="font-medium">{{ $getFeescollections->total() }}</span> classe<span
+                            class="">{{ $getFeescollections->total() > 1 ? 's' : '' }}</span> affiché<span
+                            class="">{{ $getFeescollections->total() > 1 ? 's' : '' }}</span>
+                    </div>
 
-                <!-- Pagination -->
-                <nav class="flex items-center gap-5">
-                    {{ $getFeescollections->links('vendor.pagination.tailwind') }}
-                </nav>
-            </div>
+                    <!-- Pagination -->
+                    <nav class="flex items-center gap-5">
+                        {{ $getFeescollections->links('vendor.pagination.tailwind') }}
+                    </nav>
+                </div>
             @endif
         </div>
     </div>
