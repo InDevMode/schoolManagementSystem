@@ -31,4 +31,12 @@ class FeesCollectionModel extends Model
         return FeesCollectionModel::find($id);
     }
 
+    public static function getFees(int $student_id)
+    {
+        return FeesCollectionModel::select('feescollections.*')
+            ->join('class', 'class.id', '=', 'feescollections.class_id')
+            ->where('feescollections.student_id', $student_id)
+            ->get();
+    }
+
 }
