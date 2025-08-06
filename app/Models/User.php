@@ -439,7 +439,7 @@ class User extends Authenticatable
             ->get();
     }
 
-    public static function getFeesCollectionStudent(int $perpage, array $filters = [])
+    public static function getFeesCollectionStudent(int $perpage)
     {
         $results = User::select(
             'users.*',
@@ -459,21 +459,40 @@ class User extends Authenticatable
             ->where('users.status', 1)
             ->where('users.user_type', 3);
 
-        // Filtrage intelligent sans if explicites
-        $mapping = [
-            'class_id' => 'users.class_id',
-            'student_name' => 'users.name',
-            'student_last_name' => 'users.last_name',
+        $filters = [
+            'class_id' => Request::get('class_id'),
+            'student_name' => Request::get('student_name'),
+            'student_last_name' => Request::get('student_last_name'),
+            'admission_number' => Request::get('admission_number'),
+            'created_at' => Request::get('created_at'),
+            'updated_at' => Request::get('updated_at'),
         ];
 
-        foreach ($filters as $key => $value) {
-            if (!empty($value) && isset($mapping[$key])) {
-                $results->where($mapping[$key], 'like', '%' . strtolower($value) . '%');
-            }
+        $map = [
+            'class_id' => ['users.class_id', '='],
+            'student_name' => ['users.name', 'like'],
+            'student_last_name' => ['users.last_name', 'like'],
+            'admission_number' => ['users.admission_number', 'like'],
+            'created_at' => ['feescollections.created_at', 'date'],
+            'updated_at' => ['feescollections.updated_at', 'date'],
+        ];
+
+        foreach ($map as $key => [$column, $operator]) {
+            $value = $filters[$key] ?? null;
+
+            if ($value === null || $value === '')
+                continue;
+
+            match ($operator) {
+                'like' => $results->where($column, 'like', '%' . $value . '%'),
+                'date' => $results->whereDate($column, $value),
+                default => $results->where($column, $value),
+            };
         }
 
         return $results->orderBy('users.name', 'asc')->paginate($perpage);
     }
+
 
     public static function getSingleClass(int $id)
     {
@@ -482,7 +501,6 @@ class User extends Authenticatable
             ->where('users.id', $id)
             ->first();
     }
-
 
 
 }

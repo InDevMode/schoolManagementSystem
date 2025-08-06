@@ -48,8 +48,8 @@
 
                     <!-- Admission number -->
                     <div>
-                        <label for="student_name"
-                            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">N° Matricule
+                        <label for="student_name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">N°
+                            Matricule
                         </label>
                         <div class="relative">
                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -71,7 +71,7 @@
                                 class="custom-select w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-violet-500 focus:border-violet-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500 transition-all duration-200">
                                 <option selected disabled value="">Veuillez choisir une classe
                                     @foreach ($getClass as $class)
-                                        <option value="{{ $class->id }}" {{ (old('class_id') == $class->id) ? 'selected' : '' }}>
+                                        <option value="{{ $class->id }}" {{ Request::get('class_id') == $class->id ? 'selected' : '' }}>
                                             {{ $class->name }}
                                         </option>
                                     @endforeach
@@ -157,11 +157,9 @@
             </form>
         </div>
 
-        @if (!empty($getFeescollections))
-            <div class="my-5">
-                {{ $getFeesCollections->links('vendor.pagination.tailwind') }}
-            </div>
-        @endif
+        <div class="my-5">
+            {{ $getFeesCollections->links('vendor.pagination.tailwind') }}
+        </div>
 
         <!-- Results Section -->
         <div class="bg-white rounded-lg dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
@@ -209,244 +207,237 @@
                         </tr>
                     </thead>
                     <tbody class="z-20 bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                        @if (!empty($getFeesCollections))
 
-                            <!-- Sample Row 1 -->
-                            @foreach ($getFeesCollections as $index => $feescollections)
-                                <tr class="hover:bg-violet-100 dark:hover:bg-gray-700 transition-colors">
-                                    <td class="px-6 py-4 whitespace-nowrap font-medium text-sm text-gray-500 dark:text-gray-400">
-                                        {{ $feescollections->admission_number }}
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="flex items-center">
-                                            <div class="">
-                                                <span
-                                                    class="text-sm font-medium text-gray-900 dark:text-white">{{ $feescollections->student_name }}</span>
-                                                <span
-                                                    class="text-sm font-medium text-gray-900 dark:text-white">{{ $feescollections->student_last_name }}</span>
-                                            </div>
+                        <!-- Sample Row 1 -->
+                        @foreach ($getFeesCollections as $index => $feescollections)
+                            <tr class="hover:bg-violet-100 dark:hover:bg-gray-700 transition-colors">
+                                <td class="px-6 py-4 whitespace-nowrap font-medium text-sm text-gray-500 dark:text-gray-400">
+                                    {{ $feescollections->admission_number }}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center">
+                                        <div class="">
+                                            <span
+                                                class="text-sm font-medium text-gray-900 dark:text-white">{{ $feescollections->student_name }}</span>
+                                            <span
+                                                class="text-sm font-medium text-gray-900 dark:text-white">{{ $feescollections->student_last_name }}</span>
                                         </div>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                                        {{ $feescollections->class_name }}
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="flex items-center">
-                                            <div class="">
-                                                <span
-                                                    class="text-sm font-medium text-gray-900 dark:text-white">{{ $feescollections->class_amount ?? '0' }}
-                                                    FCFA</span>
-                                            </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                                    {{ $feescollections->class_name }}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center">
+                                        <div class="">
+                                            <span
+                                                class="text-sm font-medium text-gray-900 dark:text-white">  {{ number_format($feescollections->class_amount, 0, ',', ' ') }}
+                                                FCFA</span>
                                         </div>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="flex items-center">
-                                            <div class="">
-                                                <span
-                                                    class="text-sm font-medium text-gray-900 dark:text-white">{{ $feescollections->paid_amount ?? '0' }}
-                                                    FCFA</span>
-                                            </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center">
+                                        <div class="">
+                                            <span
+                                                class="text-sm font-medium text-gray-900 dark:text-white">  {{ number_format($feescollections->paid_amount, 0, ',', ' ') }} FCFA</span>
                                         </div>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="flex items-center">
-                                            <div class="">
-                                                <span
-                                                    class="text-sm font-medium text-gray-900 dark:text-white">{{ $feescollections->remaning_amount ?? '0' }}
-                                                    FCFA</span>
-                                            </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center">
+                                        <div class="">
+                                            <span
+                                                class="text-sm font-medium text-gray-900 dark:text-white">  {{ number_format($feescollections->remaning_amount, 0, ',', ' ') }} FCFA</span>
                                         </div>
-                                    </td>
-                                     <td class="px-6 py-4 whitespace-nowrap font-medium text-sm text-gray-500 dark:text-gray-400">
-                                        {{ $feescollections->created_by_name }}
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                                        {{ \Carbon\Carbon::parse($feescollections->created_at)->locale('fr')->translatedFormat('d M Y H:i:s') }}
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                        <div class="relative inline-block text-left" x-data="{ open: false, showConfirm: false }">
-                                            <div>
-                                                <button type="button"
-                                                    class="group inline-flex w-full justify-center gap-x-1.5 rounded-lg shadow-md bg-white dark:bg-gray-800 border dark:border-gray-600 dark:hover:text-violet-600 px-3 py-2 text-sm font-semibold text-gray-700 hover:text-violet-600 dark:text-gray-200 hover:bg-gray-100"
-                                                    @click="open = !open" id="menu-button" aria-expanded="true"
-                                                    aria-haspopup="true">
-                                                    Actions
-                                                    <span
-                                                        class="-mr-1 size-5 group-hover:text-violet-600 text-gray-400"><iconify-icon
-                                                            icon="mdi:chevron-down" width="22" height="22"></iconify-icon></span>
-                                                </button>
-                                            </div>
-                                            <div class="absolute right-0 z-50 mt-2 w-56 origin-top-right rounded-md bg-white dark:bg-gray-800 ring-1 shadow-lg ring-black/5 focus:outline-hidden"
-                                                role="menu" aria-orientation="vertical" aria-labelledby="menu-button"
-                                                tabindex="{{ $index + 1 }}" x-show="open" @click.away="open = false" x-transition>
-                                                <div class="py-1">
-                                                    <div x-data="{ showConfirm: false, selectedStudent: null }">
-                                                        <button type="button" @click="showConfirm = true"
-                                                            class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:text-violet-600 dark:hover:text-violet-600"
-                                                            role="menuitem"><i class="fas fa-cash-register mr-2"></i>Ajouter un
-                                                            frais</button>
-                                                        <!-- MODAL de confirmation -->
-                                                        <div x-show="showConfirm" x-transition x-cloak
-                                                            class="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap font-medium text-sm text-gray-500 dark:text-gray-400">
+                                    {{ $feescollections->created_by_name }}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                                    {{ \Carbon\Carbon::parse($feescollections->created_at)->locale('fr')->translatedFormat('d M Y H:i:s') }}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                    <div class="relative inline-block text-left" x-data="{ open: false, showConfirm: false }">
+                                        <div>
+                                            <button type="button"
+                                                class="group inline-flex w-full justify-center gap-x-1.5 rounded-lg shadow-md bg-white dark:bg-gray-800 border dark:border-gray-600 dark:hover:text-violet-600 px-3 py-2 text-sm font-semibold text-gray-700 hover:text-violet-600 dark:text-gray-200 hover:bg-gray-100"
+                                                @click="open = !open" id="menu-button" aria-expanded="true"
+                                                aria-haspopup="true">
+                                                Actions
+                                                <span
+                                                    class="-mr-1 size-5 group-hover:text-violet-600 text-gray-400"><iconify-icon
+                                                        icon="mdi:chevron-down" width="22" height="22"></iconify-icon></span>
+                                            </button>
+                                        </div>
+                                        <div class="absolute right-0 z-50 mt-2 w-56 origin-top-right rounded-md bg-white dark:bg-gray-800 ring-1 shadow-lg ring-black/5 focus:outline-hidden"
+                                            role="menu" aria-orientation="vertical" aria-labelledby="menu-button"
+                                            tabindex="{{ $index + 1 }}" x-show="open" @click.away="open = false" x-transition>
+                                            <div class="py-1">
+                                                <div x-data="{ showConfirm: false, selectedStudent: null }">
+                                                    <button type="button" @click="showConfirm = true"
+                                                        class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:text-violet-600 dark:hover:text-violet-600"
+                                                        role="menuitem"><i class="fas fa-cash-register mr-2"></i>Ajouter un
+                                                        frais</button>
+                                                    <!-- MODAL de confirmation -->
+                                                    <div x-show="showConfirm" x-transition x-cloak
+                                                        class="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
+                                                        <div
+                                                            class="bg-white dark:bg-gray-800 border-b border-gray-200 rounded-lg shadow-lg w-[40%] h-auto">
                                                             <div
-                                                                class="bg-white dark:bg-gray-800 border-b border-gray-200 rounded-lg shadow-lg w-[40%] h-auto">
-                                                                <div
-                                                                    class="flex items-center justify-between p-4 border-b border-gray-200 rounded-t bg-violet-500 dark:bg-violet-600">
-                                                                    <h3
-                                                                        class="text-lg font-semibold text-white dark:text-white text-center">
-                                                                        Ajouter une nouvelle
-                                                                        contribution pour <span
-                                                                            class="font-bold bg-white text-gray-900 py-1 rounded px-2 text-sm me-1">{{ $feescollections->student_name }}
-                                                                            {{ $feescollections->student_last_name }} </span> de la
-                                                                        classe de <span
-                                                                            class="font-bold bg-white text-gray-900 py-1 rounded px-2 text-sm">{{ $feescollections->class_name }}</span>
-                                                                    </h3>
-                                                                    <button type="button" @click="showConfirm = false"
-                                                                        class="text-white hover:text-gray-900 dark:hover:text-white rounded-lg text-sm w-8 h-8 inline-flex justify-center items-center">
-                                                                        <iconify-icon icon="mdi:close" width="20"
-                                                                            height="20"></iconify-icon>
+                                                                class="flex items-center justify-between p-4 border-b border-gray-200 rounded-t bg-violet-500 dark:bg-violet-600">
+                                                                <h3
+                                                                    class="text-lg font-semibold text-white dark:text-white text-center">
+                                                                    Ajouter une nouvelle
+                                                                    contribution pour <span
+                                                                        class="font-bold bg-white text-gray-900 py-1 rounded px-2 text-sm me-1">{{ $feescollections->student_name }}
+                                                                        {{ $feescollections->student_last_name }} </span> de la
+                                                                    classe de <span
+                                                                        class="font-bold bg-white text-gray-900 py-1 rounded px-2 text-sm">{{ $feescollections->class_name }}</span>
+                                                                </h3>
+                                                                <button type="button" @click="showConfirm = false"
+                                                                    class="text-white hover:text-gray-900 dark:hover:text-white rounded-lg text-sm w-8 h-8 inline-flex justify-center items-center">
+                                                                    <iconify-icon icon="mdi:close" width="20"
+                                                                        height="20"></iconify-icon>
+                                                                </button>
+                                                            </div>
+                                                            <form
+                                                                action="{{ route('createFeesCollects', $feescollections->id) }}"
+                                                                method="POST" class="m-5" enctype="multipart/form-data">
+                                                                {{ csrf_field() }}
+                                                                <input type="hidden" name="class_id"
+                                                                    value="{{ $feescollections->class_id }}">
+                                                                <input type="hidden" name="student_id"
+                                                                    value="{{ $feescollections->id }}">
+                                                                <div class="mb-6">
+                                                                    <label
+                                                                        class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                                                        Montant total <span class="text-red-500">* </span>
+                                                                    </label>
+                                                                    <div class="relative">
+                                                                        <input type="text" id="total_amount" name="total_amount"
+                                                                            value="{{old('total_amount', $feescollections->class_amount ?? 0) }}"
+                                                                            required
+                                                                            class="form-input w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-violet-500 focus:border-violet-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500 transition-all duration-200"
+                                                                            placeholder="Montant total par défaut">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="mb-6">
+                                                                    <label
+                                                                        class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                                                        Montant Payé <span class="text-red-500">*</span>
+                                                                    </label>
+                                                                    <div class="relative">
+                                                                        <input type="text" id="paid_amount" name="paid_amount"
+                                                                            value="{{old('paid_amount', $feescollections->paid_amount ?? 0) }}"
+                                                                            required disabled
+                                                                            class="form-input w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-violet-500 focus:border-violet-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500 transition-all duration-200"
+                                                                            placeholder="Montant payé">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="mb-6">
+                                                                    <label
+                                                                        class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                                                        Montant Restant <span class="text-red-500">*</span>
+                                                                    </label>
+                                                                    <div class="relative">
+                                                                        <input type="text" id="remaning_amount"
+                                                                            name="remaning_amount"
+                                                                            value="{{old('remaning_amount', $feescollections->remaning_amount ?? 0) }}"
+                                                                            required disabled
+                                                                            class="form-input w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-violet-500 focus:border-violet-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500 transition-all duration-200"
+                                                                            placeholder="Montant restant">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="mb-6">
+                                                                    <label
+                                                                        class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                                                        Montant <span class="text-red-500">*</span>
+                                                                    </label>
+                                                                    <div class="relative">
+                                                                        <input type="number" id="amount" name="amount" value=""
+                                                                            required
+                                                                            class="form-input w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-violet-500 focus:border-violet-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500 transition-all duration-200"
+                                                                            placeholder="Montant ">
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="mb-3">
+                                                                    <label
+                                                                        class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                                                        Type de paiement <span class="text-red-500">*</span>
+                                                                    </label>
+                                                                    <div class="relative">
+                                                                        <select id="payment_type" name="payment_type" required
+                                                                            class="custom-select w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-violet-500 focus:border-violet-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500 transition-all duration-200">
+                                                                            <option selected disabled value="">Veuillez choisir
+                                                                                un type de paiement </option>
+                                                                            <option value="check">Chèque</option>
+                                                                            <option value="transfer">Virement</option>
+                                                                            <option value="cash">Espèces</option>
+                                                                        </select>
+                                                                        <div
+                                                                            class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                                                                            <iconify-icon icon="mdi:chevron-down"
+                                                                                class="text-gray-400" width="20"
+                                                                                height="20"></iconify-icon>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="mb-3">
+                                                                    <label
+                                                                        class="mb-3 block text-sm font-medium text-black dark:text-white">
+                                                                        Remarque <span class="text-meta-1">*</span>
+                                                                    </label>
+                                                                    <textarea name="remark"
+                                                                        class="w-full rounded-lg border-[1.5px] border-stroke bg-gray-100 dark:text-gray-200 dark:placeholder-gray-200 px-5 py-2.5 font-normal outline-none transition focus:border-violet-600 active:border-violet-600 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-violet-600"
+                                                                        required>{{ old('remark') }}</textarea>
+                                                                </div>
+
+                                                                <div class="flex justify-between py-3 rounded-b">
+                                                                    <button @click="showConfirm = false"
+                                                                        class="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-sm rounded hover:bg-gray-300 dark:hover:bg-gray-600">
+                                                                        Annuler
+                                                                    </button>
+                                                                    <button type="submit"
+                                                                        class="block w-48 rounded-lg bg-violet-600 p-3 font-medium text-gray hover:bg-opacity-90">
+                                                                        Valider
                                                                     </button>
                                                                 </div>
-                                                                <form
-                                                                    action="{{ route('createFeesCollects', $feescollections->id) }}"
-                                                                    method="POST" class="m-5" enctype="multipart/form-data">
-                                                                    {{ csrf_field() }}
-
-                                                                    <input type="hidden" name="class_id"
-                                                                        value="{{ $feescollections->class_id }}">
-                                                                    <input type="hidden" name="student_id"
-                                                                        value="{{ $feescollections->id }}">
-                                                                    <div class="mb-6">
-                                                                        <label
-                                                                            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                                                            Montant total <span class="text-red-500">* </span>
-                                                                        </label>
-                                                                        <div class="relative">
-                                                                            <input type="text" id="total_amount" name="total_amount"
-                                                                                value="{{old('total_amount', $feescollections->class_amount ?? 0) }}"
-                                                                                required
-                                                                                class="form-input w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-violet-500 focus:border-violet-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500 transition-all duration-200"
-                                                                                placeholder="Montant total par défaut">
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="mb-6">
-                                                                        <label
-                                                                            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                                                            Montant Payé <span class="text-red-500">*</span>
-                                                                        </label>
-                                                                        <div class="relative">
-                                                                            <input type="text" id="paid_amount" name="paid_amount"
-                                                                                value="{{old('paid_amount', $feescollections->paid_amount ?? 0 ) }}"
-                                                                                required disabled
-                                                                                class="form-input w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-violet-500 focus:border-violet-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500 transition-all duration-200"
-                                                                                placeholder="Montant payé">
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="mb-6">
-                                                                        <label
-                                                                            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                                                            Montant Restant <span class="text-red-500">*</span>
-                                                                        </label>
-                                                                        <div class="relative">
-                                                                            <input type="text" id="remaning_amount"
-                                                                                name="remaning_amount"
-                                                                                value="{{old('remaning_amount', $feescollections->remaning_amount ?? 0) }}"
-                                                                                required disabled
-                                                                                class="form-input w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-violet-500 focus:border-violet-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500 transition-all duration-200"
-                                                                                placeholder="Montant restant">
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="mb-6">
-                                                                        <label
-                                                                            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                                                            Montant <span class="text-red-500">*</span>
-                                                                        </label>
-                                                                        <div class="relative">
-                                                                            <input type="number" id="amount"
-                                                                                name="amount" value="" required
-                                                                                class="form-input w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-violet-500 focus:border-violet-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500 transition-all duration-200"
-                                                                                placeholder="Montant ">
-                                                                        </div>
-                                                                    </div>
-
-                                                                    <div class="mb-3">
-                                                                        <label
-                                                                            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                                                            Type de paiement <span class="text-red-500">*</span>
-                                                                        </label>
-                                                                        <div class="relative">
-                                                                            <select id="payment_type" name="payment_type" required
-                                                                                class="custom-select w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-violet-500 focus:border-violet-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500 transition-all duration-200">
-                                                                                <option selected disabled value="">Veuillez choisir
-                                                                                    un type de paiement </option>
-                                                                                <option value="check">Chèque</option>
-                                                                                <option value="transfer">Virement</option>
-                                                                                <option value="cash">Espèces</option>
-                                                                            </select>
-                                                                            <div
-                                                                                class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                                                                                <iconify-icon icon="mdi:chevron-down"
-                                                                                    class="text-gray-400" width="20"
-                                                                                    height="20"></iconify-icon>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-
-                                                                    <div class="mb-3">
-                                                                        <label
-                                                                            class="mb-3 block text-sm font-medium text-black dark:text-white">
-                                                                            Remarque <span class="text-meta-1">*</span>
-                                                                        </label>
-                                                                        <textarea name="remark"
-                                                                            class="w-full rounded-lg border-[1.5px] border-stroke bg-gray-100 text-gray-200 placeholder-gray-200 px-5 py-2.5 font-normal outline-none transition focus:border-violet-600 active:border-violet-600 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-violet-600"
-                                                                            required>{{ old('remark') }}</textarea>
-                                                                    </div>
-
-                                                                    <div class="flex justify-between py-3 rounded-b">
-                                                                        <button @click="showConfirm = false"
-                                                                            class="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-sm rounded hover:bg-gray-300 dark:hover:bg-gray-600">
-                                                                            Annuler
-                                                                        </button>
-                                                                        <button type="submit"
-                                                                            class="block w-48 rounded-lg bg-violet-600 p-3 font-medium text-gray hover:bg-opacity-90">
-                                                                            Valider
-                                                                        </button>
-                                                                    </div>
-                                                                </form>
-                                                            </div>
+                                                            </form>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </td>
-                                </tr>
-                            @endforeach
-                        @endif
-                        @if (!empty($getFeescollections))
-                            @if ($getFeescollections->isEmpty())
-                                <tr class="text-center text-gray-700 dark:text-bodydark1">
-                                    <td colspan="9" class="py-3"> Aucune contribution trouvée.</td>
-                                </tr>
-                            @endif
+                                    </div>
+                                </td>
+                            </tr>
+                        @endforeach
+                        @if ($getFeesCollections->isEmpty())
+                            <tr class="text-center text-gray-700 dark:text-bodydark1">
+                                <td colspan="9" class="py-3"> Aucune contribution trouvée.</td>
+                            </tr>
                         @endif
                     </tbody>
                 </table>
             </div>
 
             <!-- Table Footer -->
-            @if (!empty($getFeescollections))
+            @if (!empty($getFeesCollections))
                 <div
                     class="px-6 py-4 border-t border-gray-200 dark:border-gray-700 flex flex-col sm:flex-row justify-between items-center gap-4">
                     <div class="text-sm text-gray-500 dark:text-gray-400">
-                        Total de <span class="font-medium">{{ $getFeescollections->total() }}</span> classe<span
-                            class="">{{ $getFeescollections->total() > 1 ? 's' : '' }}</span> affiché<span
-                            class="">{{ $getFeescollections->total() > 1 ? 's' : '' }}</span>
+                        Total de <span class="font-medium">{{ $getFeesCollections->total() }}</span> classe<span
+                            class="">{{ $getFeesCollections->total() > 1 ? 's' : '' }}</span> affiché<span
+                            class="">{{ $getFeesCollections->total() > 1 ? 's' : '' }}</span>
                     </div>
 
                     <!-- Pagination -->
                     <nav class="flex items-center gap-5">
-                        {{ $getFeescollections->links('vendor.pagination.tailwind') }}
+                        {{ $getFeesCollections->links('vendor.pagination.tailwind') }}
                     </nav>
                 </div>
             @endif

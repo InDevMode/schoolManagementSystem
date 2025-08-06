@@ -373,6 +373,16 @@
                                                 class="{{ Request::Segment(3) == 'collections' ? 'group-hover:text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}">Percevoir</span>
                                         </a>
                                     </li>
+                                    <li>
+                                        <a class="group relative flex items-center gap-2.5 rounded-md px-4 py-2 font-medium duration-300 ease-in-out hover:bg-violet-700 text-bodydark1 dark:hover:bg-meta-4 {{ Request::Segment(3) == 'feescollects' ? 'bg-violet-600 text-bodydark1' : 'text-violet-600' }}"
+                                            href="{{ url('admin/feescollections/feescollects/feesList') }}">
+                                            <span
+                                                class="text-[18px] py-1 px-2 rounded {{ Request::Segment(3) == 'feescollects' ? 'group-hover:text-bodydark1 text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}"><i
+                                                    class="fa-solid fa-chevron-right"></i></span>
+                                            <span
+                                                class="{{ Request::Segment(3) == 'feescollects' ? 'group-hover:text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}">Reçues</span>
+                                        </a>
+                                    </li>
                                 </ul>
                             </div>
                             <!-- Dropdown Menu End -->
