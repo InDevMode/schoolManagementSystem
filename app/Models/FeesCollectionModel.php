@@ -89,7 +89,7 @@ class FeesCollectionModel extends Model
             ->paginate($perpage);
     }
 
-    public static function getFees(int $student_id)
+    public static function getFees(int $student_id, int $perpage)
     {
         return FeesCollectionModel::select(
             'feescollections.*',
@@ -108,7 +108,8 @@ class FeesCollectionModel extends Model
             ->join('users', 'users.id', '=', 'feescollections.student_id')
             ->where('feescollections.student_id', $student_id)
             ->where('feescollections.is_payment', 1)
-            ->get();
+            ->orderBy('id', 'desc')
+            ->paginate($perpage);
     }
 
     public static function getPaidAmount(int $student_id, int $class_id)

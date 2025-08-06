@@ -92,9 +92,10 @@ class FeesCollectionController extends Controller
     public function myFees()
     {
         $data['header_title'] = "Mes Contributions";
-        $data['getFees'] = FeesCollectionModel::getFees(Auth::user()->id);
+        $data['getFees'] = FeesCollectionModel::getFees(Auth::user()->id, 5);
         $data['getStudent'] = User::getSingleClass(Auth::user()->id);
-        $data['getFeesCollections'] = FeesCollectionModel::getPaidAmount(Auth::user()->id, $data['getStudent']->class_id);
+        $data['classAmount'] = $data['getStudent']->class_amount;
+        $data['totalPaid'] = FeesCollectionModel::getPaidAmount(Auth::user()->id, Auth::user()->class_id);
         return view('student.feescollections.myfees', $data);
     }
 
@@ -105,7 +106,7 @@ class FeesCollectionController extends Controller
             $getPaidAmount = FeesCollectionModel::getPaidAmount(Auth::user()->id, Auth::user()->class_id);
 
             $newPayment = intval($request->amount);
-            
+
             if ($newPayment <= 0) {
                 return redirect()->back()->with('error', 'Le montant doit être supérieur à 0.');
             }
