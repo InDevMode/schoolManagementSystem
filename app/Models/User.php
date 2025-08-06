@@ -493,6 +493,30 @@ class User extends Authenticatable
         return $results->orderBy('users.name', 'asc')->paginate($perpage);
     }
 
+    public static function getFeesCollectsStudent()
+    {
+        return User::select(
+            'users.*',
+            'class.name as class_name',
+            'class.amount as class_amount',
+            'feescollections.paid_amount as paid_amount',
+            'feescollections.remaning_amount as remaning_amount',
+            'feescollections.created_at as created_at',
+            'created_by.name as created_by_name',
+            'users.id as student_id',
+            'users.name as student_name',
+            'users.last_name as student_last_name',
+            'users.admission_number as student_admission_number'
+        )
+            ->leftJoin('class', 'class.id', '=', 'users.class_id')
+            ->leftJoin('feescollections', 'feescollections.student_id', '=', 'users.id')
+            ->leftJoin('users as created_by', 'feescollections.created_by', '=', 'created_by.id')
+            ->where('users.is_delete', 0)
+            ->where('users.status', 1)
+            ->where('users.user_type', 3)
+            ->first();
+    }
+
 
     public static function getSingleClass(int $id)
     {

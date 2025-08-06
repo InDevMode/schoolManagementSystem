@@ -91,9 +91,23 @@ class FeesCollectionModel extends Model
 
     public static function getFees(int $student_id)
     {
-        return FeesCollectionModel::select('feescollections.*')
+        return FeesCollectionModel::select(
+            'feescollections.*',
+            'class.name as class_name',
+            'feescollections.paid_amount as paid_amount',
+            'feescollections.remaning_amount as remaning_amount',
+            'feescollections.payment_type as payment_type',
+            'feescollections.created_at as created_at',
+            'created_by.name as created_by_name',
+            'users.name as student_name',
+            'users.last_name as student_last_name',
+            'users.admission_number as student_admission_number'
+        )
             ->join('class', 'class.id', '=', 'feescollections.class_id')
+            ->join('users as created_by', 'created_by.id', '=', 'feescollections.created_by')
+            ->join('users', 'users.id', '=', 'feescollections.student_id')
             ->where('feescollections.student_id', $student_id)
+            ->where('feescollections.is_payment', 1)
             ->get();
     }
 
@@ -101,6 +115,7 @@ class FeesCollectionModel extends Model
     {
         return FeesCollectionModel::where('feescollections.student_id', $student_id)
             ->where('feescollections.class_id', $class_id)
+            ->where('feescollections.is_payment', 1)
             ->sum('feescollections.paid_amount');
     }
 
