@@ -11,7 +11,7 @@ class ClassController extends Controller
     public function list(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
     {
         $data['header_title'] = "Liste des classes";
-        $data['getClass'] = ClassModel::getAllClass(10);
+        $data['getClass'] = ClassModel::getAllClass(5);
         return view('admin.class.list', $data);
     }
 
@@ -33,6 +33,7 @@ class ClassController extends Controller
             $class = new ClassModel;
             $class->name = trim($request->name);
             $class->status = trim($request->status);
+            $class->amount = intval($request->amount);
             $class->created_by = auth()->user()->id;
             $class->save();
 
@@ -71,6 +72,7 @@ class ClassController extends Controller
 
             $class->name = trim($request->name);
             $class->status = intval($request->status);
+            $class->amount = intval($request->amount);
             $class->save();
             return redirect('admin/class/list')->with('success', 'Cette classe a été modifiée avec succès.');
 

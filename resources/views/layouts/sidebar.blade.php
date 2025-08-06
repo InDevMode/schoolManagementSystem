@@ -311,7 +311,7 @@
                                     class="w-10 h-10 flex items-center justify-center rounded bg-violet-100 text-violet-600"><iconify-icon
                                         icon="mdi:home-edit" width="24" height="24"></iconify-icon>
                                 </span>
-                                <span class="group-hover:text-bodydark1 dark:text-bodydark1">Travaux </span>
+                                <span class="group-hover:text-bodydark1 dark:text-bodydark1">Devoirs </span>
                                 <span
                                     class="text-[18px] py-1 px-2 rounded bg-violet-100 text-violet-600 transition duration-700 absolute right-4 top-1/2 -translate-y-1/2 fill-current"
                                     :class="{ 'rotate-180 transition duration-700': (selected === 'practicalworks') }"><i
@@ -328,8 +328,59 @@
                                                 class="text-[18px] py-1 px-2 rounded {{ Request::Segment(3) == 'homework' ? 'group-hover:text-bodydark1 text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}"><i
                                                     class="fa-solid fa-chevron-right"></i></span>
                                             <span
-                                                class="{{ Request::Segment(3) == 'homework' ? 'group-hover:text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}">De
-                                                Maison</span>
+                                                class="{{ Request::Segment(3) == 'homework' ? 'group-hover:text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}">Travaux Maison</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="group relative flex items-center gap-2.5 rounded-md px-4 py-2 font-medium duration-300 ease-in-out hover:bg-violet-700 text-bodydark1 dark:hover:bg-meta-4 {{ Request::Segment(4) == 'reports' ? 'bg-violet-600 text-bodydark1' : 'text-violet-600' }}"
+                                            href="{{ url('admin/practicalworks/homework/reports') }}">
+                                            <span
+                                                class="text-[18px] py-1 px-2 rounded {{ Request::Segment(4) == 'reports' ? 'group-hover:text-bodydark1 text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}"><i
+                                                    class="fa-solid fa-chevron-right"></i></span>
+                                            <span
+                                                class="{{ Request::Segment(4) == 'reports' ? 'group-hover:text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}">Rapports</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <!-- Dropdown Menu End -->
+                        </li>
+                         <li>
+                            <a class="group relative flex items-center gap-2.5 rounded-md px-4 py-2 font-medium text-violet-600 duration-300 ease-in-out hover:bg-violet-600 dark:hover:bg-meta-4"
+                                href="#" @click.prevent="selected = (selected === 'feescollections' ? '':'feescollections')"
+                                :class="{ 'bg-gray-100 dark:bg-meta-4': (selected === 'feescollections')}">
+                                <span
+                                    class="w-10 h-10 flex items-center justify-center rounded bg-violet-100 text-violet-600"><iconify-icon
+                                        icon="mdi:cash-register" width="24" height="24"></iconify-icon>
+                                </span>
+                                <span class="group-hover:text-bodydark1 dark:text-bodydark1">Contributions </span>
+                                <span
+                                    class="text-[18px] py-1 px-2 rounded bg-violet-100 text-violet-600 transition duration-700 absolute right-4 top-1/2 -translate-y-1/2 fill-current"
+                                    :class="{ 'rotate-180 transition duration-700': (selected === 'feescollections') }"><i
+                                        class="fa-solid fa-chevron-down"></i></span>
+                            </a>
+                            <!-- Dropdown Menu Start -->
+                            <div class="translate transform overflow-hidden transition duration-700"
+                                :class="(selected === 'feescollections') ? 'block' :'hidden'">
+                                <ul class="mb-5.5 mt-4 flex flex-col gap-2.5 pl-8">
+                                    <li>
+                                        <a class="group relative flex items-center gap-2.5 rounded-md px-4 py-2 font-medium duration-300 ease-in-out hover:bg-violet-700 text-bodydark1 dark:hover:bg-meta-4 {{ Request::Segment(3) == 'collections' ? 'bg-violet-600 text-bodydark1' : 'text-violet-600' }}"
+                                            href="{{ url('admin/feescollections/collections/list') }}">
+                                            <span
+                                                class="text-[18px] py-1 px-2 rounded {{ Request::Segment(3) == 'collections' ? 'group-hover:text-bodydark1 text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}"><i
+                                                    class="fa-solid fa-chevron-right"></i></span>
+                                            <span
+                                                class="{{ Request::Segment(3) == 'collections' ? 'group-hover:text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}">Percevoir</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="group relative flex items-center gap-2.5 rounded-md px-4 py-2 font-medium duration-300 ease-in-out hover:bg-violet-700 text-bodydark1 dark:hover:bg-meta-4 {{ Request::Segment(3) == 'feescollects' ? 'bg-violet-600 text-bodydark1' : 'text-violet-600' }}"
+                                            href="{{ url('admin/feescollections/feescollects/feesList') }}">
+                                            <span
+                                                class="text-[18px] py-1 px-2 rounded {{ Request::Segment(3) == 'feescollects' ? 'group-hover:text-bodydark1 text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}"><i
+                                                    class="fa-solid fa-chevron-right"></i></span>
+                                            <span
+                                                class="{{ Request::Segment(3) == 'feescollects' ? 'group-hover:text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}">Reçues</span>
                                         </a>
                                     </li>
                                 </ul>
@@ -614,6 +665,18 @@
                                 <span
                                     class="{{ Request::Segment(2) == 'my_homework' ? 'group-hover:text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}">Mes
                                     Travaux</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="group relative flex items-center gap-2.5 rounded-md px-4 py-2 font-medium duration-300 ease-in-out hover:bg-violet-700 text-bodydark1 dark:hover:bg-meta-4 {{ Request::Segment(2) == 'my_fees' ? 'bg-violet-600 text-bodydark1' : 'text-violet-600' }}"
+                                href="{{ url('student/my_fees') }}">
+                                <span
+                                    class="w-10 h-10 flex items-center justify-center rounded {{ Request::Segment(2) == 'my_fees' ? 'bg-violet-100 text-violet-600' : 'bg-violet-100 text-violet-600'}}">
+                                    <i class="fa-solid fa-cash-register" width="24" height="24"></i>
+                                </span>
+                                <span
+                                    class="{{ Request::Segment(2) == 'my_fees' ? 'group-hover:text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}">Mes
+                                    Contributions</span>
                             </a>
                         </li>
                     @elseif(Auth::user()->user_type === 4)

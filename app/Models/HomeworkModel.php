@@ -91,13 +91,11 @@ class HomeworkModel extends Model
         ];
 
 
-        if(!empty(Request::get('submission_date_from')))
-        {
+        if (!empty(Request::get('submission_date_from'))) {
             $results->whereDate('submission_date', '>=', Request::get('submission_date_from'));
         }
 
-        if(!empty(Request::get('submission_date_to')))
-        {
+        if (!empty(Request::get('submission_date_to'))) {
             $results->whereDate('submission_date', '<=', Request::get('submission_date_to'));
         }
 
@@ -114,6 +112,57 @@ class HomeworkModel extends Model
     public function getStudent()
     {
         return $this->belongsTo(User::class, 'student_id');
+    }
+
+    public static function getAllHomeworks(int $perpage)
+    {
+        $results = HomeworkModel::select(
+            'homework.*',
+            'student.name as student_name',
+            'student.last_name as student_last_name',
+            'created_by_user.name as created_by_name',
+            'class.name as class_name',
+            'subject.name as subject_name',
+            'works.work_date as work_date',
+            'works.submission_date as submission_date',
+            'homework.description as homework_description',
+            'homework.document_file as homework_document_file',
+            'homework.status as homework_status'
+        )
+            ->join('users as student', 'student.id', '=', 'homework.student_id')
+            ->join('works', 'works.id', '=', 'homework.work_id')
+            ->join('users as created_by_user', 'created_by_user.id', '=', 'works.created_by')
+            ->join('class', 'class.id', '=', 'works.class_id')
+            ->join('subject', 'subject.id', '=', 'works.subject_id')
+            ->where('homework.is_delete', '=', 0);
+
+        $filters = [
+            'users.name' => strtolower(Request::get('student_name')),
+            'users.last_name' => strtolower(Request::get('student_last_name')),
+            'homework.description' => strtolower(Request::get('description')),
+            'class.name' => strtolower(Request::get('class_name')),
+            'subject.name' => strtolower(Request::get('subject_name')),
+            'works.work_date' => strtolower(Request::get('work_date')),
+        ];
+
+
+        if (!empty(Request::get('submission_date_from'))) {
+            $results->whereDate('submission_date', '>=', Request::get('submission_date_from'));
+        }
+
+        if (!empty(Request::get('submission_date_to'))) {
+            $results->whereDate('submission_date', '<=', Request::get('submission_date_to'));
+        }
+
+        foreach ($filters as $column => $value) {
+            if (!empty($value)) {
+                $results->where($column, 'like', '%' . $value . '%');
+            }
+        }
+
+
+        return $results->orderBy('homework.id', 'desc')
+            ->paginate($perpage);
     }
 
 }

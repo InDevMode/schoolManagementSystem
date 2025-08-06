@@ -11,6 +11,7 @@ use App\Http\Controllers\ClassTimetableController;
 use App\Http\Controllers\CommunicateController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ExaminationController;
+use App\Http\Controllers\FeesCollectionController;
 use App\Http\Controllers\ParentController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\SubjectController;
@@ -183,6 +184,16 @@ Route::group(['middleware' => 'admin'], function () {
     // Practical works submitted url
     Route::get('admin/practicalworks/homework/submission/{id}', [WorkController::class, 'homeworkSubmission']);
 
+    // Practical works reports url
+    Route::get('admin/practicalworks/homework/reports', [WorkController::class, 'homeworkReportList']);
+    Route::get('admin/practicalworks/homework/reports/details/{id}', [WorkController::class, 'homeworkReportDetails']);
+
+    // Fees collections url
+    Route::get('admin/feescollections/collections/list', [FeesCollectionController::class, 'list']);
+    Route::get('admin/feescollections/feescollects/feesList', [FeesCollectionController::class, 'feesList']);
+    Route::post('admin/feescollections/collections/addFees/{id}', [FeesCollectionController::class, 'createFees'])->name('createFeesCollects');
+    Route::get('admin/feescollections/collections/delete/{id}', [FeesCollectionController::class, 'deleteFees']);
+
 });
 
 Route::group(['middleware' => 'teacher'], function () {
@@ -271,6 +282,10 @@ Route::group(['middleware' => 'student'], function () {
     Route::get('student/my_homework', [WorkController::class, 'myHomework']);
     Route::get('student/my_homework/submission/{id}', [WorkController::class, 'myHomeworkSubmission']);
     Route::post('student/my_homework/submission/{id}', [WorkController::class, 'myHomeworkSubmissionCreate']);
+
+    // Student Fees collections
+    Route::get('student/my_fees', [FeesCollectionController::class, 'myFees']);
+    Route::post('student/my_fees', [FeesCollectionController::class, 'myFeesCreate'])->name('studentFeesCreate');
 
 });
 

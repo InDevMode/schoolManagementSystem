@@ -14,7 +14,7 @@ class SubjectController extends Controller
     public function list(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
     {
         $data['header_title'] = "Liste des matières";
-        $data['getSubject'] = SubjectModel::getAllSubject(10);
+        $data['getSubject'] = SubjectModel::getAllSubject(5);
         return view('admin.subject.list', $data);
     }
 
@@ -37,6 +37,7 @@ class SubjectController extends Controller
             $subject = new SubjectModel();
             $subject->name = trim($request->name);
             $subject->type = trim($request->type);
+            $subject->coefficient = intval($request->coefficient);
             $subject->status = trim($request->status);
             $subject->created_by = auth()->user()->id;
             $subject->save();
@@ -76,6 +77,7 @@ class SubjectController extends Controller
 
             $subject->name = trim($request->name);
             $subject->type = trim($request->type);
+            $subject->coefficient = intval($request->coefficient);
             $subject->status = intval($request->status);
             $subject->save();
             return redirect('admin/subject/list')->with('success', 'Cette matière a été modifiée avec succès.');

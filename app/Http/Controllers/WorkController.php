@@ -331,4 +331,10 @@ class WorkController extends Controller
         return view('parent.practicalworks.submission', $data);
     }
 
+    public function homeworkReportList(){
+        $data['header_title'] = 'Rapports des travaux de maison';
+        $data['getAllHomeworks'] = HomeworkModel::getAllHomeworks( 5);
+        return view('admin.practicalworks.reports', $data);
+    }
+
 }

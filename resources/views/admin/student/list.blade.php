@@ -44,7 +44,7 @@
 
             <form>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                    <!-- Name Input -->
+                    <!-- Number admission Input -->
                     <div>
                         <label for="admission_number"
                             class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Numéro
@@ -59,6 +59,7 @@
                         </div>
                     </div>
 
+                     <!-- Name Input -->
                     <div>
                         <label for="name"
                             class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nom</label>

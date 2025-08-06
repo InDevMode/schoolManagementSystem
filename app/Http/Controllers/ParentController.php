@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -67,7 +66,7 @@ class ParentController extends Controller
             }
             $parent->status = intval($request->status);
             if (!empty($request->password)) {
-                $parent->password = Hash::make($request->password);
+                $parent->password = $request->password;
             }
             $parent->user_type = 4;
             $parent->save();

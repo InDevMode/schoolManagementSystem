@@ -285,8 +285,18 @@ class User extends Authenticatable
 
     public static function getMyStudent(int $perPage, int $parent_id, )
     {
-        $results = User::select('users.*', 'class.name as class_name', 'teacher.name as teacher_name', 'teacher.last_name as teacher_last_name')
+        $results = User::select(
+            'users.*',
+            'class.name as class_name',
+            'teacher.name as teacher_name',
+            'teacher.last_name as teacher_last_name',
+            'parent.name as parent_name',
+            'parent.last_name as parent_last_name',
+            'student.name as student_name',
+            'student.last_name as student_last_name'
+        )
             ->join('users as parent', 'parent.id', '=', 'users.parent_id', 'left')
+            ->join('users as student', 'student.id', '=', 'users.id', 'left')
             ->join('class', 'class.id', '=', 'users.class_id', 'left')
             ->join('class_teacher', 'class_teacher.class_id', '=', 'class.id', 'left')
             ->join('users as teacher', 'teacher.id', '=', 'class_teacher.teacher_id', 'left')
@@ -300,10 +310,13 @@ class User extends Authenticatable
         $filters = [
             'users.admission_number' => strtolower(Request::get('admission_number')),
             'users.name' => strtolower(Request::get('student_name')),
+            'student.last_name' => strtolower(Request::get('student_last_name')),
             'teacher.name' => strtolower(Request::get('teacher_name')),
+            'teacher.last_name' => strtolower(Request::get('teacher_last_name')),
+            'parent.name' => strtolower(Request::get('parent_name')),
+            'parent.last_name' => strtolower(Request::get('parent_last_name')),
             'class.name' => strtolower(Request::get('class_name')),
             'users.email' => strtolower(Request::get('email')),
-            'users.date_of_birth' => strtolower(Request::get('date_of_birth')),
             'users.created_at' => strtolower(Request::get('created_at')),
             'users.updated_at' => strtolower(Request::get('updated_at')),
         ];
@@ -334,7 +347,7 @@ class User extends Authenticatable
             ->get();
     }
 
-   public static  function getTeacherStudent(int $perPage, int $teacher_id)
+    public static function getTeacherStudent(int $perPage, int $teacher_id)
     {
         $results = User::select('users.*', 'class.name as class_name')
             ->join('class', 'class.id', '=', 'users.class_id')
@@ -426,6 +439,92 @@ class User extends Authenticatable
             ->get();
     }
 
+    public static function getFeesCollectionStudent(int $perpage)
+    {
+        $results = User::select(
+            'users.*',
+            'class.name as class_name',
+            'class.amount as class_amount',
+            'feescollections.paid_amount as paid_amount',
+            'feescollections.remaning_amount as remaning_amount',
+            'feescollections.created_at as created_at',
+            'created_by.name as created_by_name',
+            'users.name as student_name',
+            'users.last_name as student_last_name'
+        )
+            ->leftJoin('class', 'class.id', '=', 'users.class_id')
+            ->leftJoin('feescollections', 'feescollections.student_id', '=', 'users.id')
+            ->leftJoin('users as created_by', 'feescollections.created_by', '=', 'created_by.id')
+            ->where('users.is_delete', 0)
+            ->where('users.status', 1)
+            ->where('users.user_type', 3);
+
+        $filters = [
+            'class_id' => Request::get('class_id'),
+            'student_name' => Request::get('student_name'),
+            'student_last_name' => Request::get('student_last_name'),
+            'admission_number' => Request::get('admission_number'),
+            'created_at' => Request::get('created_at'),
+            'updated_at' => Request::get('updated_at'),
+        ];
+
+        $map = [
+            'class_id' => ['users.class_id', '='],
+            'student_name' => ['users.name', 'like'],
+            'student_last_name' => ['users.last_name', 'like'],
+            'admission_number' => ['users.admission_number', 'like'],
+            'created_at' => ['feescollections.created_at', 'date'],
+            'updated_at' => ['feescollections.updated_at', 'date'],
+        ];
+
+        foreach ($map as $key => [$column, $operator]) {
+            $value = $filters[$key] ?? null;
+
+            if ($value === null || $value === '')
+                continue;
+
+            match ($operator) {
+                'like' => $results->where($column, 'like', '%' . $value . '%'),
+                'date' => $results->whereDate($column, $value),
+                default => $results->where($column, $value),
+            };
+        }
+
+        return $results->orderBy('users.name', 'asc')->paginate($perpage);
+    }
+
+    public static function getFeesCollectsStudent()
+    {
+        return User::select(
+            'users.*',
+            'class.name as class_name',
+            'class.amount as class_amount',
+            'feescollections.paid_amount as paid_amount',
+            'feescollections.remaning_amount as remaning_amount',
+            'feescollections.created_at as created_at',
+            'created_by.name as created_by_name',
+            'users.id as student_id',
+            'users.name as student_name',
+            'users.last_name as student_last_name',
+            'users.admission_number as student_admission_number'
+        )
+            ->leftJoin('class', 'class.id', '=', 'users.class_id')
+            ->leftJoin('feescollections', 'feescollections.student_id', '=', 'users.id')
+            ->leftJoin('users as created_by', 'feescollections.created_by', '=', 'created_by.id')
+            ->where('users.is_delete', 0)
+            ->where('users.status', 1)
+            ->where('users.user_type', 3)
+            ->first();
+    }
+
+
+    public static function getSingleClass(int $id)
+    {
+        return User::select('users.*', 'class.name as class_name', 'class.amount as class_amount')
+            ->join('class', 'class.id', '=', 'users.class_id')
+            ->where('users.id', $id)
+            ->first();
+    }
 
 
 }
