@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\SettingModel;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -327,4 +328,34 @@ class UserController extends Controller
             return redirect()->back()->with('error', 'Vos informations ne sont pas correctes. Veuillez réessayer.');
         }
     }
+
+    public function settings(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
+    {
+        $data['header_title'] = "Paramètres";
+        $data['getSetting'] = SettingModel::getSingle(1);
+        return view('admin.settings.payment_mode', $data);
+    }
+
+    public function updatePaymentMode(Request $request, $id)
+    {
+
+        try {
+
+            $setting = SettingModel::getSingle($id);
+            if ($setting) {
+                $setting->paypal_email = trim($request->paypal_email);
+                $setting->save();
+                return redirect()->back()->with('success', 'Vos informations ont été modifiés avec succès.');
+            } else {
+                return redirect()->back()->with('error', 'Cet utilisateur n\'existe pas.');
+            }
+
+        } catch (\Exception $e) {
+            Log::error("Erreur lors de la modification des informations de cet utilisateur : " . $e->getMessage());
+
+            return redirect()->back()->with('error', 'Erreur lors de la modification des informations utilisateur. Veuillez réessayer.');
+        }
+
+    }
+
 }

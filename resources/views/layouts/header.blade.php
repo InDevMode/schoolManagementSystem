@@ -386,6 +386,15 @@
                                 Mon mot de passe
                             </a>
                         </li>
+                        <li>
+                            <a
+                                href="{{ url('admin/settings') }}"
+                                class="flex items-center gap-3.5 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base"
+                            >
+                                <span><i class="fa-solid fa-gear"></i></span>
+                                Paramètres
+                            </a>
+                        </li>
                         @elseif(Auth::user()->user_type === 2)
                         <li>
                             <a

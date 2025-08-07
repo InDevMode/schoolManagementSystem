@@ -194,6 +194,10 @@ Route::group(['middleware' => 'admin'], function () {
     Route::post('admin/feescollections/collections/addFees/{id}', [FeesCollectionController::class, 'createFees'])->name('createFeesCollects');
     Route::get('admin/feescollections/collections/delete/{id}', [FeesCollectionController::class, 'deleteFees']);
 
+    // Setting url
+    Route::get('admin/settings', [UserController::class, 'settings']);
+    Route::post('admin/settings/payment_mode', [UserController::class, 'updatePaymentMode']);
+
 });
 
 Route::group(['middleware' => 'teacher'], function () {
@@ -286,6 +290,10 @@ Route::group(['middleware' => 'student'], function () {
     // Student Fees collections
     Route::get('student/my_fees', [FeesCollectionController::class, 'myFees']);
     Route::post('student/my_fees', [FeesCollectionController::class, 'myFeesCreate'])->name('studentFeesCreate');
+
+    // Student Fees payment
+    Route::get('student/my_fees_paypal/payment_error', [FeesCollectionController::class, 'myFeesPaymentError']);
+    Route::post('student/my_fees_paypal/payment_success', [FeesCollectionController::class, 'myFeesPaymentSuccess']);
 
 });
 
