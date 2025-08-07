@@ -4,10 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\ClassModel;
 use App\Models\FeesCollectionModel;
+use App\Models\SettingModel;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Stripe\Stripe;
+use Stripe\Checkout\Session as StripeSession;
 
 class FeesCollectionController extends Controller
 {
@@ -126,24 +129,95 @@ class FeesCollectionController extends Controller
             $fees->payment_type = $request->payment_type;
             $fees->remark = $request->remark;
             $fees->created_by = auth()->user()->id;
-
-            // 💳 Enregistrement des identifiants de transaction selon le moyen de paiement
-            match ($request->payment_type) {
-                'paypal' => $fees->paypal_payment_id = $request->paypal_payment_id,
-                'kkiapay' => $fees->kkiapay_payment_id = $request->kkiapay_payment_id,
-                'stripe' => $fees->stripe_payment_id = $request->stripe_payment_id,
-                default => null, // cash ou autre
-            };
-
             $fees->save();
 
-            return redirect('student/myfees')->with('success', 'La contribution a été enregistrée avec succès.');
+            // 🔁 Redirection selon le type de paiement
+            return match ($request->payment_type) {
+                'paypal' => $this->redirectToPaypal($fees),
+                'stripe' => $this->redirectToStripe($fees),
+                'kkiapay' => $this->redirectToKkiapay($fees),
+                default => redirect('student/myfees')->with('success', 'Contribution enregistrée avec succès.'),
+            };
 
         } catch (\Exception $e) {
             Log::error("Erreur lors de l'ajout de contribution : " . $e->getMessage());
-
             return redirect()->back()->with('error', 'Vos informations ne sont pas correctes. Veuillez réessayer.');
         }
+    }
+
+    private function redirectToPaypal($fees)
+    {
+        $getSetting = SettingModel::getSingle(1);
+        $query = [
+            'business' => $getSetting->paypal_email,
+            'cmd' => '_xclick',
+            'item_name' => "Student Fees",
+            'no_shipping' => '1',
+            'item_number' => $fees->id,
+            'amount' => $fees->paid_amount,
+            'currency_code' => 'XOF',
+            'cancel_return' => url('student/my_fees_paypal/payment_error'),
+            'return' => url('student/my_fees_paypal/payment_success'),
+        ];
+
+        $query_string = http_build_query($query);
+        $url = 'https://www.sandbox.paypal.com/cgi-bin/webscr?' . $query_string;
+
+        return redirect()->away($url);
+    }
+
+
+    private function redirectToStripe(FeesCollectionModel $fees): string
+    {
+        Stripe::setApiKey(env('STRIPE_SECRET'));
+
+        $session = StripeSession::create([
+            'payment_method_types' => ['card'],
+            'line_items' => [
+                [
+                    'price_data' => [
+                        'currency' => 'xof',
+                        'product_data' => ['name' => 'Student Fees'],
+                        'unit_amount' => $fees->paid_amount * 100,
+                    ],
+                    'quantity' => 1,
+                ]
+            ],
+            'mode' => 'payment',
+            'success_url' => url('student/my_fees_stripe/payment_success?session_id={CHECKOUT_SESSION_ID}'),
+            'cancel_url' => url('student/my_fees_stripe/payment_error'),
+            'metadata' => ['fees_id' => $fees->id],
+        ]);
+
+        return $session->url;
+    }
+
+
+    private function redirectToKkiapay($fees)
+    {
+        return redirect()->route('student.kkiapay.checkout', ['fees_id' => $fees->id]);
+    }
+
+
+    public function myFeesPaymentError()
+    {
+        return redirect()->back()->with('error', 'Vos informations ne sont pas correctes. Veuillez réessayer.');
+    }
+
+    public function myFeesPaymentSuccess(Request $request)
+    {
+        if (!empty($request->item_number) && $request->st == 'Completed') {
+            $fees = FeesCollectionModel::getSingle($request->item_number);
+            if ($fees) {
+                $fees->is_payment = 1;
+                $fees->payment_status = $request->st;
+                $fees->payment_data = json_encode($request->all());
+                $fees->save();
+
+                return redirect('student/myfees')->with('success', 'Paiement validé avec succès.');
+            }
+        }
+        return redirect()->back()->with('error', 'Paiement non reconnu.');
     }
 
 

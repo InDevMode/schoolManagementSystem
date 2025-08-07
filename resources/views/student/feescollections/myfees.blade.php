@@ -281,7 +281,8 @@
                                                                             class="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-sm rounded hover:bg-gray-300 dark:hover:bg-gray-600">
                                                                             Annuler
                                                                         </button>
-                                                                        <button type="submit"
+                                                                        <button type="button"
+                                                                            @click="handlePayment"
                                                                             class="block w-48 rounded-lg bg-violet-600 p-3 font-medium text-gray hover:bg-opacity-90">
                                                                             Valider
                                                                         </button>
@@ -333,20 +334,46 @@
         document.querySelectorAll('.relative .hidden').forEach(menu => menu.classList.add('hidden'));
     });
 
-    function feeForm() {
+   function feeForm() {
         return {
             totalAmount: {{ $classAmount }},
             totalPaid: {{ $totalPaid }},
             newAmount: 0,
+            paymentType: '',
             get remainingAmount() {
                 let remaining = this.totalAmount - this.totalPaid - this.newAmount;
                 return remaining < 0 ? 0 : remaining;
             },
             init() {
                 this.updateRemaining();
+                this.paymentType = document.getElementById('payment_type').value;
+                document.getElementById('payment_type').addEventListener('change', (e) => {
+                    this.paymentType = e.target.value;
+                });
             },
             updateRemaining() {
                 document.getElementById('remaning_amount').value = this.remainingAmount;
+            },
+            handlePayment() {
+                if (this.paymentType === 'kkiapy') {
+                    openKkiapayWidget({
+                        amount: this.newAmount,
+                        api_key: "TON_API_KEY_KKIAPAY",
+                        sandbox: false,
+                        callback: (response) => {
+                            // Envoie vers ton backend avec response.transactionId
+                            const form = document.querySelector('form');
+                            const input = document.createElement('input');
+                            input.type = 'hidden';
+                            input.name = 'kkiapay_payment_id';
+                            input.value = response.transactionId;
+                            form.appendChild(input);
+                            form.submit();
+                        }
+                    });
+                } else {
+                    document.querySelector('form').submit();
+                }
             }
         }
     }
