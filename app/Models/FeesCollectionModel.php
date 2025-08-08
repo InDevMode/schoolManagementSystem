@@ -97,6 +97,8 @@ class FeesCollectionModel extends Model
             'feescollections.paid_amount as paid_amount',
             'feescollections.remaning_amount as remaning_amount',
             'feescollections.payment_type as payment_type',
+            'feescollections.remark as remark',
+            'feescollections.payment_status as payment_status',
             'feescollections.created_at as created_at',
             'created_by.name as created_by_name',
             'users.name as student_name',

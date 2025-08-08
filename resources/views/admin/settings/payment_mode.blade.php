@@ -59,9 +59,84 @@
                                 </label>
                                 <div class="relative">
                                     <input type="email" id="paypal_email" name="paypal_email"
-                                        value="{{ old('paypal_email') }}" required
+                                        value="{{ old('paypal_email', $getSetting->paypal_email) }}" required
                                         class="w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-violet-500 focus:border-violet-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500 transition-all duration-200"
                                         placeholder="Entrez votre email paypal">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- kkiapay Public Key  -->
+                        <div class="mb-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                    Kkiapay Public Key <span class="text-red-500">*</span>
+                                </label>
+                                <div class="relative">
+                                    <input type="text" id="kkiapay_public_key" name="kkiapay_public_key"
+                                        value="{{ old('kkiapay_public_key', $getSetting->kkiapay_public_key) }}" required
+                                        class="w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-violet-500 focus:border-violet-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500 transition-all duration-200"
+                                        placeholder="Entrez votre kkiapay public key">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- kkiapay Private Key  -->
+                        <div class="mb-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                    Kkiapay Private Key <span class="text-red-500">*</span>
+                                </label>
+                                <div class="relative">
+                                    <input type="text" id="kkiapay_private_key" name="kkiapay_private_key"
+                                        value="{{ old('kkiapay_private_key', $getSetting->kkiapay_private_key) }}" required
+                                        class="w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-violet-500 focus:border-violet-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500 transition-all duration-200"
+                                        placeholder="Entrez votre kkiapay private key">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- kkiapay Secret Key  -->
+                        <div class="mb-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                    Kkiapay Secret Key <span class="text-red-500">*</span>
+                                </label>
+                                <div class="relative">
+                                    <input type="text" id="kkiapay_secret_key" name="kkiapay_secret_key"
+                                        value="{{ old('kkiapay_secret_key', $getSetting->kkiapay_secret_key) }}" required
+                                        class="w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-violet-500 focus:border-violet-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500 transition-all duration-200"
+                                        placeholder="Entrez votre kkiapay secret key">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- stripe Public Key  -->
+                        <div class="mb-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                    Stripe Public Key <span class="text-red-500">*</span>
+                                </label>
+                                <div class="relative">
+                                    <input type="text" id="stripe_public_key" name="stripe_public_key"
+                                        value="{{ old('stripe_public_key', $getSetting->stripe_public_key) }}" required
+                                        class="w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-violet-500 focus:border-violet-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500 transition-all duration-200"
+                                        placeholder="Entrez votre stripe public key">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- stripe Secret Key  -->
+                        <div class="mb-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                    Stripe Secret Key <span class="text-red-500">*</span>
+                                </label>
+                                <div class="relative">
+                                    <input type="text" id="stripe_secret_key" name="stripe_secret_key"
+                                        value="{{ old('stripe_secret_key', $getSetting->stripe_secret_key) }}" required
+                                        class="w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-violet-500 focus:border-violet-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500 transition-all duration-200"
+                                        placeholder="Entrez votre stripe secret key">
                                 </div>
                             </div>
                         </div>

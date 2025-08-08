@@ -291,9 +291,16 @@ Route::group(['middleware' => 'student'], function () {
     Route::get('student/my_fees', [FeesCollectionController::class, 'myFees']);
     Route::post('student/my_fees', [FeesCollectionController::class, 'myFeesCreate'])->name('studentFeesCreate');
 
-    // Student Fees payment
-    Route::get('student/my_fees_paypal/payment_error', [FeesCollectionController::class, 'myFeesPaymentError']);
-    Route::post('student/my_fees_paypal/payment_success', [FeesCollectionController::class, 'myFeesPaymentSuccess']);
+    // Paypal payment url of student
+    Route::get('student/my_fees_paypal/payment_success', [FeesCollectionController::class, 'paypalSuccess']);
+    Route::get('student/my_fees_paypal/payment_error', [FeesCollectionController::class, 'paypalError']);
+
+    // Stripe payment url of student
+    Route::get('student/my_fees_stripe/payment_success', [FeesCollectionController::class, 'stripeSuccess']);
+    Route::get('student/my_fees_stripe/payment_error', [FeesCollectionController::class, 'stripeError']);
+
+    Route::post('/paypal/ipn', [FeesCollectionController::class, 'paypalIPN']);
+
 
 });
 

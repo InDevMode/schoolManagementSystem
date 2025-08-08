@@ -69,6 +69,10 @@
                             </th>
                             <th scope="col"
                                 class="px-6 py-3 text-left text-xs font-medium text-white dark:text-gray-300 uppercase tracking-wider">
+                                Status du paiement
+                            </th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-white dark:text-gray-300 uppercase tracking-wider">
                                 Créé par
                             </th>
                             <th scope="col"
@@ -85,6 +89,42 @@
 
                         <!-- Sample Row 1 -->
                         @foreach ($getFees as $index => $fees)
+                            @php
+                                $statusMap = [
+                                    'Pending' => [
+                                        'label' => 'En attente',
+                                        'classes' => 'bg-yellow-100 border-yellow-800 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',
+                                    ],
+                                    'Completed' => [
+                                        'label' => 'Terminé',
+                                        'classes' => 'bg-green-100 border-green-800 text-green-800 dark:bg-green-900 dark:text-green-200',
+                                    ],
+                                    'Paid' => [
+                                        'label' => 'Payé',
+                                        'classes' => 'bg-blue-100 border-blue-800 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
+                                    ],
+                                    'Cancelled' => [
+                                        'label' => 'Annulé',
+                                        'classes' => 'bg-red-100 border-red-800 text-red-800 dark:bg-red-900 dark:text-red-200',
+                                    ],
+                                    'Failed' => [
+                                        'label' => 'Échoué',
+                                        'classes' => 'bg-gray-100 border-gray-800 text-gray-800 dark:bg-gray-900 dark:text-gray-200',
+                                    ],
+                                    'Refunded' => [
+                                        'label' => 'Remboursé',
+                                        'classes' => 'bg-purple-100 border-purple-800 text-purple-800 dark:bg-purple-900 dark:text-purple-200',
+                                    ],
+                                    'Processing' => [
+                                        'label' => 'En cours de traitement',
+                                        'classes' => 'bg-indigo-100 border-indigo-800 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200',
+                                    ],
+                                ];
+
+                                $status = $fees->payment_status;
+                                $label = $statusMap[$status]['label'] ?? 'Statut inconnu';
+                                $classes = $statusMap[$status]['classes'] ?? 'bg-gray-100 border-gray-800 text-gray-800 dark:bg-gray-900 dark:text-gray-200';
+                            @endphp
                             <tr class="hover:bg-violet-100 dark:hover:bg-gray-700 transition-colors">
                                 <td class="px-6 py-4 whitespace-nowrap font-medium text-sm text-gray-500 dark:text-gray-400">
                                     {{ $fees->student_admission_number }}
@@ -129,6 +169,9 @@
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap font-medium text-sm text-gray-500 dark:text-gray-400">
                                     {{ $fees->created_by_name }}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap font-medium text-sm">
+                                   <span class="px-3 py-1 rounded-full border-2 {{ $classes }}">{{ $label }}</span>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                                     {{ \Carbon\Carbon::parse($fees->created_at)->locale('fr')->translatedFormat('d M Y H:i:s') }}
@@ -177,118 +220,119 @@
                                                                         height="20"></iconify-icon>
                                                                 </button>
                                                             </div>
-                                                            <div x-data="feeForm()" x-init="init()">
-                                                                <form action="{{ route('studentFeesCreate', $fees->id) }}"
-                                                                    method="POST" class="m-5" enctype="multipart/form-data">
-                                                                    {{ csrf_field() }}
-                                                                    <input type="hidden" name="class_id"
-                                                                        value="{{ $fees->class_id }}">
-                                                                    <input type="hidden" name="student_id"
-                                                                        value="{{ $fees->id }}">
-                                                                    <div class="mb-6">
-                                                                        <label
-                                                                            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                                                            Montant total <span class="text-red-500">* </span>
-                                                                        </label>
-                                                                        <div class="relative">
-                                                                            <input type="text" id="total_amount"
-                                                                                name="total_amount"
-                                                                                value="{{old('total_amount', number_format($fees->total_amount, 0, ',', ' ')) }}"
-                                                                                required
-                                                                                class="form-input w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-violet-500 focus:border-violet-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500 transition-all duration-200"
-                                                                                placeholder="Montant total par défaut">
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="mb-6">
-                                                                        <label
-                                                                            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                                                            Montant Payé <span class="text-red-500">*</span>
-                                                                        </label>
-                                                                        <div class="relative">
-                                                                            <input type="text" id="paid_amount"
-                                                                                name="paid_amount"
-                                                                                value="{{old('paid_amount', number_format($fees->paid_amount, 0, ',', ' ')) }}"
-                                                                                required disabled
-                                                                                class="form-input w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-violet-500 focus:border-violet-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500 transition-all duration-200"
-                                                                                placeholder="Montant payé">
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="mb-6">
-                                                                        <label
-                                                                            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                                                            Montant Restant <span class="text-red-500">*</span>
-                                                                        </label>
-                                                                        <div class="relative">
-                                                                            <input type="text" id="remaning_amount"
-                                                                                name="remaning_amount"
-                                                                                value="{{old('remaning_amount', number_format($fees->remaning_amount, 0, ',', ' ')) }}"
-                                                                                :value="remainingAmount" required disabled
-                                                                                class="form-input w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-violet-500 focus:border-violet-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500 transition-all duration-200"
-                                                                                placeholder="Montant restant">
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="mb-6">
-                                                                        <label
-                                                                            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                                                            Montant <span class="text-red-500">*</span>
-                                                                        </label>
-                                                                        <div class="relative">
-                                                                            <input type="number" id="amount" name="amount"
-                                                                                value="" x-model.number="newAmount"
-                                                                                @input="updateRemaining()" required
-                                                                                class="form-input w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-violet-500 focus:border-violet-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500 transition-all duration-200"
-                                                                                placeholder="Montant ">
-                                                                        </div>
-                                                                    </div>
+                                                            <form action="{{ route('studentFeesCreate') }}"
+                                                                x-data="{
+                                                                                                                                        totalAmount: {{ $classAmount }},
+                                                                                                                                        totalPaid: {{ $totalPaid }},
+                                                                                                                                        newAmount: '',
+                                                                                                                                      get remaning() {
+                                                                                                                                        let remaning = this.totalAmount - this.totalPaid - this.newAmount;
+                                                                                                                                        return remaning < 0 ? 0 : remaning;
+                                                                                                                                    }
+                                                                                                                                    }" id="kkiapay-form" method="POST"
+                                                                class="m-5" enctype="multipart/form-data">
+                                                                {{ csrf_field() }}
+                                                                <input type="hidden" name="kkiapay_payment_id"
+                                                                    id="kkiapay_payment_id">
 
-                                                                    <div class="mb-3">
-                                                                        <label
-                                                                            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                                                            Type de paiement <span class="text-red-500">*</span>
-                                                                        </label>
-                                                                        <div class="relative">
-                                                                            <select id="payment_type" name="payment_type"
-                                                                                required
-                                                                                class="custom-select w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-violet-500 focus:border-violet-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500 transition-all duration-200">
-                                                                                <option selected disabled value="">Veuillez
-                                                                                    choisir
-                                                                                    un type de paiement </option>
-                                                                                <option value="paypal">Paypal</option>
-                                                                                <option value="stripe">Stripe</option>
-                                                                                <option value="kkiapy">Kkiapay</option>
-                                                                            </select>
-                                                                            <div
-                                                                                class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                                                                                <iconify-icon icon="mdi:chevron-down"
-                                                                                    class="text-gray-400" width="20"
-                                                                                    height="20"></iconify-icon>
-                                                                            </div>
+                                                                <div class="mb-6">
+                                                                    <label
+                                                                        class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                                                        Montant total <span class="text-red-500">* </span>
+                                                                    </label>
+                                                                    <div class="relative">
+                                                                        <input type="number" id="total_amount"
+                                                                            name="total_amount" x-model="totalAmount" required
+                                                                            disabled readonly
+                                                                            class="form-input w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-violet-500 focus:border-violet-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500 transition-all duration-200"
+                                                                            placeholder="Montant total par défaut">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="mb-6">
+                                                                    <label
+                                                                        class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                                                        Montant Payé <span class="text-red-500">*</span>
+                                                                    </label>
+                                                                    <div class="relative">
+                                                                        <input type="number" id="paid_amount" name="paid_amount"
+                                                                            x-model="totalPaid" required disabled readonly
+                                                                            class="form-input w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-violet-500 focus:border-violet-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500 transition-all duration-200"
+                                                                            placeholder="Montant payé">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="mb-6">
+                                                                    <label
+                                                                        class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                                                        Montant Restant <span class="text-red-500">*</span>
+                                                                    </label>
+                                                                    <div class="relative">
+                                                                        <input type="number" id="remaning_amount"
+                                                                            name="remaning_amount" :value="remaning" required
+                                                                            disabled readonly
+                                                                            class="form-input w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-violet-500 focus:border-violet-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500 transition-all duration-200"
+                                                                            placeholder="Montant restant">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="mb-6">
+                                                                    <label
+                                                                        class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                                                        Montant <span class="text-red-500">*</span>
+                                                                    </label>
+                                                                    <div class="relative">
+                                                                        <input type="number" id="amount" name="amount" value=""
+                                                                            x-model="newAmount" required
+                                                                            class="form-input w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-violet-500 focus:border-violet-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500 transition-all duration-200"
+                                                                            placeholder="Montant ">
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="mb-3">
+                                                                    <label
+                                                                        class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                                                        Type de paiement <span class="text-red-500">*</span>
+                                                                    </label>
+                                                                    <div class="relative">
+                                                                        <select id="payment_type" name="payment_type" required
+                                                                            class="custom-select w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-violet-500 focus:border-violet-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500 transition-all duration-200">
+                                                                            <option selected disabled value="">Veuillez
+                                                                                choisir
+                                                                                un type de paiement </option>
+                                                                            <option value="paypal">Paypal</option>
+                                                                            <option value="stripe">Stripe</option>
+                                                                            <option value="kkiapay">Kkiapay</option>
+                                                                        </select>
+                                                                        <div
+                                                                            class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                                                                            <iconify-icon icon="mdi:chevron-down"
+                                                                                class="text-gray-400" width="20"
+                                                                                height="20"></iconify-icon>
                                                                         </div>
                                                                     </div>
+                                                                </div>
 
-                                                                    <div class="mb-3">
-                                                                        <label
-                                                                            class="mb-3 block text-sm font-medium text-black dark:text-white">
-                                                                            Remarque <span class="text-meta-1">*</span>
-                                                                        </label>
-                                                                        <textarea name="remark"
-                                                                            class="w-full rounded-lg border-[1.5px] border-stroke bg-gray-100 dark:text-gray-200 dark:placeholder-gray-200 px-5 py-2.5 font-normal outline-none transition focus:border-violet-600 active:border-violet-600 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-violet-600"
-                                                                            required>{{ old('remark') }}</textarea>
-                                                                    </div>
+                                                                <div class="mb-3">
+                                                                    <label
+                                                                        class="mb-3 block text-sm font-medium text-black dark:text-white">
+                                                                        Remarque <span class="text-meta-1">*</span>
+                                                                    </label>
+                                                                    <textarea name="remark"
+                                                                        class="w-full rounded-lg border-[1.5px] border-stroke bg-gray-100 dark:text-gray-200 dark:placeholder-gray-200 px-5 py-2.5 font-normal outline-none transition focus:border-violet-600 active:border-violet-600 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-violet-600"
+                                                                        required>{{ old('remark') }}</textarea>
+                                                                </div>
 
-                                                                    <div class="flex justify-between py-3 rounded-b">
-                                                                        <button @click="showConfirm = false"
-                                                                            class="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-sm rounded hover:bg-gray-300 dark:hover:bg-gray-600">
-                                                                            Annuler
-                                                                        </button>
-                                                                        <button type="button"
-                                                                            @click="handlePayment"
-                                                                            class="block w-48 rounded-lg bg-violet-600 p-3 font-medium text-gray hover:bg-opacity-90">
-                                                                            Valider
-                                                                        </button>
-                                                                    </div>
-                                                                </form>
-                                                            </div>
+
+                                                                <!-- Boutons -->
+                                                                <div class="flex justify-between py-3 rounded-b">
+                                                                    <button type="button" onclick="window.history.back();"
+                                                                        class="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-sm rounded hover:bg-gray-300 dark:hover:bg-gray-600">
+                                                                        Annuler
+                                                                    </button>
+                                                                    <button type="submit" id="submitBtn"
+                                                                        class="block w-48 rounded-lg bg-violet-600 p-3 font-medium text-gray hover:bg-opacity-90">
+                                                                        Valider
+                                                                    </button>
+                                                                </div>
+                                                            </form>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -323,59 +367,43 @@
 @endsection
 
 <script>
-    function toggleMenu(event, index) {
-        event.stopPropagation();
-        document.querySelectorAll('.relative .hidden').forEach(menu => menu.classList.add('hidden'));
-        const menu = document.getElementById('dropdown-menu-' + index);
-        menu.classList.toggle('hidden');
-    }
+    document.addEventListener('DOMContentLoaded', function () {
+        const form = document.getElementById('kkiapay-form');
+        const paymentType = document.getElementById('payment_type');
+        const amountInput = document.getElementById('amount');
+        const kkiapayField = document.getElementById('kkiapay_payment_id');
 
-    document.addEventListener('click', function () {
-        document.querySelectorAll('.relative .hidden').forEach(menu => menu.classList.add('hidden'));
-    });
+        form.addEventListener('submit', function (e) {
+            const amount = amountInput?.value;
+            const type = paymentType?.value;
 
-   function feeForm() {
-        return {
-            totalAmount: {{ $classAmount }},
-            totalPaid: {{ $totalPaid }},
-            newAmount: 0,
-            paymentType: '',
-            get remainingAmount() {
-                let remaining = this.totalAmount - this.totalPaid - this.newAmount;
-                return remaining < 0 ? 0 : remaining;
-            },
-            init() {
-                this.updateRemaining();
-                this.paymentType = document.getElementById('payment_type').value;
-                document.getElementById('payment_type').addEventListener('change', (e) => {
-                    this.paymentType = e.target.value;
-                });
-            },
-            updateRemaining() {
-                document.getElementById('remaning_amount').value = this.remainingAmount;
-            },
-            handlePayment() {
-                if (this.paymentType === 'kkiapy') {
-                    openKkiapayWidget({
-                        amount: this.newAmount,
-                        api_key: "TON_API_KEY_KKIAPAY",
-                        sandbox: false,
-                        callback: (response) => {
-                            // Envoie vers ton backend avec response.transactionId
-                            const form = document.querySelector('form');
-                            const input = document.createElement('input');
-                            input.type = 'hidden';
-                            input.name = 'kkiapay_payment_id';
-                            input.value = response.transactionId;
-                            form.appendChild(input);
-                            form.submit();
-                        }
-                    });
-                } else {
-                    document.querySelector('form').submit();
-                }
+            if (!amount || amount <= 0) {
+                alert("Veuillez entrer un montant valide.");
+                e.preventDefault();
+                return;
             }
-        }
-    }
 
+            if (type === 'kkiapay') {
+                e.preventDefault();
+
+                openKkiapayWidget({
+                    amount: amount,
+                    api_key: 'd949680a85e3f3f61e79dbb39e9f612b73444b72',
+                    sandbox: true,
+                    callback: function (response) {
+                        if (!response.transactionId) {
+                            alert("Paiement non validé.");
+                            return;
+                        }
+
+                        console.log('Réponse Kkiapay :', response);
+                        kkiapayField.value = response.transactionId;
+
+                        // Soumission manuelle après réception du transactionId
+                        form.submit();
+                    }
+                });
+            }
+        });
+    });
 </script>
