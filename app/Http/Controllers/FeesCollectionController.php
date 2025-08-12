@@ -105,7 +105,6 @@ class FeesCollectionController extends Controller
 
     public function myFeesCreate(Request $request)
     {
-        // dd($request->all());
         try {
             $getStudent = User::getSingleClass(Auth::user()->id);
             $getPaidAmount = FeesCollectionModel::getPaidAmount(Auth::user()->id, Auth::user()->class_id);
@@ -158,7 +157,7 @@ class FeesCollectionController extends Controller
 
 
             $fees->save();
-            return redirect('student/myfees')->with('success', 'Contribution enregistrée avec succès.');
+            return redirect('student/my_fees')->with('success', 'Contribution enregistrée avec succès.');
 
         } catch (\Exception $e) {
             Log::error("Erreur lors de l'ajout de contribution : " . $e->getMessage());
@@ -279,7 +278,7 @@ class FeesCollectionController extends Controller
 
         $session = StripeSession::retrieve($request->get('session_id'));
 
-        if ($session->payment_status === 'paid') {
+        if ($session->payment_status === 'paid' && $session->status === 'complete') {
             $fees = FeesCollectionModel::find($session->metadata['fees_id']);
             if ($fees) {
                 $fees->is_payment = 1;
@@ -287,7 +286,7 @@ class FeesCollectionController extends Controller
                 $fees->payment_data = json_encode($session);
                 $fees->save();
             }
-            return redirect('student/myfees')->with('success', 'Paiement validé avec succès.');
+            return redirect('student/my_fees')->with('success', 'Paiement validé avec succès.');
         }
 
         return redirect()->route('student/my_fees')->with('error', 'Paiement non confirmé.');

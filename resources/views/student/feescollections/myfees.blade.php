@@ -171,7 +171,7 @@
                                     {{ $fees->created_by_name }}
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap font-medium text-sm">
-                                   <span class="px-3 py-1 rounded-full border-2 {{ $classes }}">{{ $label }}</span>
+                                    <span class="px-3 py-1 rounded-full border-2 {{ $classes }}">{{ $label }}</span>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                                     {{ \Carbon\Carbon::parse($fees->created_at)->locale('fr')->translatedFormat('d M Y H:i:s') }}
@@ -220,21 +220,30 @@
                                                                         height="20"></iconify-icon>
                                                                 </button>
                                                             </div>
-                                                            <form action="{{ route('studentFeesCreate') }}"
-                                                                x-data="{
-                                                                                                                                        totalAmount: {{ $classAmount }},
-                                                                                                                                        totalPaid: {{ $totalPaid }},
-                                                                                                                                        newAmount: '',
-                                                                                                                                      get remaning() {
-                                                                                                                                        let remaning = this.totalAmount - this.totalPaid - this.newAmount;
-                                                                                                                                        return remaning < 0 ? 0 : remaning;
-                                                                                                                                    }
-                                                                                                                                    }" id="kkiapay-form" method="POST"
-                                                                class="m-5" enctype="multipart/form-data">
+                                                            <form action="{{ route('studentFeesCreate') }}" x-data="{
+                                                                     totalAmount: {{ $classAmount }},
+                                                                     totalPaid: {{ $totalPaid }},
+                                                                    newAmount: '',
+                                                                     studentName: '{{ $fees->student_name }}',
+                                                                    studentLastName: '{{ $fees->student_last_name }}',
+                                                                    studentEmail: '{{ $fees->student_email }}',
+                                                                    studentPhone: '{{ $fees->student_phone }}',
+                                                                    get remaning() {
+                                                                   let remaning = this.totalAmount - this.totalPaid - this.newAmount;
+                                                                   return remaning < 0 ? 0 : remaning;
+                                                                 }
+                                                             }" id="kkiapay-form" method="POST" class="m-5" enctype="multipart/form-data">
                                                                 {{ csrf_field() }}
                                                                 <input type="hidden" name="kkiapay_payment_id"
                                                                     id="kkiapay_payment_id">
-
+                                                                <input type="hidden" name="student_first_name"
+                                                                    value="{{ $fees->student_name }}">
+                                                                <input type="hidden" name="student_last_name"
+                                                                    value="{{ $fees->student_last_name }}">
+                                                                <input type="hidden" name="student_email"
+                                                                    value="{{ $fees->student_email }}">
+                                                                <input type="hidden" name="student_phone"
+                                                                    value="{{ $fees->student_phone }}">
                                                                 <div class="mb-6">
                                                                     <label
                                                                         class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -285,14 +294,15 @@
                                                                             placeholder="Montant ">
                                                                     </div>
                                                                 </div>
-
                                                                 <div class="mb-3">
                                                                     <label
                                                                         class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                                                         Type de paiement <span class="text-red-500">*</span>
                                                                     </label>
-                                                                    <div class="relative">
-                                                                        <select id="payment_type" name="payment_type" required
+                                                                    <div class="relative" x-data="paymentApp()">
+                                                                        <select id="payment_type" name="payment_type"
+                                                                            x-model="payment_type" required
+                                                                            @change="paymentForm()"
                                                                             class="custom-select w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-violet-500 focus:border-violet-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500 transition-all duration-200">
                                                                             <option selected disabled value="">Veuillez
                                                                                 choisir
@@ -309,21 +319,17 @@
                                                                         </div>
                                                                     </div>
                                                                 </div>
-
                                                                 <div class="mb-3">
                                                                     <label
                                                                         class="mb-3 block text-sm font-medium text-black dark:text-white">
                                                                         Remarque <span class="text-meta-1">*</span>
                                                                     </label>
                                                                     <textarea name="remark"
-                                                                        class="w-full rounded-lg border-[1.5px] border-stroke bg-gray-100 dark:text-gray-200 dark:placeholder-gray-200 px-5 py-2.5 font-normal outline-none transition focus:border-violet-600 active:border-violet-600 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-violet-600"
-                                                                        required>{{ old('remark') }}</textarea>
+                                                                        class="w-full rounded-lg border-[1.5px] border-stroke bg-gray-100 dark:text-gray-200 dark:placeholder-gray-200 px-5 py-2.5 font-normal outline-none transition focus:border-violet-600 active:border-violet-600 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-violet-600">{{ old('remark') }}</textarea>
                                                                 </div>
-
-
                                                                 <!-- Boutons -->
                                                                 <div class="flex justify-between py-3 rounded-b">
-                                                                    <button type="button" onclick="window.history.back();"
+                                                                    <button type="button" @click="showConfirm = false"
                                                                         class="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-sm rounded hover:bg-gray-300 dark:hover:bg-gray-600">
                                                                         Annuler
                                                                     </button>
@@ -367,43 +373,24 @@
 @endsection
 
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const form = document.getElementById('kkiapay-form');
-        const paymentType = document.getElementById('payment_type');
-        const amountInput = document.getElementById('amount');
-        const kkiapayField = document.getElementById('kkiapay_payment_id');
+    function paymentApp() {
 
-        form.addEventListener('submit', function (e) {
-            const amount = amountInput?.value;
-            const type = paymentType?.value;
-
-            if (!amount || amount <= 0) {
-                alert("Veuillez entrer un montant valide.");
-                e.preventDefault();
-                return;
+        return {
+            payment_type: "",
+            paymentForm() {
+                if (this.payment_type === 'kkiapay') {
+                    openKkiapayWidget({
+                        amount: parseInt(this.newAmount),
+                        api_key: "ae13e22072ae11f0a9bdb7f9a2ea3488", // clé publique
+                        sandbox: true, // false en prod
+                        theme: "#5d2e8e",
+                        name: `${this.studentName} ${this.studentLastName}`,
+                        phone: this.studentPhone,
+                        email: this.studentEmail,
+                        position: "center"
+                    });
+                }
             }
-
-            if (type === 'kkiapay') {
-                e.preventDefault();
-
-                openKkiapayWidget({
-                    amount: amount,
-                    api_key: 'd949680a85e3f3f61e79dbb39e9f612b73444b72',
-                    sandbox: true,
-                    callback: function (response) {
-                        if (!response.transactionId) {
-                            alert("Paiement non validé.");
-                            return;
-                        }
-
-                        console.log('Réponse Kkiapay :', response);
-                        kkiapayField.value = response.transactionId;
-
-                        // Soumission manuelle après réception du transactionId
-                        form.submit();
-                    }
-                });
-            }
-        });
-    });
+        }
+    }
 </script>

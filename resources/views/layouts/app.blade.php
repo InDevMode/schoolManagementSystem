@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <title>{{ !empty($header_title) ? $header_title : '' }} - School</title>
+    <title>{{ !empty($header_title) ? $header_title : '' }} - SMS</title>
     <link rel="shortcut icon" href="{{ asset('public/images/logo.png') }}" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
