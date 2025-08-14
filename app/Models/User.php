@@ -450,7 +450,10 @@ class User extends Authenticatable
             'feescollections.created_at as created_at',
             'created_by.name as created_by_name',
             'users.name as student_name',
-            'users.last_name as student_last_name'
+            'users.last_name as student_last_name',
+            'users.mobile_number as student_phone',
+            'users.email as student_email',
+            'users.admission_number as student_admission_number',
         )
             ->leftJoin('class', 'class.id', '=', 'users.class_id')
             ->leftJoin('feescollections', 'feescollections.student_id', '=', 'users.id')
@@ -516,7 +519,6 @@ class User extends Authenticatable
             ->where('users.user_type', 3)
             ->first();
     }
-
 
     public static function getSingleClass(int $id)
     {

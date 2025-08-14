@@ -210,6 +210,12 @@
 
                         <!-- Sample Row 1 -->
                         @foreach ($getFeesCollections as $index => $feescollections)
+                            @php
+                                    $totalAmount = $feescollections->class_amount;
+                                   $totalPaid = (new \App\Models\FeesCollectionModel())
+                                    ->getPaidAmount($feescollections->id, $feescollections->class_id);
+
+                                @endphp
                             <tr class="hover:bg-violet-100 dark:hover:bg-gray-700 transition-colors">
                                 <td class="px-6 py-4 whitespace-nowrap font-medium text-sm text-gray-500 dark:text-gray-400">
                                     {{ $feescollections->admission_number }}
@@ -276,10 +282,17 @@
                                             tabindex="{{ $index + 1 }}" x-show="open" @click.away="open = false" x-transition>
                                             <div class="py-1">
                                                 <div x-data="{ showConfirm: false, selectedStudent: null }">
-                                                    <button type="button" @click="showConfirm = true"
-                                                        class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:text-violet-600 dark:hover:text-violet-600"
-                                                        role="menuitem"><i class="fas fa-cash-register mr-2"></i>Ajouter un
-                                                        frais</button>
+                                                   <div>
+                                                        <button
+                                                            type="button"
+                                                            @click="showConfirm = true"
+                                                             :disabled="{{ $totalAmount }} === {{ $totalPaid }}"
+                                                            class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:text-violet-600 dark:hover:text-violet-600"
+                                                            role="menuitem"
+                                                        >
+                                                            <i class="fas fa-cash-register mr-2"></i>Ajouter un frais
+                                                        </button>
+                                                    </div>
                                                     <!-- MODAL de confirmation -->
                                                     <div x-show="showConfirm" x-transition x-cloak
                                                         class="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
@@ -302,24 +315,47 @@
                                                                         height="20"></iconify-icon>
                                                                 </button>
                                                             </div>
-                                                            <div x-data="feeForm()" x-init="init()">
+                                                            <div>
                                                                 <form
                                                                     action="{{ route('createFeesCollects', $feescollections->id) }}"
+                                                                    x-data="{
+                                                                                                         totalAmount: {{ $totalAmount }},
+                                                                                                         totalPaid: {{ $totalPaid }},
+                                                                                                         newAmount: '',
+                                                                                                         studentName: '{{ $feescollections->student_name }}',
+                                                                                                         studentLastName: '{{ $feescollections->student_last_name }}',
+                                                                                                         studentEmail: '{{ $feescollections->student_email }}',
+                                                                                                         studentPhone: '{{ $feescollections->student_phone }}',
+                                                                                                         get remaning() {
+                                                                                                         let remaning = this.totalAmount - this.totalPaid - this.newAmount;
+                                                                                                         return remaning < 0 ? 0 : remaning;
+                                                                                                       }
+                                                                                                         }"
                                                                     method="POST" class="m-5" enctype="multipart/form-data">
                                                                     {{ csrf_field() }}
+                                                                    <input type="hidden" name="kkiapay_payment_id"
+                                                                        id="kkiapay_payment_id">
                                                                     <input type="hidden" name="class_id"
                                                                         value="{{ $feescollections->class_id }}">
                                                                     <input type="hidden" name="student_id"
                                                                         value="{{ $feescollections->id }}">
+                                                                          <input type="hidden" name="student_name"
+                                                                        value="{{ $feescollections->student_name }}">
+                                                                    <input type="hidden" name="student_last_name"
+                                                                        value="{{ $feescollections->student_last_name }}">
+                                                                    <input type="hidden" name="student_email"
+                                                                        value="{{ $feescollections->student_email }}">
+                                                                    <input type="hidden" name="student_phone"
+                                                                        value="{{ $feescollections->student_phone }}">
                                                                     <div class="mb-6">
                                                                         <label
                                                                             class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                                                             Montant total <span class="text-red-500">* </span>
                                                                         </label>
                                                                         <div class="relative">
-                                                                            <input type="text" id="total_amount" name="total_amount"
-                                                                                value="{{old('total_amount', number_format($feescollections->class_amount, 0, ',', ' ')) }}"
-                                                                                required
+                                                                            <input type="number" id="total_amount" name="total_amount"
+                                                                                x-model="totalAmount"
+                                                                                required disabled readonly
                                                                                 class="form-input w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-violet-500 focus:border-violet-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500 transition-all duration-200"
                                                                                 placeholder="Montant total par défaut">
                                                                         </div>
@@ -330,8 +366,8 @@
                                                                             Montant Payé <span class="text-red-500">*</span>
                                                                         </label>
                                                                         <div class="relative">
-                                                                            <input type="text" id="paid_amount" name="paid_amount"
-                                                                                value="{{old('paid_amount', number_format($feescollections->paid_amount, 0, ',', ' ')) }}"
+                                                                            <input type="number" id="paid_amount" name="paid_amount"
+                                                                                 x-model="totalPaid" required disabled readonly
                                                                                 required disabled
                                                                                 class="form-input w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-violet-500 focus:border-violet-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500 transition-all duration-200"
                                                                                 placeholder="Montant payé">
@@ -343,11 +379,9 @@
                                                                             Montant Restant <span class="text-red-500">*</span>
                                                                         </label>
                                                                         <div class="relative">
-                                                                            <input type="text" id="remaning_amount"
-                                                                                name="remaning_amount"
-                                                                                value="{{old('remaning_amount', number_format($feescollections->remaning_amount, 0, ',', ' ')) }}"
-                                                                                 :value="remainingAmount"
-                                                                                required disabled
+                                                                            <input type="number" id="remaning_amount"  name="remaning_amount"
+                                                                                 :value="remaning"
+                                                                                required disabled readonly
                                                                                 class="form-input w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-violet-500 focus:border-violet-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500 transition-all duration-200"
                                                                                 placeholder="Montant restant">
                                                                         </div>
@@ -358,9 +392,8 @@
                                                                             Montant <span class="text-red-500">*</span>
                                                                         </label>
                                                                         <div class="relative">
-                                                                            <input type="number" id="amount" name="amount" value=""
+                                                                            <input type="number" id="amount" name="amount"
                                                                              x-model.number="newAmount"
-                                                                            @input="updateRemaining()"
                                                                                 required
                                                                                 class="form-input w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-violet-500 focus:border-violet-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500 transition-all duration-200"
                                                                                 placeholder="Montant ">
@@ -372,14 +405,17 @@
                                                                             class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                                                             Type de paiement <span class="text-red-500">*</span>
                                                                         </label>
-                                                                        <div class="relative">
-                                                                            <select id="payment_type" name="payment_type" required
+                                                                        <div class="relative"  x-data="paymentApp()">
+                                                                            <select id="payment_type" name="payment_type" x-model="payment_type"  @change="paymentForm()" required
                                                                                 class="custom-select w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-violet-500 focus:border-violet-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500 transition-all duration-200">
                                                                                 <option selected disabled value="">Veuillez choisir
                                                                                     un type de paiement </option>
                                                                                 <option value="check">Chèque</option>
                                                                                 <option value="transfer">Virement</option>
                                                                                 <option value="cash">Espèces</option>
+                                                                                <option value="paypal">Paypal</option>
+                                                                                <option value="stripe">Stripe</option>
+                                                                                <option value="kkiapay">Kkiapay</option>
                                                                             </select>
                                                                             <div
                                                                                 class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
@@ -397,7 +433,7 @@
                                                                         </label>
                                                                         <textarea name="remark"
                                                                             class="w-full rounded-lg border-[1.5px] border-stroke bg-gray-100 dark:text-gray-200 dark:placeholder-gray-200 px-5 py-2.5 font-normal outline-none transition focus:border-violet-600 active:border-violet-600 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-violet-600"
-                                                                            required>{{ old('remark') }}</textarea>
+                                                                            >{{ old('remark') }}</textarea>
                                                                     </div>
 
                                                                     <div class="flex justify-between py-3 rounded-b">
@@ -449,33 +485,24 @@
         </div>
     </div>
 @endsection
-
 <script>
-    function toggleMenu(event, index) {
-        event.stopPropagation();
-        document.querySelectorAll('.relative .hidden').forEach(menu => menu.classList.add('hidden'));
-        const menu = document.getElementById('dropdown-menu-' + index);
-        menu.classList.toggle('hidden');
-    }
 
-    document.addEventListener('click', function () {
-        document.querySelectorAll('.relative .hidden').forEach(menu => menu.classList.add('hidden'));
-    });
-
-function feeForm() {
+        function paymentApp() {
         return {
-            totalAmount: {{ $classAmount }},
-            totalPaid: {{ $totalPaid }},
-            newAmount: 0,
-            get remainingAmount() {
-                let remaining = this.totalAmount - this.totalPaid - this.newAmount;
-                return remaining < 0 ? 0 : remaining;
-            },
-            init() {
-                this.updateRemaining();
-            },
-            updateRemaining() {
-                document.getElementById('remaning_amount').value = this.remainingAmount;
+            payment_type: "",
+            paymentForm() {
+                if (this.payment_type === 'kkiapay') {
+                    openKkiapayWidget({
+                        amount: parseInt(this.newAmount),
+                        api_key:  {{ env('KKIAPAY_SECRET') }}, // clé publique
+                        sandbox: true, // false en prod
+                        theme: "#5d2e8e",
+                        name: `${this.studentName} ${this.studentLastName}`,
+                        phone: this.studentPhone,
+                        email: this.studentEmail,
+                        position: "center"
+                    });
+                }
             }
         }
     }

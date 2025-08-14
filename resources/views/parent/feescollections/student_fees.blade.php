@@ -7,7 +7,8 @@
             <div>
                 <h1 class=" text-2xl font-bold text-gray-800 dark:text-white flex items-center gap-2">
                     <i class="fa-solid fa-cash-register text-primary-600"></i>
-                    Liste de mes contributions payées
+                    Liste des frais de scolarité payés par <span class="text-violet-500">{{ $getStudent->name }}
+                        {{ $getStudent->last_name }}</span>
                 </h1>
                 <p class="text-gray-600 dark:text-gray-300 mt-1">Gérez la liste de vos contributions de frais de scolarité
                     de votre plateforme</p>
@@ -16,10 +17,21 @@
             <nav class="flex items-center text-sm">
                 <ol class="flex items-center space-x-2">
                     <li class="flex items-center">
-                        <a href="{{ url('student/dashboard') }}"
+                        <a href="{{ url('parent/dashboard') }}"
                             class="text-primary-600 hover:text-violet-600 transition-colors">
                             <i class="fas fa-home mr-1"></i>
                             Dashboard
+                        </a>
+                        <span class="mx-2 text-gray-400">
+                            <iconify-icon icon="mdi:chevron-right" class="text-gray-400" width="16"
+                                height="16"></iconify-icon>
+                        </span>
+                    </li>
+                    <li class="flex items-center">
+                        <a href="{{ url('parent/my_student') }}"
+                            class="text-primary-600 hover:text-violet-600 transition-colors">
+                            <i class="fas fa-home mr-1"></i>
+                            Mes apprenants
                         </a>
                         <span class="mx-2 text-gray-400">
                             <iconify-icon icon="mdi:chevron-right" class="text-gray-400" width="16"
@@ -126,6 +138,7 @@
                                 $status = $fees->payment_status;
                                 $label = $statusMap[$status]['label'] ?? 'Statut inconnu';
                                 $classes = $statusMap[$status]['classes'] ?? 'bg-gray-100 border-gray-800 text-gray-800 dark:bg-gray-900 dark:text-gray-200';
+
                             @endphp
                             <tr class="hover:bg-violet-100 dark:hover:bg-gray-700 transition-colors">
                                 <td class="px-6 py-4 whitespace-nowrap font-medium text-sm text-gray-500 dark:text-gray-400">
@@ -180,7 +193,7 @@
                                 </td>
                                 @if ($classAmount != $totalPaid)
                                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                        <div class="relative inline-block text-left" x-data="{ open: false, showConfirm: false, showModal: false }">
+                                        <div class="relative inline-block text-left" x-data="{ open: false, showConfirm: false }">
                                             <div>
                                                 <button type="button"
                                                     class="group inline-flex w-full justify-center gap-x-1.5 rounded-lg shadow-md bg-white dark:bg-gray-800 border dark:border-gray-600 dark:hover:text-violet-600 px-3 py-2 text-sm font-semibold text-gray-700 hover:text-violet-600 dark:text-gray-200 hover:bg-gray-100"
@@ -196,11 +209,12 @@
                                                 role="menu" aria-orientation="vertical" aria-labelledby="menu-button"
                                                 tabindex="{{ $index + 1 }}" x-show="open" @click.away="open = false" x-transition>
                                                 <div class="py-1">
-                                                    <div x-data="{ showConfirm: false, selectedStudent: null }">
+                                                    <div x-data="{ showConfirm: false, selectedStudent: null}">
                                                         <button type="button" @click="showConfirm = true"
-                                                            class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:text-violet-600 dark:hover:text-violet-600"
+                                                            class="block px-4 py-2 text-sm text-gray-500 dark:text-gray-200 hover:text-violet-600 dark:hover:text-violet-600"
                                                             role="menuitem"><i class="fas fa-cash-register mr-2"></i>Ajouter un
                                                             frais</button>
+
                                                         <!-- MODAL de confirmation -->
                                                         <div x-show="showConfirm" x-transition x-cloak
                                                             class="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
@@ -223,24 +237,24 @@
                                                                             height="20"></iconify-icon>
                                                                     </button>
                                                                 </div>
-                                                                <form action="{{ route('studentFeesCreate') }}" x-data="{
-                                                                                                        totalAmount: {{ $classAmount }},
-                                                                                                        totalPaid: {{ $totalPaid }},
-                                                                                                        newAmount: '',
-                                                                                                        studentName: '{{ $fees->student_name }}',
-                                                                                                        studentLastName: '{{ $fees->student_last_name }}',
-                                                                                                        studentEmail: '{{ $fees->student_email }}',
-                                                                                                        studentPhone: '{{ $fees->student_phone }}',
-                                                                                                        get remaning() {
-                                                                                                         let remaning = this.totalAmount - this.totalPaid - this.newAmount;
-                                                                                                         return remaning < 0 ? 0 : remaning;
-                                                                                                       }
-                                                                                                   }" id="kkiapay-form" method="POST"
-                                                                    class="m-5" enctype="multipart/form-data">
+                                                                <form action="{{ route('parentStudentFeesCreate', $fees->id) }}" x-data="{
+                                                                                                                     totalAmount: {{ $classAmount }},
+                                                                                                                     totalPaid: {{ $totalPaid }},
+                                                                                                                    newAmount: '',
+                                                                                                                     studentName: '{{ $fees->student_name }}',
+                                                                                                                    studentLastName: '{{ $fees->student_last_name }}',
+                                                                                                                    studentEmail: '{{ $fees->student_email }}',
+                                                                                                                    studentPhone: '{{ $fees->student_phone }}',
+                                                                                                                    get remaning() {
+                                                                                                                   let remaning = this.totalAmount - this.totalPaid - this.newAmount;
+                                                                                                                   return remaning < 0 ? 0 : remaning;
+                                                                                                                 }
+                                                                                                             }" id="kkiapay-form"
+                                                                    method="POST" class="m-5" enctype="multipart/form-data">
                                                                     {{ csrf_field() }}
                                                                     <input type="hidden" name="kkiapay_payment_id"
                                                                         id="kkiapay_payment_id">
-                                                                    <input type="hidden" name="student_name"
+                                                                    <input type="hidden" name="student_first_name"
                                                                         value="{{ $fees->student_name }}">
                                                                     <input type="hidden" name="student_last_name"
                                                                         value="{{ $fees->student_last_name }}">
@@ -292,7 +306,7 @@
                                                                             Montant <span class="text-red-500">*</span>
                                                                         </label>
                                                                         <div class="relative">
-                                                                            <input type="number" id="amount" name="amount"
+                                                                            <input type="number" id="amount" name="amount" value=""
                                                                                 x-model="newAmount" required
                                                                                 class="form-input w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-violet-500 focus:border-violet-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500 transition-all duration-200"
                                                                                 placeholder="Montant ">
@@ -346,35 +360,6 @@
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <div x-data="{ showModal: false, selectedStudent: null }">
-                                                        <button type="button" @click="showModal = true"
-                                                            class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:text-yellow-600 dark:hover:text-yellow-600"
-                                                            role="menuitem"><i class="fas fa-eye mr-2"></i>Voir les détails</button>
-                                                        <!-- MODAL de confirmation -->
-                                                        <div x-show="showModal" x-transition x-cloak
-                                                            class="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
-                                                            <div
-                                                                class="bg-white dark:bg-gray-800 border-b border-gray-200 rounded-lg shadow-lg w-[40%] h-auto">
-                                                                <div
-                                                                    class="flex items-center justify-between p-4 border-b border-gray-200 rounded-t bg-violet-500 dark:bg-violet-600">
-                                                                    <h3
-                                                                        class="text-lg font-semibold text-white dark:text-white text-center">
-                                                                        Ajouter une nouvelle
-                                                                        contribution pour <span
-                                                                            class="font-bold bg-white text-gray-900 py-1 rounded px-2 text-sm me-1">{{ $fees->student_name }}
-                                                                            {{ $fees->student_last_name }} </span> de la
-                                                                        classe de <span
-                                                                            class="font-bold bg-white text-gray-900 py-1 rounded px-2 text-sm">{{ $fees->class_name }}</span>
-                                                                    </h3>
-                                                                    <button type="button" @click="showModal = false"
-                                                                        class="text-white hover:text-gray-900 dark:hover:text-white rounded-lg text-sm w-8 h-8 inline-flex justify-center items-center">
-                                                                        <iconify-icon icon="mdi:close" width="20"
-                                                                            height="20"></iconify-icon>
-                                                                    </button>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -408,13 +393,14 @@
 
 <script>
     function paymentApp() {
+
         return {
             payment_type: "",
             paymentForm() {
                 if (this.payment_type === 'kkiapay') {
                     openKkiapayWidget({
                         amount: parseInt(this.newAmount),
-                        api_key:  {{ env('KKIAPAY_SECRET') }}, // clé publique
+                        api_key: 'ae13e22072ae11f0a9bdb7f9a2ea3488', // clé publique
                         sandbox: true, // false en prod
                         theme: "#5d2e8e",
                         name: `${this.studentName} ${this.studentLastName}`,
