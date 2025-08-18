@@ -528,5 +528,20 @@ class User extends Authenticatable
             ->first();
     }
 
+    public static function getTotalUserWithUserType(int $user_type)
+    {
+        return User::select('users.id')
+            ->where('user_type', $user_type)
+            ->where('is_delete', 0)
+            ->count();
+    }
+
+    public static function getTotalUser()
+    {
+        return User::select('users.id')
+            ->where('is_delete', 0)
+            ->count();
+    }
+
 
 }

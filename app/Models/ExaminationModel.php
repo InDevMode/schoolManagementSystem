@@ -23,7 +23,7 @@ class ExaminationModel extends Model
     ];
 
 
-    static function getExaminations(int $perPage)
+    public static function getExaminations(int $perPage)
     {
         $results = ExaminationModel::select('exams.*', 'users.name as created_name')
             ->join('users', 'users.id', '=', 'exams.created_by');
@@ -48,24 +48,24 @@ class ExaminationModel extends Model
             ->paginate($perPage);
     }
 
-    static public function getSingle(int $id): ?ExaminationModel
+    public static function getSingle(int $id): ?ExaminationModel
     {
         return ExaminationModel::find($id);
     }
 
-    static public function getNameSingle(string $name): ?ExaminationModel
+    public static function getNameSingle(string $name): ?ExaminationModel
     {
         return ExaminationModel::where('name', $name)->first();
     }
 
-    static public function checkNameSingle(string $name, int $id): ?ExaminationModel
+    public static function checkNameSingle(string $name, int $id): ?ExaminationModel
     {
         return ExaminationModel::where('name', $name)
             ->where('id', '!=', $id)
             ->first();
     }
 
-    static public function getExams()
+    public static function getExams()
     {
         return ExaminationModel::select('exams.*')
             ->join('users', 'users.id', '=', 'exams.created_by')
@@ -73,8 +73,7 @@ class ExaminationModel extends Model
             ->orderBy('exams.id', 'desc')
             ->get();
     }
-
-    static public function getMyClassSubjectGroup(int $teacher_id)
+    public static function getMyClassSubjectGroup(int $teacher_id)
     {
         return ClassTeacherModel::select(
             'class_teacher.*',
@@ -87,6 +86,11 @@ class ExaminationModel extends Model
             ->where('class_teacher.teacher_id', '=', $teacher_id)
             ->groupBy('class_teacher.id')
             ->get();
+    }
+
+    public static function getTotalExam()
+    {
+        return ExaminationModel::where('is_delete', 0)->count();
     }
 
 }

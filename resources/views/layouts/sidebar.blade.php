@@ -62,7 +62,7 @@
                                 href="{{ url('admin/teacher/list') }}">
                                 <span
                                     class="w-10 h-10 flex items-center justify-center rounded {{ Request::Segment(2) == 'teacher' ? 'bg-violet-100 text-violet-600' : 'bg-violet-100 text-violet-600'}}"><i
-                                        class="fa-solid fa-user-tie text-[18px]"></i></span>
+                                        class="fa-solid fa-chalkboard-teacher text-[18px]"></i></span>
                                 <span
                                     class="{{ Request::Segment(2) == 'teacher' ? 'group-hover:text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}">Professeurs</span>
                             </a>
@@ -82,7 +82,7 @@
                                 href="{{ url('admin/parent/list') }}">
                                 <span
                                     class="w-10 h-10 flex items-center justify-center rounded {{ Request::Segment(2) == 'parent' ? 'bg-violet-100 text-violet-600' : 'bg-violet-100 text-violet-600'}}"><i
-                                        class="fa-solid fa-person-breastfeeding text-[18px]"></i></span>
+                                        class="fa-solid fa-user-group text-[18px]"></i></span>
                                 <span
                                     class="{{ Request::Segment(2) == 'parent' ? 'group-hover:text-bodydark1' : 'group-hover:text-bodydark1 text-violet-600 dark:text-bodydark1'}}">Parents</span>
                             </a>

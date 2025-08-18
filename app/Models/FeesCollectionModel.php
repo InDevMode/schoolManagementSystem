@@ -131,4 +131,18 @@ class FeesCollectionModel extends Model
             ->first();
     }
 
+    public static function getTotalFeesCollections()
+    {
+        return FeesCollectionModel::where('feescollections.is_payment', 1)
+            ->where('feescollections.is_delete', 0)->count();
+    }
+
+    public static function getTotalFeesCollectionsToday()
+    {
+        return FeesCollectionModel::where('feescollections.is_payment', 1)
+            ->where('feescollections.is_delete', 0)
+            ->whereDate('feescollections.created_at', date('Y-m-d'))
+            ->count();
+    }
+
 }

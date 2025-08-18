@@ -92,5 +92,10 @@ class CommunicateModel extends Model
             ->paginate($perpage);
     }
 
+    public static function getTotalCommunicate()
+    {
+        return CommunicateModel::where('is_delete', 0)->count();
+    }
+
 
 }
