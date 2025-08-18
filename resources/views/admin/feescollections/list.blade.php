@@ -391,16 +391,21 @@
                                                                             class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                                                             Montant <span class="text-red-500">*</span>
                                                                         </label>
-                                                                        <div class="relative">
+                                                                        <div class="relative" x-data="paymentApp()">
                                                                             <input type="number" id="amount" name="amount"
                                                                              x-model.number="newAmount"
+                                                                             @input="paymentForm()"
                                                                                 required
                                                                                 class="form-input w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-violet-500 focus:border-violet-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500 transition-all duration-200"
                                                                                 placeholder="Montant ">
                                                                         </div>
                                                                     </div>
+                                                                    <div id="error-amount"
+                                                                        class="text-red-800 mb-6 text-sm hidden border border-red-500 bg-red-100 px-3 py-2 rounded">
+                                                                        Veuillez entrer un montant s'il vous plaît
+                                                                    </div>
 
-                                                                    <div class="mb-3">
+                                                                    <div class="mb-6">
                                                                         <label
                                                                             class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                                                             Type de paiement <span class="text-red-500">*</span>
@@ -426,7 +431,7 @@
                                                                         </div>
                                                                     </div>
 
-                                                                    <div class="mb-3">
+                                                                    <div class="mb-6">
                                                                         <label
                                                                             class="mb-3 block text-sm font-medium text-black dark:text-white">
                                                                             Remarque <span class="text-meta-1">*</span>
@@ -450,6 +455,128 @@
                                                             </div>
                                                         </div>
                                                     </div>
+                                                    <div x-data="{ showModal: false }">
+                                                        <!-- Bouton d'ouverture -->
+                                                        <button type="button" @click="showModal = true"
+                                                            class="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-200
+                                                                    hover:text-violet-600 dark:hover:text-violet-400 transition-colors duration-200">
+                                                            <i class="fas fa-eye"></i> Voir les détails
+                                                        </button>
+
+                                                        <!-- Overlay -->
+                                                        <div x-show="showModal" x-transition.opacity x-cloak
+                                                            class="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+
+                                                            <!-- Modal -->
+                                                            <div x-show="showModal" x-transition.scale.origin.bottom x-cloak
+                                                                class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-3xl mx-4 overflow-hidden">
+
+                                                                <!-- Header -->
+                                                                <div class="flex items-center justify-between px-6 py-4 bg-gradient-to-r from-violet-600 to-violet-700">
+                                                                    <h3 class="text-xl font-bold text-white flex items-center gap-2">
+                                                                        📄 Détails de la contribution
+                                                                    </h3>
+                                                                    <button @click="showModal = false"
+                                                                        class="text-white hover:text-gray-200 transition">
+                                                                        <i class="fas fa-times"></i>
+                                                                    </button>
+                                                                </div>
+
+                                                                <!-- Body -->
+                                                                <div class="px-6 py-6 space-y-8 text-gray-700 dark:text-gray-200">
+
+                                                                    <!-- Élève -->
+                                                                    <div class="grid grid-cols-2 gap-6">
+                                                                        <div class="p-4 rounded-lg bg-gray-50 dark:bg-gray-900/50">
+                                                                            <p class="text-sm font-semibold text-gray-500 dark:text-gray-400">Nom</p>
+                                                                            <p class="text-lg font-medium">{{ $feescollections->student_name }}</p>
+                                                                        </div>
+                                                                        <div class="p-4 rounded-lg bg-gray-50 dark:bg-gray-900/50">
+                                                                            <p class="text-sm font-semibold text-gray-500 dark:text-gray-400">Prénoms</p>
+                                                                            <p class="text-lg font-medium">{{ $feescollections->student_last_name }}</p>
+                                                                        </div>
+                                                                        <div class="p-4 rounded-lg bg-gray-50 dark:bg-gray-900/50">
+                                                                            <p class="text-sm font-semibold text-gray-500 dark:text-gray-400">Matricule</p>
+                                                                            <p class="text-lg font-medium">{{ $feescollections->student_admission_number }}</p>
+                                                                        </div>
+                                                                        <div class="p-4 rounded-lg bg-gray-50 dark:bg-gray-900/50">
+                                                                            <p class="text-sm font-semibold text-gray-500 dark:text-gray-400">Classe</p>
+                                                                            <p class="text-lg font-medium">{{ $feescollections->class_name }}</p>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <!-- Paiement -->
+                                                                    <div class="grid grid-cols-3 gap-6 text-center">
+                                                                        <div class="p-4 rounded-lg bg-blue-50 dark:bg-blue-900/30">
+                                                                            <p class="text-sm font-semibold text-gray-500 dark:text-gray-400">Montant total</p>
+                                                                            <p class="text-xl font-bold text-blue-600 dark:text-blue-400">
+                                                                                {{ number_format($feescollections->total_amount, 0, ',', ' ') }} FCFA
+                                                                            </p>
+                                                                        </div>
+                                                                        <div class="p-4 rounded-lg bg-green-50 dark:bg-green-900/30">
+                                                                            <p class="text-sm font-semibold text-gray-500 dark:text-gray-400">Montant payé</p>
+                                                                            <p class="text-xl font-bold text-green-600 dark:text-green-400">
+                                                                                {{ number_format($feescollections->paid_amount, 0, ',', ' ') }} FCFA
+                                                                            </p>
+                                                                        </div>
+                                                                        <div class="p-4 rounded-lg bg-red-50 dark:bg-red-900/30">
+                                                                            <p class="text-sm font-semibold text-gray-500 dark:text-gray-400">Montant restant</p>
+                                                                            <p class="text-xl font-bold text-red-600 dark:text-red-400">
+                                                                                {{ number_format($feescollections->remaning_amount, 0, ',', ' ') }} FCFA
+                                                                            </p>
+                                                                        </div>
+                                                                    </div>
+
+                                                                     <!-- Remarque ajoutée -->
+                                                                    <div class="p-4 rounded-lg border dark:border-gray-700 col-span-2">
+                                                                        <p class="text-sm font-semibold text-gray-500 dark:text-gray-400">Remarque</p>
+                                                                        <p class="text-lg font-medium">{{ $feescollections->remark }}</p>
+                                                                    </div>
+
+                                                                     @php
+                                                                                $types = [
+                                                                                    'check' => ['label' => 'Chèque', 'bg' => 'bg-violet-100', 'border' => 'border-violet-800', 'text' => 'text-violet-800', 'dark_bg' => 'dark:bg-violet-900', 'dark_text' => 'dark:text-violet-200'],
+                                                                                    'transfer' => ['label' => 'Virement', 'bg' => 'bg-green-100', 'border' => 'border-green-800', 'text' => 'text-green-800', 'dark_bg' => 'dark:bg-green-900', 'dark_text' => 'dark:text-green-200'],
+                                                                                    'cash' => ['label' => 'Espèce', 'bg' => 'bg-yellow-200', 'border' => 'border-yellow-800', 'text' => 'text-yellow-800', 'dark_bg' => 'dark:bg-yellow-900', 'dark_text' => 'dark:text-yellow-200'],
+                                                                                    'paypal' => ['label' => 'PayPal', 'bg' => 'bg-blue-100', 'border' => 'border-blue-800', 'text' => 'text-blue-800', 'dark_bg' => 'dark:bg-blue-900', 'dark_text' => 'dark:text-blue-200'],
+                                                                                    'stripe' => ['label' => 'Stripe', 'bg' => 'bg-indigo-100', 'border' => 'border-indigo-800', 'text' => 'text-indigo-800', 'dark_bg' => 'dark:bg-indigo-900', 'dark_text' => 'dark:text-indigo-200'],
+                                                                                    'kkiapay' => ['label' => 'Kkiapay', 'bg' => 'bg-pink-100', 'border' => 'border-pink-800', 'text' => 'text-pink-800', 'dark_bg' => 'dark:bg-pink-900', 'dark_text' => 'dark:text-pink-200'],
+                                                                                ];
+
+                                                                                $type = $types[$feescollections->payment_type] ?? ['label' => 'Inconnu', 'bg' => 'bg-gray-100', 'border' => 'border-gray-800', 'text' => 'text-gray-800', 'dark_bg' => 'dark:bg-gray-900', 'dark_text' => 'dark:text-gray-200'];
+                                                                            @endphp
+
+                                                                    <!-- Infos supplémentaires -->
+                                                                    <div class="grid grid-cols-2 gap-6">
+                                                                        <div class="p-4 rounded-lg border dark:border-gray-700">
+                                                                            <p class="text-sm font-semibold text-gray-500 dark:text-gray-400">Type de paiement</p>
+                                                                            <span class="mt-1 inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold
+                                                                                        {{ $type['bg'] }} {{ $type['border'] }} {{ $type['text'] }} {{ $type['dark_bg'] }} {{ $type['dark_text'] }}">
+                                                                                {{ $type['label'] }}
+                                                                            </span>
+                                                                        </div>
+                                                                        <div class="p-4 rounded-lg border dark:border-gray-700">
+                                                                            <p class="text-sm font-semibold text-gray-500 dark:text-gray-400">Saisi par</p>
+                                                                            <p class="text-lg font-medium">{{ $feescollections->created_by_name }}</p>
+                                                                        </div>
+                                                                        <div class="p-4 rounded-lg border dark:border-gray-700 col-span-2">
+                                                                            <p class="text-sm font-semibold text-gray-500 dark:text-gray-400">Date de création</p>
+                                                                            <p class="text-lg font-medium">
+                                                                                {{ \Carbon\Carbon::parse($feescollections->created_at)->locale('fr')->translatedFormat('d M Y à H:i:s') }}
+                                                                            </p>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                <!-- Footer -->
+                                                                <div class="flex justify-end px-6 py-4 bg-gray-50 dark:bg-gray-900">
+                                                                    <button @click="showModal = false"
+                                                                        class="px-5 py-2 rounded-lg bg-violet-600 text-white font-medium hover:bg-violet-700 transition">
+                                                                        Fermer
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -485,26 +612,35 @@
         </div>
     </div>
 @endsection
-<script>
 
-        function paymentApp() {
-        return {
-            payment_type: "",
-            paymentForm() {
-                if (this.payment_type === 'kkiapay') {
-                    openKkiapayWidget({
-                        amount: parseInt(this.newAmount),
-                        api_key:  {{ env('KKIAPAY_SECRET') }}, // clé publique
-                        sandbox: true, // false en prod
-                        theme: "#5d2e8e",
-                        name: `${this.studentName} ${this.studentLastName}`,
-                        phone: this.studentPhone,
-                        email: this.studentEmail,
-                        position: "center"
-                    });
+
+<script>
+function paymentApp() {
+    return {
+        payment_type: "",
+
+         paymentForm() {
+            if (this.payment_type === 'kkiapay') {
+                if (!this.newAmount || this.newAmount <= 0) {
+                    document.getElementById('error-amount').classList.remove('hidden');
+                    return;
+                } else {
+                    document.getElementById('error-amount').classList.add('hidden');
                 }
+
+                openKkiapayWidget({
+                    amount: parseInt(this.newAmount),
+                    api_key: 'ae13e22072ae11f0a9bdb7f9a2ea3488',
+                    sandbox: true,
+                    theme: "#5d2e8e",
+                    name: `${this.studentName} ${this.studentLastName}`,
+                    phone: this.studentPhone,
+                    email: this.studentEmail,
+                    position: "center"
+                });
             }
         }
     }
-
+}
 </script>
+

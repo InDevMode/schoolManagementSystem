@@ -116,6 +116,7 @@ class FeesCollectionController extends Controller
             return redirect()->back()->with('error', 'Vos informations ne sont pas correctes. Veuillez réessayer.');
         }
     }
+
     private function redirectToAdminPaypal(Request $request, $student, $student_id)
     {
         $getSetting = SettingModel::getSingle(1);
@@ -157,7 +158,7 @@ class FeesCollectionController extends Controller
             'line_items' => [
                 [
                     'price_data' => [
-                        'currency' => 'eur',
+                        'currency' => 'xof',
                         'product_data' => [
                             'name' => 'Paiement frais scolaire - ' . $student->name,
                         ],
@@ -387,7 +388,9 @@ class FeesCollectionController extends Controller
                 [
                     'price_data' => [
                         'currency' => 'xof',
-                        'product_data' => ['name' => 'Frais de scolarité'],
+                        'product_data' => [
+                            'name' => 'Paiement frais scolaire - ' . $student->name,
+                        ],
                         'unit_amount' => $fees->paid_amount,
                     ],
                     'quantity' => 1,
@@ -680,7 +683,9 @@ class FeesCollectionController extends Controller
                 [
                     'price_data' => [
                         'currency' => 'xof',
-                        'product_data' => ['name' => 'Frais de scolarité'],
+                         'product_data' => [
+                            'name' => 'Paiement frais scolaire - ' . $student->name,
+                        ],
                         'unit_amount' => $fees->paid_amount,
                     ],
                     'quantity' => 1,

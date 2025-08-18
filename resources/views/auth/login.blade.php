@@ -91,7 +91,7 @@
                                                 class="mb-2.5 block font-medium text-black dark:text-white">Email</label>
                                             <div class="relative">
                                                 <input type="email" name="email" id="email"
-                                                    placeholder="Entrer votre email"
+                                                    placeholder="Entrer votre email" required
                                                     class="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 outline-none focus:border-violet-500 focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:focus:border-violet-500" />
                                                 <span class="absolute right-4 top-4">
                                                     <span class="text-[24px] text-violet-600"><iconify-icon
@@ -105,7 +105,7 @@
                                                 Passe</label>
                                             <div class="relative">
                                                 <input type="password" id="password" name="password"
-                                                    placeholder="Entrez votre mot de passe"
+                                                    placeholder="Entrez votre mot de passe" required
                                                     class="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 outline-none focus:border-violet-500 focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:focus:border-violet-500" />
                                                 <span class="absolute right-4 top-4 cursor-pointer"
                                                     onclick="togglePasswordVisibility()">
