@@ -107,7 +107,7 @@
                         </div>
                     </div>
                     <div class="flex justify-between items-end">
-                        <span class="text-sm font-bold">Total des Clases</span>
+                        <span class="text-sm font-bold">Total des Classes</span>
                         <span
                             class="text-xs font-semibold text-green-200 group-hover:text-white">{{ $totalClass > 0 ? round(($totalClass * 100) / $totalClass, 2) : 0 }}%</span>
                     </div>
@@ -162,7 +162,7 @@
                 </div>
 
                 <!-- Total Exams -->
-                <div onclick="window.location.href='{{ url('/admin/examinations/exam/lis') }}'"
+                <div onclick="window.location.href='{{ url('/admin/examinations/exam/list') }}'"
                     class="group cursor-pointer rounded-2xl p-6 shadow-md bg-gradient-to-r from-yellow-500 to-yellow-700 text-white h-32 flex flex-col justify-between hover:shadow-lg transition hover:scale-105">
                     <div class="flex justify-between items-start">
                         <span class="text-3xl font-bold">{{ $totalExam }}</span>
@@ -171,7 +171,7 @@
                         </div>
                     </div>
                     <div class="flex justify-between items-end">
-                        <span class="text-sm font-bold">Total des Professeurs</span>
+                        <span class="text-sm font-bold">Total des Evaluations</span>
                         <span
                             class="text-xs font-semibold text-green-200 group-hover:text-white">{{ $totalExam > 0 ? round(($totalExam * 100) / $totalExam, 2) : 0 }}%</span>
                     </div>

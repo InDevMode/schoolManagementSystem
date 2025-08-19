@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Request;
 
 class FeesCollectionModel extends Model
@@ -144,5 +145,30 @@ class FeesCollectionModel extends Model
             ->whereDate('feescollections.created_at', date('Y-m-d'))
             ->count();
     }
+
+    public static function getFeesCollectionsByStudent()
+    {
+        return FeesCollectionModel::where('feescollections.student_id', Auth::user()->id)
+            ->where('feescollections.class_id', Auth::user()->class_id)
+            ->count();
+    }
+
+    public static function getTotalFeesCollectionsAmountPaidByStudent()
+    {
+        return FeesCollectionModel::where('feescollections.student_id', Auth::user()->id)
+            ->where('feescollections.class_id', Auth::user()->class_id)
+            ->where('feescollections.is_payment', 1)
+            ->sum('feescollections.paid_amount');
+    }
+
+    public static function getTotalFeesCollectionsAmountStudent()
+    {
+        return FeesCollectionModel::where('feescollections.student_id', Auth::user()->id)
+            ->where('feescollections.class_id', Auth::user()->class_id)
+            ->where('feescollections.is_payment', 1)
+            ->sum('feescollections.total_amount');
+    }
+
+
 
 }

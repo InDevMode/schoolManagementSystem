@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Request;
 
 class ExaminationModel extends Model
@@ -91,6 +92,32 @@ class ExaminationModel extends Model
     public static function getTotalExam()
     {
         return ExaminationModel::where('is_delete', 0)->count();
+    }
+
+    public static function getTotalExamTeacherToday()
+    {
+        return ExaminationModel::join('marks_register', 'exams.id', '=', 'marks_register.exam_id')
+            ->join('class_teacher', 'marks_register.class_id', '=', 'class_teacher.class_id')
+            ->where('class_teacher.teacher_id', Auth::user()->id)
+            ->where('class_teacher.is_delete', 0)
+            ->where('marks_register.is_delete', 0)
+            ->where('exams.is_delete', 0)
+            ->whereDate('exams.created_at', today())
+            ->distinct('exams.id')
+            ->count('exams.id');
+    }
+
+    public static function getTotalExamStudent()
+    {
+        return ExaminationModel::select('exams.id')
+            ->join('schedules', 'schedules.exam_id', '=', 'exams.id')
+            ->join('marks_register', 'marks_register.exam_id', '=', 'exams.id')
+            ->where('schedules.class_id', '=', Auth::user()->class_id)
+            ->where('schedules.class_id', '=', Auth::user()->class_id)
+            ->where('schedules.is_delete', '=', 0)
+            ->where('exams.is_delete', '=', 0)
+            ->count();
+
     }
 
 }

@@ -6,6 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Request;
 use Laravel\Sanctum\HasApiTokens;
 
@@ -46,7 +47,6 @@ class User extends Authenticatable
         'profile_picture',
         'class_id',
         'parent_id',
-        'teacher_id',
     ];
 
     /**
@@ -115,7 +115,7 @@ class User extends Authenticatable
         return User::where('email', $email)->where('id', '!=', $id)->first();
     }
 
-    static public function getTokenSingle(string $token)
+    public static function getTokenSingle(string $token)
     {
         return User::where('remember_token', '=', $token)->first();
     }
@@ -541,6 +541,18 @@ class User extends Authenticatable
         return User::select('users.id')
             ->where('is_delete', 0)
             ->count();
+    }
+
+    public static function getTotalTeacherStudent()
+    {
+        return User::select('users.id')
+            ->join('class', 'class.id', '=', 'users.class_id')
+            ->join('class_teacher', 'class_teacher.class_id', '=', 'class.id')
+            ->where('class_teacher.teacher_id', '=', Auth::user()->id)
+            ->where('users.user_type', 3)
+            ->where('users.is_delete', 0)
+            ->count();
+
     }
 
 

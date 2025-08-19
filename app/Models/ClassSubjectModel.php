@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Request;
 
 class ClassSubjectModel extends Model
@@ -145,4 +146,24 @@ class ClassSubjectModel extends Model
             ->orderBy('class_subject.id', 'desc')
             ->get();
     }
+
+    public static function getTotalClassAndSubject()
+    {
+        return ClassSubjectModel::select('class_subject.*')
+            ->where('class_subject.is_delete', 0)
+            ->count();
+    }
+
+    public static function getTotalStudentSubject()
+    {
+        return ClassSubjectModel::select('class_subject.subject_id')
+            ->join('subject', 'subject.id', '=', 'class_subject.subject_id')
+            ->join('class', 'class.id', '=', 'class_subject.class_id')
+            ->where('class_subject.class_id', '=', Auth::user()->class_id)
+            ->where('class_subject.is_delete', '=', 0)
+            ->where('class.is_delete', '=', 0)
+            ->distinct('class_subject.subject_id')
+            ->count('class_subject.subject_id');
+    }
+
 }
