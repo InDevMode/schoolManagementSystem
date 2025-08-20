@@ -9,11 +9,14 @@ use App\Models\ClassTimetableModel;
 use App\Models\CommunicateModel;
 use App\Models\ExaminationModel;
 use App\Models\FeesCollectionModel;
+use App\Models\HomeworkModel;
 use App\Models\NoticeBoardMessageModel;
 use App\Models\ScheduleModel;
+use App\Models\StudentAttendanceModel;
 use App\Models\SubjectModel;
 use App\Models\User;
 use App\Models\WeekModel;
+use App\Models\WorkModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -42,6 +45,13 @@ class DashboardController extends Controller
                 $data['totalClassTimetable'] = ClassTimetableModel::getTotalClassTimetable();
                 $data['totalClassTimetableTeacher'] = ClassTimetableModel::getTotalClassTimetableTeacher();
                 $data['totalClassTimetableStudent'] = ClassTimetableModel::getTotalClassTimetableStudent();
+                $data['totalHomework'] = HomeworkModel::getTotalHomework();
+                $data['totalWork'] = WorkModel::getTotalWork();
+                $data['totalAttendance'] = StudentAttendanceModel::getTotalAttendance();
+                $data['totalAttendanceStudentPresent'] = StudentAttendanceModel::getTotalAttendanceTypeStudent(1);
+                $data['totalAttendanceStudentLate'] = StudentAttendanceModel::getTotalAttendanceTypeStudent(2);
+                $data['totalAttendanceStudentAbsent'] = StudentAttendanceModel::getTotalAttendanceTypeStudent(3);
+                $data['totalAttendanceStudentHalfDay'] = StudentAttendanceModel::getTotalAttendanceTypeStudent(4);
 
                 return view('admin.dashboard', $data);
 
@@ -77,22 +87,49 @@ class DashboardController extends Controller
                 $data['totalFeesCollections'] = FeesCollectionModel::getFeesCollectionsByStudent();
                 $data['totalFeesCollectionsAmoutPaidByStudent'] = FeesCollectionModel::getTotalFeesCollectionsAmountPaidByStudent();
                 $data['totalFeesCollectionsAmountStudent'] = FeesCollectionModel::getTotalFeesCollectionsAmountStudent();
-                // $data['totalExamStudent'] = ExaminationModel::getTotalExamStudent();
                 $data['totalExamStudent'] = ScheduleModel::getTotalExamStudent();
                 $data['totalClassTimetableStudent'] = ClassTimetableModel::getTotalClassTimetableStudent();
                 $data['totalClassTimetable'] = ClassTimetableModel::getTotalClassTimetable();
                 $data['totalExam'] = ExaminationModel::getTotalExam();
-
+                $data['totalHomeworkStudent'] = HomeworkModel::getTotalHomeworkStudent();
+                $data['totalHomework'] = HomeworkModel::getTotalHomework();
+                $data['totalWorkStudent'] = WorkModel::getTotalWorkStudent();
+                $data['totalWork'] = WorkModel::getTotalWork();
+                $data['totalAttendanceStudent'] = StudentAttendanceModel::getTotalAttendanceStudent();
+                $data['totalByAttendanceTypeStudentPresent'] = StudentAttendanceModel::getTotalByAttendanceTypeStudent(1, 3);
+                $data['totalByAttendanceTypeStudentLate'] = StudentAttendanceModel::getTotalByAttendanceTypeStudent(2, 3);
+                $data['totalByAttendanceTypeStudentAbsent'] = StudentAttendanceModel::getTotalByAttendanceTypeStudent(3, 3);
+                $data['totalByAttendanceTypeStudentHalfDay'] = StudentAttendanceModel::getTotalByAttendanceTypeStudent(4, 3);
+                $data['totalAttendance'] = StudentAttendanceModel::getTotalAttendance();
 
                 return view('student.dashboard', $data);
 
             case 4:
 
+                $student_ids = User::getStudentIds();
+                $class_ids = User::getClassIds();
+
+                if (!empty($student_ids) && !empty($class_ids)) {
+                    $data['totalFeesCollectionsAmoutPaidByStudents'] = FeesCollectionModel::getTotalFeesCollectionsAmountPaidByStudents($student_ids);
+                    $data['totalFeesCollectionsAmountStudents'] = FeesCollectionModel::getTotalFeesCollectionsAmountStudents($student_ids);
+                    $data['totalByAttendanceTypeStudentPresent'] = StudentAttendanceModel::getTotalByAttendanceTypeStudent(1, $student_ids);
+                    $data['totalByAttendanceTypeStudentLate'] = StudentAttendanceModel::getTotalByAttendanceTypeStudent(2, $student_ids);
+                    $data['totalByAttendanceTypeStudentAbsent'] = StudentAttendanceModel::getTotalByAttendanceTypeStudent(3, $student_ids);
+                    $data['totalByAttendanceTypeStudentHalfDay'] = StudentAttendanceModel::getTotalByAttendanceTypeStudent(4, $student_ids);
+                    $data['totalHomeworkStudent'] = HomeworkModel::getTotalHomeworkParentStudent($student_ids);
+                    $data['totalWorkStudent'] = WorkModel::getTotalWorkParentStudent($class_ids, $student_ids);
+                    $data['totalHomework'] = HomeworkModel::getTotalHomework();
+                    $data['totalWork'] = WorkModel::getTotalWork();
+                }
+
                 $data['totalUser'] = User::getTotalUser();
+                $data['totalParent'] = User::getTotalUserWithUserType(4);
                 $data['totalStudent'] = User::getTotalUserWithUserType(3);
+                $data['totalParentStudent'] = User::getTotalParentStudent();
                 $data['totalNoticeBoard'] = NoticeBoardMessageModel::getTotalNoticeBoardMessage();
                 $data['totalNoticeBoardParent'] = NoticeBoardMessageModel::getTotalNoticeBoardMessageParent();
-                $data['totalParent'] = User::getTotalUserWithUserType(4);
+                $data['totalAttendance'] = StudentAttendanceModel::getTotalAttendance();
+                $data['totalCommunicate'] = CommunicateModel::getTotalCommunicate();
 
                 return view('parent.dashboard', $data);
 

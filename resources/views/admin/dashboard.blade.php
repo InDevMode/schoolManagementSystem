@@ -11,14 +11,16 @@
                     <!-- Ligne du haut -->
                     <div class="flex justify-between items-start">
                         <span class="text-3xl font-bold">{{ $totalUser }}</span>
-                        <div class="flex h-12 w-12 items-center justify-center rounded-full bg-white/20 group-hover:bg-white">
+                        <div
+                            class="flex h-12 w-12 items-center justify-center rounded-full bg-white/20 group-hover:bg-white">
                             <i class="fa-solid fa-users text-white group-hover:text-blue-700"></i>
                         </div>
                     </div>
 
                     <!-- Ligne du bas -->
                     <div class="flex justify-between items-end">
-                        <span class="text-sm font-bold group-hover:text-white">Total des Utilisateurs</span>
+                        <span
+                            class="text-sm font-bold group-hover:text-white">Utilisateur{{ $totalUser > 1 ? 's' : '' }}</span>
                         <span
                             class="text-xs font-semibold text-green-200 group-hover:text-white">{{ $totalUser > 0 ? round(($totalUser * 100) / $totalUser, 2) : 0 }}%</span>
                     </div>
@@ -30,13 +32,14 @@
 
                     <div class="flex justify-between items-start">
                         <span class="text-3xl font-bold">{{ $totalAdmin }}</span>
-                        <div class="flex h-12 w-12 items-center justify-center rounded-full bg-white/20 group-hover:bg-white">
+                        <div
+                            class="flex h-12 w-12 items-center justify-center rounded-full bg-white/20 group-hover:bg-white">
                             <i class="fa-solid fa-user-shield text-white group-hover:text-purple-700"></i>
                         </div>
                     </div>
 
                     <div class="flex justify-between items-end">
-                        <span class="text-sm font-bold">Total des Administrateurs</span>
+                        <span class="text-sm font-bold">Administrateur{{ $totalAdmin > 1 ? 's' : '' }}</span>
                         <span
                             class="text-xs font-semibold text-red-200 group-hover:text-white">{{ $totalUser > 0 ? round(($totalAdmin * 100) / $totalUser, 2) : 0 }}%</span>
 
@@ -49,13 +52,14 @@
 
                     <div class="flex justify-between items-start">
                         <span class="text-3xl font-bold">{{ $totalStudent }}</span>
-                        <div class="flex h-12 w-12 items-center justify-center rounded-full bg-white/20 group-hover:bg-white">
+                        <div
+                            class="flex h-12 w-12 items-center justify-center rounded-full bg-white/20 group-hover:bg-white">
                             <i class="fa-solid fa-user-graduate text-white group-hover:text-green-700"></i>
                         </div>
                     </div>
 
                     <div class="flex justify-between items-end">
-                        <span class="text-sm font-bold">Total des Apprenants</span>
+                        <span class="text-sm font-bold">Apprenant{{ $totalStudent > 1 ? 's' : '' }}</span>
                         <span
                             class="text-xs font-semibold text-green-200 group-hover:text-white">{{ $totalUser > 0 ? round(($totalStudent * 100) / $totalUser, 2) : 0 }}%</span>
                     </div>
@@ -67,13 +71,14 @@
 
                     <div class="flex justify-between items-start">
                         <span class="text-3xl font-bold">{{ $totalParent }}</span>
-                        <div class="flex h-12 w-12 items-center justify-center rounded-full bg-white/20 group-hover:bg-white">
+                        <div
+                            class="flex h-12 w-12 items-center justify-center rounded-full bg-white/20 group-hover:bg-white">
                             <i class="fa-solid fa-user-group text-white group-hover:text-pink-700"></i>
                         </div>
                     </div>
 
                     <div class="flex justify-between items-end">
-                        <span class="text-sm font-bold">Total des Parents</span>
+                        <span class="text-sm font-bold">Parent{{ $totalParent > 1 ? 's' : '' }}</span>
                         <span
                             class="text-xs font-semibold text-green-200 group-hover:text-white">{{ $totalUser > 0 ? round(($totalParent * 100) / $totalUser, 2) : 0 }}%</span>
                     </div>
@@ -85,13 +90,14 @@
 
                     <div class="flex justify-between items-start">
                         <span class="text-3xl font-bold">{{ $totalTeacher }}</span>
-                        <div class="flex h-12 w-12 items-center justify-center rounded-full bg-white/20 group-hover:bg-white">
+                        <div
+                            class="flex h-12 w-12 items-center justify-center rounded-full bg-white/20 group-hover:bg-white">
                             <i class="fa-solid fa-chalkboard-teacher text-white group-hover:text-orange-700"></i>
                         </div>
                     </div>
 
                     <div class="flex justify-between items-end">
-                        <span class="text-sm font-bold">Total des Professeurs</span>
+                        <span class="text-sm font-bold">Professeur{{ $totalTeacher > 1 ? 's' : '' }}</span>
                         <span
                             class="text-xs font-semibold text-red-200 group-hover:text-white">{{ $totalUser > 0 ? round(($totalTeacher * 100) / $totalUser, 2) : 0 }}%</span>
                     </div>
@@ -102,12 +108,13 @@
                     class="group cursor-pointer rounded-2xl p-6 shadow-md bg-gradient-to-r from-violet-500 to-violet-700 text-white h-32 flex flex-col justify-between hover:shadow-lg transition hover:scale-105">
                     <div class="flex justify-between items-start">
                         <span class="text-3xl font-bold">{{ $totalClass }}</span>
-                        <div class="flex h-12 w-12 items-center justify-center rounded-full bg-white/20 group-hover:bg-white">
+                        <div
+                            class="flex h-12 w-12 items-center justify-center rounded-full bg-white/20 group-hover:bg-white">
                             <i class="fa-solid fa-landmark text-white group-hover:text-violet-700"></i>
                         </div>
                     </div>
                     <div class="flex justify-between items-end">
-                        <span class="text-sm font-bold">Total des Classes</span>
+                        <span class="text-sm font-bold">Classe{{ $totalClass > 1 ? 's' : '' }}</span>
                         <span
                             class="text-xs font-semibold text-green-200 group-hover:text-white">{{ $totalClass > 0 ? round(($totalClass * 100) / $totalClass, 2) : 0 }}%</span>
                     </div>
@@ -118,12 +125,13 @@
                     class="group cursor-pointer rounded-2xl p-6 shadow-md bg-gradient-to-r from-teal-500 to-teal-700 text-white h-32 flex flex-col justify-between hover:shadow-lg transition hover:scale-105">
                     <div class="flex justify-between items-start">
                         <span class="text-3xl font-bold">{{ $totalSubject }}</span>
-                        <div class="flex h-12 w-12 items-center justify-center rounded-full bg-white/20 group-hover:bg-white">
+                        <div
+                            class="flex h-12 w-12 items-center justify-center rounded-full bg-white/20 group-hover:bg-white">
                             <i class="fa-solid fa-book-open-reader text-white group-hover:text-teal-700"></i>
                         </div>
                     </div>
                     <div class="flex justify-between items-end">
-                        <span class="text-sm font-bold">Total des Matières</span>
+                        <span class="text-sm font-bold">Matière{{ $totalSubject > 1 ? 's' : '' }}</span>
                         <span
                             class="text-xs font-semibold text-red-200 group-hover:text-white">{{ $totalSubject > 0 ? round(($totalSubject * 100) / $totalSubject, 2) : 0 }}%</span>
                     </div>
@@ -134,12 +142,13 @@
                     class="group cursor-pointer rounded-2xl p-6 shadow-md bg-gradient-to-r from-amber-500 to-amber-700 text-white h-32 flex flex-col justify-between hover:shadow-lg transition hover:scale-105">
                     <div class="flex justify-between items-start">
                         <span class="text-3xl font-bold">{{ $totalFeesCollections }}</span>
-                        <div class="flex h-12 w-12 items-center justify-center rounded-full bg-white/20 group-hover:bg-white">
+                        <div
+                            class="flex h-12 w-12 items-center justify-center rounded-full bg-white/20 group-hover:bg-white">
                             <i class="fa-solid fa-credit-card text-white group-hover:text-amber-700"></i>
                         </div>
                     </div>
                     <div class="flex justify-between items-end">
-                        <span class="text-sm font-bold">Total des Contributions Payées</span>
+                        <span class="text-sm font-bold">Contribution{{ $totalFeesCollections > 1 ? 's' : '' }}</span>
                         <span
                             class="text-xs font-semibold text-green-200 group-hover:text-white">{{ $totalFeesCollections > 0 ? round(($totalFeesCollections * 100) / $totalFeesCollections, 2) : 0 }}%</span>
                     </div>
@@ -150,12 +159,13 @@
                     class="group cursor-pointer rounded-2xl p-6 shadow-md bg-gradient-to-r from-red-500 to-red-700 text-white h-32 flex flex-col justify-between hover:shadow-lg transition hover:scale-105">
                     <div class="flex justify-between items-start">
                         <span class="text-3xl font-bold">{{ $totalCommunicate }}</span>
-                        <div class="flex h-12 w-12 items-center justify-center rounded-full bg-white/20 group-hover:bg-white">
+                        <div
+                            class="flex h-12 w-12 items-center justify-center rounded-full bg-white/20 group-hover:bg-white">
                             <i class="fa-solid fa-bell text-white group-hover:text-red-700"></i>
                         </div>
                     </div>
                     <div class="flex justify-between items-end">
-                        <span class="text-sm font-bold">Total des Notifications</span>
+                        <span class="text-sm font-bold">Notification{{ $totalCommunicate > 1 ? 's' : '' }}</span>
                         <span
                             class="text-xs font-semibold text-green-200 group-hover:text-white">{{ $totalCommunicate > 0 ? round(($totalCommunicate * 100) / $totalCommunicate, 2) : 0 }}%</span>
                     </div>
@@ -166,16 +176,64 @@
                     class="group cursor-pointer rounded-2xl p-6 shadow-md bg-gradient-to-r from-yellow-500 to-yellow-700 text-white h-32 flex flex-col justify-between hover:shadow-lg transition hover:scale-105">
                     <div class="flex justify-between items-start">
                         <span class="text-3xl font-bold">{{ $totalExam }}</span>
-                        <div class="flex h-12 w-12 items-center justify-center rounded-full bg-white/20 group-hover:bg-white">
+                        <div
+                            class="flex h-12 w-12 items-center justify-center rounded-full bg-white/20 group-hover:bg-white">
                             <i class="fa-solid  fa-flask-vial text-white group-hover:text-yellow-700"></i>
                         </div>
                     </div>
                     <div class="flex justify-between items-end">
-                        <span class="text-sm font-bold">Total des Evaluations</span>
+                        <span class="text-sm font-bold">Evaluation{{ $totalExam > 1 ? 's' : '' }}</span>
                         <span
                             class="text-xs font-semibold text-green-200 group-hover:text-white">{{ $totalExam > 0 ? round(($totalExam * 100) / $totalExam, 2) : 0 }}%</span>
                     </div>
                 </div>
+
+                <!-- Total des homeworks -->
+                <div onclick="window.location.href='{{ url('/admin/practicalworks/reports') }}'"
+                    class="group cursor-pointer rounded-2xl p-6 shadow-md bg-gradient-to-r from-emerald-500 to-emerald-700 text-white h-32 flex flex-col justify-between hover:shadow-lg transition hover:scale-105">
+                    <div class="flex justify-between items-start">
+                        <span class="text-3xl font-bold text-gray-100">{{ $totalHomework }}</span>
+                        <span class="text-3xl font-bold">{{ $totalWork }}</span>
+                        <div
+                            class="flex h-12 w-12 items-center justify-center rounded-full bg-white/20 group-hover:bg-white">
+                            <i class="fa-solid  fa-user-check text-white group-hover:text-emerald-700"></i>
+                        </div>
+                    </div>
+                    <div class="flex justify-between items-end">
+                        <span class="text-sm font-bold">Trav{{ $totalWork > 1 ? 'aux' : 'ail' }} de
+                            maison{{ $totalWork > 1 ? 's' : '' }} </span>
+                        <span
+                            class="text-xs font-semibold text-gray-200 group-hover:text-white">{{ $totalWork > 0 ? round(($totalHomework * 100) / $totalWork, 2) : 0 }}%</span>
+                    </div>
+                </div>
+
+                <!-- Total des présences -->
+                <div onclick="window.location.href='{{ url('/admin/attendance/report') }}'"
+                    class="group cursor-pointer rounded-2xl p-6 shadow-md bg-gradient-to-r from-gray-600 to-gray-700 text-white h-32 flex flex-col justify-between hover:shadow-lg transition hover:scale-105">
+                    <div class="flex justify-between items-start">
+                        <span class="text-3xl font-bold text-green-500">{{ $totalAttendanceStudentPresent }}</span>
+                        <span class="text-3xl font-bold text-yellow-500">{{ $totalAttendanceStudentLate }}</span>
+                        <span class="text-3xl font-bold text-red-500">{{ $totalAttendanceStudentAbsent }}</span>
+                        <span class="text-3xl font-bold text-blue-500">{{ $totalAttendanceStudentHalfDay }}</span>
+                        <div
+                            class="flex h-12 w-12 items-center justify-center rounded-full bg-white/20 group-hover:bg-white">
+                            <i class="fa-solid  fa-user-check text-white group-hover:text-gray-700"></i>
+                        </div>
+                    </div>
+                    <div class="flex justify-between items-end">
+                        <span class="text-sm font-bold">Présence{{ $totalAttendance > 1 ? 's' : '' }} </span>
+                        <span
+                            class="text-xs font-semibold text-green-200 group-hover:text-white">{{ $totalAttendance > 0 ? round(($totalAttendanceStudentPresent * 100) / $totalAttendance, 2) : 0 }}%</span>
+                        <span
+                            class="text-xs font-semibold text-yellow-200 group-hover:text-white">{{ $totalAttendance > 0 ? round(($totalAttendanceStudentLate * 100) / $totalAttendance, 2) : 0 }}%</span>
+                        <span
+                            class="text-xs font-semibold text-red-200 group-hover:text-white">{{ $totalAttendance > 0 ? round(($totalAttendanceStudentAbsent * 100) / $totalAttendance, 2) : 0 }}%</span>
+                        <span
+                            class="text-xs font-semibold text-blue-200 group-hover:text-white">{{ $totalAttendance > 0 ? round(($totalAttendanceStudentHalfDay * 100) / $totalAttendance, 2) : 0 }}%</span>
+                    </div>
+                </div>
+
+
 
             </div>
 

@@ -80,3 +80,59 @@ Avec ces méthodes :
 - Un contrôle peut être mis en place **localement** pour éviter des erreurs accidentelles.
 
 🚀 **Solution recommandée** : Activez **la protection de branche sur GitHub** et **ajoutez un hook local** pour bloquer les pushs accidentels !
+
+
+Excellente question, Régis 👨‍💻 ! Voici une démarche claire et professionnelle pour créer ta propre branche et faire un premier commit **après avoir cloné un projet**, même si tu n’as rien fait tout de suite après le clone.
+
+---
+
+### 🧭 Étapes pour créer une branche et faire un premier commit
+
+#### 1. 📥 Cloner le projet (si ce n’est pas déjà fait)
+```bash
+git clone https://github.com/nom-utilisateur/nom-du-projet.git
+cd nom-du-projet
+```
+
+#### 2. 🌿 Créer une nouvelle branche
+```bash
+git checkout -b nom-de-ta-branche
+```
+> Exemple : `git checkout -b feature/payment-verification`
+
+Cela crée et te positionne directement sur ta branche.
+
+#### 3. 🛠️ Faire des modifications
+Tu peux maintenant modifier des fichiers, ajouter du code, etc.
+
+#### 4. 📦 Ajouter les fichiers modifiés au staging
+```bash
+git add .
+```
+> Tu peux aussi cibler des fichiers spécifiques : `git add resources/views/payment.blade.php`
+
+#### 5. 📝 Faire ton premier commit
+```bash
+git commit -m "Initial commit on feature/payment-verification"
+```
+
+#### 6. 🚀 Pousser ta branche vers le dépôt distant
+```bash
+git push origin nom-de-ta-branche
+```
+> Exemple : `git push origin feature/payment-verification`
+
+---
+
+### ✅ Résumé rapide
+
+| Action | Commande |
+|--------|----------|
+| Créer une branche | `git checkout -b nom-branche` |
+| Ajouter des fichiers | `git add .` |
+| Commit | `git commit -m "Message"` |
+| Push | `git push origin nom-branche` |
+
+---
+
+Tu veux que je t’aide à rédiger un bon message de commit pour une tâche spécifique ? Ou tu veux automatiser ça avec un alias Git ou un hook ?

@@ -552,7 +552,51 @@ class User extends Authenticatable
             ->where('users.user_type', 3)
             ->where('users.is_delete', 0)
             ->count();
+    }
 
+    public static function getTotalParentStudent()
+    {
+        return User::select('users.id')
+            ->join('class', 'class.id', '=', 'users.class_id')
+            ->join('users as parent', 'parent.id', '=', 'users.parent_id')
+            ->where('users.parent_id', '=', Auth::user()->id)
+            ->where('users.user_type', 3)
+            ->where('users.is_delete', 0)
+            ->count();
+    }
+
+    public static function getStudentIds()
+    {
+        $results = User::select('users.id')
+            ->join('class', 'class.id', '=', 'users.class_id')
+            ->join('users as parent', 'parent.id', '=', 'users.parent_id')
+            ->where('users.parent_id', Auth::user()->id)
+            ->where('users.user_type', 3)
+            ->where('users.is_delete', 0)
+            ->get();
+
+        $student_ids = array();
+        foreach ($results as $result) {
+            $student_ids[] = $result->id;
+        }
+        return $student_ids;
+    }
+
+    public static function getClassIds()
+    {
+        $results = User::select('users.*')
+            ->join('class', 'class.id', '=', 'users.class_id')
+            ->join('users as parent', 'parent.id', '=', 'users.parent_id')
+            ->where('users.parent_id', Auth::user()->id)
+            ->where('users.user_type', 3)
+            ->where('users.is_delete', 0)
+            ->get();
+
+        $class_ids = array();
+        foreach ($results as $result) {
+            $class_ids[] = $result->class_id;
+        }
+        return $class_ids;
     }
 
 

@@ -158,13 +158,13 @@ class ScheduleModel extends Model
 
     public static function getTotalExamStudent()
     {
-        return ScheduleModel::select('schedules.id')
-            ->join('exams', 'schedules.exam_id', '=', 'exams.id')
-            ->join('subject', 'schedules.subject_id', '=', 'subject.id')
-            ->join('users as student', 'student.class_id', '=', 'schedules.class_id')
-            ->where('student.id', '=', Auth::user()->id)
+        return ScheduleModel::join('exams', 'exams.id', '=', 'schedules.exam_id')
             ->where('schedules.class_id', '=', Auth::user()->class_id)
-            ->count();
+            ->where('exams.is_delete', '=', 0)
+            ->where('schedules.is_delete', '=', 0)
+            ->distinct('schedules.id')
+            ->count('schedules.id');
     }
+
 
 }

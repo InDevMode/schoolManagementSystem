@@ -170,5 +170,23 @@ class FeesCollectionModel extends Model
     }
 
 
+    public static function getTotalFeesCollectionsAmountPaidByStudents($student_ids)
+    {
+        return FeesCollectionModel::where('feescollections.is_payment', 1)
+            ->whereIn('feescollections.student_id', $student_ids)
+            ->sum('feescollections.paid_amount');
+    }
+
+    public static function getTotalFeesCollectionsAmountStudents($student_ids)
+    {
+        return FeesCollectionModel::where('feescollections.is_payment', 1)
+            ->whereIn('feescollections.student_id', $student_ids)
+            ->sum('feescollections.total_amount');
+    }
+
+
+
+
+
 
 }

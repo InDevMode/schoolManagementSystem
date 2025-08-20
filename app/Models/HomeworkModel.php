@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Request;
 
 class HomeworkModel extends Model
@@ -163,6 +164,31 @@ class HomeworkModel extends Model
 
         return $results->orderBy('homework.id', 'desc')
             ->paginate($perpage);
+    }
+
+    public static function getTotalHomework()
+    {
+        return HomeworkModel::where('homework.is_delete', '=', 0)->count();
+    }
+
+    public static function getTotalHomeworkStudent()
+    {
+        return HomeworkModel::join('works', 'works.id', '=', 'homework.work_id')
+            ->join('class', 'class.id', '=', 'works.class_id')
+            ->join('subject', 'subject.id', '=', 'works.subject_id')
+            ->where('homework.student_id', '=', Auth::user()->id)
+            ->where('homework.is_delete', '=', 0)
+            ->count();
+    }
+
+        public static function getTotalHomeworkParentStudent($student_ids)
+    {
+        return HomeworkModel::join('works', 'works.id', '=', 'homework.work_id')
+            ->join('class', 'class.id', '=', 'works.class_id')
+            ->join('subject', 'subject.id', '=', 'works.subject_id')
+            ->whereIn('homework.student_id', $student_ids)
+            ->where('homework.is_delete', '=', 0)
+            ->count();
     }
 
 }
