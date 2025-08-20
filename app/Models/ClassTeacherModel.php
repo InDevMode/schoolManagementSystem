@@ -5,6 +5,7 @@ namespace App\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Request;
 
 class ClassTeacherModel extends Model
@@ -176,5 +177,23 @@ class ClassTeacherModel extends Model
             ->groupBy('class_teacher.id')
             ->get();
     }
+
+    public static function getTotalTeacherClass()
+    {
+        return ClassTeacherModel::where('is_delete', 0)->where('teacher_id', Auth::user()->id)->count();
+    }
+
+    public static function getTotalTeacherSubject()
+    {
+        return ClassTeacherModel::select('class_subject.subject_id')
+            ->join('class_subject', 'class_teacher.class_id', '=', 'class_subject.class_id')
+            ->join('subject', 'subject.id', '=', 'class_subject.subject_id')
+            ->where('class_teacher.teacher_id', Auth::user()->id)
+            ->where('class_teacher.is_delete', '=', 0)
+            ->where('class_subject.is_delete', '=', 0)
+            ->distinct('class_subject.subject_id')
+            ->count('class_subject.subject_id');
+    }
+
 
 }

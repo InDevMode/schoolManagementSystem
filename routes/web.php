@@ -185,7 +185,7 @@ Route::group(['middleware' => 'admin'], function () {
     Route::get('admin/practicalworks/homework/submission/{id}', [WorkController::class, 'homeworkSubmission']);
 
     // Practical works reports url
-    Route::get('admin/practicalworks/homework/reports', [WorkController::class, 'homeworkReportList']);
+    Route::get('admin/practicalworks/reports', [WorkController::class, 'homeworkReportList']);
     Route::get('admin/practicalworks/homework/reports/details/{id}', [WorkController::class, 'homeworkReportDetails']);
 
     // Fees collections url
@@ -197,6 +197,16 @@ Route::group(['middleware' => 'admin'], function () {
     // Setting url
     Route::get('admin/settings', [UserController::class, 'settings']);
     Route::post('admin/settings/payment_mode', [UserController::class, 'updatePaymentMode']);
+
+    // Paypal payment url of admin
+    Route::get('admin/feescollections_paypal/payment_success', [FeesCollectionController::class, 'paypalAdminSuccess']);
+    Route::get('admin/feescollections_paypal/payment_error', [FeesCollectionController::class, 'paypalAdminError']);
+
+    // Stripe payment url of admin
+    Route::get('admin/feescollections_stripe/payment_success', [FeesCollectionController::class, 'stripeAdminSuccess']);
+    Route::get('admin/feescollections_stripe/payment_error', [FeesCollectionController::class, 'stripeAdminError']);
+
+    Route::post('/paypal/ipn/admin', [FeesCollectionController::class, 'paypalIPN']);
 
 });
 
@@ -291,9 +301,15 @@ Route::group(['middleware' => 'student'], function () {
     Route::get('student/my_fees', [FeesCollectionController::class, 'myFees']);
     Route::post('student/my_fees', [FeesCollectionController::class, 'myFeesCreate'])->name('studentFeesCreate');
 
-    // Student Fees payment
-    Route::get('student/my_fees_paypal/payment_error', [FeesCollectionController::class, 'myFeesPaymentError']);
-    Route::post('student/my_fees_paypal/payment_success', [FeesCollectionController::class, 'myFeesPaymentSuccess']);
+    // Paypal payment url of student
+    Route::get('student/my_fees_paypal/payment_success', [FeesCollectionController::class, 'paypalStudentSuccess']);
+    Route::get('student/my_fees_paypal/payment_error', [FeesCollectionController::class, 'paypalStudentError']);
+
+    // Stripe payment url of student
+    Route::get('student/my_fees_stripe/payment_success', [FeesCollectionController::class, 'stripeStudentSuccess']);
+    Route::get('student/my_fees_stripe/payment_error', [FeesCollectionController::class, 'stripeStudentError']);
+
+    Route::post('/paypal/ipn/student', [FeesCollectionController::class, 'paypalIPN']);
 
 });
 
@@ -329,4 +345,18 @@ Route::group(['middleware' => 'parent'], function () {
 
     // Practical works submitted url
     Route::get('parent/my_student/submission/{id}', [WorkController::class, 'parentHomeworkSubmission']);
+
+    //  Fees collections
+    Route::get('parent/my_student/feescollections/{student_id}', [FeesCollectionController::class, 'parentStudentFees']);
+    Route::post('parent/my_student/feescollections/{student_id}', [FeesCollectionController::class, 'parentStudentFeesCreate'])->name('parentStudentFeesCreate');
+
+    // Paypal payment url of parent
+    Route::get('parent/my_fees_paypal/payment_success', [FeesCollectionController::class, 'paypalParentSuccess']);
+    Route::get('parent/my_fees_paypal/payment_error', [FeesCollectionController::class, 'paypalParentError']);
+
+    // Stripe payment url of parent
+    Route::get('parent/my_fees_stripe/payment_success', [FeesCollectionController::class, 'stripeParentSuccess']);
+    Route::get('parent/my_fees_stripe/payment_error', [FeesCollectionController::class, 'stripeParentError']);
+
+    Route::post('/paypal/ipn/parent', [FeesCollectionController::class, 'paypalIPN']);
 });

@@ -6,7 +6,7 @@
         class="mb-6 mt-3 flex flex-col gap-3 sm:flex-row items-center justify-between"
     >
         <h2 class="uppercase font-bold text-black dark:text-bodydark">
-            Les résultats d'examens <span class="text-violet-600 bg-violet-100 rounded-full px-4 py-2 ms-5">{{ $getStudent->name }} {{ $getStudent->last_name }}</span>
+            Les résultats d'examens <span class="text-violet-500">{{ $getStudent->name }} {{ $getStudent->last_name }}</span>
         </h2>
         <nav>
             <ol class="flex items-center gap-2">
@@ -59,7 +59,7 @@
                     </th>
                 </tr>
                 </thead>
-                <tbody>
+              <tbody class="z-20 bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                 @if(empty($examResult['subject']))
                 <tr class="text-center text-gray-700 dark:text-bodydark1">
                     <td colspan="7" class="py-3"> Aucun résultat examen trouvé.</td>
@@ -86,7 +86,7 @@
                 $percentage = ($total_score * 100) / $full_marks;
                 $getGrade = \App\Models\MarksGradeModel::getGrade($percentage);
                 @endphp
-                <tr class="hover:bg-violet-100 dark:hover:bg-gray-700 transition duration-300 border-b dark:border-gray-600 hover:border-violet-400 dark:text-gray-200 text-gray-500">
+               <tr class="hover:bg-violet-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 transition-colors">
                     <td class="font-semibold px-6 py-3">
                         {{ $subjectValue['subject_name'] }}
                     </td>
@@ -117,7 +117,7 @@
                     </td>
                 </tr>
                 @endforeach
-                <tr class="bg-violet-100 text-violet-700">
+                <tr class="hover:bg-violet-100 text-gray-800 dark:text-gray-200 dark:hover:bg-gray-700 transition-colors">
                     <td class="px-6 py-3">
                         <div class="flex flex-col space-y-2">
                             <span class="font-semibold uppercase">
@@ -126,7 +126,7 @@
 
                             <hr class="border-t border-gray-300">
 
-                            <span class="text-sm text-gray-700">
+                            <span class="text-sm text-gray-700 dark:text-gray-200">
                                 Grade : {{ $getGrade }}
                             </span>
                         </div>
@@ -163,7 +163,5 @@
         </div>
     </div>
     @endforeach
-
-
 </div>
 @endsection

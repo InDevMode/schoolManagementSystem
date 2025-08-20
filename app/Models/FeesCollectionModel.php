@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Request;
 
 class FeesCollectionModel extends Model
@@ -97,10 +98,14 @@ class FeesCollectionModel extends Model
             'feescollections.paid_amount as paid_amount',
             'feescollections.remaning_amount as remaning_amount',
             'feescollections.payment_type as payment_type',
+            'feescollections.remark as remark',
+            'feescollections.payment_status as payment_status',
             'feescollections.created_at as created_at',
             'created_by.name as created_by_name',
             'users.name as student_name',
             'users.last_name as student_last_name',
+            'users.mobile_number as student_phone',
+            'users.email as student_email',
             'users.admission_number as student_admission_number'
         )
             ->join('class', 'class.id', '=', 'feescollections.class_id')
@@ -126,5 +131,62 @@ class FeesCollectionModel extends Model
             ->where('feescollections.class_id', $class_id)
             ->first();
     }
+
+    public static function getTotalFeesCollections()
+    {
+        return FeesCollectionModel::where('feescollections.is_payment', 1)
+            ->where('feescollections.is_delete', 0)->count();
+    }
+
+    public static function getTotalFeesCollectionsToday()
+    {
+        return FeesCollectionModel::where('feescollections.is_payment', 1)
+            ->where('feescollections.is_delete', 0)
+            ->whereDate('feescollections.created_at', date('Y-m-d'))
+            ->count();
+    }
+
+    public static function getFeesCollectionsByStudent()
+    {
+        return FeesCollectionModel::where('feescollections.student_id', Auth::user()->id)
+            ->where('feescollections.class_id', Auth::user()->class_id)
+            ->count();
+    }
+
+    public static function getTotalFeesCollectionsAmountPaidByStudent()
+    {
+        return FeesCollectionModel::where('feescollections.student_id', Auth::user()->id)
+            ->where('feescollections.class_id', Auth::user()->class_id)
+            ->where('feescollections.is_payment', 1)
+            ->sum('feescollections.paid_amount');
+    }
+
+    public static function getTotalFeesCollectionsAmountStudent()
+    {
+        return FeesCollectionModel::where('feescollections.student_id', Auth::user()->id)
+            ->where('feescollections.class_id', Auth::user()->class_id)
+            ->where('feescollections.is_payment', 1)
+            ->sum('feescollections.total_amount');
+    }
+
+
+    public static function getTotalFeesCollectionsAmountPaidByStudents($student_ids)
+    {
+        return FeesCollectionModel::where('feescollections.is_payment', 1)
+            ->whereIn('feescollections.student_id', $student_ids)
+            ->sum('feescollections.paid_amount');
+    }
+
+    public static function getTotalFeesCollectionsAmountStudents($student_ids)
+    {
+        return FeesCollectionModel::where('feescollections.is_payment', 1)
+            ->whereIn('feescollections.student_id', $student_ids)
+            ->sum('feescollections.total_amount');
+    }
+
+
+
+
+
 
 }

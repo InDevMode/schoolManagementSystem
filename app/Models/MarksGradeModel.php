@@ -22,24 +22,24 @@ class MarksGradeModel extends Model
         'is_delete',
     ];
 
-    static public function getSingle(int $id): ?MarksGradeModel
+    public static function getSingle(int $id): ?MarksGradeModel
     {
         return MarksGradeModel::find($id);
     }
 
-    static public function getNameSingle(string $name)
+    public static function getNameSingle(string $name)
     {
         return MarksGradeModel::where('name', $name)->first();
     }
 
-    static public function checkNameSingle(string $name, int $id)
+    public static function checkNameSingle(string $name, int $id)
     {
         return MarksGradeModel::where('name', $name)
             ->where('id', '!=', $id)
             ->first();
     }
 
-    static public function getMarksGrade(int $perPage)
+    public static function getMarksGrade(int $perPage)
     {
         return MarksGradeModel::select('marks_grade.*', 'users.name as created_name')
             ->join('users', 'users.id', '=', 'marks_grade.created_by')
@@ -48,7 +48,7 @@ class MarksGradeModel extends Model
             ->paginate($perPage);
     }
 
-    static public function getGrade(int $percent)
+    public static function getGrade(int $percent)
     {
         $result = MarksGradeModel::select('marks_grade.*')
         ->where('percent_from', '<=', $percent)

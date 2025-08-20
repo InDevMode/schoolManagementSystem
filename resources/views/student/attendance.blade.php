@@ -137,13 +137,13 @@
                                                 <span
                                                     class="
                                                                                           {{ $myAttendance->attendance_type == 1 ? 'bg-emerald-200 text-emerald-800 rounded-full px-2 py-1' :
-                                ($myAttendance->attendance_type == 2 ? 'bg-yellow-200 text-yellow-800 rounded-full px-2 py-1' :
-                                    ($myAttendance->attendance_type == 3 ? 'bg-red-200 text-red-800 rounded-full px-2 py-1' :
-                                        ($myAttendance->attendance_type == 4 ? 'bg-blue-200 text-blue-800 rounded-full px-2 py-1' : ''))) }}">
-                                                    {{ $myAttendance->attendance_type == 1 ? 'Présent(e)' :
-                                ($myAttendance->attendance_type == 2 ? 'Retard' :
-                                    ($myAttendance->attendance_type == 3 ? 'Absent(e)' :
-                                        ($myAttendance->attendance_type == 4 ? 'Demi-journée' : 'Non défini'))) }}
+                                                                                        ($myAttendance->attendance_type == 2 ? 'bg-yellow-200 text-yellow-800 rounded-full px-2 py-1' :
+                                                                                            ($myAttendance->attendance_type == 3 ? 'bg-red-200 text-red-800 rounded-full px-2 py-1' :
+                                                                                                ($myAttendance->attendance_type == 4 ? 'bg-blue-200 text-blue-800 rounded-full px-2 py-1' : ''))) }}">
+                                                                                                            {{ $myAttendance->attendance_type == 1 ? 'Présent(e)' :
+                                                                                        ($myAttendance->attendance_type == 2 ? 'Retard' :
+                                                                                            ($myAttendance->attendance_type == 3 ? 'Absent(e)' :
+                                                                                                ($myAttendance->attendance_type == 4 ? 'Demi-journée' : 'Non défini'))) }}
                                                 </span>
                                             </td>
                                             <td class="px-6 py-4">

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Request;
 
 class CommunicateModel extends Model
@@ -90,6 +91,16 @@ class CommunicateModel extends Model
 
         return $results->orderBy('communicates.id', 'desc')
             ->paginate($perpage);
+    }
+
+    public static function getTotalCommunicate()
+    {
+        return CommunicateModel::where('is_delete', 0)->count();
+    }
+
+    public static function getTotalCommunicateCreatedByTeacher()
+    {
+        return CommunicateModel::where('is_delete', 0)->where('created_by', Auth::user()->id)->count();
     }
 
 

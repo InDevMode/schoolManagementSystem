@@ -96,4 +96,9 @@ class ClassModel extends Model
             ->first();
     }
 
+    public static function getTotalClass()
+    {
+        return ClassModel::where('is_delete', 0)->count();
+    }
+
 }

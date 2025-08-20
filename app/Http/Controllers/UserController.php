@@ -336,14 +336,19 @@ class UserController extends Controller
         return view('admin.settings.payment_mode', $data);
     }
 
-    public function updatePaymentMode(Request $request, $id)
+    public function updatePaymentMode(Request $request)
     {
 
         try {
 
-            $setting = SettingModel::getSingle($id);
+            $setting = SettingModel::getSingle(1);
             if ($setting) {
                 $setting->paypal_email = trim($request->paypal_email);
+                $setting->kkiapay_public_key = trim($request->kkiapay_public_key);
+                $setting->kkiapay_private_key = trim($request->kkiapay_private_key);
+                $setting->kkiapay_secret_key = trim($request->kkiapay_secret_key);
+                $setting->stripe_public_key = trim($request->stripe_public_key);
+                $setting->stripe_secret_key = trim($request->stripe_secret_key);
                 $setting->save();
                 return redirect()->back()->with('success', 'Vos informations ont été modifiés avec succès.');
             } else {

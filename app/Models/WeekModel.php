@@ -15,14 +15,19 @@ class WeekModel extends Model
         'name',
     ];
 
-    static public function getAllWeek()
+    public static function getAllWeek()
     {
         return WeekModel::get();
     }
 
-    static public function getWeekUsingName(string $weekName)
+    public static function getWeekUsingName(string $weekName)
     {
         return WeekModel::where('name', $weekName)->first();
+    }
+
+    public static function getTotalWeek()
+    {
+        return WeekModel::count();
     }
 
 }

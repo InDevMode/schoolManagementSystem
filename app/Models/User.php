@@ -6,6 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Request;
 use Laravel\Sanctum\HasApiTokens;
 
@@ -46,7 +47,6 @@ class User extends Authenticatable
         'profile_picture',
         'class_id',
         'parent_id',
-        'teacher_id',
     ];
 
     /**
@@ -115,7 +115,7 @@ class User extends Authenticatable
         return User::where('email', $email)->where('id', '!=', $id)->first();
     }
 
-    static public function getTokenSingle(string $token)
+    public static function getTokenSingle(string $token)
     {
         return User::where('remember_token', '=', $token)->first();
     }
@@ -450,7 +450,10 @@ class User extends Authenticatable
             'feescollections.created_at as created_at',
             'created_by.name as created_by_name',
             'users.name as student_name',
-            'users.last_name as student_last_name'
+            'users.last_name as student_last_name',
+            'users.mobile_number as student_phone',
+            'users.email as student_email',
+            'users.admission_number as student_admission_number',
         )
             ->leftJoin('class', 'class.id', '=', 'users.class_id')
             ->leftJoin('feescollections', 'feescollections.student_id', '=', 'users.id')
@@ -517,13 +520,83 @@ class User extends Authenticatable
             ->first();
     }
 
-
     public static function getSingleClass(int $id)
     {
         return User::select('users.*', 'class.name as class_name', 'class.amount as class_amount')
             ->join('class', 'class.id', '=', 'users.class_id')
             ->where('users.id', $id)
             ->first();
+    }
+
+    public static function getTotalUserWithUserType(int $user_type)
+    {
+        return User::select('users.id')
+            ->where('user_type', $user_type)
+            ->where('is_delete', 0)
+            ->count();
+    }
+
+    public static function getTotalUser()
+    {
+        return User::select('users.id')
+            ->where('is_delete', 0)
+            ->count();
+    }
+
+    public static function getTotalTeacherStudent()
+    {
+        return User::select('users.id')
+            ->join('class', 'class.id', '=', 'users.class_id')
+            ->join('class_teacher', 'class_teacher.class_id', '=', 'class.id')
+            ->where('class_teacher.teacher_id', '=', Auth::user()->id)
+            ->where('users.user_type', 3)
+            ->where('users.is_delete', 0)
+            ->count();
+    }
+
+    public static function getTotalParentStudent()
+    {
+        return User::select('users.id')
+            ->join('class', 'class.id', '=', 'users.class_id')
+            ->join('users as parent', 'parent.id', '=', 'users.parent_id')
+            ->where('users.parent_id', '=', Auth::user()->id)
+            ->where('users.user_type', 3)
+            ->where('users.is_delete', 0)
+            ->count();
+    }
+
+    public static function getStudentIds()
+    {
+        $results = User::select('users.id')
+            ->join('class', 'class.id', '=', 'users.class_id')
+            ->join('users as parent', 'parent.id', '=', 'users.parent_id')
+            ->where('users.parent_id', Auth::user()->id)
+            ->where('users.user_type', 3)
+            ->where('users.is_delete', 0)
+            ->get();
+
+        $student_ids = array();
+        foreach ($results as $result) {
+            $student_ids[] = $result->id;
+        }
+        return $student_ids;
+    }
+
+    public static function getClassIds()
+    {
+        $results = User::select('users.*')
+            ->join('class', 'class.id', '=', 'users.class_id')
+            ->join('users as parent', 'parent.id', '=', 'users.parent_id')
+            ->where('users.parent_id', Auth::user()->id)
+            ->where('users.user_type', 3)
+            ->where('users.is_delete', 0)
+            ->get();
+
+        $class_ids = array();
+        foreach ($results as $result) {
+            $class_ids[] = $result->class_id;
+        }
+        return $class_ids;
     }
 
 

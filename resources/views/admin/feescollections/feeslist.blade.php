@@ -27,6 +27,17 @@
                         </span>
                     </li>
                     <li class="flex items-center">
+                        <a href="{{ url('admin/feescollections/collections/list') }}"
+                            class="text-primary-600 hover:text-violet-600 transition-colors">
+                            <i class="fas fa-home mr-1"></i>
+                            Ajouter une contribution
+                        </a>
+                        <span class="mx-2 text-gray-400">
+                            <iconify-icon icon="mdi:chevron-right" class="text-gray-400" width="16"
+                                height="16"></iconify-icon>
+                        </span>
+                    </li>
+                    <li class="flex items-center">
                         <span class="text-primary-600 hover:text-violet-600 transition-colors">
                             <i class="fas fa-cash-register mr-1"></i>
                             Contributions reçues
@@ -227,6 +238,18 @@
                     <tbody class="z-20 bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                         <!-- Sample Row 1 -->
                         @foreach ($getFeesCollections as $index => $feescollections)
+                            @php
+                                $types = [
+                                    'check' => ['label' => 'Chèque', 'bg' => 'bg-violet-100', 'border' => 'border-violet-800', 'text' => 'text-violet-800', 'dark_bg' => 'dark:bg-violet-900', 'dark_text' => 'dark:text-violet-200'],
+                                    'transfer' => ['label' => 'Virement', 'bg' => 'bg-green-100', 'border' => 'border-green-800', 'text' => 'text-green-800', 'dark_bg' => 'dark:bg-green-900', 'dark_text' => 'dark:text-green-200'],
+                                    'cash' => ['label' => 'Espèce', 'bg' => 'bg-yellow-200', 'border' => 'border-yellow-800', 'text' => 'text-yellow-800', 'dark_bg' => 'dark:bg-yellow-900', 'dark_text' => 'dark:text-yellow-200'],
+                                    'paypal' => ['label' => 'PayPal', 'bg' => 'bg-blue-100', 'border' => 'border-blue-800', 'text' => 'text-blue-800', 'dark_bg' => 'dark:bg-blue-900', 'dark_text' => 'dark:text-blue-200'],
+                                    'stripe' => ['label' => 'Stripe', 'bg' => 'bg-indigo-100', 'border' => 'border-indigo-800', 'text' => 'text-indigo-800', 'dark_bg' => 'dark:bg-indigo-900', 'dark_text' => 'dark:text-indigo-200'],
+                                    'kkiapay' => ['label' => 'Kkiapay', 'bg' => 'bg-pink-100', 'border' => 'border-pink-800', 'text' => 'text-pink-800', 'dark_bg' => 'dark:bg-pink-900', 'dark_text' => 'dark:text-pink-200'],
+                                ];
+
+                                $type = $types[$feescollections->payment_type] ?? ['label' => 'Inconnu', 'bg' => 'bg-gray-100', 'border' => 'border-gray-800', 'text' => 'text-gray-800', 'dark_bg' => 'dark:bg-gray-900', 'dark_text' => 'dark:text-gray-200'];
+                            @endphp
                                         <tr class="hover:bg-violet-100 dark:hover:bg-gray-700 transition-colors">
                                             <td class="px-6 py-4 whitespace-nowrap font-medium text-sm text-gray-500 dark:text-gray-400">
                                                 {{ $feescollections->student_admission_number }}
@@ -269,13 +292,10 @@
                                                 </div>
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap">
-                                                <span
-                                                    class="px-2 py-1 border w-24 inline-flex justify-center text-xs leading-5 font-semibold rounded-full
-                                                                                {{ $feescollections->payment_type === 'check' ? 'bg-violet-100 border-violet-800 text-violet-800 dark:bg-violet-900 dark:text-violet-200' :
-                            ($feescollections->payment_type === 'transfer' ? 'bg-green-100 border-green-800 text-green-800 dark:bg-green-900 dark:text-green-200' :
-                                'bg-yellow-200 border-yellow-800 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200') }}">
-                                                    {{ $feescollections->payment_type === 'check' ? 'Chèque' : ($feescollections->payment_type === 'transfer' ? 'Virement' : 'Espèce') }}
-                                                </span>
+                                                    <span class="px-2 py-1 border w-24 inline-flex justify-center text-xs leading-5 font-semibold rounded-full
+                                                        {{ $type['bg'] }} {{ $type['border'] }} {{ $type['text'] }} {{ $type['dark_bg'] }} {{ $type['dark_text'] }}">
+                                                        {{ $type['label'] }}
+                                                    </span>
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap font-medium text-sm text-gray-500 dark:text-gray-400">
                                                 {{ $feescollections->created_by_name }}
@@ -390,19 +410,27 @@
                                                                                 </div>
                                                                             </div>
 
+                                                                            @php
+                                                                                $types = [
+                                                                                    'check' => ['label' => 'Chèque', 'bg' => 'bg-violet-100', 'border' => 'border-violet-800', 'text' => 'text-violet-800', 'dark_bg' => 'dark:bg-violet-900', 'dark_text' => 'dark:text-violet-200'],
+                                                                                    'transfer' => ['label' => 'Virement', 'bg' => 'bg-green-100', 'border' => 'border-green-800', 'text' => 'text-green-800', 'dark_bg' => 'dark:bg-green-900', 'dark_text' => 'dark:text-green-200'],
+                                                                                    'cash' => ['label' => 'Espèce', 'bg' => 'bg-yellow-200', 'border' => 'border-yellow-800', 'text' => 'text-yellow-800', 'dark_bg' => 'dark:bg-yellow-900', 'dark_text' => 'dark:text-yellow-200'],
+                                                                                    'paypal' => ['label' => 'PayPal', 'bg' => 'bg-blue-100', 'border' => 'border-blue-800', 'text' => 'text-blue-800', 'dark_bg' => 'dark:bg-blue-900', 'dark_text' => 'dark:text-blue-200'],
+                                                                                    'stripe' => ['label' => 'Stripe', 'bg' => 'bg-indigo-100', 'border' => 'border-indigo-800', 'text' => 'text-indigo-800', 'dark_bg' => 'dark:bg-indigo-900', 'dark_text' => 'dark:text-indigo-200'],
+                                                                                    'kkiapay' => ['label' => 'Kkiapay', 'bg' => 'bg-pink-100', 'border' => 'border-pink-800', 'text' => 'text-pink-800', 'dark_bg' => 'dark:bg-pink-900', 'dark_text' => 'dark:text-pink-200'],
+                                                                                ];
+
+                                                                                $type = $types[$feescollections->payment_type] ?? ['label' => 'Inconnu', 'bg' => 'bg-gray-100', 'border' => 'border-gray-800', 'text' => 'text-gray-800', 'dark_bg' => 'dark:bg-gray-900', 'dark_text' => 'dark:text-gray-200'];
+                                                                            @endphp
+
                                                                             <!-- Type de paiement & Métadonnées -->
                                                                             <div class="grid grid-cols-2 gap-4 items-center">
                                                                                 <div>
-                                                                                    <p
-                                                                                        class="text-sm font-semibold text-gray-500 dark:text-gray-400">
-                                                                                        Type de paiement</p>
-                                                                                    <span
-                                                    class="px-2 py-1 border w-24 inline-flex justify-center text-xs leading-5 font-semibold rounded-full
-                                                                                {{ $feescollections->payment_type === 'check' ? 'bg-violet-100 border-violet-800 text-violet-800 dark:bg-violet-900 dark:text-violet-200' :
-                            ($feescollections->payment_type === 'transfer' ? 'bg-green-100 border-green-800 text-green-800 dark:bg-green-900 dark:text-green-200' :
-                                'bg-yellow-200 border-yellow-800 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200') }}">
-                                                    {{ $feescollections->payment_type === 'check' ? 'Chèque' : ($feescollections->payment_type === 'transfer' ? 'Virement' : 'Espèce') }}
-                                                </span>
+                                                                                        <p class="text-sm font-semibold text-gray-500 dark:text-gray-400">Type de paiement</p>
+                                                                                        <span class="px-2 py-1 border w-24 inline-flex justify-center text-xs leading-5 font-semibold rounded-full
+                                                                                            {{ $type['bg'] }} {{ $type['border'] }} {{ $type['text'] }} {{ $type['dark_bg'] }} {{ $type['dark_text'] }}">
+                                                                                            {{ $type['label'] }}
+                                                                                        </span>
                                                                                 </div>
                                                                                 <div>
                                                                                     <p
@@ -434,7 +462,7 @@
                                                                     <div
                                                                         class="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
                                                                         <div
-                                                                            class="bg-white dark:bg-gray-800 rounded-lg shadow-lg border-b dark:border-gray-400 w-[30%] h-auto">
+                                                                            class="bg-white dark:bg-gray-800 rounded-xl shadow-2xl w-full max-w-2xl mx-auto overflow-hidden">
                                                                             <div
                                                                                 class="flex items-center justify-between p-4 border-b dakr:border-gray-600 border-gray-200 rounded-t bg-violet-500 dark:bg-gray-700">
                                                                                 <h3

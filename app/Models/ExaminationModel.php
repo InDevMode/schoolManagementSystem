@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Request;
 
 class ExaminationModel extends Model
@@ -23,7 +24,7 @@ class ExaminationModel extends Model
     ];
 
 
-    static function getExaminations(int $perPage)
+    public static function getExaminations(int $perPage)
     {
         $results = ExaminationModel::select('exams.*', 'users.name as created_name')
             ->join('users', 'users.id', '=', 'exams.created_by');
@@ -48,24 +49,24 @@ class ExaminationModel extends Model
             ->paginate($perPage);
     }
 
-    static public function getSingle(int $id): ?ExaminationModel
+    public static function getSingle(int $id): ?ExaminationModel
     {
         return ExaminationModel::find($id);
     }
 
-    static public function getNameSingle(string $name): ?ExaminationModel
+    public static function getNameSingle(string $name): ?ExaminationModel
     {
         return ExaminationModel::where('name', $name)->first();
     }
 
-    static public function checkNameSingle(string $name, int $id): ?ExaminationModel
+    public static function checkNameSingle(string $name, int $id): ?ExaminationModel
     {
         return ExaminationModel::where('name', $name)
             ->where('id', '!=', $id)
             ->first();
     }
 
-    static public function getExams()
+    public static function getExams()
     {
         return ExaminationModel::select('exams.*')
             ->join('users', 'users.id', '=', 'exams.created_by')
@@ -73,8 +74,7 @@ class ExaminationModel extends Model
             ->orderBy('exams.id', 'desc')
             ->get();
     }
-
-    static public function getMyClassSubjectGroup(int $teacher_id)
+    public static function getMyClassSubjectGroup(int $teacher_id)
     {
         return ClassTeacherModel::select(
             'class_teacher.*',
@@ -87,6 +87,37 @@ class ExaminationModel extends Model
             ->where('class_teacher.teacher_id', '=', $teacher_id)
             ->groupBy('class_teacher.id')
             ->get();
+    }
+
+    public static function getTotalExam()
+    {
+        return ExaminationModel::where('is_delete', 0)->count();
+    }
+
+    public static function getTotalExamTeacherToday()
+    {
+        return ExaminationModel::join('marks_register', 'exams.id', '=', 'marks_register.exam_id')
+            ->join('class_teacher', 'marks_register.class_id', '=', 'class_teacher.class_id')
+            ->where('class_teacher.teacher_id', Auth::user()->id)
+            ->where('class_teacher.is_delete', 0)
+            ->where('marks_register.is_delete', 0)
+            ->where('exams.is_delete', 0)
+            ->whereDate('exams.created_at', today())
+            ->distinct('exams.id')
+            ->count('exams.id');
+    }
+
+    public static function getTotalExamStudent()
+    {
+        return ExaminationModel::select('exams.id')
+            ->join('schedules', 'schedules.exam_id', '=', 'exams.id')
+            ->join('marks_register', 'marks_register.exam_id', '=', 'exams.id')
+            ->where('schedules.class_id', '=', Auth::user()->class_id)
+            ->where('schedules.class_id', '=', Auth::user()->class_id)
+            ->where('schedules.is_delete', '=', 0)
+            ->where('exams.is_delete', '=', 0)
+            ->count();
+
     }
 
 }
