@@ -177,3 +177,60 @@ Voici les étapes à suivre :
 ---
 
 Souhaites-tu que je t’aide à rédiger un message pour demander une revue à ton équipe ? Ou à vérifier les règles de protection si tu as accès aux paramètres du dépôt ?
+
+Parfait, Régis ! Voici comment tu peux **fusionner ta branche `developpment` dans `main`** en ligne de commande, étape par étape 👇
+
+---
+
+### 🧭 **Étapes pour merger `developpment` dans `main`**
+
+#### 1. **Assure-toi d’avoir les dernières versions**
+```bash
+git checkout main
+git pull origin main
+```
+
+#### 2. **Fusionne la branche `developpment` dans `main`**
+```bash
+git merge developpment
+```
+
+> 💡 Si tout se passe bien, Git fusionnera les commits sans conflit. Sinon, il te demandera de résoudre les conflits manuellement.
+
+#### 3. **Pousse les changements vers le dépôt distant**
+```bash
+git push origin main
+```
+
+---
+
+### ⚠️ **Cas où la branche `main` est protégée**
+
+Si la branche `main` est protégée (comme dans ton cas), tu ne pourras pas pousser directement. Voici les alternatives :
+
+#### 🔁 **Option 1 : Créer une Pull Request depuis `developpment` vers `main`**
+```bash
+# Assure-toi d’être sur developpment
+git checkout developpment
+git pull origin developpment
+
+# Pousse les derniers changements si ce n’est pas déjà fait
+git push origin developpment
+```
+
+Ensuite, va sur GitHub et crée une **Pull Request** de `developpment` → `main`.
+
+#### 🔧 **Option 2 : Fusionner en local puis créer une nouvelle branche**
+Si tu veux contourner la protection sans toucher à `main` directement :
+
+```bash
+git checkout -b merge-dev-into-main
+git merge developpment
+git push origin merge-dev-into-main
+```
+
+Puis crée une **Pull Request** de `merge-dev-into-main` vers `main`.
+
+---
+
+Souhaites-tu que je t’aide à rédiger le message de la PR ou à vérifier les conflits éventuels ?
