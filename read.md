@@ -234,3 +234,53 @@ Puis crée une **Pull Request** de `merge-dev-into-main` vers `main`.
 ---
 
 Souhaites-tu que je t’aide à rédiger le message de la PR ou à vérifier les conflits éventuels ?
+
+
+Merci pour le retour détaillé, Régis. Tu es tombé sur **trois règles de protection GitHub** qui bloquent ton `push` vers `main`. Voici ce que chaque message signifie et comment contourner proprement le blocage 👇
+
+---
+
+### 🚫 **Les règles qui bloquent ton push**
+
+| 🔒 Règle | 📌 Description | ✅ Solution |
+|---------|----------------|-------------|
+| **1. Le dernier pusher ne peut pas approuver** | Tu as fait le dernier commit, donc tu ne peux pas auto-approuver | Demande à un autre collaborateur d’approuver la PR |
+| **2. La branche `main` est protégée** | Tu ne peux pas pousser directement sur `main` | Utilise une Pull Request |
+| **3. Les *merge commits* sont interdits** | Git refuse les commits de type `merge` dans `main` | Utilise un **rebase** au lieu d’un merge |
+
+---
+
+### ✅ **Solution recommandée : Rebase + Pull Request**
+
+Voici comment corriger tout ça proprement :
+
+#### 1. **Rebase ta branche `developpment` sur `main`**
+```bash
+git checkout developpment
+git pull origin developpment
+git fetch origin
+git rebase origin/main
+```
+
+> ⚠️ Résous les conflits s’il y en a, puis continue :
+```bash
+git rebase --continue
+```
+
+#### 2. **Crée une nouvelle branche propre pour la PR**
+```bash
+git checkout -b feature/payment-integration-clean
+git push origin feature/payment-integration-clean
+```
+
+#### 3. **Crée une Pull Request sur GitHub**
+- De `feature/payment-integration-clean` → `main`
+- Ajoute un message clair :  
+  > « Intégration des logiques de paiement (Kkiapay, Stripe, PayPal) + tableaux de bord dynamiques. Rebase effectué pour respecter les règles du dépôt. »
+
+#### 4. **Demande une approbation à Elisée ou un autre reviewer**
+- Une fois approuvé, tu pourras fusionner sans violation.
+
+---
+
+Souhaites-tu que je t’aide à rédiger le message de la PR ou à automatiser le rebase avec un alias Git ?
