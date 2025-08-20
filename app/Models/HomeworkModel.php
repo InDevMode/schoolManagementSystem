@@ -181,7 +181,7 @@ class HomeworkModel extends Model
             ->count();
     }
 
-        public static function getTotalHomeworkParentStudent($student_ids)
+    public static function getTotalHomeworkParentStudent($student_ids)
     {
         return HomeworkModel::join('works', 'works.id', '=', 'homework.work_id')
             ->join('class', 'class.id', '=', 'works.class_id')
