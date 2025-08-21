@@ -7,7 +7,7 @@
             <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
                 <div class="mb-4 md:mb-0">
                     <h1 class="text-2xl font-bold text-gray-800 dark:text-white flex items-center">
-                        <iconify-icon icon="fa-solid:landmark" class="text-green-600 mr-2" width="28"
+                        <iconify-icon icon="fa-solid:landmark" class="text-emerald-600 mr-2" width="28"
                             height="28"></iconify-icon>
                         Modifier cette classe
                     </h1>
@@ -19,7 +19,7 @@
                     <ol class="inline-flex items-center space-x-1 md:space-x-3">
                         <li class="inline-flex items-center">
                             <a href="{{ url('admin/dashboard') }}"
-                                class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-green-600 dark:text-gray-400 dark:hover:text-white">
+                                class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-emerald-600 dark:text-gray-400 dark:hover:text-white">
                                 <iconify-icon icon="mdi:home" class="mr-2" width="16" height="16"></iconify-icon>
                                 Tableau de bord
                             </a>

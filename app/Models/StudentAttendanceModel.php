@@ -188,5 +188,13 @@ class StudentAttendanceModel extends Model
             ->count();
     }
 
+        public static function getTotalAttendanceTypeByStudent(int $attendanceType, int $student_id)
+    {
+        return StudentAttendanceModel::where('attendances.attendance_type', '=', $attendanceType)
+            ->where('attendances.student_id', '=', $student_id)
+            ->where('attendances.is_delete', '=', 0)
+            ->count();
+    }
+
 
 }

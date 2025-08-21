@@ -17,7 +17,7 @@
                         <a href="{{ url('admin/dashboard') }}"
                             class="text-primary-600 hover:text-violet-600 transition-colors">
                             <i class="fas fa-home mr-1"></i>
-                            Dashboard
+                            Tableau de bord
                         </a>
                         <span class="mx-2 text-gray-400">
                             <iconify-icon icon="mdi:chevron-right" class="text-gray-400" width="16"
@@ -158,6 +158,10 @@
                         <tr>
                             <th scope="col"
                                 class="px-6 py-3 text-left text-xs font-medium text-white dark:text-gray-300 uppercase tracking-wider">
+                                Photo de Profile
+                            </th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-white dark:text-gray-300 uppercase tracking-wider">
                                 Nom & Prénoms
                             </th>
                             <th scope="col"
@@ -183,12 +187,26 @@
                         </tr>
                     </thead>
                     <tbody class="z-20 bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+
                         <!-- Sample Row 1 -->
                         @foreach ($getAdmin as $index => $admin)
+                        @php
+                            $basePictureProfileUrl = 'upload/profile/';
+                            $getAdminPictureProfile = $admin->profile_picture;
+                            $profilePicture = !empty($getAdminPictureProfile)
+                                ? $basePictureProfileUrl . $getAdminPictureProfile
+                                : 'upload/default.jpg';
+                        @endphp
                             <tr class="hover:bg-violet-100 dark:hover:bg-gray-700 transition-colors">
                                 <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm text-gray-900 dark:text-white">
+                                        <img src="{{ asset($profilePicture) }}" alt="profile cover"
+                                            class="w-8 my-3 rounded-full object-cover object-center" />
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="flex items-center">
-                                        <div class="ml-4">
+                                        <div class="">
                                             <span
                                                 class="text-sm font-medium text-gray-900 dark:text-white">{{ $admin->name }}</span>
                                             <span
@@ -221,17 +239,15 @@
                                                 Actions
                                                 <span
                                                     class="-mr-1 size-5 group-hover:text-violet-600 text-gray-400"><iconify-icon
-                                                        icon="mdi:chevron-down" width="22"
-                                                        height="22"></iconify-icon></span>
+                                                        icon="mdi:chevron-down" width="22" height="22"></iconify-icon></span>
                                             </button>
                                         </div>
                                         <div class="absolute right-0 z-50 mt-2 w-56 origin-top-right rounded-md bg-white dark:bg-gray-800 ring-1 shadow-lg ring-black/5 focus:outline-hidden"
                                             role="menu" aria-orientation="vertical" aria-labelledby="menu-button"
-                                            tabindex="{{ $index + 1 }}" x-show="open" @click.away="open = false"
-                                            x-transition>
+                                            tabindex="{{ $index + 1 }}" x-show="open" @click.away="open = false" x-transition>
                                             <div class="py-1">
                                                 <a href="{{ url('admin/account') }}"
-                                                    class="block px-4 py-2 text-sm hover:text-violet-600 dark:hover:text-violet-400">
+                                                    class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:text-violet-600 dark:hover:text-violet-400">
                                                     <i class="fas fa-user mr-2"></i> Profile
                                                 </a>
                                                 <a href="{{ url('admin/admin/edit', $admin->id) }}"
@@ -325,14 +341,5 @@
 @endsection
 
 <script>
-    function toggleMenu(event, index) {
-        event.stopPropagation();
-        document.querySelectorAll('.relative .hidden').forEach(menu => menu.classList.add('hidden'));
-        const menu = document.getElementById('dropdown-menu-' + index);
-        menu.classList.toggle('hidden');
-    }
 
-    document.addEventListener('click', function() {
-        document.querySelectorAll('.relative .hidden').forEach(menu => menu.classList.add('hidden'));
-    });
 </script>

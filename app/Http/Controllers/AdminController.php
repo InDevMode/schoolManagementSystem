@@ -71,7 +71,7 @@ class AdminController extends Controller
         $data['getAdmin'] = User::getSingle($id);
         if (!empty($data['getAdmin'])) {
             $data['header_title'] = "Modifier un administrateur";
-            if (!empty($data['getStudent']->profile_picture)) {
+            if (!empty($data['getAdmin']->profile_picture)) {
                 $data['profile_picture_url'] = User::getProfile($data['getAdmin']->profile_picture);
             } else {
                 $data['profile_picture_url'] = asset('upload/default.jpg');
