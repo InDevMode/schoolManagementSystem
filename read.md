@@ -82,7 +82,7 @@ Avec ces méthodes :
 🚀 **Solution recommandée** : Activez **la protection de branche sur GitHub** et **ajoutez un hook local** pour bloquer les pushs accidentels !
 
 
-Excellente question, Régis 👨‍💻 ! Voici une démarche claire et professionnelle pour créer ta propre branche et faire un premier commit **après avoir cloné un projet**, même si tu n’as rien fait tout de suite après le clone.
+Voici une démarche claire et professionnelle pour créer ta propre branche et faire un premier commit **après avoir cloné un projet**, même si tu n’as rien fait tout de suite après le clone.
 
 ---
 
@@ -135,8 +135,6 @@ git push origin nom-de-ta-branche
 
 ---
 
-Tu veux que je t’aide à rédiger un bon message de commit pour une tâche spécifique ? Ou tu veux automatiser ça avec un alias Git ou un hook ?
-
 
 Bien sûr, voici une explication claire en français :
 
@@ -176,9 +174,7 @@ Voici les étapes à suivre :
 
 ---
 
-Souhaites-tu que je t’aide à rédiger un message pour demander une revue à ton équipe ? Ou à vérifier les règles de protection si tu as accès aux paramètres du dépôt ?
-
-Parfait, Régis ! Voici comment tu peux **fusionner ta branche `developpment` dans `main`** en ligne de commande, étape par étape 👇
+Voici comment tu peux **fusionner ta branche `developpment` dans `main`** en ligne de commande, étape par étape 👇
 
 ---
 
@@ -233,4 +229,51 @@ Puis crée une **Pull Request** de `merge-dev-into-main` vers `main`.
 
 ---
 
-Souhaites-tu que je t’aide à rédiger le message de la PR ou à vérifier les conflits éventuels ?
+
+Tu es tombé sur **trois règles de protection GitHub** qui bloquent ton `push` vers `main`. Voici ce que chaque message signifie et comment contourner proprement le blocage 👇
+
+---
+
+### 🚫 **Les règles qui bloquent ton push**
+
+| 🔒 Règle | 📌 Description | ✅ Solution |
+|---------|----------------|-------------|
+| **1. Le dernier pusher ne peut pas approuver** | Tu as fait le dernier commit, donc tu ne peux pas auto-approuver | Demande à un autre collaborateur d’approuver la PR |
+| **2. La branche `main` est protégée** | Tu ne peux pas pousser directement sur `main` | Utilise une Pull Request |
+| **3. Les *merge commits* sont interdits** | Git refuse les commits de type `merge` dans `main` | Utilise un **rebase** au lieu d’un merge |
+
+---
+
+### ✅ **Solution recommandée : Rebase + Pull Request**
+
+Voici comment corriger tout ça proprement :
+
+#### 1. **Rebase ta branche `developpment` sur `main`**
+```bash
+git checkout developpment
+git pull origin developpment
+git fetch origin
+git rebase origin/main
+```
+
+> ⚠️ Résous les conflits s’il y en a, puis continue :
+```bash
+git rebase --continue
+```
+
+#### 2. **Crée une nouvelle branche propre pour la PR**
+```bash
+git checkout -b feature/payment-integration-clean
+git push origin feature/payment-integration-clean
+```
+
+#### 3. **Crée une Pull Request sur GitHub**
+- De `feature/payment-integration-clean` → `main`
+- Ajoute un message clair :  
+  > « Intégration des logiques de paiement (Kkiapay, Stripe, PayPal) + tableaux de bord dynamiques. Rebase effectué pour respecter les règles du dépôt. »
+
+#### 4. **Demande une approbation à Elisée ou un autre reviewer**
+- Une fois approuvé, tu pourras fusionner sans violation.
+
+---
+
