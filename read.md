@@ -82,7 +82,7 @@ Avec ces méthodes :
 🚀 **Solution recommandée** : Activez **la protection de branche sur GitHub** et **ajoutez un hook local** pour bloquer les pushs accidentels !
 
 
-Excellente question, Régis 👨‍💻 ! Voici une démarche claire et professionnelle pour créer ta propre branche et faire un premier commit **après avoir cloné un projet**, même si tu n’as rien fait tout de suite après le clone.
+Voici une démarche claire et professionnelle pour créer ta propre branche et faire un premier commit **après avoir cloné un projet**, même si tu n’as rien fait tout de suite après le clone.
 
 ---
 
@@ -135,8 +135,6 @@ git push origin nom-de-ta-branche
 
 ---
 
-Tu veux que je t’aide à rédiger un bon message de commit pour une tâche spécifique ? Ou tu veux automatiser ça avec un alias Git ou un hook ?
-
 
 Bien sûr, voici une explication claire en français :
 
@@ -176,9 +174,7 @@ Voici les étapes à suivre :
 
 ---
 
-Souhaites-tu que je t’aide à rédiger un message pour demander une revue à ton équipe ? Ou à vérifier les règles de protection si tu as accès aux paramètres du dépôt ?
-
-Parfait, Régis ! Voici comment tu peux **fusionner ta branche `developpment` dans `main`** en ligne de commande, étape par étape 👇
+Voici comment tu peux **fusionner ta branche `developpment` dans `main`** en ligne de commande, étape par étape 👇
 
 ---
 
@@ -233,10 +229,8 @@ Puis crée une **Pull Request** de `merge-dev-into-main` vers `main`.
 
 ---
 
-Souhaites-tu que je t’aide à rédiger le message de la PR ou à vérifier les conflits éventuels ?
 
-
-Merci pour le retour détaillé, Régis. Tu es tombé sur **trois règles de protection GitHub** qui bloquent ton `push` vers `main`. Voici ce que chaque message signifie et comment contourner proprement le blocage 👇
+Tu es tombé sur **trois règles de protection GitHub** qui bloquent ton `push` vers `main`. Voici ce que chaque message signifie et comment contourner proprement le blocage 👇
 
 ---
 
@@ -283,4 +277,3 @@ git push origin feature/payment-integration-clean
 
 ---
 
-Souhaites-tu que je t’aide à rédiger le message de la PR ou à automatiser le rebase avec un alias Git ?

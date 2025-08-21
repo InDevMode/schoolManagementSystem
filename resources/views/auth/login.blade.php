@@ -5,6 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+     <link rel="shortcut icon" href="{{ asset('public/images/logo.png') }}" />
     <title>{{ !empty($header_title) ? $header_title : 'Connexion' }} - School</title>
 
     <!-- Fonts -->
@@ -27,7 +28,7 @@
     x-init="
           darkMode = JSON.parse(localStorage.getItem('darkMode'));
           $watch('darkMode', value => localStorage.setItem('darkMode', JSON.stringify(value)))"
-    :class="{'dark text-bodydark bg-boxdark-2': darkMode === true}">
+    :class="{'dark text-gray-100 bg-gray-900': darkMode === true}">
     <!-- ===== Preloader Start ===== -->
     @include('layouts.preloader')
     <!-- ===== Preloader End ===== -->

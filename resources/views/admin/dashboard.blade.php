@@ -195,8 +195,8 @@
                         <span class="text-3xl font-bold text-gray-100">{{ $totalHomework }}</span>
                         <span class="text-3xl font-bold">{{ $totalWork }}</span>
                         <div
-                            class="flex h-12 w-12 items-center justify-center rounded-full bg-white/20 group-hover:bg-white">
-                            <i class="fa-solid  fa-user-check text-white group-hover:text-emerald-700"></i>
+                            class="relative flex h-12 w-12 items-center justify-center rounded-full bg-white/20 group-hover:bg-white">
+                            <span class="text-white group-hover:text-emerald-700"><iconify-icon icon="mdi:home-edit" width="24" height="24"></iconify-icon></span>
                         </div>
                     </div>
                     <div class="flex justify-between items-end">
