@@ -13,6 +13,11 @@ class SettingModel extends Model
 
     protected $fillable = [
         'paypal_email',
+        'kkiapay_public_key',
+        'kkiapay_private_key',
+        'kkiapay_secret_key',
+        'stripe_public_key',
+        'stripe_secret_key',
     ];
 
     protected $hidden = [

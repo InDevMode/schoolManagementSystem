@@ -114,7 +114,7 @@
                                         <div class="relative">
                                             <input
                                                 type="email" name="email"
-                                                placeholder="Entrer votre email"
+                                                placeholder="Entrer votre email" required
                                                 class="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 outline-none focus:border-violet-500 focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:focus:border-violet-500"
                                             />
                                             <span class="absolute right-4 top-4">

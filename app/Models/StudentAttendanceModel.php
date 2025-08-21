@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Request;
 
 class StudentAttendanceModel extends Model
@@ -21,15 +22,15 @@ class StudentAttendanceModel extends Model
     ];
 
     protected $hidden = [
-        ''
+        'is_delete'
     ];
 
-    static public function checkAlreadyAttendance(int $studentId, int $classId, string $date)
+    public static function checkAlreadyAttendance(int $studentId, int $classId, string $date)
     {
         return StudentAttendanceModel::where('student_id', $studentId)->where('class_id', $classId)->where('attendance_date', $date)->first();
     }
 
-    static public function getStudentAttendance(int $perpage)
+    public static function getStudentAttendance(int $perpage)
     {
         $results = StudentAttendanceModel::select('attendances.*', 'class.name as class_name', 'student.name as student_name', 'student.last_name as student_last_name', 'created_by.name as created_by_name')
             ->join('class', 'class.id', '=', 'attendances.class_id')
@@ -37,6 +38,7 @@ class StudentAttendanceModel extends Model
             ->join('users as created_by', 'created_by.id', '=', 'attendances.created_by')
             ->where('student.is_delete', '=', 0)
             ->where('created_by.is_delete', '=', 0)
+            ->where('attendances.is_delete', '=', 0)
             ->where('student.status', '=', 1)
             ->where('created_by.status', '=', 1)
             ->where('class.is_delete', '=', 0)
@@ -65,7 +67,7 @@ class StudentAttendanceModel extends Model
             ->paginate($perpage);
     }
 
-    static public function getStudentAttendanceTeacher(int $perpage, $class_ids)
+    public static function getStudentAttendanceTeacher(int $perpage, $class_ids)
     {
         if (!empty($class_ids)) {
 
@@ -75,6 +77,7 @@ class StudentAttendanceModel extends Model
                 ->join('users as created_by', 'created_by.id', '=', 'attendances.created_by')
                 ->where('student.is_delete', '=', 0)
                 ->where('created_by.is_delete', '=', 0)
+                ->where('attendances.is_delete', '=', 0)
                 ->where('student.status', '=', 1)
                 ->where('created_by.status', '=', 1)
                 ->where('class.is_delete', '=', 0)
@@ -110,12 +113,13 @@ class StudentAttendanceModel extends Model
         }
     }
 
-    static public function getMyAttendance(int $student_id, int $perpage)
+    public static function getMyAttendance(int $student_id, int $perpage)
     {
         $results = StudentAttendanceModel::select('attendances.*', 'class.name as class_name')
             ->join('class', 'class.id', '=', 'attendances.class_id')
             ->where('class.is_delete', '=', 0)
             ->where('class.status', '=', 1)
+            ->where('attendances.is_delete', '=', 0)
             ->where('attendances.student_id', '=', $student_id);
 
         $filters = [
@@ -144,15 +148,45 @@ class StudentAttendanceModel extends Model
         return $results;
     }
 
-    static public function getClassStudent(int $student_id)
+    public static function getClassStudent(int $student_id)
     {
         return StudentAttendanceModel::select('attendances.*', 'class.name as class_name')
             ->join('class', 'class.id', '=', 'attendances.class_id')
             ->where('attendances.student_id', '=', $student_id)
             ->where('class.is_delete', '=', 0)
             ->where('class.status', '=', 1)
+            ->where('attendances.is_delete', '=', 0)
             ->groupBy('attendances.class_id')
             ->get();
     }
+
+    public static function getTotalAttendance()
+    {
+        return StudentAttendanceModel::where('attendances.is_delete', '=', 0)->count();
+    }
+
+    public static function getTotalAttendanceStudent()
+    {
+        return StudentAttendanceModel::join('class', 'class.id', '=', 'attendances.class_id')
+            ->where('attendances.student_id', '=', Auth::user()->id)
+            ->where('attendances.is_delete', '=', 0)
+            ->count();
+    }
+
+    public static function getTotalAttendanceTypeStudent(int $attendanceType)
+    {
+        return StudentAttendanceModel::where('attendances.attendance_type', '=', $attendanceType)
+            ->where('attendances.is_delete', '=', 0)
+            ->count();
+    }
+
+    public static function getTotalByAttendanceTypeStudent(int $attendanceType, $student_ids)
+    {
+        return StudentAttendanceModel::where('attendances.attendance_type', '=', $attendanceType)
+            ->whereIn('attendances.student_id', $student_ids)
+            ->where('attendances.is_delete', '=', 0)
+            ->count();
+    }
+
 
 }

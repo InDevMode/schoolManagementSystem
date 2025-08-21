@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Request;
 
 class WorkModel extends Model
@@ -153,6 +154,48 @@ class WorkModel extends Model
     public function homeworks()
     {
         return $this->hasMany(HomeworkModel::class, 'work_id', 'id');
+    }
+
+    public static function getTotalWork()
+    {
+        return WorkModel::where('works.is_delete', '=', 0)->count();
+        ;
+    }
+
+    public static function getTotalWorkStudent()
+    {
+        $student_id = Auth::user()->id;
+        $class_id = Auth::user()->class_id;
+
+        return WorkModel::join('class', 'class.id', '=', 'works.class_id')
+            ->join('subject', 'subject.id', '=', 'works.subject_id')
+            ->join('users', 'users.id', '=', 'works.created_by')
+            ->leftJoin('homework', function ($join) use ($student_id) {
+                $join->on('homework.work_id', '=', 'works.id')
+                    ->where('homework.student_id', '=', $student_id)
+                    ->where('homework.is_delete', '=', 0);
+            })
+            ->where('works.class_id', '=', $class_id)
+            ->where('works.is_delete', '=', 0)
+            ->distinct('works.id')
+            ->count('works.id');
+    }
+
+        public static function getTotalWorkParentStudent($class_ids, $student_ids)
+    {
+
+        return WorkModel::join('class', 'class.id', '=', 'works.class_id')
+            ->join('subject', 'subject.id', '=', 'works.subject_id')
+            ->join('users', 'users.id', '=', 'works.created_by')
+            ->leftJoin('homework', function ($join) use ($student_ids) {
+                $join->on('homework.work_id', '=', 'works.id')
+                    ->whereIn('homework.student_id', $student_ids)
+                    ->where('homework.is_delete', '=', 0);
+            })
+            ->whereIn('works.class_id', $class_ids)
+            ->where('works.is_delete', '=', 0)
+            ->distinct('works.id')
+            ->count('works.id');
     }
 
 

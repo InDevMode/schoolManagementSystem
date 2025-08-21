@@ -621,7 +621,7 @@
                                 </td>
                             </tr>
                         @endforeach
-                        @if ($getStudentList->isEmpty())
+                        @if ($getMyStudent->isEmpty())
                             <tr class="text-center text-gray-700 dark:text-bodydark1">
                                 <td colspan="10" class="py-3"> Aucun apprenant désassigné trouvé.</td>
                             </tr>

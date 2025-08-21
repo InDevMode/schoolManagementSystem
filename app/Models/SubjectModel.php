@@ -79,4 +79,9 @@ class SubjectModel extends Model
             ->first();
     }
 
+    public static function getTotalSubject()
+    {
+        return SubjectModel::where('is_delete', 0)->count();
+    }
+
 }

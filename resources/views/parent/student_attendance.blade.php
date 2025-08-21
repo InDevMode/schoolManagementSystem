@@ -14,7 +14,7 @@
                     </li>
                     <li>
                         /<a class="font-medium hover:text-violet-600 transition duration-300"
-                            href="{{ url('student/dashboard') }}"> Dashboard</a>
+                            href="{{ url('parent/dashboard') }}"> Dashboard</a>
                     </li>
                 </ol>
             </nav>

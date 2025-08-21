@@ -25,4 +25,20 @@ class NoticeBoardMessageModel extends Model
         return NoticeBoardMessageModel::where('communicates_id', $id)->delete();
     }
 
+    public static function getTotalNoticeBoardMessage(){
+        return NoticeBoardMessageModel::count();
+    }
+
+    public static function getTotalNoticeBoardMessageTeacher(){
+        return NoticeBoardMessageModel::where('message_to', 2)->count();
+    }
+
+    public static function getTotalNoticeBoardMessageStudent(){
+        return NoticeBoardMessageModel::where('message_to', 3)->count();
+    }
+
+    public static function getTotalNoticeBoardMessageParent(){
+        return NoticeBoardMessageModel::where('message_to', 4)->count();
+    }
+
 }

@@ -91,7 +91,7 @@
                                                 de passe</label>
                                             <div class="relative">
                                                 <input type="password" id="newPassword" name="password"
-                                                    placeholder="Entrez votre nouveau mot de passe"
+                                                    placeholder="Entrez votre nouveau mot de passe" required
                                                     class="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 outline-none focus:border-violet-500 focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:focus:border-violet-500" />
                                                 <span class="absolute right-4 top-4 cursor-pointer"
                                                     onclick="togglePasswordVisibility('newPassword', 'toggleNewPasswordIcon')">

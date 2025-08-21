@@ -27,7 +27,7 @@ class MarkRegisterModel extends Model
         'is_delete'
     ];
 
-    static public function checkAlreadyMarks(int $student_id, int $exam_id, int $class_id, int $subject_id)
+    public static function checkAlreadyMarks(int $student_id, int $exam_id, int $class_id, int $subject_id)
     {
         return MarkRegisterModel::where('student_id', '=', $student_id)
             ->where('exam_id', '=', $exam_id)
@@ -36,7 +36,7 @@ class MarkRegisterModel extends Model
             ->first();
     }
 
-    static public function getExam(int $student_id)
+    public static function getExam(int $student_id)
     {
         return MarkRegisterModel::select('marks_register.*', 'exams.name as exam_name')
             ->join('exams', 'exams.id', '=', 'marks_register.exam_id')
@@ -48,7 +48,7 @@ class MarkRegisterModel extends Model
 
     }
 
-    static public function getExamSubject(int $exam_id, int $student_id)
+    public static function getExamSubject(int $exam_id, int $student_id)
     {
         return MarkRegisterModel::select('marks_register.*', 'exams.name as exam_name', 'subject.name as subject_name')
             ->join('exams', 'exams.id', '=', 'marks_register.exam_id')

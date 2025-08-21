@@ -188,7 +188,7 @@ class ExaminationController extends Controller
 
     public function myExamTimetableStudent(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
     {
-        $data['header_title'] = "Mon calendrier d'examens";
+        $data['header_title'] = "Mon calendrier d'examen";
         $class_id = Auth::user()->class_id;
         $getExamSchedule = ScheduleModel::getExam($class_id);
         $result = array();
@@ -389,7 +389,7 @@ class ExaminationController extends Controller
             ]);
         }
     }
-
+    
     public function addSingleMarksRegister(Request $request): \Illuminate\Http\JsonResponse
     {
         try {
