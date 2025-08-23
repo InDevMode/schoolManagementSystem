@@ -196,7 +196,7 @@ Route::group(['middleware' => 'admin'], function () {
 
     // Setting url
     Route::get('admin/settings', [UserController::class, 'settings']);
-    Route::post('admin/settings/payment_mode', [UserController::class, 'updatePaymentMode']);
+    Route::post('admin/settings/setting_data', [UserController::class, 'updateSettingInfo']);
 
     // Paypal payment url of admin
     Route::get('admin/feescollections_paypal/payment_success', [FeesCollectionController::class, 'paypalAdminSuccess']);

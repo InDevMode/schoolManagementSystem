@@ -18,7 +18,7 @@ class ExaminationController extends Controller
 {
     public function list(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
     {
-        $data['getExams'] = ExaminationModel::getExaminations(10);
+        $data['getExams'] = ExaminationModel::getExaminations(5);
         $data['header_title'] = "Liste des évaluations";
         return view('admin.examinations.exam.list', $data);
     }
@@ -389,7 +389,7 @@ class ExaminationController extends Controller
             ]);
         }
     }
-    
+
     public function addSingleMarksRegister(Request $request): \Illuminate\Http\JsonResponse
     {
         try {
@@ -671,7 +671,7 @@ class ExaminationController extends Controller
     public function listMarksGrade(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
     {
         $data['header_title'] = "Liste des notes";
-        $data['getMarksGrade'] = MarksGradeModel::getMarksGrade(10);
+        $data['getMarksGrade'] = MarksGradeModel::getMarksGrade(5);
         return view('admin.examinations.marks_grade.list', $data);
     }
 

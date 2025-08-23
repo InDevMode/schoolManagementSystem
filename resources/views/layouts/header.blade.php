@@ -22,13 +22,29 @@
                               </span>
                         </span>
                   </button>
+
+                  @php
+                        $getSettingFaviconAndLogo = \App\Models\SettingModel::getSingle(1);
+                        $logo_url = !empty($getSettingFaviconAndLogo->logo)
+                            ? \App\Models\SettingModel::getFaviconLogo($getSettingFaviconAndLogo->logo)
+                            : asset('upload/logo.png');
+                        $links = [
+                            1 => url('admin/dashboard'), // Admin
+                            2 => url('teacher/dashboard'), // Teacher
+                            3 => url('student/dashboard'), // Student
+                            4 => url('parent/dashboard'), // Parent
+                        ];
+                        $link = $links[Auth::user()->user_type] ?? url('login'); // Lien de secours
+
+                  @endphp
+
                   <!-- Hamburger Toggle BTN -->
-                  <a class="block flex-shrink-0 lg:hidden" href="{{ url('admin/dashboard') }}">
-                        <img src="{{ asset('public/images/logo/logo.svg') }}" alt="Logo" />
+                  <a class="block flex-shrink-0 lg:hidden w-48" href="{{  $link }}">
+                        <img src="{{ $logo_url }}" alt="Logo" />
                   </a>
             </div>
             <div class="hidden sm:block">
-                  <form action="https://formbold.com/s/unique_form_id" method="get">
+                  <form action="" method="get">
                         <div class="relative">
                               <button class="absolute left-0 top-1/2 -translate-y-1/2">
                                     <span
@@ -286,7 +302,8 @@
                                         : 'upload/default.jpg';
                               @endphp
                               <span class="h-12 w-12 rounded-full">
-                                    <img src="{{ asset($profilePicture) }}" alt="{{ Auth::user()->name }}" class="h-12 w-12 rounded-full object-cover object-center" />
+                                    <img src="{{ asset($profilePicture) }}" alt="{{ Auth::user()->name }}"
+                                          class="h-12 w-12 rounded-full object-cover object-center" />
                               </span>
                               <span :class="dropdownOpen && 'rotate-180'" class="hidden fill-current sm:block">
                                     <i class="fa-solid fa-chevron-down"></i>

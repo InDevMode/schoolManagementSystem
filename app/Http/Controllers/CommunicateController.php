@@ -16,7 +16,7 @@ class CommunicateController extends Controller
     public function list()
     {
         $data['header_title'] = 'Message de notifications';
-        $data['getNoticeBoard'] = CommunicateModel::getNoticeBoard(10);
+        $data['getNoticeBoard'] = CommunicateModel::getNoticeBoard(5);
         return view('admin.communicate.noticeboard.list', $data);
     }
 

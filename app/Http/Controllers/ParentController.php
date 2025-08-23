@@ -14,7 +14,7 @@ class ParentController extends Controller
     public function list(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
     {
         $data['header_title'] = "Liste des Parents";
-        $data['getParent'] = User::getAllParent(10);
+        $data['getParent'] = User::getAllParent(5);
         return view('admin.parent.list', $data);
     }
 

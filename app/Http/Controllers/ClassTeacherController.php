@@ -14,7 +14,7 @@ class ClassTeacherController extends Controller
 {
     public function list(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
     {
-        $data['getClassTeacher'] = ClassTeacherModel::getAllClassTeacher(10);
+        $data['getClassTeacher'] = ClassTeacherModel::getAllClassTeacher(5);
         $data['header_title'] = "Liste des classes assignées";
         return view('admin.assign_class.list', $data);
     }

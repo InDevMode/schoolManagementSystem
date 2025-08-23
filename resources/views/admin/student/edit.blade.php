@@ -11,7 +11,7 @@
                                           height="28"></iconify-icon>
                                     Modiier cet apprenant
                               </h1>
-                              <p class="text-gray-600 dark:text-gray-300 mt-1">Remplissez les détails pour modifier cet
+                              <p class="text-gray-600 dark:text-gray-300 mt-1">Remplissez les détails pour modifier les informations d'un
                                     apprenant
                               </p>
                         </div>
@@ -20,7 +20,7 @@
                               <ol class="inline-flex items-center space-x-1 md:space-x-3">
                                     <li class="inline-flex items-center">
                                           <a href="{{ url('admin/dashboard') }}"
-                                                class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-emerald-600 dark:text-gray-400 dark:hover:text-white">
+                                                class="inline-flex items-center text-sm font-medium text-gray-700 dark:text-gray-400 dark:hover:text-white">
                                                 <iconify-icon icon="mdi:home" class="mr-2" width="16"
                                                       height="16"></iconify-icon>
                                                 Tableau de bord
@@ -31,7 +31,7 @@
                                                 <iconify-icon icon="mdi:chevron-right" class="text-gray-400" width="16"
                                                       height="16"></iconify-icon>
                                                 <a href="{{ url('admin/student/list') }}"
-                                                      class="ml-1 text-sm font-medium text-gray-700 hover:text-emerald-600 md:ml-2 dark:text-gray-400 dark:hover:text-white">Liste
+                                                      class="ml-1 text-sm font-medium text-gray-700 md:ml-2 dark:text-gray-400 dark:hover:text-white">Liste
                                                       des apprenants</a>
                                           </div>
                                     </li>
@@ -40,7 +40,7 @@
                                                 <iconify-icon icon="mdi:chevron-right" class="text-gray-400" width="16"
                                                       height="16"></iconify-icon>
                                                 <span
-                                                      class="ml-1 text-sm font-medium text-emerald-600 md:ml-2 dark:text-emerald-600">Nouveau</span>
+                                                      class="ml-1 text-sm font-medium text-emerald-600 md:ml-2 dark:text-emerald-600">Modifier</span>
                                           </div>
                                     </li>
                               </ol>
@@ -394,14 +394,13 @@
                                                 Modifier cet apprenant
                                           </button>
                                     </div>
-
                               </form>
                         </div>
                   </div>
             </div>
-
       </div>
 @endsection
+
 <script>
       function togglePasswordVisibility() {
             const passwordInput = document.getElementById('password');

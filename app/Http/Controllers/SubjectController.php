@@ -115,7 +115,7 @@ class SubjectController extends Controller
         $student = User::getSingle($student_id);
         $data['getUser'] = $student;
         $data['getParentStudentSubject'] = ClassSubjectModel::studentStubject(10, $student->class_id);
-        $data['header_title'] = "Cours de mon élève";
+        $data['header_title'] = "Liste des matières de mon apprenant";
         return view('parent.student_subject', $data);
     }
 }

@@ -17,7 +17,7 @@
                         <a href="{{ url('admin/dashboard') }}"
                             class="text-primary-600 hover:text-violet-600 transition-colors">
                             <i class="fas fa-home mr-1"></i>
-                            Dashboard
+                            Tableau de bord
                         </a>
                         <span class="mx-2 text-gray-400">
                             <iconify-icon icon="mdi:chevron-right" class="text-gray-400" width="16"
@@ -97,7 +97,7 @@
                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                 <i class="fas fa-calendar-check text-gray-400"></i>
                             </div>
-                            <input type="date" id="updated_at" name="updated_at" placeholder="Jour/Mois/Année"
+                            <input type="date" id="updated_at" name="updated_at"
                                 value="{{ Request::get('updated_at') }}"
                                 class="pl-10 w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-primary-600 focus:border-primary-600 p-2.5">
                         </div>
@@ -123,6 +123,7 @@
         <div class="my-5">
             {{ $getClass->links('vendor.pagination.tailwind') }}
         </div>
+
         <!-- Results Section -->
         <div class="bg-white rounded-lg dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
             <!-- Table -->
@@ -277,7 +278,7 @@
                         @endforeach
                         @if ($getClass->isEmpty())
                             <tr class="text-center text-gray-700 dark:text-bodydark1">
-                                <td colspan="9" class="py-3"> Aucune classe trouvée.</td>
+                                <td colspan="100%" class="py-3"> Aucune classe trouvée.</td>
                             </tr>
                         @endif
                     </tbody>
@@ -303,16 +304,7 @@
 @endsection
 
 <script>
-    function toggleMenu(event, index) {
-        event.stopPropagation();
-        document.querySelectorAll('.relative .hidden').forEach(menu => menu.classList.add('hidden'));
-        const menu = document.getElementById('dropdown-menu-' + index);
-        menu.classList.toggle('hidden');
-    }
 
-    document.addEventListener('click', function () {
-        document.querySelectorAll('.relative .hidden').forEach(menu => menu.classList.add('hidden'));
-    });
 </script>
 
 

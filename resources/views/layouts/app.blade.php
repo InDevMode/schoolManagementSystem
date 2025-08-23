@@ -2,45 +2,58 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <title>{{ !empty($header_title) ? $header_title : '' }} - SMS</title>
-    <link rel="shortcut icon" href="{{ asset('public/images/logo.png') }}" />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
-        rel="stylesheet">
+      <meta charset="UTF-8" />
+      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      @vite(['resources/css/app.css', 'resources/js/app.js'])
+      <title>{{ !empty($header_title) ? $header_title : '' }} - SMS</title>
 
-    @yield('style')
-    <style>
-        [x-cloak] {
-            display: none !important;
-        }
-    </style>
+      @php
+            $getSettingFaviconAndLogo = \App\Models\SettingModel::getSingle(1);
+            $favicon_url = !empty($getSettingFaviconAndLogo->favicon)
+                ? \App\Models\SettingModel::getFaviconLogo($getSettingFaviconAndLogo->favicon)
+                : asset('upload/favicon.png');
+            $logo_url = !empty($getSettingFaviconAndLogo->logo)
+                ? \App\Models\SettingModel::getFaviconLogo($getSettingFaviconAndLogo->logo)
+                : asset('upload/logo.png');
+      @endphp
+
+      <link rel="shortcut icon" href="{{ $favicon_url }}" />
+      <link rel="preconnect" href="https://fonts.googleapis.com">
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+      <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+            rel="stylesheet">
+
+      @yield('style')
+      <style>
+            [x-cloak] {
+                  display: none !important;
+            }
+      </style>
 
 </head>
 
-<body x-data="{ page: 'SchoolManagmentSystem', 'loaded': true, 'darkMode': true, 'stickyMenu': false, 'sidebarToggle': false,
-'scrollTop':
-false }" x-init="
-darkMode = JSON.parse(localStorage.getItem('darkMode'));
-$watch('darkMode', value => localStorage.setItem('darkMode', JSON.stringify(value)))"
-    :class="{'dark text-bodydark bg-boxdark-2': darkMode === true}">
-    <!-- ===== Preloader Start ===== -->
-    @include('layouts.preloader')
-    <!-- ===== Page Wrapper Start ===== -->
-    <div class="flex h-screen overflow-hidden">
-        @include('layouts.sidebar')
-        <!-- ===== Content Area Start ===== -->
-        <div class="relative flex flex-1 flex-col overflow-y-auto overflow-x-hidden">
-            @include('layouts.header')
-            <!-- ===== Main Content Start ===== -->
-            @yield('content')
-        </div>
-    </div>
+<body x-data="{
+    page: 'SchoolManagmentSystem',
+    'loaded': true,
+    'darkMode': true,
+    'stickyMenu': false,
+    'sidebarToggle': false,
+    'scrollTop': false
+}" x-init="darkMode = JSON.parse(localStorage.getItem('darkMode'));
+$watch('darkMode', value => localStorage.setItem('darkMode', JSON.stringify(value)))" :class="{ 'dark text-bodydark bg-boxdark-2': darkMode === true }">
+      <!-- ===== Preloader Start ===== -->
+      @include('layouts.preloader')
+      <!-- ===== Page Wrapper Start ===== -->
+      <div class="flex h-screen overflow-hidden">
+            @include('layouts.sidebar')
+            <!-- ===== Content Area Start ===== -->
+            <div class="relative flex flex-1 flex-col overflow-y-auto overflow-x-hidden">
+                  @include('layouts.header')
+                  <!-- ===== Main Content Start ===== -->
+                  @yield('content')
+            </div>
+      </div>
 
 </body>
 <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>

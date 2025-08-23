@@ -17,7 +17,7 @@
                         <a href="{{ url('admin/dashboard') }}"
                             class="text-primary-600 hover:text-violet-600 transition-colors">
                             <i class="fas fa-home mr-1"></i>
-                            Dashboard
+                            Tableau de bord
                         </a>
                         <span class="mx-2 text-gray-400">
                             <iconify-icon icon="mdi:chevron-right" class="text-gray-400" width="16"

@@ -650,16 +650,6 @@
 @endsection
 
 <script>
-    function toggleMenu(event, index) {
-        event.stopPropagation();
-        document.querySelectorAll('.relative .hidden').forEach(menu => menu.classList.add('hidden'));
-        const menu = document.getElementById('dropdown-menu-' + index);
-        menu.classList.toggle('hidden');
-    }
-
-    document.addEventListener('click', function () {
-        document.querySelectorAll('.relative .hidden').forEach(menu => menu.classList.add('hidden'));
-    });
 </script>
 
 
