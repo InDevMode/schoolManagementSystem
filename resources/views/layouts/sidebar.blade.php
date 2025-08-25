@@ -18,7 +18,7 @@
 
     <div class="flex items-center justify-between lg:justify-center gap-2 lg:pl-8 px-6 py-2">
         <a href="{{ $link }}">
-            <img src="{{ $logo_url }}" alt="Logo" class="w-48 h-24" />
+            <img src="{{ $logo_url }}" alt="Logo" class="w-48 h-24 object-cover rounded-lg" />
         </a>
 
         <button class="block lg:hidden" @click.stop="sidebarToggle = !sidebarToggle">

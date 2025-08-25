@@ -61,7 +61,7 @@
                                                 <input type="text" id="name" name="name"
                                                       value="{{ old('name') }}" placeholder="Entrez un nom d'avaluation"
                                                       required
-                                                      class="w-full rounded-lg border-[1.5px] border-stroke bg-gray-50 px-5 py-2.5 font-normal text-black outline-none transition focus:border-violet-600 active:border-violet-600 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-violet-600" />
+                                                      class="w-full rounded-lg border-[1.5px] border-stroke bg-gray-50 dark:bg-gray-700 px-5 py-2.5 font-normal text-black outline-none transition focus:border-violet-600 active:border-violet-600 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-violet-600" />
                                           </div>
                                     </div>
 
@@ -70,7 +70,7 @@
                                                 Note
                                           </label>
                                           <textarea rows="1" id="note" name="note" required placeholder="Entrez une note pour l'évaluation"
-                                                class="w-full rounded-lg border-[1.5px] border-stroke bg-gray-50 px-5 py-2.5 font-normal text-black outline-none transition focus:border-violet-600 active:border-violet-600 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-violet-600">{{ old('note') }}</textarea>
+                                                class="w-full rounded-lg border-[1.5px] border-stroke bg-gray-50 dark:bg-gray-700 px-5 py-2.5 font-normal text-black outline-none transition focus:border-violet-600 active:border-violet-600 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-violet-600">{{ old('note') }}</textarea>
                                     </div>
                                     <div class="mt-8">
                                           <button type="submit" id="submit-button"

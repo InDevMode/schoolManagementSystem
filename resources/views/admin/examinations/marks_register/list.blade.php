@@ -8,7 +8,7 @@
                               <i class="fa-solid  fa-square-poll-horizontal text-primary-600"></i>
                               Liste du registres des notes des apprenants
                         </h1>
-                        <p class="text-gray-600 dark:text-gray-300 mt-1">Gérez la listeListe du registres des notes des
+                        <p class="text-gray-600 dark:text-gray-300 mt-1">Gérez la liste du registres des notes des
                               apprenants de votre
                               plateforme</p>
                   </div>

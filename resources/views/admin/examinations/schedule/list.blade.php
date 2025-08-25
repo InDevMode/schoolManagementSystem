@@ -248,7 +248,7 @@
                   </form>
             @else
                   <div class="flex justify-center py-3 text-gray-700 dark:text-bodydark1 text-sm">
-                        Cette assignation n'est pas active pour le moment
+                        Cette programmation n'est pas active pour le moment
                   </div>
             @endif
       </div>

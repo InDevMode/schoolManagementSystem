@@ -42,7 +42,7 @@
                                                 <iconify-icon icon="mdi:chevron-right" class="text-gray-400" width="16"
                                                       height="16"></iconify-icon>
                                                 <span
-                                                      class="ml-1 text-sm font-medium text-violet-600 md:ml-2 dark:text-gray-400">Nouvelle</span>
+                                                      class="ml-1 text-sm font-medium text-violet-600 md:ml-2 dark:text-violet-500">Nouvelle</span>
                                           </div>
                                     </li>
                               </ol>
@@ -63,7 +63,7 @@
                                                 </label>
                                                 <input type="text" id="name" name="name"
                                                       value="{{ old('name') }}" placeholder="Entrez un nom pour la note" required
-                                                      class="w-full rounded-lg border-[1.5px] border-stroke bg-gray-50 px-5 py-2.5 font-normal text-black outline-none transition focus:border-violet-600 active:border-violet-600 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-violet-600" />
+                                                      class="w-full rounded-lg border-[1.5px] border-stroke bg-gray-50 dark:bg-gray-700 px-5 py-2.5 font-normal text-black outline-none transition focus:border-violet-600 active:border-violet-600 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-violet-600" />
                                           </div>
                                     </div>
 
@@ -75,7 +75,7 @@
                                                 <input type="number" id="percent_from" name="percent_from"
                                                       value="{{ old('percent_from') }}" placeholder="Entrez un pourcentage"
                                                       required
-                                                      class="w-full rounded-lg border-[1.5px] border-stroke bg-gray-50 px-5 py-2.5 font-normal text-black outline-none transition focus:border-violet-600 active:border-violet-600 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-violet-600" />
+                                                      class="w-full rounded-lg border-[1.5px] border-stroke bg-gray-50 dark:bg-gray-700 px-5 py-2.5 font-normal text-black outline-none transition focus:border-violet-600 active:border-violet-600 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-violet-600" />
                                           </div>
                                     </div>
 
@@ -87,7 +87,7 @@
                                                 <input type="number" id="percent_to" name="percent_to"
                                                       value="{{ old('percent_to') }}" placeholder="Entrez un pourcentage"
                                                       required
-                                                      class="w-full rounded-lg border-[1.5px] border-stroke bg-gray-150 px-5 py-2.5 font-normal text-black outline-none transition focus:border-violet-600 active:border-violet-600 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-violet-600" />
+                                                      class="w-full rounded-lg border-[1.5px] border-stroke bg-gray-50 dark:bg-gray-700 px-5 py-2.5 font-normal text-black outline-none transition focus:border-violet-600 active:border-violet-600 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-violet-600" />
                                           </div>
                                     </div>
 

@@ -14,7 +14,7 @@ class AttendanceController extends Controller
 {
     public function attendanceStudent(Request $request): \Illuminate\Contracts\View\Factory|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\View|\Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse
     {
-        $data['header_title'] = 'Liste de présence des apprenants';
+        $data['header_title'] = 'Définir la présence des apprenants';
         $data['getClass'] = ClassModel::getClass();
 
         if (!empty($request->get('class_id')) && !empty($request->get('attendance_date'))) {
@@ -62,7 +62,7 @@ class AttendanceController extends Controller
     {
         $data['header_title'] = 'Rapport de présences';
         $data['getClass'] = ClassModel::getClass();
-        $data['getStudentAttendance'] = StudentAttendanceModel::getStudentAttendance(10);
+        $data['getStudentAttendance'] = StudentAttendanceModel::getStudentAttendance(5);
         return view('admin.attendance.report', $data);
     }
 
