@@ -5,7 +5,7 @@
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-5 gap-4">
             <div>
                 <h1 class="text-2xl font-bold text-gray-800 dark:text-white flex items-center gap-2">
-                    <i class="fa-solid fa-person-breastfeeding text-primary-600"></i>
+                    <i class="fa-solid fa-user-group text-primary-600"></i>
                     Liste des parents
                 </h1>
                 <p class="text-gray-600 dark:text-gray-300 mt-1">Gérez les comptes parents de votre plateforme</p>
