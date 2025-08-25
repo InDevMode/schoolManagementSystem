@@ -14,7 +14,7 @@ class AttendanceController extends Controller
 {
     public function attendanceStudent(Request $request): \Illuminate\Contracts\View\Factory|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\View|\Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse
     {
-        $data['header_title'] = 'Liste de présence des apprenants';
+        $data['header_title'] = 'Définir la présence des apprenants';
         $data['getClass'] = ClassModel::getClass();
 
         if (!empty($request->get('class_id')) && !empty($request->get('attendance_date'))) {
@@ -62,7 +62,7 @@ class AttendanceController extends Controller
     {
         $data['header_title'] = 'Rapport de présences';
         $data['getClass'] = ClassModel::getClass();
-        $data['getStudentAttendance'] = StudentAttendanceModel::getStudentAttendance(10);
+        $data['getStudentAttendance'] = StudentAttendanceModel::getStudentAttendance(5);
         return view('admin.attendance.report', $data);
     }
 
@@ -78,7 +78,7 @@ class AttendanceController extends Controller
 
     public function attendanceStudentTeacherSave(Request $request): \Illuminate\Http\JsonResponse
     {
-       try {
+        try {
 
             $checkAttendance = StudentAttendanceModel::checkAlreadyAttendance($request->student_id, $request->class_id, $request->attendance_date);
 
@@ -110,11 +110,11 @@ class AttendanceController extends Controller
         }
     }
 
-        public function attendanceReportTeacher(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
+    public function attendanceReportTeacher(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
     {
         $data['header_title'] = 'Rapport de présences';
-         $getClass = ClassTeacherModel::getMyClassSubjectGroup(Auth::user()->id);
-         $classArray = array();
+        $getClass = ClassTeacherModel::getMyClassSubjectGroup(Auth::user()->id);
+        $classArray = array();
         foreach ($getClass as $class) {
             $classArray[] = $class->class_id;
         }
@@ -123,14 +123,16 @@ class AttendanceController extends Controller
         return view('teacher.attendance.report', $data);
     }
 
-    public function myAttendance(){
+    public function myAttendance()
+    {
         $data['header_title'] = 'Ma Présence';
         $data['getMyAttendance'] = StudentAttendanceModel::getMyAttendance(Auth::user()->id, 10);
         $data['getClassStudent'] = StudentAttendanceModel::getClassStudent(Auth::user()->id);
         return view('student.attendance', $data);
     }
 
-    public function parentStudentAttendance($student_id) {
+    public function parentStudentAttendance($student_id)
+    {
         $data['header_title'] = "Présence des apprenants";
         $data['getStudent'] = User::getSingle($student_id);
         $data['getParentStudentAttendance'] = StudentAttendanceModel::getMyAttendance($student_id, 10);

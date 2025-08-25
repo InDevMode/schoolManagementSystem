@@ -170,7 +170,6 @@ class User extends Authenticatable
         $results = User::select('users.*')
             ->where('users.user_type', 4)
             ->where('users.is_delete', '=', 0)
-            ->where('users.status', '=', 1)
             ->where('users.is_delete', '=', 0);
 
         $filters = [

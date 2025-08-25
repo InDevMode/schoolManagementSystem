@@ -277,3 +277,194 @@ git push origin feature/payment-integration-clean
 
 ---
 
+Tu veux une configuration où **tu gardes le contrôle total sur la branche `main`**, tout en permettant aux autres de collaborer sans pouvoir fusionner eux-mêmes. Voici exactement les **règles de protection à activer ou désactiver** pour atteindre ton objectif.
+
+---
+
+## 🎯 **Objectif : Contrôle total pour l’admin (toi), collaboration encadrée pour les autres**
+
+### 🔐 **Voici les règles à configurer pour la branche `main` :**
+
+| Règle | Action recommandée | Pourquoi |
+|-------|---------------------|---------|
+| ✅ **Require pull request reviews before merging** | **Activée** | Oblige les autres à passer par une PR |
+| 🔄 **Require approval from someone other than the last pusher** | **Désactivée** | Te permet de merger même si tu es le dernier à avoir poussé |
+| ✅ **Restrict who can push to matching branches** | **Activée** → **Ajoute uniquement `regisatl`** | Tu es le seul à pouvoir faire des `push` (y compris `--force`) |
+| ✅ **Restrict who can force push** | **Activée** → **Ajoute uniquement `regisatl`** | Tu es le seul à pouvoir faire des `push --force` |
+| ✅ **Restrict who can dismiss pull request reviews** | **Activée** → **Ajoute uniquement `regisatl`** | Tu es le seul à pouvoir annuler une review |
+| ✅ **Include administrators** | **Désactivée** | Te permet de bypasser les règles si nécessaire |
+| ✅ **Require linear history** | **Désactivée** *(optionnel)* | Si tu veux autoriser les merge commits |
+| ✅ **Require status checks to pass before merging** | **Désactivée** *(optionnel)* | Si tu veux merger même si les tests échouent (à éviter en prod) |
+
+---
+
+### 🧩 **Ce que ça permet concrètement**
+
+- 🔓 **Toi seul** peux pousser dans `main`, y compris avec `--force`
+- ✅ Tu peux merger tes propres PR même si tu es le dernier à avoir commité
+- 👨‍👩‍👧‍👦 Les autres doivent créer des PR, mais **ne peuvent pas les merger**
+- 🧑‍⚖️ Tu peux approuver, merger ou rejeter les PR des autres
+- 🛠️ Tu peux bypasser les règles si besoin (en tant qu’admin)
+
+---
+
+### 🛠️ **Bonus : Pour les autres branches (`develop`, `feature/*`)**
+
+Tu peux créer une règle plus souple :
+- Autoriser les pushs
+- Exiger 1 review
+- Interdire le `--force`
+- Appliquer les tests CI/CD
+
+---
+
+Ce que tu lis là, c’est la configuration des **options de fusion des pull requests** dans GitHub. Voici une explication claire, avec des conseils adaptés à ton style de travail 👇
+
+---
+
+## 🔀 **Types de fusion disponibles pour les Pull Requests**
+
+| Option | Description | Résultat dans l’historique Git | Recommandé si… |
+|--------|-------------|-------------------------------|----------------|
+| ✅ **Merge commit** | Ajoute tous les commits avec un commit de merge | Historique non linéaire, mais complet | Tu veux garder trace de chaque commit et de la PR |
+| ✅ **Squash merge** | Combine tous les commits en un seul | Historique propre, un seul commit par PR | Tu veux un historique lisible et compact |
+| ✅ **Rebase merge** | Rejoue les commits un par un sur la base branch | Historique linéaire, sans commit de merge | Tu veux éviter les commits de merge et garder l’ordre chronologique |
+
+---
+
+## ⚠️ **Si tu actives “Require linear history” sur une branche protégée**
+
+Tu **dois activer squash ou rebase**, car les **merge commits cassent l’historique linéaire**.
+
+---
+
+## 🛠️ **Autres options utiles**
+
+### 🔄 **Always suggest updating pull request branches**
+- 💡 GitHub propose automatiquement de mettre à jour la branche si `main` a changé.
+- ✅ Utile pour éviter les conflits et garder les PR à jour.
+
+### 🤖 **Allow auto-merge**
+- GitHub peut **fusionner automatiquement** une PR dès que toutes les conditions sont remplies (reviews, tests…).
+- ✅ Pratique pour les équipes, mais **tu peux le désactiver** si tu veux garder le contrôle manuel.
+
+### 🧹 **Automatically delete head branches**
+- Supprime automatiquement la branche source après fusion.
+- ✅ Garde le dépôt propre, surtout pour les branches `feature/*`.
+
+---
+
+## 🎯 **Recommandation pour toi**
+
+Puisque tu veux garder le contrôle et une bonne lisibilité :
+
+- ✅ **Active squash merge** → pour un historique propre
+- ✅ **Active rebase merge** → si tu veux garder tous les commits sans merge commit
+- ❌ **Désactive merge commit** → si tu veux un historique linéaire
+- ✅ **Active auto-delete head branches** → pour nettoyer après fusion
+- ❌ **Désactive auto-merge** → pour garder la main sur chaque fusion
+
+---
+
+Voici une **explication complète et claire** de toutes les règles de protection de branche sur GitHub. Ces règles permettent de **sécuriser une branche** (souvent `main` ou `production`) pour éviter les erreurs, les pushs non validés, ou les merges accidentels.
+
+---
+
+## 🛡️ **Règles de protection de branche GitHub**
+
+Tu peux les configurer dans :  
+**Repository > Settings > Branches > Branch protection rules**
+
+---
+
+### 🔹 1. **Branch name pattern**
+- **Définition** : Spécifie quelles branches sont protégées (ex. `main`, `release/*`, etc.)
+- **Exemples** :
+  - `main` → protège uniquement la branche `main`
+  - `release/*` → protège toutes les branches qui commencent par `release/`
+
+---
+
+### 🔹 2. **Require pull request reviews before merging**
+- **But** : Oblige une revue de code avant de pouvoir merger une PR
+- **Options** :
+  - ✅ Nombre minimum d’approbations (ex. 2 reviewers)
+  - ✅ Empêcher l’auteur de la PR de l’approuver lui-même
+  - ✅ Re-demander une review si le code change après approbation
+
+---
+
+### 🔹 3. **Require status checks to pass before merging**
+- **But** : Empêche le merge tant que les tests CI/CD ne sont pas passés
+- **Options** :
+  - ✅ Sélectionner les checks requis (ex. `build`, `test`, `lint`)
+  - ✅ Empêcher le push direct si les checks échouent
+  - ✅ Appliquer même aux admins
+
+---
+
+### 🔹 4. **Require conversation resolution before merging**
+- **But** : Oblige à résoudre tous les commentaires de review avant de merger
+- **Utile pour** : S’assurer que les remarques ne sont pas ignorées
+
+---
+
+### 🔹 5. **Require linear history**
+- **But** : Interdit les *merge commits* → oblige les *rebase + merge*
+- **Utile pour** : Garder un historique propre et linéaire
+
+---
+
+### 🔹 6. **Require signed commits**
+- **But** : Oblige que tous les commits soient signés avec GPG
+- **Utile pour** : Vérifier l’identité du contributeur
+
+---
+
+### 🔹 7. **Require deployments to succeed before merging**
+- **But** : Empêche le merge tant que le déploiement n’a pas réussi
+- **Utile pour** : Les workflows GitHub Actions avec `deployment status`
+
+---
+
+### 🔹 8. **Lock branch**
+- **But** : Empêche tout push ou merge, même via PR
+- **Utile pour** : Geler une branche (ex. `main` avant une release)
+
+---
+
+### 🔹 9. **Restrict who can push to matching branches**
+- **But** : Autorise uniquement certains utilisateurs ou équipes à pousser
+- **Utile pour** : Donner l’exclusivité à un lead dev (comme toi 😎)
+
+---
+
+### 🔹 10. **Restrict who can dismiss pull request reviews**
+- **But** : Empêche certains utilisateurs de supprimer les reviews
+- **Utile pour** : Éviter les abus ou contournements
+
+---
+
+### 🔹 11. **Restrict who can force push**
+- **But** : Empêche le `git push --force` sauf pour certains utilisateurs
+- **Utile pour** : Protéger l’historique
+
+---
+
+### 🔹 12. **Include administrators**
+- **But** : Applique les règles même aux admins du dépôt
+- **Utile pour** : Éviter les bypass involontaires
+
+---
+
+## 🧠 Astuce pour toi
+
+Tu peux créer plusieurs règles :
+- Une pour `main` très stricte
+- Une pour `develop` plus souple
+- Une pour `release/*` avec CI obligatoire
+
+---
+
+
+

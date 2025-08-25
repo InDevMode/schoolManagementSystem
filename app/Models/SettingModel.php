@@ -24,8 +24,17 @@ class SettingModel extends Model
         'is_delete',
     ];
 
-    public static function getSingle(int $id){
+    public static function getSingle(int $id)
+    {
         return SettingModel::find($id);
+    }
+
+    public static function getFaviconLogo(string $faviconLogo): string
+    {
+        if (!empty($faviconLogo) && file_exists('upload/setting/' . $faviconLogo)) {
+            return url('upload/setting/' . $faviconLogo);
+        }
+        return url('');
     }
 
 }

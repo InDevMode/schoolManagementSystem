@@ -13,7 +13,7 @@ class TeacherController extends Controller
     public function list(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
     {
         $data['header_title'] = "Liste des Professeurs";
-        $data['getTeacher'] = User::getAllTeacher(10);
+        $data['getTeacher'] = User::getAllTeacher(5);
         return view('admin.teacher.list', $data);
     }
 
@@ -182,4 +182,5 @@ class TeacherController extends Controller
             abort(404);
         }
     }
+
 }

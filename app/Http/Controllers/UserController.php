@@ -241,6 +241,7 @@ class UserController extends Controller
             return redirect()->back()->with('error', 'Vos informations ne sont pas correctes. Veuillez réessayer.');
         }
     }
+
     public function updateParentAccount(Request $request): \Illuminate\Foundation\Application|\Illuminate\Routing\Redirector|\Illuminate\Http\RedirectResponse|\Illuminate\Contracts\Foundation\Application
     {
 
@@ -333,10 +334,16 @@ class UserController extends Controller
     {
         $data['header_title'] = "Paramètres";
         $data['getSetting'] = SettingModel::getSingle(1);
-        return view('admin.settings.payment_mode', $data);
+        $data['favicon_url'] = !empty($data['getSetting']->favicon)
+            ? SettingModel::getFaviconLogo($data['getSetting']->favicon)
+            : asset('upload/favicon.png');
+        $data['logo_url'] = !empty($data['getSetting']->logo)
+            ? SettingModel::getFaviconLogo($data['getSetting']->logo)
+            : asset('upload/logo.png');
+        return view('admin.settings.setting', $data);
     }
 
-    public function updatePaymentMode(Request $request)
+    public function updateSettingInfo(Request $request)
     {
 
         try {
@@ -349,6 +356,39 @@ class UserController extends Controller
                 $setting->kkiapay_secret_key = trim($request->kkiapay_secret_key);
                 $setting->stripe_public_key = trim($request->stripe_public_key);
                 $setting->stripe_secret_key = trim($request->stripe_secret_key);
+
+                if (!empty($request->file('favicon'))) {
+                    $settingFavicon = $setting->favicon;
+                    if (!empty($settingFavicon)) {
+                        $faviconUrl = SettingModel::getFaviconLogo($settingFavicon);
+                        if (!empty($faviconUrl)) {
+                            unlink('upload/setting/' . $settingFavicon);
+                        }
+                    }
+                    $ext = $request->file('favicon')->getClientOriginalExtension();
+                    $file = $request->file('favicon');
+                    $randomStr = 'setting' . date('dmYhis') . Str::random(20);
+                    $fileName = strtolower($randomStr) . '.' . $ext;
+                    $file->move('upload/setting/', $fileName);
+                    $setting->favicon = $fileName;
+                }
+
+                if (!empty($request->file('logo'))) {
+                    $settingLogo = $setting->logo;
+                    if (!empty($settingLogo)) {
+                        $logoUrl = SettingModel::getFaviconLogo($settingLogo);
+                        if (!empty($logoUrl)) {
+                            unlink('upload/setting/' . $settingLogo);
+                        }
+                    }
+                    $ext = $request->file('logo')->getClientOriginalExtension();
+                    $file = $request->file('logo');
+                    $randomStr = 'setting' . date('dmYhis') . Str::random(20);
+                    $fileName = strtolower($randomStr) . '.' . $ext;
+                    $file->move('upload/setting/', $fileName);
+                    $setting->logo = $fileName;
+                }
+
                 $setting->save();
                 return redirect()->back()->with('success', 'Vos informations ont été modifiés avec succès.');
             } else {

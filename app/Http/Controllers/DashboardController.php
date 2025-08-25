@@ -96,10 +96,10 @@ class DashboardController extends Controller
                 $data['totalWorkStudent'] = WorkModel::getTotalWorkStudent();
                 $data['totalWork'] = WorkModel::getTotalWork();
                 $data['totalAttendanceStudent'] = StudentAttendanceModel::getTotalAttendanceStudent();
-                $data['totalByAttendanceTypeStudentPresent'] = StudentAttendanceModel::getTotalByAttendanceTypeStudent(1, 3);
-                $data['totalByAttendanceTypeStudentLate'] = StudentAttendanceModel::getTotalByAttendanceTypeStudent(2, 3);
-                $data['totalByAttendanceTypeStudentAbsent'] = StudentAttendanceModel::getTotalByAttendanceTypeStudent(3, 3);
-                $data['totalByAttendanceTypeStudentHalfDay'] = StudentAttendanceModel::getTotalByAttendanceTypeStudent(4, 3);
+                $data['totalByAttendanceTypeStudentPresent'] = StudentAttendanceModel::getTotalAttendanceTypeByStudent(1, 3);
+                $data['totalByAttendanceTypeStudentLate'] = StudentAttendanceModel::getTotalAttendanceTypeByStudent(2, 3);
+                $data['totalByAttendanceTypeStudentAbsent'] = StudentAttendanceModel::getTotalAttendanceTypeByStudent(3, 3);
+                $data['totalByAttendanceTypeStudentHalfDay'] = StudentAttendanceModel::getTotalAttendanceTypeByStudent(4, 3);
                 $data['totalAttendance'] = StudentAttendanceModel::getTotalAttendance();
 
                 return view('student.dashboard', $data);

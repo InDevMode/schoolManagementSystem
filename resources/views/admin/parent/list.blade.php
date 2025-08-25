@@ -5,7 +5,7 @@
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-5 gap-4">
             <div>
                 <h1 class="text-2xl font-bold text-gray-800 dark:text-white flex items-center gap-2">
-                    <i class="fa-solid fa-person-breastfeeding text-primary-600"></i>
+                    <i class="fa-solid fa-user-group text-primary-600"></i>
                     Liste des parents
                 </h1>
                 <p class="text-gray-600 dark:text-gray-300 mt-1">Gérez les comptes parents de votre plateforme</p>
@@ -17,7 +17,7 @@
                         <a href="{{ url('admin/dashboard') }}"
                             class="text-primary-600 hover:text-violet-600 transition-colors">
                             <i class="fas fa-home mr-1"></i>
-                            Dashboard
+                            Tableau de bord
                         </a>
                         <span class="mx-2 text-gray-400">
                             <iconify-icon icon="mdi:chevron-right" class="text-gray-400" width="16"

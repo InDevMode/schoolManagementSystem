@@ -1,189 +1,146 @@
 @extends('layouts.app')
 @section('content')
-<div class="m-5">
-    <main>
-        <div class="mx-auto max-w-screen-2xl p-4 md:p-6 2xl:p-10">
-            <div class="mx-auto max-w-242.5">
-                <div
-                    class="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"
-                >
-                    <h2 class="uppercase font-bold text-black dark:text-bodydark">
-                        Modifier cette assignation
-                    </h2>
-                    <nav>
-                        <ol class="flex items-center gap-2">
-                            <li>
-                                <span class="font-medium text-emerald-400"><i class="fa-solid fa-landmark"></i></span>
-                            </li>
-                            <li>
-                                /<a class="font-medium hover:text-emerald-400 transition duration-300"
-                                    href="{{ url('admin/assign_class/list') }}"> Liste des classes assignées</a>
-                            </li>
-                        </ol>
-                    </nav>
-                </div>
-                @include('message')
-                <div class="flex flex-col gap-9">
-                    <!-- Contact Form -->
-                    <div
-                        class="rounded-lg border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark z-10"
-                    >
-                        <form action="" method="post" enctype="multipart/form-data">
-                            {{ csrf_field() }}
-                            <div class="p-6.5">
-                                <div class="mb-4.5">
-                                    <label
-                                        class="mb-3 block text-sm font-medium text-black dark:text-white"
-                                    >
-                                        Classe <span class="text-meta-1">*</span>
-                                    </label>
-                                    <div
-                                        x-data="{ isOptionSelected: false }"
-                                        class="relative z-20 bg-gray-100 dark:bg-form-input"
-                                    >
-                                        <select id="class_id" name="class_id" required
-                                                class="relative z-20 w-full appearance-none rounded-lg border border-stroke bg-gray-100 px-5 py-2.5 outline-none transition focus:border-emerald-400 active:border-emerald-400 dark:border-form-strokedark dark:bg-form-input dark:focus:border-emerald-400"
-                                                :class="isOptionSelected && 'text-black dark:text-white'"
-                                                @change="isOptionSelected = true"
-                                        >
-                                            <option selected disabled value="" class="text-body">
-                                                Choisissez une classe pour assignation
-                                            </option>
-                                            @foreach($getClass as $class)
-                                            <option {{ ($getClassTeacher->class_id == $class->id) ? 'selected' : '' }}
-                                                value="{{ $class->id
-                                                }}">{{ $class->name }}
-                                            </option>
-                                            @endforeach
-                                        </select>
-                                        <span
-                                            class="absolute right-4 top-1/2 z-30 -translate-y-1/2"
-                                        >
-                                                <svg
-                                                    class="fill-current"
-                                                    width="24"
-                                                    height="24"
-                                                    viewBox="0 0 24 24"
-                                                    fill="none"
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                >
-                                                  <g opacity="0.8">
-                                                    <path
-                                                        fill-rule="evenodd"
-                                                        clip-rule="evenodd"
-                                                        d="M5.29289 8.29289C5.68342 7.90237 6.31658 7.90237 6.70711 8.29289L12 13.5858L17.2929 8.29289C17.6834 7.90237 18.3166 7.90237 18.7071 8.29289C19.0976 8.68342 19.0976 9.31658 18.7071 9.70711L12.7071 15.7071C12.3166 16.0976 11.6834 16.0976 11.2929 15.7071L5.29289 9.70711C4.90237 9.31658 4.90237 8.68342 5.29289 8.29289Z"
-                                                        fill=""
-                                                    ></path>
-                                                  </g>
-                                                </svg>
-                                            </span>
-                                    </div>
-                                </div>
-                                <div class="mb-4.5">
-                                    <label
-                                        class="mb-3 block text-sm font-medium text-black dark:text-white"
-                                    >
-                                        Professeur <span class="text-meta-1">*</span>
-                                    </label>
-                                    <div
-                                        x-data="{ isOptionSelected: false }"
-                                        class="relative z-20 bg-gray-100 dark:bg-form-input"
-                                    >
-                                        <select id="teacher_id" name="teacher_id" required
-                                                class="relative z-20 w-full appearance-none rounded-lg border border-stroke bg-gray-100 px-5 py-2.5 outline-none transition focus:border-emerald-400 active:border-emerald-400 dark:border-form-strokedark dark:bg-form-input dark:focus:border-emerald-400"
-                                                :class="isOptionSelected && 'text-black dark:text-white'"
-                                                @change="isOptionSelected = true"
-                                        >
-                                            <option selected disabled value="" class="text-body">
-                                                Choisissez un professeur pour assignation
-                                            </option>
-                                            @foreach($getTeacher as $teacher)
-                                            <option {{ ($getClassTeacher->teacher_id == $teacher->id) ? 'selected' : '' }}
-                                                value="{{ $teacher->id
-                                                }}">{{ $teacher->name }} {{ $teacher->last_name }}
-                                            </option>
-                                            @endforeach
-                                        </select>
-                                        <span
-                                            class="absolute right-4 top-1/2 z-30 -translate-y-1/2"
-                                        >
-                                                <svg
-                                                    class="fill-current"
-                                                    width="24"
-                                                    height="24"
-                                                    viewBox="0 0 24 24"
-                                                    fill="none"
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                >
-                                                  <g opacity="0.8">
-                                                    <path
-                                                        fill-rule="evenodd"
-                                                        clip-rule="evenodd"
-                                                        d="M5.29289 8.29289C5.68342 7.90237 6.31658 7.90237 6.70711 8.29289L12 13.5858L17.2929 8.29289C17.6834 7.90237 18.3166 7.90237 18.7071 8.29289C19.0976 8.68342 19.0976 9.31658 18.7071 9.70711L12.7071 15.7071C12.3166 16.0976 11.6834 16.0976 11.2929 15.7071L5.29289 9.70711C4.90237 9.31658 4.90237 8.68342 5.29289 8.29289Z"
-                                                        fill=""
-                                                    ></path>
-                                                  </g>
-                                                </svg>
-                                            </span>
-                                    </div>
-                                </div>
-                                <div class="mb-4.5">
-                                    <label
-                                        class="mb-3 block text-sm font-medium text-black dark:text-white"
-                                    >
-                                        Status <span class="text-meta-1">*</span>
-                                    </label>
-                                    <div
-                                        x-data="{ isOptionSelected: false }"
-                                        class="relative z-20 bg-gray-100 dark:bg-form-input"
-                                    >
-                                        <select id="status" name="status" required
-                                                class="relative z-20 w-full appearance-none rounded-lg border border-stroke bg-gray-100 px-5 py-2.5 outline-none transition focus:border-emerald-400 active:border-emerald-400 dark:border-form-strokedark dark:bg-form-input dark:focus:border-emerald-400"
-                                                :class="isOptionSelected && 'text-black dark:text-white'"
-                                                @change="isOptionSelected = true"
-                                        >
-                                            <option selected disabled value="" class="text-body">
-                                                Choisissez un statut pour cette assignation
-                                            </option>
-                                            <option value="1" {{ old('status', $getClassTeacher->status == 1) ? 'selected' : ''}}>Activée</option>
-                                            <option value="0" {{ old('status', $getClassTeacher->status == 0) ? 'selected' : ''}}>Désactivée</option>
-                                        </select>
-                                        <span
-                                            class="absolute right-4 top-1/2 z-30 -translate-y-1/2"
-                                        >
-                                                <svg
-                                                    class="fill-current"
-                                                    width="24"
-                                                    height="24"
-                                                    viewBox="0 0 24 24"
-                                                    fill="none"
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                >
-                                                  <g opacity="0.8">
-                                                    <path
-                                                        fill-rule="evenodd"
-                                                        clip-rule="evenodd"
-                                                        d="M5.29289 8.29289C5.68342 7.90237 6.31658 7.90237 6.70711 8.29289L12 13.5858L17.2929 8.29289C17.6834 7.90237 18.3166 7.90237 18.7071 8.29289C19.0976 8.68342 19.0976 9.31658 18.7071 9.70711L12.7071 15.7071C12.3166 16.0976 11.6834 16.0976 11.2929 15.7071L5.29289 9.70711C4.90237 9.31658 4.90237 8.68342 5.29289 8.29289Z"
-                                                        fill=""
-                                                    ></path>
-                                                  </g>
-                                                </svg>
-                                            </span>
-                                    </div>
-                                </div>
-                                <button type="submit"
-                                        class="flex w-full justify-center rounded-lg bg-emerald-400 p-3 font-medium text-gray hover:bg-opacity-90"
-                                >
-                                    Réassignez
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
+      <div class="m-2">
+            @include('message')
+            <div class="container mx-auto px-4 py-8 max-w-6xl">
+                  <!-- Header Section -->
+                  <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
+                        <div class="mb-4 md:mb-0">
+                              <h1 class="text-2xl font-bold text-gray-800 dark:text-white flex items-center">
+                                    <iconify-icon icon="fa-solid:landmark" class="text-emerald-600 mr-2" width="28"
+                                          height="28"></iconify-icon>
+                                    Modifer cette assignation
+                              </h1>
+                              <p class="text-gray-600 dark:text-gray-300 mt-1">Remplissez les détails pour modifier les
+                                    informations d'une assignation
+                              </p>
+                        </div>
+
+                        <nav class="flex" aria-label="Breadcrumb">
+                              <ol class="inline-flex items-center space-x-1 md:space-x-3">
+                                    <li class="inline-flex items-center">
+                                          <a href="{{ url('admin/dashboard') }}"
+                                                class="inline-flex items-center text-sm font-medium text-gray-700 dark:text-gray-400 dark:hover:text-white">
+                                                <iconify-icon icon="mdi:home" class="mr-2" width="16"
+                                                      height="16"></iconify-icon>
+                                                Tableau de bord
+                                          </a>
+                                    </li>
+                                    <li>
+                                          <div class="flex items-center">
+                                                <iconify-icon icon="mdi:chevron-right" class="text-gray-400" width="16"
+                                                      height="16"></iconify-icon>
+                                                <a href="{{ url('admin/assign_class/list') }}"
+                                                      class="ml-1 text-sm font-medium text-gray-700 md:ml-2 dark:text-gray-400 dark:hover:text-white">Liste
+                                                      des classes assignées</a>
+                                          </div>
+                                    </li>
+                                    <li aria-current="page">
+                                          <div class="flex items-center">
+                                                <iconify-icon icon="mdi:chevron-right" class="text-gray-400" width="16"
+                                                      height="16"></iconify-icon>
+                                                <span
+                                                      class="ml-1 text-sm font-medium text-emerald-600 md:ml-2 dark:text-emerald-600">Modifier</span>
+                                          </div>
+                                    </li>
+                              </ol>
+                        </nav>
+                  </div>
+
+                  <div class="bg-white rounded-xl shadow-md overflow-hidden dark:bg-gray-800 transition-colors duration-300">
+                        <div class="p-6 md:p-8">
+                              <form action="" method="post" enctype="multipart/form-data">
+                                    {{ csrf_field() }}
+                                    <div class="p-6.5">
+                                          <div class="mb-4.5">
+                                                <label
+                                                      class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                                      Classe <span class="text-red-500">*</span>
+                                                </label>
+                                                <div class="relative">
+                                                      <select id="class_id" name="class_id" required
+                                                            class="custom-select w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-emerald-500 dark:focus:border-emerald-500 transition-all duration-200">
+                                                            <option selected disabled value="">Veuillez choisir
+                                                                  une classe pour cette assignation
+                                                                  @foreach ($getClass as $class)
+                                                            <option class="text-body" value="{{ $class->id }}"
+                                                                  {{ $getClassTeacher->class_id == $class->id ? 'selected' : '' }}>
+                                                                  {{ $class->name }}
+                                                            </option>
+                                                            @endforeach
+                                                      </select>
+                                                      <div
+                                                            class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                                                            <iconify-icon icon="mdi:chevron-down" class="text-gray-400"
+                                                                  width="20" height="20"></iconify-icon>
+                                                      </div>
+                                                </div>
+                                          </div>
+
+                                          <div class="mb-4.5">
+                                                <label
+                                                      class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                                      Professeur <span class="text-red-500">*</span>
+                                                </label>
+                                                <div class="relative">
+                                                      <select id="class_id" name="class_id" required
+                                                            class="custom-select w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-emerald-500 dark:focus:border-emerald-500 transition-all duration-200">
+                                                            <option selected disabled value="">Veuillez choisir
+                                                                  un professeur pour cette assignation
+                                                                  @foreach ($getTeacher as $teacher)
+                                                            <option
+                                                                  {{ $getClassTeacher->teacher_id == $teacher->id ? 'selected' : '' }}
+                                                                  value="{{ $teacher->id }}">{{ $teacher->name }}
+                                                                  {{ $teacher->last_name }}
+                                                            </option>
+                                                            @endforeach
+                                                      </select>
+                                                      <div
+                                                            class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                                                            <iconify-icon icon="mdi:chevron-down" class="text-gray-400"
+                                                                  width="20" height="20"></iconify-icon>
+                                                      </div>
+                                                </div>
+                                          </div>
+
+                                          <div class="mb-4.5">
+                                                <label
+                                                      class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                                      Statut <span class="text-red-500">*</span>
+                                                </label>
+                                                <div class="relative">
+                                                      <select id="status" name="status" required
+                                                            class="custom-select w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-emerald-500 dark:focus:border-emerald-500 transition-all duration-200">
+                                                            <option selected disabled value="">Veuillez choisir un
+                                                                  status pour cette assignation
+                                                            <option value="1"
+                                                                  {{ old('status', $getClassTeacher->status) == '1' ? 'selected' : '' }}>
+                                                                  Active
+                                                            </option>
+                                                            <option value="0"
+                                                                  {{ old('status', $getClassTeacher->status) == '0' ? 'selected' : '' }}>
+                                                                  Inactive
+                                                            </option>
+                                                      </select>
+                                                      <div
+                                                            class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                                                            <iconify-icon icon="mdi:chevron-down" class="text-gray-400"
+                                                                  width="20" height="20"></iconify-icon>
+                                                      </div>
+                                                </div>
+                                          </div>
+
+                                          <div class="mt-8">
+                                                <button type="submit"
+                                                      class="w-full flex justify-center items-center py-3 px-4 bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-700 hover:to-emerald-600 text-white font-medium rounded-lg shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-opacity-50 transition-all duration-300">
+                                                      <iconify-icon icon="mdi:content-save-check-outline" class="mr-2"
+                                                            width="20" height="20"></iconify-icon>
+                                                      Modifier cette assignation
+                                                </button>
+                                          </div>
+                              </form>
+                        </div>
+                  </div>
             </div>
-        </div>
-    </main>
-</div>
+      </div>
 @endsection
-
-
