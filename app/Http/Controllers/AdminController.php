@@ -30,10 +30,10 @@ class AdminController extends Controller
             $passwordLength = strlen($request->password);
             $regex = '/^[a-z0-9]+@[a-z0-9]+\.(fr|com|org|bj|io)$/';
 
-            if($adminMail){
+            if ($adminMail) {
                 return redirect()->back()->with('error', 'Cet email a déjà été utilisé.');
             }
-            if($passwordLength < 6){
+            if ($passwordLength < 6) {
                 return redirect()->back()->with('error', 'Votre mot de passe ne doit pas être de moins de 6 caractères.');
             }
 
@@ -151,4 +151,12 @@ class AdminController extends Controller
             abort(404);
         }
     }
+
+    public function test()
+    {
+        $data['header_title'] = "Liste des administrateurs";
+        $data['getAdmin'] = User::getAllAdmin(5);
+        return view('admin.admin.test', $data);
+    }
+
 }

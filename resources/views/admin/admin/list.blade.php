@@ -344,7 +344,7 @@
                                     @endforeach
                                     @if ($getAdmin->isEmpty())
                                           <tr class="text-center text-gray-700 dark:text-bodydark1">
-                                                <td colspan="6" class="py-3"> Aucun administrateur trouvé.</td>
+                                                <td colspan="100%" class="py-3"> Aucun administrateur trouvé.</td>
                                           </tr>
                                     @endif
                               </tbody>

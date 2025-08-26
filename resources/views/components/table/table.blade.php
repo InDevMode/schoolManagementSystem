@@ -1,3 +1,5 @@
-<table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+@props(['class' => 'w-full text-sm text-left text-gray-500 dark:text-gray-400'])
+
+<table {{ $attributes->merge(['class' => $class]) }}>
     {{ $slot }}
 </table>

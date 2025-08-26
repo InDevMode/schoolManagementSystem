@@ -208,6 +208,8 @@ Route::group(['middleware' => 'admin'], function () {
 
     Route::post('/paypal/ipn/admin', [FeesCollectionController::class, 'paypalIPN']);
 
+    Route::get('admin/test', [AdminController::class, 'test']);
+
 });
 
 Route::group(['middleware' => 'teacher'], function () {

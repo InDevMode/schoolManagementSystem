@@ -382,7 +382,7 @@
                         @endforeach
                         @if ($getParent->isEmpty())
                             <tr class="text-center text-gray-700 dark:text-bodydark1">
-                                <td colspan="9" class="py-3"> Aucun parent trouvé.</td>
+                                <td colspan="100%" class="py-3"> Aucun parent trouvé.</td>
                             </tr>
                         @endif
                     </tbody>

@@ -23,7 +23,7 @@
 
       <div class="flex items-center justify-between lg:justify-center gap-2">
             <a href="{{ $homeLink }}">
-                  <img src="{{ $logo_url }}" alt="Logo" class="w-48 h-24" />
+                  <img src="{{ $logo_url }}" alt="Logo" class="w-48 h-24 object-cover rounded-lg ms-6 sm:m-1" />
             </a>
             <button class="block lg:hidden" @click.stop="sidebarToggle = !sidebarToggle">
                   <i class="fa-solid fa-arrow-left"></i>
@@ -200,6 +200,12 @@
                                                       'segment' => 2,
                                                       'match' => 'settings',
                                                   ],
+                                                   [
+                                                      'url' => 'admin/test',
+                                                      'label' => 'Test',
+                                                      'segment' => 2,
+                                                      'match' => 'test',
+                                                  ],
                                               ],
                                           ],
                                       ],
@@ -320,7 +326,7 @@
                         @foreach ($roleMenus['items'] ?? [] as $menu)
                               <li>
                                     <a href="{{ url($menu['url']) }}"
-                                          class="group flex items-center gap-3 px-4 py-1.5 rounded-sm font-medium transition-all duration-700 ease-in-out
+                                          class="group flex items-center gap-3 px-4 py-1.5 rounded-t-lg font-medium transition-all duration-700 ease-in-out
                                             {{ Request::segment($menu['segment']) === $menu['match']
                                                 ? 'bg-gradient-to-r from-violet-600 to-violet-500 hover:from-violet-600 hover:to-violet-500 hover:shadow-xl text-white'
                                                 : 'text-violet-500 dark:text-white hover:bg-gradient-to-r hover:from-violet-600 hover:to-violet-600 dark:hover:bg-meta-4 hover:shadow-xl hover:translate-x-2' }}">
@@ -359,7 +365,7 @@
                                     <li>
                                           <a href="#"
                                                 @click.prevent="selectedKey = selectedKey === '{{ $key }}' ? null : '{{ $key }}'"
-                                                class="group relative flex items-center gap-3 px-4 py-2 rounded-sm font-medium transition-all duration-300 ease-in-out
+                                                class="group relative flex items-center gap-3 px-4 py-2 rounded-t-lg font-medium transition-all duration-300 ease-in-out
                                                               text-violet-600 dark:text-white hover:bg-gradient-to-r hover:from-violet-600 hover:to-violet-500 hover:text-white hover:shadow-xl hover:translate-x-2"
                                                 :class="{ 'bg-gradient-to-r from-violet-600 to-violet-500 text-white shadow-xl': selectedKey === '{{ $key }}' }">
 
@@ -392,13 +398,13 @@
                                                       @foreach ($drop['items'] as $item)
                                                             <li>
                                                                   <a href="{{ url($item['url']) }}"
-                                                                        class="group flex items-center gap-3 px-4 py-2 rounded-sm font-medium transition-all duration-300 ease-in-out
+                                                                        class="group flex items-center gap-3 px-4 py-2 rounded-t-lg font-medium transition-all duration-300 ease-in-out
                                                                                     {{ Request::segment($item['segment']) === $item['match']
                                                                                         ? 'bg-gradient-to-r from-violet-600 to-violet-500 text-white shadow-xl'
                                                                                         : 'text-violet-500 dark:text-white hover:bg-gradient-to-r hover:from-violet-600 hover:to-violet-600 hover:text-white hover:shadow-xl hover:translate-x-2' }}">
                                                                         <span
                                                                               class="w-5 h-5 flex items-center justify-center">
-                                                                              <i class="fa-solid fa-chevron-right"></i>
+                                                                             <i class="fa-solid fa-circle-dot"></i>
                                                                         </span>
 
                                                                         <span
@@ -415,9 +421,9 @@
                         <!-- Déconnexion -->
                         <li class="absolute bottom-2 left-0 px-4 py-2.5 w-full">
                               <div onclick="window.location.href='{{ url('logout') }}'"
-                                    class="cursor-pointer flex items-center px-4 py-2.5 bg-gradient-to-r from-violet-600 to-violet-500 hover:from-violet-600 hover:to-violet-500 text-white hover:translate-x-2 transition-all duration-300 ease-in-out hover:shadow-xl">
+                                    class="cursor-pointer flex items-center px-4 py-2.5 bg-gradient-to-r from-violet-600 to-violet-500 hover:from-violet-600 hover:to-violet-500 text-white hover:translate-x-2 transition-all duration-300 ease-in-out hover:shadow-xl rounded-t-lg">
                                     <span
-                                          class="w-5 h-5 flex items-center justify-center rounded-sm bg-violet-100 text-violet-600">
+                                          class="w-5 h-5 p-4 flex items-center justify-center rounded-sm bg-violet-100 text-violet-600 group-hover:text-violet-600 group-hover:bg-violet-100 group-hover:shadow-xl">
                                           <i class="fa-solid fa-arrow-right-from-bracket"></i>
                                     </span>
                                     <span class="ml-3">Déconnexion</span>
