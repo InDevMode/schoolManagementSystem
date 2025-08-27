@@ -1,9 +1,10 @@
-<header class="sticky top-0 z-999 flex w-full bg-white drop-shadow-1 dark:bg-boxdark dark:drop-shadow-none">
-      <div class="flex flex-grow items-center justify-between px-4 py-4 shadow-2 md:px-6 2xl:px-11">
+<header
+      class="sticky top-0 z-999 flex w-full border-gray-200 xl:border-b dark:border-gray-800 bg-white dark:bg-gray-900">
+      <div class="flex flex-grow items-center justify-between xl:flex-row xl:px-6 xl:py-3 px-5">
             <div class="flex items-center gap-2 sm:gap-4 lg:hidden">
                   <!-- Hamburger Toggle BTN -->
                   <button
-                        class="z-99999 block rounded-sm border border-stroke bg-white p-1.5 shadow-sm dark:border-strokedark dark:bg-boxdark lg:hidden"
+                        class="z-99999 block rounded-sm border border-stroke bg-white p-1.5 shadow-sm dark:border-gray-800 dark:bg-gray-800 lg:hidden"
                         @click.stop="sidebarToggle = !sidebarToggle">
                         <span class="relative block h-5.5 w-5.5 cursor-pointer">
                               <span class="du-block absolute right-0 h-full w-full">
@@ -39,22 +40,22 @@
                   @endphp
 
                   <!-- Hamburger Toggle BTN -->
-                  <a class="block flex-shrink-0 lg:hidden w-48" href="{{  $link }}">
+                  <a class="block flex-shrink-0 lg:hidden w-48" href="{{ $link }}">
                         <img src="{{ $logo_url }}" alt="Logo" />
                   </a>
             </div>
-            <div class="hidden sm:block">
+            <div class="hidden md:block">
                   <form action="" method="get">
-                        <div class="relative">
+                        <div class="relative w-full">
                               <button class="absolute left-0 top-1/2 -translate-y-1/2">
                                     <span
-                                          class="fill-body hover:fill-primary dark:fill-bodydark dark:hover:fill-primary">
+                                          class="absolute top-[50%] left-0 inline-flex -translate-y-1/2 items-center gap-0.5 rounded-lg px-[15px] py-[4.5px] text-xs -tracking-[0.2px] text-gray-500 dark:border-gray-700 dark:bg-white/[0.03] dark:text-gray-400">
                                           <i class="fa-solid fa-search"></i>
                                     </span>
                               </button>
 
-                              <input type="text" placeholder="Type to search..."
-                                    class="w-full bg-transparent pl-9 pr-4 focus:outline-none xl:w-125" />
+                              <input type="text" x-model="search" placeholder="Rechercher..."
+                                    class="appearance-none w-full xl:w-[430px] rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-violet-600 focus:border-violet-600 py-2.5 pr-14 pl-12 outline-none" />
                         </div>
                   </form>
             </div>
@@ -63,7 +64,7 @@
                   <ul class="flex items-center gap-2 2xsm:gap-4">
                         <li>
                               <!-- Dark Mode Toggler -->
-                              <label :class="darkMode ? 'bg-primary' : 'bg-stroke'"
+                              <label :class="darkMode ? 'bg-gray-700' : 'bg-stroke'"
                                     class="relative m-0 block h-7.5 w-14 rounded-full">
                                     <input type="checkbox" :value="darkMode" @change="darkMode = !darkMode"
                                           class="absolute top-0 z-50 m-0 h-full w-full cursor-pointer opacity-0" />
@@ -94,9 +95,9 @@
 
                               <!-- Dropdown Start -->
                               <div x-show="dropdownOpen"
-                                    class="absolute -right-27 mt-2.5 flex h-90 w-75 flex-col rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark sm:right-0 sm:w-80">
+                                    class="absolute -right-27 mt-2.5 flex h-90 w-75 flex-col rounded-xl border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark sm:right-0 sm:w-80">
                                     <div class="px-4.5 py-3">
-                                          <h5 class="text-sm font-medium text-bodydark2">Notification</h5>
+                                          <h5 class="text-sm font-medium text-bodydark2">Notifications</h5>
                                     </div>
 
                                     <ul class="flex h-auto flex-col overflow-y-auto">

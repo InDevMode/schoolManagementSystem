@@ -155,7 +155,7 @@ class AdminController extends Controller
     public function test()
     {
         $data['header_title'] = "Liste des administrateurs";
-        $data['getAdmin'] = User::getAllAdmin(5);
+        $data['getAdmin'] = User::getAllStudent(5);
         return view('admin.admin.test', $data);
     }
 

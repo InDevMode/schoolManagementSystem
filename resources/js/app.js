@@ -16,40 +16,26 @@ Alpine.start();
 
 // Init flatpickr
 flatpickr(".datepicker", {
-    mode: "range",
-    static: true,
-    monthSelectorType: "static",
-    locale: "fr",
-    dateFormat: "Y-m-d",
-    defaultDate: [new Date().setDate(new Date().getDate() - 6), new Date()],
-    prevArrow:
-        '<svg class="fill-current" width="7" height="11" viewBox="0 0 7 11"><path d="M5.4 10.8l1.4-1.4-4-4 4-4L5.4 0 0 5.4z" /></svg>',
-    nextArrow:
-        '<svg class="fill-current" width="7" height="11" viewBox="0 0 7 11"><path d="M1.4 10.8L0 9.4l4-4-4-4L1.4 0l5.4 5.4z" /></svg>',
-    onReady: (selectedDates, dateStr, instance) => {
-        // eslint-disable-next-line no-param-reassign
-        instance.element.value = dateStr.replace("to", "-");
-        const customClass = instance.element.getAttribute("data-class");
-        instance.calendarContainer.classList.add(customClass);
-    },
-    onChange: (selectedDates, dateStr, instance) => {
-        // eslint-disable-next-line no-param-reassign
-        instance.element.value = dateStr.replace("to", "-");
-    },
+  mode: "range",
+  static: true,
+  monthSelectorType: "static",
+  dateFormat: "M j, Y",
+  defaultDate: [new Date().setDate(new Date().getDate() - 6), new Date()],
+  prevArrow:
+    '<svg class="stroke-current" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M15.25 6L9 12.25L15.25 18.5" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  nextArrow:
+    '<svg class="stroke-current" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8.75 19L15 12.75L8.75 6.5" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  onReady: (selectedDates, dateStr, instance) => {
+    // eslint-disable-next-line no-param-reassign
+    instance.element.value = dateStr.replace("to", "-");
+    const customClass = instance.element.getAttribute("data-class");
+    instance.calendarContainer.classList.add(customClass);
+  },
+  onChange: (selectedDates, dateStr, instance) => {
+    // eslint-disable-next-line no-param-reassign
+    instance.element.value = dateStr.replace("to", "-");
+  },
 });
-
-flatpickr(".form-datepicker", {
-    mode: "single",
-    static: true,
-    monthSelectorType: "static",
-    locale: "fr",
-    dateFormat: "Y-m-d",
-    prevArrow:
-        '<svg class="fill-current" width="7" height="11" viewBox="0 0 7 11"><path d="M5.4 10.8l1.4-1.4-4-4 4-4L5.4 0 0 5.4z" /></svg>',
-    nextArrow:
-        '<svg class="fill-current" width="7" height="11" viewBox="0 0 7 11"><path d="M1.4 10.8L0 9.4l4-4-4-4L1.4 0l5.4 5.4z" /></svg>',
-});
-
 
 // Document Loaded
 document.addEventListener("DOMContentLoaded", () => {
@@ -58,4 +44,35 @@ document.addEventListener("DOMContentLoaded", () => {
     chart03();
     chart04();
     map01();
+});
+
+// Get the current year
+const year = document.getElementById("year");
+if (year) {
+  year.textContent = new Date().getFullYear();
+}
+
+// For Copy//
+document.addEventListener("DOMContentLoaded", () => {
+  const copyInput = document.getElementById("copy-input");
+  if (copyInput) {
+    // Select the copy button and input field
+    const copyButton = document.getElementById("copy-button");
+    const copyText = document.getElementById("copy-text");
+    const websiteInput = document.getElementById("website-input");
+
+    // Event listener for the copy button
+    copyButton.addEventListener("click", () => {
+      // Copy the input value to the clipboard
+      navigator.clipboard.writeText(websiteInput.value).then(() => {
+        // Change the text to "Copied"
+        copyText.textContent = "Copié";
+
+        // Reset the text back to "Copy" after 2 seconds
+        setTimeout(() => {
+          copyText.textContent = "Copie";
+        }, 2000);
+      });
+    });
+  }
 });

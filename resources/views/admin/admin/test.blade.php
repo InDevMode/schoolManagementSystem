@@ -1,6 +1,6 @@
 @extends('layouts.app')
 @section('content')
-      <div class="container mx-auto px-4 py-5">
+      <div class="container mx-auto px-4">
             @include('message')
 
             <!-- Section Header -->
@@ -32,12 +32,19 @@
                   <x-filter.field id="created_at" label="Date de création" type="date" icon="fas fa-calendar-plus" />
                   <x-filter.field id="updated_at" label="Date de modification" type="date" icon="fas fa-calendar-check" />
 
-                  <x-filter.actions resetUrl="{{ url('admin/admin/list') }}" />
+                  <x-filter.actions resetUrl="{{ url('admin/test') }}" />
 
             </x-filter.section>
 
             <!-- Section Table -->
-            <x-table.index :columns="['Nom' => true, 'Prénoms' => true, 'Email' => true, 'Statut' => true]">
+            <x-table.index :columns="[
+                'Nom' => true,
+                'Prénoms' => true,
+                'Email' => true,
+                'Statut' => true,
+                'Date de Création' => true,
+                'Date de Modification' => true,
+            ]">
 
                   {{-- Thead --}}
                   <x-table.thead>
@@ -65,7 +72,11 @@
                                     x-show="!search
                                     || '{{ strtolower($admin->name) }}'.includes(search.toLowerCase())
                                     || '{{ strtolower($admin->last_name) }}'.includes(search.toLowerCase())
-                                    || '{{ strtolower($admin->email) }}'.includes(search.toLowerCase())">
+                                    || '{{ strtolower($admin->email) }}'.includes(search.toLowerCase())
+                                    || '{{ strtolower($admin->statut) }}'.includes(search.toLowerCase())
+                                    || '{{ strtolower($admin->created_at) }}'.includes(search.toLowerCase())
+                                    || '{{ strtolower($admin->updated_at) }}'.includes(search.toLowerCase())
+                                    ">
 
                                     {{-- Case à cocher par ligne --}}
                                     <x-table.td align="center" class="w-10">
@@ -86,18 +97,27 @@
                                     <x-table.td x-show="visibleColumns['Email']">{{ $admin->email }}</x-table.td>
                                     <x-table.td x-show="visibleColumns['Statut']">
                                           <span class="flex items-center">
-                                                <i  class="fa-solid fa-circle {{ $admin->status == 1 ? 'text-emerald-400' : 'text-red-600' }} mr-2"></i>
+                                                <i
+                                                      class="fa-solid fa-circle {{ $admin->status == 1 ? 'text-emerald-400' : 'text-red-600' }} mr-2"></i>
                                                 {{ $admin->status == 1 ? 'Actif' : 'Inactif' }}
                                           </span>
                                     </x-table.td>
+                                    <x-table.td
+                                          x-show="visibleColumns['Date de Création']">{{ \Carbon\Carbon::parse($admin->created_at)->locale('fr')->translatedFormat('d M Y H:i:s') }}</x-table.td>
+                                    <x-table.td
+                                          x-show="visibleColumns['Date de Modification']">{{ \Carbon\Carbon::parse($admin->updated_at)->locale('fr')->translatedFormat('d M Y H:i:s') }}</x-table.td>
 
                                     {{-- Dropdown Actions --}}
                                     <x-table.td align="right">
                                           <x-table.actions-dropdown :id="$admin->id">
-                                                <a href=""
-                                                      class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700">Voir</a>
-                                                <a href=""
-                                                      class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700">Éditer</a>
+                                                <x-link href="{{ url('admin/admin/edit', $admin->id) }}"
+                                                      icon="fa-solid fa-eye text-violet-500">
+                                                      Voir
+                                                </x-link>
+                                                <x-link href="{{ url('admin/admin/edit', $admin->id) }}"
+                                                      icon="fa-solid fa-edit text-emerald-500">
+                                                      Modifier
+                                                </x-link>
                                           </x-table.actions-dropdown>
                                     </x-table.td>
                               </x-table.tr>
@@ -106,10 +126,12 @@
 
                   {{-- Footer optionnel --}}
                   <x-slot name="footer">
-                        <x-table.footer :total="$getAdmin->count()" label="administrateurs" :pagination="$getAdmin->links('vendor.pagination.tailwind')" />
+                        <x-table.footer :total="$getAdmin->total()" label="administrateur" :pagination="$getAdmin->links('vendor.pagination.tailwind')" />
                   </x-slot>
 
+
             </x-table.index>
+
       </div>
 @endsection
 

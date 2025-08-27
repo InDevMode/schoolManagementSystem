@@ -33,22 +33,15 @@
 
 </head>
 
-<body x-data="{
-    page: 'SchoolManagmentSystem',
-    'loaded': true,
-    'darkMode': true,
-    'stickyMenu': false,
-    'sidebarToggle': false,
-    'scrollTop': false
-}" x-init="darkMode = JSON.parse(localStorage.getItem('darkMode'));
-$watch('darkMode', value => localStorage.setItem('darkMode', JSON.stringify(value)))" :class="{ 'dark text-bodydark bg-boxdark-2': darkMode === true }">
+<body x-data="{ page: 'SchoolManagmentSystem', 'loaded': true, 'darkMode': false, 'stickyMenu': false, 'sidebarToggle': false, 'scrollTop': false }" x-init="darkMode = JSON.parse(localStorage.getItem('darkMode'));
+$watch('darkMode', value => localStorage.setItem('darkMode', JSON.stringify(value)))" :class="{ 'dark bg-gray-900': darkMode === true }">
       <!-- ===== Preloader Start ===== -->
       @include('layouts.preloader')
       <!-- ===== Page Wrapper Start ===== -->
       <div class="flex h-screen overflow-hidden">
             @include('layouts.sidebar')
             <!-- ===== Content Area Start ===== -->
-            <div class="relative flex flex-1 flex-col overflow-y-auto overflow-x-hidden">
+            <div class="relative flex flex-1 flex-col overflow-y-auto overflow-x-hidden bg-gray-50 dark:bg-gray-900">
                   @include('layouts.header')
                   <!-- ===== Main Content Start ===== -->
                   @yield('content')
@@ -68,7 +61,6 @@ $watch('darkMode', value => localStorage.setItem('darkMode', JSON.stringify(valu
 <!-- jQuery (obligatoire) -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <!-- Summernote CSS & JS -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.20/summernote-lite.min.css" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.20/summernote-lite.min.js"></script>
 
 <!-- Select2 JS -->

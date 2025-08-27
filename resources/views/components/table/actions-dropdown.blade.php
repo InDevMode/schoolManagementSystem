@@ -3,19 +3,21 @@
     open: false,
     dropUp: false,
     checkPosition() {
-        // calcule la position du bouton par rapport à la fenêtre
-        let r = $el.getBoundingClientRect();
-        let spaceBottom = window.innerHeight - r.bottom;
-        let spaceTop = r.top;
+        let r = $el.getBoundingClientRect(); // bouton
+        let table = document.getElementById('myTable').getBoundingClientRect();
 
-        // si pas assez d’espace en bas (<200px), on ouvre vers le haut
-        this.dropUp = spaceBottom < 100 && spaceTop > 100;
+        let spaceBottom = table.bottom - r.bottom; // espace entre le bouton et le bas du tableau
+        let spaceTop = r.top - table.top; // espace entre le haut du tableau et le bouton
+
+        // si espace < 150px en bas ET assez d’espace en haut
+        this.dropUp = spaceBottom < 150 && spaceTop > 150;
     }
 }" x-effect="open = (openDropdown === id)">
 
+
       <!-- Bouton -->
       <button type="button"
-            class="group flex items-center w-full justify-center gap-x-1.5 rounded-lg shadow-md bg-white dark:bg-gray-800 border dark:border-gray-600 px-3 py-2 text-sm font-semibold text-gray-700 hover:text-violet-600 dark:text-gray-200 hover:bg-gray-100"
+            class="group flex items-center justify-center gap-x-1.5 rounded-lg shadow-lg bg-white dark:bg-gray-700 border dark:border-gray-600 px-3 py-2 text-sm font-semibold text-gray-700 hover:text-violet-600 dark:text-gray-200 hover:bg-gray-100"
             @click.stop="
             if (openDropdown === id) {
                 openDropdown = null
@@ -25,10 +27,11 @@
             }
         ">
             Actions
-            <span class="block -mr-1 size-5 group-hover:text-violet-600 text-gray-400">
+            <span class="-mr-1 text-gray-400 group-hover:text-violet-600">
                   <i class="fas fa-chevron-down"></i>
             </span>
       </button>
+
 
       <!-- Dropdown -->
 

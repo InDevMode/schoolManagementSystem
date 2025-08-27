@@ -1,6 +1,5 @@
-<aside :class="sidebarToggle ? 'translate-x-0' : '-translate-x-full'"
-      class="absolute left-0 top-0 z-9999 flex h-screen w-72.5 flex-col overflow-y-hidden bg-white duration-300 ease-linear dark:bg-boxdark lg:static lg:translate-x-0"
-      @click.outside="sidebarToggle = false">
+<aside :class="sidebarToggle ? 'translate-x-0 lg:w-[90px]' : '-translate-x-full'"
+      class="sidebar fixed left-0 top-0 z-9999 flex h-screen w-[290px] flex-col overflow-y-hidden border-r border-gray-200 bg-white px-5 dark:border-gray-800 dark:bg-black lg:static lg:translate-x-0">
 
       <!-- HEADER -->
       @php
@@ -200,7 +199,7 @@
                                                       'segment' => 2,
                                                       'match' => 'settings',
                                                   ],
-                                                   [
+                                                  [
                                                       'url' => 'admin/test',
                                                       'label' => 'Test',
                                                       'segment' => 2,
@@ -404,7 +403,7 @@
                                                                                         : 'text-violet-500 dark:text-white hover:bg-gradient-to-r hover:from-violet-600 hover:to-violet-600 hover:text-white hover:shadow-xl hover:translate-x-2' }}">
                                                                         <span
                                                                               class="w-5 h-5 flex items-center justify-center">
-                                                                             <i class="fa-solid fa-circle-dot"></i>
+                                                                              <i class="fa-solid fa-circle-dot"></i>
                                                                         </span>
 
                                                                         <span
