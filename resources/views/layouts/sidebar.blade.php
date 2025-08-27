@@ -31,7 +31,7 @@
 
       <!-- MENU -->
       <div class="no-scrollbar flex flex-col overflow-y-auto duration-300 ease-linear">
-            <nav class="p-2 lg:px-5 mb-8" x-data="{ selected: $persist('dashboard') }">
+            <nav class="mb-8" x-data="{ selected: $persist('dashboard') }">
 
                   <!-- NOM UTILISATEUR -->
                   <h3 class="mb-4 ml-4 text-md font-medium text-bodydark2 dark:text-white">
@@ -330,7 +330,7 @@
                                                 ? 'bg-gradient-to-r from-violet-600 to-violet-500 hover:from-violet-600 hover:to-violet-500 hover:shadow-xl text-white'
                                                 : 'text-violet-500 dark:text-white hover:bg-gradient-to-r hover:from-violet-600 hover:to-violet-600 dark:hover:bg-meta-4 hover:shadow-xl hover:translate-x-2' }}">
                                           <span
-                                                class="w-5 h-5 p-4 flex items-center justify-center rounded-sm bg-violet-100 text-violet-600 group-hover:text-violet-600 group-hover:bg-violet-100 group-hover:shadow-xl">
+                                                class="w-5 h-5 p-4 flex items-center justify-center">
                                                 <i class="fa-solid {{ $menu['icon'] }}"></i>
                                           </span>
 
@@ -369,7 +369,7 @@
                                                 :class="{ 'bg-gradient-to-r from-violet-600 to-violet-500 text-white shadow-xl': selectedKey === '{{ $key }}' }">
 
                                                 <span
-                                                      class="w-5 h-5 p-4 flex items-center justify-center rounded-sm bg-violet-100 text-violet-600 group-hover:text-violet-600 group-hover:bg-violet-100 group-hover:shadow-xl">
+                                                      class="w-5 h-5 p-4 flex items-center justify-center">
                                                       @if (str_contains($drop['icon'], 'mdi:'))
                                                             <iconify-icon icon="{{ $drop['icon'] }}" width="20"
                                                                   height="20"></iconify-icon>
@@ -418,11 +418,11 @@
                         </ul>
 
                         <!-- Déconnexion -->
-                        <li class="absolute bottom-2 left-0 px-4 py-2.5 w-full">
+                        <li class="absolute bottom-0 left-0 px-4 py-2.5 w-full">
                               <div onclick="window.location.href='{{ url('logout') }}'"
-                                    class="cursor-pointer flex items-center px-4 py-2.5 bg-gradient-to-r from-violet-600 to-violet-500 hover:from-violet-600 hover:to-violet-500 text-white hover:translate-x-2 transition-all duration-300 ease-in-out hover:shadow-xl rounded-t-lg">
+                                    class="cursor-pointer flex items-center px-4 py-1 text-gray-800 hover:dark:text-gray-300 dark:text-gray-400 dark:border dark:border-gray-500 transition-all duration-300 ease-in-out rounded-lg hover:bg-gray-200 hover:dark:bg-gray-600 hover:border hover:border-gray-300">
                                     <span
-                                          class="w-5 h-5 p-4 flex items-center justify-center rounded-sm bg-violet-100 text-violet-600 group-hover:text-violet-600 group-hover:bg-violet-100 group-hover:shadow-xl">
+                                          class="w-5 h-5 p-4 flex items-center justify-center">
                                           <i class="fa-solid fa-arrow-right-from-bracket"></i>
                                     </span>
                                     <span class="ml-3">Déconnexion</span>

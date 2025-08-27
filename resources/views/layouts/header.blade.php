@@ -94,7 +94,7 @@
                               </a>
 
                               <!-- Dropdown Start -->
-                              <div x-show="dropdownOpen"
+                              <div x-show="dropdownOpen"  x-cloak
                                     class="absolute -right-27 mt-2.5 flex h-90 w-75 flex-col rounded-xl border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark sm:right-0 sm:w-80">
                                     <div class="px-4.5 py-3">
                                           <h5 class="text-sm font-medium text-bodydark2">Notifications</h5>
@@ -171,7 +171,7 @@
                               </a>
 
                               <!-- Dropdown Start -->
-                              <div x-show="dropdownOpen"
+                              <div x-show="dropdownOpen"  x-cloak
                                     class="absolute -right-16 mt-2.5 flex h-90 w-75 flex-col rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark sm:right-0 sm:w-80">
                                     <div class="px-4.5 py-3">
                                           <h5 class="text-sm font-medium text-bodydark2">Messages</h5>
@@ -311,7 +311,7 @@
                               </span>
                         </a>
                         <!-- Dropdown Start -->
-                        <div x-show="dropdownOpen"
+                        <div x-show="dropdownOpen"  x-cloak
                               class="absolute right-0 mt-4 flex w-62.5 flex-col rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
                               <ul
                                     class="flex flex-col gap-5 border-b border-stroke px-6 py-7.5 dark:border-strokedark">
