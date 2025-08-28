@@ -95,7 +95,7 @@
 
                               <!-- Dropdown Start -->
                               <div x-show="dropdownOpen"  x-cloak
-                                    class="absolute -right-27 mt-2.5 flex h-90 w-75 flex-col rounded-xl border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark sm:right-0 sm:w-80">
+                                    class="absolute -right-27 mt-6 flex h-90 w-75 flex-col rounded-xl border border-stroke bg-white shadow-xl dark:border-strokedark dark:bg-boxdark sm:right-0 sm:w-80">
                                     <div class="px-4.5 py-3">
                                           <h5 class="text-sm font-medium text-bodydark2">Notifications</h5>
                                     </div>
@@ -172,7 +172,7 @@
 
                               <!-- Dropdown Start -->
                               <div x-show="dropdownOpen"  x-cloak
-                                    class="absolute -right-16 mt-2.5 flex h-90 w-75 flex-col rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark sm:right-0 sm:w-80">
+                                    class="absolute -right-16 mt-6 flex h-90 w-75 flex-col rounded-xl border border-stroke bg-white shadow-xl dark:border-strokedark dark:bg-boxdark sm:right-0 sm:w-80">
                                     <div class="px-4.5 py-3">
                                           <h5 class="text-sm font-medium text-bodydark2">Messages</h5>
                                     </div>
@@ -312,27 +312,27 @@
                         </a>
                         <!-- Dropdown Start -->
                         <div x-show="dropdownOpen"  x-cloak
-                              class="absolute right-0 mt-4 flex w-62.5 flex-col rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
+                              class="absolute right-0 mt-5 flex w-72 flex-col rounded-xl border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
                               <ul
-                                    class="flex flex-col gap-5 border-b border-stroke px-6 py-7.5 dark:border-strokedark">
+                                    class="flex flex-col gap-x-2 border-b border-stroke dark:border-strokedark px-4 py-1.5">
                                     @if (Auth::user()->user_type === 1)
                                           <li>
                                                 <a href="{{ url('admin/account') }}"
-                                                      class="flex items-center gap-3.5 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base">
+                                                      class="flex items-center gap-3.5 text-sm font-medium duration-300 px-3 py-1.5 rounded-md ease-in-out dark:hover:bg-gray-600 dark:text-gray-300 text-gray-700 hover:bg-indigo-500/25 hover:text-indigo-600 lg:text-base">
                                                       <span><i class="fa-solid fa-user"></i></span>
                                                       Mon profile
                                                 </a>
                                           </li>
                                           <li>
                                                 <a href="{{ url('admin/change_password') }}"
-                                                      class="flex items-center gap-3.5 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base">
+                                                      class="flex items-center gap-3.5 text-sm font-medium duration-300 px-3 py-1.5 rounded-md ease-in-out dark:hover:bg-gray-600 dark:text-gray-300 text-gray-700 hover:bg-indigo-500/25 hover:text-indigo-600 lg:text-base">
                                                       <span><i class="fa-solid fa-lock"></i></span>
                                                       Mon mot de passe
                                                 </a>
                                           </li>
                                           <li>
                                                 <a href="{{ url('admin/settings') }}"
-                                                      class="flex items-center gap-3.5 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base">
+                                                      class="flex items-center gap-3.5 text-sm font-medium duration-300 px-3 py-1.5 rounded-md ease-in-out dark:hover:bg-gray-600 dark:text-gray-300 text-gray-700 hover:bg-indigo-500/25 hover:text-indigo-600 lg:text-base">
                                                       <span><i class="fa-solid fa-gear"></i></span>
                                                       Paramètres
                                                 </a>
@@ -340,14 +340,14 @@
                                     @elseif(Auth::user()->user_type === 2)
                                           <li>
                                                 <a href="{{ url('teacher/account') }}"
-                                                      class="flex items-center gap-3.5 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base">
+                                                      class="flex items-center gap-3.5 text-sm font-medium duration-300 px-3 py-1.5 rounded-md ease-in-out dark:hover:bg-gray-600 dark:text-gray-300 text-gray-700 hover:bg-indigo-500/25 hover:text-indigo-600 lg:text-base">
                                                       <span><i class="fa-solid fa-user"></i></span>
                                                       Mon profile
                                                 </a>
                                           </li>
                                           <li>
                                                 <a href="{{ url('teacher/change_password') }}"
-                                                      class="flex items-center gap-3.5 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base">
+                                                      class="flex items-center gap-3.5 text-sm font-medium duration-300 ease-in-out px-3 py-1.5 rounded-md ease-in-out dark:hover:bg-gray-600 dark:text-gray-300 text-gray-700 hover:bg-indigo-500/25 hover:text-indigo-600 lg:text-base">
                                                       <span><i class="fa-solid fa-lock"></i></span>
                                                       Mon mot de passe
                                                 </a>
@@ -355,14 +355,14 @@
                                     @elseif(Auth::user()->user_type === 3)
                                           <li>
                                                 <a href="{{ url('student/account') }}"
-                                                      class="flex items-center gap-3.5 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base">
+                                                      class="flex items-center gap-3.5 text-sm font-medium duration-300 ease-in-out px-3 py-1.5 rounded-md ease-in-out dark:hover:bg-gray-600 dark:text-gray-300 text-gray-700 hover:bg-indigo-500/25 hover:text-indigo-600 lg:text-base">
                                                       <span><i class="fa-solid fa-user"></i></span>
                                                       Mon profile
                                                 </a>
                                           </li>
                                           <li>
                                                 <a href="{{ url('student/change_password') }}"
-                                                      class="flex items-center gap-3.5 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base">
+                                                      class="flex items-center gap-3.5 text-sm font-medium duration-300 ease-in-out px-3 py-1.5 rounded-md ease-in-out dark:hover:bg-gray-600 dark:text-gray-300 text-gray-700 hover:bg-indigo-500/25 hover:text-indigo-600 lg:text-base">
                                                       <span><i class="fa-solid fa-lock"></i></span>
                                                       Mon mot de passe
                                                 </a>
@@ -370,14 +370,14 @@
                                     @elseif(Auth::user()->user_type === 4)
                                           <li>
                                                 <a href="{{ url('parent/account') }}"
-                                                      class="flex items-center gap-3.5 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base">
+                                                      class="flex items-center gap-3.5 text-sm font-medium duration-300 ease-in-out px-3 py-1.5 rounded-md ease-in-out dark:hover:bg-gray-600 dark:text-gray-300 text-gray-700 hover:bg-indigo-500/25 hover:text-indigo-600 lg:text-base">
                                                       <span><i class="fa-solid fa-user"></i></span>
                                                       Mon profile
                                                 </a>
                                           </li>
                                           <li>
                                                 <a href="{{ url('parent/change_password') }}"
-                                                      class="flex items-center gap-3.5 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base">
+                                                      class="flex items-center gap-3.5 text-sm font-medium duration-300 ease-in-out px-3 py-1.5 rounded-md ease-in-out dark:hover:bg-gray-600 dark:text-gray-300 text-gray-700 hover:bg-indigo-500/25 hover:text-indigo-600 lg:text-base">
                                                       <span><i class="fa-solid fa-lock"></i></span>
                                                       Changez votre mot de passe
                                                 </a>
@@ -385,7 +385,7 @@
                                     @endif
                               </ul>
                               <a href="{{ url('logout') }}"
-                                    class="flex items-center gap-3.5 px-6 py-4 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base">
+                                    class="flex items-center gap-3.5 px-6 py-4 text-sm font-medium duration-300 ease-in-out px-3 py-1.5 rounded-md ease-in-out dark:hover:bg-gray-600 dark:text-gray-300 text-gray-700 hover:bg-indigo-500/25 hover:text-indigo-600 lg:text-base">
                                     <span class="text-[22px]">
                                           <i class="fa-solid fa-arrow-right-from-bracket"></i>
                                     </span>

@@ -1,11 +1,11 @@
 @props([
     'href' => '#',
     'icon' => null,
-    'color' => 'text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700',
+    'color' => 'flex items-center gap-2 px-4 py-2 text-sm transition duration-300 text-gray-500 hover:underline dark:text-gray-200',
 ])
 
 <a href="{{ $href }}"
-      {{ $attributes->merge(['class' => "flex items-center gap-2 px-4 py-2 text-sm rounded-md transition $color"]) }}>
+      {{ $attributes->merge(['class' => "$color"]) }}>
       @if ($icon)
             <i class="{{ $icon }} w-4 h-4"></i>
       @endif

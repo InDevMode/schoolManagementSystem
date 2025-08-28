@@ -40,7 +40,7 @@ $watch('darkMode', value => localStorage.setItem('darkMode', JSON.stringify(valu
       <div class="flex h-screen overflow-hidden">
             @include('layouts.sidebar')
             <!-- ===== Content Area Start ===== -->
-            <div class="relative flex flex-1 flex-col overflow-y-auto overflow-x-hidden">
+            <div class="relative flex flex-1 flex-col overflow-y-auto overflow-x-hidden bg-gray-50 dark:bg-gray-800">
                   @include('layouts.header')
                   <!-- ===== Main Content Start ===== -->
                   @yield('content')

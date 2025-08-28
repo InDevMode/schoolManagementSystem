@@ -11,10 +11,11 @@
       <div class="relative">
             <select id="{{ $id }}" name="{{ $name }}" @if ($required) required @endif
                   {{ $attributes->merge([
-                      'class' => 'custom-select w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-50
-                                           focus:ring-2 focus:ring-violet-500 focus:border-violet-500
-                                           dark:bg-gray-700 dark:border-gray-600 dark:text-white
-                                           dark:focus:ring-violet-500 dark:focus:border-violet-500 transition-all duration-200',
+                      'class' => 'h-11 w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5
+                                            text-sm text-gray-800 placeholder:text-gray-400
+                                            focus:border-indigo-300 focus:ring-3 focus:ring-indigo-500/10
+                                            dark:border-gray-700 dark:bg-gray-800 dark:text-white/90 dark:placeholder:text-white/30
+                                            dark:focus:border-indigo-800transition-all duration-300',
                   ]) }}>
                   <option value="" disabled selected>Veuillez choisir</option>
                   @foreach ($options as $value => $text)

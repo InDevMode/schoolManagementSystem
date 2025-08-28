@@ -223,16 +223,16 @@
                                           [
                                               'url' => 'teacher/my_student',
                                               'icon' => 'fa-user-graduate',
-                                              'label' => 'Mes Étudiants',
+                                              'label' => 'Mes Apprenants',
                                               'segment' => 2,
                                               'match' => 'my_student',
                                           ],
                                           [
-                                              'url' => 'teacher/my_class_subject',
+                                              'url' => 'teacher/class_subject',
                                               'icon' => 'fa-book',
                                               'label' => 'Matières & Classes',
                                               'segment' => 2,
-                                              'match' => 'my_class_subject',
+                                              'match' => 'class_subject',
                                           ],
                                       ],
                                       'dropdowns' => [
@@ -268,23 +268,23 @@
                                               'match' => 'dashboard',
                                           ],
                                           [
-                                              'url' => 'student/my_subjects',
+                                              'url' => 'student/my_subject',
                                               'icon' => 'fa-book',
                                               'label' => 'Mes Matières',
                                               'segment' => 2,
-                                              'match' => 'my_subjects',
+                                              'match' => 'my_subject',
                                           ],
                                       ],
                                       'dropdowns' => [
                                           'practicalworks' => [
                                               'icon' => 'mdi:home-edit',
-                                              'label' => 'Devoirs',
+                                              'label' => 'Mes Devoirs',
                                               'items' => [
                                                   [
-                                                      'url' => 'student/practicalworks/homework/list',
+                                                      'url' => 'student/my_homework',
                                                       'label' => 'Travaux Maison',
-                                                      'segment' => 3,
-                                                      'match' => 'homework',
+                                                      'segment' => 2,
+                                                      'match' => 'my_homework',
                                                   ],
                                                   [
                                                       'url' => 'student/practicalworks/reports',
@@ -308,11 +308,11 @@
                                               'match' => 'dashboard',
                                           ],
                                           [
-                                              'url' => 'parent/my_children',
+                                              'url' => 'parent/my_student',
                                               'icon' => 'fa-user-group',
                                               'label' => 'Mes Enfants',
                                               'segment' => 2,
-                                              'match' => 'my_children',
+                                              'match' => 'my_student',
                                           ],
                                       ],
                                   ],
@@ -325,17 +325,15 @@
                         @foreach ($roleMenus['items'] ?? [] as $menu)
                               <li>
                                     <a href="{{ url($menu['url']) }}"
-                                          class="group flex items-center gap-3 px-4 py-1.5 rounded-t-lg font-medium transition-all duration-700 ease-in-out
+                                          class="group flex items-center gap-3 px-4 py-1.5 rounded-t-lg font-medium transition-all duration-300 ease-in-out text-gray-700 dark:text-gray-300
                                             {{ Request::segment($menu['segment']) === $menu['match']
-                                                ? 'bg-gradient-to-r from-violet-600 to-violet-500 hover:from-violet-600 hover:to-violet-500 hover:shadow-xl text-white'
-                                                : 'text-violet-500 dark:text-white hover:bg-gradient-to-r hover:from-violet-600 hover:to-violet-600 dark:hover:bg-meta-4 hover:shadow-xl hover:translate-x-2' }}">
-                                          <span
-                                                class="w-5 h-5 p-4 flex items-center justify-center">
+                                                ? 'bg-indigo-500/25 hover:shadow-xl text-indigo-600 dark:bg-gray-700'
+                                                : 'hover:bg-indigo-500/25 hover:shadow-xl hover:text-indigo-600 dark:hover:bg-gray-400/25 dark:hover:text-gray-300 dark:hover:shadow-xl' }}">
+                                          <span class="w-5 h-5 p-4 flex items-center justify-center">
                                                 <i class="fa-solid {{ $menu['icon'] }}"></i>
                                           </span>
 
-                                          <span
-                                                class="group-hover:text-white dark:text-white">{{ $menu['label'] }}</span>
+                                          <span class="">{{ $menu['label'] }}</span>
                                     </a>
                               </li>
                         @endforeach
@@ -365,11 +363,10 @@
                                           <a href="#"
                                                 @click.prevent="selectedKey = selectedKey === '{{ $key }}' ? null : '{{ $key }}'"
                                                 class="group relative flex items-center gap-3 px-4 py-2 rounded-t-lg font-medium transition-all duration-300 ease-in-out
-                                                              text-violet-600 dark:text-white hover:bg-gradient-to-r hover:from-violet-600 hover:to-violet-500 hover:text-white hover:shadow-xl hover:translate-x-2"
-                                                :class="{ 'bg-gradient-to-r from-violet-600 to-violet-500 text-white shadow-xl': selectedKey === '{{ $key }}' }">
+                                                text-gray-700 dark:text-gray-300 hover:bg-indigo-500/25 hover:shadow-xl hover:text-indigo-700 dark:hover:bg-gray-400/25 dark:hover:text-gray-300 dark:hover:shadow-xl"
+                                                :class="{ 'bg-indigo-500/25 hover:shadow-xl text-indigo-600 dark:bg-gray-700': selectedKey === '{{ $key }}' }">
 
-                                                <span
-                                                      class="w-5 h-5 p-4 flex items-center justify-center">
+                                                <span class="w-5 h-5 p-4 flex items-center justify-center">
                                                       @if (str_contains($drop['icon'], 'mdi:'))
                                                             <iconify-icon icon="{{ $drop['icon'] }}" width="20"
                                                                   height="20"></iconify-icon>
@@ -378,8 +375,7 @@
                                                       @endif
                                                 </span>
 
-                                                <span
-                                                      class="group-hover:text-white dark:text-white">{{ $drop['label'] }}</span>
+                                                <span class="">{{ $drop['label'] }}</span>
 
                                                 <i class="fa-solid fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 transition duration-300"
                                                       :class="{ 'rotate-180': selectedKey === '{{ $key }}' }"></i>
@@ -397,17 +393,17 @@
                                                       @foreach ($drop['items'] as $item)
                                                             <li>
                                                                   <a href="{{ url($item['url']) }}"
-                                                                        class="group flex items-center gap-3 px-4 py-2 rounded-t-lg font-medium transition-all duration-300 ease-in-out
+                                                                        class="group flex items-center gap-3 px-4 py-2 rounded-t-lg font-medium transition-all duration-300 ease-in-out text-gray-700 dark:text-gray-300
                                                                                     {{ Request::segment($item['segment']) === $item['match']
-                                                                                        ? 'bg-gradient-to-r from-violet-600 to-violet-500 text-white shadow-xl'
-                                                                                        : 'text-violet-500 dark:text-white hover:bg-gradient-to-r hover:from-violet-600 hover:to-violet-600 hover:text-white hover:shadow-xl hover:translate-x-2' }}">
+                                                                                        ? 'bg-indigo-500/25 hover:shadow-xl text-indigo-600 dark:bg-gray-700'
+                                                                                        : 'hover:bg-indigo-500/25 hover:shadow-xl hover:text-indigo-700 dark:hover:bg-gray-400/25 dark:hover:text-gray-300 dark:hover:shadow-xl' }}">
                                                                         <span
                                                                               class="w-5 h-5 flex items-center justify-center">
                                                                               <i class="fa-solid fa-circle-dot"></i>
                                                                         </span>
 
                                                                         <span
-                                                                              class="group-hover:text-white dark:text-white">{{ $item['label'] }}</span>
+                                                                              class="">{{ $item['label'] }}</span>
                                                                   </a>
                                                             </li>
                                                       @endforeach
@@ -420,9 +416,9 @@
                         <!-- Déconnexion -->
                         <li class="absolute bottom-0 left-0 px-4 py-2.5 w-full">
                               <div onclick="window.location.href='{{ url('logout') }}'"
-                                    class="cursor-pointer flex items-center px-4 py-1 text-gray-800 hover:dark:text-gray-300 dark:text-gray-400 dark:border dark:border-gray-500 transition-all duration-300 ease-in-out rounded-lg hover:bg-gray-200 hover:dark:bg-gray-600 hover:border hover:border-gray-300">
-                                    <span
-                                          class="w-5 h-5 p-4 flex items-center justify-center">
+                                    class="group cursor-pointer flex items-center px-4 py-1 rounded-lg transition-all duration-300 ease-in-out
+                                    hover:bg-indigo-500/25 hover:shadow-xl hover:text-indigo-700 text-gray-700 dark:text-gray-300 dark:hover:bg-gray-700">
+                                    <span class="w-5 h-5 p-4 flex items-center justify-center">
                                           <i class="fa-solid fa-arrow-right-from-bracket"></i>
                                     </span>
                                     <span class="ml-3">Déconnexion</span>
