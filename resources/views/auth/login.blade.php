@@ -105,9 +105,9 @@ $watch('darkMode', value => localStorage.setItem('darkMode', JSON.stringify(valu
                                                       </div>
 
                                                       <!-- Checkbox -->
-                                                      <div class="flex items-center justify-between text-gray-300">
+                                                      <div class="flex items-center justify-between text-gray-700 dark:text-gray-300">
                                                             <x-form.checked id="remember" class="checkbox-custom"
-                                                                  label="Resté connecté" />
+                                                                  label="Rester connecté(e)" />
 
                                                             <x-link href="{{ url('forgot_password') }}">
                                                                   Mot de passe oublé ?
