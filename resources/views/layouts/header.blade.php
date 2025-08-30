@@ -65,9 +65,11 @@
                         class="z-99999 block rounded-sm border border-stroke bg-white p-1.5 shadow-sm dark:border-gray-700 dark:bg-gray-800 lg:hidden"
                         @click.stop="sidebarToggle = !sidebarToggle">
                         <!-- (icône burger inchangée) -->
+                        <iconify-icon icon="mdi:menu" width="24" height="24"></iconify-icon>
                   </button>
-                  <a class="block flex-shrink-0 lg:hidden w-48" href="{{ $dashboardLink }}">
-                        <img src="{{ $logo_url }}" alt="Logo" />
+
+                  <a class="block flex-shrink-0 lg:hidden w-42 me-2" href="{{ $dashboardLink }}">
+                        <img class="object-cover rounded-lg py-1 h-24" src="{{ $logo_url }}" alt="Logo" />
                   </a>
             </div>
 
@@ -189,7 +191,7 @@
 
                         <!-- Chat Notification Area -->
                         <li class="relative" x-data="{ dropdownOpen: false, notifying: true }" @click.outside="dropdownOpen = false">
-                              <a class="relative flex h-8.5 w-8.5 items-center justify-center rounded-full border-[0.5px] border-stroke bg-gray hover:text-primary dark:border-strokedark dark:bg-meta-4 dark:text-white"
+                              <a class="relative flex h-8.5 w-8.5 items-center justify-center rounded-full border-[0.5px] border-stroke bg-gray hover:text-indigo-600 dark:border-strokedark dark:bg-meta-4 dark:text-white"
                                     href="#" @click.prevent="dropdownOpen = ! dropdownOpen; notifying = false">
                                     <span :class="!notifying && 'hidden'"
                                           class="absolute -right-0.5 -top-0.5 z-1 h-2 w-2 rounded-full bg-meta-1">
@@ -262,37 +264,27 @@
                                                 <a class="flex gap-4.5 border-t border-stroke px-4.5 py-3 hover:bg-gray-2 dark:border-strokedark dark:hover:bg-meta-4"
                                                       href="">
                                                       <div class="h-12.5 w-12.5 rounded-full">
-                                                            <img src="{{ asset('public/images/user/user-01.png') }}"
+                                                            <img src="{{ asset('public/images/user/user-03.png') }}"
                                                                   alt="User" />
                                                       </div>
 
                                                       <div>
                                                             <h6 class="text-sm font-medium text-black dark:text-white">
-                                                                  Cody Fisher
+                                                                  Henry Dholi
                                                             </h6>
-                                                            <p class="text-sm">I’m waiting for you response!</p>
-                                                            <p class="text-xs">5days ago</p>
-                                                      </div>
-                                                </a>
-                                          </li>
-                                          <li>
-                                                <a class="flex gap-4.5 border-t border-stroke px-4.5 py-3 hover:bg-gray-2 dark:border-strokedark dark:hover:bg-meta-4"
-                                                      href="">
-                                                      <div class="h-12.5 w-12.5 rounded-full">
-                                                            <img src=".{{ asset('public/images/user/user-02.png') }}"
-                                                                  alt="User" />
-                                                      </div>
-
-                                                      <div>
-                                                            <h6 class="text-sm font-medium text-black dark:text-white">
-                                                                  Mariya Desoja
-                                                            </h6>
-                                                            <p class="text-sm">I like your confidence 💪</p>
-                                                            <p class="text-xs">2min ago</p>
+                                                            <p class="text-sm">I cam across your profile and...</p>
+                                                            <p class="text-xs">1day ago</p>
                                                       </div>
                                                 </a>
                                           </li>
                                     </ul>
+                                    <!-- Footer fixe -->
+                                    <div class="px-4.5 py-3">
+                                          <h5 class="text-sm font-medium text-bodydark2">
+                                                <x-link-dropdown href="{{ url('chat') }}"
+                                                      icon="fa-solid fa-arrow-right" label="Voir tous les messages" />
+                                          </h5>
+                                    </div>
                               </div>
                               <!-- Dropdown End -->
                         </li>
@@ -306,7 +298,7 @@
                               @click.prevent="dropdownOpen = ! dropdownOpen">
                               <span class="hidden text-right lg:block">
                                     <span class="block text-sm font-medium text-black dark:text-white">
-                                          {{ $user->name }} {{ $user->last_name }}
+                                          {{ $user->last_name }} {{ $user->name }}
                                     </span>
                                     <span class="block text-xs font-medium">{{ $roleLabel }}</span>
                               </span>
@@ -323,22 +315,18 @@
                         <div x-show="dropdownOpen" x-cloak
                               class="absolute right-0 mt-5 flex w-72 flex-col rounded-xl border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
                               <ul
-                                    class="flex flex-col gap-x-2 border-b border-stroke dark:border-strokedark px-4 py-1.5">
+                                    class="flex flex-col gap-x-2 border-b border-stroke dark:border-strokedark px-0 py-0">
                                     @foreach ($menus as $menu)
                                           <li>
-                                                <a href="{{ url($menu['url']) }}"
-                                                      class="flex items-center gap-3.5 text-sm font-medium duration-300 px-3 py-1.5 rounded-md ease-in-out dark:hover:bg-gray-600 dark:text-gray-300 text-gray-700 hover:bg-indigo-500/25 hover:text-indigo-600 lg:text-base">
-                                                      <span><i class="fa-solid fa-{{ $menu['icon'] }}"></i></span>
-                                                      {{ $menu['label'] }}
-                                                </a>
+                                                <x-link-dropdown href="{{ url($menu['url']) }}"
+                                                      icon="fa-solid fa-{{ $menu['icon'] }}"
+                                                      label="  {{ $menu['label'] }}" />
                                           </li>
                                     @endforeach
                               </ul>
                               <a href="{{ url('logout') }}"
-                                    class="flex items-center gap-3.5 px-6 py-4 text-sm font-medium duration-300 ease-in-out dark:hover:bg-gray-600 dark:text-gray-300 text-gray-700 hover:bg-indigo-500/25 hover:text-indigo-600 lg:text-base">
-                                    <span class="text-[22px]">
-                                          <i class="fa-solid fa-arrow-right-from-bracket"></i>
-                                    </span>
+                                    class="flex items-center gap-3.5 px-6 py-3 text-sm font-medium duration-300 ease-in-out dark:hover:bg-gray-600 dark:text-gray-300 text-gray-700 hover:bg-indigo-500/25 hover:text-indigo-600 lg:text-base">
+                                    <i class="fa-solid fa-arrow-right-from-bracket"></i>
                                     Déconnexion
                               </a>
                         </div>

@@ -4,6 +4,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CalendarController;
+use App\Http\Controllers\ChatController;
 use App\Http\Controllers\ClassController;
 use App\Http\Controllers\ClassSubjectController;
 use App\Http\Controllers\ClassTeacherController;
@@ -39,6 +40,11 @@ Route::post('forgot_password', [AuthController::class, 'changePassword']);
 Route::get('reset/{token}', [AuthController::class, 'resetPassword']);
 Route::post('reset/{token}', [AuthController::class, 'resetAndChangePassword']);
 Route::get('signup', [AuthController::class, 'signup']);
+
+
+Route::group(['middleware' => 'common'], function () {
+    Route::get('chat', [ChatController::class, 'chat']);
+});
 
 Route::group(['middleware' => 'admin'], function () {
 
