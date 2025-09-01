@@ -15,16 +15,20 @@ class AuthController extends Controller
     public function login()
     {
         if (!empty(Auth::check())) {
-            if (Auth::user()->user_type == 1) {
-                return redirect('admin/dashboard');
-            } else if (Auth::user()->user_type == 2) {
-                return redirect('teacher/dashboard');
-            } else if (Auth::user()->user_type == 3) {
-                return redirect('student/dashboard');
-            } else if (Auth::user()->user_type == 4) {
-                return redirect('parent/dashboard');
+            switch (Auth::user()->user_type) {
+                case 1:
+                    return redirect('admin/dashboard');
+                case 2:
+                    return redirect('teacher/dashboard');
+                case 3:
+                    return redirect('student/dashboard');
+                case 4:
+                    return redirect('parent/dashboard');
+                default:
+                    return redirect(url(''));
             }
         }
+
         return view('auth.login');
     }
 
@@ -40,17 +44,23 @@ class AuthController extends Controller
                 return redirect()->back()->with('error', 'Cet utilisateur n\'est pas activé.');
             }
 
-            if ($user->user_type == 1) {
-                return redirect('admin/dashboard');
-            } elseif ($user->user_type == 2) {
-                return redirect('teacher/dashboard');
-            } elseif ($user->user_type == 3) {
-                return redirect('student/dashboard');
-            } elseif ($user->user_type == 4) {
-                return redirect('parent/dashboard');
-            }
+            // ✅ Mise à jour du last_login ici
+            $user = User::find($user->id);
+            $user->last_login = now();
+            $user->save();
 
-            return redirect(url(''));
+            switch ($user->user_type) {
+                case 1:
+                    return redirect('admin/dashboard');
+                case 2:
+                    return redirect('teacher/dashboard');
+                case 3:
+                    return redirect('student/dashboard');
+                case 4:
+                    return redirect('parent/dashboard');
+                default:
+                    return redirect(url(''));
+            }
         }
 
         return redirect()->back()->with('error', 'Email et mot de passe incorrect.');

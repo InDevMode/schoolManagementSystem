@@ -15,5 +15,5 @@
         @if($required) required @endif
         {{ $attributes->merge(['class' => $class]) }}
     >
-    <span class="ml-2 text-sm">{{ $label }}</span>
+    <label class="ml-2 text-sm" for="{{ $id }}">{{ $label }}</label>
 </div>

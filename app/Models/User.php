@@ -59,6 +59,7 @@ class User extends Authenticatable
         'user_type',
         'is_delete',
         'remember_token',
+        'last_login',
     ];
 
     /**
@@ -69,6 +70,7 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
+        'last_login' => 'datetime',
     ];
 
     public static function getSingle(int $id)
