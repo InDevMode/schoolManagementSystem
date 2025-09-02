@@ -22,7 +22,7 @@
             @if($isOnline)
                 <i class="fa-solid fa-circle text-emerald-400 mr-2"></i>En ligne
             @else
-                Dernière connexion : {{ Carbon::parse($getReceiver->last_login)->format('d M Y à H:i:s') }}
+                Dernière connexion : {{ Carbon::parse($getReceiver->last_login)->format('d M Y à H:i') }}
             @endif
         </em>
     </div>

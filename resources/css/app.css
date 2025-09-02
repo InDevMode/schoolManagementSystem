@@ -354,4 +354,9 @@ span.flatpickr-weekday,
             transform: translate(-50%, -60%) rotate(45deg);
         }
 
-        
+ .chat-preview {
+    transition: background-color 0.3s ease;
+}
+
+
+

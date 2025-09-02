@@ -35,7 +35,7 @@ class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dar
 
             <!-- Toggle colonnes -->
             <div class="relative" x-data="{ open: false }">
-                  <button @click="open = !open" class="px-3 py-2 text-gray-200 bg-gray-100 dark:bg-gray-700 border border-gray-200 dark:border-gray-500 rounded-md text-sm font-medium">
+                  <button @click="open = !open" class="px-3 py-2 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 border border-gray-200 dark:border-gray-500 rounded-md text-sm font-medium">
                         Colonnes
                   </button>
                   <div x-show="open" @click.outside="open = false"

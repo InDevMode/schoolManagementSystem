@@ -348,7 +348,7 @@
                                                                               class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:text-emerald-400 dark:hover:text-emerald-400"
                                                                               role="menuitem"><i
                                                                                     class="fas fa-edit mr-2"></i>Modifier</a>
-                                                                        <a href="{{ url('chat?receiver_id=' . base64_encode($admin->id)) }}"
+                                                                        <a href="{{ url('chat?receiver_id=' . base64_encode($teacher->id)) }}"
                                                                               class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:text-indigo-400 dark:hover:text-indigo-400"
                                                                               role="menuitem"><i
                                                                                     class="fas fa-comment mr-2"></i>Message</a>

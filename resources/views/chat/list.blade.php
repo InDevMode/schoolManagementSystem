@@ -1,10 +1,5 @@
 @extends('layouts.app')
 @section('content')
-      <header
-            class="px-4 py-2 border-b border-gray-300 dark:border-gray-900 bg-indigo-600 dark:bg-gray-700 text-white flex justify-between items-center">
-            <h1 class="text-2xl font-semibold">Messages </h1>
-            <p class="text-2xl font-semibold">@include('message') </p>
-      </header>
       <div class="flex h-screen overflow-hidden" x-data="{ openSidebar: false }">
 
             <!-- Sidebar -->
@@ -29,11 +24,7 @@
 
                   <!-- Chat Messages -->
                   <div class="no-scrollbar flex-1 overflow-y-auto p-4 pb-96 border-b dark:border-gray-800">
-                        <!-- Incoming Message -->
-                        @include('chat.receiver')
-
-                        <!-- Outgoing Message -->
-                        @include('chat.sender')
+                        @include('chat.message')
                   </div>
 
                   <!-- Chat Input -->
@@ -42,4 +33,39 @@
       </div>
 @endsection
 
-<script></script>
+<script>
+      function markMessagesAsRead(receiverId) {
+            fetch(`{{ url('/chat/read') }}`, {
+                        method: 'POST',
+                        headers: {
+                              'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute(
+                                    'content'),
+                              'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                              receiver_id: receiverId
+                        })
+                  }).then(response => response.json())
+                  .then(data => {
+                        if (data.success) {
+                              // Mise à jour visuelle du preview
+                              const preview = document.querySelector(
+                                    `.chat-preview[data-receiver-id="${base64_encode(receiverId)}"]`);
+                              if (preview) {
+                                    preview.classList.remove('bg-indigo-50', 'unread');
+                              }
+
+                              // Mise à jour des badges dans la fenêtre de chat
+                              document.querySelectorAll('.status-badge').forEach(badge => {
+                                    badge.textContent = 'Vu';
+                                    badge.classList.remove('text-red-500');
+                                    badge.classList.add('text-gray-400');
+                              });
+                        }
+                  });
+      }
+
+      document.addEventListener('DOMContentLoaded', function() {
+            markMessagesAsRead({{ $getReceiver->id }});
+      });
+</script>
