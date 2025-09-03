@@ -36,7 +36,6 @@ class ChatController extends Controller
         return view('chat.list', $data);
     }
 
-
     public function sendMessage(Request $request)
     {
         try {
@@ -56,15 +55,6 @@ class ChatController extends Controller
         }
     }
 
-    public function markAsRead(Request $request)
-    {
-        $receiverId = base64_decode($request->receiver_id);
-        $chat = ChatModel::getMarkAsRead($receiverId);
-        if ($chat) {
-            return response()->json(['success' => true]);
-        }
-        return response()->json(['success' => false]);
-    }
 
 
 }

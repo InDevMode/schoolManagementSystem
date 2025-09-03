@@ -122,5 +122,39 @@ class ChatModel extends Model
             ->update(['status' => 1]);
     }
 
+    public static function getUnreadMessages(int $user_id)
+    {
+        $getUnread = ChatModel::select(
+            'chats.*',
+            'sender.name as sender_name',
+            'sender.last_name as sender_last_name',
+            'sender.last_login as last_login',
+            'sender.profile_picture as sender_profile_picture'
+        )
+            ->join('users as sender', 'sender.id', '=', 'chats.sender_id')
+            ->where('chats.receiver_id', $user_id)
+            ->where('chats.status', '!=', 1)
+            ->where('chats.is_delete', 0)
+            ->orderBy('chats.id', 'desc')
+            ->get();
+
+        $result = [];
+
+        foreach ($getUnread as $value) {
+            $data['id'] = $value->id;
+            $data['message'] = $value->message;
+            $data['created_date'] = $value->created_date;
+            $data['sender_id'] = $value->sender_id;
+            $data['sender_name'] = $value->sender_last_name . ' ' . $value->sender_name;
+            $data['sender_profile_picture'] = $value->sender_profile_picture;
+            $data['sender_last_login'] = $value->last_login;
+            $data['countMessage'] = $value->countMessage($value->id, $user_id);
+            $result[] = $data;
+        }
+
+        return $result;
+    }
+
+
 
 }

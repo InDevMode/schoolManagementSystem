@@ -1,6 +1,6 @@
 @extends('layouts.app')
 @section('content')
-      <div class="flex h-screen overflow-hidden" x-data="{ openSidebar: false }">
+      <div class="flex h-screen overflow-hidden" x-data="{ openSidebar: false, search: '' }">
 
             <!-- Sidebar -->
             <div class="bg-white dark:bg-gray-800 border-r-4 dark:border-gray-900 transform transition-transform duration-300
@@ -22,7 +22,8 @@
                         @include('chat.header')
 
                         <!-- Chat Messages -->
-                        <div class="no-scrollbar flex-1 overflow-y-auto p-4 pb-96 border-b dark:border-gray-800 bg-indigo-100/25 dark:bg-gray-900">
+                        <div
+                              class="no-scrollbar flex-1 overflow-y-auto p-4 pb-96 border-b dark:border-gray-800 bg-indigo-100/25 dark:bg-gray-900">
                               @include('chat.message')
                         </div>
 

@@ -5,6 +5,7 @@
       // Logo
       $setting = \App\Models\SettingModel::getSingle(1);
       $logo_url = !empty($setting->logo) ? \App\Models\SettingModel::getLogo() : asset('upload/logo.png');
+      $unreadMessages = \App\Models\ChatModel::getUnreadMessages(Auth::user()->id);
 
       // Liens des dashboards par rôle
       $dashboardLinks = [
@@ -47,7 +48,9 @@
       $menus = $roleMenus[$userType] ?? [];
 
       // Photo de profil
-      $profilePicture = !empty($user->profile_picture) ? 'upload/profile/' . $user->profile_picture    : 'upload/default.jpg';
+      $profilePicture = !empty($user->profile_picture)
+          ? 'upload/profile/' . $user->profile_picture
+          : 'upload/default.jpg';
 @endphp
 
 
@@ -80,7 +83,7 @@
                                     </span>
                               </button>
                               <input type="text" x-model="search" placeholder="Rechercher..."
-                                    class="appearance-none w-full xl:w-[430px] rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-violet-600 focus:border-violet-600 py-2.5 pr-14 pl-12 outline-none" />
+                                    class="appearance-none w-full xl:w-[430px] text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-violet-600 focus:border-violet-600 py-2.5 pr-14 pl-12 outline-none" />
                         </div>
                   </form>
             </div>
@@ -186,94 +189,64 @@
                         <!-- Notification Menu Area -->
 
                         <!-- Chat Notification Area -->
-                        <li class="relative" x-data="{ dropdownOpen: false, notifying: true }" @click.outside="dropdownOpen = false">
+                        <li class="relative" x-data="{ dropdownOpen: false, notifying: {{ count($unreadMessages) > 0 ? 'true' : 'false' }} }" @click.outside="dropdownOpen = false">
                               <a class="relative flex h-8.5 w-8.5 items-center justify-center rounded-full border-[0.5px] border-stroke bg-gray hover:text-indigo-600 dark:border-strokedark dark:bg-meta-4 dark:text-white"
-                                    href="#" @click.prevent="dropdownOpen = ! dropdownOpen; notifying = false">
-                                    <span :class="!notifying && 'hidden'"
-                                          class="absolute -right-0.5 -top-0.5 z-1 h-2 w-2 rounded-full bg-meta-1">
-                                          <span
-                                                class="absolute -z-1 inline-flex h-full w-full animate-ping rounded-full bg-meta-1 opacity-75"></span>
-                                    </span>
+                                    href="#"
+                                    @click.prevent="dropdownOpen = !dropdownOpen; count($unreadMessages) > 0 ? notifying = true : notifying = false">
+
+                                    {{-- Petit badge rouge avec compteur --}}
+                                    @if (count($unreadMessages) > 0)
+                                          <span :class="!notifying && 'hidden'"
+                                                class="absolute -right-1 -top-1 z-10 min-w-[18px] h-5 px-1 flex items-center justify-center text-[10px] font-bold text-white bg-meta-1 rounded-full">
+                                                {{ count($unreadMessages) }}
+                                                <span
+                                                      class="absolute -z-10 inline-flex h-full w-full animate-ping rounded-full bg-meta-1 opacity-75"></span>
+                                          </span>
+                                    @endif
                                     <i class="fa-solid fa-comment" width="18" height="18"></i>
                               </a>
 
                               <!-- Dropdown Start -->
                               <div x-show="dropdownOpen" x-cloak
-                                    class="absolute -right-16 mt-6 flex h-90 w-75 flex-col rounded-xl border border-stroke bg-white shadow-xl dark:border-strokedark dark:bg-boxdark sm:right-0 sm:w-80">
+                                    class="absolute -right-16 mt-6 flex max-h-[400px] w-75 flex-col rounded-xl border border-stroke bg-white shadow-xl overflow-y-auto dark:border-strokedark dark:bg-boxdark sm:right-0 sm:w-80">
+
                                     <div class="px-4.5 py-3">
-                                          <h5 class="text-sm font-medium text-bodydark2">Messages</h5>
+                                          <h5 class="text-sm font-medium text-bodydark2">
+                                                Messages ({{ count($unreadMessages) }})
+                                          </h5>
                                     </div>
 
                                     <ul class="no-scrollbar flex h-auto flex-col overflow-y-auto">
-                                          <li>
-                                                <a class="flex gap-4.5 border-t border-stroke px-4.5 py-3 hover:bg-gray-2 dark:border-strokedark dark:hover:bg-meta-4"
-                                                      href="">
-                                                      <div class="h-12.5 w-12.5 rounded-full">
-                                                            <img src="{{ asset('public/images/user/user-02.png') }}"
-                                                                  alt="User" />
-                                                      </div>
+                                          @forelse ($unreadMessages as $message)
+                                                <li>
+                                                      <a class="flex gap-4.5 border-t border-stroke px-4.5 py-3 hover:bg-gray-2 dark:border-strokedark dark:hover:bg-meta-4"
+                                                            href="{{ url('chat?receiver_id=' . base64_encode($message['sender_id'])) }}">
+                                                            <div class="h-12 w-12 rounded-full">
+                                                                  <img src="{{ $message['sender_profile_picture'] ? asset('upload/profile/' . $message['sender_profile_picture']) : asset('upload/profile/default.jpg') }}"
+                                                                        alt="User" class="rounded-full" />
+                                                            </div>
 
-                                                      <div>
-                                                            <h6 class="text-sm font-medium text-black dark:text-white">
-                                                                  Mariya Desoja
-                                                            </h6>
-                                                            <p class="text-sm">I like your confidence 💪</p>
-                                                            <p class="text-xs">2min ago</p>
-                                                      </div>
-                                                </a>
-                                          </li>
-                                          <li>
-                                                <a class="flex gap-4.5 border-t border-stroke px-4.5 py-3 hover:bg-gray-2 dark:border-strokedark dark:hover:bg-meta-4"
-                                                      href="">
-                                                      <div class="h-12.5 w-12.5 rounded-full">
-                                                            <img src="{{ asset('public/images/user/user-01.png') }}"
-                                                                  alt="User" />
-                                                      </div>
-
-                                                      <div>
-                                                            <h6 class="text-sm font-medium text-black dark:text-white">
-                                                                  Robert Jhon
-                                                            </h6>
-                                                            <p class="text-sm">Can you share your offer?</p>
-                                                            <p class="text-xs">10min ago</p>
-                                                      </div>
-                                                </a>
-                                          </li>
-                                          <li>
-                                                <a class="flex gap-4.5 border-t border-stroke px-4.5 py-3 hover:bg-gray-2 dark:border-strokedark dark:hover:bg-meta-4"
-                                                      href="">
-                                                      <div class="h-12.5 w-12.5 rounded-full">
-                                                            <img src="{{ asset('public/images/user/user-03.png') }}"
-                                                                  alt="User" />
-                                                      </div>
-
-                                                      <div>
-                                                            <h6 class="text-sm font-medium text-black dark:text-white">
-                                                                  Henry Dholi
-                                                            </h6>
-                                                            <p class="text-sm">I cam across your profile and...</p>
-                                                            <p class="text-xs">1day ago</p>
-                                                      </div>
-                                                </a>
-                                          </li>
-                                          <li>
-                                                <a class="flex gap-4.5 border-t border-stroke px-4.5 py-3 hover:bg-gray-2 dark:border-strokedark dark:hover:bg-meta-4"
-                                                      href="">
-                                                      <div class="h-12.5 w-12.5 rounded-full">
-                                                            <img src="{{ asset('public/images/user/user-03.png') }}"
-                                                                  alt="User" />
-                                                      </div>
-
-                                                      <div>
-                                                            <h6 class="text-sm font-medium text-black dark:text-white">
-                                                                  Henry Dholi
-                                                            </h6>
-                                                            <p class="text-sm">I cam across your profile and...</p>
-                                                            <p class="text-xs">1day ago</p>
-                                                      </div>
-                                                </a>
-                                          </li>
+                                                            <div>
+                                                                  <h6
+                                                                        class="text-sm font-medium text-black dark:text-white">
+                                                                        {{ $message['sender_name'] }}
+                                                                  </h6>
+                                                                  <p class="text-sm">
+                                                                        {!! \Illuminate\Support\Str::limit($message['message'], 40) !!}
+                                                                  </p>
+                                                                  <p class="text-xs text-gray-400">
+                                                                        {{ \Carbon\Carbon::parse($message['created_date'])->locale('fr')->diffForHumans() }}
+                                                                  </p>
+                                                            </div>
+                                                      </a>
+                                                </li>
+                                          @empty
+                                                <li class="px-4.5 py-3 text-sm text-gray-500 text-center">
+                                                      Aucun nouveau message
+                                                </li>
+                                          @endforelse
                                     </ul>
+
                                     <!-- Footer fixe -->
                                     <div class="px-4.5 py-3">
                                           <h5 class="text-sm font-medium text-bodydark2">
@@ -284,9 +257,8 @@
                               </div>
                               <!-- Dropdown End -->
                         </li>
-                        <!-- Chat Notification Area -->
-                  </ul>
 
+                  </ul>
                   <!-- Dark mode / Notifications / Messages (inchangés pour éviter de gonfler le code) -->
 
                   <div class="relative" x-data="{ dropdownOpen: false }" @click.outside="dropdownOpen = false">
