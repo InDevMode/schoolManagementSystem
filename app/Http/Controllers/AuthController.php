@@ -15,18 +15,15 @@ class AuthController extends Controller
     public function login()
     {
         if (!empty(Auth::check())) {
-            switch (Auth::user()->user_type) {
-                case 1:
-                    return redirect('admin/dashboard');
-                case 2:
-                    return redirect('teacher/dashboard');
-                case 3:
-                    return redirect('student/dashboard');
-                case 4:
-                    return redirect('parent/dashboard');
-                default:
-                    return redirect(url(''));
-            }
+
+            match (Auth::user()->user_type) {
+                1 => redirect('admin/dashboard'),
+                2 => redirect('teacher/dashboard'),
+                3 => redirect('student/dashboard'),
+                4 => redirect('parent/dashboard'),
+                default => redirect(url('')),
+            };
+
         }
 
         return view('auth.login');
@@ -49,18 +46,14 @@ class AuthController extends Controller
             $user->last_login = now();
             $user->save();
 
-            switch ($user->user_type) {
-                case 1:
-                    return redirect('admin/dashboard');
-                case 2:
-                    return redirect('teacher/dashboard');
-                case 3:
-                    return redirect('student/dashboard');
-                case 4:
-                    return redirect('parent/dashboard');
-                default:
-                    return redirect(url(''));
-            }
+            return match ($user->user_type) {
+                1 => redirect('admin/dashboard'),
+                2 => redirect('teacher/dashboard'),
+                3 => redirect('student/dashboard'),
+                4 => redirect('parent/dashboard'),
+                default => redirect(url('')),
+            };
+
         }
 
         return redirect()->back()->with('error', 'Email et mot de passe incorrect.');
@@ -98,22 +91,23 @@ class AuthController extends Controller
         }
     }
 
-    public function resetAndChangePassword(Request $request, $token): \Illuminate\Foundation\Application|\Illuminate\Routing\Redirector|\Illuminate\Http\RedirectResponse|\Illuminate\Contracts\Foundation\Application
+    public function resetAndChangePassword(Request $request, string $token): \Illuminate\Http\RedirectResponse
     {
-        if ($request->password == $request->confPassword) {
+        $user = User::getTokenSingle($token);
 
-            $user = User::getTokenSingle($token);
-            if (!$user) {
-                return redirect()->back()->with('error', 'Token invalide ou utilisateur introuvable.');
-            }
-            $user->password = Hash::make($request->password);
-            $user->remember_token = Str::random(30);
-            $user->save();
+        return match (true) {
+            $request->password !== $request->confPassword =>
+            redirect()->back()->with('error', 'Les deux mots de passe ne correspondent pas.'),
 
-            return redirect(url(''))->with('success', 'Votre mot de passe a été réinitialisé avec succès.');
-        } else {
-            return redirect()->back()->with('error', 'Les deux mot de passes ne correspondent pas.');
-        }
+            !$user =>
+            redirect()->back()->with('error', 'Token invalide ou utilisateur introuvable.'),
+
+            default => tap($user, function ($u) use ($request) {
+                    $u->password = Hash::make($request->password);
+                    $u->remember_token = Str::random(30);
+                    $u->save();
+                })->redirect(url(''))->with('success', 'Votre mot de passe a été réinitialisé avec succès.'),
+        };
     }
 
     public function logout(): \Illuminate\Foundation\Application|\Illuminate\Routing\Redirector|\Illuminate\Http\RedirectResponse|\Illuminate\Contracts\Foundation\Application

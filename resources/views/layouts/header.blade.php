@@ -4,9 +4,7 @@
 
       // Logo
       $setting = \App\Models\SettingModel::getSingle(1);
-      $logo_url = !empty($setting->logo)
-          ? \App\Models\SettingModel::getFaviconLogo($setting->logo)
-          : asset('upload/logo.png');
+      $logo_url = !empty($setting->logo) ? \App\Models\SettingModel::getLogo() : asset('upload/logo.png');
 
       // Liens des dashboards par rôle
       $dashboardLinks = [
@@ -49,9 +47,7 @@
       $menus = $roleMenus[$userType] ?? [];
 
       // Photo de profil
-      $profilePicture = !empty($user->profile_picture)
-          ? 'upload/profile/' . $user->profile_picture
-          : 'upload/default.jpg';
+      $profilePicture = !empty($user->profile_picture) ? 'upload/profile/' . $user->profile_picture    : 'upload/default.jpg';
 @endphp
 
 
@@ -131,7 +127,7 @@
                                           <h5 class="text-sm font-medium text-bodydark2">Notifications</h5>
                                     </div>
 
-                                    <ul class="flex h-auto flex-col overflow-y-auto">
+                                    <ul class="no-scrollbar flex h-auto flex-col overflow-y-auto">
                                           <li>
                                                 <a class="flex flex-col gap-2.5 border-t border-stroke px-4.5 py-3 hover:bg-gray-2 dark:border-strokedark dark:hover:bg-meta-4"
                                                       href="#">
@@ -208,7 +204,7 @@
                                           <h5 class="text-sm font-medium text-bodydark2">Messages</h5>
                                     </div>
 
-                                    <ul class="flex h-auto flex-col overflow-y-auto">
+                                    <ul class="no-scrollbar flex h-auto flex-col overflow-y-auto">
                                           <li>
                                                 <a class="flex gap-4.5 border-t border-stroke px-4.5 py-3 hover:bg-gray-2 dark:border-strokedark dark:hover:bg-meta-4"
                                                       href="">

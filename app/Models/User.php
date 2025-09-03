@@ -245,12 +245,14 @@ class User extends Authenticatable
             ->paginate($perPage);
     }
 
-    public static function getProfile(string $profilePicture): string
+    public function getProfile(): string
     {
-        if (!empty($profilePicture) && file_exists('upload/profile/' . $profilePicture)) {
-            return url('upload/profile/' . $profilePicture);
+        $path = base_path('upload/profile/' . $this->profile_picture);
+        if (!empty($this->profile_picture) && file_exists($path)) {
+            return url('upload/profile/' . $this->profile_picture);
         }
-        return url('');
+        // Image par défaut si rien n'existe
+        return url('upload/default.jpg');
     }
 
     public static function getStudentList(int $perPage)

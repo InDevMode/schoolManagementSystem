@@ -107,11 +107,7 @@ class StudentController extends Controller
         $data['header_title'] = "Modifier un apprenants";
         if (!empty($data['getStudent'])) {
             $data['getClass'] = ClassModel::getClass();
-            if (!empty($data['getStudent']->profile_picture)) {
-                $data['profile_picture_url'] = User::getProfile($data['getStudent']->profile_picture);
-            } else {
-                $data['profile_picture_url'] = asset('upload/default.jpg');
-            }
+            !empty($data['getStudent']->profile_picture) ? $data['profile_picture_url'] = $data['getStudent']->getProfile() : $data['profile_picture_url'] = asset('upload/default.jpg');
             return view('admin.student.edit', $data);
         }
         abort(404);
@@ -171,7 +167,7 @@ class StudentController extends Controller
             if (!empty($request->file('profile_picture'))) {
                 $studentProfilePicture = $student->profile_picture;
                 if (!empty($studentProfilePicture)) {
-                    $profilePictureUrl = User::getProfile($studentProfilePicture);
+                    $profilePictureUrl = User::getProfile();
                     if (!empty($profilePictureUrl)) {
                         unlink('upload/profile/' . $studentProfilePicture);
                     }

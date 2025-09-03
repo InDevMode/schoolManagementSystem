@@ -42,7 +42,7 @@ class UserController extends Controller
     private function getProfilePictureUrl($userData): string
     {
         return !empty($userData->profile_picture)
-            ? $userData->getProfile($userData->profile_picture)
+            ? $userData->getProfile()
             : asset('upload/default.jpg');
     }
 
@@ -70,19 +70,23 @@ class UserController extends Controller
             if (!empty($request->password) && $passwordLength < 6) {
                 return redirect()->back()->with('error', 'Votre mot de passe ne doit pas être de moins de 6 caractères.');
             }
-            if (!empty($request->file('profile_picture'))) {
-                $adminProfilePicture = $admin->profile_picture;
-                if (!empty($adminProfilePicture)) {
-                    $profilePictureUrl = User::getProfile($adminProfilePicture);
-                    if (!empty($profilePictureUrl)) {
-                        unlink('upload/profile/' . $adminProfilePicture);
+
+            if ($request->hasFile('profile_picture')) {
+                $file = $request->file('profile_picture');
+                $ext = $file->getClientOriginalExtension();
+                $randomStr = 'admin' . date('dmYHis') . Str::random(20);
+                $fileName = strtolower($randomStr) . '.' . $ext;
+
+                // Supprimer l'ancienne photo si elle existe
+                if (!empty($admin->profile_picture)) {
+                    $oldPath = base_path('upload/profile/' . $admin->profile_picture);
+                    if (file_exists($oldPath)) {
+                        unlink($oldPath);
                     }
                 }
-                $ext = $request->file('profile_picture')->getClientOriginalExtension();
-                $file = $request->file('profile_picture');
-                $randomStr = 'admin' . date('dmYhis') . Str::random(20);
-                $fileName = strtolower($randomStr) . '.' . $ext;
-                $file->move('upload/profile/', $fileName);
+
+                // Déplacer la nouvelle photo
+                $file->move(base_path('upload/profile/'), $fileName);
                 $admin->profile_picture = $fileName;
             }
 
@@ -142,21 +146,26 @@ class UserController extends Controller
                 }
                 $teacher->mobile_number = $mobileNumber;
             }
-            if (!empty($request->file('profile_picture'))) {
-                $teacherProfilePicture = $teacher->profile_picture;
-                if (!empty($teacherProfilePicture)) {
-                    $profilePictureUrl = User::getProfile($teacherProfilePicture);
-                    if (!empty($profilePictureUrl)) {
-                        unlink('upload/profile/' . $teacherProfilePicture);
+
+            if ($request->hasFile('profile_picture')) {
+                $file = $request->file('profile_picture');
+                $ext = $file->getClientOriginalExtension();
+                $randomStr = 'teacher' . date('dmYHis') . Str::random(20);
+                $fileName = strtolower($randomStr) . '.' . $ext;
+
+                // Supprimer l'ancienne photo si elle existe
+                if (!empty($teacher->profile_picture)) {
+                    $oldPath = base_path('upload/profile/' . $teacher->profile_picture);
+                    if (file_exists($oldPath)) {
+                        unlink($oldPath);
                     }
                 }
-                $ext = $request->file('profile_picture')->getClientOriginalExtension();
-                $file = $request->file('profile_picture');
-                $randomStr = 'teacher' . date('dmYhis') . Str::random(20);
-                $fileName = strtolower($randomStr) . '.' . $ext;
-                $file->move('upload/profile/', $fileName);
+
+                // Déplacer la nouvelle photo
+                $file->move(base_path('upload/profile/'), $fileName);
                 $teacher->profile_picture = $fileName;
             }
+
             $teacher->save();
 
             return redirect()->back()->with('success', 'Vos informations personnelles ont été modifiées avec succès.');
@@ -214,21 +223,26 @@ class UserController extends Controller
                 }
                 $student->mobile_number = $mobileNumber;
             }
-            if (!empty($request->file('profile_picture'))) {
-                $studentProfilePicture = $student->profile_picture;
-                if (!empty($studentProfilePicture)) {
-                    $profilePictureUrl = User::getProfile($studentProfilePicture);
-                    if (!empty($profilePictureUrl)) {
-                        unlink('upload/profile/' . $studentProfilePicture);
+
+            if ($request->hasFile('profile_picture')) {
+                $file = $request->file('profile_picture');
+                $ext = $file->getClientOriginalExtension();
+                $randomStr = 'student' . date('dmYHis') . Str::random(20);
+                $fileName = strtolower($randomStr) . '.' . $ext;
+
+                // Supprimer l'ancienne photo si elle existe
+                if (!empty($student->profile_picture)) {
+                    $oldPath = base_path('upload/profile/' . $student->profile_picture);
+                    if (file_exists($oldPath)) {
+                        unlink($oldPath);
                     }
                 }
-                $ext = $request->file('profile_picture')->getClientOriginalExtension();
-                $file = $request->file('profile_picture');
-                $randomStr = 'student' . date('dmYhis') . Str::random(20);
-                $fileName = strtolower($randomStr) . '.' . $ext;
-                $file->move('upload/profile/', $fileName);
+
+                // Déplacer la nouvelle photo
+                $file->move(base_path('upload/profile/'), $fileName);
                 $student->profile_picture = $fileName;
             }
+
             $student->blood_group = trim($request->blood_group);
             $student->height = trim($request->height);
             $student->weight = trim($request->weight);
@@ -280,21 +294,26 @@ class UserController extends Controller
                 }
                 $parent->mobile_number = $mobileNumber;
             }
-            if (!empty($request->file('profile_picture'))) {
-                $parentProfilePicture = $parent->profile_picture;
-                if (!empty($parentProfilePicture)) {
-                    $profilePictureUrl = User::getProfile($parentProfilePicture);
-                    if (!empty($profilePictureUrl)) {
-                        unlink('upload/profile/' . $parentProfilePicture);
+
+            if ($request->hasFile('profile_picture')) {
+                $file = $request->file('profile_picture');
+                $ext = $file->getClientOriginalExtension();
+                $randomStr = 'parent' . date('dmYHis') . Str::random(20);
+                $fileName = strtolower($randomStr) . '.' . $ext;
+
+                // Supprimer l'ancienne photo si elle existe
+                if (!empty($parent->profile_picture)) {
+                    $oldPath = base_path('upload/profile/' . $parent->profile_picture);
+                    if (file_exists($oldPath)) {
+                        unlink($oldPath);
                     }
                 }
-                $ext = $request->file('profile_picture')->getClientOriginalExtension();
-                $file = $request->file('profile_picture');
-                $randomStr = 'parent' . date('dmYhis') . Str::random(20);
-                $fileName = strtolower($randomStr) . '.' . $ext;
-                $file->move('upload/profile/', $fileName);
+
+                // Déplacer la nouvelle photo
+                $file->move(base_path('upload/profile/'), $fileName);
                 $parent->profile_picture = $fileName;
             }
+
             $parent->save();
 
             return redirect()->back()->with('success', 'Vos informations personnelles ont été modifiés avec succès.');
@@ -334,12 +353,8 @@ class UserController extends Controller
     {
         $data['header_title'] = "Paramètres";
         $data['getSetting'] = SettingModel::getSingle(1);
-        $data['favicon_url'] = !empty($data['getSetting']->favicon)
-            ? SettingModel::getFaviconLogo($data['getSetting']->favicon)
-            : asset('upload/favicon.png');
-        $data['logo_url'] = !empty($data['getSetting']->logo)
-            ? SettingModel::getFaviconLogo($data['getSetting']->logo)
-            : asset('upload/logo.png');
+        $data['favicon_url'] = !empty($data['getSetting']->favicon) ? SettingModel::getFavicon() : asset('upload/favicon.png');
+        $data['logo_url'] = !empty($data['getSetting']->logo) ? SettingModel::getLogo() : asset('upload/logo.png');
         return view('admin.settings.setting', $data);
     }
 
@@ -357,35 +372,41 @@ class UserController extends Controller
                 $setting->stripe_public_key = trim($request->stripe_public_key);
                 $setting->stripe_secret_key = trim($request->stripe_secret_key);
 
-                if (!empty($request->file('favicon'))) {
-                    $settingFavicon = $setting->favicon;
-                    if (!empty($settingFavicon)) {
-                        $faviconUrl = SettingModel::getFaviconLogo($settingFavicon);
-                        if (!empty($faviconUrl)) {
-                            unlink('upload/setting/' . $settingFavicon);
+                if ($request->hasFile('favicon')) {
+                    $file = $request->file('favicon');
+                    $ext = $file->getClientOriginalExtension();
+                    $randomStr = 'favicon' . date('dmYHis') . Str::random(20);
+                    $fileName = strtolower($randomStr) . '.' . $ext;
+
+                    // Supprimer l'ancienne photo si elle existe
+                    if (!empty($setting->favicon)) {
+                        $oldPath = base_path('upload/setting/' . $setting->favicon);
+                        if (file_exists($oldPath)) {
+                            unlink($oldPath);
                         }
                     }
-                    $ext = $request->file('favicon')->getClientOriginalExtension();
-                    $file = $request->file('favicon');
-                    $randomStr = 'setting' . date('dmYhis') . Str::random(20);
-                    $fileName = strtolower($randomStr) . '.' . $ext;
-                    $file->move('upload/setting/', $fileName);
+
+                    // Déplacer la nouvelle photo
+                    $file->move(base_path('upload/setting/'), $fileName);
                     $setting->favicon = $fileName;
                 }
 
-                if (!empty($request->file('logo'))) {
-                    $settingLogo = $setting->logo;
-                    if (!empty($settingLogo)) {
-                        $logoUrl = SettingModel::getFaviconLogo($settingLogo);
-                        if (!empty($logoUrl)) {
-                            unlink('upload/setting/' . $settingLogo);
+                if ($request->hasFile('logo')) {
+                    $file = $request->file('logo');
+                    $ext = $file->getClientOriginalExtension();
+                    $randomStr = 'logo' . date('dmYHis') . Str::random(20);
+                    $fileName = strtolower($randomStr) . '.' . $ext;
+
+                    // Supprimer l'ancienne photo si elle existe
+                    if (!empty($setting->logo)) {
+                        $oldPath = base_path('upload/setting/' . $setting->logo);
+                        if (file_exists($oldPath)) {
+                            unlink($oldPath);
                         }
                     }
-                    $ext = $request->file('logo')->getClientOriginalExtension();
-                    $file = $request->file('logo');
-                    $randomStr = 'setting' . date('dmYhis') . Str::random(20);
-                    $fileName = strtolower($randomStr) . '.' . $ext;
-                    $file->move('upload/setting/', $fileName);
+
+                    // Déplacer la nouvelle photo
+                    $file->move(base_path('upload/setting/'), $fileName);
                     $setting->logo = $fileName;
                 }
 

@@ -69,13 +69,10 @@ class AdminController extends Controller
     public function edit($id): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
     {
         $data['getAdmin'] = User::getSingle($id);
+
         if (!empty($data['getAdmin'])) {
             $data['header_title'] = "Modifier un administrateur";
-            if (!empty($data['getAdmin']->profile_picture)) {
-                $data['profile_picture_url'] = User::getProfile($data['getAdmin']->profile_picture);
-            } else {
-                $data['profile_picture_url'] = asset('upload/default.jpg');
-            }
+            $data['getAdmin']->profile_picture ? $data['profile_picture_url'] = $data['getAdmin']->getProfile() : $data['profile_picture_url'] = asset('upload/default.jpg');
             return view('admin.admin.edit', $data);
         } else {
             abort(404);
@@ -116,7 +113,7 @@ class AdminController extends Controller
             if (!empty($request->file('profile_picture'))) {
                 $adminProfilePicture = $admin->profile_picture;
                 if (!empty($adminProfilePicture)) {
-                    $profilePictureUrl = User::getProfile($adminProfilePicture);
+                    $profilePictureUrl = User::getProfile();
                     if (!empty($profilePictureUrl)) {
                         unlink('upload/profile/' . $adminProfilePicture);
                     }

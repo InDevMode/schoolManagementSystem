@@ -89,11 +89,7 @@ class TeacherController extends Controller
         $data['getTeacher'] = User::getSingle($id);
         $data['header_title'] = "Modifier un professeur";
         if (!empty($data['getTeacher'])) {
-            if (!empty($data['getTeacher']->profile_picture)) {
-                $data['profile_picture_url'] = $data['getTeacher']->getProfile($data['getTeacher']->profile_picture);
-            } else {
-                $data['profile_picture_url'] = asset('upload/default.jpg');
-            }
+            !empty($data['getTeacher']->profile_picture) ? $data['profile_picture_url'] = $data['getTeacher']->getProfile() : $data['profile_picture_url'] = asset('upload/default.jpg');
             return view('admin.teacher.edit', $data);
         } else {
             abort(404);
@@ -145,7 +141,7 @@ class TeacherController extends Controller
             if (!empty($request->file('profile_picture'))) {
                 $teacherProfilePicture = $teacher->profile_picture;
                 if (!empty($teacherProfilePicture)) {
-                    $profilePictureUrl = User::getProfile($teacherProfilePicture);
+                    $profilePictureUrl = User::getProfile();
                     if (!empty($profilePictureUrl)) {
                         unlink('upload/profile/' . $teacherProfilePicture);
                     }

@@ -84,11 +84,7 @@ class ParentController extends Controller
         $data['getParent'] = User::getSingle($id);
         $data['header_title'] = "Modifier un Parent";
         if (!empty($data['getParent'])) {
-            if (!empty($data['getParent']->profile_picture)) {
-                $data['profile_picture_url'] = $data['getParent']->getProfile($data['getParent']->profile_picture);
-            } else {
-                $data['profile_picture_url'] = asset('upload/default.jpg');
-            }
+            !empty($data['getParent']->profile_picture) ? $data['profile_picture_url'] = $data['getParent']->getProfile() : $data['profile_picture_url'] = asset('upload/default.jpg');
             return view('admin.parent.edit', $data);
         } else {
             abort(404);
@@ -134,7 +130,7 @@ class ParentController extends Controller
             if (!empty($request->file('profile_picture'))) {
                 $parentProfilePicture = $parent->profile_picture;
                 if (!empty($parentProfilePicture)) {
-                    $profilePictureUrl = User::getProfile($parentProfilePicture);
+                    $profilePictureUrl = User::getProfile();
                     if (!empty($profilePictureUrl)) {
                         unlink('upload/profile/' . $parentProfilePicture);
                     }

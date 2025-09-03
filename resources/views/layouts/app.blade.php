@@ -9,13 +9,9 @@
       <title>{{ !empty($header_title) ? $header_title : '' }} - SMS</title>
 
       @php
-            $getSettingFaviconAndLogo = \App\Models\SettingModel::getSingle(1);
-            $favicon_url = !empty($getSettingFaviconAndLogo->favicon)
-                ? \App\Models\SettingModel::getFaviconLogo($getSettingFaviconAndLogo->favicon)
-                : asset('upload/favicon.png');
-            $logo_url = !empty($getSettingFaviconAndLogo->logo)
-                ? \App\Models\SettingModel::getFaviconLogo($getSettingFaviconAndLogo->logo)
-                : asset('upload/logo.png');
+            $getSetting = \App\Models\SettingModel::getSingle(1);
+            $favicon_url = !empty($getSetting->favicon) ? \App\Models\SettingModel::getFavicon() : asset('upload/favicon.png');
+            $logo_url = !empty($getSetting->logo) ? \App\Models\SettingModel::getLogo() : asset('upload/logo.png');
       @endphp
 
       <link rel="shortcut icon" href="{{ $favicon_url }}" />

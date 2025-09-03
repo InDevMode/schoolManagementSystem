@@ -9,8 +9,8 @@
         && Carbon::parse($getReceiver->last_login)->greaterThan(Carbon::now()->subMinutes(5));
 @endphp
 
-<header class="bg-white dark:bg-gray-700 px-4 py-2 text-gray-700 dark:text-gray-300 flex items-center justify-between">
-    <div class="flex flex-col">
+<header class="bg-indigo-500/25 dark:bg-gray-700 px-4 py-2 text-indigo-800 dark:text-gray-300 flex items-center justify-between">
+    <div class="flex flex-col items-center">
         <!-- Ligne image + nom/prénom -->
         <div class="flex items-center space-x-2">
             <img src="{{ $profilePicture }}" alt="Avatar" class="w-8 h-8 rounded-full">
@@ -18,13 +18,13 @@
         </div>
 
         <!-- Ligne statut / dernière connexion -->
-        <em class="text-sm text-gray-500 flex items-center ms-8">
+        <div class="text-sm text-italic dark:text-gray-300 text-indigo-800 flex items-center justify-end">
             @if($isOnline)
                 <i class="fa-solid fa-circle text-emerald-400 mr-2"></i>En ligne
             @else
-                Dernière connexion : {{ Carbon::parse($getReceiver->last_login)->format('d M Y à H:i') }}
+                En ligne {{ Carbon::parse($getReceiver->last_login)->locale('fr')->diffForHumans() }}
             @endif
-        </em>
+        </div>
     </div>
 
     <!-- Button to open sidebar on mobile -->

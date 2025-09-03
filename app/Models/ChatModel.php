@@ -65,6 +65,8 @@ class ChatModel extends Model
             'sender.last_name as last_name',
             'receiver.name as receiver_name',
             'receiver.last_name as receiver_last_name',
+            'receiver.profile_picture as receiver_profile_picture',
+            'sender.profile_picture as sender_profile_picture',
             \Illuminate\Support\Facades\DB::raw('(CASE WHEN chats.sender_id = ' . $user_id . ' THEN chats.receiver_id ELSE chats.sender_id END) as connection_user_id')
         )
             ->join('users as sender', 'sender.id', '=', 'chats.sender_id')
@@ -75,7 +77,8 @@ class ChatModel extends Model
                     ->where('chats.status', '<', 2)
                     ->where(function ($sub) use ($user_id) {
                         $sub->where('chats.receiver_id', $user_id)
-                            ->orWhere('chats.sender_id', $user_id);
+                            ->orWhere('chats.sender_id', $user_id)
+                            ->where('chats.status', '>', -1);
                     })
                     ->groupBy(\Illuminate\Support\Facades\DB::raw('CASE WHEN chats.sender_id = ' . $user_id . ' THEN chats.receiver_id ELSE chats.sender_id END'));
             })
@@ -91,6 +94,8 @@ class ChatModel extends Model
             $data['status'] = $value->status;
             $data['user_id'] = $value->connection_user_id;
             $data['name'] = $value->getConnectUser->last_name . ' ' . $value->getConnectUser->name;
+            $data['last_login'] = $value->getConnectUser->last_login;
+            $data['sender_profile_picture'] = $value->getConnectUser->getProfile();
             $data['countMessage'] = $value->countMessage($value->connection_user_id, $user_id);
             $result[] = $data;
         }
@@ -107,7 +112,14 @@ class ChatModel extends Model
 
     public function getConnectUser()
     {
-        return $this->hasOne(User::class, 'id', 'connection_user_id');
+        return $this->belongsTo(User::class, 'connection_user_id');
+    }
+
+    public static function updateCountMessage(int $sender_id, int $receiver_id)
+    {
+        ChatModel::where('sender_id', $receiver_id)
+            ->where('receiver_id', $sender_id)
+            ->update(['status' => 1]);
     }
 
 

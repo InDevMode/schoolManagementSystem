@@ -16,18 +16,26 @@ class ChatController extends Controller
     {
         $data['header_title'] = "Mes messages";
         $sender_id = Auth::user()->id;
+
+        // Récupération de la liste des contacts (toujours utile)
+        $data['getChatUser'] = ChatModel::getChatUser($sender_id);
+
+        // Initialiser receiver et chats seulement si receiver_id existe
         if (!empty($request->receiver_id)) {
             $receiver_id = base64_decode($request->receiver_id);
+
             if ($receiver_id == $sender_id) {
                 return redirect()->back()->with('error', 'Vous ne pouvez pas vous envoyer un message');
             }
+
+            ChatModel::updateCountMessage($sender_id, $receiver_id);
             $data['getReceiver'] = User::getSingle($receiver_id);
             $data['getChats'] = ChatModel::getChats($receiver_id, $sender_id);
-            $data['getChatUser'] = ChatModel::getChatUser($receiver_id);
-            // dd($data['getChatUser']);
         }
+
         return view('chat.list', $data);
     }
+
 
     public function sendMessage(Request $request)
     {
