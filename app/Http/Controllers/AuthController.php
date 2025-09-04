@@ -42,7 +42,7 @@ class AuthController extends Controller
             }
 
             // ✅ Mise à jour du last_login ici
-            $user = User::find($user->id);
+            $user = User::getSingle($user->id);
             $user->last_login = now();
             $user->save();
 

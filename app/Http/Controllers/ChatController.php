@@ -8,6 +8,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class ChatController extends Controller
 {
@@ -16,6 +17,11 @@ class ChatController extends Controller
     {
         $data['header_title'] = "Mes messages";
         $sender_id = Auth::user()->id;
+
+        // Mise à jour du last_login à chaque chargement de la page
+        User::where('id', $sender_id)->update([
+            'last_login' => now(),
+        ]);
 
         // Récupération de la liste des contacts (toujours utile)
         $data['getChatUser'] = ChatModel::getChatUser($sender_id);
@@ -29,6 +35,7 @@ class ChatController extends Controller
             }
 
             ChatModel::updateCountMessage($sender_id, $receiver_id);
+
             $data['getReceiver'] = User::getSingle($receiver_id);
             $data['getChats'] = ChatModel::getChats($receiver_id, $sender_id);
         }
@@ -38,6 +45,7 @@ class ChatController extends Controller
 
     public function sendMessage(Request $request)
     {
+        // dd($request->all());
         try {
 
             $chat = new ChatModel();
@@ -45,6 +53,16 @@ class ChatController extends Controller
             $chat->receiver_id = $request->receiver_id;
             $chat->message = $request->message;
             $chat->created_date = Carbon::createFromTimestamp(time());
+
+            if (!empty($request->file('file'))) {
+                $ext = $request->file('file')->getClientOriginalExtension();
+                $file = $request->file('file');
+                $randomStr = 'chat_file' . date('dmYhis') . Str::random(20);
+                $fileName = strtolower($randomStr) . '.' . $ext;
+                $file->move('upload/chats/', $fileName);
+                $chat->file = $fileName;
+            }
+
             $chat->save();
 
             return redirect()->back()->with('success', 'Message envoyé.');
@@ -54,7 +72,6 @@ class ChatController extends Controller
             return redirect()->back()->with('error', 'Vos informations ne sont pas correctes. Veuillez réessayer.');
         }
     }
-
 
 
 }

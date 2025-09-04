@@ -1,34 +1,40 @@
 @php
-    use Carbon\Carbon;
+      use Carbon\Carbon;
 
-    $profilePicture = !empty($getReceiver->profile_picture)
-        ? 'upload/profile/' . $getReceiver->profile_picture
-        : 'upload/default.jpg';
+      $profilePicture = !empty($getReceiver->profile_picture)
+          ? asset('upload/profile/' . $getReceiver->profile_picture)
+          : asset('upload/default.jpg');
 
-    $isOnline = $getReceiver->last_login
-        && Carbon::parse($getReceiver->last_login)->greaterThan(Carbon::now()->subMinutes(5));
+      $isOnline = $getReceiver->last_login && Carbon::parse($getReceiver->last_login)->diffInMinutes(now()) <= 5;
+      $lastSeen = Carbon::parse($getReceiver->last_login)->locale('fr')->diffForHumans();
 @endphp
 
-<header class="bg-indigo-500/25 dark:bg-gray-700 px-4 py-2 text-indigo-800 dark:text-gray-300 flex items-center justify-between">
-    <div class="flex flex-col items-center">
-        <!-- Ligne image + nom/prénom -->
-        <div class="flex items-center space-x-2">
-            <img src="{{ $profilePicture }}" alt="Avatar" class="w-8 h-8 rounded-full">
-            <span class="font-semibold text-md">{{ $getReceiver->last_name }} {{ $getReceiver->name }}</span>
-        </div>
+<header
+      class="bg-indigo-500/25 dark:bg-gray-700 px-4 py-2 text-indigo-800 dark:text-gray-300 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+            <!-- Avatar avec point de statut positionné -->
+            <div class="relative w-10 h-10 bg-gray-300 rounded-full">
+                  <img src="{{ $profilePicture }}" alt="Avatar" class="w-10 h-10 rounded-full">
+                  <span
+                        class="absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-white
+                         {{ $isOnline ? 'bg-emerald-500' : 'bg-gray-400' }}">
+                  </span>
+            </div>
 
-        <!-- Ligne statut / dernière connexion -->
-        <div class="text-sm text-italic dark:text-gray-300 text-indigo-800 flex items-center justify-end">
-            @if($isOnline)
-                <i class="fa-solid fa-circle text-emerald-400 mr-2"></i>En ligne
-            @else
-                En ligne {{ Carbon::parse($getReceiver->last_login)->locale('fr')->diffForHumans() }}
-            @endif
-        </div>
-    </div>
+            <!-- Nom + statut -->
+            <div class="flex flex-col">
+                  <span class="font-semibold text-md">
+                        {{ $getReceiver->last_name }} {{ $getReceiver->name }}
+                  </span>
+                  <span class="text-sm italic flex items-center text-indigo-800 dark:text-gray-300">
 
-    <!-- Button to open sidebar on mobile -->
-    <button class="xl:hidden" @click="openSidebar = !openSidebar">
-        <iconify-icon icon="mdi:menu" width="24" height="24"></iconify-icon>
-    </button>
+                        {{ $isOnline ? 'En ligne' : 'En ligne ' . $lastSeen }}
+                  </span>
+            </div>
+      </div>
+
+      <!-- Bouton menu mobile -->
+      <button class="xl:hidden" @click="openSidebar = !openSidebar">
+            <iconify-icon icon="mdi:menu" width="24" height="24"></iconify-icon>
+      </button>
 </header>

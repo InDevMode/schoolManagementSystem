@@ -136,6 +136,7 @@ class ChatModel extends Model
             ->where('chats.status', '!=', 1)
             ->where('chats.is_delete', 0)
             ->orderBy('chats.id', 'desc')
+            ->distinct('sender.id')
             ->get();
 
         $result = [];

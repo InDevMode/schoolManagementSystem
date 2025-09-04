@@ -23,7 +23,7 @@
 
                         <!-- Chat Messages -->
                         <div
-                              class="no-scrollbar flex-1 overflow-y-auto p-4 pb-96 border-b dark:border-gray-800 bg-indigo-100/25 dark:bg-gray-900">
+                              class="no-scrollbar flex-1 overflow-y-auto p-4 border-b dark:border-gray-800 bg-indigo-100/25 dark:bg-gray-900">
                               @include('chat.message')
                         </div>
 
@@ -33,3 +33,6 @@
             @endif
       </div>
 @endsection
+
+<script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+<script type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@^1/index.js"></script>

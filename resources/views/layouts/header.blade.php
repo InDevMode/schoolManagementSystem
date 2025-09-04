@@ -222,7 +222,7 @@
                                                       <a class="flex gap-4.5 border-t border-stroke px-4.5 py-3 hover:bg-gray-2 dark:border-strokedark dark:hover:bg-meta-4"
                                                             href="{{ url('chat?receiver_id=' . base64_encode($message['sender_id'])) }}">
                                                             <div class="h-12 w-12 rounded-full">
-                                                                  <img src="{{ $message['sender_profile_picture'] ? asset('upload/profile/' . $message['sender_profile_picture']) : asset('upload/profile/default.jpg') }}"
+                                                                  <img src="{{ $message['sender_profile_picture'] ? asset('upload/profile/' . $message['sender_profile_picture']) : asset('upload/default.jpg') }}"
                                                                         alt="User" class="rounded-full" />
                                                             </div>
 
