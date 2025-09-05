@@ -30,6 +30,7 @@
             }
 
             $isUnread = $chat->status == 0 && $chat->receiver_id == Auth::id();
+            $isDelete = $chat->is_delete == 1 && $chat->sender_id == Auth::id();
 
             $hasFile = !empty($chat->file);
             $fileUrl = $hasFile ? asset('upload/chats/' . $chat->file) : null;
@@ -37,7 +38,7 @@
 
       {{-- Messages envoyés par moi --}}
       @if ($isSender)
-            <div class="flex justify-end mb-2 items-end">
+            <div class="flex justify-end items-center mb-2">
                   <div class="flex flex-col items-end max-w-96">
                         {{-- 📎 Fichier joint au-dessus --}}
                         @if ($hasFile)
@@ -85,8 +86,30 @@
                         @endif
 
                         {{-- 💬 La bulle du message --}}
-                        <div class="relative bubble-right bg-indigo-500 text-white rounded-full px-5 py-2">
-                              <p class="text-sm">{!! nl2br(e($chat->message)) !!}</p>
+                        <div>
+                              {{-- Icônes d’action --}}
+                              <div class="flex items-center justify-end space-x-2 mr-5 mt-2">
+                                    {{-- Modifier --}}
+                                    <button type="button" title="Modifier"
+                                          @click="$root.editing = true; $root.editMessage = @js($chat->message); $root.editId = {{ $chat->id }}"
+                                          class="block hover:text-emerald-300">
+                                          <iconify-icon icon="mdi:pencil" width="16" height="16"></iconify-icon>
+                                    </button>
+                                    <a title="Supprimer" href='{{ route('chat.delete', $chat->id) }}'
+                                          class="block hover:text-red-300">
+                                          <iconify-icon icon="mdi:trash-can" width="16"
+                                                height="16"></iconify-icon>
+                                    </a>
+                              </div>
+                              @if ($isDelete)
+                                    <div class="relative bubble-right bg-indigo-500 text-white rounded-full px-5 py-2">
+                                          <p class="text-sm">{!! nl2br(e($chat->message)) !!}</p>
+                                    </div>
+                              @else
+                                    <div class="relative bubble-right bg-indigo-500 text-white rounded-full px-5 py-2">
+                                          <p class="text-sm">Message supprimé</p>
+                                    </div>
+                              @endif
                         </div>
 
                         {{-- ⏱️ Horodatage --}}
@@ -107,7 +130,7 @@
             </div>
       @else
             {{-- Messages reçus --}}
-            <div class="flex mb-2 items-end">
+            <div class="flex mb-2 items-center">
                   {{-- Avatar --}}
                   <div class="w-9 h-9 rounded-full flex items-center justify-center mr-2">
                         <img src="{{ asset($profilePicture) }}" alt="User Avatar" class="w-8 h-8 rounded-full">
@@ -161,9 +184,15 @@
 
 
                         {{-- 💬 La bulle du message --}}
-                        <div class="relative bubble-left bg-gray-300 text-gray-800 rounded-full px-5 py-2">
-                              <p class="text-sm">{!! nl2br(e($chat->message)) !!}</p>
-                        </div>
+                        @if ($isDelete)
+                              <div class="relative bubble-right bg-gray-300 text-gray-700 rounded-full px-5 py-2">
+                                    <p class="text-sm">{!! nl2br(e($chat->message)) !!}</p>
+                              </div>
+                        @else
+                              <div class="relative bubble-rightbg-gray-300 text-gray-700 rounded-full px-5 py-2">
+                                    <p class="text-sm">Message supprimé</p>
+                              </div>
+                        @endif
 
                         {{-- ⏱️ Horodatage --}}
                         <div class="text-[10px] text-left dark:text-gray-300 text-gray-700 mb-3 pl-2">

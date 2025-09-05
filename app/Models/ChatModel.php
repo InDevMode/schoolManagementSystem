@@ -12,7 +12,7 @@ class ChatModel extends Model
     use HasFactory;
 
     protected $table = 'chats';
-    protected $fillable = ['receiver_id', 'sender_id', 'message', 'status', 'file', 'is_delete'];
+    protected $fillable = ['receiver_id', 'sender_id', 'message', 'status', 'file',];
     protected $hidden = ['is_delete'];
     protected $casts = [
         'created_date' => 'datetime',
@@ -132,6 +132,7 @@ class ChatModel extends Model
             'sender.profile_picture as sender_profile_picture'
         )
             ->join('users as sender', 'sender.id', '=', 'chats.sender_id')
+            ->join('users as receiver', 'receiver.id', '=', 'chats.receiver_id')
             ->where('chats.receiver_id', $user_id)
             ->where('chats.status', '!=', 1)
             ->where('chats.is_delete', 0)
@@ -156,6 +157,16 @@ class ChatModel extends Model
         return $result;
     }
 
+    public static function getAllChatUser()
+    {
+        return ChatModel::select('chats.id')
+            ->join('users as sender', 'sender.id', '=', 'chats.sender_id')
+            ->join('users as receiver', 'receiver.id', '=', 'chats.receiver_id')
+            ->where('chats.receiver_id', '=', Auth::user()->id)
+            ->where('chats.status', '=', 0)
+            ->where('chats.is_delete', '=', 0)
+            ->count();
+    }
 
 
 }

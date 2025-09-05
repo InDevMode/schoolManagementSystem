@@ -281,7 +281,7 @@
 
                         <!-- Dropdown -->
                         <div x-show="dropdownOpen" x-cloak
-                              class="absolute right-0 mt-5 flex w-72 flex-col rounded-xl border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
+                              class="absolute right-0 mt-5 flex w-72 flex-col border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
                               <ul
                                     class="flex flex-col gap-x-2 border-b border-stroke dark:border-strokedark px-0 py-0">
                                     @foreach ($menus as $menu)
@@ -293,7 +293,7 @@
                                     @endforeach
                               </ul>
                               <a href="{{ url('logout') }}"
-                                    class="flex items-center gap-3.5 px-6 py-3 text-sm font-medium duration-300 ease-in-out dark:hover:bg-gray-600 dark:text-gray-300 text-gray-700 hover:bg-indigo-500/25 hover:text-indigo-600 lg:text-base">
+                                    class="flex items-center gap-3.5 px-6 py-3 text-sm rounded-lg font-medium duration-300 ease-in-out dark:hover:bg-gray-600 dark:text-gray-300 text-gray-700 hover:bg-indigo-500/25 hover:text-indigo-600 lg:text-base">
                                     <i class="fa-solid fa-arrow-right-from-bracket"></i>
                                     Déconnexion
                               </a>

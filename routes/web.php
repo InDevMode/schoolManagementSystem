@@ -44,7 +44,9 @@ Route::get('signup', [AuthController::class, 'signup']);
 
 Route::group(['middleware' => 'common'], function () {
     Route::get('chat', [ChatController::class, 'chat']);
-    Route::post('chat', [ChatController::class, 'sendMessage']);
+    Route::post('chat', [ChatController::class, 'sendMessage'])->name('chat.send');
+    Route::post('/chat/{id}', [ChatController::class, 'updateMessage'])->name('chat.update');
+    Route::get('/chat/{id}', [ChatController::class, 'deleteMessage'])->name('chat.delete');
 });
 
 Route::group(['middleware' => 'admin'], function () {

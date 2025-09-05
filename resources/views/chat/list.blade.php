@@ -1,6 +1,6 @@
 @extends('layouts.app')
 @section('content')
-      <div class="flex h-screen overflow-hidden" x-data="{ openSidebar: false, search: '' }">
+      <div class="flex h-screen overflow-hidden" x-data="{ openSidebar: false, search: '', editing: false, editMessage: '', editId: null}">
 
             <!-- Sidebar -->
             <div class="bg-white dark:bg-gray-800 border-r-4 dark:border-gray-900 transform transition-transform duration-300

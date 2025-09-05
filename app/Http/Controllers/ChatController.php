@@ -45,7 +45,6 @@ class ChatController extends Controller
 
     public function sendMessage(Request $request)
     {
-        // dd($request->all());
         try {
 
             $chat = new ChatModel();
@@ -73,5 +72,54 @@ class ChatController extends Controller
         }
     }
 
+    public function updateMessage(Request $request, $id)
+    {
+        try {
+
+            $chat = ChatModel::getSingle($id);
+            dd($chat);
+            if ($chat->sender_id !== Auth::user()->id) {
+                return redirect()->back()->with('error', 'Vous ne pouvez pas modifier ce message');
+            }
+            $chat->message = $request->message;
+            $chat->created_date = Carbon::createFromTimestamp(time());
+
+            if (!empty($request->file('file'))) {
+                $chatFile = $chat->file;
+                if (!empty($chatFile)) {
+                    $chatFileUrl = ChatModel::getChatFile();
+                    if (!empty($chatFileUrl)) {
+                        unlink('upload/chats/' . $chatFile);
+                    }
+                }
+                $ext = $request->file('file')->getClientOriginalExtension();
+                $file = $request->file('file');
+                $randomStr = 'chat_file' . date('dmYhis') . Str::random(20);
+                $fileName = strtolower($randomStr) . '.' . $ext;
+                $file->move('upload/chats/', $fileName);
+                $chat->file = $fileName;
+            }
+
+            $chat->save();
+
+            return redirect()->back()->with('success', 'Message envoyé.');
+        } catch (\Exception $e) {
+            Log::error("Erreur lors de la création d'un message : " . $e->getMessage());
+
+            return redirect()->back()->with('error', 'Vos informations ne sont pas correctes. Veuillez réessayer.');
+        }
+    }
+
+    public function deleteMessage($id)
+    {
+        $chat = ChatModel::getSingle($id);
+        // dd($chat);
+        if ($chat->sender_id !== Auth::user()->id) {
+            return redirect()->back()->with('error', 'Vous ne pouvez pas supprimer ce message');
+        }
+        $chat->is_delete = 1;
+        $chat->delete();
+        return redirect()->back()->with('success', 'Message supprimé');
+    }
 
 }
