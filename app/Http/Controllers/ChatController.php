@@ -19,9 +19,7 @@ class ChatController extends Controller
         $sender_id = Auth::user()->id;
 
         // Mise à jour du last_login à chaque chargement de la page
-        User::where('id', $sender_id)->update([
-            'last_login' => now(),
-        ]);
+        User::updateLastLogin($sender_id);
 
         // Récupération de la liste des contacts (toujours utile)
         $data['getChatUser'] = ChatModel::getChatUser($sender_id);
@@ -77,7 +75,6 @@ class ChatController extends Controller
         try {
 
             $chat = ChatModel::getSingle($id);
-            dd($chat);
             if ($chat->sender_id !== Auth::user()->id) {
                 return redirect()->back()->with('error', 'Vous ne pouvez pas modifier ce message');
             }
@@ -113,12 +110,11 @@ class ChatController extends Controller
     public function deleteMessage($id)
     {
         $chat = ChatModel::getSingle($id);
-        // dd($chat);
         if ($chat->sender_id !== Auth::user()->id) {
             return redirect()->back()->with('error', 'Vous ne pouvez pas supprimer ce message');
         }
         $chat->is_delete = 1;
-        $chat->delete();
+        $chat->save();
         return redirect()->back()->with('success', 'Message supprimé');
     }
 

@@ -1,7 +1,6 @@
 @extends('layouts.app')
 @section('content')
-      <div class="flex h-screen overflow-hidden" x-data="{ openSidebar: false, search: '', editing: false, editMessage: '', editId: null}">
-
+      <div class="flex h-screen overflow-hidden" x-data="chatEditor({{ $getReceiver->id ?? 'null' }})" x-init="init()">
             <!-- Sidebar -->
             <div class="bg-white dark:bg-gray-800 border-r-4 dark:border-gray-900 transform transition-transform duration-300
          fixed top-24 sm:top-0 bottom-0 left-0 w-64 z-40 xl:relative xl:translate-x-0 xl:w-1/4 xl:h-full"
@@ -36,3 +35,34 @@
 
 <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 <script type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@^1/index.js"></script>
+<script>
+      function chatEditor(receiverId) {
+            return {
+                  openSidebar: false,
+                  search: '',
+                  editing: false,
+                  editMessage: '',
+                  editId: null,
+                  receiverId: receiverId,
+                  init() {
+                        this.$watch('receiverId', (newValue, oldValue) => {
+                              if (newValue && newValue !== oldValue) {
+                                    this.reset();
+                              }
+                        });
+                        window.resetChatEditing = () => this.reset();
+                  },
+                  reset() {
+                        this.editing = false;
+                        this.editMessage = '';
+                        this.editId = null;
+
+                        const textarea = document.getElementById('message');
+                        if (textarea) textarea.value = '';
+
+                        const fileInput = document.querySelector('input[name="file"]');
+                        if (fileInput) fileInput.value = '';
+                  }
+            }
+      }
+</script>

@@ -602,5 +602,11 @@ class User extends Authenticatable
         return $class_ids;
     }
 
+    public static function updateLastLogin(int $sender_id)
+    {
+        return User::where('id', $sender_id)->update([
+            'last_login' => now(),
+        ]);
+    }
 
 }

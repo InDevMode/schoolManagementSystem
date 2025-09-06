@@ -39,7 +39,7 @@ class ChatModel extends Model
                     });
             })
             ->where('message', '!=', '')
-            ->where('is_delete', '=', 0)
+            // ->where('is_delete', '=', 0)
             ->orderBy('id', 'asc')
             ->get();
     }
@@ -53,7 +53,7 @@ class ChatModel extends Model
     {
         return ChatModel::where('receiver_id', Auth::id())
             ->where('sender_id', $receiverId)
-            ->where('status', 0)
+            ->where('status', '=', 0)
             ->update(['status' => 1]);
     }
 
@@ -67,6 +67,7 @@ class ChatModel extends Model
             'receiver.last_name as receiver_last_name',
             'receiver.profile_picture as receiver_profile_picture',
             'sender.profile_picture as sender_profile_picture',
+            'chats.is_delete',
             \Illuminate\Support\Facades\DB::raw('(CASE WHEN chats.sender_id = ' . $user_id . ' THEN chats.receiver_id ELSE chats.sender_id END) as connection_user_id')
         )
             ->join('users as sender', 'sender.id', '=', 'chats.sender_id')
@@ -82,7 +83,7 @@ class ChatModel extends Model
                     })
                     ->groupBy(\Illuminate\Support\Facades\DB::raw('CASE WHEN chats.sender_id = ' . $user_id . ' THEN chats.receiver_id ELSE chats.sender_id END'));
             })
-            ->where('chats.is_delete', 0)
+            ->where('chats.is_delete', '=', 0)
             ->orderBy('chats.id', 'desc')
             ->get();
 
@@ -92,6 +93,7 @@ class ChatModel extends Model
             $data['message'] = $value->message;
             $data['created_date'] = $value->created_date;
             $data['status'] = $value->status;
+            $data['is_delete'] = $value->is_delete;
             $data['user_id'] = $value->connection_user_id;
             $data['name'] = $value->getConnectUser->last_name . ' ' . $value->getConnectUser->name;
             $data['last_login'] = $value->getConnectUser->last_login;
@@ -118,7 +120,7 @@ class ChatModel extends Model
     public static function updateCountMessage(int $sender_id, int $receiver_id)
     {
         ChatModel::where('sender_id', $receiver_id)
-            ->where('receiver_id', $sender_id)
+            ->where('receiver_id', '=', $sender_id)
             ->update(['status' => 1]);
     }
 
@@ -135,7 +137,7 @@ class ChatModel extends Model
             ->join('users as receiver', 'receiver.id', '=', 'chats.receiver_id')
             ->where('chats.receiver_id', $user_id)
             ->where('chats.status', '!=', 1)
-            ->where('chats.is_delete', 0)
+            ->where('chats.is_delete', '=', 0)
             ->orderBy('chats.id', 'desc')
             ->distinct('sender.id')
             ->get();
@@ -166,6 +168,16 @@ class ChatModel extends Model
             ->where('chats.status', '=', 0)
             ->where('chats.is_delete', '=', 0)
             ->count();
+    }
+
+    public function getChatFile(): string
+    {
+        $path = base_path('upload/chats/' . $this->file);
+        if (!empty($this->file) && file_exists($path)) {
+            return url('upload/chats/' . $this->file);
+        }
+        // Image par défaut si rien n'existe
+        return url('');
     }
 
 
