@@ -609,4 +609,13 @@ class User extends Authenticatable
         ]);
     }
 
+    public static function getStudentData(int $student_id)
+    {
+        return User::select('users.*', 'class.name as class_name', 'parent.name as parent_name', 'parent.last_name as parent_last_name')
+            ->join('class', 'class.id', '=', 'users.class_id')
+            ->join('users as parent', 'parent.id', '=', 'users.parent_id')
+            ->where('users.id', '=', $student_id)
+            ->first();
+    }
+
 }

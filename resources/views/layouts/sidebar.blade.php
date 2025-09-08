@@ -388,7 +388,7 @@
                                           [
                                               'url' => 'student/my_exam_result',
                                               'icon' => 'fa-square-poll-horizontal',
-                                              'label' => 'Mes Résultsts',
+                                              'label' => 'Mes Résultats',
                                               'segment' => 2,
                                               'match' => 'my_exam_result',
                                           ],

@@ -80,8 +80,8 @@
                                           <button type="button" title="Modifier" class="block hover:text-emerald-300"
                                                 @click="
                                                     editing = true;
-                                                    editMessage = '{{ addslashes($chat->message) }}';
-                                                    editId = {{ $chat->id }};
+                                                     editId = {{ $chat->id }};
+                                                    editMessage = {{ json_encode($chat->message) }};
                                                     $nextTick(() => {
                                                         const textarea = document.getElementById('message');
                                                         if (textarea) {
