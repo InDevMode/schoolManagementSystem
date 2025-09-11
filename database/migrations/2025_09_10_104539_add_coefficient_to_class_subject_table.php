@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('subject', function (Blueprint $table) {
-            $table->integer('coefficient')->after('type');
+        Schema::table('class_subject', function (Blueprint $table) {
+            $table->integer('coefficient')->after('subject_id')->default(0);
         });
     }
 
@@ -21,7 +21,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('subject', function (Blueprint $table) {
+        Schema::table('class_subject', function (Blueprint $table) {
             $table->dropColumn('coefficient');
         });
     }

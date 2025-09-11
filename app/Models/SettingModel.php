@@ -12,6 +12,14 @@ class SettingModel extends Model
     protected $table = 'settings';
 
     protected $fillable = [
+        'school_name',
+        'school_type',
+        'address',
+        'phone',
+        'email',
+        'uai_number',
+        'logo',
+        'favicon',
         'paypal_email',
         'kkiapay_public_key',
         'kkiapay_private_key',

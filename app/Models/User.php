@@ -343,10 +343,10 @@ class User extends Authenticatable
 
     public static function getTeacher()
     {
-        $results = User::select('users.*')
+        return User::select('users.*')
             ->where('users.user_type', '=', 2)
-            ->where('users.is_delete', '=', 0);
-        return $results->orderBy('users.id', 'desc')
+            ->where('users.is_delete', '=', 0)
+            ->orderBy('users.id', 'desc')
             ->get();
     }
 
@@ -397,7 +397,9 @@ class User extends Authenticatable
 
     public static function getStudent(int $class_id)
     {
-        return User::select('users.id', 'users.name', 'users.last_name')
+        return User::select('users.*', 'class.name as class_name', 'parent.name as parent_name', 'parent.last_name as parent_last_name')
+            ->join('class', 'class.id', '=', 'users.class_id')
+            ->join('users as parent', 'parent.id', '=', 'users.parent_id')
             ->where('users.is_delete', '=', 0)
             ->where('users.status', '=', 1)
             ->where('users.user_type', '=', 3)
@@ -415,8 +417,8 @@ class User extends Authenticatable
     {
         return User::select('id', 'name', 'last_name', 'user_type')
             ->whereIn('user_type', [1, 2, 3, 4])
-            ->where('status', 1)
-            ->where('is_delete', 0)
+            ->where('status', '=', 1)
+            ->where('is_delete', '=', 0)
             ->get()
             ->map(function ($user) {
                 $suffix = match ((int) $user->user_type) {

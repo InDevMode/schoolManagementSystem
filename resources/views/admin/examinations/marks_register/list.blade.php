@@ -303,6 +303,13 @@
                                                                               class="mr-2" width="20"
                                                                               height="20"></iconify-icon>Ajouter
                                                                   </button>
+                                                                  <a target="_blank" href="{{ url('admin/examinations/marks_register/print?exam_id=' . Request::get('exam_id') .  '&student_id=' . $student->id) }}"
+                                                                        data-action="saveAll"
+                                                                        class="w-full flex justify-center items-center py-3 px-4 my-3 bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-700 hover:to-indigo-600 text-white font-medium rounded-lg shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50 transition-all duration-300">
+                                                                        <iconify-icon icon="mdi:content-save-check-outline"
+                                                                              class="mr-2" width="20"
+                                                                              height="20"></iconify-icon>Imprimer
+                                                                  </a>
                                                                   @php
                                                                         $percentage =
                                                                             ($totalStudentMark * 100) / $totalFullMarks;

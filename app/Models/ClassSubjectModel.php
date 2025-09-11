@@ -17,11 +17,12 @@ class ClassSubjectModel extends Model
     protected $fillable = [
         'class_id',
         'subject_id',
-        'created_by',
+        'coefficient',
         'status'
     ];
 
     protected $hidden = [
+        'created_by',
         'is_delete',
     ];
 

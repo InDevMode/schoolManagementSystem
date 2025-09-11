@@ -152,6 +152,7 @@ Route::group(['middleware' => 'admin'], function () {
     Route::get('admin/examinations/marks_register/list', [ExaminationController::class, 'marksRegister']);
     Route::post('admin/examinations/marks_register/add', [ExaminationController::class, 'addMarksRegister']);
     Route::post('admin/examinations/marks_register/addSingleSubject', [ExaminationController::class, 'addSingleMarksRegister']);
+    Route::get('admin/examinations/marks_register/print', [ExaminationController::class, 'studentExamResultPrint']);
 
     // Marks grade url
     Route::get('admin/examinations/marks_grade/list', [ExaminationController::class, 'listMarksGrade']);
@@ -249,6 +250,7 @@ Route::group(['middleware' => 'teacher'], function () {
     Route::get('teacher/marks_register', [ExaminationController::class, 'teacherMarkRegister']);
     Route::post('teacher/add_marks_register', [ExaminationController::class, 'addTeacherMarkRegister']);
     Route::post('teacher/add_single_marks_register', [ExaminationController::class, 'addSingleTeacherMarkRegister']);
+    Route::get('teacher/marks_register/print', [ExaminationController::class, 'studentExamResultPrint']);
 
     // Student attendance url
     Route::get('teacher/attendance/student/list', [AttendanceController::class, 'attendanceStudentTeacher']);
@@ -296,7 +298,7 @@ Route::group(['middleware' => 'student'], function () {
     // Student side exam timetable
     Route::get('student/my_exam_timetable', [ExaminationController::class, 'myExamTimetableStudent']);
     Route::get('student/my_exam_result', [ExaminationController::class, 'myExamResultStudent']);
-    Route::get('student/my_exam_result/print', [ExaminationController::class, 'myExamResultStudentPrint']);
+    Route::get('student/my_exam_result/print', [ExaminationController::class, 'studentExamResultPrint']);
 
     // Student attendance url
     Route::get('student/my_attendance', [AttendanceController::class, 'myAttendance']);
@@ -348,6 +350,7 @@ Route::group(['middleware' => 'parent'], function () {
 
     // Parent student exam result url
     Route::get('parent/my_student/exam_result/{student_id}/result', [ExaminationController::class, 'parentStudentExamResult']);
+    Route::get('parent/my_student/exam_result/print', [ExaminationController::class, 'studentExamResultPrint']);
 
     // Parent student attendance url
     Route::get('parent/my_student/attendance/{student_id}', [AttendanceController::class, 'parentStudentAttendance']);

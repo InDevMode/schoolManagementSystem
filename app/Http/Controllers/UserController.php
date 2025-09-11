@@ -371,6 +371,13 @@ class UserController extends Controller
                 $setting->kkiapay_secret_key = trim($request->kkiapay_secret_key);
                 $setting->stripe_public_key = trim($request->stripe_public_key);
                 $setting->stripe_secret_key = trim($request->stripe_secret_key);
+                $setting->school_name = trim($request->school_name);
+                $setting->school_type = trim($request->school_type);
+                $setting->address = trim($request->address);
+                $setting->phone = trim($request->phone);
+                $setting->email = trim($request->email);
+                $setting->uai_number = trim($request->uai_number);
+                $setting->status = trim($request->status);
 
                 if ($request->hasFile('favicon')) {
                     $file = $request->file('favicon');

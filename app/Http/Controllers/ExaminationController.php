@@ -9,6 +9,7 @@ use App\Models\ExaminationModel;
 use App\Models\MarkRegisterModel;
 use App\Models\MarksGradeModel;
 use App\Models\ScheduleModel;
+use App\Models\SettingModel;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -192,14 +193,14 @@ class ExaminationController extends Controller
         $data['header_title'] = "Mon calendrier d'examen";
         $class_id = Auth::user()->class_id;
         $getExamSchedule = ScheduleModel::getExam($class_id);
-        $result = array();
+        $result = [];
         foreach ($getExamSchedule as $examSchedule) {
-            $dataExam = array();
+            $dataExam = [];
             $dataExam['name'] = $examSchedule->exam_name;
             $getExamTimetable = ScheduleModel::getExamTimetable($examSchedule->exam_id, $class_id);
-            $results = array();
+            $results = [];
             foreach ($getExamTimetable as $examTimetable) {
-                $dataSchedule = array();
+                $dataSchedule = [];
                 $dataSchedule['subject_name'] = $examTimetable->subject_name;
                 $dataSchedule['exam_date'] = $examTimetable->exam_date;
                 $dataSchedule['start_time'] = $examTimetable->start_time;
@@ -260,16 +261,16 @@ class ExaminationController extends Controller
         $getStudent = User::getSingle($student_id);
         $class_id = $getStudent->class_id;
         $getExamSchedule = ScheduleModel::getExam($class_id);
-        $result = array();
+        $result = [];
 
         foreach ($getExamSchedule as $examSchedule) {
-            $dataExam = array();
+            $dataExam = [];
             $dataExam['name'] = $examSchedule->exam_name;
             $getExamTimetable = ScheduleModel::getExamTimetable($examSchedule->exam_id, $class_id);
-            $results = array();
+            $results = [];
 
             foreach ($getExamTimetable as $examTimetable) {
-                $dataSchedule = array();
+                $dataSchedule = [];
                 $dataSchedule['subject_name'] = $examTimetable->subject_name;
                 $dataSchedule['exam_date'] = $examTimetable->exam_date;
                 $dataSchedule['start_time'] = $examTimetable->start_time;
@@ -678,7 +679,7 @@ class ExaminationController extends Controller
         return view('student.exam_result', $data);
     }
 
-    public function myExamResultStudentPrint(Request $request)
+    public function studentExamResultPrint(Request $request)
     {
         $data['header_title'] = "Imprimer mes résultats d'examens";
         $exam_id = $request->exam_id;
@@ -686,6 +687,10 @@ class ExaminationController extends Controller
 
         $getExam = MarkRegisterModel::getExam($student_id);
         $data['getStudent'] = User::getStudentData($student_id);
+
+        if ($getExam->isEmpty()) {
+            return redirect()->back()->with('error', 'Aucun examen trouvé pour cet apprenant.');
+        }
 
         foreach ($getExam as $examValue) {
             $data['exam_name'] = $examValue->exam_name;
@@ -702,11 +707,11 @@ class ExaminationController extends Controller
         $passing_marks = 0;
         $full_marks = 0;
 
-        $dataSubject = array();
+        $dataSubject = [];
         foreach ($getExamSubject as $examSubject) {
             $total_score_subject = $examSubject['class_work'] + $examSubject['test_work'] + $examSubject['home_work'] + $examSubject['exam_work'];
 
-            $dataSub = array();
+            $dataSub = [];
             $dataSub['subject_name'] = $examSubject['subject_name'];
             $dataSub['class_work'] = $examSubject['class_work'];
             $dataSub['test_work'] = $examSubject['test_work'];
@@ -743,22 +748,25 @@ class ExaminationController extends Controller
         $data['percentage'] = round($percentage, 2);
         $data['getGrade'] = MarksGradeModel::getGrade($percentage);
 
-        return view('student.exam_result_print', $data);
+        return view('exam_result_print', $data);
     }
 
     public function parentStudentExamResult($student_id): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
     {
+        $data['header_title'] = "Ses résultats d'examens";
+
         $data['getStudent'] = User::getSingle($student_id);
-        $result = array();
+        $result = [];
         $getExam = MarkRegisterModel::getExam($student_id);
         foreach ($getExam as $examValue) {
-            $dataExam = array();
+            $dataExam = [];
             $dataExam['exam_name'] = $examValue->exam_name;
+            $dataExam['exam_id'] = $examValue->exam_id;
             $getExamSubject = MarkRegisterModel::getExamSubject($examValue->exam_id, $student_id);
-            $dataSubject = array();
+            $dataSubject = [];
             foreach ($getExamSubject as $examSubject) {
                 $totol_score = $examSubject['class_work'] + $examSubject['test_work'] + $examSubject['home_work'] + $examSubject['exam_work'];
-                $dataSub = array();
+                $dataSub = [];
                 $dataSub['subject_name'] = $examSubject['subject_name'];
                 $dataSub['class_work'] = $examSubject['class_work'];
                 $dataSub['test_work'] = $examSubject['test_work'];
@@ -773,7 +781,6 @@ class ExaminationController extends Controller
             $result[] = $dataExam;
         }
         $data['getExamResultStudent'] = $result;
-        $data['header_title'] = "Ses résultats d'examens";
         return view('parent.exam_result', $data);
     }
 
@@ -858,4 +865,5 @@ class ExaminationController extends Controller
             return redirect()->back()->with('error', 'Vos informations ne sont pas correctes. Veuillez réessayer.');
         }
     }
+
 }

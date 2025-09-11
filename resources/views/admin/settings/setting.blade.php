@@ -2,7 +2,7 @@
 @section('content')
       <div class="m-2">
             @include('message')
-            <div class="container mx-auto px-4 py-8 max-w-6xl">
+            <div class="container mx-auto px-4 max-w-6xl">
                   <!-- Header Section -->
                   <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
                         <div class="mb-4 md:mb-0">
@@ -159,6 +159,134 @@
                                           </div>
                                     </div>
 
+                                    {{-- school_type, uai_number, email, phone, address, school_name --}}
+
+                                    <div class="lg:flex items-center justify-between lg:space-x-3">
+                                          <!-- Name -->
+                                          <div class="mb-6 w-full">
+                                                <label
+                                                      class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                                      Nom de l'école <span class="text-red-500">*</span>
+                                                </label>
+                                                <div class="relative">
+                                                      <input type="text" id="school_name" name="school_name"
+                                                            value="{{ old('school_name', $getSetting->school_name) }}" required
+                                                            class="form-input w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-violet-500 focus:border-violet-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500 transition-all duration-200"
+                                                            placeholder="Entrez un nom pour votre école">
+                                                </div>
+                                          </div>
+
+                                          <!-- Last Name -->
+                                          <div class="mb-6 w-full">
+                                                <label
+                                                      class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                                      Numéro UAI <span class="text-red-500">*</span>
+                                                </label>
+                                                <div class="relative">
+                                                      <input type="text" id="uai_number" name="uai_number"
+                                                            value="{{ old('uai_number', $getSetting->uai_number) }}" required
+                                                            class="form-input w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-violet-500 focus:border-violet-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500 transition-all duration-200"
+                                                            placeholder="Entrez un numéro UAI">
+                                                </div>
+                                          </div>
+                                    </div>
+
+                                    <div class="lg:flex items-center justify-between lg:space-x-3">
+                                          <!-- Name -->
+                                          <div class="mb-6 w-full">
+                                                <label
+                                                      class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                                      Email de l'école <span class="text-red-500">*</span>
+                                                </label>
+                                                <div class="relative">
+                                                      <input type="email" id="email" name="email"
+                                                            value="{{ old('email', $getSetting->email) }}" required
+                                                            class="form-input w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-violet-500 focus:border-violet-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500 transition-all duration-200"
+                                                            placeholder="Entrez un email pour votre école">
+                                                </div>
+                                          </div>
+
+                                          <!-- Last Name -->
+                                          <div class="mb-6 w-full">
+                                                <label
+                                                      class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                                      Adresse <span class="text-red-500">*</span>
+                                                </label>
+                                                <div class="relative">
+                                                      <input type="text" id="address" name="address"
+                                                            value="{{ old('address', $getSetting->address) }}" required
+                                                            class="form-input w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-violet-500 focus:border-violet-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500 transition-all duration-200"
+                                                            placeholder="Entrez une adresse">
+                                                </div>
+                                          </div>
+                                    </div>
+
+                                    <div class="lg:flex items-center justify-between lg:space-x-3">
+                                          <!-- Name -->
+                                          <div class="mb-6 w-full">
+                                                <label
+                                                      class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                                      Numéro de téléphone <span class="text-red-500">*</span>
+                                                </label>
+                                                <div class="relative">
+                                                      <input type="text" id="phone" name="phone"
+                                                            value="{{ old('phone', $getSetting->phone) }}" required
+                                                            class="form-input w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-violet-500 focus:border-violet-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500 transition-all duration-200"
+                                                            placeholder="Entrez un numéro de téléphone">
+                                                </div>
+                                          </div>
+
+                                          <!-- Last Name -->
+                                          <div class="mb-6 w-full">
+                                                <label
+                                                      class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                                      Type d'école <span class="text-red-500">*</span>
+                                                </label>
+                                                <div class="relative">
+                                                      <select id="school_type" name="school_type" required
+                                                            class="custom-select w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-violet-500 focus:border-violet-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500 transition-all duration-200">
+                                                            <option selected disabled value="">Veuillez choisir un
+                                                                  type d'école pour cette école
+                                                            <option value="private"
+                                                                  {{ old('school_type', $getSetting->school_type) == 'private' ? 'selected' : '' }}>
+                                                                  Privée
+                                                            </option>
+                                                            <option value="public"
+                                                                  {{ old('school_type', $getSetting->school_type) == 'public' ? 'selected' : '' }}>
+                                                                  Publique
+                                                            </option>
+                                                      </select>
+                                                      <div
+                                                            class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                                                            <iconify-icon icon="mdi:chevron-down" class="text-gray-400"
+                                                                  width="20" height="20"></iconify-icon>
+                                                      </div>
+                                                </div>
+                                          </div>
+                                    </div>
+
+                                    <div class="mb-6">
+                                          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                                Statut <span class="text-red-500">*</span>
+                                          </label>
+                                          <div class="relative">
+                                                <select id="status" name="status" required
+                                                      class="custom-select w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-violet-500 focus:border-violet-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500 transition-all duration-200">
+                                                      <option selected disabled value="">Veuillez choisir un status
+                                                            pour cette école
+                                                      <option value="1" {{ old('status', $getSetting->status) == '1' ? 'selected' : '' }}>
+                                                            Active</option>
+                                                      <option value="0" {{ old('status', $getSetting->status) == '0' ? 'selected' : '' }}>
+                                                            Inactive</option>
+                                                </select>
+                                                <div
+                                                      class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                                                      <iconify-icon icon="mdi:chevron-down" class="text-gray-400"
+                                                            width="20" height="20"></iconify-icon>
+                                                </div>
+                                          </div>
+                                    </div>
+
                                     <!--Favicon-->
                                     <div class="lg:flex items-center justify-between lg:space-x-4">
                                           <div class="mb-6 w-full">
@@ -178,7 +306,7 @@
                                     </div>
 
                                     <!--Logo-->
-                                   <div class="lg:flex items-center justify-between lg:space-x-4">
+                                    <div class="lg:flex items-center justify-between lg:space-x-4">
                                           <div class="mb-6 w-full">
                                                 <label
                                                       class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
