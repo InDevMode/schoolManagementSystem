@@ -34,7 +34,7 @@ class CommunicateModel extends Model
     {
         return CommunicateModel::select('communicates.*', 'users.name as created_by_name')
             ->join('users', 'users.id', '=', 'communicates.created_by')
-            ->where('communicates.is_delete', 0)
+            ->where('communicates.is_delete', '=', 0)
             ->orderBy('communicates.id', 'desc')
             ->paginate($perpage);
     }
@@ -57,7 +57,7 @@ class CommunicateModel extends Model
             ->join('noticeboard_messages', 'noticeboard_messages.communicates_id', '=', 'communicates.id')
             ->join('users', 'users.id', '=', 'communicates.created_by')
             ->where('noticeboard_messages.message_to', '=', $message_to)
-            ->where('communicates.is_delete', 0);
+            ->where('communicates.is_delete', '=', 0);
 
         $filters = [
             'communicates.title' => strtolower(Request::get('title')),
@@ -69,23 +69,19 @@ class CommunicateModel extends Model
             }
         }
 
-        if(!empty(Request::get('date_notice_from')))
-        {
+        if (!empty(Request::get('date_notice_from'))) {
             $results->whereDate('notice_date', '>=', Request::get('date_notice_from'));
         }
 
-        if(!empty(Request::get('date_notice_to')))
-        {
+        if (!empty(Request::get('date_notice_to'))) {
             $results->whereDate('notice_date', '<=', Request::get('date_notice_to'));
         }
 
-        if(!empty(Request::get('date_publish_from')))
-        {
+        if (!empty(Request::get('date_publish_from'))) {
             $results->whereDate('publish_date', '>=', Request::get('date_publish_from'));
         }
 
-        if(!empty(Request::get('date_publish_to')))
-        {
+        if (!empty(Request::get('date_publish_to'))) {
             $results->whereDate('publish_date', '<=', Request::get('date_publish_to'));
         }
 
@@ -101,6 +97,17 @@ class CommunicateModel extends Model
     public static function getTotalCommunicateCreatedByTeacher()
     {
         return CommunicateModel::where('is_delete', 0)->where('created_by', Auth::user()->id)->count();
+    }
+
+    public static function getCommunicateWithUserType(int $user_type)
+    {
+        return CommunicateModel::select('communicates.*', 'users.name as created_by_name')
+            ->join('noticeboard_messages', 'noticeboard_messages.communicates_id', '=', 'communicates.id')
+            ->join('users', 'users.id', '=', 'communicates.created_by')
+            ->where('noticeboard_messages.message_to', '=', $user_type)
+            ->where('communicates.is_delete', '=', 0)
+            ->orderBy('communicates.id', 'desc')
+            ->get();
     }
 
 

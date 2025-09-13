@@ -41,4 +41,13 @@ class NoticeBoardMessageModel extends Model
         return NoticeBoardMessageModel::where('message_to', 4)->count();
     }
 
+    public static function getNoticeBoardMessage(int $user_id, int $message_to){
+        return NoticeBoardMessageModel::select('noticeboard_messages.*', 'communicates.message')
+            ->join('communicates', 'communicates.id', '=', 'noticeboard_messages.communicates_id')
+            ->where('noticeboard_messages.message_to', $message_to)
+            ->where('noticeboard_messages.created_by', $user_id)
+            ->orderBy('noticeboard_messages.id', 'desc')
+            ->get();
+    }
+
 }
