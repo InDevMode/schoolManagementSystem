@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@100;200;300;400;500;600;700;800;900&display=swap");
 
 @tailwind base;
 @tailwind components;
@@ -6,7 +6,8 @@
 
 @layer base {
     body {
-        @apply relative z-1 bg-whiten font-satoshi text-base font-normal text-body;
+        @apply relative z-1 bg-white text-base font-normal text-body;
+        font-family: Outfit;
     }
 }
 
@@ -159,13 +160,13 @@ span.flatpickr-weekday,
 .flatpickr-day.selected.nextMonthDay,
 .flatpickr-day.startRange.nextMonthDay,
 .flatpickr-day.endRange.nextMonthDay {
-    background: #3c50e0;
+    background: #465fff;
     @apply !border-primary !bg-primary hover:!border-primary hover:!bg-primary;
 }
 .flatpickr-day.selected.startRange + .endRange:not(:nth-child(7n + 1)),
 .flatpickr-day.startRange.startRange + .endRange:not(:nth-child(7n + 1)),
 .flatpickr-day.endRange.startRange + .endRange:not(:nth-child(7n + 1)) {
-    box-shadow: -10px 0 0 #3c50e0;
+    box-shadow: -10px 0 0 #465fff;
 }
 
 .map-btn .jvm-zoom-btn {
@@ -305,7 +306,7 @@ span.flatpickr-weekday,
 }
 
 .form-datepicker {
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='4' width='18' height='18' rx='2' ry='2'%3E%3C/rect%3E%3Cline x1='16' y1='2' x2='16' y2='6'%3E%3C/line%3E%3Cline x1='8' y1='2' x2='8' y2='6'%3E%3C/line%3E%3Cline x1='3' y1='10' x2='21' y2='10'%3E%3C/line%3E%3C/svg%3E");
+            background-image: url("");
             background-repeat: no-repeat;
             background-position: right 1rem center;
             background-size: 1.25rem;
@@ -317,7 +318,7 @@ span.flatpickr-weekday,
             appearance: none;
         }
 
-        .checkbox-custom {
+        .checkbox-custom, .checkbox-custom-success, .check-custom {
             -webkit-appearance: none;
             -moz-appearance: none;
             appearance: none;
@@ -331,30 +332,21 @@ span.flatpickr-weekday,
             transition: all 0.2s ease;
         }
 
-         .checkbox-custom-success {
-            -webkit-appearance: none;
-            -moz-appearance: none;
-            appearance: none;
-            width: 1.25rem;
-            height: 1.25rem;
-            border: 2px solid #d1d5db;
-            border-radius: 0.25rem;
-            background-color: white;
-            cursor: pointer;
-            position: relative;
-            transition: all 0.2s ease;
-        }
-
-        .checkbox-custom:checked {
-            background-color: #7c3aed;
-            border-color: #7c3aed;
+        .checkbox-custom:checked, .check-custom:checked {
+            background-color: #465fff;
+            border-color: #465fff;
         }
         .checkbox-custom-success:checked {
             background-color: #10B981;
             border-color: #10B981;
         }
 
-        .checkbox-custom:checked::after, .checkbox-custom-success:checked::after {
+        .checkbox-custom-success:checked {
+            background-color: #10B981;
+            border-color: #10B981;
+        }
+
+        .checkbox-custom:checked::after, .checkbox-custom-success:checked::after, .check-custom:after {
             content: '';
             position: absolute;
             left: 50%;
@@ -365,4 +357,10 @@ span.flatpickr-weekday,
             border-width: 0 2px 2px 0;
             transform: translate(-50%, -60%) rotate(45deg);
         }
+
+ .chat-preview {
+    transition: background-color 0.3s ease;
+}
+
+
 

@@ -17,14 +17,15 @@ class AdminMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if(!empty(Auth::check())){
-            if(Auth::user()->user_type == 1){
-                return $next($request);
-            }else {
-                Auth::logout();
-                return redirect(url(''));
+        if (!empty(Auth::check())) {
+            switch (Auth::user()->user_type) {
+                case 1:
+                    return $next($request);
+                default:
+                    Auth::logout();
+                    return redirect(url(''));
             }
-        }else {
+        } else {
             Auth::logout();
             return redirect(url(''));
         }

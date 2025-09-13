@@ -12,6 +12,14 @@ class SettingModel extends Model
     protected $table = 'settings';
 
     protected $fillable = [
+        'school_name',
+        'school_type',
+        'address',
+        'phone',
+        'email',
+        'uai_number',
+        'logo',
+        'favicon',
         'paypal_email',
         'kkiapay_public_key',
         'kkiapay_private_key',
@@ -29,12 +37,25 @@ class SettingModel extends Model
         return SettingModel::find($id);
     }
 
-    public static function getFaviconLogo(string $faviconLogo): string
+    public function getFavicon(): string
     {
-        if (!empty($faviconLogo) && file_exists('upload/setting/' . $faviconLogo)) {
-            return url('upload/setting/' . $faviconLogo);
+        $path = base_path('upload/setting/' . $this->favicon);
+        if (!empty($this->favicon) && file_exists($path)) {
+            return url('upload/setting/' . $this->favicon);
         }
-        return url('');
+        // Image par défaut si rien n'existe
+        return url('upload/favicon.png');
     }
+
+    public function getLogo(): string
+    {
+        $path = base_path('upload/setting/' . $this->logo);
+        if (!empty($this->logo) && file_exists($path)) {
+            return url('upload/setting/' . $this->logo);
+        }
+        // Image par défaut si rien n'existe
+        return url('upload/logo.png');
+    }
+
 
 }

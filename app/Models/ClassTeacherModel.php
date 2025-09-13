@@ -43,10 +43,7 @@ class ClassTeacherModel extends Model
             ->join('class', 'class.id', '=', 'class_teacher.class_id')
             ->join('users as teacher', 'teacher.id', '=', 'class_teacher.teacher_id')
             ->join('users', 'users.id', '=', 'class_teacher.created_by')
-            ->where('class_teacher.is_delete', 0)
-            ->where('class.is_delete', 0)
-            ->where('class.status', 1)
-            ->where('users.is_delete', 0);
+            ->where('class_teacher.is_delete', '=', 0);
 
         $filters = [
             'class.name' => strtolower(Request::get('class_name')),
@@ -97,14 +94,10 @@ class ClassTeacherModel extends Model
             ->join('class', 'class.id', '=', 'class_teacher.class_id')
             ->join('class_subject', 'class_subject.class_id', '=', 'class.id')
             ->join('subject', 'subject.id', '=', 'class_subject.subject_id')
-            ->where('class_teacher.is_delete', 0)
-            ->where('class_teacher.status', 1)
-            ->where('subject.is_delete', 0)
-            ->where('subject.status', 1)
-            ->where('class_subject.is_delete', 0)
-            ->where('class_subject.status', 1)
-            ->where('class.is_delete', 0)
-            ->where('class.status', 1)
+            ->where('class_teacher.is_delete', '=', 0)
+            ->where('class_teacher.status', '=', 1)
+            ->where('class_subject.is_delete', '=', 0)
+            ->where('class_subject.status', '=', 1)
             ->where('class_teacher.teacher_id', '=', $teacher_id);
 
         $filters = [
@@ -152,14 +145,10 @@ class ClassTeacherModel extends Model
             ->join('subject', 'subject.id', '=', 'class_timetable.subject_id')
             ->join('week', 'week.id', '=', 'class_timetable.week_id')
             ->where('class_teacher.teacher_id', '=', $teacher_id)
-            ->where('class_teacher.is_delete', 0)
-            ->where('class_teacher.status', 1)
-            ->where('class.is_delete', 0)
-            ->where('class.status', 1)
-            ->where('subject.is_delete', 0)
-            ->where('subject.status', 1)
-            ->where('class_subject.is_delete', 0)
-            ->where('class_subject.status', 1)
+            ->where('class_teacher.is_delete', '=', 0)
+            ->where('class_teacher.status', '=', 1)
+            ->where('class_subject.is_delete', '=', 0)
+            ->where('class_subject.status', '=', 1)
             ->get();
     }
 
@@ -171,8 +160,8 @@ class ClassTeacherModel extends Model
             'class.name as class_name',
         )
             ->join('class', 'class.id', '=', 'class_teacher.class_id')
-            ->where('class_teacher.is_delete', 0)
-            ->where('class_teacher.status', 1)
+            ->where('class_teacher.is_delete', '=', 0)
+            ->where('class_teacher.status', '=', 1)
             ->where('class_teacher.teacher_id', '=', $teacher_id)
             ->groupBy('class_teacher.id')
             ->get();

@@ -80,7 +80,7 @@
                                                 Matière <span class="text-red-500">*</span>
                                           </label>
                                           <div class="relative">
-                                                <select id="class_id" name="class_id" required
+                                                <select id="subject_id" name="subject_id" required
                                                       class="custom-select w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-emerald-500 dark:focus:border-emerald-500 transition-all duration-200">
                                                       <option selected disabled value="">Veuillez choisir
                                                             une matirère pour cette assignation

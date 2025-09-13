@@ -16,10 +16,10 @@ class ClassModel extends Model
     protected $fillable = [
         'name',
         'status',
-        'created_by',
     ];
 
     protected $hidden = [
+        'created_by',
         'is_delete',
     ];
 

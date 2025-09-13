@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ExportAttendance;
 use App\Models\ClassModel;
 use App\Models\ClassTeacherModel;
 use App\Models\StudentAttendanceModel;
@@ -9,6 +10,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Maatwebsite\Excel\Facades\Excel;
 
 class AttendanceController extends Controller
 {
@@ -138,6 +140,11 @@ class AttendanceController extends Controller
         $data['getParentStudentAttendance'] = StudentAttendanceModel::getMyAttendance($student_id, 10);
         $data['getClassStudent'] = StudentAttendanceModel::getClassStudent($student_id);
         return view('parent.student_attendance', $data);
+    }
+
+    public function attendanceReportExport()
+    {
+        return Excel::download(new ExportAttendance, 'attendance_' . date('d_m_Y') . '.xlsx');
     }
 
 }

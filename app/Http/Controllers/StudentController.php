@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ExportStudent;
 use App\Models\ClassModel;
 use App\Models\User;
 use Carbon\Carbon;
@@ -10,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use Maatwebsite\Excel\Facades\Excel;
 
 class StudentController extends Controller
 {
@@ -91,6 +93,7 @@ class StudentController extends Controller
                 $student->password = $request->password;
             }
             $student->user_type = 3;
+            $student->created_by = Auth::user()->id;
             $student->save();
 
             return redirect('admin/student/list')->with('success', 'Cet apprenant a été créé avec succès.');
@@ -107,11 +110,7 @@ class StudentController extends Controller
         $data['header_title'] = "Modifier un apprenants";
         if (!empty($data['getStudent'])) {
             $data['getClass'] = ClassModel::getClass();
-            if (!empty($data['getStudent']->profile_picture)) {
-                $data['profile_picture_url'] = User::getProfile($data['getStudent']->profile_picture);
-            } else {
-                $data['profile_picture_url'] = asset('upload/default.jpg');
-            }
+            !empty($data['getStudent']->profile_picture) ? $data['profile_picture_url'] = $data['getStudent']->getProfile() : $data['profile_picture_url'] = asset('upload/default.jpg');
             return view('admin.student.edit', $data);
         }
         abort(404);
@@ -171,7 +170,7 @@ class StudentController extends Controller
             if (!empty($request->file('profile_picture'))) {
                 $studentProfilePicture = $student->profile_picture;
                 if (!empty($studentProfilePicture)) {
-                    $profilePictureUrl = User::getProfile($studentProfilePicture);
+                    $profilePictureUrl = User::getProfile();
                     if (!empty($profilePictureUrl)) {
                         unlink('upload/profile/' . $studentProfilePicture);
                     }
@@ -218,6 +217,11 @@ class StudentController extends Controller
         $teacher_id = Auth::user()->id;
         $data['getTeacherStudent'] = User::getTeacherStudent(10, $teacher_id);
         return view('teacher.student', $data);
+    }
+
+    public function exportStudent()
+    {
+        return Excel::download(new ExportStudent, 'student_' . date('d_m_Y') . '.xlsx');
     }
 
 }

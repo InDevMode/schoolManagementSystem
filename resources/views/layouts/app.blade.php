@@ -9,20 +9,15 @@
       <title>{{ !empty($header_title) ? $header_title : '' }} - SMS</title>
 
       @php
-            $getSettingFaviconAndLogo = \App\Models\SettingModel::getSingle(1);
-            $favicon_url = !empty($getSettingFaviconAndLogo->favicon)
-                ? \App\Models\SettingModel::getFaviconLogo($getSettingFaviconAndLogo->favicon)
-                : asset('upload/favicon.png');
-            $logo_url = !empty($getSettingFaviconAndLogo->logo)
-                ? \App\Models\SettingModel::getFaviconLogo($getSettingFaviconAndLogo->logo)
-                : asset('upload/logo.png');
+            $getSetting = \App\Models\SettingModel::getSingle(1);
+            $favicon_url = !empty($getSetting->favicon) ? \App\Models\SettingModel::getFavicon() : asset('upload/favicon.png');
+            $logo_url = !empty($getSetting->logo) ? \App\Models\SettingModel::getLogo() : asset('upload/logo.png');
       @endphp
 
       <link rel="shortcut icon" href="{{ $favicon_url }}" />
       <link rel="preconnect" href="https://fonts.googleapis.com">
       <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-      <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
-            rel="stylesheet">
+      <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
 
       @yield('style')
       <style>
@@ -33,22 +28,15 @@
 
 </head>
 
-<body x-data="{
-    page: 'SchoolManagmentSystem',
-    'loaded': true,
-    'darkMode': true,
-    'stickyMenu': false,
-    'sidebarToggle': false,
-    'scrollTop': false
-}" x-init="darkMode = JSON.parse(localStorage.getItem('darkMode'));
-$watch('darkMode', value => localStorage.setItem('darkMode', JSON.stringify(value)))" :class="{ 'dark text-bodydark bg-boxdark-2': darkMode === true }">
+<body x-cloak x-data="{ page: 'SchoolManagmentSystem', 'loaded': true, 'darkMode': false, 'stickyMenu': false, 'sidebarToggle': false, 'scrollTop': false }" x-init="darkMode = JSON.parse(localStorage.getItem('darkMode'));
+$watch('darkMode', value => localStorage.setItem('darkMode', JSON.stringify(value)))" :class="{ 'dark bg-gray-900': darkMode === true }">
       <!-- ===== Preloader Start ===== -->
       @include('layouts.preloader')
       <!-- ===== Page Wrapper Start ===== -->
       <div class="flex h-screen overflow-hidden">
             @include('layouts.sidebar')
             <!-- ===== Content Area Start ===== -->
-            <div class="relative flex flex-1 flex-col overflow-y-auto overflow-x-hidden">
+            <div class="relative flex flex-1 flex-col overflow-y-auto overflow-x-hidden bg-gray-50 dark:bg-gray-800">
                   @include('layouts.header')
                   <!-- ===== Main Content Start ===== -->
                   @yield('content')
@@ -68,7 +56,6 @@ $watch('darkMode', value => localStorage.setItem('darkMode', JSON.stringify(valu
 <!-- jQuery (obligatoire) -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <!-- Summernote CSS & JS -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.20/summernote-lite.min.css" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.20/summernote-lite.min.js"></script>
 
 <!-- Select2 JS -->

@@ -37,7 +37,7 @@
         @foreach($getMyTimetable as $value)
         @foreach($value['weeks'] as $week)
                 <?php
-                /** @var TYPE_NAME $week */
+                
                 $startTime = date('G\h i\m\i\n', strtotime($week['start_time']));
                 $endTime = date('G\h i\m\i\n', strtotime($week['end_time']));
                 ?>
@@ -55,7 +55,7 @@
         @foreach($getExamTimetable as $valueExam)
         @foreach($valueExam['exams'] as $exam)
             <?php
-                /** @var TYPE_NAME $exam */
+
                 $startTime = date('G\h i\m\i\n', strtotime($exam['start_time']));
                 $endTime = date('G\h i\m\i\n', strtotime($exam['end_time']));
             ?>

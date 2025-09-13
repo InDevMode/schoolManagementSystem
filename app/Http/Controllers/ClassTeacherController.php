@@ -126,7 +126,7 @@ class ClassTeacherController extends Controller
 
                 return redirect('admin/assign_class/list')->with('success', 'Le status de cette assignation a été modifié avec succès.');
             } else {
-                $classClass = ClassTeacherModel::getSingle($id);;
+                $classClass = ClassTeacherModel::getSingle($id);
                 $classClass->class_id = $request->class_id;
                 $classClass->teacher_id = $request->teacher_id;
                 $classClass->status = $request->status;

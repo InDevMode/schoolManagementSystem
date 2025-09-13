@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ExportParent;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ParentController extends Controller
 {
@@ -69,6 +71,7 @@ class ParentController extends Controller
                 $parent->password = $request->password;
             }
             $parent->user_type = 4;
+            $parent->created_by = Auth::user()->id;
             $parent->save();
 
             return redirect('admin/parent/list')->with('success', 'Cet parent a été créé avec succès.');
@@ -84,11 +87,7 @@ class ParentController extends Controller
         $data['getParent'] = User::getSingle($id);
         $data['header_title'] = "Modifier un Parent";
         if (!empty($data['getParent'])) {
-            if (!empty($data['getParent']->profile_picture)) {
-                $data['profile_picture_url'] = $data['getParent']->getProfile($data['getParent']->profile_picture);
-            } else {
-                $data['profile_picture_url'] = asset('upload/default.jpg');
-            }
+            !empty($data['getParent']->profile_picture) ? $data['profile_picture_url'] = $data['getParent']->getProfile() : $data['profile_picture_url'] = asset('upload/default.jpg');
             return view('admin.parent.edit', $data);
         } else {
             abort(404);
@@ -134,7 +133,7 @@ class ParentController extends Controller
             if (!empty($request->file('profile_picture'))) {
                 $parentProfilePicture = $parent->profile_picture;
                 if (!empty($parentProfilePicture)) {
-                    $profilePictureUrl = User::getProfile($parentProfilePicture);
+                    $profilePictureUrl = User::getProfile();
                     if (!empty($profilePictureUrl)) {
                         unlink('upload/profile/' . $parentProfilePicture);
                     }
@@ -205,6 +204,11 @@ class ParentController extends Controller
         $data['getMyStudent'] = User::getMyStudent(5, $id);
         $data['header_title'] = "Mes apprenants";
         return view('parent.student', $data);
+    }
+
+    public function exportParent()
+    {
+        return Excel::download(new ExportParent, 'parent_' . date('d_m_Y') . '.xlsx');
     }
 
 }

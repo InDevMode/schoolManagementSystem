@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ExportAdmin;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use Maatwebsite\Excel\Facades\Excel;
 
 class AdminController extends Controller
 {
@@ -30,10 +33,10 @@ class AdminController extends Controller
             $passwordLength = strlen($request->password);
             $regex = '/^[a-z0-9]+@[a-z0-9]+\.(fr|com|org|bj|io)$/';
 
-            if($adminMail){
+            if ($adminMail) {
                 return redirect()->back()->with('error', 'Cet email a déjà été utilisé.');
             }
-            if($passwordLength < 6){
+            if ($passwordLength < 6) {
                 return redirect()->back()->with('error', 'Votre mot de passe ne doit pas être de moins de 6 caractères.');
             }
 
@@ -56,6 +59,7 @@ class AdminController extends Controller
             $admin->status = trim($request->status);
             $admin->password = Hash::make($request->password);
             $admin->user_type = 1;
+            $admin->created_by = Auth::user()->id;
             $admin->save();
 
             return redirect('admin/admin/list')->with('success', 'Cet administrateur a été créé avec succès.');
@@ -69,13 +73,10 @@ class AdminController extends Controller
     public function edit($id): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
     {
         $data['getAdmin'] = User::getSingle($id);
+
         if (!empty($data['getAdmin'])) {
             $data['header_title'] = "Modifier un administrateur";
-            if (!empty($data['getAdmin']->profile_picture)) {
-                $data['profile_picture_url'] = User::getProfile($data['getAdmin']->profile_picture);
-            } else {
-                $data['profile_picture_url'] = asset('upload/default.jpg');
-            }
+            $data['getAdmin']->profile_picture ? $data['profile_picture_url'] = $data['getAdmin']->getProfile() : $data['profile_picture_url'] = asset('upload/default.jpg');
             return view('admin.admin.edit', $data);
         } else {
             abort(404);
@@ -116,7 +117,7 @@ class AdminController extends Controller
             if (!empty($request->file('profile_picture'))) {
                 $adminProfilePicture = $admin->profile_picture;
                 if (!empty($adminProfilePicture)) {
-                    $profilePictureUrl = User::getProfile($adminProfilePicture);
+                    $profilePictureUrl = User::getProfile();
                     if (!empty($profilePictureUrl)) {
                         unlink('upload/profile/' . $adminProfilePicture);
                     }
@@ -151,4 +152,17 @@ class AdminController extends Controller
             abort(404);
         }
     }
+
+    public function test()
+    {
+        $data['header_title'] = "Liste des administrateurs";
+        $data['getAdmin'] = User::getAllStudent(5);
+        return view('admin.admin.test', $data);
+    }
+
+    public function exportAdmin()
+    {
+          return Excel::download(new ExportAdmin, 'admin_' . date('d_m_Y') . '.xlsx');
+    }
+
 }

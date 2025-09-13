@@ -205,8 +205,29 @@
                   </form>
             </div>
 
-            <div class="my-5">
-                  {{ $getStudentAttendance->links('vendor.pagination.tailwind') }}
+            <div class="flex justify-between items-center space-x-2 my-5">
+                  <span>{{ $getStudentAttendance->links('vendor.pagination.tailwind') }}</span>
+                  <span>
+                        <form action="{{ url('admin/attendance/report/export') }}" method="POST">
+                              @csrf
+                              <input type="hidden" name="student_name" value="{{ Request::get('student_name') }}">
+                              <input type="hidden" name="student_last_name"
+                                    value="{{ Request::get('student_last_name') }}">
+                              <input type="hidden" name="start_attendance_date"
+                                    value="{{ Request::get('start_attendance_date') }}">
+                              <input type="hidden" name="end_attendance_date"
+                                    value="{{ Request::get('end_attendance_date') }}">
+                              <input type="hidden" name="attendance_type" value="{{ Request::get('attendance_type') }}">
+                              <input type="hidden" name="class_id" value="{{ Request::get('class_id') }}">
+                              <input type="hidden" name="created_at" value="{{ Request::get('created_at') }}">
+                              <input type="hidden" name="updated_at" value="{{ Request::get('updated_at') }}">
+                              <button type="submit"
+                                    class="bg-emerald-600 hover:bg-emerald-700 text-white font-medium rounded-lg px-4 py-2.5 flex items-center justify-center gap-2 transition-colors">
+                                    <i class="fas fa-download"></i>
+                                    Exporter
+                              </button>
+                        </form>
+                  </span>
             </div>
 
             <!-- Results Section -->

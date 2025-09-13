@@ -1,12 +1,13 @@
 {
-    "private": true,
+     "private": true,
     "type": "module",
     "scripts": {
         "dev": "vite",
         "build": "vite build"
     },
     "devDependencies": {
-        "@babel/core": "^7.16.12",
+        "husky": "^9.1.7",
+               "@babel/core": "^7.16.12",
         "@babel/preset-env": "^7.16.11",
         "autoprefixer": "^10.4.13",
         "axios": "^1.6.4",

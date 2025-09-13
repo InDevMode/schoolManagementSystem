@@ -59,6 +59,7 @@ class User extends Authenticatable
         'user_type',
         'is_delete',
         'remember_token',
+        'last_login',
     ];
 
     /**
@@ -69,6 +70,7 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
+        'last_login' => 'datetime',
     ];
 
     public static function getSingle(int $id)
@@ -243,12 +245,14 @@ class User extends Authenticatable
             ->paginate($perPage);
     }
 
-    public static function getProfile(string $profilePicture): string
+    public function getProfile(): string
     {
-        if (!empty($profilePicture) && file_exists('upload/profile/' . $profilePicture)) {
-            return url('upload/profile/' . $profilePicture);
+        $path = base_path('upload/profile/' . $this->profile_picture);
+        if (!empty($this->profile_picture) && file_exists($path)) {
+            return url('upload/profile/' . $this->profile_picture);
         }
-        return url('');
+        // Image par défaut si rien n'existe
+        return url('upload/default.jpg');
     }
 
     public static function getStudentList(int $perPage)
@@ -339,10 +343,10 @@ class User extends Authenticatable
 
     public static function getTeacher()
     {
-        $results = User::select('users.*')
+        return User::select('users.*')
             ->where('users.user_type', '=', 2)
-            ->where('users.is_delete', '=', 0);
-        return $results->orderBy('users.id', 'desc')
+            ->where('users.is_delete', '=', 0)
+            ->orderBy('users.id', 'desc')
             ->get();
     }
 
@@ -393,7 +397,9 @@ class User extends Authenticatable
 
     public static function getStudent(int $class_id)
     {
-        return User::select('users.id', 'users.name', 'users.last_name')
+        return User::select('users.*', 'class.name as class_name', 'parent.name as parent_name', 'parent.last_name as parent_last_name')
+            ->join('class', 'class.id', '=', 'users.class_id')
+            ->join('users as parent', 'parent.id', '=', 'users.parent_id')
             ->where('users.is_delete', '=', 0)
             ->where('users.status', '=', 1)
             ->where('users.user_type', '=', 3)
@@ -411,8 +417,8 @@ class User extends Authenticatable
     {
         return User::select('id', 'name', 'last_name', 'user_type')
             ->whereIn('user_type', [1, 2, 3, 4])
-            ->where('status', 1)
-            ->where('is_delete', 0)
+            ->where('status', '=', 1)
+            ->where('is_delete', '=', 0)
             ->get()
             ->map(function ($user) {
                 $suffix = match ((int) $user->user_type) {
@@ -598,5 +604,172 @@ class User extends Authenticatable
         return $class_ids;
     }
 
+    public static function updateLastLogin(int $sender_id)
+    {
+        return User::where('id', $sender_id)->update([
+            'last_login' => now(),
+        ]);
+    }
+
+    public static function getStudentData(int $student_id)
+    {
+        return User::select('users.*', 'class.name as class_name', 'parent.name as parent_name', 'parent.last_name as parent_last_name')
+            ->join('class', 'class.id', '=', 'users.class_id')
+            ->join('users as parent', 'parent.id', '=', 'users.parent_id')
+            ->where('users.id', '=', $student_id)
+            ->first();
+    }
+
+    public static function getAllAdminList()
+    {
+        $results = User::select('users.*')
+            ->where('user_type', '=', 1);
+
+        $filters = [
+            'users.name' => strtolower(Request::get('name')),
+            'users.last_name' => strtolower(Request::get('last_name')),
+            'users.email' => strtolower(Request::get('email')),
+            'users.created_at' => strtolower(Request::get('created_at')),
+            'users.updated_at' => strtolower(Request::get('updated_at')),
+        ];
+
+        foreach ($filters as $column => $value) {
+            if (!empty($value)) {
+                $results->where($column, 'like', '%' . $value . '%');
+            }
+        }
+
+        $status = Request::get('status');
+        if (in_array($status, ['0', '1'], true)) {
+            $results->where('users.status', $status);
+        }
+
+        return $results->where('is_delete', '=', 0)
+            ->orderBy('id', 'asc')
+            ->get();
+    }
+
+    public static function getAllStudentList()
+    {
+        $results = User::select('users.*', 'class.name as class_name', 'parent.name as parent_name', 'parent.last_name as parent_last_name')
+            ->join('users as parent', 'parent.id', '=', 'users.parent_id', 'left')
+            ->join('class', 'class.id', '=', 'users.class_id')
+            ->where('users.user_type', '=', 3)
+            ->where('users.is_delete', '=', 0);
+
+        $filters = [
+            'users.admission_number' => strtolower(Request::get('admission_number')),
+            'users.name' => strtolower(Request::get('name')),
+            'users.last_name' => strtolower(Request::get('last_name')),
+            'users.email' => strtolower(Request::get('email')),
+            'users.mobile_number' => strtolower(Request::get('mobile_number')),
+            'users.date_of_birth' => strtolower(Request::get('date_of_birth')),
+            'class.name' => strtolower(Request::get('class_name')),
+            'users.height' => strtolower(Request::get('height')),
+            'users.weight' => strtolower(Request::get('weight')),
+            'users.religion' => strtolower(Request::get('religion')),
+            'users.created_at' => strtolower(Request::get('created_at')),
+            'users.updated_at' => strtolower(Request::get('updated_at')),
+        ];
+
+        foreach ($filters as $column => $value) {
+            if (!empty($value)) {
+                $results->where($column, 'like', '%' . $value . '%');
+            }
+        }
+        $status = Request::get('status');
+        if (in_array($status, ['0', '1'], true)) {
+            $results->where('users.status', $status);
+        }
+        $gender = Request::get('gender');
+        if (in_array($gender, ['male', 'female', 'other'], true)) {
+            $results->where('users.gender', $gender);
+        }
+        $blood_group = Request::get('blood_group');
+        if (in_array($blood_group, ['a+', 'a-', 'b+', 'b-', 'ab+', 'ab-', 'o+', 'o-'], true)) {
+            $results->where('users.blood_group', $blood_group);
+        }
+
+        return $results->orderBy('users.id', 'asc')
+            ->get();
+    }
+
+    public static function getAllTeacherList()
+    {
+        $results = User::select('users.*')
+            ->where('users.user_type', '=', 2);
+
+        $filters = [
+            'users.name' => strtolower(Request::get('name')),
+            'users.note' => strtolower(Request::get('note')),
+            'users.email' => strtolower(Request::get('email')),
+            'users.address' => strtolower(Request::get('address')),
+            'users.last_name' => strtolower(Request::get('last_name')),
+            'users.occupation' => strtolower(Request::get('occupation')),
+            'users.mobile_number' => strtolower(Request::get('mobile_number')),
+            'users.permanent_address' => strtolower(Request::get('permanent_address')),
+            'users.marital_status' => strtolower(Request::get('marital_status')),
+            'users.work_experience' => strtolower(Request::get('work_experience')),
+            'users.admission_date' => strtolower(Request::get('admission_date')),
+            'users.date_of_birth' => strtolower(Request::get('date_of_birth')),
+            'users.created_at' => strtolower(Request::get('created_at')),
+            'users.updated_at' => strtolower(Request::get('updated_at')),
+        ];
+
+        foreach ($filters as $column => $value) {
+            if (!empty($value)) {
+                $results->where($column, 'like', '%' . $value . '%');
+            }
+        }
+        $status = Request::get('status');
+        if (in_array($status, ['0', '1'], true)) {
+            $results->where('users.status', $status);
+        }
+        $gender = Request::get('gender');
+        if (in_array($gender, ['male', 'female', 'other'], true)) {
+            $results->where('users.gender', $gender);
+        }
+
+        return $results->where('users.is_delete', '=', 0)
+            ->orderBy('users.id', 'asc')
+            ->groupBy('users.id')
+            ->get();
+    }
+
+    public static function getAllParentList()
+    {
+        $results = User::select('users.*')
+            ->where('users.user_type', '=', 4)
+            ->where('users.is_delete', '=', 0)
+            ->where('users.is_delete', '=', 0);
+
+        $filters = [
+            'users.name' => strtolower(Request::get('name')),
+            'users.last_name' => strtolower(Request::get('last_name')),
+            'users.email' => strtolower(Request::get('email')),
+            'users.mobile_number' => strtolower(Request::get('mobile_number')),
+            'users.occupation' => strtolower(Request::get('occupation')),
+            'users.address' => strtolower(Request::get('address')),
+            'users.created_at' => strtolower(Request::get('created_at')),
+            'users.updated_at' => strtolower(Request::get('updated_at')),
+        ];
+
+        foreach ($filters as $column => $value) {
+            if (!empty($value)) {
+                $results->where($column, 'like', '%' . $value . '%');
+            }
+        }
+        $status = Request::get('status');
+        if (in_array($status, ['0', '1'], true)) {
+            $results->where('users.status', $status);
+        }
+        $gender = Request::get('gender');
+        if (in_array($gender, ['male', 'female', 'other'], true)) {
+            $results->where('users.gender', $gender);
+        }
+
+        return $results->orderBy('users.id', 'asc')
+            ->get();
+    }
 
 }

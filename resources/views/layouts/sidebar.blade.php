@@ -1,6 +1,5 @@
-<aside :class="sidebarToggle ? 'translate-x-0' : '-translate-x-full'"
-      class="absolute left-0 top-0 z-9999 flex h-screen w-72.5 flex-col overflow-y-hidden bg-white duration-300 ease-linear dark:bg-boxdark lg:static lg:translate-x-0"
-      @click.outside="sidebarToggle = false">
+<aside :class="sidebarToggle ? 'translate-x-0 lg:w-[90px]' : '-translate-x-full'"
+      class="sidebar fixed left-0 top-0 z-9999 flex h-screen w-[290px] flex-col overflow-y-hidden border-r border-gray-200 bg-white px-5 dark:border-gray-700 dark:bg-gray-900 lg:static lg:translate-x-0">
 
       <!-- HEADER -->
       @php
@@ -21,9 +20,9 @@
             $homeLink = $homeLinks[$role] ?? url('login');
       @endphp
 
-      <div class="flex items-center justify-between lg:justify-center gap-2">
+      <div class="flex items-center justify-between lg:justify-center gap- py-2">
             <a href="{{ $homeLink }}">
-                  <img src="{{ $logo_url }}" alt="Logo" class="w-48 h-24" />
+                  <img src="{{ $logo_url }}" alt="Logo" class="w-48 h-24 object-cover rounded-lg ms-6 sm:m-1" />
             </a>
             <button class="block lg:hidden" @click.stop="sidebarToggle = !sidebarToggle">
                   <i class="fa-solid fa-arrow-left"></i>
@@ -32,10 +31,10 @@
 
       <!-- MENU -->
       <div class="no-scrollbar flex flex-col overflow-y-auto duration-300 ease-linear">
-            <nav class="p-2 lg:px-5 mb-8" x-data="{ selected: $persist('dashboard') }">
+            <nav class="mb-8" x-data="{ selected: $persist('dashboard') }">
 
                   <!-- NOM UTILISATEUR -->
-                  <h3 class="mb-4 ml-4 text-md font-medium text-bodydark2 dark:text-white">
+                  <h3 class="mb-3 ml-4 text-md font-medium text-bodydark2 dark:text-white">
                         <span class="self-center font-bold whitespace-nowrap">
                               {{ Auth::user()->name }} {{ Auth::user()->last_name }}
                         </span>
@@ -154,6 +153,42 @@
                                                   ],
                                               ],
                                           ],
+                                          'attendance' => [
+                                              'icon' => 'mdi:user-check',
+                                              'label' => 'Présence',
+                                              'items' => [
+                                                  [
+                                                      'url' => 'admin/attendance/student/list',
+                                                      'label' => 'Apprenants',
+                                                      'segment' => 3,
+                                                      'match' => 'student',
+                                                  ],
+                                                  [
+                                                      'url' => 'admin/attendance/report',
+                                                      'label' => 'Rapports',
+                                                      'segment' => 3,
+                                                      'match' => 'report',
+                                                  ],
+                                              ],
+                                          ],
+                                          'communicate' => [
+                                              'icon' => 'mdi:bell',
+                                              'label' => 'Notifications',
+                                              'items' => [
+                                                  [
+                                                      'url' => 'admin/communicate/noticeboard/list',
+                                                      'label' => 'Listes',
+                                                      'segment' => 3,
+                                                      'match' => 'noticeboard',
+                                                  ],
+                                                  [
+                                                      'url' => 'admin/communicate/send_mail',
+                                                      'label' => 'Mails',
+                                                      'segment' => 3,
+                                                      'match' => 'send_mail',
+                                                  ],
+                                              ],
+                                          ],
                                           'practicalworks' => [
                                               'icon' => 'mdi:home-edit',
                                               'label' => 'Devoirs',
@@ -178,13 +213,13 @@
                                               'items' => [
                                                   [
                                                       'url' => 'admin/feescollections/collections/list',
-                                                      'label' => 'Percevoir',
+                                                      'label' => 'Collecter',
                                                       'segment' => 3,
                                                       'match' => 'collections',
                                                   ],
                                                   [
                                                       'url' => 'admin/feescollections/feescollects/feesList',
-                                                      'label' => 'Reçues',
+                                                      'label' => 'Rapports',
                                                       'segment' => 3,
                                                       'match' => 'feescollects',
                                                   ],
@@ -199,6 +234,12 @@
                                                       'label' => 'Menus',
                                                       'segment' => 2,
                                                       'match' => 'settings',
+                                                  ],
+                                                  [
+                                                      'url' => 'admin/test',
+                                                      'label' => 'Test',
+                                                      'segment' => 2,
+                                                      'match' => 'test',
                                                   ],
                                               ],
                                           ],
@@ -216,21 +257,74 @@
                                               'match' => 'dashboard',
                                           ],
                                           [
+                                              'url' => 'teacher/account',
+                                              'icon' => 'fa-circle-user',
+                                              'label' => 'Mon Profile',
+                                              'segment' => 2,
+                                              'match' => 'account',
+                                          ],
+                                          [
                                               'url' => 'teacher/my_student',
                                               'icon' => 'fa-user-graduate',
-                                              'label' => 'Mes Étudiants',
+                                              'label' => 'Mes Apprenants',
                                               'segment' => 2,
                                               'match' => 'my_student',
                                           ],
                                           [
-                                              'url' => 'teacher/my_class_subject',
-                                              'icon' => 'fa-book',
+                                              'url' => 'teacher/class_subject',
+                                              'icon' => 'fa-landmark',
                                               'label' => 'Matières & Classes',
                                               'segment' => 2,
-                                              'match' => 'my_class_subject',
+                                              'match' => 'class_subject',
+                                          ],
+                                          [
+                                              'url' => 'teacher/my_exam_timetable',
+                                              'icon' => 'fa-flask-vial',
+                                              'label' => 'Evaluations',
+                                              'segment' => 2,
+                                              'match' => 'my_exam_timetable',
+                                          ],
+                                          [
+                                              'url' => 'teacher/my_calendar',
+                                              'icon' => 'fa-calendar-days',
+                                              'label' => 'Mon Calendrier',
+                                              'segment' => 2,
+                                              'match' => 'my_calendar',
+                                          ],
+                                          [
+                                              'url' => 'teacher/marks_register',
+                                              'icon' => 'fa-registered',
+                                              'label' => 'Mon Registre',
+                                              'segment' => 2,
+                                              'match' => 'marks_register',
+                                          ],
+                                          [
+                                              'url' => 'teacher/my_noticeboard',
+                                              'icon' => 'fa-bell',
+                                              'label' => 'Mes Notifications',
+                                              'segment' => 2,
+                                              'match' => 'my_noticeboard',
                                           ],
                                       ],
                                       'dropdowns' => [
+                                          'attendance' => [
+                                              'icon' => 'mdi:user-check',
+                                              'label' => 'Présence',
+                                              'items' => [
+                                                  [
+                                                      'url' => 'teacher/attendance/student/list',
+                                                      'label' => 'Apprenants',
+                                                      'segment' => 3,
+                                                      'match' => 'student',
+                                                  ],
+                                                  [
+                                                      'url' => 'teacher/attendance/report',
+                                                      'label' => 'Rapports',
+                                                      'segment' => 3,
+                                                      'match' => 'report',
+                                                  ],
+                                              ],
+                                          ],
                                           'practicalworks' => [
                                               'icon' => 'mdi:home-edit',
                                               'label' => 'Devoirs',
@@ -240,12 +334,6 @@
                                                       'label' => 'Travaux Maison',
                                                       'segment' => 3,
                                                       'match' => 'homework',
-                                                  ],
-                                                  [
-                                                      'url' => 'teacher/practicalworks/reports',
-                                                      'label' => 'Rapports',
-                                                      'segment' => 3,
-                                                      'match' => 'reports',
                                                   ],
                                               ],
                                           ],
@@ -263,31 +351,74 @@
                                               'match' => 'dashboard',
                                           ],
                                           [
-                                              'url' => 'student/my_subjects',
+                                              'url' => 'student/account',
+                                              'icon' => 'fa-user-circle',
+                                              'label' => 'Mon Profile',
+                                              'segment' => 2,
+                                              'match' => 'account',
+                                          ],
+                                          [
+                                              'url' => 'student/my_calendar',
+                                              'icon' => 'fa-calendar-days',
+                                              'label' => 'Mon Calendrier',
+                                              'segment' => 2,
+                                              'match' => 'my_calendar',
+                                          ],
+                                          [
+                                              'url' => 'student/my_subject',
                                               'icon' => 'fa-book',
                                               'label' => 'Mes Matières',
                                               'segment' => 2,
-                                              'match' => 'my_subjects',
+                                              'match' => 'my_subject',
                                           ],
-                                      ],
-                                      'dropdowns' => [
-                                          'practicalworks' => [
+                                          [
+                                              'url' => 'student/my_timetable',
+                                              'icon' => 'fa-clock',
+                                              'label' => 'Mes Programmations',
+                                              'segment' => 2,
+                                              'match' => 'my_timetable',
+                                          ],
+                                          [
+                                              'url' => 'student/my_exam_timetable',
+                                              'icon' => 'fa-flask-vial',
+                                              'label' => 'Mes Evaluations',
+                                              'segment' => 2,
+                                              'match' => 'my_exam_timetable',
+                                          ],
+                                          [
+                                              'url' => 'student/my_exam_result',
+                                              'icon' => 'fa-square-poll-horizontal',
+                                              'label' => 'Mes Résultats',
+                                              'segment' => 2,
+                                              'match' => 'my_exam_result',
+                                          ],
+                                          [
+                                              'url' => 'student/my_attendance',
+                                              'icon' => 'fa-user-check',
+                                              'label' => 'Ma Présence',
+                                              'segment' => 2,
+                                              'match' => 'my_attendance',
+                                          ],
+                                          [
+                                              'url' => 'student/my_noticeboard',
+                                              'icon' => 'mdi:bell',
+                                              'label' => 'Mes Notifications',
+                                              'segment' => 2,
+                                              'match' => 'my_noticeboard',
+                                          ],
+                                          [
+                                              'url' => 'student/my_homework',
                                               'icon' => 'mdi:home-edit',
-                                              'label' => 'Devoirs',
-                                              'items' => [
-                                                  [
-                                                      'url' => 'student/practicalworks/homework/list',
-                                                      'label' => 'Travaux Maison',
-                                                      'segment' => 3,
-                                                      'match' => 'homework',
-                                                  ],
-                                                  [
-                                                      'url' => 'student/practicalworks/reports',
-                                                      'label' => 'Rapports',
-                                                      'segment' => 3,
-                                                      'match' => 'reports',
-                                                  ],
-                                              ],
+                                              'label' => 'Mes Devoirs',
+                                              'segment' => 2,
+                                              'match' => 'my_homework',
+                                          ],
+                                          [
+                                              'url' => 'student/my_fees',
+                                              'icon' => 'fa-cash-register',
+                                              'label' => 'Mes Contributions',
+                                              'segment' => 2,
+                                              'match' => 'my_fees',
                                           ],
                                       ],
                                   ],
@@ -303,11 +434,25 @@
                                               'match' => 'dashboard',
                                           ],
                                           [
-                                              'url' => 'parent/my_children',
-                                              'icon' => 'fa-user-group',
+                                              'url' => 'parent/account',
+                                              'icon' => 'fa-user-circle',
+                                              'label' => 'Mon Profile',
+                                              'segment' => 2,
+                                              'match' => 'account',
+                                          ],
+                                          [
+                                              'url' => 'parent/my_student',
+                                              'icon' => 'fa-user-graduate',
                                               'label' => 'Mes Enfants',
                                               'segment' => 2,
-                                              'match' => 'my_children',
+                                              'match' => 'my_student',
+                                          ],
+                                          [
+                                              'url' => 'parent/my_noticeboard',
+                                              'icon' => 'mdi:bell',
+                                              'label' => 'Mes Notifications',
+                                              'segment' => 2,
+                                              'match' => 'my_noticeboard',
                                           ],
                                       ],
                                   ],
@@ -320,17 +465,31 @@
                         @foreach ($roleMenus['items'] ?? [] as $menu)
                               <li>
                                     <a href="{{ url($menu['url']) }}"
-                                          class="group flex items-center gap-3 px-4 py-1.5 rounded-sm font-medium transition-all duration-700 ease-in-out
+                                          class="group flex items-center gap-3 px-4 py-1.5 rounded-t-lg font-medium transition-all duration-300 ease-in-out text-gray-700 dark:text-gray-300
                                             {{ Request::segment($menu['segment']) === $menu['match']
-                                                ? 'bg-gradient-to-r from-violet-600 to-violet-500 hover:from-violet-600 hover:to-violet-500 hover:shadow-xl text-white'
-                                                : 'text-violet-500 dark:text-white hover:bg-gradient-to-r hover:from-violet-600 hover:to-violet-600 dark:hover:bg-meta-4 hover:shadow-xl hover:translate-x-2' }}">
-                                          <span
-                                                class="w-5 h-5 p-4 flex items-center justify-center rounded-sm bg-violet-100 text-violet-600 group-hover:text-violet-600 group-hover:bg-violet-100 group-hover:shadow-xl">
-                                                <i class="fa-solid {{ $menu['icon'] }}"></i>
+                                                ? 'bg-indigo-500/25 hover:shadow-xl text-indigo-600 dark:bg-gray-700'
+                                                : 'hover:bg-indigo-500/25 hover:shadow-xl hover:text-indigo-600 dark:hover:bg-gray-400/25 dark:hover:text-gray-300 dark:hover:shadow-xl' }}">
+                                          <span class="w-5 h-5 p-4 flex items-center justify-center">
+                                                @php
+                                                      $icon = $menu['icon'];
+                                                      $isFa = str_contains($icon, 'fa');
+                                                      $isMdi = str_contains($icon, 'mdi:');
+                                                @endphp
+
+                                                @if ($isFa)
+                                                      <i class="fa {{ $icon }}"></i>
+                                                @elseif ($isMdi)
+                                                      <iconify-icon icon="{{ $icon }}" width="20"
+                                                            height="20"></iconify-icon>
+                                                @else
+                                                      {{-- Fallback Iconify if Font Awesome not found --}}
+                                                      <iconify-icon icon="{{ $icon }}" width="20"
+                                                            height="20"></iconify-icon>
+                                                @endif
                                           </span>
 
-                                          <span
-                                                class="group-hover:text-white dark:text-white">{{ $menu['label'] }}</span>
+
+                                          <span class="">{{ $menu['label'] }}</span>
                                     </a>
                               </li>
                         @endforeach
@@ -359,22 +518,31 @@
                                     <li>
                                           <a href="#"
                                                 @click.prevent="selectedKey = selectedKey === '{{ $key }}' ? null : '{{ $key }}'"
-                                                class="group relative flex items-center gap-3 px-4 py-2 rounded-sm font-medium transition-all duration-300 ease-in-out
-                                                              text-violet-600 dark:text-white hover:bg-gradient-to-r hover:from-violet-600 hover:to-violet-500 hover:text-white hover:shadow-xl hover:translate-x-2"
-                                                :class="{ 'bg-gradient-to-r from-violet-600 to-violet-500 text-white shadow-xl': selectedKey === '{{ $key }}' }">
+                                                class="group relative flex items-center gap-3 px-4 py-2 rounded-t-lg font-medium transition-all duration-300 ease-in-out
+                                                text-gray-700 dark:text-gray-300 hover:bg-indigo-500/25 hover:shadow-xl hover:text-indigo-600 dark:hover:bg-gray-400/25 dark:hover:text-gray-300 dark:hover:shadow-xl"
+                                                :class="{ 'bg-indigo-500/25 hover:shadow-xl text-indigo-600 dark:bg-gray-700': selectedKey === '{{ $key }}' }">
 
-                                                <span
-                                                      class="w-5 h-5 p-4 flex items-center justify-center rounded-sm bg-violet-100 text-violet-600 group-hover:text-violet-600 group-hover:bg-violet-100 group-hover:shadow-xl">
-                                                      @if (str_contains($drop['icon'], 'mdi:'))
-                                                            <iconify-icon icon="{{ $drop['icon'] }}" width="20"
+                                                <span class="w-5 h-5 p-4 flex items-center justify-center">
+                                                      @php
+                                                            $icon = $drop['icon'];
+                                                            $isMdi = str_contains($icon, 'mdi:');
+                                                            $isFa = str_contains($icon, 'fa');
+                                                      @endphp
+
+                                                      @if ($isFa)
+                                                            <i class="fa {{ $icon }}"></i>
+                                                      @elseif ($isMdi)
+                                                            <iconify-icon icon="{{ $icon }}" width="20"
                                                                   height="20"></iconify-icon>
                                                       @else
-                                                            <i class="fa-solid {{ $drop['icon'] }}"></i>
+                                                            {{-- Fallback Iconify if Font Awesome not found --}}
+                                                            <iconify-icon icon="{{ $icon }}" width="20"
+                                                                  height="20"></iconify-icon>
                                                       @endif
                                                 </span>
 
-                                                <span
-                                                      class="group-hover:text-white dark:text-white">{{ $drop['label'] }}</span>
+
+                                                <span class="">{{ $drop['label'] }}</span>
 
                                                 <i class="fa-solid fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 transition duration-300"
                                                       :class="{ 'rotate-180': selectedKey === '{{ $key }}' }"></i>
@@ -392,17 +560,17 @@
                                                       @foreach ($drop['items'] as $item)
                                                             <li>
                                                                   <a href="{{ url($item['url']) }}"
-                                                                        class="group flex items-center gap-3 px-4 py-2 rounded-sm font-medium transition-all duration-300 ease-in-out
+                                                                        class="group flex items-center gap-3 px-4 py-2 rounded-t-lg font-medium transition-all duration-300 ease-in-out text-gray-700 dark:text-gray-300
                                                                                     {{ Request::segment($item['segment']) === $item['match']
-                                                                                        ? 'bg-gradient-to-r from-violet-600 to-violet-500 text-white shadow-xl'
-                                                                                        : 'text-violet-500 dark:text-white hover:bg-gradient-to-r hover:from-violet-600 hover:to-violet-600 hover:text-white hover:shadow-xl hover:translate-x-2' }}">
+                                                                                        ? 'bg-indigo-500/25 hover:shadow-xl text-indigo-600 dark:bg-gray-700'
+                                                                                        : 'hover:bg-indigo-500/25 hover:shadow-xl hover:text-indigo-700 dark:hover:bg-gray-400/25 dark:hover:text-gray-300 dark:hover:shadow-xl' }}">
                                                                         <span
                                                                               class="w-5 h-5 flex items-center justify-center">
-                                                                              <i class="fa-solid fa-chevron-right"></i>
+                                                                              <i class="fa-solid fa-circle-dot"></i>
                                                                         </span>
 
                                                                         <span
-                                                                              class="group-hover:text-white dark:text-white">{{ $item['label'] }}</span>
+                                                                              class="">{{ $item['label'] }}</span>
                                                                   </a>
                                                             </li>
                                                       @endforeach
@@ -413,11 +581,11 @@
                         </ul>
 
                         <!-- Déconnexion -->
-                        <li class="absolute bottom-2 left-0 px-4 py-2.5 w-full">
+                        <li class="absolute bottom-0 left-0 px-4 py-2.5 w-full">
                               <div onclick="window.location.href='{{ url('logout') }}'"
-                                    class="cursor-pointer flex items-center px-4 py-2.5 bg-gradient-to-r from-violet-600 to-violet-500 hover:from-violet-600 hover:to-violet-500 text-white hover:translate-x-2 transition-all duration-300 ease-in-out hover:shadow-xl">
-                                    <span
-                                          class="w-5 h-5 flex items-center justify-center rounded-sm bg-violet-100 text-violet-600">
+                                    class="group cursor-pointer flex items-center px-4 py-1 rounded-lg transition-all duration-300 ease-in-out
+                                    hover:bg-indigo-500/25 hover:shadow-xl hover:text-indigo-600 text-gray-700 dark:text-gray-300 dark:hover:bg-gray-700">
+                                    <span class="w-5 h-5 p-4 flex items-center justify-center">
                                           <i class="fa-solid fa-arrow-right-from-bracket"></i>
                                     </span>
                                     <span class="ml-3">Déconnexion</span>

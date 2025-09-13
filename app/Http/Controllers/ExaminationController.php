@@ -9,6 +9,7 @@ use App\Models\ExaminationModel;
 use App\Models\MarkRegisterModel;
 use App\Models\MarksGradeModel;
 use App\Models\ScheduleModel;
+use App\Models\SettingModel;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -151,7 +152,8 @@ class ExaminationController extends Controller
             $isUpdated = $existingSchedules;
             if (!empty($request->schedule)) {
                 foreach ($request->schedule as $schedule) {
-                    if (!empty($schedule['subject_id']) &&
+                    if (
+                        !empty($schedule['subject_id']) &&
                         !empty($schedule['exam_date']) &&
                         !empty($schedule['start_time']) &&
                         !empty($schedule['end_time']) &&
@@ -191,14 +193,14 @@ class ExaminationController extends Controller
         $data['header_title'] = "Mon calendrier d'examen";
         $class_id = Auth::user()->class_id;
         $getExamSchedule = ScheduleModel::getExam($class_id);
-        $result = array();
+        $result = [];
         foreach ($getExamSchedule as $examSchedule) {
-            $dataExam = array();
+            $dataExam = [];
             $dataExam['name'] = $examSchedule->exam_name;
             $getExamTimetable = ScheduleModel::getExamTimetable($examSchedule->exam_id, $class_id);
-            $results = array();
+            $results = [];
             foreach ($getExamTimetable as $examTimetable) {
-                $dataSchedule = array();
+                $dataSchedule = [];
                 $dataSchedule['subject_name'] = $examTimetable->subject_name;
                 $dataSchedule['exam_date'] = $examTimetable->exam_date;
                 $dataSchedule['start_time'] = $examTimetable->start_time;
@@ -259,16 +261,16 @@ class ExaminationController extends Controller
         $getStudent = User::getSingle($student_id);
         $class_id = $getStudent->class_id;
         $getExamSchedule = ScheduleModel::getExam($class_id);
-        $result = array();
+        $result = [];
 
         foreach ($getExamSchedule as $examSchedule) {
-            $dataExam = array();
+            $dataExam = [];
             $dataExam['name'] = $examSchedule->exam_name;
             $getExamTimetable = ScheduleModel::getExamTimetable($examSchedule->exam_id, $class_id);
-            $results = array();
+            $results = [];
 
             foreach ($getExamTimetable as $examTimetable) {
-                $dataSchedule = array();
+                $dataSchedule = [];
                 $dataSchedule['subject_name'] = $examTimetable->subject_name;
                 $dataSchedule['exam_date'] = $examTimetable->exam_date;
                 $dataSchedule['start_time'] = $examTimetable->start_time;
@@ -611,45 +613,160 @@ class ExaminationController extends Controller
     {
         $result = array();
         $getExam = MarkRegisterModel::getExam(Auth::user()->id);
+
         foreach ($getExam as $examValue) {
             $dataExam = array();
             $dataExam['exam_name'] = $examValue->exam_name;
+            $dataExam['exam_id'] = $examValue->exam_id;
+
             $getExamSubject = MarkRegisterModel::getExamSubject($examValue->exam_id, Auth::user()->id);
             $dataSubject = array();
+
+            // Initialiser les totaux pour cet examen
+            $total_class_work = 0;
+            $total_home_work = 0;
+            $total_test_work = 0;
+            $total_exam_work = 0;
+            $total_score = 0;
+            $passing_marks = 0;
+            $full_marks = 0;
+
             foreach ($getExamSubject as $examSubject) {
-                $totol_score = $examSubject['class_work'] + $examSubject['test_work'] + $examSubject['home_work'] + $examSubject['exam_work'];
+                $total_score_subject = $examSubject['class_work'] + $examSubject['test_work'] + $examSubject['home_work'] + $examSubject['exam_work'];
+
                 $dataSub = array();
                 $dataSub['subject_name'] = $examSubject['subject_name'];
                 $dataSub['class_work'] = $examSubject['class_work'];
                 $dataSub['test_work'] = $examSubject['test_work'];
                 $dataSub['home_work'] = $examSubject['home_work'];
                 $dataSub['exam_work'] = $examSubject['exam_work'];
-                $dataSub['score_marks'] = $totol_score;
+                $dataSub['score_marks'] = $total_score_subject;
                 $dataSub['passing_marks'] = $examSubject['passing_marks'];
                 $dataSub['full_marks'] = $examSubject['full_marks'];
                 $dataSubject[] = $dataSub;
+
+                // Calculer les totaux
+                $total_class_work += $examSubject['class_work'];
+                $total_home_work += $examSubject['home_work'];
+                $total_test_work += $examSubject['test_work'];
+                $total_exam_work += $examSubject['exam_work'];
+                $total_score += $total_score_subject;
+                $passing_marks += $examSubject['passing_marks'];
+                $full_marks += $examSubject['full_marks'];
             }
+
             $dataExam['subject'] = $dataSubject;
+
+            // Ajouter les totaux à l'examen
+            $dataExam['total_class_work'] = $total_class_work;
+            $dataExam['total_home_work'] = $total_home_work;
+            $dataExam['total_test_work'] = $total_test_work;
+            $dataExam['total_exam_work'] = $total_exam_work;
+            $dataExam['total_score'] = $total_score;
+            $dataExam['passing_marks'] = $passing_marks;
+            $dataExam['full_marks'] = $full_marks;
+
+            // Calculer le pourcentage et le grade
+            $percentage = ($full_marks > 0) ? ($total_score * 100) / $full_marks : 0;
+            $dataExam['percentage'] = round($percentage, 2);
+            $dataExam['grade'] = MarksGradeModel::getGrade($percentage);
+
             $result[] = $dataExam;
         }
+
         $data['getExamResultStudent'] = $result;
         $data['header_title'] = "Mes résultats d'examens";
         return view('student.exam_result', $data);
     }
 
+    public function studentExamResultPrint(Request $request)
+    {
+        $data['header_title'] = "Imprimer mes résultats d'examens";
+        $exam_id = $request->exam_id;
+        $student_id = $request->student_id;
+
+        $getExam = MarkRegisterModel::getExam($student_id);
+        $data['getStudent'] = User::getStudentData($student_id);
+
+        if ($getExam->isEmpty()) {
+            return redirect()->back()->with('error', 'Aucun examen trouvé pour cet apprenant.');
+        }
+
+        foreach ($getExam as $examValue) {
+            $data['exam_name'] = $examValue->exam_name;
+        }
+
+        $getExamSubject = MarkRegisterModel::getExamSubject($exam_id, $student_id);
+
+        // Initialiser les totaux
+        $total_class_work = 0;
+        $total_home_work = 0;
+        $total_test_work = 0;
+        $total_exam_work = 0;
+        $total_score = 0;
+        $passing_marks = 0;
+        $full_marks = 0;
+
+        $dataSubject = [];
+        foreach ($getExamSubject as $examSubject) {
+            $total_score_subject = $examSubject['class_work'] + $examSubject['test_work'] + $examSubject['home_work'] + $examSubject['exam_work'];
+
+            $dataSub = [];
+            $dataSub['subject_name'] = $examSubject['subject_name'];
+            $dataSub['class_work'] = $examSubject['class_work'];
+            $dataSub['test_work'] = $examSubject['test_work'];
+            $dataSub['home_work'] = $examSubject['home_work'];
+            $dataSub['exam_work'] = $examSubject['exam_work'];
+            $dataSub['score_marks'] = $total_score_subject;
+            $dataSub['passing_marks'] = $examSubject['passing_marks'];
+            $dataSub['full_marks'] = $examSubject['full_marks'];
+            $dataSubject[] = $dataSub;
+
+            // Calculer les totaux
+            $total_class_work += $examSubject['class_work'];
+            $total_home_work += $examSubject['home_work'];
+            $total_test_work += $examSubject['test_work'];
+            $total_exam_work += $examSubject['exam_work'];
+            $total_score += $total_score_subject;
+            $passing_marks += $examSubject['passing_marks'];
+            $full_marks += $examSubject['full_marks'];
+        }
+
+        $data['getExamResultStudent'] = $dataSubject;
+
+        // Ajouter les totaux aux données
+        $data['total_class_work'] = $total_class_work;
+        $data['total_home_work'] = $total_home_work;
+        $data['total_test_work'] = $total_test_work;
+        $data['total_exam_work'] = $total_exam_work;
+        $data['total_score'] = $total_score;
+        $data['passing_marks'] = $passing_marks;
+        $data['full_marks'] = $full_marks;
+
+        // Calculer le pourcentage et le grade
+        $percentage = ($full_marks > 0) ? ($total_score * 100) / $full_marks : 0;
+        $data['percentage'] = round($percentage, 2);
+        $data['getGrade'] = MarksGradeModel::getGrade($percentage);
+
+        return view('exam_result_print', $data);
+    }
+
     public function parentStudentExamResult($student_id): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
     {
+        $data['header_title'] = "Ses résultats d'examens";
+
         $data['getStudent'] = User::getSingle($student_id);
-        $result = array();
+        $result = [];
         $getExam = MarkRegisterModel::getExam($student_id);
         foreach ($getExam as $examValue) {
-            $dataExam = array();
+            $dataExam = [];
             $dataExam['exam_name'] = $examValue->exam_name;
+            $dataExam['exam_id'] = $examValue->exam_id;
             $getExamSubject = MarkRegisterModel::getExamSubject($examValue->exam_id, $student_id);
-            $dataSubject = array();
+            $dataSubject = [];
             foreach ($getExamSubject as $examSubject) {
                 $totol_score = $examSubject['class_work'] + $examSubject['test_work'] + $examSubject['home_work'] + $examSubject['exam_work'];
-                $dataSub = array();
+                $dataSub = [];
                 $dataSub['subject_name'] = $examSubject['subject_name'];
                 $dataSub['class_work'] = $examSubject['class_work'];
                 $dataSub['test_work'] = $examSubject['test_work'];
@@ -664,7 +781,6 @@ class ExaminationController extends Controller
             $result[] = $dataExam;
         }
         $data['getExamResultStudent'] = $result;
-        $data['header_title'] = "Ses résultats d'examens";
         return view('parent.exam_result', $data);
     }
 
@@ -749,4 +865,5 @@ class ExaminationController extends Controller
             return redirect()->back()->with('error', 'Vos informations ne sont pas correctes. Veuillez réessayer.');
         }
     }
+
 }
