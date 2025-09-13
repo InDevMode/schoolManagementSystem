@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ExportFeesCollection;
 use App\Models\ClassModel;
 use App\Models\FeesCollectionModel;
 use App\Models\SettingModel;
@@ -10,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Maatwebsite\Excel\Facades\Excel;
 use Stripe\Stripe;
 use Stripe\Checkout\Session as StripeSession;
 
@@ -683,7 +685,7 @@ class FeesCollectionController extends Controller
                 [
                     'price_data' => [
                         'currency' => 'xof',
-                         'product_data' => [
+                        'product_data' => [
                             'name' => 'Paiement frais scolaire - ' . $student->name,
                         ],
                         'unit_amount' => $fees->paid_amount,
@@ -706,6 +708,11 @@ class FeesCollectionController extends Controller
         ]);
 
         return $session->url;
+    }
+
+    public function exportFeesCollects()
+    {
+        return Excel::download(new ExportFeesCollection, 'fees_collects_' . date('d_m_Y') . '.xlsx');
     }
 
 }

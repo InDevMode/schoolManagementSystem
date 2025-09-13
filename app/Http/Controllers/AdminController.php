@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ExportAdmin;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use Maatwebsite\Excel\Facades\Excel;
 
 class AdminController extends Controller
 {
@@ -56,6 +59,7 @@ class AdminController extends Controller
             $admin->status = trim($request->status);
             $admin->password = Hash::make($request->password);
             $admin->user_type = 1;
+            $admin->created_by = Auth::user()->id;
             $admin->save();
 
             return redirect('admin/admin/list')->with('success', 'Cet administrateur a été créé avec succès.');
@@ -154,6 +158,11 @@ class AdminController extends Controller
         $data['header_title'] = "Liste des administrateurs";
         $data['getAdmin'] = User::getAllStudent(5);
         return view('admin.admin.test', $data);
+    }
+
+    public function exportAdmin()
+    {
+          return Excel::download(new ExportAdmin, 'admin_' . date('d_m_Y') . '.xlsx');
     }
 
 }

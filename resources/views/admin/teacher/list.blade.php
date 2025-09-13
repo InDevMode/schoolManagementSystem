@@ -221,8 +221,28 @@
                   </form>
             </div>
 
-            <div class="my-5">
-                  {{ $getTeacher->links('vendor.pagination.tailwind') }}
+            <div class="flex justify-between items-center space-x-2 my-5">
+                  <span> {{ $getTeacher->links('vendor.pagination.tailwind') }}</span>
+                  <span>
+                        <form action="{{ url('admin/teacher/export') }}" method="POST">
+                              @csrf
+                              <input type="hidden" name="name" value="{{ Request::get('name') }}">
+                              <input type="hidden" name="last_name" value="{{ Request::get('last_name') }}">
+                              <input type="hidden" name="email" value="{{ Request::get('email') }}">
+                              <input type="hidden" name="status" value="{{ Request::get('status') }}">
+                              <input type="hidden" name="mobile_number" value="{{ Request::get('mobile_number') }}">
+                              <input type="hidden" name="date_of_birth" value="{{ Request::get('date_of_birth') }}">
+                              <input type="hidden" name="admission_date" value="{{ Request::get('admission_date') }}">
+                              <input type="hidden" name="gender" value="{{ Request::get('gender') }}">
+                              <input type="hidden" name="created_at" value="{{ Request::get('created_at') }}">
+                              <input type="hidden" name="updated_at" value="{{ Request::get('updated_at') }}">
+                              <button type="submit"
+                                    class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium rounded-lg px-4 py-2.5 flex items-center justify-center gap-2 transition-colors">
+                                    <i class="fas fa-download"></i>
+                                    Exporter
+                              </button>
+                        </form>
+                  </span>
             </div>
             <!-- Results Section -->
             <div

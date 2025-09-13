@@ -59,6 +59,7 @@ Route::group(['middleware' => 'admin'], function () {
     Route::get('admin/admin/edit/{id}', [AdminController::class, 'edit']);
     Route::post('admin/admin/edit/{id}', [AdminController::class, 'update']);
     Route::get('admin/admin/delete/{id}', [AdminController::class, 'delete']);
+    Route::post('admin/admin/export', [AdminController::class, 'exportAdmin']);
 
     //Class url
     Route::get('admin/class/list', [ClassController::class, 'list']);
@@ -97,6 +98,7 @@ Route::group(['middleware' => 'admin'], function () {
     Route::get('admin/student/edit/{id}', [StudentController::class, 'edit']);
     Route::post('admin/student/edit/{id}', [StudentController::class, 'update']);
     Route::get('admin/student/delete/{id}', [StudentController::class, 'delete']);
+    Route::post('admin/student/export', [StudentController::class, 'exportStudent']);
 
     // Teacher url on Admin
     Route::get('admin/teacher/list', [TeacherController::class, 'list']);
@@ -105,6 +107,7 @@ Route::group(['middleware' => 'admin'], function () {
     Route::get('admin/teacher/edit/{id}', [TeacherController::class, 'edit']);
     Route::post('admin/teacher/edit/{id}', [TeacherController::class, 'update']);
     Route::get('admin/teacher/delete/{id}', [TeacherController::class, 'delete']);
+    Route::post('admin/teacher/export', [TeacherController::class, 'exportTeacher']);
 
     // Parent url on Admin
     Route::get('admin/parent/list', [ParentController::class, 'list']);
@@ -116,6 +119,7 @@ Route::group(['middleware' => 'admin'], function () {
     Route::get('admin/parent/{parent_id}/assign_student_parent/{student_id}', [ParentController::class, 'assignStudentParent']);
     Route::get('admin/parent/des_assign_student_parent/{student_id}', [ParentController::class, 'desAssignStudentParent']);
     Route::get('admin/parent/delete/{id}', [ParentController::class, 'delete']);
+    Route::post('admin/parent/export', [ParentController::class, 'exportParent']);
 
     // Admin account url
     Route::get('admin/account', [UserController::class, 'myAccount']);
@@ -168,6 +172,7 @@ Route::group(['middleware' => 'admin'], function () {
 
     // Attendance report admin url
     Route::get('admin/attendance/report', [AttendanceController::class, 'attendanceReport']);
+    Route::post('admin/attendance/report/export', [AttendanceController::class, 'attendanceReportExport']);
 
     // Communicate url
     Route::get('admin/communicate/noticeboard/list', [CommunicateController::class, 'list']);
@@ -203,6 +208,7 @@ Route::group(['middleware' => 'admin'], function () {
     Route::get('admin/feescollections/feescollects/feesList', [FeesCollectionController::class, 'feesList']);
     Route::post('admin/feescollections/collections/addFees/{id}', [FeesCollectionController::class, 'createFees'])->name('createFeesCollects');
     Route::get('admin/feescollections/collections/delete/{id}', [FeesCollectionController::class, 'deleteFees']);
+    Route::post('admin/feescollections/feescollects/export', [FeesCollectionController::class, 'exportFeesCollects']);
 
     // Setting url
     Route::get('admin/settings', [UserController::class, 'settings']);

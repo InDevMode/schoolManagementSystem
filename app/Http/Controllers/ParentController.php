@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ExportParent;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ParentController extends Controller
 {
@@ -69,6 +71,7 @@ class ParentController extends Controller
                 $parent->password = $request->password;
             }
             $parent->user_type = 4;
+            $parent->created_by = Auth::user()->id;
             $parent->save();
 
             return redirect('admin/parent/list')->with('success', 'Cet parent a été créé avec succès.');
@@ -201,6 +204,11 @@ class ParentController extends Controller
         $data['getMyStudent'] = User::getMyStudent(5, $id);
         $data['header_title'] = "Mes apprenants";
         return view('parent.student', $data);
+    }
+
+    public function exportParent()
+    {
+        return Excel::download(new ExportParent, 'parent_' . date('d_m_Y') . '.xlsx');
     }
 
 }

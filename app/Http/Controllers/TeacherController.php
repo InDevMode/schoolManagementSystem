@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ExportTeacher;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use Maatwebsite\Excel\Facades\Excel;
 
 class TeacherController extends Controller
 {
@@ -74,6 +77,7 @@ class TeacherController extends Controller
                 $teacher->password = Hash::make($request->password);
             }
             $teacher->user_type = 2;
+            $teacher->created_by = Auth::user()->id;
             $teacher->save();
 
             return redirect('admin/teacher/list')->with('success', 'Cet professeur a été créé avec succès.');
@@ -177,6 +181,11 @@ class TeacherController extends Controller
         } else {
             abort(404);
         }
+    }
+
+    public function exportTeacher()
+    {
+        return Excel::download(new ExportTeacher, 'teacher_' . date('d_m_Y') . '.xlsx');
     }
 
 }

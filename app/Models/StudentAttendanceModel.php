@@ -188,12 +188,50 @@ class StudentAttendanceModel extends Model
             ->count();
     }
 
-        public static function getTotalAttendanceTypeByStudent(int $attendanceType, int $student_id)
+    public static function getTotalAttendanceTypeByStudent(int $attendanceType, int $student_id)
     {
         return StudentAttendanceModel::where('attendances.attendance_type', '=', $attendanceType)
             ->where('attendances.student_id', '=', $student_id)
             ->where('attendances.is_delete', '=', 0)
             ->count();
+    }
+
+    public static function getAllAttendance()
+    {
+        $results = StudentAttendanceModel::select(
+            'attendances.*',
+            'class.name as class_name',
+            'student.admission_number as student_number',
+            'student.name as student_name',
+            'student.last_name as student_last_name',
+            'created_by.name as created_by_name'
+        )
+            ->join('class', 'class.id', '=', 'attendances.class_id')
+            ->join('users as student', 'student.id', '=', 'attendances.student_id')
+            ->join('users as created_by', 'created_by.id', '=', 'attendances.created_by')
+            ->where('attendances.is_delete', '=', 0);
+
+        $filters = [
+            'student.name' => strtolower(Request::get('student_name')),
+            'student.last_name' => strtolower(Request::get('student_last_name')),
+            'attendances.class_id' => strtolower(Request::get('class_id')),
+            'attendances.attendance_date' => strtolower(Request::get('attendance_date')),
+            'attendances.created_at' => strtolower(Request::get('created_at')),
+        ];
+
+        foreach ($filters as $column => $value) {
+            if (!empty($value)) {
+                $results->where($column, 'like', '%' . $value . '%');
+            }
+        }
+
+        $attendanceType = Request::get('attendance_type');
+        if (in_array($attendanceType, ['1', '2', '3', '4'], true)) {
+            $results->where('attendances.attendance_type', $attendanceType);
+        }
+
+        return $results->orderBy('attendances.id', 'asc')
+            ->get();
     }
 
 
