@@ -358,5 +358,11 @@ span.flatpickr-weekday,
     transition: background-color 0.3s ease;
 }
 
+/* Appliquer le style uniquement en mode dark */
+body.dark .note-editor.note-frame .note-editing-area .note-editable {
+   background-color: #1f2937;
+   color: #ffffff;
+}
+
 
 

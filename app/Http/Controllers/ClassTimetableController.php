@@ -95,14 +95,14 @@ class ClassTimetableController extends Controller
         $data['header_title'] = "Mes horaires de cours";
         $getTimetable = ClassTimetableModel::getSubject(Auth::user()->class_id);
 
-        $studentTimetable = array();
+        $studentTimetable = [];
         foreach ($getTimetable as $timetable) {
             $dataSubject['name'] = $timetable->subject_name;
             $getWeek = WeekModel::getAllWeek();
 
-            $week = array();
+            $week = [];
             foreach ($getWeek as $weekValue) {
-                $dataWeek = array();
+                $dataWeek = [];
                 $dataWeek['week_id'] = $weekValue->id;
                 $dataWeek['week_name'] = $weekValue->name;
                 $dataWeek['day'] = $weekValue->day;
@@ -131,10 +131,10 @@ class ClassTimetableController extends Controller
         $data['getClass'] = ClassModel::getSingle($class_id);
         $data['getSubject'] = SubjectModel::getSingle($subject_id);
         $getWeek = WeekModel::getAllWeek();
-        $week = array();
+        $week = [];
 
         foreach ($getWeek as $weekValue) {
-            $dataWeek = array();
+            $dataWeek = [];
             $dataWeek['week_id'] = $weekValue->id;
             $dataWeek['week_name'] = $weekValue->name;
             $classSubjectTimetable = ClassTimetableModel::getClassTimetable($class_id, $subject_id, $weekValue->id);
@@ -165,10 +165,10 @@ class ClassTimetableController extends Controller
         $data['getSubject'] = SubjectModel::getSingle($subject_id);
         $data['getStudent'] = User::getSingle($student_id);
         $getWeek = WeekModel::getAllWeek();
-        $week = array();
+        $week = [];
 
         foreach ($getWeek as $weekValue) {
-            $dataWeek = array();
+            $dataWeek = [];
             $dataWeek['week_id'] = $weekValue->id;
             $dataWeek['week_name'] = $weekValue->name;
             $classSubjectTimetable = ClassTimetableModel::getClassTimetable($class_id, $subject_id, $weekValue->id);

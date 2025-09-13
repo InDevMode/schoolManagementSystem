@@ -254,8 +254,9 @@
                                           <label class="mb-3 block text-sm font-medium text-black dark:text-white">
                                                 Message <span class="text-meta-1">*</span>
                                           </label>
+
                                           <textarea id="compose-textarea" name="message"
-                                                class="w-full rounded-lg border-[1.5px] border-stroke bg-gray-50 dark:bg-gray-700 text-gray-200 placeholder-gray-200 px-5 py-2.5 font-normal outline-none transition focus:border-violet-600 active:border-violet-600 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-violet-600"
+                                                class="w-full rounded-lg border-[1.5px] border-stroke bg-gray-50 dark:bg-gray-700 px-5 py-2.5 font-normal text-gray-800 dark:text-white placeholder-gray-400 outline-none transition focus:border-violet-600 active:border-violet-600 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-violet-600"
                                                 required>{{ old('message') }}</textarea>
                                     </div>
 
@@ -277,7 +278,6 @@
 
       <script>
             document.addEventListener("DOMContentLoaded", function() {
-                  // Initialiser Summernote
                   const textarea = document.getElementById("compose-textarea");
                   if (textarea && window.jQuery) {
                         window.jQuery(textarea).summernote({
@@ -285,8 +285,8 @@
                               height: 200
                         });
                   }
-
             });
+
 
             function dropdown() {
                   return {

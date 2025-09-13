@@ -10,7 +10,9 @@
 
       @php
             $getSetting = \App\Models\SettingModel::getSingle(1);
-            $favicon_url = !empty($getSetting->favicon) ? \App\Models\SettingModel::getFavicon() : asset('upload/favicon.png');
+            $favicon_url = !empty($getSetting->favicon)
+                ? \App\Models\SettingModel::getFavicon()
+                : asset('upload/favicon.png');
             $logo_url = !empty($getSetting->logo) ? \App\Models\SettingModel::getLogo() : asset('upload/logo.png');
       @endphp
 
@@ -24,6 +26,7 @@
             [x-cloak] {
                   display: none !important;
             }
+
       </style>
 
 </head>
@@ -55,8 +58,13 @@ $watch('darkMode', value => localStorage.setItem('darkMode', JSON.stringify(valu
 <script src="{{ asset('public/js/us-aea-en.js') }}"></script>
 <!-- jQuery (obligatoire) -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<!-- Summernote CSS & JS -->
+
+<!-- Summernote CSS -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.20/summernote-lite.min.css" rel="stylesheet">
+
+<!-- Summernote JS -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.20/summernote-lite.min.js"></script>
+
 
 <!-- Select2 JS -->
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>

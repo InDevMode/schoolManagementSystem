@@ -580,7 +580,7 @@ class User extends Authenticatable
             ->where('users.is_delete', 0)
             ->get();
 
-        $student_ids = array();
+        $student_ids = [];
         foreach ($results as $result) {
             $student_ids[] = $result->id;
         }
@@ -597,7 +597,7 @@ class User extends Authenticatable
             ->where('users.is_delete', 0)
             ->get();
 
-        $class_ids = array();
+        $class_ids = [];
         foreach ($results as $result) {
             $class_ids[] = $result->class_id;
         }

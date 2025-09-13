@@ -107,13 +107,13 @@ class ExaminationController extends Controller
         $data['header_title'] = "Programmation des examens";
         $data['getClass'] = ClassModel::getClass();
         $data['getExams'] = ExaminationModel::getExams();
-        $result = array();
+        $result = [];
 
         if (!empty($request->get('exam_id')) && !empty($request->get('class_id'))) {
             $getSubject = ClassSubjectModel::getSubject($request->get('class_id'));
 
             foreach ($getSubject as $subject) {
-                $dataSchedule = array();
+                $dataSchedule = [];
                 $dataSchedule['subject_id'] = $subject->subject_id;
                 $dataSchedule['class_id'] = $subject->class_id;
                 $dataSchedule['subject_name'] = $subject->subject_name;
@@ -221,21 +221,21 @@ class ExaminationController extends Controller
     {
         $data['header_title'] = "Mon calendrier d'examens";
         $getClass = ClassTeacherModel::getMyClassSubjectGroup(Auth::user()->id);
-        $result = array();
+        $result = [];
 
         foreach ($getClass as $class) {
-            $dataClass = array();
+            $dataClass = [];
             $dataClass['class_name'] = $class->class_name;
 
             $getExamSchedule = ScheduleModel::getExam($class->class_id);
-            $examArray = array();
+            $examArray = [];
             foreach ($getExamSchedule as $examSchedule) {
-                $dataExam = array();
+                $dataExam = [];
                 $dataExam['exam_name'] = $examSchedule->exam_name;
                 $getExamTimetable = ScheduleModel::getExamTimetable($examSchedule->exam_id, $class->class_id);
-                $subjectArray = array();
+                $subjectArray = [];
                 foreach ($getExamTimetable as $examTimetable) {
-                    $dataSchedule = array();
+                    $dataSchedule = [];
                     $dataSchedule['subject_name'] = $examTimetable->subject_name;
                     $dataSchedule['exam_date'] = $examTimetable->exam_date;
                     $dataSchedule['start_time'] = $examTimetable->start_time;
@@ -611,16 +611,16 @@ class ExaminationController extends Controller
 
     public function myExamResultStudent(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
     {
-        $result = array();
+        $result = [];
         $getExam = MarkRegisterModel::getExam(Auth::user()->id);
 
         foreach ($getExam as $examValue) {
-            $dataExam = array();
+            $dataExam = [];
             $dataExam['exam_name'] = $examValue->exam_name;
             $dataExam['exam_id'] = $examValue->exam_id;
 
             $getExamSubject = MarkRegisterModel::getExamSubject($examValue->exam_id, Auth::user()->id);
-            $dataSubject = array();
+            $dataSubject = [];
 
             // Initialiser les totaux pour cet examen
             $total_class_work = 0;
@@ -634,7 +634,7 @@ class ExaminationController extends Controller
             foreach ($getExamSubject as $examSubject) {
                 $total_score_subject = $examSubject['class_work'] + $examSubject['test_work'] + $examSubject['home_work'] + $examSubject['exam_work'];
 
-                $dataSub = array();
+                $dataSub = [];
                 $dataSub['subject_name'] = $examSubject['subject_name'];
                 $dataSub['class_work'] = $examSubject['class_work'];
                 $dataSub['test_work'] = $examSubject['test_work'];

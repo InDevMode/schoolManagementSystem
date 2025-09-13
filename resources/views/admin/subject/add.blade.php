@@ -87,15 +87,6 @@
                                     </div>
 
                                     <div class="mb-4.5">
-                                          <label class="mb-3 block text-sm font-medium text-black dark:text-white">
-                                                Coefficient <span class="text-meta-1">*</span>
-                                          </label>
-                                          <input id="coefficient" name="coefficient" value="{{ old('coefficient') }}" required
-                                                type="number" placeholder="Entrez un coefficient d'une matière"
-                                                class="w-full rounded-lg dark:placeholder-white border-[1.5px] border-stroke bg-gray-50 px-5 py-2.5 font-normal text-black outline-none transition focus:border-violet-600 active:border-violet-600 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-violet-600" />
-                                    </div>
-
-                                    <div class="mb-4.5">
                                           <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                                 Statut <span class="text-red-500">*</span>
                                           </label>
