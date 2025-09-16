@@ -172,7 +172,7 @@
                                                                   </div>
                                                                   <div class="w-full px-4 relative">
                                                                         <div x-show.transition.origin.top="isOpen()"
-                                                                              class="absolute top-full left-0 z-50 w-full max-h-60 overflow-y-auto rounded bg-white shadow dark:bg-form-input"
+                                                                              class="absolute top-full left-0 z-50 w-full max-h-60 overflow-y-auto no-scrollbar rounded bg-white shadow dark:bg-form-input"
                                                                               @click.outside="close">
                                                                               <div class="flex w-full flex-col">
                                                                                     <template

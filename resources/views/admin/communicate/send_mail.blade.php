@@ -78,12 +78,12 @@
                                                             <div @click="open" class="w-full">
                                                                   <div
                                                                         class="mb-2 flex rounded-lg border border-stroke bg-gray-50 dark:bg-gray-700 py-2 pl-3 pr-3 outline-none transition focus:border-violet-600 active:border-violet-600 dark:border-form-strokedark dark:bg-form-input">
-                                                                        <div class="flex flex-auto flex-wrap gap-3">
+                                                                        <div class="flex flex-auto flex-wrap space-x-1">
                                                                               <!-- Badges des users sélectionnés -->
                                                                               <template x-for="(option,index) in selected"
                                                                                     :key="index">
                                                                                     <div
-                                                                                          class="my-1.5 flex items-center justify-center rounded border-[.5px] border-stroke bg-gray-50 dark:bg-gray-700 px-2.5 py-1.5 text-sm font-medium dark:border-strokedark dark:bg-white/30">
+                                                                                          class="my-1 flex items-center justify-center rounded border-[.5px] border-stroke bg-gray-200 dark:bg-gray-700 px-2.5 py-1.5 text-sm font-medium dark:border-strokedark dark:bg-white/30">
                                                                                           <div class="max-w-full flex-initial"
                                                                                                 x-text="options[option].text">
                                                                                           </div>
@@ -102,9 +102,8 @@
                                                                               <div x-show="selected.length == 0"
                                                                                     class="flex-1">
                                                                                     <input placeholder="Choisissez un ou plusieurs utilisateurs"
-                                                                                          class="h-full w-full appearance-none bg-gray-50 dark:bg-gray-700 p-1 px-2 outline-none"
-                                                                                          :value="selectedValues
-                                                                                              ()"
+                                                                                            class="custom-select dark:placeholder-white h-full w-full appearance-none bg-gray-50 dark:bg-gray-700 p-1 px-2 outline-none"
+                                                                                          :value="selectedValues()"
                                                                                           readonly />
                                                                               </div>
                                                                         </div>
@@ -127,7 +126,7 @@
                                                             <!-- Dropdown de sélection -->
                                                             <div class="w-full px-4">
                                                                   <div x-show.transition.origin.top="isOpen()"
-                                                                        class="max-h-select absolute top-full left-0 z-40 w-full overflow-y-auto rounded bg-white shadow dark:bg-form-input"
+                                                                        class="max-h-[800px] absolute top-full left-0 z-40 w-full overflow-y-auto no-scrollbar rounded bg-white shadow dark:bg-form-input"
                                                                         @click.outside="close">
 
                                                                         <!-- 🔍 Zone de recherche -->

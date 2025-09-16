@@ -102,7 +102,7 @@ class SubjectController extends Controller
 
     public function studentSubject(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
     {
-        $data['getStudentSubject'] = ClassSubjectModel::studentStubject(10, Auth::user()->class_id);
+        $data['getStudentSubject'] = ClassSubjectModel::studentStubject(Auth::user()->class_id, 10, );
         $data['student_id'] = Auth::user()->id;
         $data['header_title'] = "Mes Cours";
         return view('student.subject', $data);

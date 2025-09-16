@@ -81,8 +81,9 @@ class ClassSubjectModel extends Model
         return ClassSubjectModel::where('class_id', '=', $class_id)->delete();
     }
 
-    public static function studentStubject(int $perPage, int $class_id)
+    public static function studentStubject(int $class_id, int $perPage)
     {
+
         $results = ClassSubjectModel::select(
             'class_subject.*',
             'class.name as class_name',
@@ -92,6 +93,7 @@ class ClassSubjectModel extends Model
             'teacher.name as teacher_name',
             'teacher.last_name as teacher_last_name'
         )
+
             ->join('subject', 'subject.id', '=', 'class_subject.subject_id')
             ->join('class', 'class.id', '=', 'class_subject.class_id')
             ->join('class_teacher', 'class_teacher.class_id', '=', 'class.id')
