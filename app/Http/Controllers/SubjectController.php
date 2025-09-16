@@ -37,7 +37,6 @@ class SubjectController extends Controller
             $subject = new SubjectModel();
             $subject->name = trim($request->name);
             $subject->type = trim($request->type);
-            $subject->coefficient = intval($request->coefficient);
             $subject->status = trim($request->status);
             $subject->created_by = auth()->user()->id;
             $subject->save();
@@ -53,6 +52,7 @@ class SubjectController extends Controller
     public function edit($id)
     {
         $data['getSubject'] = SubjectModel::getSingle($id);
+        dd($data['getSubject']);
         if (!empty($data['getSubject'])) {
             $data['header_title'] = "Modifier une matière";
             return view('admin.subject.edit', $data);
@@ -77,7 +77,6 @@ class SubjectController extends Controller
 
             $subject->name = trim($request->name);
             $subject->type = trim($request->type);
-            $subject->coefficient = intval($request->coefficient);
             $subject->status = intval($request->status);
             $subject->save();
             return redirect('admin/subject/list')->with('success', 'Cette matière a été modifiée avec succès.');

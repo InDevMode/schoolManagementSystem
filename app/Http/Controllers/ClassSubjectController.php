@@ -35,12 +35,14 @@ class ClassSubjectController extends Controller
                     $classSubjectAlreadyExist = ClassSubjectModel::getAlreadyExist($request->class_id, $subject_id);
                     if (!empty($classSubjectAlreadyExist)) {
                         $classSubjectAlreadyExist->status = $request->status;
+                        $classSubjectAlreadyExist->coefficient = $request->coefficient;
                         $classSubjectAlreadyExist->save();
                     }
                     $classSubject = new ClassSubjectModel;
                     $classSubject->class_id = $request->class_id;
                     $classSubject->subject_id = $subject_id;
                     $classSubject->status = $request->status;
+                    $classSubject->coefficient = $request->coefficient;
                     $classSubject->created_by = Auth::user()->id;
                     $classSubject->save();
 
@@ -82,12 +84,14 @@ class ClassSubjectController extends Controller
                     $classSubjectAlreadyExist = ClassSubjectModel::getAlreadyExist($request->class_id, $subject_id);
                     if (!empty($classSubjectAlreadyExist)) {
                         $classSubjectAlreadyExist->status = $request->status;
+                        $classSubjectAlreadyExist->coefficient = $request->coefficient;
                         $classSubjectAlreadyExist->save();
                     }
                     $classSubject = new ClassSubjectModel;
                     $classSubject->class_id = $request->class_id;
                     $classSubject->subject_id = $subject_id;
                     $classSubject->status = $request->status;
+                    $classSubject->coefficient = $request->coefficient;
                     $classSubject->created_by = Auth::user()->id;
                     $classSubject->save();
                 }
@@ -125,6 +129,7 @@ class ClassSubjectController extends Controller
             $classSubjectAlreadyExist = ClassSubjectModel::getAlreadyExist($request->class_id, $request->subject_id);
             if (!empty($classSubjectAlreadyExist)) {
                 $classSubjectAlreadyExist->status = $request->status;
+                $classSubjectAlreadyExist->coefficient = $request->coefficient;
                 $classSubjectAlreadyExist->save();
 
                 return redirect('admin/assign_subject/list')->with('success', 'Le status de cette assignation a été modifié avec succès.');
@@ -133,6 +138,7 @@ class ClassSubjectController extends Controller
                 $classSubject->class_id = $request->class_id;
                 $classSubject->subject_id = $request->subject_id;
                 $classSubject->status = $request->status;
+                $classSubject->coefficient = $request->coefficient;
                 $classSubject->save();
             }
 

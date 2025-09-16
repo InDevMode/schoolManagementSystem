@@ -12,6 +12,14 @@ class MarkRegisterModel extends Model
     protected $table = 'marks_register';
 
     protected $fillable = [
+        'quiz_1',
+        'quiz_2',
+        'quiz_3',
+        'quiz_4',
+        'quiz_5',
+        'assignment_1',
+        'assignment_2',
+        'assignment_3',
         'test_work',
         'exam_work',
         'home_work',

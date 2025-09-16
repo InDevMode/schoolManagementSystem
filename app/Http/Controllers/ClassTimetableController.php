@@ -72,9 +72,9 @@ class ClassTimetableController extends Controller
             foreach ($request->timetable as $timetable) {
                 if (!empty($timetable['week_id']) && !empty($timetable['start_time']) && !empty($timetable['end_time']) && !empty($timetable['room_number'])) {
                     $classTimetable = new ClassTimetableModel;
-                    $classTimetable->class_id = $request->class_id;
-                    $classTimetable->subject_id = $request->subject_id;
-                    $classTimetable->week_id = $timetable['week_id'];
+                    $classTimetable->class_id = intval($request->class_id);
+                    $classTimetable->subject_id = intval($request->subject_id);
+                    $classTimetable->week_id = intval($timetable['week_id']);
                     $classTimetable->start_time = $timetable['start_time'];
                     $classTimetable->end_time = $timetable['end_time'];
                     $classTimetable->room_number = $timetable['room_number'];

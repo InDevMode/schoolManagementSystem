@@ -167,7 +167,7 @@ Route::group(['middleware' => 'admin'], function () {
     Route::get('admin/examinations/marks_grade/delete/{id}', [ExaminationController::class, 'deleteMarksGrade']);
 
     // Attendance student url
-    Route::get('admin/attendance/student/list', [AttendanceController::class, 'attendanceStudent']);
+    Route::get('admin/attendance/students/list', [AttendanceController::class, 'attendanceStudent']);
     Route::post('admin/attendance/student/save', [AttendanceController::class, 'attendanceStudentSave']);
 
     // Attendance report admin url

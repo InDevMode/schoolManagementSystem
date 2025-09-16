@@ -158,10 +158,10 @@
                                               'label' => 'Présence',
                                               'items' => [
                                                   [
-                                                      'url' => 'admin/attendance/student/list',
+                                                      'url' => 'admin/attendance/students/list',
                                                       'label' => 'Apprenants',
                                                       'segment' => 3,
-                                                      'match' => 'student',
+                                                      'match' => 'students',
                                                   ],
                                                   [
                                                       'url' => 'admin/attendance/report',

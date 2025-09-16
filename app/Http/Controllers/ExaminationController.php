@@ -297,6 +297,7 @@ class ExaminationController extends Controller
         if (!empty($request->exam_id) && !empty($request->class_id)) {
             $data['getSubject'] = ScheduleModel::getSubject($request->exam_id, $request->class_id);
             $data['getStudent'] = User::getStudent($request->class_id);
+            // dd($data);
         }
 
         return view('admin.examinations.marks_register.list', $data);
@@ -319,6 +320,15 @@ class ExaminationController extends Controller
                     $exam_work = !empty($mark['exam_work']) ? $mark['exam_work'] : 0;
                     $passing_marks = !empty($mark['passing_marks']) ? $mark['passing_marks'] : 0;
                     $full_marks = !empty($mark['full_marks']) ? $mark['full_marks'] : 0;
+                    $quiz_1 = !empty($mark['quiz_1']) ? $mark['quiz_1'] : 0;
+                    $quiz_2 = !empty($mark['quiz_2']) ? $mark['quiz_2'] : 0;
+                    $quiz_3 = !empty($mark['quiz_3']) ? $mark['quiz_3'] : 0;
+                    $quiz_4 = !empty($mark['quiz_4']) ? $mark['quiz_4'] : 0;
+                    $quiz_5 = !empty($mark['quiz_5']) ? $mark['quiz_5'] : 0;
+                    $assignment_1 = !empty($mark['assignment_1']) ? $mark['assignment_1'] : 0;
+                    $assignment_2 = !empty($mark['assignment_2']) ? $mark['assignment_2'] : 0;
+                    $assignment_3 = !empty($mark['assignment_3']) ? $mark['assignment_3'] : 0;
+
 
                     $total_marks = $class_work + $home_work + $test_work + $exam_work;
 
@@ -342,6 +352,14 @@ class ExaminationController extends Controller
                         $marksRegister->class_id = $request->class_id;
                         $marksRegister->exam_id = $request->exam_id;
                         $marksRegister->subject_id = $mark['subject_id'];
+                        $marksRegister->quiz_1 = $quiz_1;
+                        $marksRegister->quiz_2 = $quiz_2;
+                        $marksRegister->quiz_3 = $quiz_3;
+                        $marksRegister->quiz_4 = $quiz_4;
+                        $marksRegister->quiz_5 = $quiz_5;
+                        $marksRegister->assignment_1 = $assignment_1;
+                        $marksRegister->assignment_2 = $assignment_2;
+                        $marksRegister->assignment_3 = $assignment_3;
                         $marksRegister->class_work = $class_work;
                         $marksRegister->home_work = $home_work;
                         $marksRegister->test_work = $test_work;
@@ -406,6 +424,15 @@ class ExaminationController extends Controller
                     $test_work = !empty($mark['test_work']) ? $mark['test_work'] : 0;
                     $exam_work = !empty($mark['exam_work']) ? $mark['exam_work'] : 0;
 
+                    $quiz_1 = !empty($mark['quiz_1']) ? $mark['quiz_1'] : 0;
+                    $quiz_2 = !empty($mark['quiz_2']) ? $mark['quiz_2'] : 0;
+                    $quiz_3 = !empty($mark['quiz_3']) ? $mark['quiz_3'] : 0;
+                    $quiz_4 = !empty($mark['quiz_4']) ? $mark['quiz_4'] : 0;
+                    $quiz_5 = !empty($mark['quiz_5']) ? $mark['quiz_5'] : 0;
+                    $assignment_1 = !empty($mark['assignment_1']) ? $mark['assignment_1'] : 0;
+                    $assignment_2 = !empty($mark['assignment_2']) ? $mark['assignment_2'] : 0;
+                    $assignment_3 = !empty($mark['assignment_3']) ? $mark['assignment_3'] : 0;
+
                     $total_marks = $class_work + $home_work + $test_work + $exam_work;
 
                     if ($getExamSchedule && $schedule_full_marks >= $total_marks) {
@@ -422,6 +449,14 @@ class ExaminationController extends Controller
                         $marksRegister->class_id = $request->class_id;
                         $marksRegister->exam_id = $request->exam_id;
                         $marksRegister->subject_id = $mark['subject_id'];
+                        $marksRegister->quiz_1 = $quiz_1;
+                        $marksRegister->quiz_2 = $quiz_2;
+                        $marksRegister->quiz_3 = $quiz_3;
+                        $marksRegister->quiz_4 = $quiz_4;
+                        $marksRegister->quiz_5 = $quiz_5;
+                        $marksRegister->assignment_1 = $assignment_1;
+                        $marksRegister->assignment_2 = $assignment_2;
+                        $marksRegister->assignment_3 = $assignment_3;
                         $marksRegister->class_work = $class_work;
                         $marksRegister->home_work = $home_work;
                         $marksRegister->test_work = $test_work;

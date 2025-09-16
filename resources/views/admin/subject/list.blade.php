@@ -198,7 +198,7 @@
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <span
                                         class="px-2 py-1 border w-24 inline-flex justify-center text-xs leading-5 font-semibold rounded-full {{ $subject->type == 'practical' ? 'bg-violet-100 border-violet-800 text-violet-800 dark:bg-violet-900 dark:text-violet-200' : 'bg-pink-100 border-pink-800 text-red-800 dark:bg-pink-900 dark:text-pink-200' }}">
-                                        {{ $subject->type == 'theoretical' ? 'Pratique' : 'Théorique' }}
+                                        {{ $subject->type == 'practical' ? 'Pratique' : 'Théorique' }}
                                     </span>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">

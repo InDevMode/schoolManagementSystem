@@ -78,6 +78,21 @@
                                     </div>
                               </div>
 
+                                <div>
+                                    <label for="subject_name"
+                                          class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Coefficient de la
+                                          matière</label>
+                                    <div class="relative">
+                                          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                <i class="fas fa-coffee text-gray-400"></i>
+                                          </div>
+                                          <input type="number" id="coefficient" name="coefficient"
+                                                value="{{ Request::get('coefficient') }}"
+                                                placeholder="Entrez le coefficient de la matière..."
+                                                class="pl-10 w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-primary-600 focus:border-primary-600 p-2.5">
+                                    </div>
+                              </div>
+
                               <!-- Status Select -->
                               <div>
                                     <label for="status"
@@ -163,6 +178,9 @@
                                                 Matière
                                           </th>
                                           <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-white dark:text-gray-300 uppercase tracking-wider">
+                                                Coefficient
+                                          </th>
+                                          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-white dark:text-gray-300 uppercase tracking-wider">
                                                 Status
                                           </th>
                                           <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-white dark:text-gray-300 uppercase tracking-wider">
@@ -189,6 +207,10 @@
                                                 <td
                                                       class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                                                       {{ $classSubject->subject_name }}
+                                                </td>
+                                                <td
+                                                      class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                                                      {{ $classSubject->coefficient }}
                                                 </td>
                                                 <td
                                                       class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">

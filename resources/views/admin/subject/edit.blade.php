@@ -67,7 +67,7 @@
                                                 Type <span class="text-red-500">*</span>
                                           </label>
                                           <div class="relative">
-                                                <select id="status" name="status" required
+                                                <select id="type" name="type" required
                                                       class="custom-select w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-emerald-500 dark:focus:border-emerald-500 transition-all duration-200">
                                                       <option selected disabled value="">Veuillez choisir un type pour
                                                             la matière

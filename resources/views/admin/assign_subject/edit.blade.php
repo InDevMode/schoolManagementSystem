@@ -30,7 +30,7 @@
                                           <div class="flex items-center">
                                                 <iconify-icon icon="mdi:chevron-right" class="text-gray-400" width="16"
                                                       height="16"></iconify-icon>
-                                                <a href="{{ url('admin/assign_class/list') }}"
+                                                <a href="{{ url('admin/assign_subject/list') }}"
                                                       class="ml-1 text-sm font-medium text-gray-700 md:ml-2 dark:text-gray-400 dark:hover:text-white">Liste
                                                       des classes assignées</a>
                                           </div>
@@ -104,7 +104,7 @@
                                                 <div x-data="dropdown()" x-init="loadOptions()"
                                                       class="flex flex-col items-center">
                                                       <input type="hidden" :value="selectedValues()" />
-                                                      <div class="relative z-20 inline-block w-full">
+                                                      <div class="relative z-30 inline-block w-full">
                                                             <div class="relative flex flex-col items-center">
                                                                   <div @click="open" class="w-full">
                                                                         <div
@@ -171,7 +171,7 @@
                                                                   </div>
                                                                   <div class="w-full px-4 relative">
                                                                         <div x-show.transition.origin.top="isOpen()"
-                                                                              class="absolute top-full left-0 z-50 w-full max-h-60 overflow-y-auto rounded bg-white shadow dark:bg-form-input"
+                                                                              class="absolute top-full left-0 z-50 w-full max-h-60 overflow-y-auto no-scrollbar rounded bg-white shadow dark:bg-form-input"
                                                                               @click.outside="close">
                                                                               <div class="flex w-full flex-col">
                                                                                     <template
@@ -202,6 +202,20 @@
                                                             </div>
                                                       </div>
                                                 </div>
+                                          </div>
+                                    </div>
+
+
+                                    <div class="mb-4.5">
+                                          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                                Coefficient <span class="text-red-500">*</span>
+                                          </label>
+                                          <div class="relative">
+                                                <input type="number" id="coefficient" name="coefficient"
+                                                      value="{{ old('coefficient', $getClassSubject->coefficient) }}"
+                                                      required
+                                                      class="form-input w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-emerald-500 dark:focus:border-emerald-500 transition-all duration-200"
+                                                      placeholder="Entrez le coefficient">
                                           </div>
                                     </div>
 

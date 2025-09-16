@@ -160,7 +160,7 @@
                                                                   </div>
                                                                   <div class="w-full px-4">
                                                                         <div x-show.transition.origin.top="isOpen()"
-                                                                              class="max-h-select absolute top-full left-0 z-40 w-full overflow-y-auto rounded bg-white shadow dark:bg-form-input"
+                                                                              class="absolute top-full left-0 z-50 w-full max-h-60 overflow-y-auto no-scrollbar rounded bg-white shadow dark:bg-form-input"
                                                                               @click.outside="close">
                                                                               <div class="flex w-full flex-col">
                                                                                     <template
@@ -191,6 +191,18 @@
                                                             </div>
                                                       </div>
                                                 </div>
+                                          </div>
+                                    </div>
+
+                                    <div class="mb-4.5">
+                                          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                                Coefficient <span class="text-red-500">*</span>
+                                          </label>
+                                          <div class="relative">
+                                                <input type="number" id="coefficient" name="coefficient"
+                                                      value="{{ old('coefficient') }}" required
+                                                      class="form-input w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-violet-500 focus:border-violet-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500 transition-all duration-200"
+                                                      placeholder="Entrez le coefficient">
                                           </div>
                                     </div>
 

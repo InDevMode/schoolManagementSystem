@@ -297,7 +297,7 @@
             </div>
             <!-- Results Section -->
             <div
-                  class="bg-white rounded-lg dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+                  class="bg-white overflow-x-auto rounded-lg dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
                   <!-- Table -->
                   <div class="relative overflow rounded-lg z-10">
                         <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
