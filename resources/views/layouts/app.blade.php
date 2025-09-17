@@ -26,7 +26,6 @@
             [x-cloak] {
                   display: none !important;
             }
-
       </style>
 
 </head>
@@ -73,6 +72,8 @@ $watch('darkMode', value => localStorage.setItem('darkMode', JSON.stringify(valu
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script src="https://npmcdn.com/flatpickr/dist/l10n/fr.js"></script>
 <script src="https://cdn.kkiapay.me/k.js"></script>
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js'></script>
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/locales/fr.global.min.js'></script>
 
 @yield('script')
 
