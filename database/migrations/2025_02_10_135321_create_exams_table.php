@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('exams', function (Blueprint $table) {
             $table->id();
             $table->string('name')->nullable();
-            $table->string('note')->nullable();
             $table->Integer('created_by')->unsigned()->nullable()->foreign('created_by')->references('id')->on('users')->onDelete('cascade');
             $table->tinyInteger('is_delete')->default(0)->comment('0: isntDeleted, 1: Deleted');;
             $table->timestamps();
