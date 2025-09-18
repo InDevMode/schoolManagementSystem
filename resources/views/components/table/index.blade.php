@@ -30,7 +30,7 @@ class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dar
             <!-- Filtre -->
             <div class="flex items-center gap-2 w-full sm:w-auto">
                   <input type="text" x-model="search" placeholder="Filtrer les colonnes"
-                        class="w-full sm:w-64 px-3 py-2 border rounded-md dark:bg-gray-700 dark:text-gray-200 dark:border-gray-500 outline-none focus:ring-violet-600 focus:border-violet-600" />
+                        class="w-full sm:w-96 px-3 py-2 border rounded-md dark:bg-gray-700 dark:text-gray-200 dark:border-gray-500 outline-none focus:ring-violet-600 focus:border-violet-600" />
             </div>
 
             <!-- Toggle colonnes -->

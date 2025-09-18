@@ -128,6 +128,12 @@
                                               'label' => 'Evaluations',
                                               'items' => [
                                                   [
+                                                      'url' => 'admin/examinations/period/list',
+                                                      'label' => 'Périodes',
+                                                      'segment' => 3,
+                                                      'match' => 'period',
+                                                  ],
+                                                  [
                                                       'url' => 'admin/examinations/exam/list',
                                                       'label' => 'Examens',
                                                       'segment' => 3,

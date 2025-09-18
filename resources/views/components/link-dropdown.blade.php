@@ -8,8 +8,7 @@
 ])
 
 @php
-      $isFa = $icon && str_starts_with($icon, 'fa');
-      $isMdi = $icon && str_starts_with($icon, 'mdi');
+      $isFa = Str::startsWith($icon, ['fa', 'fas', 'far', 'fal', 'fad']);
 @endphp
 
 <li>
@@ -19,18 +18,18 @@
             ]) }}>
 
             @if ($icon)
-                  <span>
+                  <span class="mr-2">
                         @if ($isFa)
+                              {{-- Use <i> for Font Awesome icons --}}
                               <i class="{{ $icon }}"></i>
-                        @elseif ($isMdi)
-                              <iconify-icon icon="{{ $icon }}" width="20" height="20"></iconify-icon>
                         @else
-                              {{-- Fallback Iconify si non FA/MDI --}}
+                              {{-- Use <iconify-icon> for all other icon sets --}}
                               <iconify-icon icon="{{ $icon }}" width="20" height="20"></iconify-icon>
                         @endif
                   </span>
             @endif
 
-            {{ $label ?: $slot }}
+            {{-- Use $slot as the primary content, with a fallback to $label --}}
+            {{ $slot }}
       </a>
 </li>

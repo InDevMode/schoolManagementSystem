@@ -14,6 +14,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ExaminationController;
 use App\Http\Controllers\FeesCollectionController;
 use App\Http\Controllers\ParentController;
+use App\Http\Controllers\PeriodController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\TeacherController;
@@ -139,6 +140,14 @@ Route::group(['middleware' => 'admin'], function () {
     Route::get('admin/class_timetable/list', [ClassTimetableController::class, 'list']);
     Route::post('admin/class_timetable/subject', [ClassTimetableController::class, 'getSubject']);
     Route::post('admin/class_timetable/add', [ClassTimetableController::class, 'add']);
+
+    //  Period Url
+    Route::get('admin/examinations/period/list', [PeriodController::class, 'list']);
+    Route::get('admin/examinations/period/add', [PeriodController::class, 'add']);
+    Route::post('admin/examinations/period/add', [PeriodController::class, 'create']);
+    Route::get('admin/examinations/period/edit/{id}', [PeriodController::class, 'edit']);
+    Route::post('admin/examinations/period/edit/{id}', [PeriodController::class, 'update']);
+    Route::get('admin/examinations/period/delete/{id}', [PeriodController::class, 'delete']);
 
     // Examinations url
     Route::get('admin/examinations/exam/list', [ExaminationController::class, 'list']);
