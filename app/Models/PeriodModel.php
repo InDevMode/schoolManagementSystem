@@ -33,16 +33,16 @@ class PeriodModel extends Model
 
     public static function getPeriods(int $perpage)
     {
-        $results = PeriodModel::select('periods.*')
+        $results = PeriodModel::select('periods.*', 'created_by.name as created_by_name', 'settings.school_name as settings_school_name')
             ->join('settings', 'periods.settings_id', '=', 'settings.id')
-            ->join('users', 'periods.created_by', '=', 'users.id')
+            ->join('users as created_by', 'periods.created_by', '=', 'created_by.id')
             ->where('periods.is_delete', '=', 0)
             ->where('periods.is_current', '=', 0)
             ->where('periods.status', '=', 1);
 
         $filters = [
             'periods.name' => strtolower(Request::get('name')),
-            'users.name' => strtolower(Request::get('created_by')),
+            'users.name' => strtolower(Request::get('created_by_name')),
             'periods.created_at' => strtolower(Request::get('created_at')),
             'periods.updated_at' => strtolower(Request::get('updated_at')),
         ];

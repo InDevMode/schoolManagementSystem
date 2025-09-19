@@ -13,14 +13,14 @@ class PeriodController extends Controller
     {
         $data['header_title'] = 'Liste des Periodes';
         $data['getPeriods'] = PeriodModel::getPeriods(5);
-        return view('admin.period.list', $data);
+        return view('admin.examinations.period.list', $data);
     }
     public function add()
     {
         $data['header_title'] = 'Ajouter une Periode';
          $getSettings = SettingModel::getSingle(1);
-         $data['getSettings'] = $getSettings ? $getSettings : null;
-        return view('admin.period.add', $data);
+         $data['getSettings'] = $getSettings ?: null;
+        return view('admin.examinations.period.add', $data);
     }
     public function create(Request $request)
     {
@@ -46,7 +46,7 @@ class PeriodController extends Controller
     {
         $data['header_title'] = 'Editer une Periode';
         $data['getPeriod'] = PeriodModel::getSingle($id);
-        return view('admin.period.edit', $data);
+        return view('admin.examinations.period.edit', $data);
     }
     public function update($id)
     {

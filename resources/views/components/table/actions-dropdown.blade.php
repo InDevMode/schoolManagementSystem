@@ -39,7 +39,7 @@
             :class="dropUp ? 'bottom-full mb-2 origin-bottom-right' : 'mt-2 origin-top-right'"
             class="absolute right-0 z-50 w-56 rounded-md bg-white dark:bg-gray-800 ring-1 shadow-lg ring-black/5"
             x-cloak>
-            <div class="py-1">
+            <div class="flex flex-col py-1 px-3">
                   {{ $slot }}
             </div>
       </div>
