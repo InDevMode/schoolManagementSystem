@@ -37,8 +37,7 @@ class PeriodModel extends Model
             ->join('settings', 'periods.settings_id', '=', 'settings.id')
             ->join('users as created_by', 'periods.created_by', '=', 'created_by.id')
             ->where('periods.is_delete', '=', 0)
-            ->where('periods.is_current', '=', 0)
-            ->where('periods.status', '=', 1);
+            ->where('periods.is_current', '=', 0);
 
         $filters = [
             'periods.name' => strtolower(Request::get('name')),
@@ -77,6 +76,15 @@ class PeriodModel extends Model
 
         return $results->orderBy('periods.id', 'desc')
             ->paginate($perpage);
+    }
+
+    public static function getAllPeriods()
+    {
+        return PeriodModel::select('periods.*')
+            ->where('periods.is_delete', '=', 0)
+            ->where('periods.status', '=', 1)
+            ->orderBy('periods.id', 'desc')
+            ->get();
     }
 
 }

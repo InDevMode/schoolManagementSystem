@@ -8,8 +8,8 @@ use App\Models\ClassTeacherModel;
 use App\Models\ExaminationModel;
 use App\Models\MarkRegisterModel;
 use App\Models\MarksGradeModel;
+use App\Models\PeriodModel;
 use App\Models\ScheduleModel;
-use App\Models\SettingModel;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -19,14 +19,15 @@ class ExaminationController extends Controller
 {
     public function list(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
     {
-        $data['getExams'] = ExaminationModel::getExaminations(5);
         $data['header_title'] = "Liste des évaluations";
+        $data['getExams'] = ExaminationModel::getExaminations(5);
         return view('admin.examinations.exam.list', $data);
     }
 
     public function add(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
     {
         $data['header_title'] = "Créer une évaluation";
+        $data['getPeriods'] = PeriodModel::getAllPeriods();
         return view('admin.examinations.exam.add', $data);
     }
 
@@ -41,7 +42,10 @@ class ExaminationController extends Controller
 
             $exam = new ExaminationModel;
             $exam->name = trim($request->name);
-            $exam->note = trim($request->note);
+            $exam->start_date = trim($request->start_date);
+            $exam->end_date = trim($request->end_date);
+            $exam->period_id = intval($request->period_id);
+            $exam->status = intval($request->status);
             $exam->created_by = auth()->user()->id;
             $exam->save();
 
@@ -56,6 +60,7 @@ class ExaminationController extends Controller
     public function edit($id)
     {
         $data['getExams'] = ExaminationModel::getSingle($id);
+        $data['getPeriods'] = PeriodModel::getAllPeriods();
         if (!empty($data['getExams'])) {
             $data['header_title'] = "Modifier une évaluation";
             return view('admin.examinations.exam.edit', $data);
@@ -79,7 +84,10 @@ class ExaminationController extends Controller
             }
 
             $exam->name = trim($request->name);
-            $exam->note = trim($request->note);
+            $exam->start_date = trim($request->start_date);
+            $exam->end_date = trim($request->end_date);
+            $exam->period_id = intval($request->period_id);
+            $exam->status = intval($request->status);
             $exam->save();
             return redirect('admin/examinations/exam/list')->with('success', 'Cette évaluation a été modifiée avec succès.');
 

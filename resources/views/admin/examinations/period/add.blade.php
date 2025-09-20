@@ -37,12 +37,14 @@
                                           placeholder="Entrez le titre de la période" icon="fas fa-tag"
                                           value="{{ old('name') }}" required />
 
-                                    <x-form.date id="start_date" label="Date de début" icon="fas fa-calendar-alt" required />
+                                    <x-form.date id="start_date" label="Date de début" icon="fas fa-calendar-alt"
+                                          value="{{ old('start_date') }}" required />
 
-                                    <x-form.date id="end_date" label="Date de fin" icon="fas fa-calendar-alt" required />
+                                    <x-form.date id="end_date" label="Date de fin" icon="fas fa-calendar-alt"
+                                          value="{{ old('end_date') }}" required />
 
-                                    <x-form.select id="status" label="Statut" icon="fas fa-check" :options="['1' => 'Actif', '0' => 'Inactif']"
-                                          selected="" />
+                                    <x-form.select id="status" label="Statut" icon="fas fa-check-circle"
+                                          value="{{ old('status') }}" :options="['1' => 'Actif', '0' => 'Inactif']" selected="" />
 
                                     @php
                                           $options = [];
@@ -51,7 +53,7 @@
                                           }
                                     @endphp
 
-                                    <x-form.select id="settings_id" label="Nom de l'école" icon="fas fa-check"
+                                    <x-form.select id="settings_id" label="Nom de l'école" icon="fas fa-check-circle"
                                           :options="$options" selected="" />
 
                                     <x-form.button icon="mdi:content-save-check-outline">

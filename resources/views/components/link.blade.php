@@ -1,7 +1,7 @@
 @props([
     'href' => '#',
     'icon' => null,
-    'hover' => 'hover:text-violet-600 dark:hover:text-white',
+    'hover' => 'hover:text-indigo-500 dark:hover:text-white',
 ])
 
 <a href="{{ $href }}"

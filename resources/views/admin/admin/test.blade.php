@@ -31,6 +31,7 @@
                   <x-filter.field id="occupation" label="Occupation" icon="fas fa-briefcase" />
                   <x-filter.field id="created_at" label="Date de création" type="date" icon="fas fa-calendar-plus" />
                   <x-filter.field id="updated_at" label="Date de modification" type="date" icon="fas fa-calendar-check" />
+                  <x-filter.field id="date_naissance" label="Date de naissance" type="date" icon="fas fa-calendar-alt" />
 
                   <x-filter.actions resetUrl="{{ url('admin/test') }}" />
 
@@ -51,8 +52,8 @@
                         <x-table.tr>
                               {{-- Colonne "sélectionner tout" --}}
                               <x-table.th align="center" class="w-10">
-                                    <input type="checkbox" class="check-custom" @change="toggleAll($el, $event.target.checked)"
-                                          title="Tout sélectionner">
+                                    <input type="checkbox" class="check-custom"
+                                          @change="toggleAll($el, $event.target.checked)" title="Tout sélectionner">
                               </x-table.th>
 
                               {{-- Colonnes dynamiques --}}

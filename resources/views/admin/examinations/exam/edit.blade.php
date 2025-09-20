@@ -3,89 +3,68 @@
       <div class="m-2">
             @include('message')
             <div class="container mx-auto px-4 py-8 max-w-6xl">
-                  <!-- Header Section -->
-                  <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
-                        <div class="mb-4 md:mb-0">
-                              <h1 class="text-2xl font-bold text-gray-800 dark:text-white flex items-center">
-                                    <span class="text-emerald-600 mr-2">
-                                          <i class="fa-solid fa-square-poll-horizontal text-primary-600" width="28"
-                                                height="28"></i>
-                                    </span>
-                                    Modifier cette évaluation
-                              </h1>
-                              <p class="text-gray-600 dark:text-gray-300 mt-1">Remplissez les détails pour modifier une
-                                    évaluation
-                              </p>
-                        </div>
 
-                        <nav class="flex" aria-label="Breadcrumb">
-                              <ol class="inline-flex items-center space-x-1 md:space-x-3">
-                                    <li class="inline-flex items-center">
-                                          <a href="{{ url('admin/dashboard') }}"
-                                                class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-emerald-600 dark:text-gray-400 dark:hover:text-white">
-                                                <iconify-icon icon="mdi:home" class="mr-2" width="16"
-                                                      height="16"></iconify-icon>
-                                                Tableau de bord
-                                          </a>
-                                    </li>
-                                    <li>
-                                          <div class="flex items-center">
-                                                <iconify-icon icon="mdi:chevron-right" class="text-gray-400" width="16"
-                                                      height="16"></iconify-icon>
-                                                <a href="{{ url('admin/examinations/exam/list') }}"
-                                                      class="ml-1 text-sm font-medium text-gray-700 hover:text-emerald-600 md:ml-2 dark:text-gray-400 dark:hover:text-white">Liste
-                                                      des évaluations</a>
-                                          </div>
-                                    </li>
-                                    <li aria-current="page">
-                                          <div class="flex items-center">
-                                                <iconify-icon icon="mdi:chevron-right" class="text-gray-400" width="16"
-                                                      height="16"></iconify-icon>
-                                                <span
-                                                      class="ml-1 text-sm font-medium text-emerald-600 md:ml-2 dark:text-emerald-400">Modifier</span>
-                                          </div>
-                                    </li>
-                              </ol>
-                        </nav>
-                  </div>
+                  <!-- Section Header -->
+                  <x-pages.header title="Modifier cette évaluation" subtitle="Remplissez les détails pour modifier l'évaluation"
+                        icon="fas fa-calendar-alt" :breadcrumbs="[
+                            [
+                                'url' => url('admin/dashboard'),
+                                'label' => 'Tableau de bord',
+                                'icon' => 'fas fa-home',
+                            ],
+                            [
+                                'url' => url('admin/examinations/exam/list'),
+                                'label' => 'Liste des évaluations',
+                                'icon' => '',
+                            ],
+                            [
+                                'url' => '#',
+                                'icon' => '',
+                                'label' => 'Modifier',
+                            ],
+                        ]" />
 
                   <!-- Main Form Section -->
-                  <div class="bg-white rounded-xl shadow-md overflow-hidden dark:bg-gray-800 transition-colors duration-300">
+                  <div class="bg-white rounded-xl shadow-md overflow-hidden dark:bg-gray-700 transition-colors duration-300">
                         <div class="p-6 md:p-8">
-                              <form action="" method="post" enctype="multipart/form-data">
+                              <form action="{{ url('admin/examinations/exam/edit/' . $getExams->id) }}" method="post"
+                                    enctype="multipart/form-data">
                                     {{ csrf_field() }}
 
-                                    <div class="mb-4.5">
-                                          <div>
-                                                <label class="mb-3 block text-sm font-medium text-black dark:text-white">
-                                                      Nom de l'évaluation
-                                                </label>
-                                                <input type="text" id="name" name="name"
-                                                      value="{{ old('name', $getExams->name) }}" placeholder="Entrez un nom"
-                                                      required
-                                                      class="w-full rounded-lg border-[1.5px] border-stroke bg-gray-100 px-5 py-2.5 font-normal text-black outline-none transition focus:border-emerald-400 active:border-emerald-400 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-emerald-400" />
-                                          </div>
-                                    </div>
-                                    <div class="mb-4.5">
-                                          <label class="mb-3 block text-sm font-medium text-black dark:text-white">
-                                                Note
-                                          </label>
-                                          <textarea rows="1" id="note" name="note" required placeholder="Entrez une note"
-                                                class="w-full rounded-lg border-[1.5px] border-stroke bg-gray-100 px-5 py-2.5 font-normal text-black outline-none transition focus:border-emerald-400 active:border-emerald-400 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-emerald-400">{{ old('note', $getExams->note) }}</textarea>
-                                    </div>
-                                    <div class="mt-8">
-                                          <button type="submit" id="submit-button"
-                                                class="w-full flex justify-center items-center py-3 px-4 bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-700 hover:to-emerald-600 text-white font-medium rounded-lg shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-opacity-50 transition-all duration-300">
-                                                <iconify-icon icon="mdi:content-save-check-outline" class="mr-2"
-                                                      width="20" height="20"></iconify-icon>
-                                                Modifier cette évaluation
-                                          </button>
-                                    </div>
+                                    {{-- Nom --}}
+                                    <x-form.input id="name" type="text" label="Titre de l'évaluation"
+                                          placeholder="Entrez le titre de l'évaluation" icon="fas fa-tag"
+                                          value="{{ old('name', $getExams->name) }}" required />
+
+                                    {{-- Dates --}}
+                                    <x-form.date id="start_date" label="Date de début" icon="fas fa-calendar-alt"
+                                          value="{{ old('start_date', $getExams->start_date) }}" required />
+
+                                    <x-form.date id="end_date" label="Date de fin" icon="fas fa-calendar-alt"
+                                          value="{{ old('end_date', $getExams->end_date) }}" required />
+
+                                    {{-- Période --}}
+                                    @php
+                                          $options = [];
+                                          foreach ($getPeriods as $key => $getPeriod) {
+                                              $options[$getPeriod->id] = $getPeriod->name;
+                                          }
+                                    @endphp
+
+                                    <x-form.select id="period_id" label="Titre de la période" icon="fas fa-check-circle"
+                                          :options="$options" selected="{{ old('period_id', $getExams->period_id) }}" />
+
+                                    {{-- Statut --}}
+                                    <x-form.select id="status" label="Statut" icon="fas fa-check-circle" :options="['1' => 'Actif', '0' => 'Inactif']"
+                                          selected="{{ old('status', $getExams->status) }}" />
+
+                                    {{-- Bouton --}}
+                                    <x-form.button icon="mdi:content-save-check-outline" color="emerald">
+                                          Modifier cette évaluation
+                                    </x-form.button>
 
                               </form>
                         </div>
                   </div>
             </div>
       @endsection
-
-      <script></script>
