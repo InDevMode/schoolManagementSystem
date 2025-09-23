@@ -109,13 +109,13 @@
             </div>
 
             @if (!empty($getSubject) && $getSubject->count() > 0)
-                  <div class="relative overflow-x-auto rounded-lg shadow border border-gray-200 dark:border-gray-700"
+                  <div class="relative overflow-x-auto no-scrollbar rounded-lg shadow border border-gray-200 dark:border-gray-700"
                         style="max-height: 70vh;">
                         <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                              <thead class="rounded-lg bg-violet-600 dark:bg-gray-700 sticky top-0 z-30">
+                              <thead class="rounded-lg bg-indigo-500 dark:bg-gray-700 sticky top-0 z-30">
                                     <tr>
                                           <th scope="col"
-                                                class="px-6 py-3 text-left text-xs font-medium text-white dark:text-gray-300 uppercase tracking-wider sticky left-0 bg-violet-600 dark:bg-gray-700 z-40 min-w-[180px]">
+                                                class="px-6 py-3 text-left text-xs font-medium text-white dark:text-gray-300 uppercase tracking-wider sticky left-0 bg-indigo-500 dark:bg-gray-700 z-40 min-w-[180px]">
                                                 Apprenants</th>
                                           @foreach ($getSubject as $subject)
                                                 <th scope="col"
@@ -131,7 +131,7 @@
                                                 </th>
                                           @endforeach
                                           <th scope="col"
-                                                class="px-6 py-3 text-left text-xs font-medium text-white dark:text-gray-300 uppercase tracking-wider sticky right-0 bg-violet-600 dark:bg-gray-700 z-40 min-w-[200px]">
+                                                class="px-6 py-3 text-left text-xs font-medium text-white dark:text-gray-300 uppercase tracking-wider right-0 bg-indigo-500 dark:bg-gray-700 z-40 sticky min-w-[200px]">
                                                 Actions</th>
                                     </tr>
                               </thead>
@@ -147,7 +147,7 @@
                                                             value="{{ Request::get('class_id') }}">
                                                       {{ csrf_field() }}
                                                       <tr
-                                                            class="hover:bg-violet-50 dark:hover:bg-gray-700 transition-colors w-full">
+                                                            class="hover:bg-indigo-50 dark:hover:bg-gray-700 transition-colors w-full">
                                                             <td
                                                                   class="px-6 py-4 sticky left-0 bg-white dark:bg-gray-800 z-30 whitespace-nowrap font-medium">
                                                                   {{ $student->name }} {{ $student->last_name }}
@@ -364,14 +364,15 @@
                                                             <td
                                                                   class="px-4 py-3 sticky right-0 bg-white dark:bg-gray-800 z-30 whitespace-nowrap border-l border-gray-200 dark:border-gray-600">
                                                                   <div class="flex flex-col gap-2">
+
                                                                         <button type="submit" id="addMarksRegister"
-                                                                              data-action="saveAll"
                                                                               class="w-full flex justify-center items-center py-2 px-3 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-medium rounded shadow-sm transition-colors">
                                                                               <iconify-icon icon="mdi:content-save-all"
                                                                                     class="mr-1" width="16"
                                                                                     height="16"></iconify-icon>
                                                                               Sauvegarder tout
                                                                         </button>
+
                                                                         <a target="_blank"
                                                                               href="{{ url('admin/examinations/marks_register/print?exam_id=' . Request::get('exam_id') . '&student_id=' . $student->id) }}"
                                                                               class="w-full flex justify-center items-center py-2 px-3 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded shadow-sm transition-colors">

@@ -169,4 +169,11 @@ class ClassSubjectModel extends Model
             ->count('class_subject.subject_id');
     }
 
+    public static function getClassSubject(int $class_id, int $subject_id)
+    {
+        return ClassSubjectModel::where('class_id', '=', $class_id)
+            ->where('subject_id', '=', $subject_id)
+            ->first();
+    }
+
 }
