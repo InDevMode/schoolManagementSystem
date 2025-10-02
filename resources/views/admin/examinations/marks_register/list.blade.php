@@ -160,19 +160,18 @@
                                                             @endphp
                                                             @foreach ($getSubject as $index => $subject)
                                                                   @php
-                                                                        $totalMark = 0;
-                                                                        $totalFullMarks =
-                                                                            $totalFullMarks + $subject->full_marks;
-                                                                        $totalPassingMarks =
-                                                                            $totalPassingMarks +
-                                                                            $subject->passing_marks;
-
                                                                         $getMark = \App\Models\ScheduleModel::getMarks(
                                                                             $student->id,
                                                                             Request::get('exam_id'),
                                                                             Request::get('class_id'),
                                                                             $subject->subject_id,
                                                                         );
+
+                                                                        // Éviter la division par zero
+                                                                        $totalMark = 0;
+                                                                        $percentage = 0;
+                                                                        $getGrade = '';
+
                                                                         if (!empty($getMark)) {
                                                                             $totalMark =
                                                                                 $getMark->class_work +
@@ -187,17 +186,34 @@
                                                                                 $getMark->assignment_1 +
                                                                                 $getMark->assignment_2 +
                                                                                 $getMark->assignment_3;
+
+                                                                            // Vérifier que full_marks n'est pas zero avant de diviser
+                                                                            if ($subject->full_marks > 0) {
+                                                                                $percentage = round(
+                                                                                    ($totalMark * 100) /
+                                                                                        $subject->full_marks,
+                                                                                    2,
+                                                                                );
+                                                                                $getGrade = \App\Models\MarksGradeModel::getGrade(
+                                                                                    $percentage,
+                                                                                );
+                                                                            }
                                                                         }
-                                                                        $totalStudentMark =
-                                                                            $totalStudentMark + $totalMark;
-                                                                        $percentage =
-                                                                            ($totalStudentMark * 100) / $totalFullMarks;
-                                                                        $getGrade = \App\Models\MarksGradeModel::getGrade(
-                                                                            $percentage,
-                                                                        );
                                                                   @endphp
+
                                                                   <td
                                                                         class="px-4 py-3 whitespace-nowrap border-r border-gray-200 dark:border-gray-600">
+                                                                        <!-- Champs cachés avec la bonne structure -->
+                                                                        <input type="hidden"
+                                                                              name="marks[{{ $index }}][passing_marks]"
+                                                                              value="{{ $subject->passing_marks }}">
+                                                                        <input type="hidden"
+                                                                              name="marks[{{ $index }}][full_marks]"
+                                                                              value="{{ $subject->full_marks }}">
+                                                                        <input type="hidden"
+                                                                              name="marks[{{ $index }}][subject_id]"
+                                                                              value="{{ $subject->subject_id }}">
+
                                                                         <!-- Quiz fields -->
                                                                         <div class="mb-3">
                                                                               <label
@@ -210,8 +226,7 @@
                                                                                                 <input type="number"
                                                                                                       step="0.01"
                                                                                                       min="0"
-                                                                                                      max="{{ $subject->full_marks }}"
-                                                                                                      id="marks[{{ $index }}][quiz_{{ $q }}]"
+                                                                                                      max="{{ $subject->full_marks > 0 ? $subject->full_marks : 100 }}"
                                                                                                       name="marks[{{ $index }}][quiz_{{ $q }}]"
                                                                                                       value="{{ $getMark ? $getMark->{'quiz_' . $q} : '' }}"
                                                                                                       placeholder="Interro {{ $q }}"
@@ -233,8 +248,7 @@
                                                                                                 <input type="number"
                                                                                                       step="0.01"
                                                                                                       min="0"
-                                                                                                      max="{{ $subject->full_marks }}"
-                                                                                                      id="marks[{{ $index }}][assignment_{{ $a }}]"
+                                                                                                      max="{{ $subject->full_marks > 0 ? $subject->full_marks : 100 }}"
                                                                                                       name="marks[{{ $index }}][assignment_{{ $a }}]"
                                                                                                       value="{{ $getMark ? $getMark->{'assignment_' . $a} : '' }}"
                                                                                                       placeholder="Devoir {{ $a }}"
@@ -251,24 +265,14 @@
                                                                                     Travaux individuels et collectifs
                                                                               </label>
                                                                               <div class="grid grid-cols-2 gap-2">
+                                                                                    <input type="hidden"
+                                                                                          name="marks[{{ $index }}][id]"
+                                                                                          value="{{ $subject->id }}">
                                                                                     <div>
-                                                                                          <input type="hidden"
-                                                                                                name="marks[{{ $index }}][passing_marks]"
-                                                                                                value="{{ $subject->passing_marks }}">
-                                                                                          <input type="hidden"
-                                                                                                name="marks[{{ $index }}][full_marks]"
-                                                                                                value="{{ $subject->full_marks }}">
-                                                                                          <input type="hidden"
-                                                                                                name="marks[{{ $index }}][id]"
-                                                                                                value="{{ $subject->id }}">
-                                                                                          <input type="hidden"
-                                                                                                name="marks[{{ $index }}][subject_id]"
-                                                                                                value="{{ $subject->subject_id }}">
                                                                                           <input type="number"
                                                                                                 step="0.01"
                                                                                                 min="0"
-                                                                                                max="{{ $subject->full_marks }}"
-                                                                                                id="marks[{{ $index }}][class_work]"
+                                                                                                max="{{ $subject->full_marks > 0 ? $subject->full_marks : 100 }}"
                                                                                                 name="marks[{{ $index }}][class_work]"
                                                                                                 value="{{ $getMark ? $getMark->class_work : '' }}"
                                                                                                 placeholder="Travail de classe"
@@ -278,8 +282,7 @@
                                                                                           <input type="number"
                                                                                                 step="0.01"
                                                                                                 min="0"
-                                                                                                max="{{ $subject->full_marks }}"
-                                                                                                id="marks[{{ $index }}][home_work]"
+                                                                                                max="{{ $subject->full_marks > 0 ? $subject->full_marks : 100 }}"
                                                                                                 name="marks[{{ $index }}][home_work]"
                                                                                                 value="{{ $getMark ? $getMark->home_work : '' }}"
                                                                                                 placeholder="Travail de maison"
@@ -289,8 +292,7 @@
                                                                                           <input type="number"
                                                                                                 step="0.01"
                                                                                                 min="0"
-                                                                                                max="{{ $subject->full_marks }}"
-                                                                                                id="marks[{{ $index }}][exam_work]"
+                                                                                                max="{{ $subject->full_marks > 0 ? $subject->full_marks : 100 }}"
                                                                                                 name="marks[{{ $index }}][exam_work]"
                                                                                                 value="{{ $getMark ? $getMark->exam_work : '' }}"
                                                                                                 placeholder="Travail d'examen"
@@ -300,8 +302,7 @@
                                                                                           <input type="number"
                                                                                                 step="0.01"
                                                                                                 min="0"
-                                                                                                max="{{ $subject->full_marks }}"
-                                                                                                id="marks[{{ $index }}][test_work]"
+                                                                                                max="{{ $subject->full_marks > 0 ? $subject->full_marks : 100 }}"
                                                                                                 name="marks[{{ $index }}][test_work]"
                                                                                                 value="{{ $getMark ? $getMark->test_work : '' }}"
                                                                                                 placeholder="Travail de test"
@@ -310,47 +311,66 @@
                                                                               </div>
                                                                         </div>
 
-                                                                        @if (!empty($getMark))
-                                                                              <div
-                                                                                    class="mt-3 p-2 bg-gray-50 dark:bg-gray-700 rounded border border-gray-200 dark:border-gray-600">
-                                                                                    <div class="text-xs">
-                                                                                          <p
-                                                                                                class="flex justify-between mb-1">
-                                                                                                <span class="font-medium">Note
-                                                                                                      totale:</span>
-                                                                                                <span>{{ $totalMark }}</span>
-                                                                                          </p>
-                                                                                          <p
-                                                                                                class="flex justify-between mb-1">
-                                                                                                <span class="font-medium">Note
-                                                                                                      de passage:</span>
-                                                                                                <span>{{ $subject->passing_marks }}</span>
-                                                                                          </p>
-                                                                                          @if (!empty($getGrade))
+                                                                        <!-- Section résultats -->
+                                                                        <div class="result-display mt-3">
+                                                                              @if (!empty($getMark))
+                                                                                    <div
+                                                                                          class="p-2 bg-gray-50 dark:bg-gray-700 rounded border border-gray-200 dark:border-gray-600">
+                                                                                          <div class="text-xs">
                                                                                                 <p
                                                                                                       class="flex justify-between mb-1">
                                                                                                       <span
-                                                                                                            class="font-medium">Grade:</span>
-                                                                                                      <span>{{ $getGrade }}</span>
+                                                                                                            class="font-medium">Note
+                                                                                                            totale:</span>
+                                                                                                      <span>{{ $totalMark }}</span>
                                                                                                 </p>
-                                                                                          @endif
-                                                                                          <p
-                                                                                                class="flex justify-between mt-2 pt-2 border-t border-gray-200 dark:border-gray-600">
-                                                                                                <span
-                                                                                                      class="font-medium">Décision:</span>
-                                                                                                <span
-                                                                                                      class="{{ $totalMark >= $subject->passing_marks ? 'text-emerald-600 font-bold' : 'text-red-600 font-bold' }}">
-                                                                                                      {{ $totalMark >= $subject->passing_marks ? 'Admis' : 'Refusé' }}
-                                                                                                </span>
-                                                                                          </p>
+                                                                                                <p
+                                                                                                      class="flex justify-between mb-1">
+                                                                                                      <span
+                                                                                                            class="font-medium">Note
+                                                                                                            maximale:</span>
+                                                                                                      <span>{{ $subject->full_marks > 0 ? $subject->full_marks : 'Non définie' }}</span>
+                                                                                                </p>
+                                                                                                <p
+                                                                                                      class="flex justify-between mb-1">
+                                                                                                      <span
+                                                                                                            class="font-medium">Note
+                                                                                                            de passage:</span>
+                                                                                                      <span>{{ $subject->passing_marks }}</span>
+                                                                                                </p>
+                                                                                                @if ($subject->full_marks > 0 && !empty($getGrade))
+                                                                                                      <p
+                                                                                                            class="flex justify-between mb-1">
+                                                                                                            <span
+                                                                                                                  class="font-medium">Pourcentage:</span>
+                                                                                                            <span>{{ $percentage }}%</span>
+                                                                                                      </p>
+                                                                                                      <p
+                                                                                                            class="flex justify-between mb-1">
+                                                                                                            <span
+                                                                                                                  class="font-medium">Grade:</span>
+                                                                                                            <span>{{ $getGrade }}</span>
+                                                                                                      </p>
+                                                                                                @endif
+                                                                                                <p
+                                                                                                      class="flex justify-between mt-2 pt-2 border-t border-gray-200 dark:border-gray-600">
+                                                                                                      <span
+                                                                                                            class="font-medium">Décision:</span>
+                                                                                                      <span
+                                                                                                            class="{{ $totalMark >= $subject->passing_marks ? 'text-emerald-600 font-bold' : 'text-red-600 font-bold' }}">
+                                                                                                            {{ $totalMark >= $subject->passing_marks ? 'Admis' : 'Refusé' }}
+                                                                                                      </span>
+                                                                                                </p>
+                                                                                          </div>
                                                                                     </div>
-                                                                              </div>
-                                                                        @endif
-                                                                        <button type="submit"
+                                                                              @endif
+                                                                        </div>
+
+                                                                        <button type="button"
                                                                               data-student="{{ $student->id }}"
                                                                               data-exam="{{ Request::get('exam_id') }}"
                                                                               data-class="{{ Request::get('class_id') }}"
-                                                                              data-subject="{{ $subject->id }}"
+                                                                              data-subject="{{ $subject->subject_id }}"
                                                                               class="saveSingleSubject w-full flex justify-center items-center py-1.5 px-3 mt-2 bg-violet-600 hover:bg-violet-700 text-white text-xs font-medium rounded shadow-sm transition-colors">
                                                                               <iconify-icon
                                                                                     icon="mdi:content-save-check-outline"
@@ -359,7 +379,6 @@
                                                                               Sauvegarder
                                                                         </button>
                                                                   </td>
-                                                                  @php $i = 1; @endphp
                                                             @endforeach
                                                             <td
                                                                   class="px-4 py-3 sticky right-0 bg-white dark:bg-gray-800 z-30 whitespace-nowrap border-l border-gray-200 dark:border-gray-600">
@@ -382,13 +401,19 @@
                                                                               Imprimer
                                                                         </a>
                                                                   </div>
-
                                                                   @php
-                                                                        $percentage =
-                                                                            ($totalStudentMark * 100) / $totalFullMarks;
-                                                                        $getGrade = \App\Models\MarksGradeModel::getGrade(
-                                                                            $percentage,
-                                                                        );
+                                                                        // CORRECTION : Vérifier que $totalFullMarks n'est pas zéro avant de diviser
+                                                                    $percentage = 0;
+                                                                    $getGrade = 'Non défini';
+
+                                                                        if ($totalFullMarks > 0) {
+                                                                            $percentage =
+                                                                                ($totalStudentMark * 100) /
+                                                                                $totalFullMarks;
+                                                                            $getGrade = \App\Models\MarksGradeModel::getGrade(
+                                                                                $percentage,
+                                                                            );
+                                                                        }
                                                                   @endphp
                                                                   <div
                                                                         class="mt-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600 text-xs">
@@ -473,79 +498,277 @@
             document.querySelectorAll('.saveSingleSubject').forEach(function(button) {
                   button.addEventListener('click', function(e) {
                         e.preventDefault();
-                        let student_id = button.getAttribute('data-student');
-                        let exam_id = button.getAttribute('data-exam');
-                        let class_id = button.getAttribute('data-class');
-                        let td = button.closest('td');
-
-                        handleSingleSubjectSubmit(td, student_id, exam_id, class_id);
+                        handleSingleSubject(button);
                   });
             });
       }
 
-      function handleFormSubmit(form) {
-            let formData = new FormData(form);
-            formData.append('_token', '{{ csrf_token() }}');
+      function handleSingleSubject(button) {
+            let student_id = button.getAttribute('data-student');
+            let exam_id = button.getAttribute('data-exam');
+            let class_id = button.getAttribute('data-class');
+            let subject_id = button.getAttribute('data-subject');
+            let td = button.closest('td');
 
-            let xhr = new XMLHttpRequest();
-            xhr.open('POST', "{{ url('admin/examinations/marks_register/add') }}", true);
-
-            xhr.onreadystatechange = function() {
-                  if (xhr.readyState === XMLHttpRequest.DONE) {
-                        let response = JSON.parse(xhr.responseText);
-                        displayMessage(response);
-                        if (xhr.status === 200 && response.success) {
-                              window.location.reload();
-                        }
-                  }
-            };
-
-            xhr.send(formData);
-      }
-
-      function handleSingleSubjectSubmit(td, student_id, exam_id, class_id) {
             let formData = new FormData();
+
+            // Désactiver le bouton pendant l'envoi
+            button.disabled = true;
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sauvegarde...';
+
+            // Récupérer tous les champs de cette matière spécifique
             td.querySelectorAll('input').forEach(function(input) {
                   if (input.type === 'number' || input.type === 'hidden') {
-                        formData.append(input.name, input.value);
+                        // Vérifier que le champ appartient à cette matière
+                        if (input.name.includes(`[${subject_id}]`)) {
+                              let value = input.value === '' ? '0' : input.value;
+                              formData.append(input.name, value);
+                        }
                   }
             });
 
+            // Ajouter les paramètres principaux
             formData.append('student_id', student_id);
             formData.append('exam_id', exam_id);
             formData.append('class_id', class_id);
+            formData.append('subject_id', subject_id);
             formData.append('_token', '{{ csrf_token() }}');
 
-            let xhr = new XMLHttpRequest();
-            xhr.open('POST', "{{ url('admin/examinations/marks_register/addSingleSubject') }}", true);
+            console.log('Envoi des données pour une matière:', Object.fromEntries(formData));
 
-            xhr.onreadystatechange = function() {
-                  if (xhr.readyState === XMLHttpRequest.DONE) {
-                        let response = JSON.parse(xhr.responseText);
-                        displayMessage(response);
-                        if (xhr.status === 200 && response.success) {
-                              window.location.reload();
+            // CORRECTION : Utiliser la bonne URL
+            fetch("{{ url('admin/examinations/marks_register/addSingleSubject') }}", {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                              'X-Requested-With': 'XMLHttpRequest',
+                              'X-CSRF-TOKEN': '{{ csrf_token() }}'
                         }
+                  })
+                  .then(response => {
+                        if (!response.ok) {
+                              throw new Error('Erreur réseau: ' + response.status);
+                        }
+                        return response.json();
+                  })
+                  .then(data => {
+                        console.log('Réponse reçue:', data);
+                        displayMessage(data);
+                        if (data.success) {
+                              updateSubjectDisplay(td, data.data, subject_id);
+                        }
+                  })
+                  .catch(error => {
+                        console.error('Erreur:', error);
+                        displayMessage({
+                              success: false,
+                              message: 'Erreur réseau: ' + error.message
+                        });
+                  })
+                  .finally(() => {
+                        // Réactiver le bouton
+                        button.disabled = false;
+                        button.innerHTML =
+                              '<iconify-icon icon="mdi:content-save-check-outline" class="mr-1" width="14" height="14"></iconify-icon> Sauvegarder';
+                  });
+      }
+
+      function handleFormSubmit(form) {
+            let formData = new FormData(form);
+            let submitButton = form.querySelector('#addMarksRegister');
+
+            // Désactiver le bouton pendant l'envoi
+            if (submitButton) {
+                  submitButton.disabled = true;
+                  submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sauvegarde...';
+            }
+
+            console.log('Envoi de toutes les données:', Object.fromEntries(formData));
+
+            fetch("{{ url('admin/examinations/marks_register/add') }}", {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                              'X-Requested-With': 'XMLHttpRequest',
+                              'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        }
+                  })
+                  .then(response => {
+                        if (!response.ok) {
+                              throw new Error('Erreur réseau: ' + response.status);
+                        }
+                        return response.json();
+                  })
+                  .then(data => {
+                        console.log('Réponse reçue pour toutes les matières:', data);
+                        displayMessage(data);
+                        if (data.success) {
+                              // Recharger après 2 secondes pour voir les nouvelles données
+                              setTimeout(() => {
+                                    window.location.reload();
+                              }, 2000);
+                        }
+                  })
+                  .catch(error => {
+                        console.error('Error:', error);
+                        displayMessage({
+                              success: false,
+                              message: 'Erreur réseau. Veuillez réessayer.'
+                        });
+                  })
+                  .finally(() => {
+                        // Réactiver le bouton
+                        if (submitButton) {
+                              submitButton.disabled = false;
+                              submitButton.innerHTML =
+                                    '<iconify-icon icon="mdi:content-save-all" class="mr-1" width="16" height="16"></iconify-icon> Sauvegarder tout';
+                        }
+                  });
+      }
+
+      function updateSubjectDisplay(td, data, subject_id) {
+            if (data && data.marks) {
+                  let marks = data.marks;
+
+                  // Calculer le total des notes
+                  let totalMark = (parseFloat(marks.class_work) || 0) +
+                        (parseFloat(marks.home_work) || 0) +
+                        (parseFloat(marks.exam_work) || 0) +
+                        (parseFloat(marks.test_work) || 0) +
+                        (parseFloat(marks.quiz_1) || 0) +
+                        (parseFloat(marks.quiz_2) || 0) +
+                        (parseFloat(marks.quiz_3) || 0) +
+                        (parseFloat(marks.quiz_4) || 0) +
+                        (parseFloat(marks.quiz_5) || 0) +
+                        (parseFloat(marks.assignment_1) || 0) +
+                        (parseFloat(marks.assignment_2) || 0) +
+                        (parseFloat(marks.assignment_3) || 0);
+
+                  // Trouver ou créer le div de résultats
+                  let resultDiv = td.querySelector('.result-display');
+                  if (!resultDiv) {
+                        resultDiv = document.createElement('div');
+                        resultDiv.className = 'result-display mt-3';
+                        let saveButton = td.querySelector('.saveSingleSubject');
+                        td.insertBefore(resultDiv, saveButton);
                   }
-            };
-            xhr.send(formData);
+
+                  // Construire le HTML des résultats
+                  resultDiv.innerHTML = `
+            <div class="p-2 bg-gray-50 dark:bg-gray-700 rounded border border-gray-200 dark:border-gray-600">
+                <div class="text-xs">
+                    <p class="flex justify-between mb-1">
+                        <span class="font-medium">Note totale:</span>
+                        <span class="font-bold">${totalMark.toFixed(2)}</span>
+                    </p>
+                    <p class="flex justify-between mb-1">
+                        <span class="font-medium">Note maximale:</span>
+                        <span>${data.full_marks || marks.full_marks || 'Non définie'}</span>
+                    </p>
+                    <p class="flex justify-between mb-1">
+                        <span class="font-medium">Note de passage:</span>
+                        <span>${data.passing_marks || marks.passing_marks}</span>
+                    </p>
+                    ${data.quiz_average ? `
+                    <p class="flex justify-between mb-1">
+                        <span class="font-medium">Moyenne Quiz:</span>
+                        <span>${parseFloat(data.quiz_average).toFixed(2)}</span>
+                    </p>
+                    ` : ''}
+                    ${data.assignment_average ? `
+                    <p class="flex justify-between mb-1">
+                        <span class="font-medium">Moyenne Devoirs:</span>
+                        <span>${parseFloat(data.assignment_average).toFixed(2)}</span>
+                    </p>
+                    ` : ''}
+                    ${data.percentage ? `
+                    <p class="flex justify-between mb-1">
+                        <span class="font-medium">Pourcentage:</span>
+                        <span>${data.percentage}%</span>
+                    </p>
+                    ` : ''}
+                    ${data.grade ? `
+                    <p class="flex justify-between mb-1">
+                        <span class="font-medium">Grade:</span>
+                        <span class="font-bold">${data.grade}</span>
+                    </p>
+                    ` : ''}
+                    <p class="flex justify-between mt-2 pt-2 border-t border-gray-200 dark:border-gray-600">
+                        <span class="font-medium">Décision:</span>
+                        <span class="${totalMark >= (data.passing_marks || marks.passing_marks) ? 'text-emerald-600 font-bold' : 'text-red-600 font-bold'}">
+                            ${totalMark >= (data.passing_marks || marks.passing_marks) ? '✅ Admis' : '❌ Refusé'}
+                        </span>
+                    </p>
+                </div>
+            </div>
+        `;
+            }
       }
 
       function displayMessage(response) {
-            let messageBox = document.createElement('div');
-            messageBox.className = 'fixed top-4 right-4 px-4 py-3 rounded shadow-lg z-50 text-white font-medium';
-            messageBox.innerHTML = response.message;
+            console.log('Affichage du message:', response);
 
-            if (response.success) {
-                  messageBox.classList.add('bg-emerald-600');
-            } else {
-                  messageBox.classList.add('bg-red-600');
-            }
+            // Supprimer les messages existants
+            document.querySelectorAll('.alert-message').forEach(msg => {
+                  if (msg.parentNode) {
+                        msg.parentNode.removeChild(msg);
+                  }
+            });
+
+            let messageBox = document.createElement('div');
+            messageBox.className = 'alert-message';
+
+            // Styles CSS inline pour éviter les conflits
+            messageBox.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 12px 16px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 10000;
+            color: white;
+            font-weight: 500;
+            transform: translateX(400px);
+            opacity: 0;
+            transition: all 0.3s ease;
+            max-width: 400px;
+        ${response.success ? 'background-color: #10b981;' : 'background-color: #ef4444;'}
+    `;
+
+            messageBox.innerHTML = `
+        <div class="flex items-center gap-2" style="color: white;">
+            <i class="fas ${response.success ? 'fa-check-circle' : 'fa-exclamation-triangle'}"></i>
+            <span>${response.message || 'Action effectuée'}</span>
+        </div>
+    `;
 
             document.body.appendChild(messageBox);
-            setTimeout(function() {
-                  messageBox.remove();
-            }, 3000);
+
+            // Animation d'entrée
+            setTimeout(() => {
+                  messageBox.style.transform = 'translateX(0)';
+                  messageBox.style.opacity = '1';
+            }, 100);
+
+            // Animation de sortie après 4 secondes
+            setTimeout(() => {
+                  messageBox.style.transform = 'translateX(400px)';
+                  messageBox.style.opacity = '0';
+                  setTimeout(() => {
+                        if (messageBox.parentNode) {
+                              messageBox.parentNode.removeChild(messageBox);
+                        }
+                  }, 300);
+            }, 4000);
+      }
+
+      // Fonction de test pour vérifier que les messages fonctionnent
+      function testMessage() {
+            displayMessage({
+                  success: true,
+                  message: 'Test de message réussi!'
+            });
       }
 </script>
 
@@ -617,5 +840,35 @@
       .text-xs input {
             font-size: 0.75rem;
             padding: 0.4rem 0.5rem;
+      }
+
+      .alert-message {
+            transform: translateX(100%);
+            opacity: 0;
+      }
+
+      .alert-message {
+            transition: transform 0.3s ease, opacity 0.3s ease;
+      }
+
+      /* Style pour le spinner */
+      .fa-spinner {
+            animation: spin 1s linear infinite;
+      }
+
+      @keyframes spin {
+            0% {
+                  transform: rotate(0deg);
+            }
+
+            100% {
+                  transform: rotate(360deg);
+            }
+      }
+
+      /* Désactiver le style par défaut des boutons désactivés */
+      button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
       }
 </style>

@@ -442,7 +442,6 @@ class ExaminationController extends Controller
 
     public function addSingleMarksRegister(Request $request)
     {
-        // dd($request->all());
         try {
             $allSuccessful = true;
 
