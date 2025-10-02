@@ -8,8 +8,8 @@ use App\Models\ClassTeacherModel;
 use App\Models\ExaminationModel;
 use App\Models\MarkRegisterModel;
 use App\Models\MarksGradeModel;
+use App\Models\PeriodModel;
 use App\Models\ScheduleModel;
-use App\Models\SettingModel;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -19,14 +19,15 @@ class ExaminationController extends Controller
 {
     public function list(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
     {
-        $data['getExams'] = ExaminationModel::getExaminations(5);
         $data['header_title'] = "Liste des évaluations";
+        $data['getExams'] = ExaminationModel::getExaminations(5);
         return view('admin.examinations.exam.list', $data);
     }
 
     public function add(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
     {
         $data['header_title'] = "Créer une évaluation";
+        $data['getPeriods'] = PeriodModel::getAllPeriods();
         return view('admin.examinations.exam.add', $data);
     }
 
@@ -41,7 +42,10 @@ class ExaminationController extends Controller
 
             $exam = new ExaminationModel;
             $exam->name = trim($request->name);
-            $exam->note = trim($request->note);
+            $exam->start_date = trim($request->start_date);
+            $exam->end_date = trim($request->end_date);
+            $exam->period_id = intval($request->period_id);
+            $exam->status = intval($request->status);
             $exam->created_by = auth()->user()->id;
             $exam->save();
 
@@ -56,6 +60,7 @@ class ExaminationController extends Controller
     public function edit($id)
     {
         $data['getExams'] = ExaminationModel::getSingle($id);
+        $data['getPeriods'] = PeriodModel::getAllPeriods();
         if (!empty($data['getExams'])) {
             $data['header_title'] = "Modifier une évaluation";
             return view('admin.examinations.exam.edit', $data);
@@ -79,7 +84,10 @@ class ExaminationController extends Controller
             }
 
             $exam->name = trim($request->name);
-            $exam->note = trim($request->note);
+            $exam->start_date = trim($request->start_date);
+            $exam->end_date = trim($request->end_date);
+            $exam->period_id = intval($request->period_id);
+            $exam->status = intval($request->status);
             $exam->save();
             return redirect('admin/examinations/exam/list')->with('success', 'Cette évaluation a été modifiée avec succès.');
 
@@ -107,13 +115,13 @@ class ExaminationController extends Controller
         $data['header_title'] = "Programmation des examens";
         $data['getClass'] = ClassModel::getClass();
         $data['getExams'] = ExaminationModel::getExams();
-        $result = array();
+        $result = [];
 
         if (!empty($request->get('exam_id')) && !empty($request->get('class_id'))) {
             $getSubject = ClassSubjectModel::getSubject($request->get('class_id'));
 
             foreach ($getSubject as $subject) {
-                $dataSchedule = array();
+                $dataSchedule = [];
                 $dataSchedule['subject_id'] = $subject->subject_id;
                 $dataSchedule['class_id'] = $subject->class_id;
                 $dataSchedule['subject_name'] = $subject->subject_name;
@@ -221,21 +229,21 @@ class ExaminationController extends Controller
     {
         $data['header_title'] = "Mon calendrier d'examens";
         $getClass = ClassTeacherModel::getMyClassSubjectGroup(Auth::user()->id);
-        $result = array();
+        $result = [];
 
         foreach ($getClass as $class) {
-            $dataClass = array();
+            $dataClass = [];
             $dataClass['class_name'] = $class->class_name;
 
             $getExamSchedule = ScheduleModel::getExam($class->class_id);
-            $examArray = array();
+            $examArray = [];
             foreach ($getExamSchedule as $examSchedule) {
-                $dataExam = array();
+                $dataExam = [];
                 $dataExam['exam_name'] = $examSchedule->exam_name;
                 $getExamTimetable = ScheduleModel::getExamTimetable($examSchedule->exam_id, $class->class_id);
-                $subjectArray = array();
+                $subjectArray = [];
                 foreach ($getExamTimetable as $examTimetable) {
-                    $dataSchedule = array();
+                    $dataSchedule = [];
                     $dataSchedule['subject_name'] = $examTimetable->subject_name;
                     $dataSchedule['exam_date'] = $examTimetable->exam_date;
                     $dataSchedule['start_time'] = $examTimetable->start_time;
@@ -302,27 +310,54 @@ class ExaminationController extends Controller
         return view('admin.examinations.marks_register.list', $data);
     }
 
-    public function addMarksRegister(Request $request): \Illuminate\Http\JsonResponse
+    public function addMarksRegister(Request $request)
     {
         try {
-            $responses = [];
             $allSuccessful = true;
 
             if (!empty($request->marks)) {
                 foreach ($request->marks as $mark) {
                     $getExamSchedule = ScheduleModel::getSingle($mark['id']);
-                    $schedule_full_marks = $getExamSchedule->full_marks;
 
-                    $class_work = !empty($mark['class_work']) ? $mark['class_work'] : 0;
-                    $home_work = !empty($mark['home_work']) ? $mark['home_work'] : 0;
-                    $test_work = !empty($mark['test_work']) ? $mark['test_work'] : 0;
-                    $exam_work = !empty($mark['exam_work']) ? $mark['exam_work'] : 0;
-                    $passing_marks = !empty($mark['passing_marks']) ? $mark['passing_marks'] : 0;
-                    $full_marks = !empty($mark['full_marks']) ? $mark['full_marks'] : 0;
+                    // Définir les notes par défaut à null si elles n'existent pas
+                    $class_work = $mark['class_work'] ?? null;
+                    $home_work = $mark['home_work'] ?? null;
+                    $test_work = $mark['test_work'] ?? null;
+                    $exam_work = $mark['exam_work'] ?? null;
+                    $quiz_1 = $mark['quiz_1'] ?? null;
+                    $quiz_2 = $mark['quiz_2'] ?? null;
+                    $quiz_3 = $mark['quiz_3'] ?? null;
+                    $quiz_4 = $mark['quiz_4'] ?? null;
+                    $quiz_5 = $mark['quiz_5'] ?? null;
+                    $assignment_1 = $mark['assignment_1'] ?? null;
+                    $assignment_2 = $mark['assignment_2'] ?? null;
+                    $assignment_3 = $mark['assignment_3'] ?? null;
+                    $passing_marks = $mark['passing_marks'] ?? null;
+                    $full_marks = $mark['full_marks'] ?? null;
 
-                    $total_marks = $class_work + $home_work + $test_work + $exam_work;
+                    // Création d'un tableau de toutes les notes individuelles pour un calcul facile
+                    $all_individual_marks = [
+                        $class_work,
+                        $home_work,
+                        $test_work,
+                        $exam_work,
+                        $quiz_1,
+                        $quiz_2,
+                        $quiz_3,
+                        $quiz_4,
+                        $quiz_5,
+                        $assignment_1,
+                        $assignment_2,
+                        $assignment_3
+                    ];
 
-                    if ($getExamSchedule && $schedule_full_marks >= $total_marks) {
+                    // Calcul du total des notes en ignorant les valeurs null
+                    $total_marks = collect($all_individual_marks)->filter(fn($value) => !is_null($value))->sum();
+
+                    // Le total des notes reçues pour la validation (vous pouvez le garder ou le calculer)
+                    $total_marks_received = $mark['total_marks'] ?? $total_marks;
+
+                    if ($getExamSchedule && $getExamSchedule->full_marks >= $total_marks_received) {
                         $getMarks = MarkRegisterModel::checkAlreadyMarks(
                             $request->student_id,
                             $request->exam_id,
@@ -330,14 +365,9 @@ class ExaminationController extends Controller
                             $mark['subject_id']
                         );
 
-                        if (!empty($getMarks)) {
-                            $marksRegister = $getMarks;
-                            $marksRegister->created_by = Auth::user()->id;
-                        } else {
-                            $marksRegister = new MarkRegisterModel;
-                            $marksRegister->created_by = Auth::user()->id;
-                        }
+                        $marksRegister = $getMarks ?? new MarkRegisterModel;
 
+                        // Assigner toutes les valeurs des notes individuelles et des totaux
                         $marksRegister->student_id = $request->student_id;
                         $marksRegister->class_id = $request->class_id;
                         $marksRegister->exam_id = $request->exam_id;
@@ -346,40 +376,58 @@ class ExaminationController extends Controller
                         $marksRegister->home_work = $home_work;
                         $marksRegister->test_work = $test_work;
                         $marksRegister->exam_work = $exam_work;
+                        $marksRegister->quiz_1 = $quiz_1;
+                        $marksRegister->quiz_2 = $quiz_2;
+                        $marksRegister->quiz_3 = $quiz_3;
+                        $marksRegister->quiz_4 = $quiz_4;
+                        $marksRegister->quiz_5 = $quiz_5;
+                        $marksRegister->assignment_1 = $assignment_1;
+                        $marksRegister->assignment_2 = $assignment_2;
+                        $marksRegister->assignment_3 = $assignment_3;
+
+                        // Calcul de la moyenne des quiz
+                        $quiz_notes = array_filter([$quiz_1, $quiz_2, $quiz_3, $quiz_4, $quiz_5], fn($value) => !is_null($value));
+                        $quiz_average = count($quiz_notes) > 0 ? array_sum($quiz_notes) / count($quiz_notes) : 0;
+
+                        // Calcul de la moyenne des assignments
+                        $assignment_notes = array_filter([$assignment_1, $assignment_2, $assignment_3], fn($value) => !is_null($value));
+                        $assignment_average = count($assignment_notes) > 0 ? array_sum($assignment_notes) / count($assignment_notes) : 0;
+
+                        // Récupération et assignation du coefficient
+                        $classSubject = ClassSubjectModel::getClassSubject($request->class_id, $mark['subject_id']);
+                        $coefficient = $classSubject ? $classSubject->coefficient : 1;
+
+                        // Enregistrer les moyennes, le coefficient et les totaux dans le modèle
+                        $marksRegister->quiz_average = round($quiz_average, 2);
+                        $marksRegister->assignment_average = round($assignment_average, 2);
+                        $marksRegister->coefficient = $coefficient;
+                        $marksRegister->total_marks = $total_marks_received;
                         $marksRegister->passing_marks = $passing_marks;
                         $marksRegister->full_marks = $full_marks;
+                        $marksRegister->created_by = Auth::user()->id;
 
                         $marksRegister->save();
 
-                        $responses[] = [
-                            'success' => true,
-                            'message' => "Notes ajoutées/modifiées avec succès pour la matière avec l'ID : {$mark['subject_id']}."
-                        ];
                     } else {
-                        $responses[] = [
+                        $allSuccessful = false;
+                        return response()->json([
                             'success' => false,
                             'message' => "Le total des notes pour la matière avec l'ID : {$mark['subject_id']} dépasse la note totale autorisée."
-                        ];
-                        $allSuccessful = false;
+                        ]);
                     }
                 }
+
+                if ($allSuccessful) {
+                    return response()->json([
+                        'success' => true,
+                        'message' => 'Toutes les notes ont été ajoutées/modifiées avec succès.'
+                    ]);
+                }
+
             } else {
                 return response()->json([
                     'success' => false,
                     'message' => 'Aucune donnée de notes envoyée.'
-                ]);
-            }
-
-            if ($allSuccessful) {
-                return response()->json([
-                    'success' => true,
-                    'message' => 'Toutes les notes ont été ajoutées/modifiées avec succès.'
-                ]);
-            } else {
-                $firstError = collect($responses)->firstWhere('success', false);
-                return response()->json([
-                    'success' => false,
-                    'message' => $firstError['message']
                 ]);
             }
 
@@ -392,32 +440,63 @@ class ExaminationController extends Controller
         }
     }
 
-    public function addSingleMarksRegister(Request $request): \Illuminate\Http\JsonResponse
+    public function addSingleMarksRegister(Request $request)
     {
         try {
-            $isUpdate = false;
+            $allSuccessful = true;
+
             if (!empty($request->marks)) {
                 foreach ($request->marks as $mark) {
                     $getExamSchedule = ScheduleModel::getSingle($mark['id']);
-                    $schedule_full_marks = $getExamSchedule->full_marks;
 
-                    $class_work = !empty($mark['class_work']) ? $mark['class_work'] : 0;
-                    $home_work = !empty($mark['home_work']) ? $mark['home_work'] : 0;
-                    $test_work = !empty($mark['test_work']) ? $mark['test_work'] : 0;
-                    $exam_work = !empty($mark['exam_work']) ? $mark['exam_work'] : 0;
+                    // Définir les notes par défaut à null si elles n'existent pas ou sont vides
+                    $class_work = $mark['class_work'] ?? null;
+                    $home_work = $mark['home_work'] ?? null;
+                    $test_work = $mark['test_work'] ?? null;
+                    $exam_work = $mark['exam_work'] ?? null;
+                    $quiz_1 = $mark['quiz_1'] ?? null;
+                    $quiz_2 = $mark['quiz_2'] ?? null;
+                    $quiz_3 = $mark['quiz_3'] ?? null;
+                    $quiz_4 = $mark['quiz_4'] ?? null;
+                    $quiz_5 = $mark['quiz_5'] ?? null;
+                    $assignment_1 = $mark['assignment_1'] ?? null;
+                    $assignment_2 = $mark['assignment_2'] ?? null;
+                    $assignment_3 = $mark['assignment_3'] ?? null;
+                    $passing_marks = $mark['passing_marks'] ?? null;
+                    $full_marks = $mark['full_marks'] ?? null;
 
-                    $total_marks = $class_work + $home_work + $test_work + $exam_work;
+                    // Création d'un tableau de toutes les notes individuelles
+                    $all_individual_marks = [
+                        $class_work,
+                        $home_work,
+                        $test_work,
+                        $exam_work,
+                        $quiz_1,
+                        $quiz_2,
+                        $quiz_3,
+                        $quiz_4,
+                        $quiz_5,
+                        $assignment_1,
+                        $assignment_2,
+                        $assignment_3
+                    ];
 
-                    if ($getExamSchedule && $schedule_full_marks >= $total_marks) {
-                        $getMarks = MarkRegisterModel::checkAlreadyMarks($request->student_id, $request->exam_id, $request->class_id, $mark['subject_id']);
-                        if (!empty($getMarks)) {
-                            $marksRegister = $getMarks;
-                            $isUpdate = true;
-                        } else {
-                            $marksRegister = new MarkRegisterModel;
-                            $marksRegister->created_by = Auth::user()->id;
-                        }
+                    // Calcul du total des notes en ignorant les valeurs null
+                    $total_marks_calculated = collect($all_individual_marks)->filter(fn($value) => !is_null($value))->sum();
+                    $total_marks_received = $mark['total_marks'] ?? $total_marks_calculated;
 
+                    if ($getExamSchedule && $getExamSchedule->full_marks >= $total_marks_received) {
+                        $getMarks = MarkRegisterModel::checkAlreadyMarks(
+                            $request->student_id,
+                            $request->exam_id,
+                            $request->class_id,
+                            $mark['subject_id']
+                        );
+
+                        $marksRegister = $getMarks ?? new MarkRegisterModel;
+                        $marksRegister->created_by = Auth::user()->id;
+
+                        // Assigner toutes les valeurs des notes individuelles
                         $marksRegister->student_id = $request->student_id;
                         $marksRegister->class_id = $request->class_id;
                         $marksRegister->exam_id = $request->exam_id;
@@ -426,26 +505,64 @@ class ExaminationController extends Controller
                         $marksRegister->home_work = $home_work;
                         $marksRegister->test_work = $test_work;
                         $marksRegister->exam_work = $exam_work;
-                        $marksRegister->passing_marks = $getExamSchedule->passing_marks;
-                        $marksRegister->full_marks = $getExamSchedule->full_marks;
+                        $marksRegister->quiz_1 = $quiz_1;
+                        $marksRegister->quiz_2 = $quiz_2;
+                        $marksRegister->quiz_3 = $quiz_3;
+                        $marksRegister->quiz_4 = $quiz_4;
+                        $marksRegister->quiz_5 = $quiz_5;
+                        $marksRegister->assignment_1 = $assignment_1;
+                        $marksRegister->assignment_2 = $assignment_2;
+                        $marksRegister->assignment_3 = $assignment_3;
+
+                        // Calcul de la moyenne des quiz
+                        $quiz_notes_collection = collect([$quiz_1, $quiz_2, $quiz_3, $quiz_4, $quiz_5]);
+                        $quiz_average = $quiz_notes_collection->filter(fn($value) => !is_null($value))->avg();
+                        $marksRegister->quiz_average = round($quiz_average, 2);
+
+                        // Calcul de la moyenne des assignments
+                        $assignment_notes_collection = collect([$assignment_1, $assignment_2, $assignment_3]);
+                        $assignment_average = $assignment_notes_collection->filter(fn($value) => !is_null($value))->avg();
+                        $marksRegister->assignment_average = round($assignment_average, 2);
+
+                        // Récupération et assignation du coefficient
+                        $classSubject = ClassSubjectModel::getClassSubject($request->class_id, $mark['subject_id']);
+                        $coefficient = $classSubject ? $classSubject->coefficient : 1;
+                        $marksRegister->coefficient = $coefficient;
+
+                        // Assigner les totaux et autres informations
+                        $marksRegister->total_marks = $total_marks_received;
+                        $marksRegister->passing_marks = $passing_marks;
+                        $marksRegister->full_marks = $full_marks;
 
                         $marksRegister->save();
 
-                        $message = $isUpdate ? 'Notes modifiées avec succès' : 'Notes ajoutées avec succès';
-                        return response()->json(['success' => true, 'message' => $message]);
                     } else {
-                        return response()->json(['error' => false, 'message' => 'Le total des notes de l\'apprenant est plus grande que la note totale']);
+                        $allSuccessful = false;
+                        return response()->json([
+                            'success' => false,
+                            'message' => "Le total des notes pour la matière avec l'ID : {$mark['subject_id']} dépasse la note totale autorisée."
+                        ]);
                     }
                 }
+
+                if ($allSuccessful) {
+                    return response()->json([
+                        'success' => true,
+                        'message' => 'Toutes les notes ont été ajoutées/modifiées avec succès.'
+                    ]);
+                }
             } else {
-                return response()->json(['error' => false, 'message' => '']);
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Aucune donnée de notes envoyée.'
+                ]);
             }
-            return response()->json(['success' => true, 'message' => 'Opération effectuée avec succès']);
-
         } catch (\Exception $e) {
-            Log::error("Erreur lors de la création de ce registre de notes. " . $e->getMessage());
-
-            return response()->json(['success' => false, 'message' => 'Vos informations ne sont pas correctes. Veuillez réessayer.']);
+            Log::error("Erreur lors de la création du registre de notes : " . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Une erreur s\'est produite. Veuillez réessayer.'
+            ]);
         }
     }
 
@@ -611,16 +728,16 @@ class ExaminationController extends Controller
 
     public function myExamResultStudent(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
     {
-        $result = array();
+        $result = [];
         $getExam = MarkRegisterModel::getExam(Auth::user()->id);
 
         foreach ($getExam as $examValue) {
-            $dataExam = array();
+            $dataExam = [];
             $dataExam['exam_name'] = $examValue->exam_name;
             $dataExam['exam_id'] = $examValue->exam_id;
 
             $getExamSubject = MarkRegisterModel::getExamSubject($examValue->exam_id, Auth::user()->id);
-            $dataSubject = array();
+            $dataSubject = [];
 
             // Initialiser les totaux pour cet examen
             $total_class_work = 0;
@@ -634,7 +751,7 @@ class ExaminationController extends Controller
             foreach ($getExamSubject as $examSubject) {
                 $total_score_subject = $examSubject['class_work'] + $examSubject['test_work'] + $examSubject['home_work'] + $examSubject['exam_work'];
 
-                $dataSub = array();
+                $dataSub = [];
                 $dataSub['subject_name'] = $examSubject['subject_name'];
                 $dataSub['class_work'] = $examSubject['class_work'];
                 $dataSub['test_work'] = $examSubject['test_work'];

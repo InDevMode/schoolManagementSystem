@@ -101,6 +101,18 @@
 
                                     <div class="mb-4.5">
                                           <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                                Coefficient <span class="text-red-500">*</span>
+                                          </label>
+                                          <div class="relative">
+                                                <input type="number" id="coefficient" name="coefficient"
+                                                      value="{{ old('coefficient', $getClassSubject->coefficient) }}" required
+                                                      class="form-input w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-emerald-500 dark:focus:border-emerald-500 transition-all duration-200"
+                                                      placeholder="Entrez le coefficient">
+                                          </div>
+                                    </div>
+
+                                    <div class="mb-4.5">
+                                          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                                 Statut <span class="text-red-500">*</span>
                                           </label>
                                           <div class="relative">

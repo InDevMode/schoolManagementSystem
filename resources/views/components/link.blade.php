@@ -1,16 +1,23 @@
 @props([
     'href' => '#',
     'icon' => null,
-    'iconColor' => 'text-gray-500',
-    'textColor' => 'text-gray-700 dark:text-gray-200',
-    'hoverColor' => 'hover:text-indigo-600 dark:hover:text-indigo-400',
+    'hover' => 'hover:text-indigo-500 dark:hover:text-white',
 ])
 
 <a href="{{ $href }}"
-      {{ $attributes->merge(['class' => "flex items-center gap-2 px-4 py-2 text-sm transition duration-300 $textColor $hoverColor"]) }}>
-
+      {{ $attributes->merge([
+          'class' =>
+              'inline-flex items-center gap-2 text-sm font-medium transition-colors text-gray-700 dark:text-gray-400 ' .
+              $hover,
+      ]) }}>
       @if ($icon)
-            <i class="{{ $icon }} {{ $iconColor }}"></i>
+            @if (Str::startsWith($icon, ['fa', 'fas', 'far', 'fal', 'fad']))
+                  {{-- Use <i> for Font Awesome icons. Added fas, far, fal, fad for consistency --}}
+                  <i class="{{ $icon }} mr-2"></i>
+            @else
+                  {{-- Use <iconify-icon> for MDI and other icon sets --}}
+                  <iconify-icon icon="{{ $icon }}" class="mr-2" width="16" height="16"></iconify-icon>
+            @endif
       @endif
 
       <span>{{ $slot }}</span>

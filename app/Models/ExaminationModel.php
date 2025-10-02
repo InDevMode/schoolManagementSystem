@@ -15,7 +15,10 @@ class ExaminationModel extends Model
 
     protected $fillable = [
         'name',
-        'note',
+        'period_id',
+        'start_date',
+        'end_date',
+        'status',
         'created_by',
     ];
 
@@ -26,28 +29,30 @@ class ExaminationModel extends Model
 
     public static function getExaminations(int $perPage)
     {
-        $results = ExaminationModel::select('exams.*', 'users.name as created_name')
-            ->join('users', 'users.id', '=', 'exams.created_by');
+        $results = ExaminationModel::select('exams.*', 'users.name as created_by_name', 'periods.name as periods_name')
+            ->leftJoin('users', 'users.id', '=', 'exams.created_by')
+            ->leftJoin('periods', 'periods.id', '=', 'exams.period_id');
 
         $filters = [
-            'exams.name' => strtolower(Request::get('exam_name')),
-            'exams.note' => strtolower(Request::get('exam_note')),
-            'users.name' => strtolower(Request::get('created_name')),
-            'exams.created_at' => strtolower(Request::get('created_at')),
-            'exams.updated_at' => strtolower(Request::get('updated_at')),
+            'exams.name' => Request::get('exam_name'),
+            'users.name' => Request::get('created_name'),
+            'exams.created_at' => Request::get('created_at'),
+            'exams.updated_at' => Request::get('updated_at'),
         ];
 
         foreach ($filters as $column => $value) {
             if (!empty($value)) {
-                $results->where($column, 'like', '%' . $value . '%');
+                $results->where($column, 'like', '%' . strtolower($value) . '%');
             }
         }
 
-        return $results->where('exams.is_delete', 0)
+        return $results
+            ->where('exams.is_delete', '=', 0)
             ->orderBy('exams.id', 'desc')
             ->groupBy('exams.id')
             ->paginate($perPage);
     }
+
 
     public static function getSingle(int $id): ?ExaminationModel
     {
@@ -99,9 +104,9 @@ class ExaminationModel extends Model
         return ExaminationModel::join('marks_register', 'exams.id', '=', 'marks_register.exam_id')
             ->join('class_teacher', 'marks_register.class_id', '=', 'class_teacher.class_id')
             ->where('class_teacher.teacher_id', Auth::user()->id)
-            ->where('class_teacher.is_delete', 0)
-            ->where('marks_register.is_delete', 0)
-            ->where('exams.is_delete', 0)
+            ->where('class_teacher.is_delete', '=', 0)
+            ->where('marks_register.is_delete', '=', 0)
+            ->where('exams.is_delete', '=', 0)
             ->whereDate('exams.created_at', today())
             ->distinct('exams.id')
             ->count('exams.id');

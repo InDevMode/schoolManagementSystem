@@ -115,8 +115,7 @@
 
 
             @if (!empty(Request::get('class_id') && !empty(Request::get('subject_id'))))
-                  <form action="{{ url('admin/class_timetable/add') }}" method="post"
-                        class="">
+                  <form action="{{ url('admin/class_timetable/add') }}" method="post" class="">
                         {{ csrf_field() }}
                         <input type="hidden" name="subject_id" value="{{ Request::get('subject_id') }}">
                         <input type="hidden" name="class_id" value="{{ Request::get('class_id') }}">
@@ -150,14 +149,16 @@
                                                 $i = 1;
                                           @endphp
                                           @foreach ($week as $index => $weekData)
-                                                <tr class="hover:bg-violet-100 dark:hover:bg-gray-700 transition-colors w-full">
+                                                <tr
+                                                      class="hover:bg-violet-100 dark:hover:bg-gray-700 transition-colors w-full">
                                                       <td
                                                             class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400 w-[25%]">
-                                                            <input type="text"
-                                                                  id="timetable[{{ $index }}][week_id]"
-                                                                    name="timetable[{{ $index }}][week_id]" disabled
-                                                                  value="{{ old('timetable.' . $index . '.week_name', $weekData['week_name']) }}"
-                                                                  class="w-full rounded-lg border-[1.5px] border-stroke bg-gray-100 px-5 py-2.5 font-normal text-black outline-none transition focus:border-violet-600 active:border-violet-600 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-violet-600">
+                                                            {{--  Affiche le nom du jour  --}}
+                                                            <p class="font-semibold">{{ $weekData['week_name'] }}</p>
+                                                            {{--  Champ caché pour l'ID  --}}
+                                                            <input type="hidden"
+                                                                  name="timetable[{{ $index }}][week_id]"
+                                                                  value="{{ $weekData['week_id'] }}">
                                                       </td>
                                                       <td
                                                             class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400 w-[25%]">
@@ -167,8 +168,8 @@
                                                                   value="{{ old('timetable.' . $index . '.start_time', $weekData['start_time']) }}"
                                                                   class="w- rounded-lg border-[1.5px] border-stroke bg-gray-100 px-5 py-2.5 font-normal text-black outline-none transition focus:border-violet-600 active:border-violet-600 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-violet-600">
                                                       </td>
-                                                      <td
-                                                            class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400" w-[25%]>
+                                                      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400"
+                                                            w-[25%]>
                                                             <input type="time"
                                                                   id="timetable[{{ $index }}][end_time]"
                                                                   name="timetable[{{ $index }}][end_time]"

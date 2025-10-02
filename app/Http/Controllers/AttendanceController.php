@@ -116,7 +116,7 @@ class AttendanceController extends Controller
     {
         $data['header_title'] = 'Rapport de présences';
         $getClass = ClassTeacherModel::getMyClassSubjectGroup(Auth::user()->id);
-        $classArray = array();
+        $classArray = [];
         foreach ($getClass as $class) {
             $classArray[] = $class->class_id;
         }

@@ -18,8 +18,7 @@ class StudentController extends Controller
     public function list(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
     {
         $data['header_title'] = "Liste des apprenants";
-        $data['getStudent'] = User::getAllStudent(5);
-        // dd($data['getStudent']);
+        $data['getStudent'] = User::getAllStudent(50);
         return view('admin.student.list', $data);
     }
 

@@ -157,10 +157,6 @@
                             </th>
                             <th scope="col"
                                 class="px-6 py-3 text-left text-xs font-medium text-white dark:text-gray-300 uppercase tracking-wider">
-                                Coefficient
-                            </th>
-                            <th scope="col"
-                                class="px-6 py-3 text-left text-xs font-medium text-white dark:text-gray-300 uppercase tracking-wider">
                                 Statut
                             </th>
                             <th scope="col"
@@ -199,13 +195,10 @@
                                         {{ $subject->status == 1 ? 'Actif' : 'Inactif' }}
                                     </span>
                                 </td>
-                                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                                   {{ $subject -> coefficient }}
-                                </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <span
                                         class="px-2 py-1 border w-24 inline-flex justify-center text-xs leading-5 font-semibold rounded-full {{ $subject->type == 'practical' ? 'bg-violet-100 border-violet-800 text-violet-800 dark:bg-violet-900 dark:text-violet-200' : 'bg-pink-100 border-pink-800 text-red-800 dark:bg-pink-900 dark:text-pink-200' }}">
-                                        {{ $subject->type == 'theoretical' ? 'Pratique' : 'Théorique' }}
+                                        {{ $subject->type == 'practical' ? 'Pratique' : 'Théorique' }}
                                     </span>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">

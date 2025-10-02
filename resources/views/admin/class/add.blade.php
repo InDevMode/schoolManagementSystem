@@ -68,7 +68,7 @@
                                 Montant <span class="text-red-500">*</span>
                             </label>
                             <div class="relative">
-                                <input type="text" id="amount" name="amount" value="{{ old('amount') }}" required
+                                <input type="number" id="amount" name="amount" value="{{ old('amount') }}" required
                                     class="form-input w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-violet-500 focus:border-violet-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500 transition-all duration-200"
                                     placeholder="Entrez le montant de la classe">
                             </div>

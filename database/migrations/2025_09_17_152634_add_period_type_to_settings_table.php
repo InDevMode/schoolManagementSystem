@@ -11,9 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('marks_register', function (Blueprint $table) {
-            $table->integer('passing_marks')->nullable();
-            $table->integer('full_marks')->nullable();
+        Schema::table('settings', function (Blueprint $table) {
+            $table->string('period_type')->nullable()->after('school_type');
         });
     }
 
@@ -22,8 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('marks_register', function (Blueprint $table) {
-            $table->dropColumn(['passing_marks', 'full_marks']);
+        Schema::table('settings', function (Blueprint $table) {
+            $table->dropColumn('period_type');
         });
     }
 };

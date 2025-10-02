@@ -128,6 +128,12 @@
                                               'label' => 'Evaluations',
                                               'items' => [
                                                   [
+                                                      'url' => 'admin/examinations/period/list',
+                                                      'label' => 'Périodes',
+                                                      'segment' => 3,
+                                                      'match' => 'period',
+                                                  ],
+                                                  [
                                                       'url' => 'admin/examinations/exam/list',
                                                       'label' => 'Examens',
                                                       'segment' => 3,
@@ -158,10 +164,10 @@
                                               'label' => 'Présence',
                                               'items' => [
                                                   [
-                                                      'url' => 'admin/attendance/student/list',
+                                                      'url' => 'admin/attendance/students/list',
                                                       'label' => 'Apprenants',
                                                       'segment' => 3,
-                                                      'match' => 'student',
+                                                      'match' => 'students',
                                                   ],
                                                   [
                                                       'url' => 'admin/attendance/report',

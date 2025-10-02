@@ -105,7 +105,7 @@
                                                                                                 x-for="(option,index) in selected"
                                                                                                 :key="index">
                                                                                                 <div
-                                                                                                      class="my-1.5 flex items-center justify-center rounded-lg dark:text-white border-[.5px] border-stroke bg-gray px-2.5 py-1.5 text-sm font-medium dark:border-strokedark dark:bg-white/30">
+                                                                                                      class="my-1.5 flex items-center justify-center rounded-lg dark:text-white border-[.5px] border-stroke bg-gray-200 px-2.5 py-1.5 text-sm font-medium dark:border-strokedark dark:bg-white/30">
                                                                                                       <div class="max-w-full flex-initial"
                                                                                                             x-model="options[option]"
                                                                                                             x-text="options[option].text">
@@ -144,7 +144,7 @@
                                                                         </div>
                                                                         <div class="w-full px-4">
                                                                               <div x-show.transition.origin.top="isOpen()"
-                                                                                    class="max-h-select absolute top-full left-0 z-40 w-full overflow-y-auto rounded bg-white shadow dark:bg-form-input"
+                                                                                    class="max-h-[230px] absolute top-full left-0 z-40 w-full overflow-y-auto no-scrollbar rounded bg-white shadow dark:bg-form-input"
                                                                                     @click.outside="close">
                                                                                     <div class="flex w-full flex-col">
                                                                                           <template
@@ -177,6 +177,7 @@
                                                       </div>
                                                 </div>
                                           </div>
+
                                           <div class="mb-6">
                                                 <label
                                                       class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">

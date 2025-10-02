@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\ClassModel;
 use App\Models\ClassTeacherModel;
-use App\Models\ClassTimetableModel;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;

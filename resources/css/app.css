@@ -201,17 +201,6 @@ span.flatpickr-weekday,
     @apply border-primary bg-primary dark:border-primary;
 }
 
-.custom-input-date::-webkit-calendar-picker-indicator {
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: 20px;
-}
-.custom-input-date-1::-webkit-calendar-picker-indicator {
-    background-image: url(../../public/images/icon/icon-calendar.svg);
-}
-.custom-input-date-2::-webkit-calendar-picker-indicator {
-    background-image: url(../../public/images/icon/icon-arrow-down.svg);
-}
 
 [x-cloak] {
     display: none !important;
@@ -362,5 +351,76 @@ span.flatpickr-weekday,
     transition: background-color 0.3s ease;
 }
 
+/* Appliquer le style uniquement en mode dark */
+body.dark .note-editor.note-frame .note-editing-area .note-editable {
+   background-color: #1f2937;
+   color: #ffffff;
+}
+
+/* Cache l'icône de calendrier par défaut de l'input de type 'date' */
+input[type="date"]::-webkit-calendar-picker-indicator {
+    opacity: 0;
+    width: 0;
+    pointer-events: none;
+}
+
+
+.custom-alert {
+    transform: translateX(100%);
+    opacity: 0;
+    animation: slideIn 0.3s ease-out forwards;
+}
+
+@keyframes slideIn {
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Style pour le spinner */
+.fa-spinner {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Désactiver les boutons pendant l'envoi */
+button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.custom-alert {
+    transform: translateX(100%);
+    opacity: 0;
+    animation: slideIn 0.3s ease-out forwards;
+}
+
+@keyframes slideIn {
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Style pour le spinner */
+.fa-spinner {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Désactiver les boutons pendant l'envoi */
+button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
 
 

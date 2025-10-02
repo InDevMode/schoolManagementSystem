@@ -183,7 +183,7 @@
                                     <div class="flex items-center">
                                         <div class="">
                                             <span
-                                                class="text-sm font-medium text-gray-900 dark:text-white">{{ $class->amount ? $class->amount : '0' }} FCFA</span>
+                                                class="text-sm font-medium text-gray-900 dark:text-white">   {{ number_format( $class->amount, 0, ',', ' ') }} FCFA</span>
                                         </div>
                                     </div>
                                 </td>

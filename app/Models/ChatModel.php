@@ -87,7 +87,7 @@ class ChatModel extends Model
             ->orderBy('chats.id', 'desc')
             ->get();
 
-        $result = array();
+        $result = [];
         foreach ($getChatUser as $value) {
             $data['id'] = $value->id;
             $data['message'] = $value->message;

@@ -17,7 +17,7 @@
 
       <!-- Bouton -->
       <button type="button"
-            class="group flex items-center justify-center gap-x-1.5 rounded-lg shadow-lg bg-white dark:bg-gray-700 border dark:border-gray-600 px-3 py-2 text-sm font-semibold text-gray-700 hover:text-violet-600 dark:text-gray-200 hover:bg-gray-100"
+            class="group flex items-center justify-center gap-x-1.5 rounded-lg shadow-lg bg-white dark:bg-gray-700 border dark:border-gray-600 px-3 py-2 text-sm font-semibold text-gray-700 hover:text-indigo-500 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800"
             @click.stop="
             if (openDropdown === id) {
                 openDropdown = null
@@ -27,7 +27,7 @@
             }
         ">
             Actions
-            <span class="-mr-1 text-gray-400 group-hover:text-violet-600">
+            <span class="-mr-1 text-gray-400 group-hover:text-indigo-500 dark:group-hover:text-gray-400 dark:group-hover:bg-gray-800">
                   <i class="fas fa-chevron-down"></i>
             </span>
       </button>
@@ -37,9 +37,9 @@
 
       <div x-show="open" @click.outside="open = false" x-transition
             :class="dropUp ? 'bottom-full mb-2 origin-bottom-right' : 'mt-2 origin-top-right'"
-            class="absolute right-0 z-50 w-56 rounded-md bg-white dark:bg-gray-800 ring-1 shadow-lg ring-black/5"
+            class="absolute right-0 z-50 w-56 rounded-md bg-white dark:bg-gray-700 ring-1 shadow-lg ring-black/5"
             x-cloak>
-            <div class="py-1">
+            <div class="flex flex-col py-1 px-3">
                   {{ $slot }}
             </div>
       </div>

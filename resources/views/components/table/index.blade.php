@@ -29,14 +29,15 @@ class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dar
             class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 px-6 py-4 border-b dark:border-gray-700">
             <!-- Filtre -->
             <div class="flex items-center gap-2 w-full sm:w-auto">
-                  <input type="text" x-model="search" placeholder="Filtrer les colonnes"
-                        class="w-full sm:w-64 px-3 py-2 border rounded-md dark:bg-gray-700 dark:text-gray-200 dark:border-gray-500 outline-none focus:ring-violet-600 focus:border-violet-600" />
+                  <input type="text" x-model="search" placeholder="Rechercher une période"
+                        class="w-full sm:w-96 px-3 py-2 border rounded-md dark:bg-gray-700 dark:text-gray-200 dark:border-gray-500 outline-none focus:ring-indigo-500 focus:border-indigo-500" />
             </div>
 
             <!-- Toggle colonnes -->
             <div class="relative" x-data="{ open: false }">
                   <button @click="open = !open" class="px-3 py-2 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 border border-gray-200 dark:border-gray-500 rounded-md text-sm font-medium">
-                        Colonnes
+                    <i class="fas fa-filter text-indigo-500 me-2"></i>
+                        Filtrer les colonnes
                   </button>
                   <div x-show="open" @click.outside="open = false"
                         class="absolute right-0 mt-2 bg-white w-72 dark:bg-gray-800 border dark:border-gray-700 rounded-lg shadow-lg p-2 z-50">

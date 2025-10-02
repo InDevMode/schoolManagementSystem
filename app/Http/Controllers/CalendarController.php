@@ -25,17 +25,17 @@ class CalendarController extends Controller
 
     public function getTimetable($class_id): array
     {
-        $result = array();
+        $result = [];
         $getCalendar = ClassSubjectModel::getSubject($class_id);
 
         foreach ($getCalendar as $calendar) {
-            $dataCalendar = array();
+            $dataCalendar = [];
             $dataCalendar['name'] = $calendar->subject_name;
 
             $getWeek = WeekModel::getAllWeek();
-            $week = array();
+            $week = [];
             foreach ($getWeek as $weekValue) {
-                $dataWeek = array();
+                $dataWeek = [];
                 $dataWeek['week_name'] = $weekValue->name;
                 $dataWeek['day'] = $weekValue->day;
 
@@ -60,14 +60,14 @@ class CalendarController extends Controller
     public function getExamTimetable($class_id): array
     {
         $getExamSchedule = ScheduleModel::getExam($class_id);
-        $result = array();
+        $result = [];
         foreach ($getExamSchedule as $examSchedule) {
-            $dataExam = array();
+            $dataExam = [];
             $dataExam['name'] = $examSchedule->exam_name;
             $getExamTimetable = ScheduleModel::getExamTimetable($examSchedule->exam_id, $class_id);
-            $results = array();
+            $results = [];
             foreach ($getExamTimetable as $examTimetable) {
-                $dataSchedule = array();
+                $dataSchedule = [];
                 $dataSchedule['subject_name'] = $examTimetable->subject_name;
                 $dataSchedule['exam_date'] = $examTimetable->exam_date;
                 $dataSchedule['start_time'] = $examTimetable->start_time;

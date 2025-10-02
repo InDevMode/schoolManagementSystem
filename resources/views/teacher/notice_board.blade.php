@@ -18,7 +18,7 @@
                 </ol>
             </nav>
         </div>
-        @include('message')
+
         <div class="my-4">
             {{ $getTeacherNoticeboard->links('vendor.pagination.tailwind') }}
         </div>
@@ -129,7 +129,7 @@
                         @endphp
 
                         <div
-                            class="notification-card flex flex-col h-full group hover:shadow-lg transition-all duration-300 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 rounded-lg overflow-hidden">
+                            class="notification-card flex flex-col group hover:shadow-lg transition-all duration-300 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 rounded-lg h-[400px]">
                             <!-- Header -->
                             <div class="pb-4">
                                 <div class="flex items-start justify-between">
@@ -153,7 +153,7 @@
                             </div>
 
                             <!-- Content -->
-                            <div class="px-6 space-y-4 flex-grow">
+                            <div class="px-6 space-y-4 flex-grow overflow-y-auto no-scrollbar">
                                 <div>
                                     <div class="flex items-center gap-2 mb-2">
                                         <span class="text-sm font-medium text-gray-700 dark:text-white">Message</span>

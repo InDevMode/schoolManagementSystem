@@ -297,7 +297,7 @@
             </div>
             <!-- Results Section -->
             <div
-                  class="bg-white rounded-lg dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+                  class="bg-white overflow-x-auto rounded-lg dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
                   <!-- Table -->
                   <div class="relative overflow rounded-lg z-10">
                         <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
@@ -513,7 +513,7 @@
                                     @endforeach
                                     @if ($getStudent->isEmpty())
                                           <tr class="text-center text-gray-700 dark:text-bodydark1">
-                                                <td colspan="10" class="py-3"> Aucun apprenant trouvé.</td>
+                                                <td colspan="100%" class="py-3"> Aucun apprenant trouvé.</td>
                                           </tr>
                                     @endif
                               </tbody>

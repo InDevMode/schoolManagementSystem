@@ -16,11 +16,11 @@ class SubjectModel extends Model
     protected $fillable = [
         'name',
         'type',
+        'created_by',
         'status',
     ];
 
     protected $hidden = [
-        'created_by',
         'is_delete',
     ];
 
@@ -62,20 +62,23 @@ class SubjectModel extends Model
     {
         return SubjectModel::select('subject.*')
             ->join('users', 'users.id', '=', 'subject.created_by')
-            ->where('subject.is_delete', 0)
+            ->where('subject.is_delete', '=', 0)
             ->orderBy('subject.id', 'desc')
             ->get();
     }
 
     public static function getNameSingle(string $name): ?SubjectModel
     {
-        return SubjectModel::where('name', $name)->first();
+        return SubjectModel::where('name', '=', $name)
+            ->where('is_delete', '=', 0)
+            ->first();
     }
 
     public static function checkNameSingle(string $name, int $id): ?SubjectModel
     {
-        return SubjectModel::where('name', $name)
+        return SubjectModel::where('name', '=',$name)
             ->where('id', '!=', $id)
+            ->where('is_delete', '=',0)
             ->first();
     }
 

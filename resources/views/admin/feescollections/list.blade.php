@@ -221,7 +221,7 @@
                                     @foreach ($getFeesCollections as $index => $feescollections)
                                           @php
                                                 $totalAmount = $feescollections->class_amount;
-                                                $totalPaid = new \App\Models\FeesCollectionModel()->getPaidAmount(
+                                                $totalPaid =  \App\Models\FeesCollectionModel::getPaidAmount(
                                                     $feescollections->id,
                                                     $feescollections->class_id,
                                                 );

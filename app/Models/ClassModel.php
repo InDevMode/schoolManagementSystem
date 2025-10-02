@@ -65,7 +65,7 @@ class ClassModel extends Model
             ->paginate($perPage);
     }
 
-    static public function getClass()
+    public static function getClass()
     {
         return ClassModel::select('class.*')
             ->join('users', 'users.id', '=', 'class.created_by')
