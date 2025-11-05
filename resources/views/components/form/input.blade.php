@@ -1,45 +1,59 @@
 @props([
-    'id',
-    'type' => 'text',
-    'label' => null,
-    'placeholder' => '',
+    'name',
+    'label',
+    'id' => null, // L'id est maintenant optionnel
     'value' => '',
-    'icon' => null,
+    'type' => 'text',
+    'leftIcon' => null,
     'required' => false,
 ])
 
-<div class="mb-6 w-full">
-      @if ($label)
-            <label for="{{ $id }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  {{ $label }} @if ($required)
-                        <span class="text-red-500">*</span>
-                  @endif
-            </label>
-      @endif
+@php
+      // Si l'id n'est pas fourni, il prend automatiquement la valeur de 'name'.
+      // Cela simplifie l'appel du composant !
+$name = $id;
+$isPassword = $type === 'password';
+$inputClasses = Arr::toCssClasses([
+    'w-full h-11 rounded-lg border bg-transparent py-4 font-satoshi text-black outline-none transition', // Ajout de la police
+    'focus:border-primary dark:focus:border-primary',
+    'border-stroke dark:border-form-strokedark',
+    'border-danger' => $errors->has($name),
+    'pl-12' => $leftIcon,
+    'pr-12' => $isPassword,
+    'px-6' => !$leftIcon && !$isPassword,
+      ]);
+@endphp
+
+<div x-data="{ show: {{ $isPassword ? 'false' : 'true' }} }">
+      {{-- On utilise $id pour le 'for' du label --}}
+      <label for="{{ $id }}" class="mb-2.5 block font-satoshi font-medium text-black dark:text-white">
+            {{ $label }} {!! $required ? '<span class="text-danger">*</span>' : '' !!}
+      </label>
 
       <div class="relative">
-            @if ($icon)
-                  <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        @if (Str::startsWith($icon, ['fa', 'fas', 'far', 'fal', 'fad']))
-                              {{-- Use <i> for Font Awesome icons --}}
-                              <i class="{{ $icon }} text-gray-400 dark:text-gray-500"></i>
-                        @else
-                              {{-- Use <iconify-icon> for all other icon sets --}}
-                              <iconify-icon icon="{{ $icon }}" width="20" height="20"
-                                    class="text-gray-400 dark:text-gray-500"></iconify-icon>
-                        @endif
+            @if ($leftIcon)
+                  <span class="absolute left-4 top-0 flex h-full items-center">
+                        <iconify-icon icon="{{ $leftIcon }}" class="text-bodydark" width="20" height="20"></iconify-icon>
                   </span>
             @endif
 
-            <input type="{{ $type }}" id="{{ $id }}" name="{{ $id }}"
-                  value="{{ old($id, $value) }}" placeholder="{{ $placeholder }}"
-                  @if ($required) required @endif
-                  {{ $attributes->merge([
-                      'class' =>
-                          'h-11 w-full rounded-lg border border-gray-300 bg-gray-50
-                                         px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400
-                                         dark:border-gray-700 dark:bg-gray-800 dark:text-white/90 dark:placeholder:text-white/50
-                                         dark:focus:border-indigo-800 transition-all duration-300 ' . ($icon ? 'pl-10' : ''),
-                  ]) }}>
+            <input id="{{ $id }}" {{-- L'id est défini ici --}} name="{{ $name }}" {{-- Le name est indispensable et est bien séparé --}}
+                  @if ($isPassword) x-bind:type="show ? 'text' : 'password'"
+            @else
+                type="{{ $type }}" @endif
+                  {{-- On utilise bien $name pour old(), ce qui est correct --}} value="{{ old($name, $value) }}"
+                  {{ $attributes->merge(['class' => $inputClasses]) }} />
+
+            @if ($isPassword)
+                  <span class="absolute right-4 top-0 flex h-full items-center cursor-pointer" @click="show = !show">
+                        <iconify-icon x-show="!show" icon="mdi:eye-off-outline" class="text-bodydark" width="20" height="20"></iconify-icon>
+                        <iconify-icon x-show="show" icon="mdi:eye-outline" class="text-bodydark" width="20" height="20"></iconify-icon>
+                  </span>
+            @endif
       </div>
+
+      {{-- La validation d'erreur se base aussi sur le 'name' --}}
+      @error($name)
+            <span class="text-sm text-danger">{{ $message }}</span>
+      @enderror
 </div>

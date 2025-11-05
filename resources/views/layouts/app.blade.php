@@ -7,6 +7,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       @vite(['resources/css/app.css', 'resources/js/app.js'])
       <title>{{ !empty($header_title) ? $header_title : '' }} - SMS</title>
+       <title>{{ !empty($header_title) ? $header_title . ' | ' . config('app.name') : config('app.name') }}</title>
 
       @php
             $getSetting = \App\Models\SettingModel::getSingle(1);

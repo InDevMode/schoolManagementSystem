@@ -52,9 +52,7 @@
                                     <x-form.select id="settings_id" label="Nom de l'école" icon="fas fa-check-circle"
                                           :options="$options" :selected="old('settings_id', $getPeriod->settings_id)" />
 
-                                    <x-form.button type="submit" icon="mdi:pencil-outline" color="green">
-                                          Modifier la période
-                                    </x-form.button>
+                                    <x-form.button type="submit" icon="mdi:pencil-outline" color="green" label="Modifier la période"></x-form.button>
                               </form>
                         </div>
                   </div>

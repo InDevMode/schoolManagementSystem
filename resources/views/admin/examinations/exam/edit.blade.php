@@ -59,9 +59,7 @@
                                           selected="{{ old('status', $getExams->status) }}" />
 
                                     {{-- Bouton --}}
-                                    <x-form.button icon="mdi:content-save-check-outline" color="emerald">
-                                          Modifier cette évaluation
-                                    </x-form.button>
+                                    <x-form.button icon="mdi:content-save-check-outline" color="emerald" label="Modifier cette évaluation"></x-form.button>
 
                               </form>
                         </div>

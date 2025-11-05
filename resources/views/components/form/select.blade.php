@@ -1,46 +1,58 @@
-@props(['id', 'label' => null, 'options' => [], 'selected' => null, 'icon' => null, 'required' => false])
+@props([
+    'name',
+    'label',
+    'options', // Tableau des options (ex: ['1' => 'Actif', '0' => 'Inactif'])
+    'id' => null,
+    'value' => '', // La valeur sélectionnée (pour les formulaires de modification)
+    'leftIcon' => null,
+    'required' => false,
+    'placeholder' => 'Sélectionnez une option', // Texte pour l'option vide
+])
 
-<div class="mb-6 w-full">
-      @if ($label)
-            <label for="{{ $id }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  {{ $label }} @if ($required)
-                        <span class="text-red-500">*</span>
-                  @endif
-            </label>
-      @endif
+@php
+      $name = $id;
+      $selectClasses = Arr::toCssClasses([
+          'relative z-20 h-11 w-full appearance-none rounded-lg border bg-transparent py-4 font-satoshi text-black outline-none transition',
+          'focus:border-primary dark:focus:border-primary',
+          'border-stroke dark:border-form-strokedark',
+          'border-danger' => $errors->has($name),
+          'pl-12 pr-6' => $leftIcon,
+          'px-6' => !$leftIcon,
+      ]);
+@endphp
+
+<div>
+      <label for="{{ $id }}" class="mb-2.5 block font-satoshi font-medium text-black dark:text-white">
+            {{ $label }} {!! $required ? '<span class="text-danger">*</span>' : '' !!}
+      </label>
+
       <div class="relative">
-            @if ($icon)
-                  <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        @if (Str::startsWith($icon, ['fa', 'fas', 'far', 'fal', 'fad']))
-                              {{-- Use <i> for Font Awesome icons --}}
-                              <i class="{{ $icon }} text-gray-400 dark:text-gray-500"></i>
-                        @else
-                              {{-- Use <iconify-icon> for all other icon sets --}}
-                              <iconify-icon icon="{{ $icon }}" width="20" height="20"
-                                    class="text-gray-400 dark:text-gray-500"></iconify-icon>
-                        @endif
+            @if ($leftIcon)
+                  <span class="absolute left-4 top-0 flex h-full items-center z-10">
+                        <iconify-icon icon="{{ $leftIcon }}" class="text-bodydark" width="20" height="20"></iconify-icon>
                   </span>
             @endif
-            <select id="{{ $id }}" name="{{ $id }}"
-                  @if ($required) required @endif
-                  {{ $attributes->merge([
-                      'class' =>
-                          'h-11 w-full appearance-none rounded-lg border border-gray-300 bg-gray-50
-                                      px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400
-                                      focus:border-indigo-300 focus:ring-3 focus:ring-indigo-500/10
-                                      dark:border-gray-700 dark:bg-gray-800 dark:text-white/90 dark:placeholder:text-white/30
-                                      dark:focus:border-indigo-800 transition-all duration-300 ' . ($icon ? 'pl-10' : ''),
-                  ]) }}>
-                  <option value="" disabled selected>Veuillez choisir une option</option>
-                  @foreach ($options as $value => $text)
-                        <option value="{{ $value }}" {{ old($id, $selected) == $value ? 'selected' : '' }}>
-                              {{ $text }}
+
+            <select id="{{ $id }}" name="{{ $name }}"
+                  {{ $attributes->merge(['class' => $selectClasses]) }}>
+                  {{-- Option vide par défaut --}}
+                  <option value="" disabled selected>{{ $placeholder }}</option>
+
+                  {{-- Boucle sur les options fournies --}}
+                  @foreach ($options as $optionValue => $optionLabel)
+                        <option value="{{ $optionValue }}" {{ old($name, $value) == $optionValue ? 'selected' : '' }}>
+                              {{ $optionLabel }}
                         </option>
                   @endforeach
             </select>
-            <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                  <iconify-icon icon="mdi:chevron-down" class="text-gray-700 dark:text-gray-500" width="20"
-                        height="20"></iconify-icon>
-            </div>
+
+            {{-- Flèche du select --}}
+            <span class="absolute left-4 top-0 z-10 flex h-full items-center">
+                  <iconify-icon icon="mdi:chevron-down" class="text-bodydark text-xl"></iconify-icon>
+            </span>
       </div>
+
+      @error($name)
+            <span class="text-sm text-danger">{{ $message }}</span>
+      @enderror
 </div>

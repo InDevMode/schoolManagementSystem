@@ -10,7 +10,7 @@
     <div @click.stop>
         <x-modal.confirm title="{{ $deleteLabel }}" confirmUrl="{{ $deleteUrl }}">
             <x-slot:trigger>
-                <x-link icon="fa-solid fa-trash text-red-500 py-2"
+                <x-link label="{{ $deleteLabel }}" icon="fa-solid fa-trash text-red-500 py-2"
                     hover="hover:text-red-500 dark:hover:text-red-500">
                     {{ $deleteLabel }}
                 </x-link>

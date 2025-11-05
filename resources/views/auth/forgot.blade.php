@@ -76,14 +76,13 @@ $watch('darkMode', value => localStorage.setItem('darkMode', JSON.stringify(valu
 
                                                       <!-- Checkbox -->
                                                       <div class="flex items-center justify-end text-gray-300">
-                                                            <x-link href="{{ url('') }}">
-                                                                  Non, je me connecte.
+                                                            <x-link label="Non, je me connecte." href="{{ url('') }}">
                                                             </x-link>
                                                       </div>
                                                       <!-- Button -->
                                                       <x-form.button text="text-white"
-                                                            icon="mdi:check-circle">Réinitialiser le mot de
-                                                            passe</x-form.button>
+                                                            icon="mdi:check-circle" label="Réinitialiser le mot de
+                                                            passe"></x-form.button>
                                                 </div>
                                           </form>
 

@@ -56,9 +56,7 @@
                                     <x-form.select id="settings_id" label="Nom de l'école" icon="fas fa-check-circle"
                                           :options="$options" selected="" />
 
-                                    <x-form.button icon="mdi:content-save-check-outline">
-                                          Créer une nouvelle période
-                                    </x-form.button>
+                                    <x-form.button icon="mdi:content-save-check-outline" label="Créer une nouvelle période"></x-form.button>
 
                               </form>
                         </div>

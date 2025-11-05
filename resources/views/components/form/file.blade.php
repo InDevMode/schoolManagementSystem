@@ -1,20 +1,52 @@
-@props(['id', 'name', 'label' => null, 'required' => false])
+@props([
+    'name',
+    'label',
+    'id' => null,
+    'required' => false,
+    'leftIcon' => 'mdi:file-upload-outline', // Icône par défaut
+])
 
-<div class="mb-6 w-full">
-      @if ($label)
-            <label for="{{ $id }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  {{ $label }} @if ($required)
-                        <span class="text-red-500">*</span>
-                  @endif
+@php
+      $name = $id;
+@endphp
+
+{{--
+    On utilise Alpine.js pour gérer l'affichage du nom du fichier.
+    x-data="{ fileName: '' }" initialise une variable locale 'fileName'.
+    @change="fileName = $event.target.files[0].name" met à jour cette variable
+    dès qu'un fichier est sélectionné.
+--}}
+<div x-data="{ fileName: '' }">
+      <label for="{{ $id }}" class="mb-2.5 block font-satoshi font-medium text-black dark:text-white">
+            {{ $label }} {!! $required ? '<span class="text-danger">*</span>' : '' !!}
+      </label>
+
+      <div class="relative">
+            {{-- Le champ de fichier réel, mais caché --}}
+            <input type="file" id="{{ $id }}" name="{{ $name }}" class="sr-only" {{-- C'est la classe qui le cache visuellement --}}
+                  @change="fileName = $event.target.files.length > 0 ? $event.target.files[0].name : ''" />
+
+            {{-- Notre faux champ stylisé qui sert de bouton --}}
+            <label for="{{ $id }}"
+                  class="flex h-11 cursor-pointer items-center justify-between rounded-lg border border-stroke bg-gray px-6 font-satoshi text-body outline-none transition dark:border-form-strokedark dark:bg-form-input dark:text-bodydark">
+                  <div class="flex items-center gap-3">
+                        @if ($leftIcon)
+                              <span>
+                                    <iconify-icon icon="{{ $leftIcon }}"
+                                          class="text-bodydark text-xl"></iconify-icon>
+                              </span>
+                        @endif
+                        {{-- Affiche le nom du fichier si sélectionné, sinon un texte par défaut --}}
+                        <span x-text="fileName || 'Aucun fichier sélectionné'"></span>
+                  </div>
+
+                  <span class="rounded-md bg-primary px-4 py-1.5 text-sm font-medium text-white">
+                        Choisir
+                  </span>
             </label>
-      @endif
-      <input type="file" id="{{ $id }}" name="{{ $name }}"
-            @if ($required) required @endif
-            {{ $attributes->merge([
-                'class' => 'w-full cursor-pointer rounded-lg border-[1.5px] border-stroke bg-gray-50
-                                file:mr-5 file:cursor-pointer file:border-0 file:px-5 file:py-3
-                                file:hover:bg-violet-400 file:hover:bg-opacity-10
-                                dark:border-gray-600 dark:bg-gray-700 dark:file:bg-white/30
-                                dark:file:text-white focus:border-violet-400 active:border-violet-400',
-            ]) }}>
+      </div>
+
+      @error($name)
+            <span class="text-sm text-danger">{{ $message }}</span>
+      @enderror
 </div>

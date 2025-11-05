@@ -64,18 +64,13 @@ $watch('darkMode', value => localStorage.setItem('darkMode', JSON.stringify(valu
 
                                     <div class="mb-5">
                                           <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-5">
-                                                <x-form.button type="button" bg="from-gray-300 dark:from-gray-700"
-                                                      to="to-gray-700 dark:to-gray-600"
-                                                      hover="hover:from-gray-700 hover:to-gray-300 dark:from-gray-800"
-                                                      text="text-white">
-                                                      @include('components.svg.google') Google
-                                                </x-form.button>
+                                                <x-form.button label="Google" />
 
                                                 <x-form.button type="button" bg="from-gray-300 dark:from-gray-700"
                                                       to="to-gray-700 dark:to-gray-600"
                                                       hover="hover:from-gray-700 hover:to-gray-300 dark:from-gray-800"
-                                                      text="text-white">
-                                                      @include('components.svg.facebook') Facebook
+                                                      text="text-white" label="Facebook">
+                                                      @include('components.svg.facebook')
                                                 </x-form.button>
                                           </div>
 
@@ -94,28 +89,33 @@ $watch('darkMode', value => localStorage.setItem('darkMode', JSON.stringify(valu
                                                 {{ csrf_field() }}
                                                 <div class="space-y-5">
 
-                                                      <div>
+                                                      {{-- Champ Email avec le nouveau composant --}}
+                                                      <div class="mb-4">
                                                             <x-form.input type="email" id="email"
-                                                                  icon="mdi:email-send" placeholder="Entrez un email"
-                                                                  label="Email" required></x-form.input>
-                                                            <!-- Password -->
-                                                            <x-form.password label="Mot de Passe" id="password"
-                                                                  icon="mdi:lock" placeholder="Entrez un mot de passe"
-                                                                  required></x-form.password>
+                                                                  label="Email" placeholder="Entrez votre email"
+                                                                  left-icon="mdi:envelope-outline" :required="true" />
+                                                      </div>
+
+                                                      {{-- Champ Mot de passe avec le nouveau composant --}}
+                                                      <div class="mb-6">
+                                                            <x-form.input type="password" id="password"
+                                                                  label="Mot de passe"
+                                                                  placeholder="Entrez votre mot de passe"
+                                                                  left-icon="mdi:lock-outline" :required="true" />
                                                       </div>
 
                                                       <!-- Checkbox -->
-                                                      <div class="flex items-center justify-between text-gray-700 dark:text-gray-300">
-                                                            <x-form.checked id="remember" class="checkbox-custom"
+                                                      <div
+                                                            class="flex items-center justify-between text-gray-700 dark:text-gray-300">
+                                                            <x-form.checkbox id="remember" class="rounded-lg h-11"
                                                                   label="Rester connecté(e)" />
 
-                                                            <x-link href="{{ url('forgot_password') }}">
-                                                                  Mot de passe oublé ?
+                                                            <x-link label="Mot de passe oublé ?" href="{{ url('forgot_password') }}">
                                                             </x-link>
                                                       </div>
                                                       <!-- Button -->
-                                                      <x-form.button text="text-white"
-                                                            icon="mdi:check-circle">Connectez-vous</x-form.button>
+                                                      <x-form.button text="text-white" icon="mdi:check-circle"
+                                                            label="Connectez-vous"></x-form.button>
                                                 </div>
                                           </form>
 

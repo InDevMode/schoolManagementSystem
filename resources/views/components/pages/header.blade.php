@@ -33,7 +33,7 @@
                                           </span>
                                     @else
                                           {{-- Utilisation de votre composant x-link --}}
-                                          <x-link href="{{ $breadcrumb['url'] ?? '#' }}"
+                                          <x-link label="{{ $breadcrumb['label'] }}" href="{{ $breadcrumb['url'] ?? '#' }}"
                                                 icon="{{ $breadcrumb['icon'] ?? null }}"
                                                 hover="hover:text-violet-600 dark:hover:text-white" class="!p-0">
                                                 {{ $breadcrumb['label'] }}

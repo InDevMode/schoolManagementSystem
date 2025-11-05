@@ -111,13 +111,11 @@
                                     {{-- Dropdown Actions --}}
                                     <x-table.td align="right">
                                           <x-table.actions-dropdown :id="$admin->id">
-                                                <x-link href="{{ url('admin/admin/edit', $admin->id) }}"
+                                                <x-link label="Voir" href="{{ url('admin/admin/edit', $admin->id) }}"
                                                       icon="fa-solid fa-eye text-violet-500">
-                                                      Voir
                                                 </x-link>
-                                                <x-link href="{{ url('admin/admin/edit', $admin->id) }}"
+                                                <x-link label="Modifier" href="{{ url('admin/admin/edit', $admin->id) }}"
                                                       icon="fa-solid fa-edit text-emerald-500">
-                                                      Modifier
                                                 </x-link>
                                           </x-table.actions-dropdown>
                                     </x-table.td>

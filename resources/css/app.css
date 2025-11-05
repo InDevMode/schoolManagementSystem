@@ -170,7 +170,7 @@ span.flatpickr-weekday,
 }
 
 .map-btn .jvm-zoom-btn {
-    @apply flex h-7.5 w-7.5 items-center justify-center rounded border border-stroke bg-white px-0 pt-0 pb-0.5 text-2xl leading-none text-body hover:border-primary hover:bg-primary hover:text-white dark:border-strokedark dark:text-bodydark dark:hover:border-primary dark:hover:text-white;
+    @apply flex h-[1.875rem] w-[1.875rem] items-center justify-center rounded border border-stroke bg-white px-0 pt-0 pb-0.5 text-2xl leading-none text-body hover:border-primary hover:bg-primary hover:text-white dark:border-strokedark dark:text-bodydark dark:hover:border-primary dark:hover:text-white;
 }
 .mapOne .jvm-zoom-btn {
     @apply left-auto top-auto bottom-0;
@@ -307,45 +307,10 @@ span.flatpickr-weekday,
             appearance: none;
         }
 
-        .checkbox-custom, .checkbox-custom-success, .check-custom {
-            -webkit-appearance: none;
-            -moz-appearance: none;
-            appearance: none;
-            width: 1.25rem;
-            height: 1.25rem;
-            border: 2px solid #d1d5db;
-            border-radius: 0.25rem;
-            background-color: white;
-            cursor: pointer;
-            position: relative;
-            transition: all 0.2s ease;
-        }
-
-        .checkbox-custom:checked, .check-custom:checked {
-            background-color: #465fff;
-            border-color: #465fff;
-        }
-        .checkbox-custom-success:checked {
-            background-color: #10B981;
-            border-color: #10B981;
-        }
-
-        .checkbox-custom-success:checked {
-            background-color: #10B981;
-            border-color: #10B981;
-        }
-
-        .checkbox-custom:checked::after, .checkbox-custom-success:checked::after, .check-custom:after {
-            content: '';
-            position: absolute;
-            left: 50%;
-            top: 50%;
-            width: 0.5rem;
-            height: 0.8rem;
-            border: solid white;
-            border-width: 0 2px 2px 0;
-            transform: translate(-50%, -60%) rotate(45deg);
-        }
+   /* Ce code cible le .box à l'intérieur de notre composant Blade */
+input[type="checkbox"]:checked + .box {
+    @apply border-primary bg-primary;
+}
 
  .chat-preview {
     transition: background-color 0.3s ease;

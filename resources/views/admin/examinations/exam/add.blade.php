@@ -57,9 +57,7 @@
                                           value="{{ old('status') }}" :options="['1' => 'Actif', '0' => 'Inactif']" selected="" />
 
 
-                                    <x-form.button icon="mdi:content-save-check-outline">
-                                          Créer une nouvelle évaluation
-                                    </x-form.button>
+                                    <x-form.button icon="mdi:content-save-check-outline" label="Créer une nouvelle évaluation"></x-form.button>
 
                               </form>
                         </div>

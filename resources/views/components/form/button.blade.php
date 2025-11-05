@@ -1,23 +1,25 @@
 @props([
-    'type' => 'submit',
-    'icon' => null,
-    'color' => 'indigo',
+    'label',
+    'type' => 'submit', // 'submit' ou 'button'
+    'leftIcon' => null,
+    'rightIcon' => null,
 ])
 
 @php
-      $bgClass = "from-$color-600";
-      $toClass = "to-$color-400";
-      $textColor = 'text-white';
-      $hoverColor = 'hover:shadow-2xl';
+      $buttonClasses = Arr::toCssClasses([
+          'flex h-11 items-center justify-center gap-2.5 rounded-lg px-6 text-center font-medium transition',
+          'hover:bg-opacity-90',
+          // Le style par défaut est un fond solide avec du texte blanc.
+          $attributes->get('class') ?: 'bg-primary text-white',
+      ]);
 @endphp
 
-<button type="{{ $type }}"
-      {{ $attributes->merge([
-          'class' => "w-full h-11 flex justify-center items-center space-x-2 py-3 px-4 bg-gradient-to-r $bgClass $toClass $textColor font-medium rounded-lg shadow-md $hoverColor
-                                       transition-all duration-300",
-      ]) }}>
-      @if ($icon)
-            <iconify-icon icon="{{ $icon }}" class="mr-2" width="20" height="20"></iconify-icon>
+<button type="{{ $type }}" {{ $attributes->except('class')->merge(['class' => $buttonClasses]) }}>
+      @if ($leftIcon)
+            <iconify-icon icon="{{ $leftIcon }}" class="text-xl"></iconify-icon>
       @endif
-      {{ $slot }}
+      <span>{{ $label }}</span>
+      @if ($rightIcon)
+            <iconify-icon icon="{{ $rightIcon }}" class="text-xl"></iconify-icon>
+      @endif
 </button>
