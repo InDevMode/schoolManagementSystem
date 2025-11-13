@@ -18,25 +18,6 @@
                       ],
                   ]" />
 
-            <!-- Section Filtrage -->
-            <x-filter.section>
-
-                  <x-filter.field id="name" label="Nom" icon="fas fa-user" />
-                  <x-filter.field id="last_name" label="Prénoms" icon="fas fa-user-tag" />
-                  <x-filter.field id="email" label="Email" type="email" icon="fas fa-envelope" />
-                  <x-filter.field id="status" label="Statut" type="select" icon="fas fa-check-circle" :options="['1' => 'Actif', '0' => 'Inactif']" />
-                  <x-filter.field id="gender" label="Genre" type="select" icon="fas fa-venus-mars" :options="['male' => 'Masculin', 'female' => 'Féminin', 'other' => 'Autre']" />
-                  <x-filter.field id="mobile_number" label="Téléphone" icon="fas fa-phone" />
-                  <x-filter.field id="address" label="Adresse" icon="fas fa-map-marker-alt" />
-                  <x-filter.field id="occupation" label="Occupation" icon="fas fa-briefcase" />
-                  <x-filter.field id="created_at" label="Date de création" type="date" icon="fas fa-calendar-plus" />
-                  <x-filter.field id="updated_at" label="Date de modification" type="date" icon="fas fa-calendar-check" />
-                  <x-filter.field id="date_naissance" label="Date de naissance" type="date" icon="fas fa-calendar-alt" />
-
-                  <x-filter.actions resetUrl="{{ url('admin/test') }}" />
-
-            </x-filter.section>
-
             <!-- Section Table -->
             <x-table.index :columns="[
                 'Nom' => true,
@@ -52,8 +33,8 @@
                         <x-table.tr>
                               {{-- Colonne "sélectionner tout" --}}
                               <x-table.th align="center" class="w-10">
-                                    <input type="checkbox" class="check-custom"
-                                          @change="toggleAll($el, $event.target.checked)" title="Tout sélectionner">
+                                    <input type="checkbox" class="check-custom" @change="toggleAll($el, $event.target.checked)"
+                                          title="Tout sélectionner">
                               </x-table.th>
 
                               {{-- Colonnes dynamiques --}}
@@ -71,25 +52,25 @@
                         @foreach ($getAdmin as $admin)
                               <x-table.tr
                                     x-show="!search
-                                    || '{{ strtolower($admin->name) }}'.includes(search.toLowerCase())
-                                    || '{{ strtolower($admin->last_name) }}'.includes(search.toLowerCase())
-                                    || '{{ strtolower($admin->email) }}'.includes(search.toLowerCase())
-                                    || '{{ strtolower($admin->statut) }}'.includes(search.toLowerCase())
-                                    || '{{ strtolower($admin->created_at) }}'.includes(search.toLowerCase())
-                                    || '{{ strtolower($admin->updated_at) }}'.includes(search.toLowerCase())
-                                    ">
+                      || '{{ strtolower($admin->name) }}'.includes(search.toLowerCase())
+                      || '{{ strtolower($admin->last_name) }}'.includes(search.toLowerCase())
+                      || '{{ strtolower($admin->email) }}'.includes(search.toLowerCase())
+                      || '{{ strtolower($admin->statut) }}'.includes(search.toLowerCase())
+                      || '{{ strtolower($admin->created_at) }}'.includes(search.toLowerCase())
+                      || '{{ strtolower($admin->updated_at) }}'.includes(search.toLowerCase())
+                      ">
 
                                     {{-- Case à cocher par ligne --}}
                                     <x-table.td align="center" class="w-10">
                                           <input type="checkbox" class="row-check check-custom" value="{{ $admin->id }}"
                                                 @change="
-                                                    if ($event.target.checked) {
-                                                        if (!selectedIds.includes('{{ $admin->id }}'))
-                                                            selectedIds.push('{{ $admin->id }}')
-                                                    } else {
-                                                        selectedIds = selectedIds.filter(id => id !== '{{ $admin->id }}')
-                                                    }
-                                     ">
+                                  if ($event.target.checked) {
+                                      if (!selectedIds.includes('{{ $admin->id }}'))
+                                          selectedIds.push('{{ $admin->id }}')
+                                  } else {
+                                      selectedIds = selectedIds.filter(id => id !== '{{ $admin->id }}')
+                                  }
+                   ">
                                     </x-table.td>
 
                                     {{-- Colonnes dynamiques --}}
@@ -111,14 +92,51 @@
                                     {{-- Dropdown Actions --}}
                                     <x-table.td align="right">
                                           <x-table.actions-dropdown :id="$admin->id">
-                                                <x-link href="{{ url('admin/admin/edit', $admin->id) }}"
-                                                      icon="fa-solid fa-eye text-violet-500">
-                                                      Voir
+                                                {{-- Lien Profile avec modal --}}
+                                                <div @click.stop>
+                                                      <x-modal.profile :admin="$admin">
+                                                            <x-slot:trigger>
+                                                                  <x-link icon="fa-solid fa-user text-blue-500 py-2"
+                                                                        hover="hover:text-blue-500 dark:hover:text-blue-500">
+                                                                        Profile
+                                                                  </x-link>
+                                                            </x-slot:trigger>
+                                                      </x-modal.profile>
+                                                </div>
+
+                                                {{-- Lien Message --}}
+                                                <x-link href="{{ url('chat?receiver_id=' . base64_encode($admin->id)) }}"
+                                                      icon="fa-solid fa-envelope text-indigo-500 py-2"
+                                                      hover="hover:text-indigo-500 dark:hover:text-indigo-500">
+                                                      Message
                                                 </x-link>
+
+                                                {{-- Lien Modifier --}}
                                                 <x-link href="{{ url('admin/admin/edit', $admin->id) }}"
-                                                      icon="fa-solid fa-edit text-emerald-500">
+                                                      icon="fa-solid fa-edit text-emerald-500 py-2"
+                                                      hover="hover:text-emerald-500 dark:hover:text-emerald-500">
                                                       Modifier
                                                 </x-link>
+
+                                                {{-- Lien Supprimer avec modal de confirmation --}}
+                                                <div @click.stop>
+                                                      <x-modal.confirm title="Supprimer l'administrateur"
+                                                            confirmUrl="{{ url('admin/admin/delete', $admin->id) }}"
+                                                            confirmLabel="Oui, supprimer" confirmVariant="danger">
+                                                            <x-slot:trigger>
+                                                                  <x-link icon="fa-solid fa-trash text-red-500 py-2"
+                                                                        hover="hover:text-red-500 dark:hover:text-red-500">
+                                                                        Supprimer
+                                                                  </x-link>
+                                                            </x-slot:trigger>
+                                                            <p class="break-words whitespace-normal text-center">
+                                                                  Êtes-vous sûr de vouloir supprimer l'administrateur
+                                                                  <strong>{{ $admin->name }}
+                                                                        {{ $admin->last_name }}</strong> ?
+                                                                  Cette action est irréversible.
+                                                            </p>
+                                                      </x-modal.confirm>
+                                                </div>
                                           </x-table.actions-dropdown>
                                     </x-table.td>
                               </x-table.tr>
@@ -130,10 +148,7 @@
                         <x-table.footer :total="$getAdmin->total()" label="administrateur" :pagination="$getAdmin->links('vendor.pagination.tailwind')" />
                   </x-slot>
 
-
             </x-table.index>
 
       </div>
 @endsection
-
-<script></script>
