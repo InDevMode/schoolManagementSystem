@@ -33,7 +33,7 @@
                         <a
                             v-for="contact in filteredContacts"
                             :key="contact.user_id"
-                            :href="`/chat?receiver_id=${btoa(String(contact.user_id))}`"
+                            :href="`/chat?receiver_id=${encodeId(contact.user_id)}`"
                             :class="[
                                 'flex items-center gap-3 px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors cursor-pointer',
                                 isActiveContact(contact) ? 'bg-primary-50 dark:bg-primary-900/20' : ''
@@ -225,6 +225,9 @@ const props = defineProps<{
 
 const authUser = computed(() => page.props.auth?.user as any);
 const csrfToken = computed(() => (document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement)?.content ?? '');
+
+// btoa n'est pas accessible dans les templates Vue — on l'expose explicitement
+const encodeId = (id: number | string) => btoa(String(id));
 
 const search           = ref('');
 const message          = ref('');
