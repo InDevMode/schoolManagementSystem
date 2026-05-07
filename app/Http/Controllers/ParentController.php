@@ -9,206 +9,160 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use Inertia\Inertia;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ParentController extends Controller
 {
-    public function list(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
+    public function list()
     {
-        $data['header_title'] = "Liste des Parents";
-        $data['getParent'] = User::getAllParent(5);
-        return view('admin.parent.list', $data);
+        return Inertia::render('Admin/Parents/Index', [
+            'parents' => User::getAllParent(15),
+        ]);
     }
 
-    public function add(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
+    public function create(Request $request)
     {
-        $data['header_title'] = "Créer un nouveau Parent";
-        return view('admin.parent.add', $data);
-    }
+        $request->validate([
+            'name'      => 'required|string|max:100',
+            'last_name' => 'required|string|max:100',
+            'email'     => 'required|email|unique:users,email',
+            'status'    => 'required|in:0,1',
+            'gender'    => 'nullable|in:male,female,other',
+            'password'  => 'nullable|string|min:6',
+        ]);
 
-    public function create(Request $request): \Illuminate\Foundation\Application|\Illuminate\Routing\Redirector|\Illuminate\Http\RedirectResponse|\Illuminate\Contracts\Foundation\Application
-    {
         try {
-            $parentMail = User::getEmailSingle($request->email);
-            $passwordLength = strlen($request->password);
-            $regex = '/^[a-z0-9]+@[a-z0-9]+\.(fr|com|org|bj|io)$/';
-
-            if ($parentMail) {
-                return redirect()->back()->with('error', 'Cet email a déjà été utilisé par un autre parent');
-            }
-            if (!empty($request->password) && $passwordLength < 6) {
-                return redirect()->back()->with('error', 'Votre mot de passe ne doit pas être de moins de 6 caractères.');
-            }
-
-            if (!preg_match($regex, $request->email)) {
-                return redirect()->back()->with('error', 'Cet email est invalide. Assurez-vous qu\'il se termine par .fr, .com, .org, .bj ou .io.');
-            }
-
             $parent = new User;
-            $parent->name = trim($request->name);
-            $parent->last_name = trim($request->last_name);
-            $parent->email = trim($request->email);
-            $parent->occupation = trim($request->occupation);
-            $parent->address = trim($request->address);
-            $parent->gender = trim($request->gender);
-            if (!empty($request->mobile_number)) {
-                $mobileNumber = trim($request->mobile_number);
-                if (!preg_match('/^\d{8,15}$/', $mobileNumber)) {
-                    return redirect()->back()->with('error', 'Le numéro de téléphone doit contenir uniquement des chiffres et être compris entre 8 et 15 chiffres.');
-                }
-                $parent->mobile_number = $mobileNumber;
-            }
-            if (!empty($request->file('profile_picture'))) {
-                $ext = $request->file('profile_picture')->getClientOriginalExtension();
-                $file = $request->file('profile_picture');
-                $randomStr = 'parent' . date('dmYhis') . Str::random(20);
-                $fileName = strtolower($randomStr) . '.' . $ext;
-                $file->move('upload/profile/', $fileName);
-                $parent->profile_picture = $fileName;
-            }
-            $parent->status = intval($request->status);
-            if (!empty($request->password)) {
-                $parent->password = $request->password;
-            }
-            $parent->user_type = 4;
-            $parent->created_by = Auth::user()->id;
-            $parent->save();
 
-            return redirect('admin/parent/list')->with('success', 'Cet parent a été créé avec succès.');
-        } catch (\Exception $e) {
-            Log::error("Erreur lors de la création d'un parent' : " . $e->getMessage());
-
-            return redirect()->back()->with('error', 'Vos informations ne sont pas correctes. Veuillez réessayer.');
-        }
-    }
-
-    public function edit($id): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
-    {
-        $data['getParent'] = User::getSingle($id);
-        $data['header_title'] = "Modifier un Parent";
-        if (!empty($data['getParent'])) {
-            !empty($data['getParent']->profile_picture) ? $data['profile_picture_url'] = $data['getParent']->getProfile() : $data['profile_picture_url'] = asset('upload/default.jpg');
-            return view('admin.parent.edit', $data);
-        } else {
-            abort(404);
-        }
-    }
-
-    public function update(Request $request, $id): \Illuminate\Foundation\Application|\Illuminate\Routing\Redirector|\Illuminate\Http\RedirectResponse|\Illuminate\Contracts\Foundation\Application
-    {
-        try {
-            $parent = User::getSingle($id);
-            $parentMail = User::checkEmailSingle($request->email, $id);
-            $passwordLength = strlen($request->password);
-            $regex = '/^[a-z0-9]+@[a-z0-9]+\.(fr|com|org|bj|io)$/';
-
-            if (!$parent) {
-                return redirect()->back()->with('error', 'Cet parent est introuvable.');
+            if ($request->hasFile('profile_picture')) {
+                $parent->profile_picture = $this->uploadProfilePicture($request, 'parent');
             }
 
-            if ($parentMail) {
-                return redirect()->back()->with('error', 'Cet email a déjà été utilisé par un autre parent');
-            }
-            if (!empty($request->password) && $passwordLength < 6) {
-                return redirect()->back()->with('error', 'Votre mot de passe ne doit pas être de moins de 6 caractères.');
-            }
+            $parent->fill([
+                'name'          => trim($request->name),
+                'last_name'     => trim($request->last_name),
+                'email'         => trim($request->email),
+                'occupation'    => $request->occupation,
+                'address'       => $request->address,
+                'gender'        => $request->gender,
+                'mobile_number' => $request->mobile_number,
+                'status'        => $request->status,
+                'user_type'     => 4,
+                'created_by'    => Auth::id(),
+            ]);
 
-            if (!preg_match($regex, $request->email)) {
-                return redirect()->back()->with('error', 'Cet email est invalide. Assurez-vous qu\'il se termine par .fr, .com, .org, .bj ou .io.');
-            }
-
-            $parent->name = trim($request->name);
-            $parent->last_name = trim($request->last_name);
-            $parent->email = trim($request->email);
-            $parent->occupation = trim($request->occupation);
-            $parent->address = trim($request->address);
-            $parent->gender = trim($request->gender);
-            if (!empty($request->mobile_number)) {
-                $mobileNumber = trim($request->mobile_number);
-                if (!preg_match('/^\d{8,15}$/', $mobileNumber)) {
-                    return redirect()->back()->with('error', 'Le numéro de téléphone doit contenir uniquement des chiffres et être compris entre 8 et 15 chiffres.');
-                }
-                $parent->mobile_number = $mobileNumber;
-            }
-            if (!empty($request->file('profile_picture'))) {
-                $parentProfilePicture = $parent->profile_picture;
-                if (!empty($parentProfilePicture)) {
-                    $profilePictureUrl = User::getProfile();
-                    if (!empty($profilePictureUrl)) {
-                        unlink('upload/profile/' . $parentProfilePicture);
-                    }
-                }
-                $ext = $request->file('profile_picture')->getClientOriginalExtension();
-                $file = $request->file('profile_picture');
-                $randomStr = 'parent' . date('dmYhis') . Str::random(20);
-                $fileName = strtolower($randomStr) . '.' . $ext;
-                $file->move('upload/profile/', $fileName);
-                $parent->profile_picture = $fileName;
-            }
-            $parent->status = intval($request->status);
-            if (!empty($request->password)) {
+            if ($request->filled('password')) {
                 $parent->password = Hash::make($request->password);
             }
+
             $parent->save();
 
-            return redirect('admin/parent/list')->with('success', 'Cet parent a été modifié avec succès.');
+            return back()->with('success', 'Parent créé avec succès.');
         } catch (\Exception $e) {
-            Log::error("Erreur lors de la modification d'un parent' : " . $e->getMessage());
-
-            return redirect()->back()->with('error', 'Vos informations ne sont pas correctes. Veuillez réessayer.');
+            Log::error('Création parent : ' . $e->getMessage());
+            return back()->with('error', 'Une erreur est survenue. Veuillez réessayer.');
         }
     }
 
-    public function student($id): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
-    {
-        $data['parent_id'] = $id;
-        $data['getParent'] = User::getSingle($id);
-        $data['getStudentList'] = User::getStudentList(5);
-        $data['getMyStudent'] = User::getMyStudent(5, $id);
-        $data['header_title'] = "Listes des élèves du parent";
-        return view('admin.parent.student', $data);
-    }
-
-    public function assignStudentParent($parent_id, $student_id): \Illuminate\Http\RedirectResponse
-    {
-        $student = User::getSingle($student_id);
-        $student->parent_id = $parent_id;
-        $student->save();
-        return redirect()->back()->with('success', 'Cet apprenant a été assignée à un parent avec succès.');
-    }
-
-    public function desAssignStudentParent($student_id): \Illuminate\Http\RedirectResponse
-    {
-        $student = User::getSingle($student_id);
-        $student->parent_id = null;
-        $student->save();
-        return redirect()->back()->with('success', 'Cet apprenant a été désassignée à un parent avec succès.');
-    }
-
-    public function delete($id)
+    public function update(Request $request, int $id)
     {
         $parent = User::getSingle($id);
-        if ($parent) {
-            $parent->is_delete = 1;
+        abort_unless($parent, 404);
+
+        $request->validate([
+            'name'      => 'required|string|max:100',
+            'last_name' => 'required|string|max:100',
+            'email'     => "required|email|unique:users,email,{$id}",
+            'status'    => 'required|in:0,1',
+            'password'  => 'nullable|string|min:6',
+        ]);
+
+        try {
+            $parent->fill([
+                'name'          => trim($request->name),
+                'last_name'     => trim($request->last_name),
+                'email'         => trim($request->email),
+                'occupation'    => $request->occupation,
+                'address'       => $request->address,
+                'gender'        => $request->gender,
+                'mobile_number' => $request->mobile_number,
+                'status'        => $request->status,
+            ]);
+
+            if ($request->filled('password')) {
+                $parent->password = Hash::make($request->password);
+            }
+
+            if ($request->hasFile('profile_picture')) {
+                $this->deleteOldPicture($parent->profile_picture);
+                $parent->profile_picture = $this->uploadProfilePicture($request, 'parent');
+            }
+
             $parent->save();
-            return redirect('admin/parent/list')->with('success', 'Cet parent a été supprimé avec succès.');
-        } else {
-            abort(404);
+
+            return back()->with('success', 'Parent modifié avec succès.');
+        } catch (\Exception $e) {
+            Log::error('Modification parent : ' . $e->getMessage());
+            return back()->with('error', 'Une erreur est survenue. Veuillez réessayer.');
         }
     }
 
-    public function parentStudent(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
+    public function student(int $id)
     {
-        $id = Auth::user()->id;
-        $data['parent_id'] = User::getSingle($id);
-        $data['getMyStudent'] = User::getMyStudent(5, $id);
-        $data['header_title'] = "Mes apprenants";
-        return view('parent.student', $data);
+        return Inertia::render('Admin/Parents/Students', [
+            'parent'      => User::getSingle($id),
+            'studentList' => User::getStudentList(50),
+            'myStudents'  => User::getMyStudent(50, $id),
+            'parentId'    => $id,
+        ]);
+    }
+
+    public function assignStudentParent(int $parent_id, int $student_id)
+    {
+        User::getSingle($student_id)?->update(['parent_id' => $parent_id]);
+        return back()->with('success', 'Apprenant assigné au parent avec succès.');
+    }
+
+    public function desAssignStudentParent(int $student_id)
+    {
+        User::getSingle($student_id)?->update(['parent_id' => null]);
+        return back()->with('success', 'Apprenant désassigné avec succès.');
+    }
+
+    public function delete(int $id)
+    {
+        $parent = User::getSingle($id);
+        abort_unless($parent, 404);
+        $parent->update(['is_delete' => 1]);
+        return back()->with('success', 'Parent supprimé avec succès.');
+    }
+
+    public function parentStudent()
+    {
+        $id = Auth::id();
+        return Inertia::render('Parent/Students/Index', [
+            'myStudents' => User::getMyStudent(15, $id),
+        ]);
     }
 
     public function exportParent()
     {
-        return Excel::download(new ExportParent, 'parent_' . date('d_m_Y') . '.xlsx');
+        return Excel::download(new ExportParent, 'parents_' . date('d_m_Y') . '.xlsx');
     }
 
+    private function uploadProfilePicture(Request $request, string $prefix): string
+    {
+        $file = $request->file('profile_picture');
+        $fileName = strtolower($prefix . date('dmYhis') . Str::random(10)) . '.' . $file->getClientOriginalExtension();
+        $file->move('upload/profile/', $fileName);
+        return $fileName;
+    }
+
+    private function deleteOldPicture(?string $filename): void
+    {
+        if ($filename && file_exists('upload/profile/' . $filename)) {
+            unlink('upload/profile/' . $filename);
+        }
+    }
 }

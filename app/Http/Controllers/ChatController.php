@@ -9,36 +9,39 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use Inertia\Inertia;
 
 class ChatController extends Controller
 {
 
     public function chat(Request $request)
     {
-        $data['header_title'] = "Mes messages";
         $sender_id = Auth::user()->id;
-
-        // Mise à jour du last_login à chaque chargement de la page
         User::updateLastLogin($sender_id);
 
-        // Récupération de la liste des contacts (toujours utile)
-        $data['getChatUser'] = ChatModel::getChatUser($sender_id);
+        $getChatUser = ChatModel::getChatUser($sender_id);
 
-        // Initialiser receiver et chats seulement si receiver_id existe
+        $receiver    = null;
+        $getChats    = [];
+
         if (!empty($request->receiver_id)) {
             $receiver_id = base64_decode($request->receiver_id);
 
             if ($receiver_id == $sender_id) {
-                return redirect()->back()->with('error', 'Vous ne pouvez pas vous envoyer un message');
+                return back()->with('error', 'Vous ne pouvez pas vous envoyer un message.');
             }
 
             ChatModel::updateCountMessage($sender_id, $receiver_id);
-
-            $data['getReceiver'] = User::getSingle($receiver_id);
-            $data['getChats'] = ChatModel::getChats($receiver_id, $sender_id);
+            $receiver  = User::getSingle($receiver_id);
+            $getChats  = ChatModel::getChats($receiver_id, $sender_id);
         }
 
-        return view('chat.list', $data);
+        return \Inertia\Inertia::render('Chat/Index', [
+            'contacts'    => $getChatUser,
+            'receiver'    => $receiver,
+            'chats'       => $getChats,
+            'receiver_id' => $request->receiver_id ?? null,
+        ]);
     }
 
     public function sendMessage(Request $request)

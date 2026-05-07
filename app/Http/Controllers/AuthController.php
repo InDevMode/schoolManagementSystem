@@ -9,110 +9,105 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
+use Inertia\Inertia;
 
 class AuthController extends Controller
 {
     public function login()
     {
-        if (!empty(Auth::check())) {
-
-            match (Auth::user()->user_type) {
-                1 => redirect('admin/dashboard'),
-                2 => redirect('teacher/dashboard'),
-                3 => redirect('student/dashboard'),
-                4 => redirect('parent/dashboard'),
-                default => redirect(url('')),
-            };
-
+        if (Auth::check()) {
+            return $this->redirectByRole(Auth::user()->user_type);
         }
 
-        return view('auth.login');
+        return Inertia::render('Auth/Login');
     }
 
-    public function authenticate(Request $request): \Illuminate\Foundation\Application|\Illuminate\Routing\Redirector|\Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse
+    public function authenticate(Request $request)
     {
-        $remember = !empty($request->remember);
+        $request->validate([
+            'email'    => 'required|email',
+            'password' => 'required|string',
+        ]);
 
-        if (Auth::attempt(['email' => $request->email, 'password' => $request->password], $remember)) {
+        if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
             $user = Auth::user();
 
             if ($user->status != 1) {
                 Auth::logout();
-                return redirect()->back()->with('error', 'Cet utilisateur n\'est pas activé.');
+                return back()->with('error', "Cet utilisateur n'est pas activé.");
             }
 
-            // ✅ Mise à jour du last_login ici
-            $user = User::getSingle($user->id);
-            $user->last_login = now();
-            $user->save();
+            User::getSingle($user->id)->update(['last_login' => now()]);
+            $request->session()->regenerate();
 
-            return match ($user->user_type) {
-                1 => redirect('admin/dashboard'),
-                2 => redirect('teacher/dashboard'),
-                3 => redirect('student/dashboard'),
-                4 => redirect('parent/dashboard'),
-                default => redirect(url('')),
-            };
-
+            return $this->redirectByRole($user->user_type);
         }
 
-        return redirect()->back()->with('error', 'Email et mot de passe incorrect.');
+        return back()->with('error', 'Email ou mot de passe incorrect.');
     }
 
-    public function forgotPassword(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
+    public function forgotPassword()
     {
-        return view('auth.forgot');
+        return Inertia::render('Auth/ForgotPassword');
     }
 
-    public function changePassword(Request $request): \Illuminate\Foundation\Application|\Illuminate\Routing\Redirector|\Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse
+    public function changePassword(Request $request)
     {
+        $request->validate(['email' => 'required|email']);
+
         $user = User::getEmailSingle($request->email);
 
-        if (!empty($user)) {
+        if ($user) {
             $user->remember_token = Str::random(30);
             $user->save();
-
             Mail::to($user->email)->send(new ForgotPasswordMail($user));
-            return redirect()->back()->with('success', 'Veuillez vérifier votre boîte mail et réinitialiser votre mot de passe.');
-        } else {
-            return redirect()->back()->with('error', 'Email non trouvé dans le système.');
+            return back()->with('success', 'Vérifiez votre boîte mail pour réinitialiser votre mot de passe.');
         }
+
+        return back()->with('error', 'Aucun compte trouvé avec cet email.');
     }
 
-    public function resetPassword($token)
+    public function resetPassword(string $token)
     {
         $user = User::getTokenSingle($token);
+        abort_unless($user, 404);
 
-        if (!empty($user)) {
-            $data['user'] = $user;
-            return view('auth.reset', $data);
-        } else {
-            abort(404);
-        }
+        return Inertia::render('Auth/ResetPassword', ['token' => $token]);
     }
 
-    public function resetAndChangePassword(Request $request, string $token): \Illuminate\Http\RedirectResponse
+    public function resetAndChangePassword(Request $request, string $token)
     {
+        $request->validate([
+            'password'     => 'required|string|min:6',
+            'confPassword' => 'required|same:password',
+        ]);
+
         $user = User::getTokenSingle($token);
+        abort_unless($user, 404);
 
-        return match (true) {
-            $request->password !== $request->confPassword =>
-            redirect()->back()->with('error', 'Les deux mots de passe ne correspondent pas.'),
+        $user->password       = Hash::make($request->password);
+        $user->remember_token = Str::random(30);
+        $user->save();
 
-            !$user =>
-            redirect()->back()->with('error', 'Token invalide ou utilisateur introuvable.'),
-
-            default => tap($user, function ($u) use ($request) {
-                    $u->password = Hash::make($request->password);
-                    $u->remember_token = Str::random(30);
-                    $u->save();
-                })->redirect(url(''))->with('success', 'Votre mot de passe a été réinitialisé avec succès.'),
-        };
+        return redirect('/login')->with('success', 'Mot de passe réinitialisé avec succès. Connectez-vous.');
     }
 
-    public function logout(): \Illuminate\Foundation\Application|\Illuminate\Routing\Redirector|\Illuminate\Http\RedirectResponse|\Illuminate\Contracts\Foundation\Application
+    public function logout()
     {
         Auth::logout();
-        return redirect(url(''));
+        request()->session()->invalidate();
+        request()->session()->regenerateToken();
+        return redirect('/login');
+    }
+
+    private function redirectByRole(int $userType)
+    {
+        return match ($userType) {
+            1 => redirect('/admin/dashboard'),
+            2 => redirect('/teacher/dashboard'),
+            3 => redirect('/student/dashboard'),
+            4 => redirect('/parent/dashboard'),
+            default => redirect('/login'),
+        };
     }
 }

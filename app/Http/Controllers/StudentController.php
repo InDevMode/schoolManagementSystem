@@ -11,216 +11,171 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use Inertia\Inertia;
 use Maatwebsite\Excel\Facades\Excel;
 
 class StudentController extends Controller
 {
-    public function list(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
+    public function list()
     {
-        $data['header_title'] = "Liste des apprenants";
-        $data['getStudent'] = User::getAllStudent(50);
-        return view('admin.student.list', $data);
+        return Inertia::render('Admin/Students/Index', [
+            'students' => User::getAllStudent(15),
+            'classes'  => ClassModel::getClass(),
+        ]);
     }
 
-    public function add(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
+    public function create(Request $request)
     {
-        $data['header_title'] = "Créer un nouvel apprenant";
-        $data['getClass'] = ClassModel::getClass();
-        return view('admin.student.add', $data);
-    }
+        $request->validate([
+            'name'             => 'required|string|max:100',
+            'last_name'        => 'required|string|max:100',
+            'email'            => 'required|email|unique:users,email',
+            'class_id'         => 'required|exists:class,id',
+            'status'           => 'required|in:0,1',
+            'gender'           => 'nullable|in:male,female,other',
+            'admission_number' => 'nullable|string|max:50',
+            'password'         => 'nullable|string|min:6',
+        ]);
 
-    public function create(Request $request): \Illuminate\Foundation\Application|\Illuminate\Routing\Redirector|\Illuminate\Http\RedirectResponse|\Illuminate\Contracts\Foundation\Application
-    {
         try {
-            $studentMail = User::getEmailSingle($request->email);
-            $passwordLength = strlen($request->password);
-            $regex = '/^[a-z0-9]+@[a-z0-9]+\.(fr|com|org|bj|io)$/';
-
-            if ($studentMail) {
-                return redirect()->back()->with('error', 'Cet email a déjà été utilisé par un autre apprenant');
-            }
-            if (!empty($request->password) && $passwordLength < 6) {
-                return redirect()->back()->with('error', 'Votre mot de passe ne doit pas être de moins de 6 caractères.');
-            }
-
-            if (!preg_match($regex, $request->email)) {
-                return redirect()->back()->with('error', 'Cet email est invalide. Assurez-vous qu\'il se termine par .fr, .com, .org, .bj ou .io.');
-            }
-
             $student = new User;
-            $student->name = trim($request->name);
-            $student->last_name = trim($request->last_name);
-            $student->email = trim($request->email);
-            $student->admission_number = trim($request->admission_number);
-            $student->roll_number = trim($request->roll_number);
-            $student->class_id = intval($request->class_id);
-            $student->gender = trim($request->gender);
-            if (!empty($request->date_of_birth)) {
-                $dateOfBirth = Carbon::parse(trim($request->date_of_birth));
-                $minimumAge = 2;
-                $age = $dateOfBirth->diffInYears(Carbon::now());
-                if ($age < $minimumAge) {
-                    return redirect()->back()->with('error', 'L\'apprenant doit avoir au moins 2 ans.');
+
+            if ($request->hasFile('profile_picture')) {
+                $student->profile_picture = $this->uploadProfilePicture($request, 'student');
+            }
+
+            if ($request->filled('date_of_birth')) {
+                $dob = Carbon::parse($request->date_of_birth);
+                if ($dob->diffInYears(now()) < 2) {
+                    return back()->with('error', "L'apprenant doit avoir au moins 2 ans.");
                 }
-                $student->date_of_birth = $dateOfBirth;
-            }
-            $student->caste = trim($request->caste);
-            $student->religion = trim($request->religion);
-            if (!empty($request->mobile_number)) {
-                $mobileNumber = trim($request->mobile_number);
-                if (!preg_match('/^\d{8,15}$/', $mobileNumber)) {
-                    return redirect()->back()->with('error', 'Le numéro de téléphone doit contenir uniquement des chiffres et être compris entre 8 et 15 chiffres.');
-                }
-                $student->mobile_number = $mobileNumber;
-            }
-            if (!empty($request->admission_date)) {
-                $student->admission_date = trim($request->admission_date);
-            }
-            if (!empty($request->file('profile_picture'))) {
-                $ext = $request->file('profile_picture')->getClientOriginalExtension();
-                $file = $request->file('profile_picture');
-                $randomStr = 'student' . date('dmYhis') . Str::random(20);
-                $fileName = strtolower($randomStr) . '.' . $ext;
-                $file->move('upload/profile/', $fileName);
-                $student->profile_picture = $fileName;
-            }
-            $student->blood_group = trim($request->blood_group);
-            $student->height = trim($request->height);
-            $student->weight = trim($request->weight);
-            $student->status = intval($request->status);
-            if (!empty($request->password)) {
-                $student->password = $request->password;
-            }
-            $student->user_type = 3;
-            $student->created_by = Auth::user()->id;
-            $student->save();
-
-            return redirect('admin/student/list')->with('success', 'Cet apprenant a été créé avec succès.');
-        } catch (\Exception $e) {
-            Log::error("Erreur lors de la création d'un apprenant' : " . $e->getMessage());
-
-            return redirect()->back()->with('error', 'Vos informations ne sont pas correctes. Veuillez réessayer.');
-        }
-    }
-
-    public function edit($id)
-    {
-        $data['getStudent'] = User::getSingle($id);
-        $data['header_title'] = "Modifier un apprenants";
-        if (!empty($data['getStudent'])) {
-            $data['getClass'] = ClassModel::getClass();
-            !empty($data['getStudent']->profile_picture) ? $data['profile_picture_url'] = $data['getStudent']->getProfile() : $data['profile_picture_url'] = asset('upload/default.jpg');
-            return view('admin.student.edit', $data);
-        }
-        abort(404);
-    }
-
-    public function update(Request $request, $id): \Illuminate\Foundation\Application|\Illuminate\Routing\Redirector|\Illuminate\Http\RedirectResponse|\Illuminate\Contracts\Foundation\Application
-    {
-        try {
-            $student = User::getSingle($id);
-            $studentMail = User::checkEmailSingle($request->email, $id);
-            $passwordLength = strlen($request->password);
-            $regex = '/^[a-z0-9]+@[a-z0-9]+\.(fr|com|org|bj|io)$/';
-
-            if (!$student) {
-                return redirect()->back()->with('error', 'Cet élève est introuvable.');
+                $student->date_of_birth = $dob;
             }
 
-            if ($studentMail) {
-                return redirect()->back()->with('error', 'Cet email a déjà été utilisé par un autre apprenant');
-            }
-            if (!empty($request->password) && $passwordLength < 6) {
-                return redirect()->back()->with('error', 'Votre mot de passe ne doit pas être de moins de 6 caractères.');
-            }
+            $student->fill([
+                'name'             => trim($request->name),
+                'last_name'        => trim($request->last_name),
+                'email'            => trim($request->email),
+                'admission_number' => $request->admission_number,
+                'roll_number'      => $request->roll_number,
+                'class_id'         => $request->class_id,
+                'gender'           => $request->gender,
+                'caste'            => $request->caste,
+                'religion'         => $request->religion,
+                'mobile_number'    => $request->mobile_number,
+                'admission_date'   => $request->admission_date,
+                'blood_group'      => $request->blood_group,
+                'height'           => $request->height,
+                'weight'           => $request->weight,
+                'status'           => $request->status,
+                'user_type'        => 3,
+                'created_by'       => Auth::id(),
+            ]);
 
-            if (!preg_match($regex, $request->email)) {
-                return redirect()->back()->with('error', 'Cet email est invalide. Assurez-vous qu\'il se termine par .fr, .com, .org, .bj ou .io.');
-            }
-
-            $student->name = trim($request->name);
-            $student->last_name = trim($request->last_name);
-            $student->email = trim($request->email);
-            $student->admission_number = trim($request->admission_number);
-            $student->roll_number = trim($request->roll_number);
-            $student->class_id = intval($request->class_id);
-            $student->gender = trim($request->gender);
-            if (!empty($request->date_of_birth)) {
-                $dateOfBirth = Carbon::parse(trim($request->date_of_birth));
-                $minimumAge = 2;
-                $age = $dateOfBirth->diffInYears(Carbon::now());
-                if ($age < $minimumAge) {
-                    return redirect('admin/student/add')->with('error', 'L\'apprenant doit avoir au moins 2 ans.');
-                }
-                $student->date_of_birth = $dateOfBirth;
-            }
-            $student->caste = trim($request->caste);
-            $student->religion = trim($request->religion);
-            if (!empty($request->mobile_number)) {
-                $mobileNumber = trim($request->mobile_number);
-                if (!preg_match('/^\d{8,15}$/', $mobileNumber)) {
-                    return redirect()->back()->with('error', 'Le numéro de téléphone doit contenir uniquement des chiffres et être compris entre 8 et 15 chiffres.');
-                }
-                $student->mobile_number = $mobileNumber;
-            }
-            if (!empty($request->admission_date)) {
-                $student->admission_date = trim($request->admission_date);
-            }
-            if (!empty($request->file('profile_picture'))) {
-                $studentProfilePicture = $student->profile_picture;
-                if (!empty($studentProfilePicture)) {
-                    $profilePictureUrl = User::getProfile();
-                    if (!empty($profilePictureUrl)) {
-                        unlink('upload/profile/' . $studentProfilePicture);
-                    }
-                }
-                $ext = $request->file('profile_picture')->getClientOriginalExtension();
-                $file = $request->file('profile_picture');
-                $randomStr = 'student' . date('dmYhis') . Str::random(20);
-                $fileName = strtolower($randomStr) . '.' . $ext;
-                $file->move('upload/profile/', $fileName);
-                $student->profile_picture = $fileName;
-            }
-            $student->blood_group = trim($request->blood_group);
-            $student->height = trim($request->height);
-            $student->weight = trim($request->weight);
-            $student->status = intval($request->status);
-            if (!empty($request->password)) {
+            if ($request->filled('password')) {
                 $student->password = Hash::make($request->password);
             }
+
             $student->save();
 
-            return redirect('admin/student/list')->with('success', 'Cet apprenant a été modifié avec succès.');
+            return back()->with('success', 'Apprenant créé avec succès.');
         } catch (\Exception $e) {
-            Log::error("Erreur lors de la modification d'un apprenant' : " . $e->getMessage());
-
-            return redirect()->back()->with('error', 'Vos informations ne sont pas correctes. Veuillez réessayer.');
+            Log::error('Création apprenant : ' . $e->getMessage());
+            return back()->with('error', 'Une erreur est survenue. Veuillez réessayer.');
         }
     }
 
-    public function delete($id)
+    public function update(Request $request, int $id)
     {
         $student = User::getSingle($id);
-        if ($student) {
-            $student->is_delete = 1;
+        abort_unless($student, 404);
+
+        $request->validate([
+            'name'      => 'required|string|max:100',
+            'last_name' => 'required|string|max:100',
+            'email'     => "required|email|unique:users,email,{$id}",
+            'class_id'  => 'required|exists:class,id',
+            'status'    => 'required|in:0,1',
+            'password'  => 'nullable|string|min:6',
+        ]);
+
+        try {
+            if ($request->filled('date_of_birth')) {
+                $dob = Carbon::parse($request->date_of_birth);
+                if ($dob->diffInYears(now()) < 2) {
+                    return back()->with('error', "L'apprenant doit avoir au moins 2 ans.");
+                }
+                $student->date_of_birth = $dob;
+            }
+
+            $student->fill([
+                'name'             => trim($request->name),
+                'last_name'        => trim($request->last_name),
+                'email'            => trim($request->email),
+                'admission_number' => $request->admission_number,
+                'roll_number'      => $request->roll_number,
+                'class_id'         => $request->class_id,
+                'gender'           => $request->gender,
+                'caste'            => $request->caste,
+                'religion'         => $request->religion,
+                'mobile_number'    => $request->mobile_number,
+                'admission_date'   => $request->admission_date,
+                'blood_group'      => $request->blood_group,
+                'height'           => $request->height,
+                'weight'           => $request->weight,
+                'status'           => $request->status,
+            ]);
+
+            if ($request->filled('password')) {
+                $student->password = Hash::make($request->password);
+            }
+
+            if ($request->hasFile('profile_picture')) {
+                $this->deleteOldPicture($student->profile_picture);
+                $student->profile_picture = $this->uploadProfilePicture($request, 'student');
+            }
+
             $student->save();
-            return redirect('admin/student/list')->with('success', 'Cet apprenant a été supprimé avec succès.');
-        } else {
-            abort(404);
+
+            return back()->with('success', 'Apprenant modifié avec succès.');
+        } catch (\Exception $e) {
+            Log::error('Modification apprenant : ' . $e->getMessage());
+            return back()->with('error', 'Une erreur est survenue. Veuillez réessayer.');
         }
     }
 
-    public function myStudent(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
+    public function delete(int $id)
     {
-        $data['header_title'] = "Mes apprenants";
-        $teacher_id = Auth::user()->id;
-        $data['getTeacherStudent'] = User::getTeacherStudent(10, $teacher_id);
-        return view('teacher.student', $data);
+        $student = User::getSingle($id);
+        abort_unless($student, 404);
+        $student->update(['is_delete' => 1]);
+        return back()->with('success', 'Apprenant supprimé avec succès.');
+    }
+
+    public function myStudent()
+    {
+        return Inertia::render('Teacher/Students/Index', [
+            'students' => User::getTeacherStudent(15, Auth::id()),
+        ]);
     }
 
     public function exportStudent()
     {
-        return Excel::download(new ExportStudent, 'student_' . date('d_m_Y') . '.xlsx');
+        return Excel::download(new ExportStudent, 'students_' . date('d_m_Y') . '.xlsx');
     }
 
+    private function uploadProfilePicture(Request $request, string $prefix): string
+    {
+        $file = $request->file('profile_picture');
+        $fileName = strtolower($prefix . date('dmYhis') . Str::random(10)) . '.' . $file->getClientOriginalExtension();
+        $file->move('upload/profile/', $fileName);
+        return $fileName;
+    }
+
+    private function deleteOldPicture(?string $filename): void
+    {
+        if ($filename && file_exists('upload/profile/' . $filename)) {
+            unlink('upload/profile/' . $filename);
+        }
+    }
 }

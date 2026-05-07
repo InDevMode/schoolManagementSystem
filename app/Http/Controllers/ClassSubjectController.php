@@ -8,22 +8,17 @@ use App\Models\SubjectModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Inertia\Inertia;
 
 class ClassSubjectController extends Controller
 {
-    public function list(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
+    public function list()
     {
-        $data['getClassSubject'] = ClassSubjectModel::getAllClassSubject(5);
-        $data['header_title'] = "Listes des matières assignées";
-        return view('admin.assign_subject.list', $data);
-    }
-
-    public function add(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
-    {
-        $data['getClass'] = ClassModel::getClass();
-        $data['getSubject'] = SubjectModel::getSubject();
-        $data['header_title'] = "Assignez une matière";
-        return view('admin.assign_subject.add', $data);
+        return Inertia::render('Admin/AssignSubject/Index', [
+            'classSubjects' => ClassSubjectModel::getAllClassSubject(15),
+            'classes'       => ClassModel::getClass(),
+            'subjects'      => SubjectModel::getSubject(),
+        ]);
     }
 
     public function create(Request $request): \Illuminate\Foundation\Application|\Illuminate\Routing\Redirector|\Illuminate\Http\RedirectResponse|\Illuminate\Contracts\Foundation\Application
@@ -59,21 +54,6 @@ class ClassSubjectController extends Controller
         }
     }
 
-    public function edit($id): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
-    {
-        $editExisting = ClassSubjectModel::getSingle($id);
-        if (!empty($editExisting)) {
-            $data['getClassSubject'] = $editExisting;
-            $data['getClass'] = ClassModel::getClass();
-            $data['getSubject'] = SubjectModel::getSubject();
-            $data['getAssignSubject'] = ClassSubjectModel::getAssignSubject($editExisting->class_id);
-            $data['header_title'] = "Modifier une assignation";
-            return view('admin.assign_subject.edit', $data);
-        } else {
-            abort(404);
-        }
-    }
-
     public function update(Request $request): \Illuminate\Foundation\Application|\Illuminate\Routing\Redirector|\Illuminate\Http\RedirectResponse|\Illuminate\Contracts\Foundation\Application
     {
         try {
@@ -104,21 +84,6 @@ class ClassSubjectController extends Controller
             Log::error("Erreur lors de la modification de l'assignation de ces matières. " . $e->getMessage());
 
             return redirect()->back()->with('error', 'Vos informations ne sont pas correctes. Veuillez réessayer.');
-        }
-    }
-
-    public function editSingle($id)
-    {
-        $editExisting = ClassSubjectModel::getSingle($id);
-        if (!empty($editExisting)) {
-            $data['getClassSubject'] = $editExisting;
-            $data['getClass'] = ClassModel::getClass();
-            $data['getSubject'] = SubjectModel::getSubject();
-            $data['getAssignSubject'] = ClassSubjectModel::getAssignSubject($editExisting->class_id);
-            $data['header_title'] = "Modifier une assignation";
-            return view('admin.assign_subject.edit_single', $data);
-        } else {
-            abort(404);
         }
     }
 

@@ -10,33 +10,19 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use Inertia\Inertia;
 
 class UserController extends Controller
 {
 
-    public function myAccount(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
+    public function myAccount()
     {
-        $data['header_title'] = "Mon Compte";
-        $data['getUserData'] = User::getSingle(Auth::user()->id);
-
-        if (empty($data['getUserData'])) {
-            abort(404);
-        }
-
-        $data['profile_picture_url'] = $this->getProfilePictureUrl($data['getUserData']);
-
-        $viewMap = [
-            1 => 'admin.account',
-            2 => 'teacher.account',
-            3 => 'student.account',
-            4 => 'parent.account',
-        ];
-
-        $userType = Auth::user()->user_type;
-
-        return isset($viewMap[$userType])
-            ? view($viewMap[$userType], $data)
-            : view('auth.login');
+        $user = User::getSingle(Auth::user()->id);
+        abort_unless($user, 404);
+        return Inertia::render('Profile/Account', [
+            'userData'          => $user,
+            'profilePictureUrl' => $this->getProfilePictureUrl($user),
+        ]);
     }
 
     private function getProfilePictureUrl($userData): string
@@ -324,10 +310,9 @@ class UserController extends Controller
         }
     }
 
-    public function changePassword(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
+    public function changePassword()
     {
-        $data['header_title'] = "Modifiez votre mot de passe";
-        return view('profile.change_password', $data);
+        return Inertia::render('Profile/ChangePassword');
     }
 
     public function updatePassword(Request $request): \Illuminate\Http\RedirectResponse
@@ -349,13 +334,14 @@ class UserController extends Controller
         }
     }
 
-    public function settings(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
+    public function settings()
     {
-        $data['header_title'] = "Paramètres";
-        $data['getSetting'] = SettingModel::getSingle(1);
-        $data['favicon_url'] = !empty($data['getSetting']->favicon) ? SettingModel::getFavicon() : asset('upload/favicon.png');
-        $data['logo_url'] = !empty($data['getSetting']->logo) ? SettingModel::getLogo() : asset('upload/logo.png');
-        return view('admin.settings.setting', $data);
+        $setting = SettingModel::getSingle(1);
+        return Inertia::render('Admin/Settings/Index', [
+            'setting'    => $setting,
+            'faviconUrl' => $setting?->getFavicon() ?? asset('upload/favicon.png'),
+            'logoUrl'    => $setting?->getLogo()    ?? asset('upload/logo.png'),
+        ]);
     }
 
     public function updateSettingInfo(Request $request)

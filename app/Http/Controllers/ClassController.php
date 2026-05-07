@@ -5,20 +5,15 @@ namespace App\Http\Controllers;
 use App\Models\ClassModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Inertia\Inertia;
 
 class ClassController extends Controller
 {
-    public function list(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
+    public function list()
     {
-        $data['header_title'] = "Liste des classes";
-        $data['getClass'] = ClassModel::getAllClass(5);
-        return view('admin.class.list', $data);
-    }
-
-    public function add(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
-    {
-        $data['header_title'] = "Créer une classe";
-        return view('admin.class.add', $data);
+        return Inertia::render('Admin/Classes/Index', [
+            'classes' => ClassModel::getAllClass(15),
+        ]);
     }
 
     public function create(Request $request): \Illuminate\Foundation\Application|\Illuminate\Routing\Redirector|\Illuminate\Http\RedirectResponse|\Illuminate\Contracts\Foundation\Application
@@ -42,17 +37,6 @@ class ClassController extends Controller
             Log::error("Erreur lors de la création d'une classe : " . $e->getMessage());
 
             return redirect()->back()->with('error', 'Vos informations ne sont pas correctes. Veuillez réessayer.');
-        }
-    }
-
-    public function edit($id)
-    {
-        $data['getClass'] = ClassModel::getSingle($id);
-        if (!empty($data['getClass'])) {
-            $data['header_title'] = "Modifier une classe";
-            return view('admin.class.edit', $data);
-        } else {
-            abort(404);
         }
     }
 
