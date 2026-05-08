@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Inertia\Inertia;
 use Maatwebsite\Excel\Facades\Excel;
 use Stripe\Stripe;
 use Stripe\Checkout\Session as StripeSession;
@@ -19,17 +20,17 @@ class FeesCollectionController extends Controller
 {
     public function list()
     {
-        $data['header_title'] = "Perceptions des contributions";
-        $data['getClass'] = ClassModel::getClass();
-        $data['getFeesCollections'] = User::getFeesCollectionStudent(5);
-        return view('admin.feescollections.list', $data);
+        return Inertia::render('Admin/Fees/Index', [
+            'classes' => ClassModel::getClass(),
+            'feesCollections' => User::getFeesCollectionStudent(15),
+        ]);
     }
 
     public function feesList()
     {
-        $data['header_title'] = "Liste des contributions reçues";
-        $data['getFeesCollections'] = FeesCollectionModel::getFeesCollections(5);
-        return view('admin.feescollections.feeslist', $data);
+        return Inertia::render('Admin/Fees/List', [
+            'feesCollections' => FeesCollectionModel::getFeesCollections(15),
+        ]);
     }
 
     public function createFees(Request $request, $student_id)
@@ -264,12 +265,13 @@ class FeesCollectionController extends Controller
 
     public function myFees()
     {
-        $data['header_title'] = "Mes Contributions";
-        $data['getFees'] = FeesCollectionModel::getFees(Auth::user()->id, 5);
-        $data['getStudent'] = User::getSingleClass(Auth::user()->id);
-        $data['classAmount'] = $data['getStudent']->class_amount;
-        $data['totalPaid'] = FeesCollectionModel::getPaidAmount(Auth::user()->id, Auth::user()->class_id);
-        return view('student.feescollections.myfees', $data);
+        $getStudent = User::getSingleClass(Auth::user()->id);
+        return Inertia::render('Student/Fees/Index', [
+            'student' => $getStudent,
+            'classAmount' => $getStudent->class_amount,
+            'totalPaid' => FeesCollectionModel::getPaidAmount(Auth::user()->id, Auth::user()->class_id),
+            'feesCollections' => FeesCollectionModel::getFees(Auth::user()->id, 15),
+        ]);
     }
 
     public function myFeesCreate(Request $request)
@@ -496,12 +498,12 @@ class FeesCollectionController extends Controller
 
     public function parentStudentFees($student_id)
     {
-        $data['header_title'] = 'Frais de scolarité';
-        $data['getFees'] = FeesCollectionModel::getFees($student_id, 5);
-        $data['getStudent'] = User::getSingleClass($student_id);
-        $data['classAmount'] = $data['getStudent']->class_amount;
-        $data['totalPaid'] = FeesCollectionModel::getPaidAmount($student_id, $data['getStudent']->class_id);
-        return view('parent.feescollections.student_fees', $data);
+        $getStudent = User::getSingleClass($student_id);
+        return Inertia::render('Parent/Fees/Index', [
+            'student' => $getStudent,
+            'classAmount' => $getStudent->class_amount,
+            'totalPaid' => FeesCollectionModel::getPaidAmount($student_id, $getStudent->class_id),
+        ]);
     }
 
     public function parentStudentFeesCreate(Request $request, $student_id)

@@ -11,16 +11,17 @@ use App\Models\User;
 use App\Models\WeekModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
 
 class CalendarController extends Controller
 {
 
-    public function myCalendar(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
+    public function myCalendar()
     {
-        $data['header_title'] = "Mon Calendrier";
-        $data['getMyTimetable'] = $this->getTimetable(Auth::user()->class_id);
-        $data['getExamTimetable'] = $this->getExamTimetable(Auth::user()->class_id);
-        return view('student.calendar', $data);
+        return Inertia::render('Student/Calendar/Index', [
+            'timetable' => $this->getTimetable(Auth::user()->class_id),
+            'examTimetable' => $this->getExamTimetable(Auth::user()->class_id),
+        ]);
     }
 
     public function getTimetable($class_id): array
@@ -83,23 +84,23 @@ class CalendarController extends Controller
         return $result;
     }
 
-    public function parentStudentExamCalendar($student_id): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
+    public function parentStudentExamCalendar($student_id)
     {
-        $data['header_title'] = "Son Calendrier";
         $getStudent = User::getSingle($student_id);
-        $data['getStudent'] = $getStudent;
-        $data['getMyTimetable'] = $this->getTimetable($getStudent->class_id);
-        $data['getExamTimetable'] = $this->getExamTimetable($getStudent->class_id);
-        return view('parent.calendar', $data);
+        return Inertia::render('Parent/Calendar/Index', [
+            'timetable' => $this->getTimetable($getStudent->class_id),
+            'examTimetable' => $this->getExamTimetable($getStudent->class_id),
+            'student' => $getStudent,
+        ]);
     }
 
-    public function myTeacherCalendar(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
+    public function myTeacherCalendar()
     {
-        $data['header_title'] = "Mon calendrier";
         $teacher_id = Auth::user()->id;
-        $data['getClassTeacherTimetable'] = ClassTeacherModel::getTeacherCalendar($teacher_id);
-        $data['getExamTimetableTeacher'] = ScheduleModel::getExamTimetableTeacher($teacher_id);
-        return view('teacher.calendar', $data);
+        return Inertia::render('Teacher/Calendar/Index', [
+            'classTimetable' => ClassTeacherModel::getTeacherCalendar($teacher_id),
+            'examTimetable' => ScheduleModel::getExamTimetableTeacher($teacher_id),
+        ]);
     }
 
 }

@@ -24,6 +24,8 @@ export interface PageProps {
         error?: string;
         warning?: string;
     };
+    notifications: any[];
+    unreadMessages: any[];
     ziggy: {
         location: string;
         [key: string]: unknown;

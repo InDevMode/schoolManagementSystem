@@ -12,7 +12,7 @@
                 class="card p-5 space-y-3 hover:shadow-md transition-shadow"
             >
                 <h3 class="text-sm font-semibold text-gray-900 dark:text-white">{{ notice.title }}</h3>
-                <p class="text-sm text-gray-600 dark:text-gray-400">{{ notice.message }}</p>
+                <p class="text-sm text-gray-600 dark:text-gray-400">{{ stripHtml(notice.message, 200) }}</p>
                 <div class="flex items-center gap-3 text-xs text-gray-400 dark:text-gray-500 pt-2 border-t border-gray-100 dark:border-gray-700">
                     <span>Publié: {{ formatDate(notice.publish_date) }}</span>
                     <span>Date: {{ formatDate(notice.notice_date) }}</span>
@@ -65,4 +65,6 @@ defineProps<{
 
 const formatDate = (d: string) =>
     d ? new Date(d).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' }) : '—';
+
+import { stripHtml } from '@/Utils/html';
 </script>

@@ -125,17 +125,13 @@ Route::group(['middleware' => 'admin'], function () {
 
     //  Period Url
     Route::get('admin/examinations/period/list', [PeriodController::class, 'list']);
-    Route::get('admin/examinations/period/add', [PeriodController::class, 'add']);
     Route::post('admin/examinations/period/add', [PeriodController::class, 'create']);
-    Route::get('admin/examinations/period/edit/{id}', [PeriodController::class, 'edit']);
     Route::post('admin/examinations/period/edit/{id}', [PeriodController::class, 'update']);
     Route::get('admin/examinations/period/delete/{id}', [PeriodController::class, 'delete']);
 
     // Examinations url
     Route::get('admin/examinations/exam/list', [ExaminationController::class, 'list']);
-    Route::get('admin/examinations/exam/add', [ExaminationController::class, 'add']);
     Route::post('admin/examinations/exam/add', [ExaminationController::class, 'create']);
-    Route::get('admin/examinations/exam/edit/{id}', [ExaminationController::class, 'edit']);
     Route::post('admin/examinations/exam/edit/{id}', [ExaminationController::class, 'update']);
     Route::get('admin/examinations/exam/delete/{id}', [ExaminationController::class, 'delete']);
 
@@ -151,9 +147,7 @@ Route::group(['middleware' => 'admin'], function () {
 
     // Marks grade url
     Route::get('admin/examinations/marks_grade/list', [ExaminationController::class, 'listMarksGrade']);
-    Route::get('admin/examinations/marks_grade/add', [ExaminationController::class, 'addMarksGrade']);
     Route::post('admin/examinations/marks_grade/add', [ExaminationController::class, 'createMarksGrade']);
-    Route::get('admin/examinations/marks_grade/edit/{id}', [ExaminationController::class, 'editMarksGrade']);
     Route::post('admin/examinations/marks_grade/edit/{id}', [ExaminationController::class, 'updateMarksGrade']);
     Route::get('admin/examinations/marks_grade/delete/{id}', [ExaminationController::class, 'deleteMarksGrade']);
 

@@ -83,21 +83,19 @@ class SubjectController extends Controller
         }
     }
 
-    public function studentSubject(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
+    public function studentSubject()
     {
-        $data['getStudentSubject'] = ClassSubjectModel::studentStubject(Auth::user()->class_id, 10, );
-        $data['student_id'] = Auth::user()->id;
-        $data['header_title'] = "Mes Cours";
-        return view('student.subject', $data);
-
+        return Inertia::render('Student/Subjects/Index', [
+            'subjects' => ClassSubjectModel::studentStubject(15, Auth::user()->class_id),
+        ]);
     }
 
-    public function parentStudentSubject($student_id): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
+    public function parentStudentSubject($student_id)
     {
         $student = User::getSingle($student_id);
-        $data['getUser'] = $student;
-        $data['getParentStudentSubject'] = ClassSubjectModel::studentStubject(10, $student->class_id);
-        $data['header_title'] = "Liste des matières de mon apprenant";
-        return view('parent.student_subject', $data);
+        return Inertia::render('Parent/Subjects/Index', [
+            'student' => $student,
+            'subjects' => ClassSubjectModel::studentStubject(15, $student->class_id),
+        ]);
     }
 }

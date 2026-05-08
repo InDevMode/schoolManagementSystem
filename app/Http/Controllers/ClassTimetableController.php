@@ -10,21 +10,20 @@ use App\Models\WeekModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Inertia\Inertia;
 
 class ClassTimetableController extends Controller
 {
-    public function list(Request $request): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
+    public function list(Request $request)
     {
-        $data['header_title'] = "Liste des horaires de cours";
-        $data['getClass'] = ClassModel::getClass();
-
+        $subjects = [];
         if (!empty($request->class_id)) {
-            $data['getSubject'] = ClassTimetableModel::getSubject($request->class_id);
+            $subjects = ClassTimetableModel::getSubject($request->class_id);
         }
-        $data['getWeek'] = WeekModel::getAllWeek();
 
+        $getWeek = WeekModel::getAllWeek();
         $week = [];
-        foreach ($data['getWeek'] as $weekValue) {
+        foreach ($getWeek as $weekValue) {
             $weekEntry = [
                 'week_id' => $weekValue->id,
                 'week_name' => $weekValue->name,
@@ -43,8 +42,14 @@ class ClassTimetableController extends Controller
             }
             $week[] = $weekEntry;
         }
-        $data['week'] = $week;
-        return view('admin.class_timetable.list', $data);
+
+        return Inertia::render('Admin/Timetable/Index', [
+            'classes' => ClassModel::getClass(),
+            'subjects' => $subjects,
+            'week' => $week,
+            'selectedClass' => $request->class_id,
+            'selectedSubject' => $request->subject_id,
+        ]);
     }
 
     public function getSubject(Request $request): \Illuminate\Http\JsonResponse
@@ -65,7 +70,7 @@ class ClassTimetableController extends Controller
         return response()->json(['subjects' => $subjects], 200);
     }
 
-    public function add(Request $request): \Illuminate\Foundation\Application|\Illuminate\Routing\Redirector|\Illuminate\Http\RedirectResponse|\Illuminate\Contracts\Foundation\Application
+    public function add(Request $request)
     {
         try {
             ClassTimetableModel::where('class_id', '=', $request->class_id)->where('subject_id', '=', $request->subject_id)->delete();
@@ -90,9 +95,8 @@ class ClassTimetableController extends Controller
         }
     }
 
-    public function studentTimetable(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
+    public function studentTimetable()
     {
-        $data['header_title'] = "Mes horaires de cours";
         $getTimetable = ClassTimetableModel::getSubject(Auth::user()->class_id);
 
         $studentTimetable = [];
@@ -121,15 +125,14 @@ class ClassTimetableController extends Controller
             $dataSubject['week'] = $week;
             $studentTimetable[] = $dataSubject;
         }
-        $data['getStudentTimetable'] = $studentTimetable;
-        return view('student.timetable', $data);
+
+        return Inertia::render('Student/Timetable/Index', [
+            'timetable' => $studentTimetable,
+        ]);
     }
 
-    public function myClassSubjectTimetable($class_id, $subject_id): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
+    public function myClassSubjectTimetable($class_id, $subject_id)
     {
-        $data['header_title'] = "Mes horaires de cours";
-        $data['getClass'] = ClassModel::getSingle($class_id);
-        $data['getSubject'] = SubjectModel::getSingle($subject_id);
         $getWeek = WeekModel::getAllWeek();
         $week = [];
 
@@ -154,16 +157,15 @@ class ClassTimetableController extends Controller
         $dataSubject['week'] = $week;
         $teacherTimetable[] = $dataSubject;
 
-        $data['getTeacherTimetable'] = $teacherTimetable;
-        return view('teacher.timetable', $data);
+        return Inertia::render('Teacher/Timetable/Index', [
+            'class' => ClassModel::getSingle($class_id),
+            'subject' => SubjectModel::getSingle($subject_id),
+            'timetable' => $teacherTimetable,
+        ]);
     }
 
-    public function parentStudentSubjectTimetable($class_id, $subject_id, $student_id): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
+    public function parentStudentSubjectTimetable($class_id, $subject_id, $student_id)
     {
-        $data['header_title'] = "Ses horaires de cours";
-        $data['getClass'] = ClassModel::getSingle($class_id);
-        $data['getSubject'] = SubjectModel::getSingle($subject_id);
-        $data['getStudent'] = User::getSingle($student_id);
         $getWeek = WeekModel::getAllWeek();
         $week = [];
 
@@ -188,8 +190,11 @@ class ClassTimetableController extends Controller
         $dataSubject['week'] = $week;
         $teacherTimetable[] = $dataSubject;
 
-        $data['getTeacherTimetable'] = $teacherTimetable;
-        return view('parent.timetable', $data);
+        return Inertia::render('Parent/Timetable/Index', [
+            'class' => ClassModel::getSingle($class_id),
+            'subject' => SubjectModel::getSingle($subject_id),
+            'student' => User::getSingle($student_id),
+            'timetable' => $teacherTimetable,
+        ]);
     }
-
 }

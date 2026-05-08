@@ -62,6 +62,26 @@ class HandleInertiaRequests extends Middleware
                 'error'   => fn () => $request->session()->get('error'),
                 'warning' => fn () => $request->session()->get('warning'),
             ],
+            'notifications' => function () use ($request) {
+                if (!$request->user()) return [];
+                try {
+                    $userType = $request->user()->user_type;
+                    if ($userType == 1) {
+                        return \App\Models\CommunicateModel::getNoticeBoard(5);
+                    }
+                    return \App\Models\CommunicateModel::getCommunicateWithUserType($userType);
+                } catch (\Exception $e) {
+                    return [];
+                }
+            },
+            'unreadMessages' => function () use ($request) {
+                if (!$request->user()) return [];
+                try {
+                    return \App\Models\ChatModel::getUnreadMessages($request->user()->id);
+                } catch (\Exception $e) {
+                    return [];
+                }
+            },
             'ziggy' => fn () => [
                 ...(new Ziggy)->toArray(),
                 'location' => $request->url(),

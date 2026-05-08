@@ -32,7 +32,7 @@
                         </button>
                     </div>
                 </div>
-                <p class="text-xs text-gray-500 dark:text-gray-400 line-clamp-3">{{ notice.message }}</p>
+                <p class="text-xs text-gray-500 dark:text-gray-400 line-clamp-3" v-html="truncateHtml(notice.message, 150)" />
                 <div class="flex items-center gap-3 text-xs text-gray-400 dark:text-gray-500 pt-1 border-t border-gray-100 dark:border-gray-700">
                     <span>Publié: {{ formatDate(notice.publish_date) }}</span>
                     <span>Date: {{ formatDate(notice.notice_date) }}</span>
@@ -197,4 +197,10 @@ const confirmDelete = () => {
 
 const formatDate = (d: string) =>
     d ? new Date(d).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' }) : '—';
+
+// Nettoie le HTML et tronque le texte
+const truncateHtml = (html: string, maxLength = 150) => {
+    const text = html?.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim() ?? '';
+    return text.length > maxLength ? text.slice(0, maxLength) + '…' : text;
+};
 </script>

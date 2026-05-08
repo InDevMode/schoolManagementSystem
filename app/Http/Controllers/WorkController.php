@@ -12,28 +12,23 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use Inertia\Inertia;
 
 class WorkController extends Controller
 {
     public function practicalWorksList()
     {
-        $data['header_title'] = 'Liste des travaux';
-        $data['getWorks'] = WorkModel::getWorks(5);
-        return view('admin.practicalworks.list', $data);
-    }
-
-    public function practicalWorksAdd()
-    {
-        $data['header_title'] = 'Ajouter un travail';
-        $data['getClass'] = ClassModel::getClass();
-        return view('admin.practicalworks.add', $data);
+        return Inertia::render('Admin/Homework/Index', [
+            'works' => WorkModel::getWorks(15),
+            'classes' => ClassModel::getClass(),
+        ]);
     }
 
     public function practicalWorksDetails($id)
     {
-        $data['header_title'] = 'Détails du travail de maison';
-        $data['getWorks'] = WorkModel::getWorkIdWithHomeworks($id);
-        return view('admin.practicalworks.details', $data);
+        return Inertia::render('Admin/Homework/Details', [
+            'work' => WorkModel::getWorkIdWithHomeworks($id),
+        ]);
     }
 
     public function getSubjectByClassId($classId)
@@ -72,15 +67,6 @@ class WorkController extends Controller
 
             return redirect()->back()->with('error', 'Vos informations ne sont pas correctes. Veuillez réessayer.');
         }
-    }
-
-    public function practicalWorksEdit($id)
-    {
-        $data['header_title'] = 'Modifier un travail';
-        $data['getClass'] = ClassModel::getClass();
-        $data['getWorks'] = WorkModel::getSingle($id);
-        $data['getSubject'] = ClassSubjectModel::getSubject($data['getWorks']->class_id);
-        return view('admin.practicalworks.edit', $data);
     }
 
     public function practicalWorksUpdate(Request $request, $id)
@@ -129,23 +115,38 @@ class WorkController extends Controller
         }
     }
 
+    public function homeworkSubmission($id)
+    {
+        $homework = WorkModel::getSingle($id);
+        if (!empty($homework)) {
+            return Inertia::render('Admin/Homework/Submission', [
+                'homeworks' => HomeworkModel::getHomeworks($id, 15),
+                'workId' => $id,
+            ]);
+        } else {
+            abort(404);
+        }
+    }
+
+    public function homeworkReportList()
+    {
+        return Inertia::render('Admin/Homework/Reports', [
+            'homeworks' => HomeworkModel::getAllHomeworks(15),
+        ]);
+    }
+
     public function teacherPracticalWorksList()
     {
-        $data['header_title'] = 'Liste des travaux';
         $class_ids = [];
         $getClass = ClassTeacherModel::getMyClassSubjectGroup(Auth::user()->id);
         foreach ($getClass as $class) {
             $class_ids[] = $class->class_id;
         }
-        $data['getWorks'] = WorkModel::getWorksTeacher(5, $class_ids);
-        return view('teacher.practicalworks.list', $data);
-    }
 
-    public function teacherPracticalWorksAdd()
-    {
-        $data['header_title'] = 'Ajouter un travail';
-        $data['getClass'] = ClassTeacherModel::getMyClassSubjectGroup(Auth::user()->id);
-        return view('teacher.practicalworks.add', $data);
+        return Inertia::render('Teacher/Homework/Index', [
+            'works' => WorkModel::getWorksTeacher(15, $class_ids),
+            'classes' => ClassTeacherModel::getMyClassSubjectGroup(Auth::user()->id),
+        ]);
     }
 
     public function teacherPracticalWorksCreate(Request $request)
@@ -178,14 +179,6 @@ class WorkController extends Controller
             return redirect()->back()->with('error', 'Vos informations ne sont pas correctes. Veuillez réessayer.');
         }
 
-    }
-
-    public function teacherPracticalWorksEdit($id)
-    {
-        $data['header_title'] = 'Modifier un travail';
-        $data['getClass'] = ClassTeacherModel::getMyClassSubjectGroup(Auth::user()->id);
-        $data['getWorks'] = WorkModel::getSingle($id);
-        return view('teacher.practicalworks.edit', $data);
     }
 
     public function teacherPracticalWorksUpdate(Request $request, $id)
@@ -233,26 +226,31 @@ class WorkController extends Controller
         }
     }
 
-    public function myHomework()
+    public function teacherHomeworkSubmission($id)
     {
-        $data['header_title'] = 'Mes travaux';
-        $data['getWorks'] = WorkModel::getWorksWithStudentStatus(Auth::user()->class_id, Auth::user()->id, 5);
-        return view('student.practicalworks.list', $data);
+        $homework = WorkModel::getSingle($id);
+        if (!empty($homework)) {
+            return Inertia::render('Teacher/Homework/Submission', [
+                'homeworks' => HomeworkModel::getHomeworks($id, 15),
+                'workId' => $id,
+            ]);
+        } else {
+            abort(404);
+        }
     }
 
-    //  TODO LATER
-    public function myHomeworkDetails($id)
+    public function myHomework()
     {
-        $data['header_title'] = 'Détails d\'un travail';
-        $data['getWorks'] = WorkModel::getSingle($id);
-        return view('student.practicalworks.list', $data);
+        return Inertia::render('Student/Homework/Index', [
+            'works' => WorkModel::getWorksWithStudentStatus(Auth::user()->class_id, Auth::user()->id, 15),
+        ]);
     }
 
     public function myHomeworkSubmission($work_id)
     {
-        $data['getWorks'] = WorkModel::getSingle($work_id);
-        $data['header_title'] = 'Soumettre un travail de maison';
-        return view('student.practicalworks.submission', $data);
+        return Inertia::render('Student/Homework/Submission', [
+            'work' => WorkModel::getSingle($work_id),
+        ]);
     }
 
     public function myHomeworkSubmissionCreate(Request $request, $work_id)
@@ -285,56 +283,12 @@ class WorkController extends Controller
         }
     }
 
-    public function myHomeworkSubmissionDetails($id)
-    {
-        $data['header_title'] = 'Détails d\'un travail de maison soumis';
-        $data['getHomeworks'] = HomeworkModel::getSingle($id);
-        return view('student.practicalworks.list', $data);
-    }
-
-    public function homeworkSubmission($work_id)
-    {
-        $homework = WorkModel::getSingle($work_id);
-        if (!empty($homework)) {
-
-            $data['work_id'] = $work_id;
-            $data['header_title'] = 'Soumission d\'un travail de maison';
-            $data['getHomeworks'] = HomeworkModel::getHomeworks($work_id, 5);
-
-            return view('admin.practicalworks.submission', $data);
-        } else {
-            abort(404);
-        }
-
-    }
-
-    public function teacherHomeworkSubmission($work_id)
-    {
-        $homework = WorkModel::getSingle($work_id);
-        if (!empty($homework)) {
-
-            $data['work_id'] = $work_id;
-            $data['header_title'] = 'Soumission d\'un travail de maison';
-            $data['getHomeworks'] = HomeworkModel::getHomeworks($work_id, 5);
-
-            return view('teacher.practicalworks.submission', $data);
-        } else {
-            abort(404);
-        }
-    }
-
     public function parentHomeworkSubmission($student_id)
     {
-        $data['getStudent'] = User::getSingle($student_id);
-        $data['header_title'] = 'Soumission d\'un travail de maison';
-        $data['getWorks'] = WorkModel::getWorksWithStudentStatus($data['getStudent']->class_id, $data['getStudent']->id, 5);
-        return view('parent.practicalworks.submission', $data);
+        $getStudent = User::getSingle($student_id);
+        return Inertia::render('Parent/Homework/Submission', [
+            'works' => WorkModel::getWorksWithStudentStatus($getStudent->class_id, $getStudent->id, 15),
+            'student' => $getStudent,
+        ]);
     }
-
-    public function homeworkReportList(){
-        $data['header_title'] = 'Rapports des travaux de maison';
-        $data['getAllHomeworks'] = HomeworkModel::getAllHomeworks( 5);
-        return view('admin.practicalworks.reports', $data);
-    }
-
 }
