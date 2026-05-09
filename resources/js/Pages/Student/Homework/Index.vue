@@ -8,7 +8,7 @@
         <div class="card overflow-hidden">
             <AppTable :columns="columns" :rows="works.data" :pagination="works" row-key="id">
                 <template #cell-description="{ row }">
-                    <span class="line-clamp-2 text-sm text-gray-600 dark:text-gray-400">{{ row.description }}</span>
+                    <span class="line-clamp-2 text-sm text-gray-600 dark:text-gray-400">{{ stripHtml(row.description, 100) }}</span>
                 </template>
                 <template #cell-homework_status="{ row }">
                     <AppBadge v-if="row.homework_status" :variant="row.homework_status === 'submitted' ? 'success' : 'warning'" dot>
@@ -28,6 +28,7 @@
 
 <script setup lang="ts">
 import { AppTable, AppBadge } from '@/Components/UI';
+import { stripHtml } from '@/Utils/html';
 
 interface Work {
     id: number;

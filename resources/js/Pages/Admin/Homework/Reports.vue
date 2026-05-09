@@ -17,6 +17,9 @@
                     <a v-if="row.document_file" :href="`/upload/homeworks/${row.document_file}`" target="_blank" class="text-primary-600 hover:underline text-xs">Voir</a>
                     <span v-else class="text-gray-400 text-xs">—</span>
                 </template>
+                <template #cell-created_at="{ row }">
+                    <span class="text-xs text-gray-500">{{ formatDate(row.created_at) }}</span>
+                </template>
             </AppTable>
         </div>
     </div>
@@ -54,4 +57,10 @@ const columns = [
     { key: 'document_file', label: 'Document' },
     { key: 'created_at', label: 'Date' },
 ];
+
+const formatDate = (d: string) => {
+    if (!d) return '—';
+    try { return new Date(d).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' }); }
+    catch { return d; }
+};
 </script>

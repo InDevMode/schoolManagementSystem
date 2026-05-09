@@ -25,6 +25,10 @@
     @routes
     @vite(['resources/css/app.css', 'resources/js/app.ts'])
     @inertiaHead
+    <!-- SDK Kkiapay -->
+    <script src="https://cdn.kkiapay.me/k.js" defer></script>
+    <!-- SDK FedaPay (optionnel pour widget inline) -->
+    <script src="https://cdn.fedapay.com/checkout.js?v=1.1.7" defer></script>
 </head>
 <body class="font-inter antialiased bg-gray-50 dark:bg-gray-900">
     @inertia

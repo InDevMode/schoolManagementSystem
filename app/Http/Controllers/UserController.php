@@ -351,13 +351,15 @@ class UserController extends Controller
 
             $setting = SettingModel::getSingle(1);
             if ($setting) {
-                $setting->paypal_email = trim($request->paypal_email);
-                $setting->kkiapay_public_key = trim($request->kkiapay_public_key);
+                $setting->paypal_email        = trim($request->paypal_email);
+                $setting->kkiapay_public_key  = trim($request->kkiapay_public_key);
                 $setting->kkiapay_private_key = trim($request->kkiapay_private_key);
-                $setting->kkiapay_secret_key = trim($request->kkiapay_secret_key);
-                $setting->stripe_public_key = trim($request->stripe_public_key);
-                $setting->stripe_secret_key = trim($request->stripe_secret_key);
-                $setting->school_name = trim($request->school_name);
+                $setting->kkiapay_secret_key  = trim($request->kkiapay_secret_key);
+                $setting->stripe_public_key   = trim($request->stripe_public_key);
+                $setting->stripe_secret_key   = trim($request->stripe_secret_key);
+                $setting->fedapay_public_key  = trim($request->fedapay_public_key);
+                $setting->fedapay_secret_key  = trim($request->fedapay_secret_key);
+                $setting->school_name         = trim($request->school_name);
                 $setting->school_type = trim($request->school_type);
                 $setting->address = trim($request->address);
                 $setting->phone = trim($request->phone);

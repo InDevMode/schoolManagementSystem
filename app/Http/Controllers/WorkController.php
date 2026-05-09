@@ -31,6 +31,13 @@ class WorkController extends Controller
         ]);
     }
 
+    public function practicalWorksDetailsJson($id)
+    {
+        $work = WorkModel::getWorkIdWithHomeworks($id);
+        abort_unless($work, 404);
+        return response()->json(['work' => $work]);
+    }
+
     public function getSubjectByClassId($classId)
     {
         $data['getSubject'] = ClassSubjectModel::getSubject($classId);

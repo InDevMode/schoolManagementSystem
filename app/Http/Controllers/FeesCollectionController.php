@@ -7,6 +7,8 @@ use App\Models\ClassModel;
 use App\Models\FeesCollectionModel;
 use App\Models\SettingModel;
 use App\Models\User;
+use FedaPay\FedaPay;
+use FedaPay\Transaction as FedaTransaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
@@ -44,16 +46,14 @@ class FeesCollectionController extends Controller
 
             // 💰 Nouveau montant à payer
             $newPayment = intval($request->amount);
-            // ✅ Vérifie que le montant à payer est supérieur à 0
             if ($newPayment <= 0) {
-                return redirect()->back()->with('error', 'Le montant doit être supérieur à 0.');
+                return back()->with('error', 'Le montant doit être supérieur à 0.');
             }
 
             // 💰 Nouveau montant total après ce paiement
             $totalAfterPayment = $getPaidAmount + $newPayment;
-            // ✅ Vérifie que le paiement ne dépasse pas le montant total requis
             if ($totalAfterPayment > intval($getStudent->class_amount)) {
-                return redirect()->back()->with('error', 'La contribution totale ne peut pas dépasser le montant requis pour la classe.');
+                return back()->with('error', 'La contribution totale ne peut pas dépasser le montant requis pour la classe.');
             }
 
             // 🧾 Préparation des données communes
@@ -74,24 +74,22 @@ class FeesCollectionController extends Controller
                 case 'check':
                 case 'transfer':
                 case 'virement':
-                    // ✅ Paiement manuel, on enregistre directement
                     $fees = new FeesCollectionModel($paymentData);
                     $fees->payment_status = 'Paid';
                     $fees->save();
 
-                    return redirect('admin/feescollections/collections/list')
-                        ->with('success', 'Paiement enregistré avec succès.');
+                    return back()->with('success', 'Paiement enregistré avec succès.');
 
                 case 'kkiapay':
                     $transactionId = $request->input('kkiapay_payment_id');
 
                     $response = Http::withHeaders([
-                        'Authorization' => 'Bearer ' . env('KKIAPAY_SECRET'),
+                        'Authorization' => 'Bearer ' . env('KKIAPAY_SECRET_KEY'),
                         'Accept' => 'application/json',
                     ])->get("https://api.kkiapay.me/api/v1/transactions/$transactionId");
 
                     if (!$response->ok() || $response['status'] !== 'SUCCESS') {
-                        return redirect()->back()->with('error', 'Paiement Kkiapay invalide ou échoué.');
+                        return back()->with('error', 'Paiement Kkiapay invalide ou échoué.');
                     }
 
                     $fees = new FeesCollectionModel($paymentData);
@@ -99,56 +97,127 @@ class FeesCollectionController extends Controller
                     $fees->payment_status = 'Paid';
                     $fees->save();
 
-                    return redirect('admin/feescollections/collections/list')
-                        ->with('success', 'Paiement Kkiapay validé et enregistré.');
+                    return back()->with('success', 'Paiement Kkiapay validé et enregistré.');
 
                 case 'paypal':
-                    // 🔁 Redirection vers PayPal avec les données en `custom`
-                    return $this->redirectToAdminPaypal($request, $getStudent, $student_id);
+                    $paypalUrl = $this->getAdminPaypalUrl($request, $getStudent, $student_id);
+                    return response()->json(['redirect_url' => $paypalUrl]);
 
                 case 'stripe':
-                    // 🔁 Redirection vers Stripe avec les données en `metadata`
-                    $fees = new FeesCollectionModel($paymentData); // utilisé uniquement pour transmettre les infos
-                    return redirect()->away($this->redirectToAdminStripe($fees, $getStudent));
+                    $fees = new FeesCollectionModel($paymentData);
+                    $stripeUrl = $this->redirectToAdminStripe($fees, $getStudent);
+                    // Retourner l'URL en JSON pour que le frontend fasse la redirection
+                    return response()->json(['redirect_url' => $stripeUrl]);
+
+                case 'fedapay':
+                    $fedapayUrl = $this->getFedapayUrl($request, $getStudent, $student_id, $paymentData);
+                    return response()->json(['redirect_url' => $fedapayUrl]);
             }
 
-            return redirect()->back()->with('error', 'Type de paiement non reconnu.');
+            return back()->with('error', 'Type de paiement non reconnu.');
 
         } catch (\Exception $e) {
             Log::error("Erreur lors de l'ajout de contribution : " . $e->getMessage());
-            return redirect()->back()->with('error', 'Vos informations ne sont pas correctes. Veuillez réessayer.');
+            return back()->with('error', 'Une erreur est survenue. Veuillez réessayer.');
         }
     }
 
-    private function redirectToAdminPaypal(Request $request, $student, $student_id)
+    private function getFedapayUrl(Request $request, $student, $student_id, array $paymentData): string
+    {
+        $setting   = SettingModel::getSingle(1);
+        $secretKey = $setting->fedapay_secret_key ?? env('FEDAPAY_SECRET_KEY', '');
+
+        FedaPay::setApiKey($secretKey);
+
+        // Détecter l'environnement selon le préfixe de la clé
+        $environment = str_starts_with($secretKey, 'sk_live') ? 'live' : 'sandbox';
+        FedaPay::setEnvironment($environment);
+
+        $transaction = FedaTransaction::create([
+            'description' => 'Frais de scolarité — ' . $student->name . ' ' . $student->last_name,
+            'amount'      => intval($request->amount),
+            'currency'    => ['iso' => 'XOF'],
+            'callback_url'=> url('admin/feescollections_fedapay/payment_success'),
+            'customer'    => [
+                'firstname' => $student->name,
+                'lastname'  => $student->last_name,
+                'email'     => $student->email,
+            ],
+        ]);
+
+        // Stocker les données en session pour le callback
+        session([
+            'fedapay_pending' => array_merge($paymentData, [
+                'transaction_id' => $transaction->id,
+            ]),
+        ]);
+
+        return $transaction->generateToken()->url;
+    }
+
+    public function fedapayAdminSuccess(Request $request)
+    {
+        $pending = session('fedapay_pending');
+
+        if ($pending) {
+            $setting   = SettingModel::getSingle(1);
+            $secretKey = $setting->fedapay_secret_key ?? env('FEDAPAY_SECRET_KEY', '');
+
+            FedaPay::setApiKey($secretKey);
+            $environment = str_starts_with($secretKey, 'sk_live') ? 'live' : 'sandbox';
+            FedaPay::setEnvironment($environment);
+
+            try {
+                $transaction = FedaTransaction::retrieve($pending['transaction_id']);
+
+                if ($transaction->status === 'approved') {
+                    $fees = new FeesCollectionModel($pending);
+                    $fees->payment_status     = 'Paid';
+                    $fees->fedapay_transaction_id = $pending['transaction_id'];
+                    $fees->save();
+
+                    session()->forget('fedapay_pending');
+                    return redirect('admin/feescollections/collections/list')
+                        ->with('success', 'Paiement FedaPay validé et enregistré.');
+                }
+            } catch (\Exception $e) {
+                Log::error('FedaPay callback error: ' . $e->getMessage());
+            }
+        }
+
+        return redirect('admin/feescollections/collections/list')
+            ->with('error', 'Paiement FedaPay non confirmé.');
+    
+    
+        return redirect()->away($this->getAdminPaypalUrl($request, $student, $student_id));
+    }
+
+    private function getAdminPaypalUrl(Request $request, $student, $student_id): string
     {
         $getSetting = SettingModel::getSingle(1);
 
         $query = [
-            'business' => $getSetting->paypal_email,
-            'cmd' => '_xclick',
-            'item_name' => "Frais de scolarité",
-            'no_shipping' => '1',
-            'amount' => $request->amount,
+            'business'      => $getSetting->paypal_email,
+            'cmd'           => '_xclick',
+            'item_name'     => "Frais de scolarité",
+            'no_shipping'   => '1',
+            'amount'        => $request->amount,
             'currency_code' => 'XOF',
-            'custom' => json_encode([
-                'student_id' => $student_id,
-                'class_id' => $student->class_id,
-                'total_amount' => $student->class_amount,
-                'paid_amount' => $request->amount,
+            'custom'        => json_encode([
+                'student_id'      => $student_id,
+                'class_id'        => $student->class_id,
+                'total_amount'    => $student->class_amount,
+                'paid_amount'     => $request->amount,
                 'remaning_amount' => $student->class_amount - (FeesCollectionModel::getPaidAmount($student_id, $student->class_id) + $request->amount),
-                'remark' => $request->remark,
-                'created_by' => auth()->user()->id,
+                'remark'          => $request->remark,
+                'created_by'      => auth()->user()->id,
             ]),
-            'notify_url' => url('paypal/ipn/admin'),
+            'notify_url'    => url('paypal/ipn/admin'),
             'cancel_return' => url('admin/feescollections_paypal/payment_error'),
-            'return' => url('admin/feescollections_paypal/payment_success'),
+            'return'        => url('admin/feescollections_paypal/payment_success'),
         ];
 
-        $query_string = http_build_query($query);
-        $url = 'https://www.sandbox.paypal.com/cgi-bin/webscr?' . $query_string;
-
-        return redirect()->away($url);
+        return 'https://www.sandbox.paypal.com/cgi-bin/webscr?' . http_build_query($query);
     }
 
     private function redirectToAdminStripe(FeesCollectionModel $fees, $student)
@@ -315,7 +384,7 @@ class FeesCollectionController extends Controller
                     $transactionId = $request->input('kkiapay_payment_id');
 
                     $response = Http::withHeaders([
-                        'Authorization' => 'Bearer ' . env('KKIAPAY_SECRET'),
+                        'Authorization' => 'Bearer ' . env('KKIAPAY_SECRET_KEY'),
                         'Accept' => 'application/json',
                     ])->get("https://api.kkiapay.me/api/v1/transactions/$transactionId");
 
@@ -545,7 +614,7 @@ class FeesCollectionController extends Controller
                     $transactionId = $request->input('kkiapay_payment_id');
 
                     $response = Http::withHeaders([
-                        'Authorization' => 'Bearer ' . env('KKIAPAY_SECRET'),
+                        'Authorization' => 'Bearer ' . env('KKIAPAY_SECRET_KEY'),
                         'Accept' => 'application/json',
                     ])->get("https://api.kkiapay.me/api/v1/transactions/$transactionId");
 

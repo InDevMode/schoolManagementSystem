@@ -26,6 +26,8 @@ class SettingModel extends Model
         'kkiapay_secret_key',
         'stripe_public_key',
         'stripe_secret_key',
+        'fedapay_public_key',
+        'fedapay_secret_key',
     ];
 
     protected $hidden = [

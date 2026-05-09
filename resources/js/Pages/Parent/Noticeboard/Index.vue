@@ -45,6 +45,8 @@
 </template>
 
 <script setup lang="ts">
+import { stripHtml } from '@/Utils/html';
+
 interface Notice {
     id: number;
     title: string;

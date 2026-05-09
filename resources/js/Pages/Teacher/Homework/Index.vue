@@ -16,7 +16,7 @@
         <div class="card overflow-hidden">
             <AppTable :columns="columns" :rows="works.data" :pagination="works" row-key="id">
                 <template #cell-description="{ row }">
-                    <span class="line-clamp-2 text-sm text-gray-600 dark:text-gray-400">{{ row.description }}</span>
+                    <span class="line-clamp-2 text-sm text-gray-600 dark:text-gray-400">{{ stripHtml(row.description, 100) }}</span>
                 </template>
                 <template #actions="{ row }">
                     <a :href="`/teacher/practicalworks/homework/submission/${row.id}`" class="p-1.5 rounded-lg text-gray-400 hover:text-primary-600 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors inline-flex">
@@ -48,6 +48,7 @@
 import { ref, computed } from 'vue';
 import { useForm } from '@inertiajs/vue3';
 import { AppButton, AppInput, AppSelect, AppModal, AppTable } from '@/Components/UI';
+import { stripHtml } from '@/Utils/html';
 
 interface Work {
     id: number;

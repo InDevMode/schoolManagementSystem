@@ -18,6 +18,9 @@ export interface PageProps {
     settings: {
         school_name: string;
         logo_url: string;
+        kkiapay_public_key?: string;
+        stripe_public_key?: string;
+        fedapay_public_key?: string;
     } | null;
     flash: {
         success?: string;

@@ -7,6 +7,7 @@
     "require": {
         "php": "^8.1",
         "doctrine/dbal": "^3.9",
+        "fedapay/fedapay-php": "^0.4.8",
         "guzzlehttp/guzzle": "^7.2",
         "inertiajs/inertia-laravel": "^2.0",
         "laravel/framework": "^10.10",

@@ -5,8 +5,8 @@
             <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">Configuration de l'établissement</p>
         </div>
 
-        <AppAlert v-if="flash.success" variant="success" :message="flash.success" dismissible />
-        <AppAlert v-if="flash.error"   variant="danger"  :message="flash.error"   dismissible />
+        <AppAlert v-if="successMsg" variant="success" :message="successMsg" dismissible />
+        <AppAlert v-if="errorMsg"   variant="danger"  :message="errorMsg"   dismissible />
 
         <form @submit.prevent="submitForm" enctype="multipart/form-data" class="space-y-6">
 
@@ -103,6 +103,24 @@
                 </div>
             </div>
 
+            <!-- Paiement FedaPay -->
+            <div class="card p-6 space-y-4">
+                <h2 class="text-base font-semibold text-gray-900 dark:text-white border-b border-gray-100 dark:border-gray-700 pb-3 flex items-center gap-2">
+                    <svg class="w-5 h-5 text-orange-500" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1.41 16.09V20h-2.67v-1.93c-1.71-.36-3.16-1.46-3.27-3.4h1.96c.1 1.05.82 1.87 2.65 1.87 1.96 0 2.4-.98 2.4-1.59 0-.83-.44-1.61-2.67-2.14-2.48-.6-4.18-1.62-4.18-3.67 0-1.72 1.39-2.84 3.11-3.21V4h2.67v1.95c1.86.45 2.79 1.86 2.85 3.39H14.3c-.05-1.11-.64-1.87-2.22-1.87-1.5 0-2.4.68-2.4 1.64 0 .84.65 1.39 2.67 1.91s4.18 1.39 4.18 3.91c-.01 1.83-1.38 2.83-3.12 3.16z"/>
+                    </svg>
+                    FedaPay
+                </h2>
+                <p class="text-xs text-gray-500 dark:text-gray-400">
+                    Passerelle de paiement mobile money pour l'Afrique de l'Ouest (Bénin, Togo, Côte d'Ivoire...).
+                    Obtenez vos clés sur <a href="https://fedapay.com" target="_blank" class="text-primary-600 hover:underline">fedapay.com</a>
+                </p>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <AppInput v-model="form.fedapay_public_key" label="Clé publique" placeholder="pk_sandbox_..." />
+                    <AppInput v-model="form.fedapay_secret_key" label="Clé secrète"  placeholder="sk_sandbox_..." />
+                </div>
+            </div>
+
             <div class="flex justify-end">
                 <AppButton type="submit" :loading="submitting" size="lg">
                     Enregistrer les paramètres
@@ -113,8 +131,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
-import { router, usePage } from '@inertiajs/vue3';
+import { ref } from 'vue';
+import { router } from '@inertiajs/vue3';
 import { AppButton, AppInput, AppSelect, AppAlert } from '@/Components/UI';
 
 interface Setting {
@@ -131,6 +149,8 @@ interface Setting {
     kkiapay_secret_key?: string;
     stripe_public_key?:  string;
     stripe_secret_key?:  string;
+    fedapay_public_key?: string;
+    fedapay_secret_key?: string;
 }
 
 const props = defineProps<{
@@ -139,9 +159,11 @@ const props = defineProps<{
     logoUrl:    string;
 }>();
 
-const page       = usePage();
-const flash      = computed(() => page.props.flash as any);
 const submitting = ref(false);
+
+// Messages locaux — évite les doublons liés aux rechargements Inertia
+const successMsg = ref('');
+const errorMsg   = ref('');
 
 const logoPreview    = ref<string | null>(null);
 const faviconPreview = ref<string | null>(null);
@@ -162,6 +184,8 @@ const form = ref<Setting>({
     kkiapay_secret_key:  props.setting?.kkiapay_secret_key  ?? '',
     stripe_public_key:   props.setting?.stripe_public_key   ?? '',
     stripe_secret_key:   props.setting?.stripe_secret_key   ?? '',
+    fedapay_public_key:  props.setting?.fedapay_public_key  ?? '',
+    fedapay_secret_key:  props.setting?.fedapay_secret_key  ?? '',
 });
 
 const onLogoChange = (e: Event) => {
@@ -182,8 +206,22 @@ const submitForm = () => {
     if (logoFile.value)    data.append('logo',    logoFile.value);
     if (faviconFile.value) data.append('favicon', faviconFile.value);
 
+    // Réinitialiser les messages avant chaque soumission
+    successMsg.value = '';
+    errorMsg.value   = '';
     submitting.value = true;
+
     router.post('/admin/settings/setting_data', data, {
+        preserveScroll: true,
+        preserveState:  true,
+        onSuccess: () => {
+            successMsg.value = 'Paramètres enregistrés avec succès.';
+            // Effacer le message après 4 secondes
+            setTimeout(() => { successMsg.value = ''; }, 4000);
+        },
+        onError: () => {
+            errorMsg.value = 'Une erreur est survenue. Veuillez réessayer.';
+        },
         onFinish: () => { submitting.value = false; },
     });
 };

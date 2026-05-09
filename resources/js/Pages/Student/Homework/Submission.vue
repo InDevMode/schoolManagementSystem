@@ -20,7 +20,7 @@
             </div>
             <div>
                 <p class="text-xs text-gray-500 uppercase font-medium">Description</p>
-                <p class="text-sm text-gray-700 dark:text-gray-300 mt-1">{{ work.description }}</p>
+                <div class="text-sm text-gray-700 dark:text-gray-300 mt-1 prose prose-sm dark:prose-invert max-w-none" v-html="work.description" />
             </div>
             <div v-if="work.document_file">
                 <a :href="`/upload/practicalworks/${work.document_file}`" target="_blank" class="text-sm text-primary-600 hover:underline">

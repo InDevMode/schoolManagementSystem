@@ -45,6 +45,8 @@
 </template>
 
 <script setup lang="ts">
+import { stripHtml } from '@/Utils/html';
+
 interface Notice {
     id: number;
     title: string;
@@ -65,6 +67,4 @@ defineProps<{
 
 const formatDate = (d: string) =>
     d ? new Date(d).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' }) : '—';
-
-import { stripHtml } from '@/Utils/html';
 </script>

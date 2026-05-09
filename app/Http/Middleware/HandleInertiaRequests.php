@@ -46,8 +46,11 @@ class HandleInertiaRequests extends Middleware
         try {
             $setting = \App\Models\SettingModel::getSingle(1);
             $settings = $setting ? [
-                'school_name' => $setting->school_name,
-                'logo_url'    => $setting->getLogo(),
+                'school_name'       => $setting->school_name,
+                'logo_url'          => $setting->getLogo(),
+                'kkiapay_public_key'=> $setting->kkiapay_public_key ?? '',
+                'stripe_public_key' => $setting->stripe_public_key  ?? '',
+                'fedapay_public_key'=> $setting->fedapay_public_key ?? '',
             ] : null;
         } catch (\Exception $e) {
             $settings = null;

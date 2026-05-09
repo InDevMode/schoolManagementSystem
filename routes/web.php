@@ -173,11 +173,9 @@ Route::group(['middleware' => 'admin'], function () {
     // Practical works url
     Route::get('admin/practicalworks/homework/list', [WorkController::class, 'practicalWorksList']);
     Route::get('admin/practicalworks/homework/details/{id}', [WorkController::class, 'practicalWorksDetails']);
-    Route::get('admin/practicalworks/homework/add', [WorkController::class, 'practicalWorksAdd']);
+    Route::get('admin/practicalworks/homework/details-json/{id}', [WorkController::class, 'practicalWorksDetailsJson']);
     Route::get('admin/practicalworks/homework/getSubjectByClassId/{id}', [WorkController::class, 'getSubjectByClassId']);
-    Route::post('admin/practicalworks/homework/add', [WorkController::class, 'practicalWorksCreate']);
-    Route::get('admin/practicalworks/homework/edit/{id}', [WorkController::class, 'practicalWorksEdit']);
-    Route::post('admin/practicalworks/homework/edit/{id}', [WorkController::class, 'practicalWorksUpdate']);
+    Route::post('admin/practicalworks/homework/create', [WorkController::class, 'practicalWorksCreate']);
     Route::get('admin/practicalworks/homework/delete/{id}', [WorkController::class, 'practicalWorksDelete']);
 
     // Practical works submitted url
@@ -201,6 +199,9 @@ Route::group(['middleware' => 'admin'], function () {
     // Paypal payment url of admin
     Route::get('admin/feescollections_paypal/payment_success', [FeesCollectionController::class, 'paypalAdminSuccess']);
     Route::get('admin/feescollections_paypal/payment_error', [FeesCollectionController::class, 'paypalAdminError']);
+
+    // FedaPay payment url of admin
+    Route::get('admin/feescollections_fedapay/payment_success', [FeesCollectionController::class, 'fedapayAdminSuccess']);
 
     // Stripe payment url of admin
     Route::get('admin/feescollections_stripe/payment_success', [FeesCollectionController::class, 'stripeAdminSuccess']);
