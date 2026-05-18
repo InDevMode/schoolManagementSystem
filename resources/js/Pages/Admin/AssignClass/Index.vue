@@ -15,25 +15,30 @@
         </div>
 
         <!-- Table -->
-        <div class="card overflow-hidden">
-            <AppTable :columns="columns" :rows="classTeachers.data" :pagination="classTeachers" row-key="id">
-                <template #cell-teacher_name="{ row }">
-                    {{ row.teacher_last_name }} {{ row.teacher_name }}
-                </template>
-                <template #cell-status="{ row }">
-                    <AppBadge :variant="row.status == 1 ? 'success' : 'danger'" dot>
-                        {{ row.status == 1 ? 'Actif' : 'Inactif' }}
-                    </AppBadge>
-                </template>
-                <template #actions="{ row }">
-                    <div class="flex items-center justify-end gap-1">
-                        <button class="p-1.5 rounded-lg text-gray-400 hover:text-danger-600 hover:bg-danger-50 dark:hover:bg-danger-900/20 transition-colors" title="Supprimer" @click="openDelete(row)">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
-                        </button>
-                    </div>
-                </template>
-            </AppTable>
-        </div>
+        <DataTable
+            ref="tableRef"
+            :columns="columns"
+            :rows="classTeachers.data"
+            row-key="id"
+            export-filename="assignations-classes"
+            @delete="handleDelete"
+        >
+            <template #cell-teacher_name="{ row }">
+                {{ row.teacher_last_name }} {{ row.teacher_name }}
+            </template>
+            <template #cell-status="{ row }">
+                <AppBadge :variant="row.status == 1 ? 'success' : 'danger'" dot>
+                    {{ row.status == 1 ? 'Actif' : 'Inactif' }}
+                </AppBadge>
+            </template>
+            <template #actions="{ row }">
+                <div class="flex items-center justify-end gap-1">
+                    <button class="p-1.5 rounded-lg text-gray-400 hover:text-danger-600 hover:bg-danger-50 dark:hover:bg-danger-900/20 transition-colors" title="Supprimer" @click="tableRef?.confirmDelete(row.id as number, `${row.class_name}`)">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                    </button>
+                </div>
+            </template>
+        </DataTable>
 
         <!-- Modal Créer -->
         <AppModal v-model="showForm" title="Nouvelle assignation" size="md">
@@ -78,8 +83,9 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import { useForm, router } from '@inertiajs/vue3';
-import { AppButton, AppSelect, AppModal, AppTable, AppBadge } from '@/Components/UI';
+import { AppButton, AppSelect, AppModal, DataTable, AppBadge } from '@/Components/UI';
 import AppMultiSelect from '@/Components/UI/AppMultiSelect.vue';
+import { useToast } from '@/Composables/useToast';
 
 interface ClassTeacher {
     id: number;
@@ -109,6 +115,8 @@ const showForm   = ref(false);
 const showDelete = ref(false);
 const deleteTarget = ref<ClassTeacher | null>(null);
 const deleting     = ref(false);
+const toast = useToast();
+const tableRef = ref<InstanceType<typeof DataTable> | null>(null);
 
 const statusOptions = [
     { value: '1', label: 'Actif' },
@@ -158,6 +166,15 @@ const confirmDelete = () => {
     deleting.value = true;
     router.get(`/admin/assign_class/delete/${deleteTarget.value.id}`, {}, {
         onFinish: () => { deleting.value = false; showDelete.value = false; },
+    });
+};
+
+const handleDelete = (ids: (string | number)[]) => {
+    ids.forEach(id => {
+        router.get(`/admin/assign_class/delete/${id}`, {}, {
+            onSuccess: () => toast.success('Assignation supprimée avec succès.'),
+            onError: () => toast.error('Erreur lors de la suppression.'),
+        });
     });
 };
 </script>

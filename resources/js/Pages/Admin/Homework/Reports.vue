@@ -6,7 +6,12 @@
         </div>
 
         <div class="card overflow-hidden">
-            <AppTable :columns="columns" :rows="homeworks.data" :pagination="homeworks" row-key="id">
+            <DataTable
+                :columns="columns"
+                :rows="homeworks.data"
+                row-key="id"
+                export-filename="rapports-devoirs"
+            >
                 <template #cell-student="{ row }">
                     <span class="font-medium text-gray-900 dark:text-white">{{ row.student_last_name }} {{ row.student_name }}</span>
                 </template>
@@ -18,15 +23,15 @@
                     <span v-else class="text-gray-400 text-xs">—</span>
                 </template>
                 <template #cell-created_at="{ row }">
-                    <span class="text-xs text-gray-500">{{ formatDate(row.created_at) }}</span>
+                    <span class="text-xs text-gray-500">{{ formatDate(row.created_at as string) }}</span>
                 </template>
-            </AppTable>
+            </DataTable>
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
-import { AppTable, AppBadge } from '@/Components/UI';
+import { AppBadge, DataTable } from '@/Components/UI';
 
 interface HomeworkReport {
     id: number;

@@ -110,6 +110,7 @@ Route::group(['middleware' => 'admin'], function () {
     // Admin account url
     Route::get('admin/account', [UserController::class, 'myAccount']);
     Route::post('admin/account', [UserController::class, 'updateAdminAccount']);
+    Route::post('admin/users/reset-password', [UserController::class, 'resetUsersPassword']);
 
     // Assign class to teacher url
     Route::get('admin/assign_class/list', [ClassTeacherController::class, 'list']);

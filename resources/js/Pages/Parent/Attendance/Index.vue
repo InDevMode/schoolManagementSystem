@@ -28,25 +28,39 @@
         </div>
 
         <!-- Table -->
-        <div class="card overflow-hidden">
-            <AppTable :columns="columns" :rows="attendance.data" :pagination="attendance" row-key="id">
-                <template #cell-attendance_type="{ row }">
-                    <AppBadge :variant="typeVariant(row.attendance_type)">
-                        {{ typeLabel(row.attendance_type) }}
-                    </AppBadge>
-                </template>
-                <template #cell-attendance_date="{ row }">
-                    <span class="text-xs text-gray-500">{{ formatDate(row.attendance_date) }}</span>
-                </template>
-            </AppTable>
+        <DataTable
+            :columns="columns"
+            :rows="attendance.data"
+            row-key="id"
+            export-filename="presences_apprenant"
+            :selectable="false"
+        >
+            <template #cell-attendance_type="{ row }">
+                <AppBadge :variant="typeVariant(row.attendance_type as string)">
+                    {{ typeLabel(row.attendance_type as string) }}
+                </AppBadge>
+            </template>
+            <template #cell-attendance_date="{ row }">
+                <span class="text-xs text-gray-500">{{ formatDate(row.attendance_date as string) }}</span>
+            </template>
+        </DataTable>
+
+        <!-- Total -->
+        <div class="flex items-center gap-6 px-4 py-3 bg-gray-50 dark:bg-gray-800/60 rounded-xl border border-gray-200 dark:border-gray-700 text-sm">
+            <span class="text-gray-500 font-medium">Total :</span>
+            <span class="text-success-600 font-semibold">Présent : {{ classStudent?.present ?? 0 }}</span>
+            <span class="text-warning-600 font-semibold">En retard : {{ classStudent?.late ?? 0 }}</span>
+            <span class="text-danger-600 font-semibold">Absent : {{ classStudent?.absent ?? 0 }}</span>
+            <span class="text-info-600 font-semibold">Demi-journée : {{ classStudent?.half_day ?? 0 }}</span>
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
-import { AppTable, AppBadge } from '@/Components/UI';
+import { DataTable, AppBadge } from '@/Components/UI';
 
 interface AttendanceRecord {
+    [key: string]: unknown;
     id: number;
     class_name: string;
     attendance_type: string;
@@ -57,13 +71,7 @@ interface Student { id: number; name: string; last_name: string; }
 
 defineProps<{
     student: Student | null;
-    attendance: {
-        data: AttendanceRecord[];
-        total: number;
-        from: number;
-        to: number;
-        links: { url: string | null; label: string; active: boolean }[];
-    };
+    attendance: { data: AttendanceRecord[]; total: number; from: number; to: number; links: any[] };
     classStudent: Record<string, number> | null;
 }>();
 
@@ -73,20 +81,7 @@ const columns = [
     { key: 'attendance_date', label: 'Date' },
 ];
 
-const typeLabel = (type: string) => ({
-    present:  'Présent',
-    late:     'En retard',
-    absent:   'Absent',
-    half_day: 'Demi-journée',
-}[type] ?? type);
-
-const typeVariant = (type: string) => ({
-    present:  'success',
-    late:     'warning',
-    absent:   'danger',
-    half_day: 'info',
-}[type] as any ?? 'gray');
-
-const formatDate = (d: string) =>
-    new Date(d).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' });
+const typeLabel = (type: string) => ({ present: 'Présent', late: 'En retard', absent: 'Absent', half_day: 'Demi-journée' }[type] ?? type);
+const typeVariant = (type: string) => ({ present: 'success', late: 'warning', absent: 'danger', half_day: 'info' }[type] as any ?? 'gray');
+const formatDate = (d: string) => new Date(d).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' });
 </script>

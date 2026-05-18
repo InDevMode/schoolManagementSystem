@@ -8,7 +8,12 @@
         </div>
 
         <div v-if="homeworks.data.length" class="card overflow-hidden">
-            <AppTable :columns="columns" :rows="homeworks.data" :pagination="homeworks" row-key="id">
+            <DataTable
+                :columns="columns"
+                :rows="homeworks.data"
+                row-key="id"
+                export-filename="soumissions"
+            >
                 <template #cell-student="{ row }">
                     <span class="font-medium text-gray-900 dark:text-white">{{ row.student_last_name }} {{ row.student_name }}</span>
                 </template>
@@ -19,7 +24,7 @@
                     <a v-if="row.document_file" :href="`/upload/homeworks/${row.document_file}`" target="_blank" class="text-primary-600 hover:underline text-xs">Voir</a>
                     <span v-else class="text-gray-400 text-xs">—</span>
                 </template>
-            </AppTable>
+            </DataTable>
         </div>
 
         <div v-else class="card p-8 text-center text-gray-500 dark:text-gray-400">
@@ -29,7 +34,7 @@
 </template>
 
 <script setup lang="ts">
-import { AppTable, AppBadge } from '@/Components/UI';
+import { AppBadge, DataTable } from '@/Components/UI';
 
 interface HomeworkSubmission {
     id: number;

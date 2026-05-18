@@ -27,22 +27,27 @@
 
         <!-- Table -->
         <div class="card overflow-hidden">
-            <AppTable :columns="columns" :rows="attendance.data" :pagination="attendance" row-key="id">
+            <DataTable
+                :columns="columns"
+                :rows="attendance.data"
+                row-key="id"
+                export-filename="mes-presences"
+            >
                 <template #cell-attendance_type="{ row }">
-                    <AppBadge :variant="typeVariant(row.attendance_type)">
-                        {{ typeLabel(row.attendance_type) }}
+                    <AppBadge :variant="typeVariant(row.attendance_type as string)">
+                        {{ typeLabel(row.attendance_type as string) }}
                     </AppBadge>
                 </template>
                 <template #cell-attendance_date="{ row }">
-                    <span class="text-xs text-gray-500">{{ formatDate(row.attendance_date) }}</span>
+                    <span class="text-xs text-gray-500">{{ formatDate(row.attendance_date as string) }}</span>
                 </template>
-            </AppTable>
+            </DataTable>
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
-import { AppTable, AppBadge } from '@/Components/UI';
+import { AppBadge, DataTable } from '@/Components/UI';
 
 interface AttendanceRecord {
     id: number;

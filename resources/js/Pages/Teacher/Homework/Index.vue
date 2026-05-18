@@ -13,18 +13,23 @@
             </AppButton>
         </div>
 
-        <div class="card overflow-hidden">
-            <AppTable :columns="columns" :rows="works.data" :pagination="works" row-key="id">
-                <template #cell-description="{ row }">
-                    <span class="line-clamp-2 text-sm text-gray-600 dark:text-gray-400">{{ stripHtml(row.description, 100) }}</span>
-                </template>
-                <template #actions="{ row }">
-                    <a :href="`/teacher/practicalworks/homework/submission/${row.id}`" class="p-1.5 rounded-lg text-gray-400 hover:text-primary-600 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors inline-flex">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0zM2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
-                    </a>
-                </template>
-            </AppTable>
-        </div>
+        <DataTable
+            ref="tableRef"
+            :columns="columns"
+            :rows="works.data"
+            row-key="id"
+            export-filename="devoirs"
+            @delete="handleDelete"
+        >
+            <template #cell-description="{ row }">
+                <span class="line-clamp-2 text-sm text-gray-600 dark:text-gray-400">{{ stripHtml(row.description as string, 100) }}</span>
+            </template>
+            <template #actions="{ row }">
+                <a :href="`/teacher/practicalworks/homework/submission/${row.id}`" class="p-1.5 rounded-lg text-gray-400 hover:text-primary-600 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors inline-flex">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0zM2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+                </a>
+            </template>
+        </DataTable>
 
         <AppModal v-model="showForm" title="Nouveau travail de maison" size="lg">
             <form :id="formId" @submit.prevent="submitForm" class="space-y-4">
@@ -46,9 +51,10 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue';
-import { useForm } from '@inertiajs/vue3';
-import { AppButton, AppInput, AppSelect, AppModal, AppTable } from '@/Components/UI';
+import { useForm, router } from '@inertiajs/vue3';
+import { AppButton, AppInput, AppSelect, AppModal, DataTable } from '@/Components/UI';
 import { stripHtml } from '@/Utils/html';
+import { useToast } from '@/Composables/useToast';
 
 interface Work {
     id: number;
@@ -72,6 +78,8 @@ const props = defineProps<{
 
 const formId = 'teacher-homework-form';
 const showForm = ref(false);
+const toast = useToast();
+const tableRef = ref<InstanceType<typeof DataTable> | null>(null);
 
 const classOptions = computed(() =>
     props.classes.map(c => ({ value: `${c.class_id}:${c.subject_id}`, label: `${c.class_name} — ${c.subject_name}` }))
@@ -101,6 +109,15 @@ const openCreate = () => {
 const submitForm = () => {
     form.post('/teacher/practicalworks/homework/create', {
         onSuccess: () => { showForm.value = false; },
+    });
+};
+
+const handleDelete = (ids: (string | number)[]) => {
+    ids.forEach(id => {
+        router.get(`/teacher/practicalworks/homework/delete/${id}`, {}, {
+            onSuccess: () => toast.success('Travail supprimé avec succès.'),
+            onError: () => toast.error('Erreur lors de la suppression.'),
+        });
     });
 };
 </script>

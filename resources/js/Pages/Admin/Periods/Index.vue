@@ -13,25 +13,30 @@
             </AppButton>
         </div>
 
-        <div class="card overflow-hidden">
-            <AppTable :columns="columns" :rows="periods.data" :pagination="periods" row-key="id">
-                <template #cell-status="{ row }">
-                    <AppBadge :variant="row.status == 1 ? 'success' : 'danger'" dot>
-                        {{ row.status == 1 ? 'Actif' : 'Inactif' }}
-                    </AppBadge>
-                </template>
-                <template #actions="{ row }">
-                    <div class="flex items-center justify-end gap-1">
-                        <button class="p-1.5 rounded-lg text-gray-400 hover:text-primary-600 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors" @click="openEdit(row)">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
-                        </button>
-                        <button class="p-1.5 rounded-lg text-gray-400 hover:text-danger-600 hover:bg-danger-50 dark:hover:bg-danger-900/20 transition-colors" @click="openDelete(row)">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
-                        </button>
-                    </div>
-                </template>
-            </AppTable>
-        </div>
+        <DataTable
+            ref="tableRef"
+            :columns="columns"
+            :rows="periods.data"
+            row-key="id"
+            export-filename="periodes"
+            @delete="handleDelete"
+        >
+            <template #cell-status="{ row }">
+                <AppBadge :variant="row.status == 1 ? 'success' : 'danger'" dot>
+                    {{ row.status == 1 ? 'Actif' : 'Inactif' }}
+                </AppBadge>
+            </template>
+            <template #actions="{ row }">
+                <div class="flex items-center justify-end gap-1">
+                    <button class="p-1.5 rounded-lg text-gray-400 hover:text-primary-600 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors" @click="openEdit(row as any)">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+                    </button>
+                    <button class="p-1.5 rounded-lg text-gray-400 hover:text-danger-600 hover:bg-danger-50 dark:hover:bg-danger-900/20 transition-colors" @click="tableRef?.confirmDelete(row.id as number, row.name as string)">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                    </button>
+                </div>
+            </template>
+        </DataTable>
 
         <AppModal v-model="showForm" :title="editTarget ? 'Modifier la période' : 'Nouvelle période'" size="md">
             <form :id="formId" @submit.prevent="submitForm" class="space-y-4">
@@ -63,7 +68,8 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useForm, router } from '@inertiajs/vue3';
-import { AppButton, AppInput, AppSelect, AppModal, AppTable, AppBadge } from '@/Components/UI';
+import { AppButton, AppInput, AppSelect, AppModal, DataTable, AppBadge } from '@/Components/UI';
+import { useToast } from '@/Composables/useToast';
 
 interface Period {
     id: number;
@@ -90,6 +96,8 @@ const showDelete = ref(false);
 const editTarget = ref<Period | null>(null);
 const deleteTarget = ref<Period | null>(null);
 const deleting = ref(false);
+const toast = useToast();
+const tableRef = ref<InstanceType<typeof DataTable> | null>(null);
 
 const statusOptions = [
     { value: '1', label: 'Actif' },
@@ -143,6 +151,15 @@ const confirmDelete = () => {
     deleting.value = true;
     router.get(`/admin/examinations/period/delete/${deleteTarget.value.id}`, {}, {
         onFinish: () => { deleting.value = false; showDelete.value = false; },
+    });
+};
+
+const handleDelete = (ids: (string | number)[]) => {
+    ids.forEach(id => {
+        router.get(`/admin/examinations/period/delete/${id}`, {}, {
+            onSuccess: () => toast.success('Période supprimée avec succès.'),
+            onError: () => toast.error('Erreur lors de la suppression.'),
+        });
     });
 };
 </script>

@@ -310,6 +310,24 @@ class UserController extends Controller
         }
     }
 
+    public function resetUsersPassword(Request $request): \Illuminate\Http\JsonResponse
+    {
+        $request->validate(['ids' => 'required|array', 'ids.*' => 'integer|exists:users,id']);
+
+        try {
+            $defaultPassword = Hash::make('password123');
+            User::whereIn('id', $request->ids)->update(['password' => $defaultPassword]);
+
+            return response()->json([
+                'success' => true,
+                'message' => count($request->ids) . ' mot(s) de passe réinitialisé(s) avec succès. Nouveau mot de passe : password123',
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Reset password error: ' . $e->getMessage());
+            return response()->json(['success' => false, 'message' => 'Erreur lors de la réinitialisation.'], 500);
+        }
+    }
+
     public function changePassword()
     {
         return Inertia::render('Profile/ChangePassword');

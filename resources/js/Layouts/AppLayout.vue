@@ -13,6 +13,9 @@
         <main class="flex-1 w-full px-6 py-6">
             <slot />
         </main>
+
+        <!-- Toast notifications globales -->
+        <ToastContainer />
     </div>
 </template>
 
@@ -21,6 +24,7 @@ import { computed } from 'vue';
 import { usePage } from '@inertiajs/vue3';
 import AppHeader from '@/Components/Layout/AppHeader.vue';
 import AppAlert from '@/Components/UI/AppAlert.vue';
+import ToastContainer from '@/Components/UI/ToastContainer.vue';
 
 const page  = usePage();
 const flash = computed(() => page.props.flash as { success?: string; error?: string; warning?: string });

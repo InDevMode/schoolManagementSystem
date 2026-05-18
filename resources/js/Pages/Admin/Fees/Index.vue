@@ -9,7 +9,13 @@
         </div>
 
         <div class="card overflow-hidden">
-            <AppTable :columns="columns" :rows="feesCollections.data" :pagination="feesCollections" row-key="id">
+            <DataTable
+                ref="tableRef"
+                :columns="columns"
+                :rows="feesCollections.data"
+                row-key="id"
+                export-filename="contributions"
+            >
 
                 <!-- Apprenant -->
                 <template #cell-student="{ row }">
@@ -21,20 +27,20 @@
 
                 <!-- Montant total -->
                 <template #cell-class_amount="{ row }">
-                    <span class="font-medium text-gray-900 dark:text-white">{{ formatAmount(row.class_amount) }}</span>
+                    <span class="font-medium text-gray-900 dark:text-white">{{ formatAmount(row.class_amount as number) }}</span>
                 </template>
 
                 <!-- Montant payé -->
                 <template #cell-paid_amount="{ row }">
-                    <span :class="row.paid_amount > 0 ? 'text-success-600 dark:text-success-400 font-medium' : 'text-gray-400'">
-                        {{ formatAmount(row.paid_amount ?? 0) }}
+                    <span :class="(row.paid_amount as number) > 0 ? 'text-success-600 dark:text-success-400 font-medium' : 'text-gray-400'">
+                        {{ formatAmount((row.paid_amount as number) ?? 0) }}
                     </span>
                 </template>
 
                 <!-- Reste -->
                 <template #cell-remaining="{ row }">
-                    <span :class="(row.remaning_amount ?? row.class_amount) > 0 ? 'text-danger-600 dark:text-danger-400 font-medium' : 'text-success-600 dark:text-success-400'">
-                        {{ formatAmount(row.remaning_amount ?? row.class_amount) }}
+                    <span :class="((row.remaning_amount as number) ?? (row.class_amount as number)) > 0 ? 'text-danger-600 dark:text-danger-400 font-medium' : 'text-success-600 dark:text-success-400'">
+                        {{ formatAmount((row.remaning_amount as number) ?? (row.class_amount as number)) }}
                     </span>
                 </template>
 
@@ -42,12 +48,12 @@
                 <template #cell-progress="{ row }">
                     <div class="w-24">
                         <div class="flex items-center justify-between text-xs mb-1">
-                            <span class="text-gray-500">{{ progressPercent(row) }}%</span>
+                            <span class="text-gray-500">{{ progressPercent(row as any) }}%</span>
                         </div>
                         <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1.5">
                             <div
-                                :class="['h-1.5 rounded-full transition-all', progressPercent(row) >= 100 ? 'bg-success-500' : 'bg-primary-500']"
-                                :style="{ width: progressPercent(row) + '%' }"
+                                :class="['h-1.5 rounded-full transition-all', progressPercent(row as any) >= 100 ? 'bg-success-500' : 'bg-primary-500']"
+                                :style="{ width: progressPercent(row as any) + '%' }"
                             />
                         </div>
                     </div>
@@ -56,9 +62,9 @@
                 <!-- Actions -->
                 <template #actions="{ row }">
                     <button
-                        v-if="(row.remaning_amount ?? row.class_amount) > 0"
+                        v-if="((row.remaning_amount as number) ?? (row.class_amount as number)) > 0"
                         class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300 hover:bg-primary-100 dark:hover:bg-primary-900/40 transition-colors"
-                        @click="openPayment(row)"
+                        @click="openPayment(row as any)"
                     >
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
@@ -67,7 +73,15 @@
                     </button>
                     <AppBadge v-else variant="success" dot>Soldé</AppBadge>
                 </template>
-            </AppTable>
+            </DataTable>
+        </div>
+
+        <!-- Totaux -->
+        <div v-if="feesCollections.data.length > 0" class="flex flex-wrap items-center gap-6 px-4 py-3 bg-gray-50 dark:bg-gray-800/60 rounded-xl border border-gray-200 dark:border-gray-700 text-sm">
+            <span class="text-gray-500 font-medium">Totaux :</span>
+            <span class="text-gray-700 dark:text-gray-300">Total : <strong>{{ formatAmount(totalClassAmount) }}</strong></span>
+            <span class="text-success-600 dark:text-success-400">Payé : <strong>{{ formatAmount(totalPaidAmount) }}</strong></span>
+            <span class="text-danger-600 dark:text-danger-400">Reste : <strong>{{ formatAmount(totalRemainingAmount) }}</strong></span>
         </div>
 
         <!-- Modal Paiement -->
@@ -180,7 +194,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import { router, usePage } from '@inertiajs/vue3';
-import { AppSelect, AppTable, AppBadge, AppModal, AppButton, AppInput } from '@/Components/UI';
+import { AppSelect, DataTable, AppBadge, AppModal, AppButton, AppInput } from '@/Components/UI';
 import type { PageProps } from '@/types';
 
 interface FeesStudent {
@@ -216,6 +230,12 @@ const showPayment     = ref(false);
 const paying          = ref(false);
 const selectedStudent = ref<FeesStudent | null>(null);
 const payFormId       = 'pay-form';
+const tableRef        = ref<InstanceType<typeof DataTable> | null>(null);
+
+// Totaux
+const totalClassAmount    = computed(() => props.feesCollections.data.reduce((s, r) => s + (r.class_amount ?? 0), 0));
+const totalPaidAmount     = computed(() => props.feesCollections.data.reduce((s, r) => s + (r.paid_amount ?? 0), 0));
+const totalRemainingAmount = computed(() => props.feesCollections.data.reduce((s, r) => s + (r.remaning_amount ?? r.class_amount ?? 0), 0));
 
 const payForm = ref({
     amount:       '',

@@ -5,32 +5,33 @@
                 <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Rapport de présences</h1>
                 <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">Historique des présences des apprenants</p>
             </div>
-            <a href="/admin/attendance/report/export" class="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium rounded-xl border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
-                Exporter
-            </a>
-        </div>
+                </div>
 
         <div class="card overflow-hidden">
-            <AppTable :columns="columns" :rows="attendance.data" :pagination="attendance" row-key="id">
+            <DataTable
+                :columns="columns"
+                :rows="attendance.data"
+                row-key="id"
+                export-filename="rapport-presences"
+            >
                 <template #cell-student_name="{ row }">
                     {{ row.student_last_name }} {{ row.student_name }}
                 </template>
                 <template #cell-attendance_type="{ row }">
-                    <AppBadge :variant="typeVariant(row.attendance_type)">
-                        {{ typeLabel(row.attendance_type) }}
+                    <AppBadge :variant="typeVariant(row.attendance_type as string)">
+                        {{ typeLabel(row.attendance_type as string) }}
                     </AppBadge>
                 </template>
                 <template #cell-attendance_date="{ row }">
-                    <span class="text-xs text-gray-500">{{ formatDate(row.attendance_date) }}</span>
+                    <span class="text-xs text-gray-500">{{ formatDate(row.attendance_date as string) }}</span>
                 </template>
-            </AppTable>
+            </DataTable>
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
-import { AppTable, AppBadge } from '@/Components/UI';
+import { AppBadge, DataTable } from '@/Components/UI';
 
 interface AttendanceRecord {
     id: number;

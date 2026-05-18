@@ -6,10 +6,6 @@
                 <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">{{ parents.total }} parent(s)</p>
             </div>
             <div class="flex items-center gap-2">
-                <a href="/admin/parent/export" class="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium rounded-xl border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
-                    Exporter
-                </a>
                 <AppButton @click="openCreate">
                     <template #icon><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg></template>
                     Nouveau parent
@@ -25,35 +21,42 @@
             </div>
         </div>
 
-        <div class="card overflow-hidden">
-            <AppTable :columns="columns" :rows="tableRows" :pagination="parents" row-key="id">
-                <template #cell-user="{ row }">
-                    <div class="flex items-center gap-3">
-                        <UserAvatar :src="row.profile_url" :name="row.name" :last-name="row.last_name" size="sm" />
-                        <div>
-                            <p class="text-sm font-medium text-gray-900 dark:text-white">{{ row.last_name }} {{ row.name }}</p>
-                            <p class="text-xs text-gray-500">{{ row.email }}</p>
-                        </div>
+        <DataTable
+            ref="tableRef"
+            :columns="columns"
+            :rows="tableRows"
+            row-key="id"
+            export-filename="parents"
+            :show-reset-password="true"
+            @delete="handleDelete"
+            @reset-password="handleResetPassword"
+        >
+            <template #cell-user="{ row }">
+                <div class="flex items-center gap-3">
+                    <UserAvatar :src="row.profile_url as string" :name="row.name as string" :last-name="row.last_name as string" size="sm" />
+                    <div>
+                        <p class="text-sm font-medium text-gray-900 dark:text-white">{{ row.last_name }} {{ row.name }}</p>
+                        <p class="text-xs text-gray-500">{{ row.email }}</p>
                     </div>
-                </template>
-                <template #cell-status="{ row }">
-                    <AppBadge :variant="row.status == 1 ? 'success' : 'danger'" dot>{{ row.status == 1 ? 'Actif' : 'Inactif' }}</AppBadge>
-                </template>
-                <template #actions="{ row }">
-                    <div class="flex items-center justify-end gap-1">
-                        <a :href="`/admin/parent/student/${row.id}`" class="p-1.5 rounded-lg text-gray-400 hover:text-info-600 hover:bg-info-50 dark:hover:bg-info-900/20 transition-colors" title="Gérer les enfants">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-                        </a>
-                        <button class="p-1.5 rounded-lg text-gray-400 hover:text-primary-600 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors" @click="openEdit(row)">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
-                        </button>
-                        <button class="p-1.5 rounded-lg text-gray-400 hover:text-danger-600 hover:bg-danger-50 dark:hover:bg-danger-900/20 transition-colors" @click="openDelete(row)">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
-                        </button>
-                    </div>
-                </template>
-            </AppTable>
-        </div>
+                </div>
+            </template>
+            <template #cell-status="{ row }">
+                <AppBadge :variant="row.status == 1 ? 'success' : 'danger'" dot>{{ row.status == 1 ? 'Actif' : 'Inactif' }}</AppBadge>
+            </template>
+            <template #actions="{ row }">
+                <div class="flex items-center justify-end gap-1">
+                    <a :href="`/admin/parent/student/${row.id}`" class="p-1.5 rounded-lg text-gray-400 hover:text-info-600 hover:bg-info-50 dark:hover:bg-info-900/20 transition-colors" title="Gérer les enfants">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                    </a>
+                    <button class="p-1.5 rounded-lg text-gray-400 hover:text-primary-600 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors" @click="openEdit(row as any)">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+                    </button>
+                    <button class="p-1.5 rounded-lg text-gray-400 hover:text-danger-600 hover:bg-danger-50 dark:hover:bg-danger-900/20 transition-colors" @click="tableRef?.confirmDelete(row.id as number, `${row.last_name} ${row.name}`)">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                    </button>
+                </div>
+            </template>
+        </DataTable>
 
         <!-- Modal Formulaire -->
         <AppModal v-model="showForm" :title="editTarget ? 'Modifier le parent' : 'Nouveau parent'" size="lg">
@@ -99,8 +102,9 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import { router } from '@inertiajs/vue3';
-import { AppButton, AppInput, AppSelect, AppModal, AppTable, AppBadge } from '@/Components/UI';
+import { AppButton, AppInput, AppSelect, AppModal, DataTable, AppBadge } from '@/Components/UI';
 import UserAvatar from '@/Components/Shared/UserAvatar.vue';
+import { useToast } from '@/Composables/useToast';
 
 interface Parent {
     id: number; name: string; last_name: string; email: string;
@@ -117,7 +121,8 @@ const showForm = ref(false); const showDelete = ref(false);
 const editTarget = ref<Parent | null>(null); const deleteTarget = ref<Parent | null>(null);
 const deleting = ref(false); const submitting = ref(false);
 const previewUrl = ref<string | null>(null); const picFile = ref<File | null>(null);
-const filters = ref({ name: '', email: '', status: '' });
+const toast = useToast();
+const tableRef = ref<InstanceType<typeof DataTable> | null>(null);
 
 const statusOptions = [{ value: '1', label: 'Actif' }, { value: '0', label: 'Inactif' }];
 const genderOptions = [{ value: 'male', label: 'Masculin' }, { value: 'female', label: 'Féminin' }, { value: 'other', label: 'Autre' }];
@@ -161,4 +166,27 @@ const confirmDelete = () => {
 };
 
 const applyFilters = () => router.get('/admin/parent/list', filters.value, { preserveState: true, replace: true });
+
+const handleDelete = (ids: (string | number)[]) => {
+    ids.forEach(id => {
+        router.get(`/admin/parent/delete/${id}`, {}, {
+            onSuccess: () => toast.success('Parent supprimé avec succès.'),
+            onError: () => toast.error('Erreur lors de la suppression.'),
+        });
+    });
+};
+
+const handleResetPassword = async (ids: (string | number)[]) => {
+    try {
+        const csrf = (document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement)?.content ?? '';
+        const res = await fetch('/admin/users/reset-password', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrf, 'Accept': 'application/json' },
+            body: JSON.stringify({ ids }),
+        });
+        const data = await res.json();
+        if (data.success) toast.success(data.message);
+        else toast.error(data.message);
+    } catch { toast.error('Erreur lors de la réinitialisation.'); }
+};
 </script>
