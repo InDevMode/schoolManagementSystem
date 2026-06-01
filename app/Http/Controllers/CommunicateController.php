@@ -144,31 +144,29 @@ class CommunicateController extends Controller
     public function sendMailCreate(Request $request)
     {
         try {
-            if (!empty($request->user_id)) {
-                foreach ($request->user_id as $userId) {
+            // Envoi aux destinataires individuels
+            if (!empty($request->user_ids)) {
+                foreach ($request->user_ids as $userId) {
                     $user = User::getSingle($userId);
 
                     if ($user && $user->email) {
-                        // Ajouter dynamiquement les données nécessaires pour l'email
                         $user->send_message = $request->message;
                         $user->send_subject = $request->subject;
-                        // Envoi du mail
                         Mail::to($user->email)->send(new SendMailUserMail($user));
                     }
+                }
+            }
 
-                    if (!empty($request->message_to)) {
-                        foreach ($request->message_to as $user_type) {
-                            $getUser = User::getUserByUserType($user_type);
-                            if (!empty($getUser)) {
-                                foreach ($getUser as $user) {
-                                    if ($user && $user->email) {
-                                        // Ajouter dynamiquement les données nécessaires pour l'email
-                                        $user->send_message = $request->message;
-                                        $user->send_subject = $request->subject;
-                                        // Envoi du mail
-                                        Mail::to($user->email)->send(new SendMailUserMail($user));
-                                    }
-                                }
+            // Envoi aux groupes (indépendant des destinataires individuels)
+            if (!empty($request->message_to)) {
+                foreach ($request->message_to as $user_type) {
+                    $groupUsers = User::getUserByUserType($user_type);
+                    if (!empty($groupUsers)) {
+                        foreach ($groupUsers as $user) {
+                            if ($user && $user->email) {
+                                $user->send_message = $request->message;
+                                $user->send_subject = $request->subject;
+                                Mail::to($user->email)->send(new SendMailUserMail($user));
                             }
                         }
                     }

@@ -19,8 +19,9 @@
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
-                        <template v-for="entry in timetable" :key="entry">
-                            <tr v-for="day in entry.week" :key="day.week_id" class="hover:bg-gray-50 dark:hover:bg-gray-800/50">
+                        <template v-for="(entry, i) in timetable" :key="i">
+                            <tr v-for="day in entry.week" :key="day.week_id"
+                                class="hover:bg-gray-50 dark:hover:bg-gray-800/50">
                                 <td class="px-4 py-3 font-medium text-gray-900 dark:text-white">{{ day.week_name }}</td>
                                 <td class="px-4 py-3 text-gray-600 dark:text-gray-400">{{ day.start_time || '—' }}</td>
                                 <td class="px-4 py-3 text-gray-600 dark:text-gray-400">{{ day.end_time || '—' }}</td>
@@ -47,11 +48,13 @@ interface WeekDay {
     room_number: string;
 }
 
-defineProps<{
-    class: { id: number; name: string } | null;
-    subject: { id: number; name: string } | null;
+interface ClassInfo { id: number; name: string; }
+interface SubjectInfo { id: number; name: string; }
+
+// "class" est un mot réservé — on utilise classInfo comme alias via la prop "class"
+const props = defineProps<{
+    classInfo: ClassInfo | null;
+    subject:   SubjectInfo | null;
     timetable: { week: WeekDay[] }[];
 }>();
-
-const classInfo = defineProps<{ class: { id: number; name: string } | null }>().class;
 </script>

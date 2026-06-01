@@ -16,7 +16,7 @@
                         v-model="form.user_ids"
                         :options="userOptions"
                         placeholder="Sélectionner des utilisateurs"
-                        :error="form.errors.user_id"
+                        :error="form.errors.user_ids"
                     />
                 </div>
 
@@ -26,13 +26,30 @@
                         Envoyer à un groupe
                     </label>
                     <div class="flex flex-wrap gap-3">
-                        <label v-for="opt in groupOptions" :key="opt.value" class="flex items-center gap-2 cursor-pointer">
-                            <input
-                                type="checkbox"
-                                :value="opt.value"
-                                v-model="form.message_to"
-                                class="w-4 h-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500"
-                            />
+                        <label
+                            v-for="opt in groupOptions"
+                            :key="opt.value"
+                            class="flex items-center gap-2 cursor-pointer select-none"
+                            @click="toggleGroup(opt.value)"
+                        >
+                            <div
+                                :class="[
+                                    'w-4 h-4 rounded border-2 flex items-center justify-center flex-shrink-0 transition-colors',
+                                    form.message_to.includes(opt.value)
+                                        ? 'bg-primary-600 border-primary-600'
+                                        : 'border-gray-300 dark:border-gray-500 bg-white dark:bg-gray-800',
+                                ]"
+                            >
+                                <svg
+                                    v-if="form.message_to.includes(opt.value)"
+                                    class="w-2.5 h-2.5 text-white"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+                                </svg>
+                            </div>
                             <span class="text-sm text-gray-700 dark:text-gray-300">{{ opt.label }}</span>
                         </label>
                     </div>
@@ -44,14 +61,11 @@
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
                         Message <span class="text-danger-500 ml-0.5">*</span>
                     </label>
-                    <textarea
+                    <AppRichEditor
                         v-model="form.message"
-                        rows="6"
-                        required
                         placeholder="Rédigez votre message..."
-                        class="w-full rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                        :error="form.errors.message"
                     />
-                    <p v-if="form.errors.message" class="mt-1 text-xs text-danger-600">{{ form.errors.message }}</p>
                 </div>
 
                 <div class="flex justify-end pt-2">
@@ -70,14 +84,14 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { useForm } from '@inertiajs/vue3';
-import { AppButton, AppInput } from '@/Components/UI';
+import { AppButton, AppInput, AppRichEditor } from '@/Components/UI';
 import AppMultiSelect from '@/Components/UI/AppMultiSelect.vue';
 
 interface UserItem {
     id: number;
     name: string;
     last_name: string;
-    email: string;
+    full_name: string;
 }
 
 const props = defineProps<{
@@ -85,7 +99,7 @@ const props = defineProps<{
 }>();
 
 const userOptions = computed(() =>
-    props.users.map(u => ({ value: String(u.id), label: `${u.last_name} ${u.name} (${u.email})` }))
+    props.users.map(u => ({ value: String(u.id), label: u.full_name }))
 );
 
 const groupOptions = [
@@ -102,14 +116,14 @@ const form = useForm({
 });
 
 const submitForm = () => {
-    const data = new FormData();
-    data.append('subject', form.subject);
-    data.append('message', form.message);
-    form.user_ids.forEach(id => data.append('user_id[]', id));
-    form.message_to.forEach(t => data.append('message_to[]', t));
-
     form.post('/admin/communicate/send_mail', {
         onSuccess: () => form.reset(),
     });
+};
+
+const toggleGroup = (value: string) => {
+    const idx = form.message_to.indexOf(value);
+    if (idx === -1) form.message_to.push(value);
+    else form.message_to.splice(idx, 1);
 };
 </script>

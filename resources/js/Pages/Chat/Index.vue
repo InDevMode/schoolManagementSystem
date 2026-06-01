@@ -1,12 +1,25 @@
 <template>
-    <!-- Layout plein écran avec header en haut -->
-    <div class="flex flex-col h-screen bg-gray-50 dark:bg-gray-900">
+    <!-- Layout plein écran avec sidebar + topbar -->
+    <div :class="['flex h-screen overflow-hidden transition-colors duration-300', isDark ? 'dark' : '', 'bg-gray-50 dark:bg-gray-900']">
 
-        <!-- Header Inertia réutilisé -->
-        <AppHeader />
+        <!-- ── Sidebar ── -->
+        <AppSidebar
+            :collapsed="sidebarCollapsed"
+            :mobile-open="mobileSidebarOpen"
+            @toggle="sidebarCollapsed = !sidebarCollapsed"
+            @close="mobileSidebarOpen = false"
+        />
 
-        <!-- Corps du chat : sidebar + zone messages -->
-        <div class="flex flex-1 overflow-hidden">
+        <!-- ── Zone principale ── -->
+        <div :class="[
+            'flex flex-col flex-1 min-w-0 transition-all duration-300 overflow-hidden',
+            sidebarCollapsed ? 'lg:ml-[72px]' : 'lg:ml-64',
+        ]">
+            <!-- Topbar -->
+            <AppTopbar @open-mobile="mobileSidebarOpen = true" />
+
+            <!-- Corps du chat : sidebar contacts + zone messages -->
+            <div class="flex flex-1 overflow-hidden">
 
             <!-- ── Sidebar contacts ── -->
             <aside class="w-80 flex-shrink-0 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 flex flex-col">
@@ -112,7 +125,7 @@
                             </div>
 
                             <!-- Message envoyé (moi) -->
-                            <div v-if="chat.sender_id === authUser.id" class="flex justify-end items-end gap-2 mb-1">
+                            <div v-if="authUser && chat.sender_id === authUser.id" class="flex justify-end items-end gap-2 mb-1">
                                 <div class="flex flex-col items-end max-w-[65%]">
                                     <!-- Actions -->
                                     <div v-if="!chat.is_delete" class="flex items-center gap-2 mb-1 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -126,7 +139,7 @@
                                     <span class="text-[10px] text-gray-400 mt-1 pr-1">{{ timeAgo(chat.created_date) }}</span>
                                 </div>
                                 <img
-                                    :src="authUser.profile_picture ? `/upload/profile/${authUser.profile_picture}` : '/upload/default.jpg'"
+                                    :src="authUser?.profile_picture ? `/upload/profile/${authUser.profile_picture}` : '/upload/default.jpg'"
                                     class="w-7 h-7 rounded-full object-cover flex-shrink-0"
                                 />
                             </div>
@@ -204,17 +217,31 @@
                 </template>
             </div>
         </div>
+        </div>
     </div>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, onMounted, nextTick } from 'vue';
 import { usePage } from '@inertiajs/vue3';
-import AppHeader from '@/Components/Layout/AppHeader.vue';
+import { useDark } from '@vueuse/core';
+import type { PageProps } from '@/types';
+import AppSidebar from '@/Components/Layout/AppSidebar.vue';
+import AppTopbar  from '@/Components/Layout/AppTopbar.vue';
 
 defineOptions({ layout: null }); // Layout custom — on gère tout ici
 
-const page = usePage();
+const isDark = useDark();
+
+// ── État sidebar (synchronisé avec localStorage) ─────────────────────────────
+const STORAGE_KEY      = 'sidebar_collapsed';
+const sidebarCollapsed = ref<boolean>(localStorage.getItem(STORAGE_KEY) === 'true');
+const mobileSidebarOpen = ref(false);
+
+import { watch } from 'vue';
+watch(sidebarCollapsed, (val) => localStorage.setItem(STORAGE_KEY, String(val)));
+
+const page = usePage<PageProps>();
 
 const props = defineProps<{
     contacts:    any[];
@@ -223,7 +250,7 @@ const props = defineProps<{
     receiver_id: string | null;
 }>();
 
-const authUser = computed(() => page.props.auth?.user as any);
+const authUser = computed(() => page.props.auth?.user);
 const csrfToken = computed(() => (document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement)?.content ?? '');
 
 // btoa n'est pas accessible dans les templates Vue — on l'expose explicitement

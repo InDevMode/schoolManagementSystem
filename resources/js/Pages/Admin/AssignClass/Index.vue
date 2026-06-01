@@ -57,7 +57,7 @@
                     :options="teacherOptions"
                     placeholder="Sélectionner des professeurs"
                     required
-                    :error="form.errors.teacher_id"
+                    :error="form.errors.teacher_ids"
                 />
                 <AppSelect v-model="form.status" label="Statut" :options="statusOptions" required :error="form.errors.status" />
             </form>

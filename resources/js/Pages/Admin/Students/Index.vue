@@ -129,6 +129,8 @@ const previewUrl = ref<string | null>(null); const picFile = ref<File | null>(nu
 const toast = useToast();
 const tableRef = ref<InstanceType<typeof DataTable> | null>(null);
 
+const filters = ref({ name: '', last_name: '', class_id: '', status: '' });
+
 const statusOptions    = [{ value: '1', label: 'Actif' }, { value: '0', label: 'Inactif' }];
 const genderOptions    = [{ value: 'male', label: 'Masculin' }, { value: 'female', label: 'Féminin' }, { value: 'other', label: 'Autre' }];
 const bloodGroupOptions = ['A+','A-','B+','B-','AB+','AB-','O+','O-'].map(v => ({ value: v.toLowerCase(), label: v }));

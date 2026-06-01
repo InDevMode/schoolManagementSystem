@@ -19,6 +19,7 @@ use App\Http\Controllers\StudentController;
 use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\TeacherController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\SocialAuthController;
 use App\Http\Controllers\WorkController;
 use Illuminate\Support\Facades\Route;
 
@@ -42,12 +43,23 @@ Route::post('forgot_password', [AuthController::class, 'changePassword'])->name(
 Route::get('reset/{token}', [AuthController::class, 'resetPassword'])->name('password.reset');
 Route::post('reset/{token}', [AuthController::class, 'resetAndChangePassword'])->name('password.update');
 
+// OAuth Social Login (Google & Facebook)
+Route::get('auth/{provider}', [SocialAuthController::class, 'redirect'])->name('social.redirect');
+Route::get('auth/{provider}/callback', [SocialAuthController::class, 'callback'])->name('social.callback');
+
 
 Route::group(['middleware' => 'common'], function () {
     Route::get('chat', [ChatController::class, 'chat']);
     Route::post('chat', [ChatController::class, 'sendMessage'])->name('chat.send');
     Route::put('/chat/{id}', [ChatController::class, 'updateMessage'])->name('chat.update');
     Route::get('/chat/{id}', [ChatController::class, 'deleteMessage'])->name('chat.delete');
+
+    // ── API JSON pour le polling temps réel ──────────────────────────────────
+    Route::get('chat/messages/poll', [ChatController::class, 'pollMessages'])->name('chat.poll');
+    Route::get('chat/contacts/poll', [ChatController::class, 'pollContacts'])->name('chat.contacts.poll');
+    Route::post('chat/send-ajax', [ChatController::class, 'sendMessageAjax'])->name('chat.send.ajax');
+    Route::post('chat/update-ajax/{id}', [ChatController::class, 'updateMessageAjax'])->name('chat.update.ajax');
+    Route::post('chat/delete-ajax/{id}', [ChatController::class, 'deleteMessageAjax'])->name('chat.delete.ajax');
 });
 
 Route::group(['middleware' => 'admin'], function () {

@@ -17,9 +17,10 @@
 
 <script setup lang="ts">
 import { usePage } from '@inertiajs/vue3';
+import type { PageProps } from '@/types';
 import StatCard from '@/Components/Dashboard/StatCard.vue';
 
-const $page = usePage();
+const $page = usePage<PageProps>();
 
 defineProps<{
     totalTeacherStudent: number;

@@ -48,6 +48,9 @@ class User extends Authenticatable
         'profile_picture',
         'class_id',
         'parent_id',
+        'provider',
+        'provider_id',
+        'last_login',
     ];
 
     /**

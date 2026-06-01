@@ -45,7 +45,7 @@
                     <template v-else>
                         <tr
                             v-for="(row, index) in rows"
-                            :key="rowKey ? row[rowKey] : index"
+                            :key="rowKey ? String(row[rowKey]) : index"
                             class="hover:bg-gray-50 dark:hover:bg-gray-700/40 transition-colors duration-100"
                         >
                             <td

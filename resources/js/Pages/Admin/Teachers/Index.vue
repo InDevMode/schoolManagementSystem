@@ -131,6 +131,8 @@ const showPwd = ref(false); const previewUrl = ref<string | null>(null); const p
 const toast = useToast();
 const tableRef = ref<InstanceType<typeof DataTable> | null>(null);
 
+const filters = ref({ name: '', last_name: '', status: '' });
+
 const statusOptions  = [{ value: '1', label: 'Actif' }, { value: '0', label: 'Inactif' }];
 const genderOptions  = [{ value: 'male', label: 'Masculin' }, { value: 'female', label: 'Féminin' }, { value: 'other', label: 'Autre' }];
 const maritalOptions = [{ value: 'single', label: 'Célibataire' }, { value: 'married', label: 'Marié(e)' }, { value: 'divorced', label: 'Divorcé(e)' }];

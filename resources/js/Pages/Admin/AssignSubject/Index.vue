@@ -54,7 +54,7 @@
                     :options="subjectOptions"
                     placeholder="Sélectionner des matières"
                     required
-                    :error="form.errors.subject_id"
+                    :error="form.errors.subject_ids"
                 />
                 <AppInput v-model="form.coefficient" label="Coefficient" type="number" required :error="form.errors.coefficient" />
                 <AppSelect v-model="form.status" label="Statut" :options="statusOptions" required :error="form.errors.status" />
