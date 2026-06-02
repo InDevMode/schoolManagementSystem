@@ -11,6 +11,11 @@
 
         // si espace < 150px en bas ET assez d’espace en haut
         this.dropUp = spaceBottom < 150 && spaceTop > 150;
+
+        // Empêcher le scroll et ajuster la position
+        if (spaceBottom < 150 && spaceTop < 150) {
+            this.dropUp = true; // Forcer l'ouverture vers le haut
+        }
     }
 }" x-effect="open = (openDropdown === id)">
 

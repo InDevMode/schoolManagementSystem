@@ -7,12 +7,17 @@
     "require": {
         "php": "^8.1",
         "doctrine/dbal": "^3.9",
+        "fedapay/fedapay-php": "^0.4.8",
         "guzzlehttp/guzzle": "^7.2",
+        "inertiajs/inertia-laravel": "^2.0",
         "laravel/framework": "^10.10",
         "laravel/sanctum": "^3.3",
+        "laravel/socialite": "^5.27",
         "laravel/tinker": "^2.8",
         "maatwebsite/excel": "^3.1",
-        "stripe/stripe-php": "^17.5"
+        "spatie/laravel-permission": "^6.25",
+        "stripe/stripe-php": "^17.5",
+        "tightenco/ziggy": "^2.6"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",

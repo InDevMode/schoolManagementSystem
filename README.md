@@ -1,112 +1,138 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# School Management System
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Plateforme de gestion scolaire multi-rôles construite avec Laravel 10, Inertia.js et Vue 3.
 
-## About Laravel
+## Stack technique
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+| Couche      | Technologie                          |
+|-------------|--------------------------------------|
+| Backend     | Laravel 10, PHP 8.1+                 |
+| Frontend    | Vue 3, TypeScript, Inertia.js        |
+| Style       | Tailwind CSS (couleur primaire : Violet `#7C3AED`) |
+| Auth        | Laravel Auth + Spatie Permission     |
+| Build       | Vite                                 |
+| Base de données | MySQL                            |
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Rôles utilisateurs
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+| Rôle | Accès |
+|------|-------|
+| Admin (1) | Gestion complète de l'établissement |
+| Professeur (2) | Classes, présences, notes, devoirs |
+| Apprenant (3) | Résultats, devoirs, présences, contributions |
+| Parent (4) | Suivi des enfants |
 
-## Learning Laravel
-
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
-
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
-
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-## Laravel Sponsors
-
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
-
-### Premium Partners
-
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
-
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
-
-
-Authentification : 
-
-Parfait, si **tu n’as pas de mot de passe** pour ton utilisateur `root` MySQL (ce qui peut arriver en local), tu peux simplement **retirer l’option `-p`** de la commande.
-
----
-
-## ✅ Commande adaptée **sans mot de passe** :
+## Installation
 
 ```bash
-mysqldump -u root schoolManagementSystem > schoolManagementSystem.sql
+# 1. Cloner et installer les dépendances
+composer install
+npm install
+
+# 2. Configurer l'environnement
+cp .env.example .env
+php artisan key:generate
+
+# 3. Base de données
+php artisan migrate
+# Importer le fichier SQL si disponible :
+# mysql -u root schoolManagementSystem < schoolManagementSystem.sql
+
+# 4. Lancer le développement
+php artisan serve
+npm run dev
 ```
 
----
+## Structure frontend
 
-👉 Cela va :
-
-* se connecter à MySQL en tant que `root`
-* exporter toute la base `schoolManagementSystem`
-* écrire le fichier `schoolManagementSystem.sql` dans le dossier courant
-
----
-
-### 📝 Note importante :
-
-* Si tu obtiens une erreur comme `Access denied`, ton MySQL **utilise peut-être un mot de passe vide**, mais nécessite tout de même `-p`.
-* Dans ce cas, essaye avec `-p` et appuie sur `Entrée` quand il demande le mot de passe :
-
-```bash
-mysqldump -u root -p schoolManagementSystem > schoolManagementSystem.sql
-# Puis appuie juste sur Entrée sans taper de mot de passe
+```
+resources/js/
+├── app.ts                  # Point d'entrée Inertia
+├── types/                  # Types TypeScript globaux
+├── Layouts/
+│   ├── AppLayout.vue       # Layout principal (header + sous-menu)
+│   └── GuestLayout.vue     # Layout pages publiques (login)
+├── Components/
+│   ├── UI/                 # Composants réutilisables
+│   │   ├── AppButton.vue
+│   │   ├── AppInput.vue
+│   │   ├── AppSelect.vue
+│   │   ├── AppModal.vue
+│   │   ├── AppTable.vue
+│   │   ├── AppBadge.vue
+│   │   ├── AppCheckbox.vue
+│   │   ├── AppRadio.vue
+│   │   ├── AppAlert.vue
+│   │   └── AppMultiSelect.vue
+│   ├── Layout/
+│   │   ├── AppHeader.vue   # Header horizontal avec sous-menus dropdown
+│   │   ├── SubMenuBar.vue  # Barre de sous-navigation contextuelle
+│   │   └── NavIcon.vue     # Icônes SVG Heroicons
+│   └── Dashboard/
+│       └── StatCard.vue    # Carte de statistique
+├── Composables/
+│   └── useNavigation.ts    # Navigation dynamique par rôle
+├── Data/
+│   └── navigation.ts       # Configuration des menus par rôle
+└── Pages/
+    ├── Auth/Login.vue
+    └── Dashboard/
+        ├── Admin.vue
+        ├── Teacher.vue
+        ├── Student.vue
+        └── Parent.vue
 ```
 
-Souhaites-tu maintenant la commande complète pour migrer ce fichier `.sql` vers PostgreSQL ?
+## Composants UI — Usage rapide
 
-MAIL_MAILER=smtp
-MAIL_HOST=smtp.gmail.com
-MAIL_PORT=587
-MAIL_USERNAME=regisattolou19@gmail.com
-MAIL_PASSWORD=lzuzlrazbwwaygbr
-MAIL_ENCRYPTION=tls
-MAIL_FROM_ADDRESS=devlead20@gmail.com
-MAIL_FROM_NAME="${APP_NAME}"
+```vue
+<!-- Bouton -->
+<AppButton variant="primary" size="md" :loading="false">Enregistrer</AppButton>
 
+<!-- Input -->
+<AppInput v-model="form.name" label="Nom" required :error="form.errors.name" />
 
+<!-- Select -->
+<AppSelect v-model="form.status" label="Statut" :options="[{value:1,label:'Actif'},{value:0,label:'Inactif'}]" />
+
+<!-- MultiSelect -->
+<AppMultiSelect v-model="form.subjects" label="Matières" :options="subjectOptions" />
+
+<!-- Modal (formulaire) -->
+<AppModal v-model="showModal" title="Créer un admin" size="md">
+    <!-- formulaire ici -->
+    <template #footer>
+        <AppButton variant="ghost" @click="showModal = false">Annuler</AppButton>
+        <AppButton type="submit" :loading="form.processing">Enregistrer</AppButton>
+    </template>
+</AppModal>
+
+<!-- Table -->
+<AppTable :columns="cols" :rows="data" :pagination="pagination">
+    <template #cell-status="{ value }">
+        <AppBadge :variant="value ? 'success' : 'danger'">{{ value ? 'Actif' : 'Inactif' }}</AppBadge>
+    </template>
+    <template #actions="{ row }">
+        <AppButton size="xs" variant="ghost">Éditer</AppButton>
+    </template>
+</AppTable>
+```
+
+## Conventions de code
+
+- Tous les formulaires (create/edit) sont dans des **modals** (`AppModal`)
+- Les composants UI sont importés depuis `@/Components/UI`
+- Les pages Inertia sont dans `resources/js/Pages/`
+- Chaque page reçoit ses données via les **props Inertia** (pas d'appels API séparés)
+- La navigation est définie dans `resources/js/Data/navigation.ts`
+
+## Roadmap
+
+- [x] Migration Blade → Vue 3 + Inertia.js
+- [x] Header horizontal avec sous-menus (style projet 2)
+- [x] Bibliothèque de composants UI réutilisables
+- [x] Tailwind config propre (palette violet)
+- [ ] Système de rôles/permissions Spatie (Phase 2)
+- [ ] Migration de toutes les pages CRUD en Vue + modals
+- [ ] Architecture Repository + Service (Phase 3)
+- [ ] Multi-tenant / multi-école (Phase 4)

@@ -7,7 +7,7 @@
 <a href="{{ $href }}"
       {{ $attributes->merge([
           'class' =>
-              'inline-flex items-center gap-2 text-sm font-medium transition-colors text-gray-700 dark:text-gray-400 ' .
+              'inline-flex items-center gap-2 text-sm font-medium transition-colors text-gray-700 dark:text-gray-400 py-3' .
               $hover,
       ]) }}>
       @if ($icon)

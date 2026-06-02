@@ -10,20 +10,15 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Inertia\Inertia;
 
 class CommunicateController extends Controller
 {
     public function list()
     {
-        $data['header_title'] = 'Message de notifications';
-        $data['getNoticeBoard'] = CommunicateModel::getNoticeBoard(5);
-        return view('admin.communicate.noticeboard.list', $data);
-    }
-
-    public function add()
-    {
-        $data['header_title'] = 'Créer un message de notification';
-        return view('admin.communicate.noticeboard.add', $data);
+        return Inertia::render('Admin/Noticeboard/Index', [
+            'notices' => CommunicateModel::getNoticeBoard(15),
+        ]);
     }
 
     public function create(Request $request)
@@ -58,11 +53,14 @@ class CommunicateController extends Controller
 
     }
 
-    public function edit($id)
+    public function edit(int $id)
     {
-        $data['getNoticeBoard'] = CommunicateModel::getSingle($id);
-        $data['header_title'] = 'Modifier un message de notification';
-        return view('admin.communicate.noticeboard.edit', $data);
+        $notice = CommunicateModel::getSingle($id);
+        abort_unless($notice, 404);
+        return Inertia::render('Admin/Noticeboard/Index', [
+            'notices'    => CommunicateModel::getNoticeBoard(15),
+            'editNotice' => $notice,
+        ]);
     }
 
     public function update(Request $request, $id)
@@ -117,60 +115,58 @@ class CommunicateController extends Controller
 
     public function myNoticeBoard()
     {
-        $data['header_title'] = 'Mes notifications';
-        $data['getStudentNoticeboard'] = CommunicateModel::getNoticeBoardWithUserType(Auth::user()->user_type, 5);
-        return view('student.notice_board', $data);
+        return Inertia::render('Student/Noticeboard/Index', [
+            'notices' => CommunicateModel::getNoticeBoardWithUserType(Auth::user()->user_type, 15),
+        ]);
     }
 
     public function teacherNoticeBoard()
     {
-        $data['header_title'] = 'Mes notifications';
-        $data['getTeacherNoticeboard'] = CommunicateModel::getNoticeBoardWithUserType(Auth::user()->user_type, 5);
-        return view('teacher.notice_board', $data);
+        return Inertia::render('Teacher/Noticeboard/Index', [
+            'notices' => CommunicateModel::getNoticeBoardWithUserType(Auth::user()->user_type, 15),
+        ]);
     }
 
     public function parentNoticeBoard()
     {
-        $data['header_title'] = 'Mes notifications';
-        $data['getParentNoticeboard'] = CommunicateModel::getNoticeBoardWithUserType(Auth::user()->user_type, 5);
-        return view('parent.notice_board', $data);
+        return Inertia::render('Parent/Noticeboard/Index', [
+            'notices' => CommunicateModel::getNoticeBoardWithUserType(Auth::user()->user_type, 15),
+        ]);
     }
 
     public function sendMail()
     {
-        $data['header_title'] = 'Envoyer un mail';
-        $data['getUsers'] = User::getUsers();
-        return view('admin.communicate.send_mail', $data);
+        return Inertia::render('Admin/SendMail/Index', [
+            'users' => User::getUsers(),
+        ]);
     }
 
     public function sendMailCreate(Request $request)
     {
         try {
-            if (!empty($request->user_id)) {
-                foreach ($request->user_id as $userId) {
+            // Envoi aux destinataires individuels
+            if (!empty($request->user_ids)) {
+                foreach ($request->user_ids as $userId) {
                     $user = User::getSingle($userId);
 
                     if ($user && $user->email) {
-                        // Ajouter dynamiquement les données nécessaires pour l'email
                         $user->send_message = $request->message;
                         $user->send_subject = $request->subject;
-                        // Envoi du mail
                         Mail::to($user->email)->send(new SendMailUserMail($user));
                     }
+                }
+            }
 
-                    if (!empty($request->message_to)) {
-                        foreach ($request->message_to as $user_type) {
-                            $getUser = User::getUserByUserType($user_type);
-                            if (!empty($getUser)) {
-                                foreach ($getUser as $user) {
-                                    if ($user && $user->email) {
-                                        // Ajouter dynamiquement les données nécessaires pour l'email
-                                        $user->send_message = $request->message;
-                                        $user->send_subject = $request->subject;
-                                        // Envoi du mail
-                                        Mail::to($user->email)->send(new SendMailUserMail($user));
-                                    }
-                                }
+            // Envoi aux groupes (indépendant des destinataires individuels)
+            if (!empty($request->message_to)) {
+                foreach ($request->message_to as $user_type) {
+                    $groupUsers = User::getUserByUserType($user_type);
+                    if (!empty($groupUsers)) {
+                        foreach ($groupUsers as $user) {
+                            if ($user && $user->email) {
+                                $user->send_message = $request->message;
+                                $user->send_subject = $request->subject;
+                                Mail::to($user->email)->send(new SendMailUserMail($user));
                             }
                         }
                     }

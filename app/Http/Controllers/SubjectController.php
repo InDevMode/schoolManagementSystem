@@ -8,20 +8,15 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Inertia\Inertia;
 
 class SubjectController extends Controller
 {
-    public function list(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
+    public function list()
     {
-        $data['header_title'] = "Liste des matières";
-        $data['getSubject'] = SubjectModel::getAllSubject(5);
-        return view('admin.subject.list', $data);
-    }
-
-    public function add(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
-    {
-        $data['header_title'] = "Créer une matière";
-        return view('admin.subject.add', $data);
+        return Inertia::render('Admin/Subjects/Index', [
+            'subjects' => SubjectModel::getAllSubject(15),
+        ]);
     }
 
     public function create(Request $request): \Illuminate\Foundation\Application|\Illuminate\Routing\Redirector|\Illuminate\Http\RedirectResponse|\Illuminate\Contracts\Foundation\Application
@@ -46,18 +41,6 @@ class SubjectController extends Controller
             Log::error("Erreur lors de la création d'une matière : " . $e->getMessage());
 
             return redirect()->back()->with('error', 'Vos informations ne sont pas correctes. Veuillez réessayer.');
-        }
-    }
-
-    public function edit($id)
-    {
-        $data['getSubject'] = SubjectModel::getSingle($id);
-        dd($data['getSubject']);
-        if (!empty($data['getSubject'])) {
-            $data['header_title'] = "Modifier une matière";
-            return view('admin.subject.edit', $data);
-        } else {
-            abort(404);
         }
     }
 
@@ -100,21 +83,19 @@ class SubjectController extends Controller
         }
     }
 
-    public function studentSubject(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
+    public function studentSubject()
     {
-        $data['getStudentSubject'] = ClassSubjectModel::studentStubject(Auth::user()->class_id, 10, );
-        $data['student_id'] = Auth::user()->id;
-        $data['header_title'] = "Mes Cours";
-        return view('student.subject', $data);
-
+        return Inertia::render('Student/Subjects/Index', [
+            'subjects' => ClassSubjectModel::studentStubject(15, Auth::user()->class_id),
+        ]);
     }
 
-    public function parentStudentSubject($student_id): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
+    public function parentStudentSubject($student_id)
     {
         $student = User::getSingle($student_id);
-        $data['getUser'] = $student;
-        $data['getParentStudentSubject'] = ClassSubjectModel::studentStubject(10, $student->class_id);
-        $data['header_title'] = "Liste des matières de mon apprenant";
-        return view('parent.student_subject', $data);
+        return Inertia::render('Parent/Subjects/Index', [
+            'student' => $student,
+            'subjects' => ClassSubjectModel::studentStubject(15, $student->class_id),
+        ]);
     }
 }

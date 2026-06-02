@@ -10,20 +10,23 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Inertia\Inertia;
 use Maatwebsite\Excel\Facades\Excel;
 
 class AttendanceController extends Controller
 {
-    public function attendanceStudent(Request $request): \Illuminate\Contracts\View\Factory|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\View|\Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse
+    public function attendanceStudent(Request $request)
     {
-        $data['header_title'] = 'Définir la présence des apprenants';
-        $data['getClass'] = ClassModel::getClass();
-
-        if (!empty($request->get('class_id')) && !empty($request->get('attendance_date'))) {
-            $data['getStudent'] = User::getStudent($request->get('class_id'));
+        $students = [];
+        if ($request->filled('class_id') && $request->filled('attendance_date')) {
+            $students = User::getStudent($request->class_id);
         }
-
-        return view('admin.attendance.student.list', $data);
+        return Inertia::render('Admin/Attendance/Index', [
+            'classes'       => ClassModel::getClass(),
+            'students'      => $students,
+            'selectedClass' => $request->class_id,
+            'selectedDate'  => $request->attendance_date,
+        ]);
     }
 
     public function attendanceStudentSave(Request $request): \Illuminate\Http\JsonResponse
@@ -60,22 +63,26 @@ class AttendanceController extends Controller
         }
     }
 
-    public function attendanceReport(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
+    public function attendanceReport()
     {
-        $data['header_title'] = 'Rapport de présences';
-        $data['getClass'] = ClassModel::getClass();
-        $data['getStudentAttendance'] = StudentAttendanceModel::getStudentAttendance(5);
-        return view('admin.attendance.report', $data);
+        return Inertia::render('Admin/Attendance/Report', [
+            'classes'    => ClassModel::getClass(),
+            'attendance' => StudentAttendanceModel::getStudentAttendance(15),
+        ]);
     }
 
-    public function attendanceStudentTeacher(Request $request): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
+    public function attendanceStudentTeacher(Request $request)
     {
-        $data['header_title'] = 'Liste de présence des apprenants';
-        $data['getClass'] = ClassTeacherModel::getMyClassSubjectGroup(Auth::user()->id);
-        if (!empty($request->get('class_id')) && !empty($request->get('attendance_date'))) {
-            $data['getStudent'] = User::getStudent($request->get('class_id'));
+        $students = [];
+        if ($request->filled('class_id') && $request->filled('attendance_date')) {
+            $students = User::getStudent($request->class_id);
         }
-        return view('teacher.attendance.student.list', $data);
+        return Inertia::render('Teacher/Attendance/Index', [
+            'classes'       => ClassTeacherModel::getMyClassSubjectGroup(Auth::user()->id),
+            'students'      => $students,
+            'selectedClass' => $request->class_id,
+            'selectedDate'  => $request->attendance_date,
+        ]);
     }
 
     public function attendanceStudentTeacherSave(Request $request): \Illuminate\Http\JsonResponse
@@ -112,34 +119,30 @@ class AttendanceController extends Controller
         }
     }
 
-    public function attendanceReportTeacher(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
+    public function attendanceReportTeacher()
     {
-        $data['header_title'] = 'Rapport de présences';
-        $getClass = ClassTeacherModel::getMyClassSubjectGroup(Auth::user()->id);
-        $classArray = [];
-        foreach ($getClass as $class) {
-            $classArray[] = $class->class_id;
-        }
-        $data['getClass'] = $getClass;
-        $data['getStudentAttendance'] = StudentAttendanceModel::getStudentAttendanceTeacher(10, $classArray);
-        return view('teacher.attendance.report', $data);
+        return Inertia::render('Teacher/Attendance/Report', [
+            'classes'    => ClassTeacherModel::getMyClassSubjectGroup(Auth::user()->id),
+            'attendance' => StudentAttendanceModel::getStudentAttendance(10),
+        ]);
     }
 
     public function myAttendance()
     {
-        $data['header_title'] = 'Ma Présence';
-        $data['getMyAttendance'] = StudentAttendanceModel::getMyAttendance(Auth::user()->id, 10);
-        $data['getClassStudent'] = StudentAttendanceModel::getClassStudent(Auth::user()->id);
-        return view('student.attendance', $data);
+        return Inertia::render('Student/Attendance/Index', [
+            'attendance'   => StudentAttendanceModel::getMyAttendance(Auth::user()->id, 10),
+            'classStudent' => StudentAttendanceModel::getClassStudent(Auth::user()->id),
+        ]);
     }
 
-    public function parentStudentAttendance($student_id)
+    public function parentStudentAttendance(int $student_id)
     {
-        $data['header_title'] = "Présence des apprenants";
-        $data['getStudent'] = User::getSingle($student_id);
-        $data['getParentStudentAttendance'] = StudentAttendanceModel::getMyAttendance($student_id, 10);
-        $data['getClassStudent'] = StudentAttendanceModel::getClassStudent($student_id);
-        return view('parent.student_attendance', $data);
+        $student = User::getSingle($student_id);
+        return Inertia::render('Parent/Attendance/Index', [
+            'student'      => $student,
+            'attendance'   => StudentAttendanceModel::getMyAttendance($student_id, 10),
+            'classStudent' => StudentAttendanceModel::getClassStudent($student_id),
+        ]);
     }
 
     public function attendanceReportExport()

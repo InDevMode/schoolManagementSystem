@@ -19,6 +19,7 @@ use App\Http\Controllers\StudentController;
 use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\TeacherController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\SocialAuthController;
 use App\Http\Controllers\WorkController;
 use Illuminate\Support\Facades\Route;
 
@@ -34,13 +35,17 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', [AuthController::class, 'login']);
+Route::get('login', [AuthController::class, 'login'])->name('login');
 Route::post('login', [AuthController::class, 'authenticate']);
-Route::get('logout', [AuthController::class, 'logout']);
-Route::get('forgot_password', [AuthController::class, 'forgotPassword']);
-Route::post('forgot_password', [AuthController::class, 'changePassword']);
-Route::get('reset/{token}', [AuthController::class, 'resetPassword']);
-Route::post('reset/{token}', [AuthController::class, 'resetAndChangePassword']);
-Route::get('signup', [AuthController::class, 'signup']);
+Route::get('logout', [AuthController::class, 'logout'])->name('logout');
+Route::get('forgot_password', [AuthController::class, 'forgotPassword'])->name('password.request');
+Route::post('forgot_password', [AuthController::class, 'changePassword'])->name('password.email');
+Route::get('reset/{token}', [AuthController::class, 'resetPassword'])->name('password.reset');
+Route::post('reset/{token}', [AuthController::class, 'resetAndChangePassword'])->name('password.update');
+
+// OAuth Social Login (Google & Facebook)
+Route::get('auth/{provider}', [SocialAuthController::class, 'redirect'])->name('social.redirect');
+Route::get('auth/{provider}/callback', [SocialAuthController::class, 'callback'])->name('social.callback');
 
 
 Route::group(['middleware' => 'common'], function () {
@@ -48,6 +53,13 @@ Route::group(['middleware' => 'common'], function () {
     Route::post('chat', [ChatController::class, 'sendMessage'])->name('chat.send');
     Route::put('/chat/{id}', [ChatController::class, 'updateMessage'])->name('chat.update');
     Route::get('/chat/{id}', [ChatController::class, 'deleteMessage'])->name('chat.delete');
+
+    // ── API JSON pour le polling temps réel ──────────────────────────────────
+    Route::get('chat/messages/poll', [ChatController::class, 'pollMessages'])->name('chat.poll');
+    Route::get('chat/contacts/poll', [ChatController::class, 'pollContacts'])->name('chat.contacts.poll');
+    Route::post('chat/send-ajax', [ChatController::class, 'sendMessageAjax'])->name('chat.send.ajax');
+    Route::post('chat/update-ajax/{id}', [ChatController::class, 'updateMessageAjax'])->name('chat.update.ajax');
+    Route::post('chat/delete-ajax/{id}', [ChatController::class, 'deleteMessageAjax'])->name('chat.delete.ajax');
 });
 
 Route::group(['middleware' => 'admin'], function () {
@@ -55,36 +67,27 @@ Route::group(['middleware' => 'admin'], function () {
     //Admin url
     Route::get('admin/dashboard', [DashboardController::class, 'dashboard']);
     Route::get('admin/admin/list', [AdminController::class, 'list']);
-    Route::get('admin/admin/add', [AdminController::class, 'add']);
     Route::post('admin/admin/add', [AdminController::class, 'create']);
-    Route::get('admin/admin/edit/{id}', [AdminController::class, 'edit']);
     Route::post('admin/admin/edit/{id}', [AdminController::class, 'update']);
     Route::get('admin/admin/delete/{id}', [AdminController::class, 'delete']);
     Route::post('admin/admin/export', [AdminController::class, 'exportAdmin']);
 
     //Class url
     Route::get('admin/class/list', [ClassController::class, 'list']);
-    Route::get('admin/class/add', [ClassController::class, 'add']);
     Route::post('admin/class/add', [ClassController::class, 'create']);
-    Route::get('admin/class/edit/{id}', [ClassController::class, 'edit']);
     Route::post('admin/class/edit/{id}', [ClassController::class, 'update']);
     Route::get('admin/class/delete/{id}', [ClassController::class, 'delete']);
 
     //Subject url
     Route::get('admin/subject/list', [SubjectController::class, 'list']);
-    Route::get('admin/subject/add', [SubjectController::class, 'add']);
     Route::post('admin/subject/add', [SubjectController::class, 'create']);
-    Route::get('admin/subject/edit/{id}', [SubjectController::class, 'edit']);
     Route::post('admin/subject/edit/{id}', [SubjectController::class, 'update']);
     Route::get('admin/subject/delete/{id}', [SubjectController::class, 'delete']);
 
     //Assign Class Subject url
     Route::get('admin/assign_subject/list', [ClassSubjectController::class, 'list']);
-    Route::get('admin/assign_subject/add', [ClassSubjectController::class, 'add']);
     Route::post('admin/assign_subject/add', [ClassSubjectController::class, 'create']);
-    Route::get('admin/assign_subject/edit/{id}', [ClassSubjectController::class, 'edit']);
     Route::post('admin/assign_subject/edit/{id}', [ClassSubjectController::class, 'update']);
-    Route::get('admin/assign_subject/edit_single/{id}', [ClassSubjectController::class, 'editSingle']);
     Route::post('admin/assign_subject/edit_single/{id}', [ClassSubjectController::class, 'updateSingle']);
     Route::get('admin/assign_subject/delete/{id}', [ClassSubjectController::class, 'delete']);
 
@@ -94,27 +97,21 @@ Route::group(['middleware' => 'admin'], function () {
 
     // Student url on Admin
     Route::get('admin/student/list', [StudentController::class, 'list']);
-    Route::get('admin/student/add', [StudentController::class, 'add']);
     Route::post('admin/student/add', [StudentController::class, 'create']);
-    Route::get('admin/student/edit/{id}', [StudentController::class, 'edit']);
     Route::post('admin/student/edit/{id}', [StudentController::class, 'update']);
     Route::get('admin/student/delete/{id}', [StudentController::class, 'delete']);
     Route::post('admin/student/export', [StudentController::class, 'exportStudent']);
 
     // Teacher url on Admin
     Route::get('admin/teacher/list', [TeacherController::class, 'list']);
-    Route::get('admin/teacher/add', [TeacherController::class, 'add']);
     Route::post('admin/teacher/add', [TeacherController::class, 'create']);
-    Route::get('admin/teacher/edit/{id}', [TeacherController::class, 'edit']);
     Route::post('admin/teacher/edit/{id}', [TeacherController::class, 'update']);
     Route::get('admin/teacher/delete/{id}', [TeacherController::class, 'delete']);
     Route::post('admin/teacher/export', [TeacherController::class, 'exportTeacher']);
 
     // Parent url on Admin
     Route::get('admin/parent/list', [ParentController::class, 'list']);
-    Route::get('admin/parent/add', [ParentController::class, 'add']);
     Route::post('admin/parent/add', [ParentController::class, 'create']);
-    Route::get('admin/parent/edit/{id}', [ParentController::class, 'edit']);
     Route::post('admin/parent/edit/{id}', [ParentController::class, 'update']);
     Route::get('admin/parent/student/{id}', [ParentController::class, 'student']);
     Route::get('admin/parent/{parent_id}/assign_student_parent/{student_id}', [ParentController::class, 'assignStudentParent']);
@@ -125,14 +122,12 @@ Route::group(['middleware' => 'admin'], function () {
     // Admin account url
     Route::get('admin/account', [UserController::class, 'myAccount']);
     Route::post('admin/account', [UserController::class, 'updateAdminAccount']);
+    Route::post('admin/users/reset-password', [UserController::class, 'resetUsersPassword']);
 
     // Assign class to teacher url
     Route::get('admin/assign_class/list', [ClassTeacherController::class, 'list']);
-    Route::get('admin/assign_class/add', [ClassTeacherController::class, 'add']);
     Route::post('admin/assign_class/add', [ClassTeacherController::class, 'create']);
-    Route::get('admin/assign_class/edit/{id}', [ClassTeacherController::class, 'edit']);
     Route::post('admin/assign_class/edit/{id}', [ClassTeacherController::class, 'update']);
-    Route::get('admin/assign_class/edit_single/{id}', [ClassTeacherController::class, 'editSingle']);
     Route::post('admin/assign_class/edit_single/{id}', [ClassTeacherController::class, 'updateSingle']);
     Route::get('admin/assign_class/delete/{id}', [ClassTeacherController::class, 'delete']);
 
@@ -143,17 +138,13 @@ Route::group(['middleware' => 'admin'], function () {
 
     //  Period Url
     Route::get('admin/examinations/period/list', [PeriodController::class, 'list']);
-    Route::get('admin/examinations/period/add', [PeriodController::class, 'add']);
     Route::post('admin/examinations/period/add', [PeriodController::class, 'create']);
-    Route::get('admin/examinations/period/edit/{id}', [PeriodController::class, 'edit']);
     Route::post('admin/examinations/period/edit/{id}', [PeriodController::class, 'update']);
     Route::get('admin/examinations/period/delete/{id}', [PeriodController::class, 'delete']);
 
     // Examinations url
     Route::get('admin/examinations/exam/list', [ExaminationController::class, 'list']);
-    Route::get('admin/examinations/exam/add', [ExaminationController::class, 'add']);
     Route::post('admin/examinations/exam/add', [ExaminationController::class, 'create']);
-    Route::get('admin/examinations/exam/edit/{id}', [ExaminationController::class, 'edit']);
     Route::post('admin/examinations/exam/edit/{id}', [ExaminationController::class, 'update']);
     Route::get('admin/examinations/exam/delete/{id}', [ExaminationController::class, 'delete']);
 
@@ -169,9 +160,7 @@ Route::group(['middleware' => 'admin'], function () {
 
     // Marks grade url
     Route::get('admin/examinations/marks_grade/list', [ExaminationController::class, 'listMarksGrade']);
-    Route::get('admin/examinations/marks_grade/add', [ExaminationController::class, 'addMarksGrade']);
     Route::post('admin/examinations/marks_grade/add', [ExaminationController::class, 'createMarksGrade']);
-    Route::get('admin/examinations/marks_grade/edit/{id}', [ExaminationController::class, 'editMarksGrade']);
     Route::post('admin/examinations/marks_grade/edit/{id}', [ExaminationController::class, 'updateMarksGrade']);
     Route::get('admin/examinations/marks_grade/delete/{id}', [ExaminationController::class, 'deleteMarksGrade']);
 
@@ -185,7 +174,6 @@ Route::group(['middleware' => 'admin'], function () {
 
     // Communicate url
     Route::get('admin/communicate/noticeboard/list', [CommunicateController::class, 'list']);
-    Route::get('admin/communicate/noticeboard/add', [CommunicateController::class, 'add']);
     Route::post('admin/communicate/noticeboard/add', [CommunicateController::class, 'create']);
     Route::get('admin/communicate/noticeboard/edit/{id}', [CommunicateController::class, 'edit']);
     Route::post('admin/communicate/noticeboard/edit/{id}', [CommunicateController::class, 'update']);
@@ -198,11 +186,9 @@ Route::group(['middleware' => 'admin'], function () {
     // Practical works url
     Route::get('admin/practicalworks/homework/list', [WorkController::class, 'practicalWorksList']);
     Route::get('admin/practicalworks/homework/details/{id}', [WorkController::class, 'practicalWorksDetails']);
-    Route::get('admin/practicalworks/homework/add', [WorkController::class, 'practicalWorksAdd']);
+    Route::get('admin/practicalworks/homework/details-json/{id}', [WorkController::class, 'practicalWorksDetailsJson']);
     Route::get('admin/practicalworks/homework/getSubjectByClassId/{id}', [WorkController::class, 'getSubjectByClassId']);
-    Route::post('admin/practicalworks/homework/add', [WorkController::class, 'practicalWorksCreate']);
-    Route::get('admin/practicalworks/homework/edit/{id}', [WorkController::class, 'practicalWorksEdit']);
-    Route::post('admin/practicalworks/homework/edit/{id}', [WorkController::class, 'practicalWorksUpdate']);
+    Route::post('admin/practicalworks/homework/create', [WorkController::class, 'practicalWorksCreate']);
     Route::get('admin/practicalworks/homework/delete/{id}', [WorkController::class, 'practicalWorksDelete']);
 
     // Practical works submitted url
@@ -226,6 +212,9 @@ Route::group(['middleware' => 'admin'], function () {
     // Paypal payment url of admin
     Route::get('admin/feescollections_paypal/payment_success', [FeesCollectionController::class, 'paypalAdminSuccess']);
     Route::get('admin/feescollections_paypal/payment_error', [FeesCollectionController::class, 'paypalAdminError']);
+
+    // FedaPay payment url of admin
+    Route::get('admin/feescollections_fedapay/payment_success', [FeesCollectionController::class, 'fedapayAdminSuccess']);
 
     // Stripe payment url of admin
     Route::get('admin/feescollections_stripe/payment_success', [FeesCollectionController::class, 'stripeAdminSuccess']);

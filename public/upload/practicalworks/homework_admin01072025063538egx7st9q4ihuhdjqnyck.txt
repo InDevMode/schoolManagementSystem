@@ -1,0 +1,18 @@
+Résumé sur les actions commerciales
+
+Rajouter trois champs dans la tables sales_actions dont : 
+Priorité: priority_level
+Centre d'intérêt: interest_center
+Origine informelle: informal_origin
+
+Dans un premier temps est ce que ces trois champs seront des inputs ou des selects ?
+
+Saisie libre des commercial déjà prise en charge dans une autre jira 
+
+Les apporteurs d'affaires servent à quoi ?
+
+Catégorie de fichiers à ajouter pour les actions commerciales
+
+
+Résumé et inquiétudes sur les contacts
+

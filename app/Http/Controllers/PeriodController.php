@@ -6,23 +6,18 @@ use App\Models\PeriodModel;
 use App\Models\SettingModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Inertia\Inertia;
 
 class PeriodController extends Controller
 {
     public function list()
     {
-        $data['header_title'] = 'Liste des Périodes';
-        $data['getPeriods'] = PeriodModel::getPeriods(5);
-        return view('admin.examinations.period.list', $data);
+        return Inertia::render('Admin/Periods/Index', [
+            'periods' => PeriodModel::getPeriods(15),
+            'settings' => SettingModel::getSingle(1),
+        ]);
     }
 
-    public function add()
-    {
-        $data['header_title'] = 'Ajouter une Période';
-        $getSettings = SettingModel::getSingle(1);
-        $data['getSettings'] = $getSettings ?: null;
-        return view('admin.examinations.period.add', $data);
-    }
     public function create(Request $request)
     {
         try {
@@ -44,15 +39,6 @@ class PeriodController extends Controller
         }
     }
 
-    public function edit($id)
-    {
-        $data['header_title'] = 'Editer une Periode';
-        $data['getPeriod'] = PeriodModel::getSingle($id);
-        $getSettings = SettingModel::getSingle(1);
-        $data['getSettings'] = $getSettings ?: null;
-        return view('admin.examinations.period.edit', $data);
-    }
-
     public function update(Request $request, $id)
     {
         try {
@@ -65,7 +51,7 @@ class PeriodController extends Controller
             $existingPeriod->settings_id = intval($request->settings_id);
             $existingPeriod->save();
 
-            return redirect('admin/examinations/period/list')->with('success', 'Période créée avec succès.');
+            return redirect('admin/examinations/period/list')->with('success', 'Période modifiée avec succès.');
 
         } catch (\Exception $e) {
             Log::error("Erreur lors de la modification d'une période : " . $e->getMessage());
@@ -73,6 +59,7 @@ class PeriodController extends Controller
             return redirect()->back()->with('error', 'Vos informations ne sont pas correctes. Veuillez réessayer.');
         }
     }
+
     public function delete($id)
     {
         $period = PeriodModel::getSingle($id);
@@ -84,7 +71,4 @@ class PeriodController extends Controller
             abort(404);
         }
     }
-
-
-
 }

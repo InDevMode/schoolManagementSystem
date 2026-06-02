@@ -8,22 +8,17 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Inertia\Inertia;
 
 class ClassTeacherController extends Controller
 {
-    public function list(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
+    public function list()
     {
-        $data['getClassTeacher'] = ClassTeacherModel::getAllClassTeacher(5);
-        $data['header_title'] = "Liste des classes assignées";
-        return view('admin.assign_class.list', $data);
-    }
-
-    public function add(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
-    {
-        $data['getClass'] = ClassModel::getClass();
-        $data['getTeacher'] = User::getTeacher();
-        $data['header_title'] = "Assignez une classe";
-        return view('admin.assign_class.add', $data);
+        return Inertia::render('Admin/AssignClass/Index', [
+            'classTeachers' => ClassTeacherModel::getAllClassTeacher(15),
+            'classes'       => ClassModel::getClass(),
+            'teachers'      => User::getTeacher(),
+        ]);
     }
 
     public function create(Request $request): \Illuminate\Foundation\Application|\Illuminate\Routing\Redirector|\Illuminate\Http\RedirectResponse|\Illuminate\Contracts\Foundation\Application
@@ -55,21 +50,6 @@ class ClassTeacherController extends Controller
         }
     }
 
-    public function edit($id)
-    {
-        $editExisting = ClassTeacherModel::getSingle($id);
-        if (!empty($editExisting)) {
-            $data['getClassTeacher'] = $editExisting;
-            $data['getClass'] = ClassModel::getClass();
-            $data['getTeacher'] = User::getTeacher();
-            $data['getAssignClass'] = ClassTeacherModel::getAssignTeacher($editExisting->class_id);
-            $data['header_title'] = "Modifier une assignation";
-            return view('admin.assign_class.edit', $data);
-        } else {
-            abort(404);
-        }
-    }
-
     public function update(Request $request): \Illuminate\Foundation\Application|\Illuminate\Routing\Redirector|\Illuminate\Http\RedirectResponse|\Illuminate\Contracts\Foundation\Application
     {
         try {
@@ -97,21 +77,6 @@ class ClassTeacherController extends Controller
             Log::error("Erreur lors de la modification de l'assignation de cette classe. " . $e->getMessage());
 
             return redirect()->back()->with('error', 'Vos informations ne sont pas correctes. Veuillez réessayer.');
-        }
-    }
-
-    public function editSingle($id)
-    {
-        $editExisting = ClassTeacherModel::getSingle($id);
-        if (!empty($editExisting)) {
-            $data['getClassTeacher'] = $editExisting;
-            $data['getClass'] = ClassModel::getClass();
-            $data['getTeacher'] = User::getTeacher();
-            $data['getAssignClass'] = ClassTeacherModel::getAssignTeacher($editExisting->class_id);
-            $data['header_title'] = "Modifier une assignation";
-            return view('admin.assign_class.edit_single', $data);
-        } else {
-            abort(404);
         }
     }
 
@@ -153,16 +118,11 @@ class ClassTeacherController extends Controller
         }
     }
 
-    public function myClassSubject(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
+    public function myClassSubject()
     {
-        $data['header_title'] = "Mes Classes";
-        $teacher_id = Auth::user()->id;
-        $data['getClassSubjectTeacher'] = ClassTeacherModel::getMyClassSubject(10, $teacher_id);
-        $data['timetables'] = [];
-        foreach ($data['getClassSubjectTeacher'] as $classSubjectTeacher) {
-            $classSubjectTeacher->timetables = ClassTeacherModel::getMyClassTimetable($classSubjectTeacher->class_id, $classSubjectTeacher->subject_id);
-        }
-        return view('teacher.class_subject', $data);
+        return Inertia::render('Teacher/ClassSubject/Index', [
+            'classSubjects' => ClassTeacherModel::getMyClassSubjectGroup(Auth::user()->id),
+        ]);
     }
 
 }

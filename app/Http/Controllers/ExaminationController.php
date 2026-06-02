@@ -14,21 +14,16 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Inertia\Inertia;
 
 class ExaminationController extends Controller
 {
-    public function list(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
+    public function list()
     {
-        $data['header_title'] = "Liste des évaluations";
-        $data['getExams'] = ExaminationModel::getExaminations(5);
-        return view('admin.examinations.exam.list', $data);
-    }
-
-    public function add(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
-    {
-        $data['header_title'] = "Créer une évaluation";
-        $data['getPeriods'] = PeriodModel::getAllPeriods();
-        return view('admin.examinations.exam.add', $data);
+        return Inertia::render('Admin/Exams/Index', [
+            'exams' => ExaminationModel::getExaminations(15),
+            'periods' => PeriodModel::getAllPeriods(),
+        ]);
     }
 
     public function create(Request $request): \Illuminate\Foundation\Application|\Illuminate\Routing\Redirector|\Illuminate\Http\RedirectResponse|\Illuminate\Contracts\Foundation\Application
@@ -59,14 +54,11 @@ class ExaminationController extends Controller
 
     public function edit($id)
     {
-        $data['getExams'] = ExaminationModel::getSingle($id);
-        $data['getPeriods'] = PeriodModel::getAllPeriods();
-        if (!empty($data['getExams'])) {
-            $data['header_title'] = "Modifier une évaluation";
-            return view('admin.examinations.exam.edit', $data);
-        } else {
+        $exam = ExaminationModel::getSingle($id);
+        if (!$exam) {
             abort(404);
         }
+        return response()->json(['exam' => $exam, 'periods' => PeriodModel::getAllPeriods()]);
     }
 
     public function update(Request $request, $id): \Illuminate\Foundation\Application|\Illuminate\Routing\Redirector|\Illuminate\Http\RedirectResponse|\Illuminate\Contracts\Foundation\Application
@@ -110,11 +102,8 @@ class ExaminationController extends Controller
         }
     }
 
-    public function scheduleList(Request $request): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
+    public function scheduleList(Request $request)
     {
-        $data['header_title'] = "Programmation des examens";
-        $data['getClass'] = ClassModel::getClass();
-        $data['getExams'] = ExaminationModel::getExams();
         $result = [];
 
         if (!empty($request->get('exam_id')) && !empty($request->get('class_id'))) {
@@ -142,14 +131,19 @@ class ExaminationController extends Controller
                     $dataSchedule['room_number'] = '';
                     $dataSchedule['full_marks'] = '';
                     $dataSchedule['passing_marks'] = '';
-
                 }
 
                 $result[] = $dataSchedule;
             }
         }
-        $data['getExamSchedule'] = $result;
-        return view('admin.examinations.schedule.list', $data);
+
+        return Inertia::render('Admin/Exams/Schedule', [
+            'examSchedule' => $result,
+            'exams'        => ExaminationModel::getExams(),
+            'classes'      => ClassModel::getClass(),
+            'selectedExam'  => $request->exam_id,
+            'selectedClass' => $request->class_id,
+        ]);
     }
 
     public function scheduleCreate(Request $request): \Illuminate\Foundation\Application|\Illuminate\Routing\Redirector|\Illuminate\Http\RedirectResponse|\Illuminate\Contracts\Foundation\Application
@@ -196,9 +190,8 @@ class ExaminationController extends Controller
         }
     }
 
-    public function myExamTimetableStudent(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
+    public function myExamTimetableStudent()
     {
-        $data['header_title'] = "Mon calendrier d'examen";
         $class_id = Auth::user()->class_id;
         $getExamSchedule = ScheduleModel::getExam($class_id);
         $result = [];
@@ -221,13 +214,14 @@ class ExaminationController extends Controller
             $dataExam['getExams'] = $results;
             $result[] = $dataExam;
         }
-        $data['getExamTimetable'] = $result;
-        return view('student.exam_timetable', $data);
+
+        return Inertia::render('Student/Exams/Timetable', [
+            'examTimetable' => $result,
+        ]);
     }
 
-    public function myExamTimetableTeacher(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
+    public function myExamTimetableTeacher()
     {
-        $data['header_title'] = "Mon calendrier d'examens";
         $getClass = ClassTeacherModel::getMyClassSubjectGroup(Auth::user()->id);
         $result = [];
 
@@ -259,13 +253,14 @@ class ExaminationController extends Controller
             $dataClass['getExams'] = $examArray;
             $result[] = $dataClass;
         }
-        $data['getExamTimetable'] = $result;
-        return view('teacher.exam_timetable', $data);
+
+        return Inertia::render('Teacher/Exams/Timetable', [
+            'examTimetable' => $result,
+        ]);
     }
 
-    public function parentStudentExamTimetable($student_id): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
+    public function parentStudentExamTimetable($student_id)
     {
-        $data['header_title'] = "Son calendrier d'examens";
         $getStudent = User::getSingle($student_id);
         $class_id = $getStudent->class_id;
         $getExamSchedule = ScheduleModel::getExam($class_id);
@@ -291,23 +286,28 @@ class ExaminationController extends Controller
             $dataExam['getExams'] = $results;
             $result[] = $dataExam;
         }
-        $data['getExamTimetable'] = $result;
-        $data['getStudent'] = $getStudent;
-        return view('parent.exam_timetable', $data);
+
+        return Inertia::render('Parent/Exams/Timetable', [
+            'examTimetable' => $result,
+            'student' => $getStudent,
+        ]);
     }
 
-    public function marksRegister(Request $request): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
+    public function marksRegister(Request $request)
     {
-        $data['header_title'] = "Registre des notes";
-        $data['getClass'] = ClassModel::getClass();
-        $data['getExams'] = ExaminationModel::getExams();
+        $data = [
+            'classes' => ClassModel::getClass(),
+            'exams' => ExaminationModel::getExams(),
+        ];
 
         if (!empty($request->exam_id) && !empty($request->class_id)) {
-            $data['getSubject'] = ScheduleModel::getSubject($request->exam_id, $request->class_id);
-            $data['getStudent'] = User::getStudent($request->class_id);
+            $data['subjects'] = ScheduleModel::getSubject($request->exam_id, $request->class_id);
+            $data['students'] = User::getStudent($request->class_id);
         }
 
-        return view('admin.examinations.marks_register.list', $data);
+        return Inertia::render('Admin/Exams/MarksRegister', [
+            'data' => $data,
+        ]);
     }
 
     public function addMarksRegister(Request $request)
@@ -566,17 +566,21 @@ class ExaminationController extends Controller
         }
     }
 
-    public function teacherMarkRegister(Request $request): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
+    public function teacherMarkRegister(Request $request)
     {
-        $data['header_title'] = "Registre des notes";
-        $data['getClass'] = ClassTeacherModel::getMyClassSubjectGroup(Auth::user()->id);
-        $data['getExams'] = ScheduleModel::getExamTeacher(Auth::user()->id);
+        $data = [
+            'classes' => ClassTeacherModel::getMyClassSubjectGroup(Auth::user()->id),
+            'exams' => ScheduleModel::getExamTeacher(Auth::user()->id),
+        ];
+
         if (!empty($request->exam_id) && !empty($request->class_id)) {
-            $data['getSubject'] = ScheduleModel::getSubject($request->exam_id, $request->class_id);
-            $data['getStudent'] = User::getStudent($request->class_id);
+            $data['subjects'] = ScheduleModel::getSubject($request->exam_id, $request->class_id);
+            $data['students'] = User::getStudent($request->class_id);
         }
 
-        return view('teacher.marks_register', $data);
+        return Inertia::render('Teacher/Exams/MarksRegister', [
+            'data' => $data,
+        ]);
     }
 
     public function addTeacherMarkRegister(Request $request): \Illuminate\Http\JsonResponse
@@ -726,7 +730,7 @@ class ExaminationController extends Controller
         }
     }
 
-    public function myExamResultStudent(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
+    public function myExamResultStudent()
     {
         $result = [];
         $getExam = MarkRegisterModel::getExam(Auth::user()->id);
@@ -792,8 +796,9 @@ class ExaminationController extends Controller
         }
 
         $data['getExamResultStudent'] = $result;
-        $data['header_title'] = "Mes résultats d'examens";
-        return view('student.exam_result', $data);
+        return Inertia::render('Student/Exams/Results', [
+            'examResult' => $result,
+        ]);
     }
 
     public function studentExamResultPrint(Request $request)
@@ -868,11 +873,9 @@ class ExaminationController extends Controller
         return view('exam_result_print', $data);
     }
 
-    public function parentStudentExamResult($student_id): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
+    public function parentStudentExamResult($student_id)
     {
-        $data['header_title'] = "Ses résultats d'examens";
-
-        $data['getStudent'] = User::getSingle($student_id);
+        $getStudent = User::getSingle($student_id);
         $result = [];
         $getExam = MarkRegisterModel::getExam($student_id);
         foreach ($getExam as $examValue) {
@@ -898,20 +901,17 @@ class ExaminationController extends Controller
             $result[] = $dataExam;
         }
         $data['getExamResultStudent'] = $result;
-        return view('parent.exam_result', $data);
+        return Inertia::render('Parent/Exams/Results', [
+            'examResult' => $result,
+            'student' => $getStudent,
+        ]);
     }
 
-    public function listMarksGrade(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
+    public function listMarksGrade()
     {
-        $data['header_title'] = "Liste des notes";
-        $data['getMarksGrade'] = MarksGradeModel::getMarksGrade(5);
-        return view('admin.examinations.marks_grade.list', $data);
-    }
-
-    public function addMarksGrade(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
-    {
-        $data['header_title'] = "Créer une note";
-        return view('admin.examinations.marks_grade.add', $data);
+        return Inertia::render('Admin/Exams/MarksGrade', [
+            'marksGrades' => MarksGradeModel::getMarksGrade(15),
+        ]);
     }
 
     public function createMarksGrade(Request $request): \Illuminate\Http\RedirectResponse
@@ -939,11 +939,13 @@ class ExaminationController extends Controller
 
     }
 
-    public function editMarksGrade($id): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
+    public function editMarksGrade($id)
     {
-        $data['header_title'] = "Modifier une note";
-        $data['getMarksGrade'] = MarksGradeModel::getSingle($id);
-        return view('admin.examinations.marks_grade.edit', $data);
+        $marksGrade = MarksGradeModel::getSingle($id);
+        if (!$marksGrade) {
+            abort(404);
+        }
+        return response()->json(['marksGrade' => $marksGrade]);
     }
 
     public function updateMarksGrade(Request $request, $id): \Illuminate\Http\RedirectResponse

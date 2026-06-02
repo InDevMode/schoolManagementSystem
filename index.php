@@ -1,55 +1,41 @@
 <?php
 
-use Illuminate\Contracts\Http\Kernel;
-use Illuminate\Http\Request;
+/**
+ * Point d'entrée pour déploiement à la racine (hébergement mutualisé / Laragon).
+ * Redirige vers public/index.php tout en servant les assets statiques correctement.
+ */
 
 define('LARAVEL_START', microtime(true));
 
-/*
-|--------------------------------------------------------------------------
-| Check If The Application Is Under Maintenance
-|--------------------------------------------------------------------------
-|
-| If the application is in maintenance / demo mode via the "down" command
-| we will load this file so that any pre-rendered content can be shown
-| instead of starting the framework, which could cause an exception.
-|
-*/
+// Servir les fichiers statiques directement (assets Vite, images, etc.)
+$uri = urldecode(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
 
-if (file_exists($maintenance = __DIR__.'/storage/framework/maintenance.php')) {
-    require $maintenance;
+// Si le fichier existe dans public/, le servir directement
+$publicFile = __DIR__ . '/public' . $uri;
+if ($uri !== '/' && file_exists($publicFile) && !is_dir($publicFile)) {
+    // Déterminer le Content-Type
+    $ext = strtolower(pathinfo($publicFile, PATHINFO_EXTENSION));
+    $mimeTypes = [
+        'js'    => 'application/javascript',
+        'css'   => 'text/css',
+        'png'   => 'image/png',
+        'jpg'   => 'image/jpeg',
+        'jpeg'  => 'image/jpeg',
+        'gif'   => 'image/gif',
+        'svg'   => 'image/svg+xml',
+        'ico'   => 'image/x-icon',
+        'woff'  => 'font/woff',
+        'woff2' => 'font/woff2',
+        'ttf'   => 'font/ttf',
+        'json'  => 'application/json',
+        'map'   => 'application/json',
+    ];
+    if (isset($mimeTypes[$ext])) {
+        header('Content-Type: ' . $mimeTypes[$ext]);
+    }
+    readfile($publicFile);
+    exit;
 }
 
-/*
-|--------------------------------------------------------------------------
-| Register The Auto Loader
-|--------------------------------------------------------------------------
-|
-| Composer provides a convenient, automatically generated class loader for
-| this application. We just need to utilize it! We'll simply require it
-| into the script here so we don't need to manually load our classes.
-|
-*/
-
-require __DIR__.'/vendor/autoload.php';
-
-/*
-|--------------------------------------------------------------------------
-| Run The Application
-|--------------------------------------------------------------------------
-|
-| Once we have the application, we can handle the incoming request using
-| the application's HTTP kernel. Then, we will send the response back
-| to this client's browser, allowing them to enjoy our application.
-|
-*/
-
-$app = require_once __DIR__.'/bootstrap/app.php';
-
-$kernel = $app->make(Kernel::class);
-
-$response = $kernel->handle(
-    $request = Request::capture()
-)->send();
-
-$kernel->terminate($request, $response);
+// Tout le reste passe par Laravel via public/index.php
+require __DIR__ . '/public/index.php';

@@ -9,10 +9,11 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Request;
 use Laravel\Sanctum\HasApiTokens;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable, HasRoles;
 
     protected $table = 'users';
 
@@ -47,6 +48,9 @@ class User extends Authenticatable
         'profile_picture',
         'class_id',
         'parent_id',
+        'provider',
+        'provider_id',
+        'last_login',
     ];
 
     /**

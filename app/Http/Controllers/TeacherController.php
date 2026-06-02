@@ -9,183 +9,140 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use Inertia\Inertia;
 use Maatwebsite\Excel\Facades\Excel;
 
 class TeacherController extends Controller
 {
-    public function list(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
+    public function list()
     {
-        $data['header_title'] = "Liste des Professeurs";
-        $data['getTeacher'] = User::getAllTeacher(5);
-        return view('admin.teacher.list', $data);
+        return Inertia::render('Admin/Teachers/Index', [
+            'teachers' => User::getAllTeacher(15),
+        ]);
     }
 
-    public function add(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
+    public function create(Request $request)
     {
-        $data['header_title'] = "Créer un nouveau professeur";
-        return view('admin.teacher.add', $data);
-    }
+        $request->validate([
+            'name'      => 'required|string|max:100',
+            'last_name' => 'required|string|max:100',
+            'email'     => 'required|email|unique:users,email',
+            'password'  => 'nullable|string|min:6',
+            'status'    => 'required|in:0,1',
+            'gender'    => 'nullable|in:male,female,other',
+        ]);
 
-    public function create(Request $request): \Illuminate\Foundation\Application|\Illuminate\Routing\Redirector|\Illuminate\Http\RedirectResponse|\Illuminate\Contracts\Foundation\Application
-    {
         try {
-            $teacherMail = User::getEmailSingle($request->email);
-            $passwordLength = strlen($request->password);
-            $regex = '/^[a-z0-9]+@[a-z0-9]+\.(fr|com|org|bj|io)$/';
-
-            if ($teacherMail) {
-                return redirect()->back()->with('error', 'Cet email a déjà été utilisé par un autre professeur');
-            }
-            if (!empty($request->password) && $passwordLength < 6) {
-                return redirect()->back()->with('error', 'Votre mot de passe ne doit pas être de moins de 6 caractères.');
-            }
-
-            if (!preg_match($regex, $request->email)) {
-                return redirect()->back()->with('error', 'Cet email est invalide. Assurez-vous qu\'il se termine par .fr, .com, .org, .bj ou .io.');
-            }
-
             $teacher = new User;
-            $teacher->name = trim($request->name);
-            $teacher->last_name = trim($request->last_name);
-            $teacher->email = trim($request->email);
-            $teacher->marital_status = trim($request->marital_status);
-            $teacher->address = trim($request->address);
-            $teacher->permanent_address = trim($request->permanent_address);
-            $teacher->qualification = trim($request->qualification);
-            $teacher->work_experience = trim($request->work_experience);
-            $teacher->admission_date = trim($request->admission_date);
-            $teacher->date_of_birth = trim($request->date_of_birth);
-            $teacher->note = trim($request->note);
-            if (!empty($request->mobile_number)) {
-                $mobileNumber = trim($request->mobile_number);
-                if (!preg_match('/^\d{8,15}$/', $mobileNumber)) {
-                    return redirect()->back()->with('error', 'Le numéro de téléphone doit contenir uniquement des chiffres et être compris entre 8 et 15 chiffres.');
-                }
-                $teacher->mobile_number = $mobileNumber;
+
+            if ($request->hasFile('profile_picture')) {
+                $teacher->profile_picture = $this->uploadProfilePicture($request, 'teacher');
             }
-            if (!empty($request->file('profile_picture'))) {
-                $ext = $request->file('profile_picture')->getClientOriginalExtension();
-                $file = $request->file('profile_picture');
-                $randomStr = 'teacher' . date('dmYhis') . Str::random(20);
-                $fileName = strtolower($randomStr) . '.' . $ext;
-                $file->move('upload/profile/', $fileName);
-                $teacher->profile_picture = $fileName;
-            }
-            $teacher->status = intval($request->status);
-            $teacher->gender = trim($request->gender);
-            if (!empty($request->password)) {
+
+            $teacher->fill([
+                'name'              => trim($request->name),
+                'last_name'         => trim($request->last_name),
+                'email'             => trim($request->email),
+                'gender'            => $request->gender,
+                'mobile_number'     => $request->mobile_number,
+                'date_of_birth'     => $request->date_of_birth,
+                'admission_date'    => $request->admission_date,
+                'marital_status'    => $request->marital_status,
+                'address'           => $request->address,
+                'permanent_address' => $request->permanent_address,
+                'work_experience'   => $request->work_experience,
+                'note'              => $request->note,
+                'status'            => $request->status,
+                'user_type'         => 2,
+                'created_by'        => Auth::id(),
+            ]);
+
+            if ($request->filled('password')) {
                 $teacher->password = Hash::make($request->password);
             }
-            $teacher->user_type = 2;
-            $teacher->created_by = Auth::user()->id;
+
             $teacher->save();
 
-            return redirect('admin/teacher/list')->with('success', 'Cet professeur a été créé avec succès.');
+            return back()->with('success', 'Professeur créé avec succès.');
         } catch (\Exception $e) {
-            Log::error("Erreur lors de la création d'un professeur' : " . $e->getMessage());
-
-            return redirect()->back()->with('error', 'Vos informations ne sont pas correctes. Veuillez réessayer.');
+            Log::error('Création professeur : ' . $e->getMessage());
+            return back()->with('error', 'Une erreur est survenue. Veuillez réessayer.');
         }
     }
 
-    public function edit($id): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
-    {
-        $data['getTeacher'] = User::getSingle($id);
-        $data['header_title'] = "Modifier un professeur";
-        if (!empty($data['getTeacher'])) {
-            !empty($data['getTeacher']->profile_picture) ? $data['profile_picture_url'] = $data['getTeacher']->getProfile() : $data['profile_picture_url'] = asset('upload/default.jpg');
-            return view('admin.teacher.edit', $data);
-        } else {
-            abort(404);
-        }
-    }
-
-    public function update(Request $request, $id): \Illuminate\Foundation\Application|\Illuminate\Routing\Redirector|\Illuminate\Http\RedirectResponse|\Illuminate\Contracts\Foundation\Application
-    {
-        try {
-            $teacher = User::getSingle($id);
-            $teacherMail = User::checkEmailSingle($request->email, $id);
-            $passwordLength = strlen($request->password);
-            $regex = '/^[a-z0-9]+@[a-z0-9]+\.(fr|com|org|bj|io)$/';
-
-            if (!$teacher) {
-                return redirect()->back()->with('error', 'Cet professeur est introuvable.');
-            }
-
-            if ($teacherMail) {
-                return redirect()->back()->with('error', 'Cet email a déjà été utilisé par un autre professeur');
-            }
-            if (!empty($request->password) && $passwordLength < 6) {
-                return redirect()->back()->with('error', 'Votre mot de passe ne doit pas être de moins de 6 caractères.');
-            }
-
-            if (!preg_match($regex, $request->email)) {
-                return redirect()->back()->with('error', 'Cet email est invalide. Assurez-vous qu\'il se termine par .fr, .com, .org, .bj ou .io.');
-            }
-
-            $teacher->name = trim($request->name);
-            $teacher->last_name = trim($request->last_name);
-            $teacher->email = trim($request->email);
-            $teacher->gender = trim($request->gender);
-            $teacher->date_of_birth = trim($request->date_of_birth);
-            $teacher->admission_date = trim($request->admission_date);
-            $teacher->marital_status = trim($request->marital_status);
-            $teacher->address = trim($request->address);
-            $teacher->permanent_address = trim($request->permanent_address);
-            $teacher->qualification = trim($request->qualification);
-            $teacher->work_experience = trim($request->work_experience);
-            $teacher->note = trim($request->note);
-            if (!empty($request->mobile_number)) {
-                $mobileNumber = trim($request->mobile_number);
-                if (!preg_match('/^\d{8,15}$/', $mobileNumber)) {
-                    return redirect()->back()->with('error', 'Le numéro de téléphone doit contenir uniquement des chiffres et être compris entre 8 et 15 chiffres.');
-                }
-                $teacher->mobile_number = $mobileNumber;
-            }
-            if (!empty($request->file('profile_picture'))) {
-                $teacherProfilePicture = $teacher->profile_picture;
-                if (!empty($teacherProfilePicture)) {
-                    $profilePictureUrl = User::getProfile();
-                    if (!empty($profilePictureUrl)) {
-                        unlink('upload/profile/' . $teacherProfilePicture);
-                    }
-                }
-                $ext = $request->file('profile_picture')->getClientOriginalExtension();
-                $file = $request->file('profile_picture');
-                $randomStr = 'teacher' . date('dmYhis') . Str::random(20);
-                $fileName = strtolower($randomStr) . '.' . $ext;
-                $file->move('upload/profile/', $fileName);
-                $teacher->profile_picture = $fileName;
-            }
-            $teacher->status = intval($request->status);
-            if (!empty($request->password)) {
-                $teacher->password = Hash::make($request->password);
-            }
-            $teacher->save();
-
-            return redirect('admin/teacher/list')->with('success', 'Cet professeur a été modifié avec succès.');
-        } catch (\Exception $e) {
-            Log::error("Erreur lors de la modification d'un professeur' : " . $e->getMessage());
-
-            return redirect()->back()->with('error', 'Vos informations ne sont pas correctes. Veuillez réessayer.');
-        }
-    }
-
-    public function delete($id)
+    public function update(Request $request, int $id)
     {
         $teacher = User::getSingle($id);
-        if ($teacher) {
-            $teacher->is_delete = 1;
+        abort_unless($teacher, 404);
+
+        $request->validate([
+            'name'      => 'required|string|max:100',
+            'last_name' => 'required|string|max:100',
+            'email'     => "required|email|unique:users,email,{$id}",
+            'password'  => 'nullable|string|min:6',
+            'status'    => 'required|in:0,1',
+        ]);
+
+        try {
+            $teacher->fill([
+                'name'              => trim($request->name),
+                'last_name'         => trim($request->last_name),
+                'email'             => trim($request->email),
+                'gender'            => $request->gender,
+                'mobile_number'     => $request->mobile_number,
+                'date_of_birth'     => $request->date_of_birth,
+                'admission_date'    => $request->admission_date,
+                'marital_status'    => $request->marital_status,
+                'address'           => $request->address,
+                'permanent_address' => $request->permanent_address,
+                'work_experience'   => $request->work_experience,
+                'note'              => $request->note,
+                'status'            => $request->status,
+            ]);
+
+            if ($request->filled('password')) {
+                $teacher->password = Hash::make($request->password);
+            }
+
+            if ($request->hasFile('profile_picture')) {
+                $this->deleteOldPicture($teacher->profile_picture);
+                $teacher->profile_picture = $this->uploadProfilePicture($request, 'teacher');
+            }
+
             $teacher->save();
-            return redirect('admin/teacher/list')->with('success', 'Cet professeur a été supprimé avec succès.');
-        } else {
-            abort(404);
+
+            return back()->with('success', 'Professeur modifié avec succès.');
+        } catch (\Exception $e) {
+            Log::error('Modification professeur : ' . $e->getMessage());
+            return back()->with('error', 'Une erreur est survenue. Veuillez réessayer.');
         }
+    }
+
+    public function delete(int $id)
+    {
+        $teacher = User::getSingle($id);
+        abort_unless($teacher, 404);
+        $teacher->update(['is_delete' => 1]);
+        return back()->with('success', 'Professeur supprimé avec succès.');
     }
 
     public function exportTeacher()
     {
-        return Excel::download(new ExportTeacher, 'teacher_' . date('d_m_Y') . '.xlsx');
+        return Excel::download(new ExportTeacher, 'teachers_' . date('d_m_Y') . '.xlsx');
     }
 
+    private function uploadProfilePicture(Request $request, string $prefix): string
+    {
+        $file = $request->file('profile_picture');
+        $fileName = strtolower($prefix . date('dmYhis') . Str::random(10)) . '.' . $file->getClientOriginalExtension();
+        $file->move('upload/profile/', $fileName);
+        return $fileName;
+    }
+
+    private function deleteOldPicture(?string $filename): void
+    {
+        if ($filename && file_exists('upload/profile/' . $filename)) {
+            unlink('upload/profile/' . $filename);
+        }
+    }
 }

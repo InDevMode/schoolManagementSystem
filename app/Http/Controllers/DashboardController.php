@@ -19,6 +19,7 @@ use App\Models\WeekModel;
 use App\Models\WorkModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
 
 class DashboardController extends Controller
 {
@@ -53,7 +54,7 @@ class DashboardController extends Controller
                 $data['totalAttendanceStudentAbsent'] = StudentAttendanceModel::getTotalAttendanceTypeStudent(3);
                 $data['totalAttendanceStudentHalfDay'] = StudentAttendanceModel::getTotalAttendanceTypeStudent(4);
 
-                return view('admin.dashboard', $data);
+                return Inertia::render('Dashboard/Admin', $data);
 
             case 2:
 
@@ -73,7 +74,7 @@ class DashboardController extends Controller
                 $data['totalNoticeBoard'] = NoticeBoardMessageModel::getTotalNoticeBoardMessage();
                 $data['totalNoticeBoardTeacher'] = NoticeBoardMessageModel::getTotalNoticeBoardMessageTeacher();
 
-                return view('teacher.dashboard', $data);
+                return Inertia::render('Dashboard/Teacher', $data);
 
             case 3:
 
@@ -102,7 +103,7 @@ class DashboardController extends Controller
                 $data['totalByAttendanceTypeStudentHalfDay'] = StudentAttendanceModel::getTotalAttendanceTypeByStudent(4, 3);
                 $data['totalAttendance'] = StudentAttendanceModel::getTotalAttendance();
 
-                return view('student.dashboard', $data);
+                return Inertia::render('Dashboard/Student', $data);
 
             case 4:
 
@@ -131,9 +132,9 @@ class DashboardController extends Controller
                 $data['totalAttendance'] = StudentAttendanceModel::getTotalAttendance();
                 $data['totalCommunicate'] = CommunicateModel::getTotalCommunicate();
 
-                return view('parent.dashboard', $data);
+                return Inertia::render('Dashboard/Parent', $data);
 
         }
-        return view('auth.login');
+        return Inertia::render('Auth/Login');
     }
 }

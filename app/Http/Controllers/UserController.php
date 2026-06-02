@@ -10,33 +10,19 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use Inertia\Inertia;
 
 class UserController extends Controller
 {
 
-    public function myAccount(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
+    public function myAccount()
     {
-        $data['header_title'] = "Mon Compte";
-        $data['getUserData'] = User::getSingle(Auth::user()->id);
-
-        if (empty($data['getUserData'])) {
-            abort(404);
-        }
-
-        $data['profile_picture_url'] = $this->getProfilePictureUrl($data['getUserData']);
-
-        $viewMap = [
-            1 => 'admin.account',
-            2 => 'teacher.account',
-            3 => 'student.account',
-            4 => 'parent.account',
-        ];
-
-        $userType = Auth::user()->user_type;
-
-        return isset($viewMap[$userType])
-            ? view($viewMap[$userType], $data)
-            : view('auth.login');
+        $user = User::getSingle(Auth::user()->id);
+        abort_unless($user, 404);
+        return Inertia::render('Profile/Account', [
+            'userData'          => $user,
+            'profilePictureUrl' => $this->getProfilePictureUrl($user),
+        ]);
     }
 
     private function getProfilePictureUrl($userData): string
@@ -324,10 +310,27 @@ class UserController extends Controller
         }
     }
 
-    public function changePassword(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
+    public function resetUsersPassword(Request $request): \Illuminate\Http\JsonResponse
     {
-        $data['header_title'] = "Modifiez votre mot de passe";
-        return view('profile.change_password', $data);
+        $request->validate(['ids' => 'required|array', 'ids.*' => 'integer|exists:users,id']);
+
+        try {
+            $defaultPassword = Hash::make('password123');
+            User::whereIn('id', $request->ids)->update(['password' => $defaultPassword]);
+
+            return response()->json([
+                'success' => true,
+                'message' => count($request->ids) . ' mot(s) de passe réinitialisé(s) avec succès. Nouveau mot de passe : password123',
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Reset password error: ' . $e->getMessage());
+            return response()->json(['success' => false, 'message' => 'Erreur lors de la réinitialisation.'], 500);
+        }
+    }
+
+    public function changePassword()
+    {
+        return Inertia::render('Profile/ChangePassword');
     }
 
     public function updatePassword(Request $request): \Illuminate\Http\RedirectResponse
@@ -349,13 +352,14 @@ class UserController extends Controller
         }
     }
 
-    public function settings(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
+    public function settings()
     {
-        $data['header_title'] = "Paramètres";
-        $data['getSetting'] = SettingModel::getSingle(1);
-        $data['favicon_url'] = !empty($data['getSetting']->favicon) ? SettingModel::getFavicon() : asset('upload/favicon.png');
-        $data['logo_url'] = !empty($data['getSetting']->logo) ? SettingModel::getLogo() : asset('upload/logo.png');
-        return view('admin.settings.setting', $data);
+        $setting = SettingModel::getSingle(1);
+        return Inertia::render('Admin/Settings/Index', [
+            'setting'    => $setting,
+            'faviconUrl' => $setting?->getFavicon() ?? asset('upload/favicon.png'),
+            'logoUrl'    => $setting?->getLogo()    ?? asset('upload/logo.png'),
+        ]);
     }
 
     public function updateSettingInfo(Request $request)
@@ -365,13 +369,15 @@ class UserController extends Controller
 
             $setting = SettingModel::getSingle(1);
             if ($setting) {
-                $setting->paypal_email = trim($request->paypal_email);
-                $setting->kkiapay_public_key = trim($request->kkiapay_public_key);
+                $setting->paypal_email        = trim($request->paypal_email);
+                $setting->kkiapay_public_key  = trim($request->kkiapay_public_key);
                 $setting->kkiapay_private_key = trim($request->kkiapay_private_key);
-                $setting->kkiapay_secret_key = trim($request->kkiapay_secret_key);
-                $setting->stripe_public_key = trim($request->stripe_public_key);
-                $setting->stripe_secret_key = trim($request->stripe_secret_key);
-                $setting->school_name = trim($request->school_name);
+                $setting->kkiapay_secret_key  = trim($request->kkiapay_secret_key);
+                $setting->stripe_public_key   = trim($request->stripe_public_key);
+                $setting->stripe_secret_key   = trim($request->stripe_secret_key);
+                $setting->fedapay_public_key  = trim($request->fedapay_public_key);
+                $setting->fedapay_secret_key  = trim($request->fedapay_secret_key);
+                $setting->school_name         = trim($request->school_name);
                 $setting->school_type = trim($request->school_type);
                 $setting->address = trim($request->address);
                 $setting->phone = trim($request->phone);
