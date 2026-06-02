@@ -11,6 +11,7 @@ export default {
         extend: {
             fontFamily: {
                 inter: ['Inter', ...defaultTheme.fontFamily.sans],
+                sans: ['Inter', ...defaultTheme.fontFamily.sans],
             },
             colors: {
                 // Couleur primaire : Violet

@@ -310,6 +310,60 @@ class UserController extends Controller
         }
     }
 
+    /**
+     * Édition inline d'une cellule (super admin uniquement).
+     * Champs autorisés : name, last_name, email, mobile_number, status.
+     */
+    public function inlineCellEdit(Request $request): \Illuminate\Http\JsonResponse
+    {
+        // Seul le super admin (user_type = 0) peut utiliser cette fonctionnalité
+        if (!Auth::check() || Auth::user()->user_type !== 0) {
+            return response()->json(['success' => false, 'message' => 'Accès refusé.'], 403);
+        }
+
+        $request->validate([
+            'id'    => 'required|integer|exists:users,id',
+            'field' => 'required|string|in:name,last_name,email,mobile_number,status,address,occupation,gender',
+            'value' => 'present|string|max:255',
+        ]);
+
+        try {
+            $user = User::getSingle((int) $request->id);
+            if (!$user) {
+                return response()->json(['success' => false, 'message' => 'Utilisateur introuvable.'], 404);
+            }
+
+            $field = $request->field;
+            $value = trim($request->value);
+
+            // Validation supplémentaire par champ
+            if ($field === 'email') {
+                $existing = User::where('email', $value)->where('id', '!=', $user->id)->first();
+                if ($existing) {
+                    return response()->json(['success' => false, 'message' => 'Cet email est déjà utilisé.'], 422);
+                }
+            }
+
+            if ($field === 'status' && !in_array($value, ['0', '1'])) {
+                return response()->json(['success' => false, 'message' => 'Statut invalide.'], 422);
+            }
+
+            $user->{$field} = $value;
+            $user->save();
+
+            Log::info("Inline edit par super admin #{Auth::id()} : user #{$user->id} champ '{$field}' → '{$value}'");
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Modification enregistrée.',
+                'value'   => $value,
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Inline cell edit error: ' . $e->getMessage());
+            return response()->json(['success' => false, 'message' => 'Erreur serveur.'], 500);
+        }
+    }
+
     public function resetUsersPassword(Request $request): \Illuminate\Http\JsonResponse
     {
         $request->validate(['ids' => 'required|array', 'ids.*' => 'integer|exists:users,id']);

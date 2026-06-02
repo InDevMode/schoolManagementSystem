@@ -51,6 +51,7 @@ class User extends Authenticatable
         'provider',
         'provider_id',
         'last_login',
+        'user_type',  // nécessaire pour la création d'utilisateurs à rôles custom
     ];
 
     /**
@@ -60,7 +61,6 @@ class User extends Authenticatable
      */
     protected $hidden = [
         'password',
-        'user_type',
         'is_delete',
         'remember_token',
         'last_login',

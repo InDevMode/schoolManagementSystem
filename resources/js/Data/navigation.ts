@@ -86,6 +86,99 @@ export const adminNav: NavItem[] = [
     },
 ];
 
+export const superAdminNav: NavItem[] = [
+    {
+        id: 'dashboard',
+        label: 'Dashboard',
+        icon: 'home',
+        href: '/superadmin/dashboard',
+    },
+    // ── Mêmes sections que l'admin ────────────────────────────────────────
+    {
+        id: 'users',
+        label: 'Utilisateurs',
+        icon: 'users',
+        children: [
+            { id: 'sa-admins',   label: 'Administrateurs', icon: 'shield',       href: '/admin/admin/list' },
+            { id: 'sa-teachers', label: 'Professeurs',      icon: 'academic-cap', href: '/admin/teacher/list' },
+            { id: 'sa-students', label: 'Apprenants',       icon: 'user-group',   href: '/admin/student/list' },
+            { id: 'sa-parents',  label: 'Parents',          icon: 'users',        href: '/admin/parent/list' },
+        ],
+    },
+    {
+        id: 'sa-academics',
+        label: 'Académique',
+        icon: 'book-open',
+        children: [
+            { id: 'sa-classes',         label: 'Classes',          icon: 'building-library', href: '/admin/class/list' },
+            { id: 'sa-subjects',        label: 'Matières',         icon: 'book-open',        href: '/admin/subject/list' },
+            { id: 'sa-assign-subjects', label: 'Assign. Matières', icon: 'arrows-right-left',href: '/admin/assign_subject/list' },
+            { id: 'sa-assign-classes',  label: 'Assign. Classes',  icon: 'arrows-right-left',href: '/admin/assign_class/list' },
+            { id: 'sa-timetable',       label: 'Emploi du temps',  icon: 'calendar',         href: '/admin/class_timetable/list' },
+        ],
+    },
+    {
+        id: 'sa-examinations',
+        label: 'Évaluations',
+        icon: 'clipboard-document-list',
+        children: [
+            { id: 'sa-periods',        label: 'Périodes',       icon: 'calendar',           href: '/admin/examinations/period/list' },
+            { id: 'sa-exams',          label: 'Examens',        icon: 'clipboard-document', href: '/admin/examinations/exam/list' },
+            { id: 'sa-schedules',      label: 'Programmations', icon: 'calendar-days',      href: '/admin/examinations/schedule/list' },
+            { id: 'sa-marks-register', label: 'Registres',      icon: 'table-cells',        href: '/admin/examinations/marks_register/list' },
+            { id: 'sa-marks-grade',    label: 'Barèmes',        icon: 'chart-bar',          href: '/admin/examinations/marks_grade/list' },
+        ],
+    },
+    {
+        id: 'sa-attendance',
+        label: 'Présences',
+        icon: 'user-check',
+        children: [
+            { id: 'sa-attendance-students', label: 'Saisie',   icon: 'pencil-square', href: '/admin/attendance/students/list' },
+            { id: 'sa-attendance-report',   label: 'Rapports', icon: 'chart-bar',     href: '/admin/attendance/report' },
+        ],
+    },
+    {
+        id: 'sa-homework',
+        label: 'Devoirs',
+        icon: 'pencil',
+        children: [
+            { id: 'sa-homework-list',    label: 'Travaux',  icon: 'document-text', href: '/admin/practicalworks/homework/list' },
+            { id: 'sa-homework-reports', label: 'Rapports', icon: 'chart-bar',     href: '/admin/practicalworks/reports' },
+        ],
+    },
+    {
+        id: 'sa-fees',
+        label: 'Contributions',
+        icon: 'banknotes',
+        children: [
+            { id: 'sa-fees-collect', label: 'Collecter', icon: 'plus-circle', href: '/admin/feescollections/collections/list' },
+            { id: 'sa-fees-list',    label: 'Rapports',  icon: 'chart-bar',   href: '/admin/feescollections/feescollects/feesList' },
+        ],
+    },
+    {
+        id: 'sa-communicate',
+        label: 'Communication',
+        icon: 'bell',
+        children: [
+            { id: 'sa-noticeboard', label: "Tableau d'affichage", icon: 'megaphone', href: '/admin/communicate/noticeboard/list' },
+            { id: 'sa-send-mail',   label: 'Envoyer un mail',     icon: 'envelope',  href: '/admin/communicate/send_mail' },
+        ],
+    },
+    // ── Configuration exclusive super_admin ────────────────────────────────
+    {
+        id: 'configuration',
+        label: 'Configuration',
+        icon: 'cog-6-tooth',
+        children: [
+            { id: 'sa-settings',    label: 'Paramètres',            icon: 'cog-6-tooth',      href: '/superadmin/config/settings' },
+            { id: 'sa-roles',       label: 'Rôles',                 icon: 'shield-check',     href: '/superadmin/config/roles' },
+            { id: 'sa-permissions', label: 'Permissions',           icon: 'key',              href: '/superadmin/config/permissions' },
+            { id: 'sa-assign',      label: 'Attribuer permissions', icon: 'arrows-right-left',href: '/superadmin/config/assign' },
+        ],
+    },
+];
+
 export const teacherNav: NavItem[] = [
     { id: 'dashboard',      label: 'Dashboard',        icon: 'home',                  href: '/teacher/dashboard' },
     { id: 'my-students',    label: 'Mes Apprenants',   icon: 'user-group',            href: '/teacher/my_student' },
@@ -125,6 +218,7 @@ export const parentNav: NavItem[] = [
 ];
 
 export const navByRole: Record<number, NavItem[]> = {
+    0: superAdminNav,
     1: adminNav,
     2: teacherNav,
     3: studentNav,

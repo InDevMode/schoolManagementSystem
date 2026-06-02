@@ -27,8 +27,35 @@ class DashboardController extends Controller
     {
         $data['header_title'] = 'Tableau de bord';
         switch (Auth::user()->user_type) {
-            case 1:
+            case 0:
+                // Super Admin — mêmes stats que l'admin + stats RBAC
+                $data['totalUser']    = User::getTotalUser();
+                $data['totalAdmin']   = User::getTotalUserWithUserType(1);
+                $data['totalTeacher'] = User::getTotalUserWithUserType(2);
+                $data['totalStudent'] = User::getTotalUserWithUserType(3);
+                $data['totalParent']  = User::getTotalUserWithUserType(4);
+                $data['totalClass']   = ClassModel::getTotalClass();
+                $data['totalSubject'] = SubjectModel::getTotalSubject();
+                $data['totalFeesCollections']      = FeesCollectionModel::getTotalFeesCollections();
+                $data['totalFeesCollectionsToday'] = FeesCollectionModel::getTotalFeesCollectionsToday();
+                $data['totalCommunicate']          = CommunicateModel::getTotalCommunicate();
+                $data['totalExam']                 = ExaminationModel::getTotalExam();
+                $data['totalNoticeBoard']          = NoticeBoardMessageModel::getTotalNoticeBoardMessage();
+                $data['totalHomework']             = HomeworkModel::getTotalHomework();
+                $data['totalWork']                 = WorkModel::getTotalWork();
+                $data['totalAttendance']           = StudentAttendanceModel::getTotalAttendance();
+                $data['totalAttendanceStudentPresent']  = StudentAttendanceModel::getTotalAttendanceTypeStudent(1);
+                $data['totalAttendanceStudentLate']     = StudentAttendanceModel::getTotalAttendanceTypeStudent(2);
+                $data['totalAttendanceStudentAbsent']   = StudentAttendanceModel::getTotalAttendanceTypeStudent(3);
+                $data['totalAttendanceStudentHalfDay']  = StudentAttendanceModel::getTotalAttendanceTypeStudent(4);
+                $data['totalWeek']                 = WeekModel::getTotalWeek();
+                $data['totalClassTimetable']       = ClassTimetableModel::getTotalClassTimetable();
+                // Stats RBAC exclusives
+                $data['totalRoles']       = \Spatie\Permission\Models\Role::count();
+                $data['totalPermissions'] = \Spatie\Permission\Models\Permission::count();
+                return Inertia::render('Dashboard/SuperAdmin', $data);
 
+            case 1:
                 $data['totalUser'] = User::getTotalUser();
                 $data['totalAdmin'] = User::getTotalUserWithUserType(1);
                 $data['totalTeacher'] = User::getTotalUserWithUserType(2);

@@ -20,6 +20,8 @@
       <link rel="preconnect" href="https://fonts.googleapis.com">
       <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
       <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
+      <link rel="stylesheet" href="{{ asset('css/advanced-table.css') }}">
+      <meta name="csrf-token" content="{{ csrf_token() }}">
 
       @yield('style')
       <style>
@@ -76,5 +78,24 @@ $watch('darkMode', value => localStorage.setItem('darkMode', JSON.stringify(valu
 <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/locales/fr.global.min.js'></script>
 
 @yield('script')
+
+<!-- Menu contextuel global pour les tableaux avancés -->
+<div id="adv-context-menu" class="adv-cm-hidden" role="menu" aria-label="Actions rapides">
+    <a href="#" data-cm-edit class="adv-cm-item">
+        <i class="fas fa-edit" style="width:14px"></i>
+        Modifier
+    </a>
+    <a href="#" data-cm-detail class="adv-cm-item">
+        <i class="fas fa-eye" style="width:14px"></i>
+        Voir les détails
+    </a>
+    <div class="adv-cm-divider"></div>
+    <a href="#" data-cm-message class="adv-cm-item">
+        <i class="fas fa-comment" style="width:14px"></i>
+        Envoyer un message
+    </a>
+</div>
+
+<script src="{{ asset('js/advanced-table.js') }}"></script>
 
 </html>

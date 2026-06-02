@@ -15,6 +15,7 @@ use App\Http\Controllers\ExaminationController;
 use App\Http\Controllers\FeesCollectionController;
 use App\Http\Controllers\ParentController;
 use App\Http\Controllers\PeriodController;
+use App\Http\Controllers\RbacController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\TeacherController;
@@ -224,6 +225,41 @@ Route::group(['middleware' => 'admin'], function () {
 
     Route::get('admin/test', [AdminController::class, 'test']);
 
+});
+
+// ══════════════════════════════════════════════════════════════════════════════
+// SUPER ADMIN — Configuration RBAC (user_type = 0)
+// ══════════════════════════════════════════════════════════════════════════════
+Route::group(['middleware' => 'super_admin', 'prefix' => 'superadmin'], function () {
+
+    Route::get('dashboard', [DashboardController::class, 'dashboard'])->name('superadmin.dashboard');
+
+    // ── Rôles ──────────────────────────────────────────────────────────────
+    Route::get('config/roles',            [RbacController::class, 'roleList'])->name('superadmin.roles');
+    Route::post('config/roles/add',       [RbacController::class, 'roleCreate'])->name('superadmin.roles.create');
+    Route::post('config/roles/edit/{id}', [RbacController::class, 'roleUpdate'])->name('superadmin.roles.update');
+    Route::get('config/roles/delete/{id}',[RbacController::class, 'roleDelete'])->name('superadmin.roles.delete');
+
+    // ── Permissions ────────────────────────────────────────────────────────
+    Route::get('config/permissions',             [RbacController::class, 'permissionList'])->name('superadmin.permissions');
+    Route::post('config/permissions/add',        [RbacController::class, 'permissionCreate'])->name('superadmin.permissions.create');
+    Route::post('config/permissions/edit/{id}',  [RbacController::class, 'permissionUpdate'])->name('superadmin.permissions.update');
+    Route::get('config/permissions/delete/{id}', [RbacController::class, 'permissionDelete'])->name('superadmin.permissions.delete');
+
+    // ── Attribution permissions ↔ rôles ────────────────────────────────────
+    Route::get('config/assign',                  [RbacController::class, 'assignList'])->name('superadmin.assign');
+    Route::post('config/assign/{roleId}/sync',   [RbacController::class, 'assignSync'])->name('superadmin.assign.sync');
+
+    // ── Paramètres système ─────────────────────────────────────────────────
+    Route::get('config/settings',                [UserController::class, 'settings'])->name('superadmin.settings');
+    Route::post('config/settings/save',          [UserController::class, 'updateSettingInfo'])->name('superadmin.settings.save');
+
+    // ── Compte super admin ─────────────────────────────────────────────────
+    Route::get('account',  [UserController::class, 'myAccount'])->name('superadmin.account');
+    Route::post('account', [UserController::class, 'updateAdminAccount']);
+
+    // ── Édition inline cellule (super admin only) ──────────────────────────
+    Route::post('users/inline-edit', [UserController::class, 'inlineCellEdit'])->name('superadmin.inline-edit');
 });
 
 Route::group(['middleware' => 'teacher'], function () {

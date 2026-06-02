@@ -102,12 +102,14 @@ class AuthController extends Controller
 
     private function redirectByRole(int $userType)
     {
-        return match ($userType) {
-            1 => redirect('/admin/dashboard'),
-            2 => redirect('/teacher/dashboard'),
-            3 => redirect('/student/dashboard'),
-            4 => redirect('/parent/dashboard'),
-            default => redirect('/login'),
+        return match (true) {
+            $userType === 0          => redirect('/superadmin/dashboard'),
+            $userType === 1          => redirect('/admin/dashboard'),
+            $userType === 2          => redirect('/teacher/dashboard'),
+            $userType === 3          => redirect('/student/dashboard'),
+            $userType === 4          => redirect('/parent/dashboard'),
+            $userType >= 5           => redirect('/admin/dashboard'), // rôles custom
+            default                  => redirect('/login'),
         };
     }
 }

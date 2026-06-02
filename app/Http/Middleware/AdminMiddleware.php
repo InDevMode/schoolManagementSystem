@@ -18,16 +18,17 @@ class AdminMiddleware
     public function handle(Request $request, Closure $next): Response
     {
         if (!empty(Auth::check())) {
-            switch (Auth::user()->user_type) {
-                case 1:
-                    return $next($request);
-                default:
-                    Auth::logout();
-                    return redirect(url(''));
+            $userType = Auth::user()->user_type;
+            // user_type 0 (super_admin), 1 (admin) ET tous les rôles custom (>= 5)
+            // ont accès aux routes /admin/*
+            if ($userType === 0 || $userType >= 1) {
+                return $next($request);
             }
-        } else {
             Auth::logout();
             return redirect(url(''));
         }
+
+        Auth::logout();
+        return redirect(url(''));
     }
 }
