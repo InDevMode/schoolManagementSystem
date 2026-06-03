@@ -1,4 +1,4 @@
-<script setup lang="ts">
+﻿<script setup lang="ts">
 /**
  * DataTable — Composant tableau professionnel universel
  * Style inspiré des captures : fond blanc, rows aérées, actions icônes, dropdown propre.
@@ -740,8 +740,7 @@ defineExpose({ clearSelection, selected, filteredRows, confirmDelete });
         <thead class="sticky top-0 z-10">
           <tr class="dt-thead-row bg-gray-50 dark:bg-gray-900/80 border-b-2 border-gray-200 dark:border-gray-700/60">
 
-            <th v-if="selectable" :class="[headerDensityClass, 'w-10']"
-                style="background:transparent;">
+            <th v-if="selectable" :class="[headerDensityClass, 'w-10 bg-gray-50 dark:bg-gray-900/80']">
               <input type="checkbox" :checked="allSelected" :indeterminate="someSelected"
                      class="w-4 h-4 rounded cursor-pointer"
                      style="accent-color:#7c3aed;"
@@ -751,15 +750,13 @@ defineExpose({ clearSelection, selected, filteredRows, confirmDelete });
             <th v-for="col in visibleColumns" :key="col.key"
                 :class="[
                   headerDensityClass,
+                  'bg-gray-50 dark:bg-gray-900/80',
                   'text-[11px] font-semibold uppercase tracking-wider whitespace-nowrap select-none',
                   'text-gray-500 dark:text-gray-400',
                   col.align === 'center' ? 'text-center' : col.align === 'right' ? 'text-right' : 'text-left',
                   col.sortable !== false ? 'cursor-pointer hover:text-gray-800 dark:hover:text-gray-200 transition-colors' : '',
                 ]"
-                :style="[
-                  'background:transparent;',
-                  col.width ? `width:${col.width};` : col.minWidth ? `min-width:${col.minWidth};` : '',
-                ].join('')"
+                :style="col.width ? `width:${col.width};` : col.minWidth ? `min-width:${col.minWidth};` : ''"
                 @click="col.sortable !== false && toggleSort(col.key)"
                 :aria-sort="sortKey === col.key ? (sortDir === 'asc' ? 'ascending' : 'descending') : 'none'">
               <div class="flex items-center gap-1.5 group/hdr"
@@ -786,8 +783,7 @@ defineExpose({ clearSelection, selected, filteredRows, confirmDelete });
             </th>
 
             <th v-if="actions?.length || $slots['actions']"
-                :class="[headerDensityClass, 'text-[11px] font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 text-right']"
-                style="background:transparent;">
+                :class="[headerDensityClass, 'bg-gray-50 dark:bg-gray-900/80 text-[11px] font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 text-right']">
               Actions
             </th>
           </tr>
@@ -800,7 +796,8 @@ defineExpose({ clearSelection, selected, filteredRows, confirmDelete });
           <!-- Skeleton -->
           <template v-if="loading">
             <tr v-for="i in perPage" :key="`sk-${i}`"
-                class="dt-data-row bg-white dark:bg-gray-800/60 even:bg-gray-50/80 even:dark:bg-gray-900/40 animate-pulse">
+                class="dt-data-row animate-pulse"
+                :class="i % 2 === 0 ? 'bg-gray-50 dark:bg-gray-900/50' : 'bg-white dark:bg-gray-800'">
               <td v-if="selectable" :class="[densityClass, 'w-10 border-b border-gray-100 dark:border-gray-700/60']">
                 <div class="h-4 w-4 bg-gray-200 dark:bg-gray-700 rounded"/>
               </td>
@@ -840,8 +837,12 @@ defineExpose({ clearSelection, selected, filteredRows, confirmDelete });
           <template v-else>
             <tr v-for="(row, idx) in paginatedRows"
                 :key="rowKey ? String(row[rowKey]) : idx"
-                class="dt-data-row bg-white dark:bg-gray-800/60 even:bg-gray-50/80 even:dark:bg-gray-900/40"
-                :class="{ 'dt-row-selected !bg-violet-50 dark:!bg-violet-900/20': selected.includes(rowId(row)) }"
+                class="dt-data-row"
+                :class="selected.includes(rowId(row))
+                  ? '!bg-violet-50 dark:!bg-violet-900/20'
+                  : idx % 2 === 0
+                    ? 'bg-white dark:bg-gray-800'
+                    : 'bg-gray-50/80 dark:bg-gray-900/50'"
                 @contextmenu="contextMenu && openContextMenu($event, row)">
 
               <!-- Checkbox -->
