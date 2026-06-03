@@ -84,32 +84,40 @@
 
             <!-- Actions ligne -->
             <template #actions="{ row }">
-                <div class="flex items-center justify-end gap-1">
-                    <button title="Voir les détails" @click="openEdit(row as any)"
-                            class="p-1.5 rounded-lg text-gray-400 hover:text-primary-600 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="flex items-center justify-end gap-1.5">
+                    <button title="Voir les détails" @click="openView(row as any)"
+                            class="p-1.5 rounded-lg transition-all duration-150
+                                   text-white bg-violet-500 hover:bg-violet-600 active:bg-violet-700
+                                   shadow-sm shadow-violet-200 dark:shadow-violet-900/40">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                   d="M15 12a3 3 0 11-6 0 3 3 0 016 0zM2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
                         </svg>
                     </button>
                     <button title="Modifier" @click="openEdit(row as any)"
-                            class="p-1.5 rounded-lg text-gray-400 hover:text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-colors">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            class="p-1.5 rounded-lg transition-all duration-150
+                                   text-white bg-emerald-500 hover:bg-emerald-600 active:bg-emerald-700
+                                   shadow-sm shadow-emerald-200 dark:shadow-emerald-900/40">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                   d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                         </svg>
                     </button>
                     <a :href="`/chat?receiver_id=${row.id_encoded}`" title="Message"
-                       class="p-1.5 rounded-lg text-gray-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                       class="p-1.5 rounded-lg transition-all duration-150
+                              text-white bg-blue-500 hover:bg-blue-600 active:bg-blue-700
+                              shadow-sm shadow-blue-200 dark:shadow-blue-900/40">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                   d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
                         </svg>
                     </a>
                     <button title="Supprimer"
                             @click="tableRef?.confirmDelete(row.id as number, `${row.last_name} ${row.name}`)"
-                            class="p-1.5 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            class="p-1.5 rounded-lg transition-all duration-150
+                                   text-white bg-red-500 hover:bg-red-600 active:bg-red-700
+                                   shadow-sm shadow-red-200 dark:shadow-red-900/40">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                   d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
                         </svg>
@@ -119,7 +127,7 @@
 
             <!-- Menu contextuel clic droit -->
             <template #context-menu="{ row }">
-                <button @click="openEdit(row as any)"
+                <button @click="openView(row as any)"
                         class="flex w-full items-center gap-2.5 px-3.5 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-primary-50 dark:hover:bg-gray-700/60 hover:text-primary-700 transition-colors">
                     <svg class="w-4 h-4 text-primary-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -154,6 +162,92 @@
                 </button>
             </template>
         </DataTable>
+
+        <!-- Modal Détails Professeur -->
+        <AppModal v-model="showView" title="Détails du professeur" size="lg">
+            <div v-if="viewTarget" class="space-y-6">
+                <!-- Header profil -->
+                <div class="relative rounded-2xl overflow-hidden bg-gradient-to-br from-emerald-600 to-teal-700 p-6">
+                    <div class="absolute inset-0 opacity-10"
+                         style="background-image:radial-gradient(circle at 80% 20%, white 0%, transparent 60%)"/>
+                    <div class="relative flex items-center gap-5">
+                        <div class="relative flex-shrink-0">
+                            <img v-if="viewTarget.profile_picture"
+                                 :src="`/upload/profile/${viewTarget.profile_picture}`"
+                                 class="w-20 h-20 rounded-full object-cover ring-4 ring-white/30 shadow-xl"/>
+                            <div v-else
+                                 class="w-20 h-20 rounded-full bg-white/20 backdrop-blur flex items-center justify-center ring-4 ring-white/30 shadow-xl">
+                                <span class="text-2xl font-bold text-white">
+                                    {{ (viewTarget.last_name?.[0] ?? '') }}{{ (viewTarget.name?.[0] ?? '') }}
+                                </span>
+                            </div>
+                            <span class="absolute bottom-0.5 right-0.5 w-4 h-4 rounded-full border-2 border-white shadow-sm"
+                                  :class="viewTarget.is_online ? 'bg-emerald-400' : 'bg-gray-400'"/>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <h2 class="text-xl font-bold text-white truncate">{{ viewTarget.last_name }} {{ viewTarget.name }}</h2>
+                            <p class="text-emerald-100 text-sm mt-0.5">{{ viewTarget.email }}</p>
+                            <div class="flex items-center gap-2 mt-2 flex-wrap">
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold"
+                                      :class="viewTarget.status == 1 ? 'bg-emerald-400/30 text-emerald-100' : 'bg-red-400/30 text-red-100'">
+                                    {{ viewTarget.status == 1 ? '✓ Actif' : '✗ Inactif' }}
+                                </span>
+                                <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-white/10 text-white/80">
+                                    <span class="w-1.5 h-1.5 rounded-full" :class="viewTarget.is_online ? 'bg-emerald-400' : 'bg-gray-400'"/>
+                                    {{ viewTarget.is_online ? 'En ligne' : 'Hors ligne' }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Infos -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="bg-gray-50 dark:bg-gray-800/60 rounded-xl p-4 border border-gray-100 dark:border-gray-700">
+                        <p class="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-1.5">Téléphone</p>
+                        <p class="text-sm font-semibold text-gray-800 dark:text-gray-200 font-mono">{{ viewTarget.mobile_number ?? '—' }}</p>
+                    </div>
+                    <div class="bg-gray-50 dark:bg-gray-800/60 rounded-xl p-4 border border-gray-100 dark:border-gray-700">
+                        <p class="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-1.5">Genre</p>
+                        <p class="text-sm font-semibold text-gray-800 dark:text-gray-200">{{ genderLabel(viewTarget.gender) }}</p>
+                    </div>
+                    <div class="bg-gray-50 dark:bg-gray-800/60 rounded-xl p-4 border border-gray-100 dark:border-gray-700">
+                        <p class="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-1.5">Date de naissance</p>
+                        <p class="text-sm font-semibold text-gray-800 dark:text-gray-200">{{ formatDate(viewTarget.date_of_birth) }}</p>
+                    </div>
+                    <div class="bg-gray-50 dark:bg-gray-800/60 rounded-xl p-4 border border-gray-100 dark:border-gray-700">
+                        <p class="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-1.5">Date d'embauche</p>
+                        <p class="text-sm font-semibold text-gray-800 dark:text-gray-200">{{ formatDate(viewTarget.admission_date) }}</p>
+                    </div>
+                    <div class="bg-gray-50 dark:bg-gray-800/60 rounded-xl p-4 border border-gray-100 dark:border-gray-700">
+                        <p class="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-1.5">Situation matrimoniale</p>
+                        <p class="text-sm font-semibold text-gray-800 dark:text-gray-200 capitalize">{{ viewTarget.marital_status ?? '—' }}</p>
+                    </div>
+                    <div class="bg-gray-50 dark:bg-gray-800/60 rounded-xl p-4 border border-gray-100 dark:border-gray-700">
+                        <p class="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-1.5">Expérience</p>
+                        <p class="text-sm font-semibold text-gray-800 dark:text-gray-200">{{ viewTarget.work_experience ? `${viewTarget.work_experience} an(s)` : '—' }}</p>
+                    </div>
+                    <div v-if="viewTarget.address" class="sm:col-span-2 bg-gray-50 dark:bg-gray-800/60 rounded-xl p-4 border border-gray-100 dark:border-gray-700">
+                        <p class="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-1.5">Adresse</p>
+                        <p class="text-sm font-semibold text-gray-800 dark:text-gray-200">{{ viewTarget.address }}</p>
+                    </div>
+                    <div v-if="viewTarget.note" class="sm:col-span-2 bg-gray-50 dark:bg-gray-800/60 rounded-xl p-4 border border-gray-100 dark:border-gray-700">
+                        <p class="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-1.5">Note / Qualification</p>
+                        <p class="text-sm text-gray-800 dark:text-gray-200">{{ viewTarget.note }}</p>
+                    </div>
+                </div>
+            </div>
+            <template #footer>
+                <AppButton variant="ghost" @click="showView = false">Fermer</AppButton>
+                <AppButton @click="showView = false; openEdit(viewTarget!)">
+                    <template #icon>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                        </svg>
+                    </template>
+                    Modifier
+                </AppButton>
+            </template>
+        </AppModal>
 
         <!-- Modal Formulaire -->
         <AppModal v-model="showForm" :title="editTarget ? 'Modifier le professeur' : 'Nouveau professeur'" size="xl">
@@ -244,8 +338,10 @@ const inlineEditEndpoint = '/superadmin/users/inline-edit';
 const formId     = 'teacher-form';
 const showForm   = ref(false);
 const showDelete = ref(false);
+const showView   = ref(false);
 const editTarget   = ref<Teacher | null>(null);
 const deleteTarget = ref<Teacher | null>(null);
+const viewTarget   = ref<Teacher | null>(null);
 const deleting   = ref(false);
 const submitting = ref(false);
 const showPwd    = ref(false);
@@ -259,11 +355,14 @@ const genderOptions  = [{ value: 'male', label: 'Masculin' }, { value: 'female',
 const maritalOptions = [{ value: 'single', label: 'Célibataire' }, { value: 'married', label: 'Marié(e)' }, { value: 'divorced', label: 'Divorcé(e)' }];
 
 const columns = computed(() => [
-    { key: 'user',          label: 'Professeur',   searchable: true },
-    { key: 'mobile_number', label: 'Téléphone',    editable: isSuperAdmin.value, dataType: 'tel' as const },
-    { key: 'gender',        label: 'Genre',        sortable: true },
-    { key: 'status',        label: 'Statut',       sortable: true },
-    { key: 'online',        label: 'En ligne',     sortable: false, searchable: false },
+    { key: 'user',          label: 'Professeur',   searchable: false },
+    { key: 'last_name',     label: '',             searchable: true,  visible: false },
+    { key: 'name',          label: '',             searchable: true,  visible: false },
+    { key: 'email',         label: '',             searchable: true,  visible: false },
+    { key: 'mobile_number', label: 'Téléphone',    editable: isSuperAdmin.value, dataType: 'tel' as const, searchable: true },
+    { key: 'gender',        label: 'Genre',        sortable: true,    searchable: false },
+    { key: 'status',        label: 'Statut',       sortable: true,    searchable: false },
+    { key: 'online',        label: 'En ligne',     sortable: false,   searchable: false },
 ]);
 
 const tableRows = computed(() =>
@@ -287,6 +386,7 @@ const openCreate = () => {
     editTarget.value = null; previewUrl.value = null; picFile.value = null;
     form.value = emptyForm(); showForm.value = true;
 };
+const openView = (t: Teacher) => { viewTarget.value = t; showView.value = true; };
 const openEdit = (t: Teacher) => {
     editTarget.value = t;
     previewUrl.value = t.profile_picture ? `/upload/profile/${t.profile_picture}` : null;
@@ -326,6 +426,12 @@ const confirmDelete = () => {
     });
 };
 const genderLabel = (g: string) => ({ male: 'Masculin', female: 'Féminin', other: 'Autre' }[g] ?? '—');
+
+const formatDate = (d?: string) => {
+    if (!d) return '—';
+    try { return new Date(d).toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' }); }
+    catch { return d; }
+};
 
 const handleDelete = (ids: (string | number)[]) => {
     ids.forEach(id => router.get(`/admin/teacher/delete/${id}`, {}, {
