@@ -52,7 +52,7 @@
                 daysOfWeek: [ {{ $week['day'] }} ],
                 startTime: '{{ $week['start_time'] }}',
                 endTime: '{{ $week['end_time'] }}',
-                color: '#7c3aed',
+                color: '#7B74F0',
         });
         @endforeach
         @endforeach

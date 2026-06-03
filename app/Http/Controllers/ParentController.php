@@ -16,8 +16,15 @@ class ParentController extends Controller
 {
     public function list()
     {
+        $perPage = min((int) request('per_page', 15), 100);
+        $parents = User::getAllParent($perPage);
+        $parents->getCollection()->transform(function ($p) {
+            $p->is_online = \Illuminate\Support\Facades\Cache::has('OnlineUser.' . $p->id);
+            return $p;
+        });
+
         return Inertia::render('Admin/Parents/Index', [
-            'parents' => User::getAllParent(15),
+            'parents' => $parents,
         ]);
     }
 

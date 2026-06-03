@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 use Spatie\Permission\Models\Permission;
@@ -12,13 +14,14 @@ use Spatie\Permission\PermissionRegistrar;
 
 class RbacController extends Controller
 {
-    // ══════════════════════════════════════════════════════════════════════════
-    // ROLES
-    // ══════════════════════════════════════════════════════════════════════════
+    // ══════════════════════════════════════════════════════════════════════
+    // RÔLES
+    // ══════════════════════════════════════════════════════════════════════
 
     public function roleList()
     {
-        $roles = Role::withCount('permissions')
+        $allRoles = Role::withCount('permissions')
+            ->orderBy('user_type')
             ->orderBy('name')
             ->get()
             ->map(fn($r) => [
@@ -27,15 +30,18 @@ class RbacController extends Controller
                 'guard_name'        => $r->guard_name,
                 'user_type'         => $r->user_type,
                 'description'       => $r->description,
+                'is_delete'         => (int) ($r->is_delete ?? 0),
+                'deleted_at'        => $r->deleted_at
+                    ? \Carbon\Carbon::parse($r->deleted_at)->format('d/m/Y H:i')
+                    : null,
                 'permissions_count' => $r->permissions_count,
                 'created_at'        => $r->created_at?->format('d/m/Y'),
             ]);
 
-        // user_types déjà utilisés pour le formulaire
-        $usedUserTypes = $roles->pluck('user_type')->filter()->values();
+        $usedUserTypes = Role::whereNotNull('user_type')->pluck('user_type')->values();
 
         return Inertia::render('SuperAdmin/Config/Roles', [
-            'roles'         => $roles,
+            'roles'         => $allRoles,
             'usedUserTypes' => $usedUserTypes,
         ]);
     }
@@ -46,7 +52,6 @@ class RbacController extends Controller
             'name'        => 'required|string|max:80|unique:roles,name',
             'user_type'   => [
                 'required', 'integer', 'min:5',
-                // Un user_type ne peut appartenir qu'à un seul rôle
                 function ($attr, $value, $fail) {
                     if (Role::where('user_type', $value)->exists()) {
                         $fail("Le user_type {$value} est déjà utilisé par un autre rôle.");
@@ -74,7 +79,6 @@ class RbacController extends Controller
     {
         $role = Role::findOrFail($id);
 
-        // Protéger les rôles système (user_type 0-4)
         if ($role->user_type !== null && $role->user_type <= 4) {
             return back()->with('error', 'Les rôles système (user_type 0–4) ne peuvent pas être modifiés.');
         }
@@ -105,6 +109,7 @@ class RbacController extends Controller
         }
     }
 
+    /** Soft-delete d'un rôle */
     public function roleDelete(int $id)
     {
         $role = Role::findOrFail($id);
@@ -114,18 +119,34 @@ class RbacController extends Controller
         }
 
         try {
-            $role->delete();
+            DB::table('roles')->where('id', $id)->update([
+                'is_delete'  => 1,
+                'deleted_by' => Auth::id(),
+                'deleted_at' => now(),
+            ]);
             app()[PermissionRegistrar::class]->forgetCachedPermissions();
-            return back()->with('success', 'Rôle supprimé avec succès.');
+            return back()->with('success', "Rôle « {$role->name} » supprimé (soft delete).");
         } catch (\Exception $e) {
             Log::error('RBAC roleDelete: ' . $e->getMessage());
             return back()->with('error', 'Erreur lors de la suppression du rôle.');
         }
     }
 
-    // ══════════════════════════════════════════════════════════════════════════
+    /** Restaurer un rôle supprimé */
+    public function roleRestore(int $id)
+    {
+        DB::table('roles')->where('id', $id)->update([
+            'is_delete'  => 0,
+            'deleted_by' => null,
+            'deleted_at' => null,
+        ]);
+        app()[PermissionRegistrar::class]->forgetCachedPermissions();
+        return back()->with('success', 'Rôle restauré avec succès.');
+    }
+
+    // ══════════════════════════════════════════════════════════════════════
     // PERMISSIONS
-    // ══════════════════════════════════════════════════════════════════════════
+    // ══════════════════════════════════════════════════════════════════════
 
     public function permissionList()
     {
@@ -136,11 +157,17 @@ class RbacController extends Controller
                 'name'       => $p->name,
                 'guard_name' => $p->guard_name,
                 'module'     => explode('.', $p->name)[0],
+                'is_delete'  => (int) ($p->is_delete ?? 0),
+                'deleted_at' => $p->deleted_at
+                    ? \Carbon\Carbon::parse($p->deleted_at)->format('d/m/Y H:i')
+                    : null,
                 'created_at' => $p->created_at?->format('d/m/Y'),
             ]);
 
-        // Grouper par module pour l'affichage
-        $grouped = $permissions->groupBy('module')->map(fn($g) => $g->values())->toArray();
+        $grouped = $permissions
+            ->groupBy('module')
+            ->map(fn($g) => $g->values())
+            ->toArray();
 
         return Inertia::render('SuperAdmin/Config/Permissions', [
             'permissions' => $permissions,
@@ -182,54 +209,115 @@ class RbacController extends Controller
         }
     }
 
+    /** Soft-delete d'une permission */
     public function permissionDelete(int $id)
     {
         $permission = Permission::findOrFail($id);
 
         try {
-            $permission->delete();
+            DB::table('permissions')->where('id', $id)->update([
+                'is_delete'  => 1,
+                'deleted_by' => Auth::id(),
+                'deleted_at' => now(),
+            ]);
             app()[PermissionRegistrar::class]->forgetCachedPermissions();
-            return back()->with('success', 'Permission supprimée avec succès.');
+            return back()->with('success', "Permission « {$permission->name} » supprimée (soft delete).");
         } catch (\Exception $e) {
             Log::error('RBAC permissionDelete: ' . $e->getMessage());
             return back()->with('error', 'Erreur lors de la suppression.');
         }
     }
 
-    // ══════════════════════════════════════════════════════════════════════════
-    // ATTRIBUTION DES PERMISSIONS AUX RÔLES
-    // ══════════════════════════════════════════════════════════════════════════
+    /** Restaurer une permission supprimée */
+    public function permissionRestore(int $id)
+    {
+        DB::table('permissions')->where('id', $id)->update([
+            'is_delete'  => 0,
+            'deleted_by' => null,
+            'deleted_at' => null,
+        ]);
+        app()[PermissionRegistrar::class]->forgetCachedPermissions();
+        return back()->with('success', 'Permission restaurée avec succès.');
+    }
+
+    // ══════════════════════════════════════════════════════════════════════
+    // ATTRIBUTION — par rôle OU par utilisateur
+    // ══════════════════════════════════════════════════════════════════════
 
     public function assignList()
     {
-        $roles = Role::with('permissions')->orderBy('name')->get()->map(fn($r) => [
-            'id'          => $r->id,
-            'name'        => $r->name,
-            'permissions' => $r->permissions->pluck('name')->toArray(),
-        ]);
+        // Tous les rôles (actifs)
+        $roles = Role::where('is_delete', 0)
+            ->with('permissions')
+            ->orderBy('name')
+            ->get()
+            ->map(fn($r) => [
+                'id'          => $r->id,
+                'name'        => $r->name,
+                'user_type'   => $r->user_type,
+                'description' => $r->description,
+                'permissions' => $r->permissions->where('is_delete', 0)->pluck('name')->toArray(),
+            ]);
 
-        $permissions = Permission::orderBy('name')->get()->map(fn($p) => [
-            'id'     => $p->id,
-            'name'   => $p->name,
-            'module' => explode('.', $p->name)[0],
-        ]);
+        // Tous les utilisateurs actifs (sauf super_admin user_type=0)
+        $users = User::where('is_delete', 0)
+            ->where('status', 1)
+            ->where('user_type', '!=', 0)
+            ->orderBy('name')
+            ->get()
+            ->map(function ($u) {
+                // Permissions directes (hors rôle)
+                $directPerms = $u->getDirectPermissions()
+                    ->where('is_delete', 0)
+                    ->pluck('name')
+                    ->toArray();
+                // Permissions héritées du rôle
+                $rolePerms = $u->getPermissionsViaRoles()
+                    ->where('is_delete', 0)
+                    ->pluck('name')
+                    ->toArray();
+
+                return [
+                    'id'               => $u->id,
+                    'name'             => $u->name,
+                    'last_name'        => $u->last_name,
+                    'email'            => $u->email,
+                    'user_type'        => $u->user_type,
+                    'roles'            => $u->getRoleNames()->toArray(),
+                    'direct_perms'     => $directPerms,
+                    'role_perms'       => $rolePerms,
+                    'all_perms'        => array_unique(array_merge($directPerms, $rolePerms)),
+                    'profile_picture'  => $u->profile_picture,
+                ];
+            });
+
+        // Toutes les permissions actives, groupées par module
+        $permissions = Permission::where('is_delete', 0)
+            ->orderBy('name')
+            ->get()
+            ->map(fn($p) => [
+                'id'     => $p->id,
+                'name'   => $p->name,
+                'module' => explode('.', $p->name)[0],
+            ]);
 
         return Inertia::render('SuperAdmin/Config/AssignPermissions', [
             'roles'       => $roles,
+            'users'       => $users,
             'permissions' => $permissions,
         ]);
     }
 
+    /** Sync permissions d'un rôle */
     public function assignSync(Request $request, int $roleId)
     {
         $request->validate([
-            'permissions' => 'present|array',
+            'permissions'   => 'present|array',
             'permissions.*' => 'string|exists:permissions,name',
         ]);
 
         $role = Role::findOrFail($roleId);
 
-        // super_admin toujours tout permissions — on ne laisse pas modifier
         if ($role->name === 'super_admin') {
             return back()->with('error', 'Les permissions du super_admin ne peuvent pas être modifiées.');
         }
@@ -241,6 +329,32 @@ class RbacController extends Controller
         } catch (\Exception $e) {
             Log::error('RBAC assignSync: ' . $e->getMessage());
             return back()->with('error', 'Erreur lors de la mise à jour des permissions.');
+        }
+    }
+
+    /** Sync permissions DIRECTES d'un utilisateur (en plus des permissions du rôle) */
+    public function assignUserSync(Request $request, int $userId)
+    {
+        $request->validate([
+            'permissions'   => 'present|array',
+            'permissions.*' => 'string|exists:permissions,name',
+        ]);
+
+        $user = User::findOrFail($userId);
+
+        if ($user->user_type === 0) {
+            return back()->with('error', 'Les permissions du super_admin ne peuvent pas être modifiées ici.');
+        }
+
+        try {
+            // syncPermissions sur l'utilisateur = remplace les permissions DIRECTES
+            // (ne touche pas aux permissions héritées via les rôles)
+            $user->syncPermissions($request->permissions);
+            app()[PermissionRegistrar::class]->forgetCachedPermissions();
+            return back()->with('success', "Permissions directes de {$user->name} {$user->last_name} mises à jour.");
+        } catch (\Exception $e) {
+            Log::error('RBAC assignUserSync: ' . $e->getMessage());
+            return back()->with('error', 'Erreur lors de la mise à jour des permissions utilisateur.');
         }
     }
 }

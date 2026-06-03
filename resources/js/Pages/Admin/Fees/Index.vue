@@ -1,4 +1,4 @@
-<template>
+﻿<template>
     <div class="space-y-6">
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
@@ -135,7 +135,7 @@
                 </div>
 
                 <!-- Info Stripe -->
-                <div v-if="payForm.payment_type === 'stripe'" class="p-3 bg-indigo-50 dark:bg-indigo-900/20 rounded-xl text-xs text-indigo-700 dark:text-indigo-300">
+                <div v-if="payForm.payment_type === 'stripe'" class="p-3 bg-primary-50 dark:bg-primary-900/20 rounded-xl text-xs text-primary-700 dark:text-primary-300">
                     <p class="font-medium mb-1">Paiement via Stripe</p>
                     <p>Vous serez redirigé vers la page de paiement sécurisée Stripe.</p>
                 </div>

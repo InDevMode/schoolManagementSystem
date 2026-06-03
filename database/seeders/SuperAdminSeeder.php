@@ -16,10 +16,14 @@ class SuperAdminSeeder extends Seeder
         app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
         // ── 1. Rôle super_admin ────────────────────────────────────────────
-        $superAdminRole = Role::firstOrCreate([
-            'name'       => 'super_admin',
-            'guard_name' => 'web',
-        ]);
+        $superAdminRole = Role::firstOrCreate(
+            ['name' => 'super_admin', 'guard_name' => 'web'],
+            ['user_type' => 0, 'description' => 'Super administrateur — accès total au système']
+        );
+        // Mise à jour si déjà existant sans ces infos
+        Role::where('name', 'super_admin')
+            ->whereNull('user_type')
+            ->update(['user_type' => 0, 'description' => 'Super administrateur — accès total au système']);
 
         // Permissions RBAC exclusives au super_admin
         $rbacPermissions = [

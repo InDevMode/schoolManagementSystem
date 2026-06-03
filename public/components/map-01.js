@@ -12,7 +12,7 @@ const map01 = () => {
 
       regionStyle: {
         initial: {
-          fontFamily: "Outfit",
+          fontFamily: "Inter",
           fill: "#D9D9D9",
         },
         hover: {

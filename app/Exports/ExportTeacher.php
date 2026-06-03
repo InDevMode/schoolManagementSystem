@@ -4,99 +4,82 @@ namespace App\Exports;
 
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Cache;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithColumnWidths;
+use Maatwebsite\Excel\Concerns\WithStyles;
+use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class ExportTeacher implements FromCollection, WithMapping, WithHeadings, WithColumnWidths
+class ExportTeacher implements FromCollection, WithMapping, WithHeadings, WithColumnWidths, WithStyles
 {
+    private static array $genderMap  = ['male' => 'Masculin', 'female' => 'Féminin', 'other' => 'Autre'];
+    private static array $statusMap  = [1 => 'Actif', 0 => 'Inactif'];
+
     public function map($row): array
     {
-        $teacher_name = $row->name . ' ' . $row->last_name;
-        $teacher_gender = [
-            'male' => 'Homme',
-            'female' => 'Femme',
-        ];
-        $teacher_status = [
-            1 => 'Actif',
-            0 => 'Inactif',
-        ];
-
         return [
             $row->id,
-            $teacher_name,
+            trim($row->name . ' ' . $row->last_name),
             $row->email,
-            $row->mobile_number,
-            $teacher_gender[$row->gender],
+            $row->mobile_number       ?? '—',
+            self::$genderMap[$row->gender] ?? ($row->gender ?? '—'),
             $this->formatDate($row->date_of_birth),
             $this->formatDate($row->admission_date),
-            $row->address,
-            $row->permanent_address,
-            $row->marital_status,
-            $row->qualification,
-            $row->note,
-            $row->work_experience,
-            $teacher_status[$row->status],
-            $row->created_at->format('d-m-Y H:i:s'),
-            $row->updated_at->format('d-m-Y H:i:s'),
+            $row->address             ?? '—',
+            $row->permanent_address   ?? '—',
+            $row->marital_status      ?? '—',
+            $row->qualification       ?? '—',
+            $row->note                ?? '—',
+            $row->work_experience     ?? '—',
+            self::$statusMap[(int) $row->status] ?? '—',
+            Cache::has('OnlineUser.' . $row->id) ? 'En ligne' : 'Hors ligne',
+            $row->created_at ? $row->created_at->format('d-m-Y H:i:s') : '—',
+            $row->updated_at ? $row->updated_at->format('d-m-Y H:i:s') : '—',
         ];
     }
 
     public function headings(): array
     {
         return [
-            'ID',
-            'Nom et Prénoms',
-            'Email',
-            'Téléphone',
-            'Genre',
-            'Date de naissance',
-            'Date d\'Adhésion',
-            'Adresse Actuelle',
-            'Adresse Permanente',
-            'Situation Matrimoniale',
-            'Qualification',
-            'Note',
-            'Expérience de Travail',
-            'Statut',
-            'Date de création',
-            'Date de modification',
+            'ID', 'Nom et Prénoms', 'Email', 'Téléphone',
+            'Genre', 'Date de naissance', 'Date d\'embauche',
+            'Adresse actuelle', 'Adresse permanente', 'Situation matrimoniale',
+            'Qualification', 'Note', 'Expérience (années)',
+            'Statut', 'Présence', 'Créé le', 'Modifié le',
         ];
     }
 
     public function columnWidths(): array
     {
         return [
-            'A' => 40,
-            'B' => 40,
-            'C' => 40,
-            'D' => 40,
-            'E' => 40,
-            'F' => 40,
-            'G' => 40,
-            'H' => 40,
-            'I' => 40,
-            'J' => 40,
-            'K' => 40,
-            'L' => 40,
-            'M' => 40,
-            'N' => 40,
-            'O' => 40,
-            'P' => 40,
+            'A' => 8,  'B' => 30, 'C' => 30, 'D' => 16,
+            'E' => 12, 'F' => 16, 'G' => 16, 'H' => 28,
+            'I' => 28, 'J' => 22, 'K' => 20, 'L' => 20,
+            'M' => 14, 'N' => 12, 'O' => 14, 'P' => 20,
+            'Q' => 20,
         ];
     }
-    /**
-     * @return \Illuminate\Support\Collection
-     */
+
+    public function styles(Worksheet $sheet): array
+    {
+        return [
+            1 => [
+                'font'      => ['bold' => true, 'color' => ['rgb' => 'FFFFFF']],
+                'fill'      => ['fillType' => 'solid', 'startColor' => ['rgb' => '7C3AED']],
+                'alignment' => ['horizontal' => 'center'],
+            ],
+        ];
+    }
+
     public function collection()
     {
         return User::getAllTeacherList();
     }
 
-    private function formatDate($date): ?string
+    private function formatDate(?string $date): string
     {
-        return $date ? Carbon::parse($date)->format('d-m-Y') : null;
+        return $date ? Carbon::parse($date)->format('d-m-Y') : '—';
     }
-
 }

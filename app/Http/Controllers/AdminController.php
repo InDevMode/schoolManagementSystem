@@ -16,8 +16,16 @@ class AdminController extends Controller
 {
     public function list()
     {
+        $perPage = min((int) request('per_page', 15), 100);
+        $admins  = User::getAllAdmin($perPage);
+
+        $admins->getCollection()->transform(function ($admin) {
+            $admin->is_online = \Illuminate\Support\Facades\Cache::has('OnlineUser.' . $admin->id);
+            return $admin;
+        });
+
         return Inertia::render('Admin/Admins/Index', [
-            'admins' => User::getAllAdmin(15),
+            'admins' => $admins,
         ]);
     }
 

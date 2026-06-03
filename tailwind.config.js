@@ -14,21 +14,21 @@ export default {
                 sans: ['Inter', ...defaultTheme.fontFamily.sans],
             },
             colors: {
-                // Couleur primaire : Violet
+                // Couleur primaire : Violet periwinkle (bouton "Goals" — #7B74F0)
                 primary: {
-                    50:  '#f5f3ff',
-                    100: '#ede9fe',
-                    200: '#ddd6fe',
-                    300: '#c4b5fd',
-                    400: '#a78bfa',
-                    500: '#8b5cf6',
-                    600: '#7c3aed', // principale
-                    700: '#6d28d9',
-                    800: '#5b21b6',
-                    900: '#4c1d95',
-                    950: '#2e1065',
+                    50:  '#f0efff',
+                    100: '#e3e1fe',
+                    200: '#cbc8fc',
+                    300: '#aca4fa',
+                    400: '#9189f5',
+                    500: '#8880f2',
+                    600: '#7B74F0', // principale — periwinkle doux
+                    700: '#6660d4',
+                    800: '#534fb2',
+                    900: '#403d8c',
+                    950: '#252360',
                 },
-                // Couleur secondaire : Indigo
+                // Couleur secondaire : Indigo doux
                 secondary: {
                     50:  '#eef2ff',
                     100: '#e0e7ff',

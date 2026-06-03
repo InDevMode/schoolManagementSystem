@@ -106,7 +106,7 @@
                         <line x1="0" y1="180" x2="600" y2="180" stroke="currentColor" stroke-width="0.5" class="text-gray-100 dark:text-gray-700"/>
 
                         <!-- Barres Professeurs (violet) -->
-                        <g fill="#7c3aed" opacity="0.85">
+                        <g fill="#7B74F0" opacity="0.85">
                             <rect x="18"  y="60"  width="22" height="120" rx="4"/>
                             <rect x="68"  y="40"  width="22" height="140" rx="4"/>
                             <rect x="118" y="20"  width="22" height="160" rx="4"/>
@@ -163,7 +163,7 @@
                             <circle cx="50" cy="50" r="38" fill="none" stroke="#f59e0b" stroke-width="14"
                                     stroke-dasharray="95.5 143.3" stroke-dashoffset="0" stroke-linecap="round"/>
                             <!-- Garçons (violet) — 60% -->
-                            <circle cx="50" cy="50" r="38" fill="none" stroke="#7c3aed" stroke-width="14"
+                            <circle cx="50" cy="50" r="38" fill="none" stroke="#7B74F0" stroke-width="14"
                                     stroke-dasharray="143.3 95.5" stroke-dashoffset="-95.5" stroke-linecap="round"/>
                         </svg>
                         <div class="absolute inset-0 flex flex-col items-center justify-center">
@@ -453,7 +453,7 @@ interface CalEvent {
 const calendarEvents: CalEvent[] = [
     { id: 1, day: 3,  month: today.getMonth(), title: 'Réunion parents',    color: '#f472b6', dateLabel: `3 ${months[today.getMonth()]}`,  time: '08:00 - 10:00', price: 'Gratuit', progress: 72, seats: 23, highlight: true,  highlightBg: '#ec4899' },
     { id: 2, day: 8,  month: today.getMonth(), title: 'Examen Maths',       color: '#a78bfa', dateLabel: `8 ${months[today.getMonth()]}`,  time: '09:00 - 12:00', price: 'Gratuit', progress: 45, seats: 17, highlight: false },
-    { id: 3, day: 15, month: today.getMonth(), title: 'Sortie scolaire',    color: '#34d399', dateLabel: `15 ${months[today.getMonth()]}`, time: '07:00 - 18:00', price: '5 000 F', progress: 90, seats: 4,  highlight: true,  highlightBg: '#7c3aed' },
+    { id: 3, day: 15, month: today.getMonth(), title: 'Sortie scolaire',    color: '#34d399', dateLabel: `15 ${months[today.getMonth()]}`, time: '07:00 - 18:00', price: '5 000 F', progress: 90, seats: 4,  highlight: true,  highlightBg: '#7B74F0' },
     { id: 4, day: 22, month: today.getMonth(), title: 'Conseil de classe',  color: '#fb923c', dateLabel: `22 ${months[today.getMonth()]}`, time: '14:00 - 16:00', price: 'Gratuit', progress: 60, seats: 13, highlight: false },
     { id: 5, day: 28, month: today.getMonth(), title: 'Remise des bulletins',color: '#60a5fa', dateLabel: `28 ${months[today.getMonth()]}`, time: '10:00 - 12:00', price: 'Gratuit', progress: 30, seats: 30, highlight: false },
 ];
@@ -465,7 +465,7 @@ const getDayEvents = (day: number): CalEvent[] =>
 // Style de fond d'une case — adaptatif light/dark
 const getDayStyle = (day: number): Record<string, string> => {
     if (isToday(day)) {
-        return { background: '#7c3aed' };
+        return { background: '#7B74F0' };
     }
     const evs = getDayEvents(day);
     if (evs.length && evs[0].highlight) {

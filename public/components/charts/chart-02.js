@@ -6,7 +6,7 @@ const chart02 = () => {
     series: [75.55],
     colors: ["#465FFF"],
     chart: {
-      fontFamily: "Outfit, sans-serif",
+      fontFamily: "Inter, sans-serif",
       type: "radialBar",
       height: 330,
       sparkline: {

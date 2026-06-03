@@ -16,8 +16,15 @@ class TeacherController extends Controller
 {
     public function list()
     {
+        $perPage  = min((int) request('per_page', 15), 100);
+        $teachers = User::getAllTeacher($perPage);
+        $teachers->getCollection()->transform(function ($t) {
+            $t->is_online = \Illuminate\Support\Facades\Cache::has('OnlineUser.' . $t->id);
+            return $t;
+        });
+
         return Inertia::render('Admin/Teachers/Index', [
-            'teachers' => User::getAllTeacher(15),
+            'teachers' => $teachers,
         ]);
     }
 

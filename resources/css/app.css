@@ -4,8 +4,8 @@
 
 @layer base {
     :root {
-        --color-primary: 124 58 237;   /* violet-600 */
-        --color-secondary: 99 102 241; /* indigo-500 */
+        --color-primary: 123 116 240;   /* #7B74F0 periwinkle doux */
+        --color-secondary: 99 102 241;  /* indigo-500 */
     }
 
     html {
@@ -17,6 +17,11 @@
         font-feature-settings: "cv02", "cv03", "cv04", "cv11";
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* Forcer Inter sur TOUS les éléments — override Flowbite/AdminLTE */
+    *, *::before, *::after {
+        font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif !important;
     }
 
     * {

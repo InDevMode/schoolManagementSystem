@@ -1,10 +1,10 @@
-<template>
+﻿<template>
     <GuestLayout>
         <!-- Icône + Titre -->
         <div class="mb-8">
             <div class="w-14 h-14 rounded-2xl flex items-center justify-center mb-5 transition-colors duration-300"
                  :style="iconBoxStyle">
-                <svg class="w-7 h-7" style="color: #8b5cf6;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="w-7 h-7" style="color: #9189f5;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                           d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/>
                 </svg>
@@ -44,7 +44,7 @@
                         :type="showPassword ? 'text' : 'password'"
                         placeholder="••••••••••"
                         required
-                        class="w-full pl-10 pr-12 py-3 rounded-xl text-sm outline-none transition-all duration-200 focus:ring-2 focus:ring-violet-500"
+                        class="w-full pl-10 pr-12 py-3 rounded-xl text-sm outline-none transition-all duration-200 focus:ring-2 focus:ring-primary-500"
                         :class="form.errors.password ? 'ring-2 ring-red-500' : ''"
                         :style="inputStyle"
                     />
@@ -97,7 +97,7 @@
                         :type="showConfirm ? 'text' : 'password'"
                         placeholder="••••••••••"
                         required
-                        class="w-full pl-10 pr-12 py-3 rounded-xl text-sm outline-none transition-all duration-200 focus:ring-2 focus:ring-violet-500"
+                        class="w-full pl-10 pr-12 py-3 rounded-xl text-sm outline-none transition-all duration-200 focus:ring-2 focus:ring-primary-500"
                         :class="confirmRingClass"
                         :style="inputStyle"
                     />
@@ -130,7 +130,7 @@
                 type="submit"
                 :disabled="form.processing || (!!form.confPassword && form.confPassword !== form.password)"
                 class="w-full py-3.5 px-4 rounded-xl font-semibold text-sm text-white transition-all duration-200 flex items-center justify-center gap-2 hover:opacity-90 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed"
-                style="background: linear-gradient(135deg, #8b5cf6, #6d28d9); box-shadow: 0 4px 18px rgba(124,58,237,0.35);"
+                style="background: linear-gradient(135deg, #9189f5, #6660d4); box-shadow: 0 4px 18px rgba(123,116,240,0.35);"
             >
                 <svg v-if="form.processing" class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
@@ -148,7 +148,7 @@
         <div class="mt-6 text-center">
             <a href="/login"
                class="inline-flex items-center gap-2 text-sm font-medium transition-colors hover:opacity-80"
-               style="color: #7c3aed;">
+               style="color: #7B74F0;">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
                 </svg>

@@ -1,4 +1,4 @@
-<template>
+﻿<template>
     <component
         :is="href ? 'a' : 'div'"
         :href="href"
@@ -46,7 +46,7 @@ const props = withDefaults(defineProps<Props>(), { color: 'primary' });
 
 const colorMap: Record<string, { bubble: string; iconBg: string; icon: string }> = {
     primary:   { bubble: 'bg-primary-500',   iconBg: 'bg-primary-100 dark:bg-primary-900/40',   icon: 'text-primary-600 dark:text-primary-400' },
-    secondary: { bubble: 'bg-indigo-500',    iconBg: 'bg-indigo-100 dark:bg-indigo-900/40',     icon: 'text-indigo-600 dark:text-indigo-400' },
+    secondary: { bubble: 'bg-primary-500',    iconBg: 'bg-primary-100 dark:bg-primary-900/40',     icon: 'text-primary-600 dark:text-primary-400' },
     success:   { bubble: 'bg-green-500',     iconBg: 'bg-green-100 dark:bg-green-900/40',       icon: 'text-green-600 dark:text-green-400' },
     danger:    { bubble: 'bg-red-500',       iconBg: 'bg-red-100 dark:bg-red-900/40',           icon: 'text-red-600 dark:text-red-400' },
     warning:   { bubble: 'bg-amber-500',     iconBg: 'bg-amber-100 dark:bg-amber-900/40',       icon: 'text-amber-600 dark:text-amber-400' },

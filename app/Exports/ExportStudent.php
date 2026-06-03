@@ -4,120 +4,87 @@ namespace App\Exports;
 
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Cache;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithColumnWidths;
+use Maatwebsite\Excel\Concerns\WithStyles;
+use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class ExportStudent implements FromCollection, WithMapping, WithHeadings, WithColumnWidths
+class ExportStudent implements FromCollection, WithMapping, WithHeadings, WithColumnWidths, WithStyles
 {
+    private static array $genderMap     = ['male' => 'Masculin', 'female' => 'Féminin', 'other' => 'Autre'];
+    private static array $statusMap     = [1 => 'Actif', 0 => 'Inactif'];
+    private static array $bloodGroupMap = [
+        'a+' => 'A+', 'a-' => 'A-', 'b+' => 'B+', 'b-' => 'B-',
+        'ab+' => 'AB+', 'ab-' => 'AB-', 'o+' => 'O+', 'o-' => 'O-',
+    ];
 
     public function map($row): array
     {
-        $student_name = $row->name . ' ' . $row->last_name;
-        $parent_name = $row->parent_name . ' ' . $row->parent_last_name;
-        $student_gender = [
-            'male' => 'Homme',
-            'female' => 'Femme',
-        ];
-        $student_status = [
-            1 => 'Actif',
-            0 => 'Inactif',
-        ];
-        $student_blood_group = [
-            'a+' => 'A+',
-            'a-' => 'A-',
-            'b+' => 'B+',
-            'b-' => 'B-',
-            'ab+' => 'AB+',
-            'ab-' => 'AB-',
-            'o+' => 'O+',
-            'o-' => 'O-',
-        ];
-
         return [
             $row->id,
-            $row->admission_number,
-            $student_name,
-            $parent_name,
+            $row->admission_number ?? '—',
+            trim($row->name . ' ' . $row->last_name),
+            trim(($row->parent_name ?? '') . ' ' . ($row->parent_last_name ?? '')),
             $row->email,
-            $row->mobile_number,
-            $student_gender[$row->gender],
-            $row->roll_number,
+            $row->mobile_number ?? '—',
+            self::$genderMap[$row->gender] ?? $row->gender ?? '—',
+            $row->roll_number ?? '—',
             $this->formatDate($row->date_of_birth),
             $this->formatDate($row->admission_date),
-            $row->caste,
-            $row->religion,
-            $row->class_name,
-            $student_status[$row->status],
-            $student_blood_group[$row->blood_group],
-            $row->height,
-            $row->weight,
-            $row->created_at->format('d-m-Y H:i:s'),
-            $row->updated_at->format('d-m-Y H:i:s'),
+            $row->class_name ?? '—',
+            self::$statusMap[(int) $row->status] ?? '—',
+            self::$bloodGroupMap[$row->blood_group] ?? ($row->blood_group ?? '—'),
+            $row->height ?? '—',
+            $row->weight ?? '—',
+            Cache::has('OnlineUser.' . $row->id) ? 'En ligne' : 'Hors ligne',
+            $row->created_at ? $row->created_at->format('d-m-Y H:i:s') : '—',
+            $row->updated_at ? $row->updated_at->format('d-m-Y H:i:s') : '—',
         ];
     }
 
     public function headings(): array
     {
         return [
-            'ID',
-            'Numéro matricule',
-            'Nom et Prénoms de l\'apprenant',
-            'Nom et Prénoms du parent',
-            'Email',
-            'Téléphone',
-            'Genre',
-            'Numéro de rôle',
-            'Date de naissance',
-            'Date d\'admission',
-            'Caste',
-            'Religion',
-            'Classe',
-            'Statut',
-            'Groupe sanguin',
-            'Taille',
-            'Poids',
-            'Date de création',
-            'Date de modification',
+            'ID', 'N° Matricule', 'Nom et Prénoms', 'Parent',
+            'Email', 'Téléphone', 'Genre', 'N° de rôle',
+            'Date de naissance', 'Date d\'admission', 'Classe',
+            'Statut', 'Groupe sanguin', 'Taille (cm)', 'Poids (kg)',
+            'Présence', 'Créé le', 'Modifié le',
         ];
     }
 
     public function columnWidths(): array
     {
         return [
-           'A' => 40,
-           'B' => 40,
-           'C' => 40,
-           'D' => 40,
-           'E' => 40,
-           'F' => 40,
-           'G' => 40,
-           'H' => 40,
-           'I' => 40,
-           'J' => 40,
-           'K' => 40,
-           'L' => 40,
-           'M' => 40,
-           'N' => 40,
-           'O' => 40,
-           'P' => 40,
-           'Q' => 40,
-           'R' => 40,
-           'S' => 40,
+            'A' => 8,  'B' => 18, 'C' => 30, 'D' => 28,
+            'E' => 30, 'F' => 16, 'G' => 12, 'H' => 12,
+            'I' => 16, 'J' => 16, 'K' => 18, 'L' => 12,
+            'M' => 14, 'N' => 12, 'O' => 12, 'P' => 14,
+            'Q' => 20, 'R' => 20,
         ];
     }
-    /**
-     * @return \Illuminate\Support\Collection
-     */
+
+    public function styles(Worksheet $sheet): array
+    {
+        return [
+            1 => [
+                'font'      => ['bold' => true, 'color' => ['rgb' => 'FFFFFF']],
+                'fill'      => ['fillType' => 'solid', 'startColor' => ['rgb' => '7C3AED']],
+                'alignment' => ['horizontal' => 'center'],
+            ],
+        ];
+    }
+
     public function collection()
     {
         return User::getAllStudentList();
     }
 
-        private function formatDate($date): ?string
+    private function formatDate(?string $date): string
     {
-        return $date ? Carbon::parse($date)->format('d-m-Y') : null;
+        return $date ? Carbon::parse($date)->format('d-m-Y') : '—';
     }
-
 }

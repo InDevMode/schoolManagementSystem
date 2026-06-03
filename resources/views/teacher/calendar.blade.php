@@ -53,7 +53,7 @@
                 daysOfWeek: [ {{ $valueClassTeacher->week_day }} ],
                 startTime: '{{$valueClassTeacher->start_time }}',
                 endTime: '{{ $valueClassTeacher->end_time }}',
-                color: '#7c3aed',
+                color: '#7B74F0',
             });
         @endforeach
 

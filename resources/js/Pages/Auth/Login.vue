@@ -1,4 +1,4 @@
-<template>
+﻿<template>
     <GuestLayout>
         <!-- Titre -->
         <div class="mb-8">
@@ -73,7 +73,7 @@
                         type="email"
                         placeholder="exemple@email.com"
                         required
-                        class="w-full pl-10 pr-4 py-3 rounded-xl text-sm outline-none transition-all duration-200 focus:ring-2 focus:ring-violet-500"
+                        class="w-full pl-10 pr-4 py-3 rounded-xl text-sm outline-none transition-all duration-200 focus:ring-2 focus:ring-primary-500"
                         :class="form.errors.email ? 'ring-2 ring-red-500' : ''"
                         :style="inputStyle"
                     />
@@ -90,7 +90,7 @@
                     </label>
                     <a href="/forgot_password"
                        class="text-xs font-medium transition-colors hover:opacity-80"
-                       style="color: #7c3aed;">
+                       style="color: #7B74F0;">
                         Mot de passe oublié ?
                     </a>
                 </div>
@@ -108,7 +108,7 @@
                         :type="showPassword ? 'text' : 'password'"
                         placeholder="••••••••••"
                         required
-                        class="w-full pl-10 pr-12 py-3 rounded-xl text-sm outline-none transition-all duration-200 focus:ring-2 focus:ring-violet-500"
+                        class="w-full pl-10 pr-12 py-3 rounded-xl text-sm outline-none transition-all duration-200 focus:ring-2 focus:ring-primary-500"
                         :class="form.errors.password ? 'ring-2 ring-red-500' : ''"
                         :style="inputStyle"
                     />
@@ -135,7 +135,7 @@
                 type="submit"
                 :disabled="form.processing"
                 class="w-full py-3.5 px-4 rounded-xl font-semibold text-sm text-white transition-all duration-200 mt-2 flex items-center justify-center gap-2 hover:opacity-90 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed"
-                style="background: linear-gradient(135deg, #8b5cf6, #6d28d9); box-shadow: 0 4px 18px rgba(124,58,237,0.35);"
+                style="background: linear-gradient(135deg, #8880f2, #7B74F0); box-shadow: 0 4px 18px rgba(123,116,240,0.35);"
             >
                 <svg v-if="form.processing" class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>

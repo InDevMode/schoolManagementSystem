@@ -1,17 +1,43 @@
 import { computed } from 'vue';
 import { usePage } from '@inertiajs/vue3';
-import { navByRole } from '@/Data/navigation';
+import { getNavForUserType } from '@/Data/navigation';
+import { useCan } from '@/Composables/useCan';
 import type { NavItem, PageProps } from '@/types';
 
 export function useNavigation() {
-    const page = usePage<PageProps>();
+    const page    = usePage<PageProps>();
+    const { can, isSuperAdmin } = useCan();
 
     const user     = computed(() => page.props.auth?.user ?? null);
-    const userType = computed(() => user.value?.user_type ?? 0);
+    const userType = computed(() => user.value?.user_type ?? -1);
 
-    const navItems = computed<NavItem[]>(() => navByRole[userType.value] ?? []);
+    /** Navigation brute selon le user_type (rôles custom >= 5 → adminNav) */
+    const baseNav = computed<NavItem[]>(() => getNavForUserType(userType.value));
 
-    /** Chemin courant — sécurisé même sans Ziggy */
+    /**
+     * Navigation filtrée par permissions.
+     * - super_admin (user_type=0) : voit tout sans filtrage
+     * - Autres : on filtre chaque item et ses enfants selon can(permission)
+     * - Un groupe parent est affiché si AU MOINS UN enfant est visible
+     */
+    const navItems = computed<NavItem[]>(() => {
+        if (isSuperAdmin.value) return baseNav.value; // super_admin : tout visible
+
+        return baseNav.value
+            .map(item => {
+                // Item sans enfants
+                if (!item.children) {
+                    return can(item.permission) ? item : null;
+                }
+                // Item avec enfants : filtrer les enfants visibles
+                const visibleChildren = item.children.filter(child => can(child.permission));
+                if (visibleChildren.length === 0) return null;
+                return { ...item, children: visibleChildren };
+            })
+            .filter((item): item is NavItem => item !== null);
+    });
+
+    /** Chemin courant */
     const currentPath = computed<string>(() => {
         try {
             const loc = (page.props as any).ziggy?.location ?? window.location.href;

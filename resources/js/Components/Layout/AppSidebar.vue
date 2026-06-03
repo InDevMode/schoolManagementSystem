@@ -32,7 +32,7 @@
             <!-- Logo + nom -->
             <a :href="homeLink" class="flex items-center gap-3 flex-1 min-w-0">
                 <div class="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 shadow-md"
-                     style="background: linear-gradient(135deg, #8b5cf6, #6d28d9);">
+                     style="background: linear-gradient(135deg, #9189f5, #7B74F0);">
                     <img v-if="logoUrl" :src="logoUrl" alt="Logo" class="w-6 h-6 object-contain rounded" />
                     <svg v-else class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -291,7 +291,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                   d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
                         </svg>
-                        Light
+                        Clair
                     </button>
                     <button
                         :class="[
@@ -304,7 +304,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                   d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
                         </svg>
-                        Dark
+                        Sombre
                     </button>
                 </template>
                 <template v-else>
@@ -327,13 +327,78 @@
         </div>
 
         <!-- ── Profil utilisateur ── -->
-        <div class="px-3 pb-4 flex-shrink-0">
-            <div :class="[
-                'flex items-center gap-3 p-2.5 rounded-xl cursor-pointer transition-colors',
+        <div ref="sidebarProfileRef" class="px-3 pb-4 flex-shrink-0 relative">
+
+            <!-- Dropdown profil — s'ouvre vers le haut -->
+            <Transition
+                enter-active-class="transition duration-150 ease-out"
+                enter-from-class="opacity-0 translate-y-2"
+                enter-to-class="opacity-100 translate-y-0"
+                leave-active-class="transition duration-100 ease-in"
+                leave-from-class="opacity-100 translate-y-0"
+                leave-to-class="opacity-0 translate-y-2"
+            >
+                <div v-if="profileOpen && !collapsed"
+                     class="absolute bottom-full left-3 right-3 mb-2
+                            bg-white dark:bg-gray-800 rounded-2xl
+                            border border-gray-100 dark:border-gray-700
+                            shadow-card-lg overflow-hidden z-50">
+                    <!-- En-tête dégradé -->
+                    <div class="px-4 py-3.5 bg-gradient-to-br from-primary-50 to-secondary-50
+                                dark:from-primary-900/20 dark:to-secondary-900/20
+                                border-b border-gray-100 dark:border-gray-700">
+                        <div class="flex items-center gap-3">
+                            <img :src="avatarUrl" :alt="user?.name"
+                                 class="w-10 h-10 rounded-full object-cover ring-2 ring-primary-300 flex-shrink-0"/>
+                            <div class="min-w-0">
+                                <p class="font-bold text-sm text-gray-900 dark:text-white truncate">
+                                    {{ user?.last_name }} {{ user?.name }}
+                                </p>
+                                <p class="text-xs text-primary-600 dark:text-primary-400 font-medium mt-0.5">{{ roleLabel }}</p>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 truncate">{{ user?.email }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Liens -->
+                    <div class="py-1.5">
+                        <a v-for="link in profileLinks" :key="link.href" :href="link.href"
+                           class="flex items-center gap-3 px-4 py-2.5 text-sm
+                                  text-gray-700 dark:text-gray-300
+                                  hover:bg-gray-50 dark:hover:bg-gray-700/60
+                                  hover:text-primary-600 dark:hover:text-primary-400
+                                  transition-colors">
+                            <span class="w-7 h-7 rounded-lg bg-gray-100 dark:bg-gray-700 flex items-center justify-center flex-shrink-0">
+                                <NavIcon :name="link.icon" class="w-3.5 h-3.5 text-gray-500"/>
+                            </span>
+                            {{ link.label }}
+                        </a>
+                    </div>
+                    <!-- Déconnexion -->
+                    <div class="border-t border-gray-100 dark:border-gray-700 py-1.5">
+                        <a href="/logout"
+                           class="flex items-center gap-3 px-4 py-2.5 text-sm
+                                  text-danger-600 dark:text-danger-400
+                                  hover:bg-danger-50 dark:hover:bg-danger-900/20 transition-colors">
+                            <span class="w-7 h-7 rounded-lg bg-danger-50 dark:bg-danger-900/20 flex items-center justify-center flex-shrink-0">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                          d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                                </svg>
+                            </span>
+                            Déconnexion
+                        </a>
+                    </div>
+                </div>
+            </Transition>
+
+            <!-- Bouton profil -->
+            <button :class="[
+                'w-full flex items-center gap-3 p-2.5 rounded-xl transition-colors',
                 'hover:bg-gray-100 dark:hover:bg-gray-800',
                 collapsed ? 'justify-center' : '',
+                profileOpen ? 'bg-gray-100 dark:bg-gray-800' : '',
             ]"
-                 @click="profileOpen = !profileOpen"
+                    @click="profileOpen = !profileOpen"
             >
                 <img
                     :src="avatarUrl"
@@ -348,7 +413,7 @@
                     leave-from-class="opacity-100"
                     leave-to-class="opacity-0"
                 >
-                    <div v-if="!collapsed" class="flex-1 min-w-0">
+                    <div v-if="!collapsed" class="flex-1 min-w-0 text-left">
                         <p class="text-sm font-semibold text-gray-800 dark:text-white truncate leading-tight">
                             {{ user?.last_name }} {{ user?.name }}
                         </p>
@@ -363,24 +428,19 @@
                     leave-from-class="opacity-100"
                     leave-to-class="opacity-0"
                 >
-                    <a v-if="!collapsed" href="/logout"
-                       class="w-7 h-7 rounded-lg flex items-center justify-center text-gray-400 hover:text-danger-500 hover:bg-danger-50 dark:hover:bg-danger-900/20 transition-colors flex-shrink-0"
-                       title="Déconnexion"
-                       @click.stop
-                    >
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                  d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
-                        </svg>
-                    </a>
+                    <svg v-if="!collapsed"
+                         :class="['w-3.5 h-3.5 text-gray-400 transition-transform duration-200 flex-shrink-0', profileOpen ? 'rotate-180' : '']"
+                         fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/>
+                    </svg>
                 </Transition>
-            </div>
+            </button>
         </div>
     </aside>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue';
+import { ref, computed, watch, onMounted, onUnmounted } from 'vue';
 import { usePage } from '@inertiajs/vue3';
 import { useDark, useToggle } from '@vueuse/core';
 import { useNavigation } from '@/Composables/useNavigation';
@@ -416,14 +476,61 @@ const avatarUrl  = computed(() => {
 });
 
 const roleLabelMap: Record<number, string> = {
-    1: 'Administrateur', 2: 'Professeur', 3: 'Apprenant', 4: 'Parent',
+    0: 'Super Admin',
+    1: 'Administrateur',
+    2: 'Professeur',
+    3: 'Apprenant',
+    4: 'Parent',
 };
-const roleLabel = computed(() => roleLabelMap[user.value?.user_type ?? 0] ?? 'Utilisateur');
+// Pour les rôles custom (user_type >= 5), on utilise role_label partagé par Inertia
+const roleLabel = computed(() => {
+    const ut = user.value?.user_type ?? -1;
+    if (roleLabelMap[ut]) return roleLabelMap[ut];
+    // Rôle custom : utiliser le role_label du backend ou le nom du rôle Spatie
+    return user.value?.role_label ?? user.value?.roles?.[0] ?? 'Utilisateur';
+});
 
 const homeLinks: Record<number, string> = {
-    1: '/admin/dashboard', 2: '/teacher/dashboard', 3: '/student/dashboard', 4: '/parent/dashboard',
+    0: '/superadmin/dashboard',
+    1: '/admin/dashboard',
+    2: '/teacher/dashboard',
+    3: '/student/dashboard',
+    4: '/parent/dashboard',
 };
-const homeLink = computed(() => homeLinks[user.value?.user_type ?? 0] ?? '/');
+// Rôles custom → /admin/dashboard
+const homeLink = computed(() => homeLinks[user.value?.user_type ?? -1] ?? '/admin/dashboard');
+
+// ── Liens profil (dropdown sidebar) ─────────────────────────────────────────
+const profileLinksMap: Record<number, { href: string; icon: string; label: string }[]> = {
+    0: [
+        { href: '/superadmin/account',          icon: 'user',         label: 'Mon profil' },
+        { href: '/superadmin/change_password',  icon: 'lock',         label: 'Mot de passe' },
+        { href: '/superadmin/config/settings',  icon: 'cog-6-tooth',  label: 'Paramètres' },
+        { href: '/superadmin/config/roles',     icon: 'shield-check', label: 'Rôles' },
+        { href: '/superadmin/config/assign',    icon: 'key',          label: 'Permissions' },
+    ],
+    1: [
+        { href: '/admin/account',          icon: 'user',        label: 'Mon profil' },
+        { href: '/admin/change_password',  icon: 'lock',        label: 'Mot de passe' },
+        { href: '/admin/settings',         icon: 'cog-6-tooth', label: 'Paramètres' },
+    ],
+    2: [
+        { href: '/teacher/account',         icon: 'user', label: 'Mon profil' },
+        { href: '/teacher/change_password', icon: 'lock', label: 'Mot de passe' },
+    ],
+    3: [
+        { href: '/student/account',         icon: 'user', label: 'Mon profil' },
+        { href: '/student/change_password', icon: 'lock', label: 'Mot de passe' },
+    ],
+    4: [
+        { href: '/parent/account',         icon: 'user', label: 'Mon profil' },
+        { href: '/parent/change_password', icon: 'lock', label: 'Mot de passe' },
+    ],
+};
+const profileLinks = computed(() => {
+    const ut = user.value?.user_type ?? 1;
+    return profileLinksMap[ut] ?? profileLinksMap[1] ?? [];
+});
 
 // ── Recherche ────────────────────────────────────────────────────────────────
 const searchQuery = ref('');
@@ -442,6 +549,16 @@ const filteredNav = computed<NavItem[]>(() => {
 // ── Menus ouverts (accordéon) ────────────────────────────────────────────────
 const openMenus = ref<Set<string>>(new Set());
 const profileOpen = ref(false);
+const sidebarProfileRef = ref<HTMLElement | null>(null);
+
+// Fermer le dropdown profil si clic en dehors
+const handleOutsideClick = (e: MouseEvent) => {
+    if (sidebarProfileRef.value && !sidebarProfileRef.value.contains(e.target as Node)) {
+        profileOpen.value = false;
+    }
+};
+onMounted(()  => document.addEventListener('mousedown', handleOutsideClick));
+onUnmounted(() => document.removeEventListener('mousedown', handleOutsideClick));
 
 // Ouvrir automatiquement le menu actif au chargement
 watch(currentMenu, (menu) => {

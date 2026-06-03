@@ -18,8 +18,15 @@ class StudentController extends Controller
 {
     public function list()
     {
+        $perPage  = min((int) request('per_page', 15), 100);
+        $students = User::getAllStudent($perPage);
+        $students->getCollection()->transform(function ($s) {
+            $s->is_online = \Illuminate\Support\Facades\Cache::has('OnlineUser.' . $s->id);
+            return $s;
+        });
+
         return Inertia::render('Admin/Students/Index', [
-            'students' => User::getAllStudent(15),
+            'students' => $students,
             'classes'  => ClassModel::getClass(),
         ]);
     }

@@ -65,163 +65,152 @@ Route::group(['middleware' => 'common'], function () {
 
 Route::group(['middleware' => 'admin'], function () {
 
-    //Admin url
+    // Dashboard
     Route::get('admin/dashboard', [DashboardController::class, 'dashboard']);
-    Route::get('admin/admin/list', [AdminController::class, 'list']);
-    Route::post('admin/admin/add', [AdminController::class, 'create']);
-    Route::post('admin/admin/edit/{id}', [AdminController::class, 'update']);
-    Route::get('admin/admin/delete/{id}', [AdminController::class, 'delete']);
-    Route::post('admin/admin/export', [AdminController::class, 'exportAdmin']);
 
-    //Class url
-    Route::get('admin/class/list', [ClassController::class, 'list']);
-    Route::post('admin/class/add', [ClassController::class, 'create']);
-    Route::post('admin/class/edit/{id}', [ClassController::class, 'update']);
-    Route::get('admin/class/delete/{id}', [ClassController::class, 'delete']);
+    // Admin url
+    Route::get('admin/admin/list',         [AdminController::class, 'list'])->middleware('check_perm:view.users.admins');
+    Route::post('admin/admin/add',         [AdminController::class, 'create'])->middleware('check_perm:action.users.create');
+    Route::post('admin/admin/edit/{id}',   [AdminController::class, 'update'])->middleware('check_perm:action.users.edit');
+    Route::get('admin/admin/delete/{id}',  [AdminController::class, 'delete'])->middleware('check_perm:action.users.delete');
+    Route::post('admin/admin/export',      [AdminController::class, 'exportAdmin'])->middleware('check_perm:view.users.admins');
 
-    //Subject url
-    Route::get('admin/subject/list', [SubjectController::class, 'list']);
-    Route::post('admin/subject/add', [SubjectController::class, 'create']);
-    Route::post('admin/subject/edit/{id}', [SubjectController::class, 'update']);
-    Route::get('admin/subject/delete/{id}', [SubjectController::class, 'delete']);
+    // Class url
+    Route::get('admin/class/list',         [ClassController::class, 'list'])->middleware('check_perm:view.academics.classes');
+    Route::post('admin/class/add',         [ClassController::class, 'create'])->middleware('check_perm:action.classes.create');
+    Route::post('admin/class/edit/{id}',   [ClassController::class, 'update'])->middleware('check_perm:action.classes.edit');
+    Route::get('admin/class/delete/{id}',  [ClassController::class, 'delete'])->middleware('check_perm:action.classes.delete');
 
-    //Assign Class Subject url
-    Route::get('admin/assign_subject/list', [ClassSubjectController::class, 'list']);
-    Route::post('admin/assign_subject/add', [ClassSubjectController::class, 'create']);
-    Route::post('admin/assign_subject/edit/{id}', [ClassSubjectController::class, 'update']);
-    Route::post('admin/assign_subject/edit_single/{id}', [ClassSubjectController::class, 'updateSingle']);
-    Route::get('admin/assign_subject/delete/{id}', [ClassSubjectController::class, 'delete']);
+    // Subject url
+    Route::get('admin/subject/list',         [SubjectController::class, 'list'])->middleware('check_perm:view.academics.subjects');
+    Route::post('admin/subject/add',         [SubjectController::class, 'create'])->middleware('check_perm:action.subjects.create');
+    Route::post('admin/subject/edit/{id}',   [SubjectController::class, 'update'])->middleware('check_perm:action.subjects.edit');
+    Route::get('admin/subject/delete/{id}',  [SubjectController::class, 'delete'])->middleware('check_perm:action.subjects.delete');
 
-    // Admin Change Password url
-    Route::get('admin/change_password', [UserController::class, 'changePassword']);
-    Route::post('admin/change_password', [UserController::class, 'updatePassword']);
+    // Assign Class Subject url
+    Route::get('admin/assign_subject/list',              [ClassSubjectController::class, 'list'])->middleware('check_perm:view.academics.assign_subjects');
+    Route::post('admin/assign_subject/add',              [ClassSubjectController::class, 'create'])->middleware('check_perm:view.academics.assign_subjects');
+    Route::post('admin/assign_subject/edit/{id}',        [ClassSubjectController::class, 'update'])->middleware('check_perm:view.academics.assign_subjects');
+    Route::post('admin/assign_subject/edit_single/{id}', [ClassSubjectController::class, 'updateSingle'])->middleware('check_perm:view.academics.assign_subjects');
+    Route::get('admin/assign_subject/delete/{id}',       [ClassSubjectController::class, 'delete'])->middleware('check_perm:view.academics.assign_subjects');
 
-    // Student url on Admin
-    Route::get('admin/student/list', [StudentController::class, 'list']);
-    Route::post('admin/student/add', [StudentController::class, 'create']);
-    Route::post('admin/student/edit/{id}', [StudentController::class, 'update']);
-    Route::get('admin/student/delete/{id}', [StudentController::class, 'delete']);
-    Route::post('admin/student/export', [StudentController::class, 'exportStudent']);
+    // Student url
+    Route::get('admin/student/list',         [StudentController::class, 'list'])->middleware('check_perm:view.users.students');
+    Route::post('admin/student/add',         [StudentController::class, 'create'])->middleware('check_perm:action.users.create');
+    Route::post('admin/student/edit/{id}',   [StudentController::class, 'update'])->middleware('check_perm:action.users.edit');
+    Route::get('admin/student/delete/{id}',  [StudentController::class, 'delete'])->middleware('check_perm:action.users.delete');
+    Route::post('admin/student/export',      [StudentController::class, 'exportStudent'])->middleware('check_perm:view.users.students');
 
-    // Teacher url on Admin
-    Route::get('admin/teacher/list', [TeacherController::class, 'list']);
-    Route::post('admin/teacher/add', [TeacherController::class, 'create']);
-    Route::post('admin/teacher/edit/{id}', [TeacherController::class, 'update']);
-    Route::get('admin/teacher/delete/{id}', [TeacherController::class, 'delete']);
-    Route::post('admin/teacher/export', [TeacherController::class, 'exportTeacher']);
+    // Teacher url
+    Route::get('admin/teacher/list',         [TeacherController::class, 'list'])->middleware('check_perm:view.users.teachers');
+    Route::post('admin/teacher/add',         [TeacherController::class, 'create'])->middleware('check_perm:action.users.create');
+    Route::post('admin/teacher/edit/{id}',   [TeacherController::class, 'update'])->middleware('check_perm:action.users.edit');
+    Route::get('admin/teacher/delete/{id}',  [TeacherController::class, 'delete'])->middleware('check_perm:action.users.delete');
+    Route::post('admin/teacher/export',      [TeacherController::class, 'exportTeacher'])->middleware('check_perm:view.users.teachers');
 
-    // Parent url on Admin
-    Route::get('admin/parent/list', [ParentController::class, 'list']);
-    Route::post('admin/parent/add', [ParentController::class, 'create']);
-    Route::post('admin/parent/edit/{id}', [ParentController::class, 'update']);
-    Route::get('admin/parent/student/{id}', [ParentController::class, 'student']);
-    Route::get('admin/parent/{parent_id}/assign_student_parent/{student_id}', [ParentController::class, 'assignStudentParent']);
-    Route::get('admin/parent/des_assign_student_parent/{student_id}', [ParentController::class, 'desAssignStudentParent']);
-    Route::get('admin/parent/delete/{id}', [ParentController::class, 'delete']);
-    Route::post('admin/parent/export', [ParentController::class, 'exportParent']);
+    // Parent url
+    Route::get('admin/parent/list',          [ParentController::class, 'list'])->middleware('check_perm:view.users.parents');
+    Route::post('admin/parent/add',          [ParentController::class, 'create'])->middleware('check_perm:action.users.create');
+    Route::post('admin/parent/edit/{id}',    [ParentController::class, 'update'])->middleware('check_perm:action.users.edit');
+    Route::get('admin/parent/student/{id}',  [ParentController::class, 'student'])->middleware('check_perm:view.users.parents');
+    Route::get('admin/parent/{parent_id}/assign_student_parent/{student_id}',  [ParentController::class, 'assignStudentParent'])->middleware('check_perm:view.users.parents');
+    Route::get('admin/parent/des_assign_student_parent/{student_id}',          [ParentController::class, 'desAssignStudentParent'])->middleware('check_perm:view.users.parents');
+    Route::get('admin/parent/delete/{id}',   [ParentController::class, 'delete'])->middleware('check_perm:action.users.delete');
+    Route::post('admin/parent/export',       [ParentController::class, 'exportParent'])->middleware('check_perm:view.users.parents');
 
     // Admin account url
-    Route::get('admin/account', [UserController::class, 'myAccount']);
+    Route::get('admin/account',  [UserController::class, 'myAccount']);
     Route::post('admin/account', [UserController::class, 'updateAdminAccount']);
     Route::post('admin/users/reset-password', [UserController::class, 'resetUsersPassword']);
 
+    // Change password
+    Route::get('admin/change_password',  [UserController::class, 'changePassword']);
+    Route::post('admin/change_password', [UserController::class, 'updatePassword']);
+
     // Assign class to teacher url
-    Route::get('admin/assign_class/list', [ClassTeacherController::class, 'list']);
-    Route::post('admin/assign_class/add', [ClassTeacherController::class, 'create']);
-    Route::post('admin/assign_class/edit/{id}', [ClassTeacherController::class, 'update']);
-    Route::post('admin/assign_class/edit_single/{id}', [ClassTeacherController::class, 'updateSingle']);
-    Route::get('admin/assign_class/delete/{id}', [ClassTeacherController::class, 'delete']);
+    Route::get('admin/assign_class/list',              [ClassTeacherController::class, 'list'])->middleware('check_perm:view.academics.assign_classes');
+    Route::post('admin/assign_class/add',              [ClassTeacherController::class, 'create'])->middleware('check_perm:view.academics.assign_classes');
+    Route::post('admin/assign_class/edit/{id}',        [ClassTeacherController::class, 'update'])->middleware('check_perm:view.academics.assign_classes');
+    Route::post('admin/assign_class/edit_single/{id}', [ClassTeacherController::class, 'updateSingle'])->middleware('check_perm:view.academics.assign_classes');
+    Route::get('admin/assign_class/delete/{id}',       [ClassTeacherController::class, 'delete'])->middleware('check_perm:view.academics.assign_classes');
 
     // Class timetable url
-    Route::get('admin/class_timetable/list', [ClassTimetableController::class, 'list']);
-    Route::post('admin/class_timetable/subject', [ClassTimetableController::class, 'getSubject']);
-    Route::post('admin/class_timetable/add', [ClassTimetableController::class, 'add']);
+    Route::get('admin/class_timetable/list',    [ClassTimetableController::class, 'list'])->middleware('check_perm:view.academics.timetable');
+    Route::post('admin/class_timetable/subject',[ClassTimetableController::class, 'getSubject'])->middleware('check_perm:view.academics.timetable');
+    Route::post('admin/class_timetable/add',    [ClassTimetableController::class, 'add'])->middleware('check_perm:view.academics.timetable');
 
-    //  Period Url
-    Route::get('admin/examinations/period/list', [PeriodController::class, 'list']);
-    Route::post('admin/examinations/period/add', [PeriodController::class, 'create']);
-    Route::post('admin/examinations/period/edit/{id}', [PeriodController::class, 'update']);
-    Route::get('admin/examinations/period/delete/{id}', [PeriodController::class, 'delete']);
+    // Period url
+    Route::get('admin/examinations/period/list',        [PeriodController::class, 'list'])->middleware('check_perm:view.exams.periods');
+    Route::post('admin/examinations/period/add',        [PeriodController::class, 'create'])->middleware('check_perm:view.exams.periods');
+    Route::post('admin/examinations/period/edit/{id}',  [PeriodController::class, 'update'])->middleware('check_perm:view.exams.periods');
+    Route::get('admin/examinations/period/delete/{id}', [PeriodController::class, 'delete'])->middleware('check_perm:view.exams.periods');
 
     // Examinations url
-    Route::get('admin/examinations/exam/list', [ExaminationController::class, 'list']);
-    Route::post('admin/examinations/exam/add', [ExaminationController::class, 'create']);
-    Route::post('admin/examinations/exam/edit/{id}', [ExaminationController::class, 'update']);
-    Route::get('admin/examinations/exam/delete/{id}', [ExaminationController::class, 'delete']);
+    Route::get('admin/examinations/exam/list',        [ExaminationController::class, 'list'])->middleware('check_perm:view.exams.list');
+    Route::post('admin/examinations/exam/add',        [ExaminationController::class, 'create'])->middleware('check_perm:action.exams.create');
+    Route::post('admin/examinations/exam/edit/{id}',  [ExaminationController::class, 'update'])->middleware('check_perm:action.exams.edit');
+    Route::get('admin/examinations/exam/delete/{id}', [ExaminationController::class, 'delete'])->middleware('check_perm:action.exams.delete');
 
     // Schedule url
-    Route::get('admin/examinations/schedule/list', [ExaminationController::class, 'scheduleList']);
-    Route::post('admin/examinations/schedule/add', [ExaminationController::class, 'scheduleCreate']);
+    Route::get('admin/examinations/schedule/list',  [ExaminationController::class, 'scheduleList'])->middleware('check_perm:view.exams.schedules');
+    Route::post('admin/examinations/schedule/add',  [ExaminationController::class, 'scheduleCreate'])->middleware('check_perm:view.exams.schedules');
 
-    // Exams register marks url
-    Route::get('admin/examinations/marks_register/list', [ExaminationController::class, 'marksRegister']);
-    Route::post('admin/examinations/marks_register/add', [ExaminationController::class, 'addMarksRegister']);
-    Route::post('admin/examinations/marks_register/addSingleSubject', [ExaminationController::class, 'addSingleMarksRegister']);
-    Route::get('admin/examinations/marks_register/print', [ExaminationController::class, 'studentExamResultPrint']);
+    // Marks register url
+    Route::get('admin/examinations/marks_register/list',               [ExaminationController::class, 'marksRegister'])->middleware('check_perm:view.exams.marks');
+    Route::post('admin/examinations/marks_register/add',               [ExaminationController::class, 'addMarksRegister'])->middleware('check_perm:action.marks.manage');
+    Route::post('admin/examinations/marks_register/addSingleSubject',  [ExaminationController::class, 'addSingleMarksRegister'])->middleware('check_perm:action.marks.manage');
+    Route::get('admin/examinations/marks_register/print',              [ExaminationController::class, 'studentExamResultPrint'])->middleware('check_perm:view.exams.marks');
 
     // Marks grade url
-    Route::get('admin/examinations/marks_grade/list', [ExaminationController::class, 'listMarksGrade']);
-    Route::post('admin/examinations/marks_grade/add', [ExaminationController::class, 'createMarksGrade']);
-    Route::post('admin/examinations/marks_grade/edit/{id}', [ExaminationController::class, 'updateMarksGrade']);
-    Route::get('admin/examinations/marks_grade/delete/{id}', [ExaminationController::class, 'deleteMarksGrade']);
+    Route::get('admin/examinations/marks_grade/list',        [ExaminationController::class, 'listMarksGrade'])->middleware('check_perm:view.exams.grades');
+    Route::post('admin/examinations/marks_grade/add',        [ExaminationController::class, 'createMarksGrade'])->middleware('check_perm:view.exams.grades');
+    Route::post('admin/examinations/marks_grade/edit/{id}',  [ExaminationController::class, 'updateMarksGrade'])->middleware('check_perm:view.exams.grades');
+    Route::get('admin/examinations/marks_grade/delete/{id}', [ExaminationController::class, 'deleteMarksGrade'])->middleware('check_perm:view.exams.grades');
 
-    // Attendance student url
-    Route::get('admin/attendance/students/list', [AttendanceController::class, 'attendanceStudent']);
-    Route::post('admin/attendance/student/save', [AttendanceController::class, 'attendanceStudentSave']);
-
-    // Attendance report admin url
-    Route::get('admin/attendance/report', [AttendanceController::class, 'attendanceReport']);
-    Route::post('admin/attendance/report/export', [AttendanceController::class, 'attendanceReportExport']);
+    // Attendance url
+    Route::get('admin/attendance/students/list',        [AttendanceController::class, 'attendanceStudent'])->middleware('check_perm:view.attendance.manage');
+    Route::post('admin/attendance/student/save',        [AttendanceController::class, 'attendanceStudentSave'])->middleware('check_perm:action.attendance.save');
+    Route::get('admin/attendance/report',               [AttendanceController::class, 'attendanceReport'])->middleware('check_perm:view.attendance.report');
+    Route::post('admin/attendance/report/export',       [AttendanceController::class, 'attendanceReportExport'])->middleware('check_perm:view.attendance.report');
 
     // Communicate url
-    Route::get('admin/communicate/noticeboard/list', [CommunicateController::class, 'list']);
-    Route::post('admin/communicate/noticeboard/add', [CommunicateController::class, 'create']);
-    Route::get('admin/communicate/noticeboard/edit/{id}', [CommunicateController::class, 'edit']);
-    Route::post('admin/communicate/noticeboard/edit/{id}', [CommunicateController::class, 'update']);
-    Route::post('admin/communicate/noticeboard/delete/{id}', [CommunicateController::class, 'delete']);
-
-    // Send mail url
-    Route::get('admin/communicate/send_mail', [CommunicateController::class, 'sendMail']);
-    Route::post('admin/communicate/send_mail', [CommunicateController::class, 'sendMailCreate']);
+    Route::get('admin/communicate/noticeboard/list',          [CommunicateController::class, 'list'])->middleware('check_perm:view.communicate.noticeboard');
+    Route::post('admin/communicate/noticeboard/add',          [CommunicateController::class, 'create'])->middleware('check_perm:action.noticeboard.manage');
+    Route::get('admin/communicate/noticeboard/edit/{id}',     [CommunicateController::class, 'edit'])->middleware('check_perm:action.noticeboard.manage');
+    Route::post('admin/communicate/noticeboard/edit/{id}',    [CommunicateController::class, 'update'])->middleware('check_perm:action.noticeboard.manage');
+    Route::post('admin/communicate/noticeboard/delete/{id}',  [CommunicateController::class, 'delete'])->middleware('check_perm:action.noticeboard.manage');
+    Route::get('admin/communicate/send_mail',                 [CommunicateController::class, 'sendMail'])->middleware('check_perm:view.communicate.mail');
+    Route::post('admin/communicate/send_mail',                [CommunicateController::class, 'sendMailCreate'])->middleware('check_perm:action.mail.send');
 
     // Practical works url
-    Route::get('admin/practicalworks/homework/list', [WorkController::class, 'practicalWorksList']);
-    Route::get('admin/practicalworks/homework/details/{id}', [WorkController::class, 'practicalWorksDetails']);
-    Route::get('admin/practicalworks/homework/details-json/{id}', [WorkController::class, 'practicalWorksDetailsJson']);
-    Route::get('admin/practicalworks/homework/getSubjectByClassId/{id}', [WorkController::class, 'getSubjectByClassId']);
-    Route::post('admin/practicalworks/homework/create', [WorkController::class, 'practicalWorksCreate']);
-    Route::get('admin/practicalworks/homework/delete/{id}', [WorkController::class, 'practicalWorksDelete']);
-
-    // Practical works submitted url
-    Route::get('admin/practicalworks/homework/submission/{id}', [WorkController::class, 'homeworkSubmission']);
-
-    // Practical works reports url
-    Route::get('admin/practicalworks/reports', [WorkController::class, 'homeworkReportList']);
-    Route::get('admin/practicalworks/homework/reports/details/{id}', [WorkController::class, 'homeworkReportDetails']);
+    Route::get('admin/practicalworks/homework/list',                      [WorkController::class, 'practicalWorksList'])->middleware('check_perm:view.homework.list');
+    Route::get('admin/practicalworks/homework/details/{id}',              [WorkController::class, 'practicalWorksDetails'])->middleware('check_perm:view.homework.list');
+    Route::get('admin/practicalworks/homework/details-json/{id}',         [WorkController::class, 'practicalWorksDetailsJson'])->middleware('check_perm:view.homework.list');
+    Route::get('admin/practicalworks/homework/getSubjectByClassId/{id}',  [WorkController::class, 'getSubjectByClassId'])->middleware('check_perm:view.homework.list');
+    Route::post('admin/practicalworks/homework/create',                   [WorkController::class, 'practicalWorksCreate'])->middleware('check_perm:action.homework.create');
+    Route::get('admin/practicalworks/homework/delete/{id}',               [WorkController::class, 'practicalWorksDelete'])->middleware('check_perm:action.homework.delete');
+    Route::get('admin/practicalworks/homework/submission/{id}',           [WorkController::class, 'homeworkSubmission'])->middleware('check_perm:view.homework.list');
+    Route::get('admin/practicalworks/reports',                            [WorkController::class, 'homeworkReportList'])->middleware('check_perm:view.homework.reports');
+    Route::get('admin/practicalworks/homework/reports/details/{id}',      [WorkController::class, 'homeworkReportDetails'])->middleware('check_perm:view.homework.reports');
 
     // Fees collections url
-    Route::get('admin/feescollections/collections/list', [FeesCollectionController::class, 'list']);
-    Route::get('admin/feescollections/feescollects/feesList', [FeesCollectionController::class, 'feesList']);
-    Route::post('admin/feescollections/collections/addFees/{id}', [FeesCollectionController::class, 'createFees'])->name('createFeesCollects');
-    Route::get('admin/feescollections/collections/delete/{id}', [FeesCollectionController::class, 'deleteFees']);
-    Route::post('admin/feescollections/feescollects/export', [FeesCollectionController::class, 'exportFeesCollects']);
+    Route::get('admin/feescollections/collections/list',                  [FeesCollectionController::class, 'list'])->middleware('check_perm:view.fees.collect');
+    Route::get('admin/feescollections/feescollects/feesList',             [FeesCollectionController::class, 'feesList'])->middleware('check_perm:view.fees.reports');
+    Route::post('admin/feescollections/collections/addFees/{id}',         [FeesCollectionController::class, 'createFees'])->name('createFeesCollects')->middleware('check_perm:action.fees.collect');
+    Route::get('admin/feescollections/collections/delete/{id}',           [FeesCollectionController::class, 'deleteFees'])->middleware('check_perm:action.fees.delete');
+    Route::post('admin/feescollections/feescollects/export',              [FeesCollectionController::class, 'exportFeesCollects'])->middleware('check_perm:view.fees.reports');
 
-    // Setting url
-    Route::get('admin/settings', [UserController::class, 'settings']);
-    Route::post('admin/settings/setting_data', [UserController::class, 'updateSettingInfo']);
+    // Settings url
+    Route::get('admin/settings',                [UserController::class, 'settings'])->middleware('check_perm:view.settings');
+    Route::post('admin/settings/setting_data',  [UserController::class, 'updateSettingInfo'])->middleware('check_perm:action.settings.manage');
 
-    // Paypal payment url of admin
-    Route::get('admin/feescollections_paypal/payment_success', [FeesCollectionController::class, 'paypalAdminSuccess']);
-    Route::get('admin/feescollections_paypal/payment_error', [FeesCollectionController::class, 'paypalAdminError']);
-
-    // FedaPay payment url of admin
+    // Payment callbacks (pas de check_perm — callbacks externes)
+    Route::get('admin/feescollections_paypal/payment_success',  [FeesCollectionController::class, 'paypalAdminSuccess']);
+    Route::get('admin/feescollections_paypal/payment_error',    [FeesCollectionController::class, 'paypalAdminError']);
     Route::get('admin/feescollections_fedapay/payment_success', [FeesCollectionController::class, 'fedapayAdminSuccess']);
-
-    // Stripe payment url of admin
-    Route::get('admin/feescollections_stripe/payment_success', [FeesCollectionController::class, 'stripeAdminSuccess']);
-    Route::get('admin/feescollections_stripe/payment_error', [FeesCollectionController::class, 'stripeAdminError']);
-
-    Route::post('/paypal/ipn/admin', [FeesCollectionController::class, 'paypalIPN']);
+    Route::get('admin/feescollections_stripe/payment_success',  [FeesCollectionController::class, 'stripeAdminSuccess']);
+    Route::get('admin/feescollections_stripe/payment_error',    [FeesCollectionController::class, 'stripeAdminError']);
+    Route::post('/paypal/ipn/admin',                            [FeesCollectionController::class, 'paypalIPN']);
 
     Route::get('admin/test', [AdminController::class, 'test']);
 
@@ -235,20 +224,23 @@ Route::group(['middleware' => 'super_admin', 'prefix' => 'superadmin'], function
     Route::get('dashboard', [DashboardController::class, 'dashboard'])->name('superadmin.dashboard');
 
     // ── Rôles ──────────────────────────────────────────────────────────────
-    Route::get('config/roles',            [RbacController::class, 'roleList'])->name('superadmin.roles');
-    Route::post('config/roles/add',       [RbacController::class, 'roleCreate'])->name('superadmin.roles.create');
-    Route::post('config/roles/edit/{id}', [RbacController::class, 'roleUpdate'])->name('superadmin.roles.update');
-    Route::get('config/roles/delete/{id}',[RbacController::class, 'roleDelete'])->name('superadmin.roles.delete');
+    Route::get('config/roles',              [RbacController::class, 'roleList'])->name('superadmin.roles');
+    Route::post('config/roles/add',         [RbacController::class, 'roleCreate'])->name('superadmin.roles.create');
+    Route::post('config/roles/edit/{id}',   [RbacController::class, 'roleUpdate'])->name('superadmin.roles.update');
+    Route::get('config/roles/delete/{id}',  [RbacController::class, 'roleDelete'])->name('superadmin.roles.delete');
+    Route::get('config/roles/restore/{id}', [RbacController::class, 'roleRestore'])->name('superadmin.roles.restore');
 
     // ── Permissions ────────────────────────────────────────────────────────
-    Route::get('config/permissions',             [RbacController::class, 'permissionList'])->name('superadmin.permissions');
-    Route::post('config/permissions/add',        [RbacController::class, 'permissionCreate'])->name('superadmin.permissions.create');
-    Route::post('config/permissions/edit/{id}',  [RbacController::class, 'permissionUpdate'])->name('superadmin.permissions.update');
-    Route::get('config/permissions/delete/{id}', [RbacController::class, 'permissionDelete'])->name('superadmin.permissions.delete');
+    Route::get('config/permissions',               [RbacController::class, 'permissionList'])->name('superadmin.permissions');
+    Route::post('config/permissions/add',          [RbacController::class, 'permissionCreate'])->name('superadmin.permissions.create');
+    Route::post('config/permissions/edit/{id}',    [RbacController::class, 'permissionUpdate'])->name('superadmin.permissions.update');
+    Route::get('config/permissions/delete/{id}',   [RbacController::class, 'permissionDelete'])->name('superadmin.permissions.delete');
+    Route::get('config/permissions/restore/{id}',  [RbacController::class, 'permissionRestore'])->name('superadmin.permissions.restore');
 
-    // ── Attribution permissions ↔ rôles ────────────────────────────────────
-    Route::get('config/assign',                  [RbacController::class, 'assignList'])->name('superadmin.assign');
-    Route::post('config/assign/{roleId}/sync',   [RbacController::class, 'assignSync'])->name('superadmin.assign.sync');
+    // ── Attribution permissions ────────────────────────────────────────────
+    Route::get('config/assign',                        [RbacController::class, 'assignList'])->name('superadmin.assign');
+    Route::post('config/assign/role/{roleId}/sync',    [RbacController::class, 'assignSync'])->name('superadmin.assign.sync');
+    Route::post('config/assign/user/{userId}/sync',    [RbacController::class, 'assignUserSync'])->name('superadmin.assign.user.sync');
 
     // ── Paramètres système ─────────────────────────────────────────────────
     Route::get('config/settings',                [UserController::class, 'settings'])->name('superadmin.settings');

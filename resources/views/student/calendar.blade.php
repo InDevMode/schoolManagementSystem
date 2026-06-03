@@ -42,7 +42,7 @@
                                           startTime: '{{ date('H:i:s', strtotime($week['start_time'])) }}',
                                           endTime: '{{ date('H:i:s', strtotime($week['end_time'])) }}',
                                           daysOfWeek: [{{ $week['day'] }}],
-                                          color: '#7c3aed',
+                                          color: '#7B74F0',
                                           url: '{{ url('student/my_exam_timetable') }}',
                                           extendedProps: {
                                                 displayTime: '{{ date('H\hi', strtotime($week['start_time'])) }} - {{ date('H\hi', strtotime($week['end_time'])) }}'

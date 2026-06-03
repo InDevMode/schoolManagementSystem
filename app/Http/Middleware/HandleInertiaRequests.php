@@ -23,10 +23,27 @@ class HandleInertiaRequests extends Middleware
         if ($user) {
             try {
                 $roles       = $user->getRoleNames()->toArray();
-                $permissions = $user->getAllPermissions()->pluck('name')->toArray();
+                // getAllPermissions retourne rôle + directes, on filtre is_delete=0
+                $permissions = $user->getAllPermissions()
+                    ->filter(fn($p) => ($p->is_delete ?? 0) == 0)
+                    ->pluck('name')
+                    ->toArray();
             } catch (\Exception $e) {
                 $roles       = [];
                 $permissions = [];
+            }
+
+            // Libellé du rôle pour la sidebar — cherche dans les rôles Spatie
+            $roleLabel = $roles[0] ?? null;
+            if (!$roleLabel) {
+                $roleLabel = match ((int) $user->user_type) {
+                    0 => 'super_admin',
+                    1 => 'admin',
+                    2 => 'teacher',
+                    3 => 'student',
+                    4 => 'parent',
+                    default => 'Utilisateur',
+                };
             }
 
             $userData = [
@@ -38,6 +55,7 @@ class HandleInertiaRequests extends Middleware
                 'profile_picture' => $user->profile_picture,
                 'status'          => $user->status,
                 'roles'           => $roles,
+                'role_label'      => $roleLabel,
                 'permissions'     => $permissions,
             ];
         }
@@ -69,7 +87,8 @@ class HandleInertiaRequests extends Middleware
                 if (!$request->user()) return [];
                 try {
                     $userType = $request->user()->user_type;
-                    if ($userType == 1) {
+                    // super_admin (0), admin (1), et rôles custom (>=5) voient le noticeboard admin
+                    if ($userType == 0 || $userType == 1 || $userType >= 5) {
                         return \App\Models\CommunicateModel::getNoticeBoard(5);
                     }
                     return \App\Models\CommunicateModel::getCommunicateWithUserType($userType);
