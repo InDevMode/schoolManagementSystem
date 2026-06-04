@@ -51,10 +51,48 @@
                     <UserAvatar :src="row.profile_url as string" :name="row.name as string"
                                 :last-name="row.last_name as string" size="sm"/>
                     <div>
-                        <p class="text-sm font-semibold text-gray-900 dark:text-white">
-                            {{ row.last_name }} {{ row.name }}
-                        </p>
-                        <p class="text-xs text-gray-500">{{ row.email }}</p>
+                        <!-- Nom avec bouton copie au survol -->
+                        <div class="group/name relative flex items-center">
+                            <p class="text-sm font-semibold text-gray-900 dark:text-white">
+                                {{ row.last_name }} {{ row.name }}
+                            </p>
+                            <button
+                                type="button"
+                                class="ml-1.5 opacity-0 group-hover/name:opacity-100 transition-opacity duration-150
+                                       p-0.5 rounded text-gray-400 hover:text-primary-600 hover:bg-primary-50
+                                       dark:hover:text-primary-400 dark:hover:bg-primary-900/20"
+                                :title="copiedField === `name-${row.id}` ? 'Copié !' : 'Copier le nom'"
+                                @click.stop="copyToClipboard(`${row.last_name} ${row.name}`, `name-${row.id}`)"
+                            >
+                                <svg v-if="copiedField !== `name-${row.id}`" class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                          d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                                </svg>
+                                <svg v-else class="w-3 h-3 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                </svg>
+                            </button>
+                        </div>
+                        <!-- Email avec bouton copie au survol -->
+                        <div class="group/email relative flex items-center">
+                            <p class="text-xs text-gray-500">{{ row.email }}</p>
+                            <button
+                                type="button"
+                                class="ml-1.5 opacity-0 group-hover/email:opacity-100 transition-opacity duration-150
+                                       p-0.5 rounded text-gray-400 hover:text-blue-600 hover:bg-blue-50
+                                       dark:hover:text-blue-400 dark:hover:bg-blue-900/20"
+                                :title="copiedField === `email-${row.id}` ? 'Copié !' : 'Copier l\'email'"
+                                @click.stop="copyToClipboard(row.email as string, `email-${row.id}`)"
+                            >
+                                <svg v-if="copiedField !== `email-${row.id}`" class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                          d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                                </svg>
+                                <svg v-else class="w-3 h-3 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                </svg>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </template>
@@ -211,6 +249,10 @@
                         <p class="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-1">Inscrit le</p>
                         <p class="text-sm font-semibold text-gray-800 dark:text-gray-200">{{ formatDate(viewTarget.created_at) }}</p>
                     </div>
+                    <div class="bg-gray-50 dark:bg-gray-800/60 rounded-xl p-4 border border-gray-100 dark:border-gray-700">
+                        <p class="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-1">Téléphone</p>
+                        <p class="text-sm font-semibold text-gray-800 dark:text-gray-200 font-mono">{{ viewTarget.mobile_number ?? '—' }}</p>
+                    </div>
                     <div class="sm:col-span-2 bg-gray-50 dark:bg-gray-800/60 rounded-xl p-4 border border-gray-100 dark:border-gray-700">
                         <p class="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-1">Email</p>
                         <p class="text-sm font-semibold text-gray-800 dark:text-gray-200">{{ viewTarget.email }}</p>
@@ -247,6 +289,7 @@
                     <AppInput v-model="form.last_name" label="Prénoms" required :error="form.errors.last_name"/>
                     <AppInput v-model="form.name" label="Nom" required :error="form.errors.name"/>
                     <AppInput v-model="form.email" label="Email" type="email" required :error="form.errors.email"/>
+                    <AppInput v-model="form.mobile_number" label="Téléphone" :error="form.errors.mobile_number"/>
                     <AppInput v-model="form.password"
                               :label="editTarget ? 'Nouveau mot de passe (optionnel)' : 'Mot de passe'"
                               :type="showPwd ? 'text' : 'password'" :required="!editTarget" :error="form.errors.password">
@@ -283,7 +326,7 @@ import { useForm } from '@inertiajs/vue3';
 interface Admin {
     id: number; name: string; last_name: string; email: string;
     status: number; profile_picture: string | null; created_at: string;
-    is_online?: boolean;
+    is_online?: boolean; mobile_number?: string;
 }
 
 const props = defineProps<{
@@ -322,6 +365,7 @@ const columns = computed(() => [
     { key: 'last_name',  label: '',               searchable: true,  visible: false },
     { key: 'name',       label: '',               searchable: true,  visible: false },
     { key: 'email',      label: 'Email',          editable: isSuperAdmin.value, dataType: 'email' as const, sortable: true, searchable: true },
+    { key: 'mobile_number', label: 'Téléphone',   editable: isSuperAdmin.value, dataType: 'tel' as const, searchable: true },
     { key: 'status',     label: 'Statut',         sortable: true,    searchable: false },
     { key: 'online',     label: 'En ligne',       sortable: false,   searchable: false },
     { key: 'created_at', label: 'Créé le',        sortable: true,    searchable: false },
@@ -336,7 +380,19 @@ const tableRows = computed(() =>
     }))
 );
 
-const form = useForm({ name: '', last_name: '', email: '', password: '', status: '1' });
+const form = useForm({ name: '', last_name: '', email: '', password: '', status: '1', mobile_number: '' });
+
+// ── Copie dans le presse-papier ───────────────────────────────────────────────
+const copiedField = ref<string | null>(null);
+let copiedTimeout: ReturnType<typeof setTimeout> | null = null;
+
+const copyToClipboard = (text: string, fieldKey: string) => {
+    navigator.clipboard.writeText(text).then(() => {
+        copiedField.value = fieldKey;
+        if (copiedTimeout) clearTimeout(copiedTimeout);
+        copiedTimeout = setTimeout(() => { copiedField.value = null; }, 1500);
+    }).catch(() => toast.error('Impossible de copier.'));
+};
 
 const openCreate = () => {
     editTarget.value = null; previewUrl.value = null; picFile.value = null;
@@ -352,6 +408,7 @@ const openEdit = (admin: Admin) => {
     picFile.value = null; showPwd.value = false;
     form.name = admin.name; form.last_name = admin.last_name;
     form.email = admin.email; form.password = ''; form.status = String(admin.status);
+    form.mobile_number = admin.mobile_number ?? '';
     showForm.value = true;
 };
 const onFileChange = (e: Event) => {
@@ -362,6 +419,7 @@ const submitForm = () => {
     const data = new FormData();
     data.append('name', form.name); data.append('last_name', form.last_name);
     data.append('email', form.email); data.append('status', form.status);
+    data.append('mobile_number', form.mobile_number);
     if (form.password) data.append('password', form.password);
     if (picFile.value) data.append('profile_picture', picFile.value);
     submitting.value = true;

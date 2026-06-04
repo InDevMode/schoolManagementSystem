@@ -54,7 +54,13 @@ class AdminController extends Controller
                 'password'   => Hash::make($request->password),
                 'user_type'  => 1,
                 'created_by' => Auth::id(),
-            ])->save();
+            ]);
+
+            if ($request->filled('mobile_number')) {
+                $admin->mobile_number = trim($request->mobile_number);
+            }
+
+            $admin->save();
 
             return back()->with('success', 'Administrateur créé avec succès.');
         } catch (\Exception $e) {
@@ -83,6 +89,12 @@ class AdminController extends Controller
                 'email'     => trim($request->email),
                 'status'    => $request->status,
             ]);
+
+            if ($request->filled('mobile_number')) {
+                $admin->mobile_number = trim($request->mobile_number);
+            } elseif ($request->has('mobile_number')) {
+                $admin->mobile_number = null;
+            }
 
             if ($request->filled('password')) {
                 $admin->password = Hash::make($request->password);

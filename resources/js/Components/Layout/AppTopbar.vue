@@ -230,8 +230,9 @@
                             </a>
                         </div>
                         <div class="border-t border-gray-100 dark:border-gray-700 py-2">
-                            <a href="/logout"
-                               class="flex items-center gap-3 px-5 py-3 text-sm
+                            <button
+                               @click="profileOpen = false; showLogoutConfirm = true"
+                               class="w-full flex items-center gap-3 px-5 py-3 text-sm
                                       text-danger-600 dark:text-danger-400
                                       hover:bg-danger-50 dark:hover:bg-danger-900/20 transition-colors">
                                 <span class="w-8 h-8 rounded-lg bg-danger-50 dark:bg-danger-900/20 flex items-center justify-center flex-shrink-0">
@@ -241,7 +242,7 @@
                                     </svg>
                                 </span>
                                 Déconnexion
-                            </a>
+                            </button>
                         </div>
                     </div>
                 </Transition>
@@ -249,6 +250,65 @@
         </div>
 
     </header>
+
+    <!-- Modal confirmation déconnexion -->
+    <Teleport to="body">
+        <Transition
+            enter-active-class="transition duration-200 ease-out"
+            enter-from-class="opacity-0"
+            enter-to-class="opacity-100"
+            leave-active-class="transition duration-150 ease-in"
+            leave-from-class="opacity-100"
+            leave-to-class="opacity-0"
+        >
+            <div v-if="showLogoutConfirm" class="fixed inset-0 z-[9998] flex items-center justify-center p-4">
+                <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" @click="showLogoutConfirm = false" />
+                <Transition
+                    enter-active-class="transition duration-200 ease-out"
+                    enter-from-class="opacity-0 scale-95"
+                    enter-to-class="opacity-100 scale-100"
+                    leave-active-class="transition duration-150 ease-in"
+                    leave-from-class="opacity-100 scale-100"
+                    leave-to-class="opacity-0 scale-95"
+                >
+                    <div v-if="showLogoutConfirm" class="relative w-full max-w-sm bg-white dark:bg-gray-800 rounded-2xl shadow-2xl overflow-hidden">
+                        <div class="flex flex-col items-center px-6 pt-8 pb-4 text-center">
+                            <div class="w-14 h-14 rounded-full bg-danger-50 dark:bg-danger-900/30 flex items-center justify-center mb-4">
+                                <svg class="w-7 h-7 text-danger-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                          d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                                </svg>
+                            </div>
+                            <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-1">Déconnexion</h3>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">
+                                Êtes-vous sûr de vouloir vous déconnecter ?
+                            </p>
+                        </div>
+                        <div class="px-6 pb-6 flex gap-3 mt-2">
+                            <button
+                                @click="showLogoutConfirm = false"
+                                class="flex-1 px-4 py-2.5 rounded-xl text-sm font-medium
+                                       border border-gray-200 dark:border-gray-600
+                                       text-gray-700 dark:text-gray-300
+                                       hover:bg-gray-50 dark:hover:bg-gray-700
+                                       transition-colors"
+                            >
+                                Annuler
+                            </button>
+                            <a
+                                href="/logout"
+                                class="flex-1 px-4 py-2.5 rounded-xl text-sm font-medium text-center
+                                       bg-danger-600 hover:bg-danger-700 text-white
+                                       transition-colors"
+                            >
+                                Se déconnecter
+                            </a>
+                        </div>
+                    </div>
+                </Transition>
+            </div>
+        </Transition>
+    </Teleport>
 </template>
 
 <script setup lang="ts">
@@ -257,6 +317,9 @@ import { usePage } from '@inertiajs/vue3';
 import { useNavigation } from '@/Composables/useNavigation';
 import NavIcon from '@/Components/Layout/NavIcon.vue';
 import type { PageProps } from '@/types';
+
+const showLogoutConfirm = ref(false);
+
 
 defineEmits<{ openMobile: [] }>();
 

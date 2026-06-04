@@ -18,11 +18,17 @@ class CommunicateModel extends Model
         "notice_date",
         "publish_date",
         "message",
-        "created_by"
+        "created_by",
+        "is_active",
+        "deleted_at",
+        "deleted_reason",
     ];
 
-    protected $hidden = [
-        'is_delete',
+    protected $hidden = [];
+
+    protected $casts = [
+        'is_active' => 'boolean',
+        'deleted_at' => 'datetime',
     ];
 
     public static function getSingle($id)
@@ -35,6 +41,65 @@ class CommunicateModel extends Model
         return CommunicateModel::select('communicates.*', 'users.name as created_by_name')
             ->join('users', 'users.id', '=', 'communicates.created_by')
             ->where('communicates.is_delete', '=', 0)
+            ->orderBy('communicates.id', 'desc')
+            ->paginate($perpage);
+    }
+
+    /**
+     * Retourne une notice avec ses destinataires (message_to)
+     */
+    public static function getSingleWithRecipients(int $id): ?self
+    {
+        $notice = CommunicateModel::select('communicates.*', 'users.name as created_by_name')
+            ->join('users', 'users.id', '=', 'communicates.created_by')
+            ->where('communicates.id', $id)
+            ->first();
+
+        if ($notice) {
+            $notice->recipients = NoticeBoardMessageModel::where('communicates_id', $id)
+                ->pluck('message_to')
+                ->map(fn($v) => (string) $v)
+                ->toArray();
+        }
+
+        return $notice;
+    }
+
+    /**
+     * Liste du tableau d'affichage avec les destinataires
+     */
+    public static function getNoticeBoardWithRecipients(int $perpage)
+    {
+        $notices = CommunicateModel::select('communicates.*', 'users.name as created_by_name')
+            ->join('users', 'users.id', '=', 'communicates.created_by')
+            ->where('communicates.is_delete', '=', 0)
+            ->orderBy('communicates.id', 'desc')
+            ->paginate($perpage);
+
+        // Charger les destinataires pour chaque notice
+        $noticeIds = $notices->pluck('id')->toArray();
+        $recipients = NoticeBoardMessageModel::whereIn('communicates_id', $noticeIds)
+            ->get()
+            ->groupBy('communicates_id');
+
+        $notices->getCollection()->transform(function ($notice) use ($recipients) {
+            $notice->recipients = isset($recipients[$notice->id])
+                ? $recipients[$notice->id]->pluck('message_to')->map(fn($v) => (string) $v)->toArray()
+                : [];
+            return $notice;
+        });
+
+        return $notices;
+    }
+
+    /**
+     * Historique des notifications supprimées
+     */
+    public static function getDeletedNoticeBoard(int $perpage)
+    {
+        return CommunicateModel::select('communicates.*', 'users.name as created_by_name')
+            ->join('users', 'users.id', '=', 'communicates.created_by')
+            ->where('communicates.is_delete', '=', 1)
             ->orderBy('communicates.id', 'desc')
             ->paginate($perpage);
     }

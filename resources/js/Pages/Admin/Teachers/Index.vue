@@ -48,8 +48,38 @@
                     <UserAvatar :src="row.profile_url as string" :name="row.name as string"
                                 :last-name="row.last_name as string" size="sm"/>
                     <div>
-                        <p class="text-sm font-semibold text-gray-900 dark:text-white">{{ row.last_name }} {{ row.name }}</p>
-                        <p class="text-xs text-gray-500">{{ row.email }}</p>
+                        <div class="group/name flex items-center">
+                            <p class="text-sm font-semibold text-gray-900 dark:text-white">{{ row.last_name }} {{ row.name }}</p>
+                            <button type="button"
+                                    class="ml-1.5 opacity-0 group-hover/name:opacity-100 transition-opacity duration-150
+                                           p-0.5 rounded text-gray-400 hover:text-primary-600 hover:bg-primary-50
+                                           dark:hover:text-primary-400 dark:hover:bg-primary-900/20"
+                                    :title="copiedField === `name-${row.id}` ? 'Copié !' : 'Copier le nom'"
+                                    @click.stop="copyToClipboard(`${row.last_name} ${row.name}`, `name-${row.id}`)">
+                                <svg v-if="copiedField !== `name-${row.id}`" class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                                </svg>
+                                <svg v-else class="w-3 h-3 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="group/email flex items-center mt-0.5">
+                            <p class="text-xs text-gray-500">{{ row.email }}</p>
+                            <button type="button"
+                                    class="ml-1.5 opacity-0 group-hover/email:opacity-100 transition-opacity duration-150
+                                           p-0.5 rounded text-gray-400 hover:text-blue-600 hover:bg-blue-50
+                                           dark:hover:text-blue-400 dark:hover:bg-blue-900/20"
+                                    :title="copiedField === `email-${row.id}` ? 'Copié !' : 'Copier l\'email'"
+                                    @click.stop="copyToClipboard(row.email as string, `email-${row.id}`)">
+                                <svg v-if="copiedField !== `email-${row.id}`" class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                                </svg>
+                                <svg v-else class="w-3 h-3 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                </svg>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </template>
@@ -433,9 +463,19 @@ const formatDate = (d?: string) => {
     catch { return d; }
 };
 
+// ── Copie presse-papier ───────────────────────────────────────────────────────
+const copiedField = ref<string | null>(null);
+let copiedTimeout: ReturnType<typeof setTimeout> | null = null;
+const copyToClipboard = (text: string, fieldKey: string) => {
+    navigator.clipboard.writeText(text).then(() => {
+        copiedField.value = fieldKey;
+        if (copiedTimeout) clearTimeout(copiedTimeout);
+        copiedTimeout = setTimeout(() => { copiedField.value = null; }, 1500);
+    }).catch(() => toast.error('Impossible de copier.'));
+};
+
 const handleDelete = (ids: (string | number)[]) => {
-    ids.forEach(id => router.get(`/admin/teacher/delete/${id}`, {}, {
-        onSuccess: () => toast.success('Professeur supprimé.'),
+    ids.forEach(id => router.get(`/admin/teacher/delete/${id}`, {}, {        onSuccess: () => toast.success('Professeur supprimé.'),
         onError:   () => toast.error('Erreur lors de la suppression.'),
     }));
 };

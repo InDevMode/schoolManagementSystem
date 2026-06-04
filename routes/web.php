@@ -53,14 +53,18 @@ Route::group(['middleware' => 'common'], function () {
     Route::get('chat', [ChatController::class, 'chat']);
     Route::post('chat', [ChatController::class, 'sendMessage'])->name('chat.send');
     Route::put('/chat/{id}', [ChatController::class, 'updateMessage'])->name('chat.update');
-    Route::get('/chat/{id}', [ChatController::class, 'deleteMessage'])->name('chat.delete');
 
-    // ── API JSON pour le polling temps réel ──────────────────────────────────
-    Route::get('chat/messages/poll', [ChatController::class, 'pollMessages'])->name('chat.poll');
-    Route::get('chat/contacts/poll', [ChatController::class, 'pollContacts'])->name('chat.contacts.poll');
-    Route::post('chat/send-ajax', [ChatController::class, 'sendMessageAjax'])->name('chat.send.ajax');
-    Route::post('chat/update-ajax/{id}', [ChatController::class, 'updateMessageAjax'])->name('chat.update.ajax');
-    Route::post('chat/delete-ajax/{id}', [ChatController::class, 'deleteMessageAjax'])->name('chat.delete.ajax');
+    // ── API JSON pour le polling temps réel — AVANT les routes wildcard ──────
+    Route::get('chat/messages/poll',       [ChatController::class, 'pollMessages'])->name('chat.poll');
+    Route::get('chat/contacts/poll',       [ChatController::class, 'pollContacts'])->name('chat.contacts.poll');
+    Route::post('chat/send-ajax',          [ChatController::class, 'sendMessageAjax'])->name('chat.send.ajax');
+    Route::post('chat/update-ajax/{id}',   [ChatController::class, 'updateMessageAjax'])->name('chat.update.ajax');
+    Route::post('chat/delete-ajax/{id}',   [ChatController::class, 'deleteMessageAjax'])->name('chat.delete.ajax');
+    Route::post('chat/typing',             [ChatController::class, 'setTyping'])->name('chat.typing');
+    Route::get('chat/typing/check',        [ChatController::class, 'checkTyping'])->name('chat.typing.check');
+
+    // Wildcard en DERNIER
+    Route::get('/chat/{id}', [ChatController::class, 'deleteMessage'])->name('chat.delete');
 });
 
 Route::group(['middleware' => 'admin'], function () {
@@ -174,13 +178,16 @@ Route::group(['middleware' => 'admin'], function () {
     Route::post('admin/attendance/report/export',       [AttendanceController::class, 'attendanceReportExport'])->middleware('check_perm:view.attendance.report');
 
     // Communicate url
-    Route::get('admin/communicate/noticeboard/list',          [CommunicateController::class, 'list'])->middleware('check_perm:view.communicate.noticeboard');
-    Route::post('admin/communicate/noticeboard/add',          [CommunicateController::class, 'create'])->middleware('check_perm:action.noticeboard.manage');
-    Route::get('admin/communicate/noticeboard/edit/{id}',     [CommunicateController::class, 'edit'])->middleware('check_perm:action.noticeboard.manage');
-    Route::post('admin/communicate/noticeboard/edit/{id}',    [CommunicateController::class, 'update'])->middleware('check_perm:action.noticeboard.manage');
-    Route::post('admin/communicate/noticeboard/delete/{id}',  [CommunicateController::class, 'delete'])->middleware('check_perm:action.noticeboard.manage');
-    Route::get('admin/communicate/send_mail',                 [CommunicateController::class, 'sendMail'])->middleware('check_perm:view.communicate.mail');
-    Route::post('admin/communicate/send_mail',                [CommunicateController::class, 'sendMailCreate'])->middleware('check_perm:action.mail.send');
+    Route::get('admin/communicate/noticeboard/list',           [CommunicateController::class, 'list'])->middleware('check_perm:view.communicate.noticeboard');
+    Route::post('admin/communicate/noticeboard/add',           [CommunicateController::class, 'create'])->middleware('check_perm:action.noticeboard.manage');
+    Route::get('admin/communicate/noticeboard/edit/{id}',      [CommunicateController::class, 'edit'])->middleware('check_perm:action.noticeboard.manage');
+    Route::post('admin/communicate/noticeboard/edit/{id}',     [CommunicateController::class, 'update'])->middleware('check_perm:action.noticeboard.manage');
+    Route::post('admin/communicate/noticeboard/delete/{id}',   [CommunicateController::class, 'delete'])->middleware('check_perm:action.noticeboard.manage');
+    Route::post('admin/communicate/noticeboard/toggle/{id}',   [CommunicateController::class, 'toggle'])->middleware('check_perm:action.noticeboard.manage');
+    Route::get('admin/communicate/noticeboard/history',        [CommunicateController::class, 'history'])->middleware('check_perm:action.noticeboard.manage');
+    Route::post('admin/communicate/noticeboard/restore/{id}',  [CommunicateController::class, 'restore'])->middleware('check_perm:action.noticeboard.manage');
+    Route::get('admin/communicate/send_mail',                  [CommunicateController::class, 'sendMail'])->middleware('check_perm:view.communicate.mail');
+    Route::post('admin/communicate/send_mail',                 [CommunicateController::class, 'sendMailCreate'])->middleware('check_perm:action.mail.send');
 
     // Practical works url
     Route::get('admin/practicalworks/homework/list',                      [WorkController::class, 'practicalWorksList'])->middleware('check_perm:view.homework.list');

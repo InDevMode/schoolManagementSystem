@@ -484,6 +484,17 @@ const handleResetPasswordBulk = () => {
   });
 };
 
+
+//  Copie presse-papier (cellules) ─────────────────────────
+const dtCopiedKey = ref<string | null>(null);
+let dtCopiedTimeout: ReturnType<typeof setTimeout> | null = null;
+const dtCopy = (text: string, key: string) => {
+  navigator.clipboard.writeText(text).then(() => {
+    dtCopiedKey.value = key;
+    if (dtCopiedTimeout) clearTimeout(dtCopiedTimeout);
+    dtCopiedTimeout = setTimeout(() => { dtCopiedKey.value = null; }, 1500);
+  }).catch(() => {});
+};
 defineExpose({ clearSelection, selected, filteredRows, confirmDelete });
 </script>
 
@@ -738,7 +749,7 @@ defineExpose({ clearSelection, selected, filteredRows, confirmDelete });
 
         <!-- THEAD — sobre, gris clair, sans couleur de fond violette -->
         <thead class="sticky top-0 z-10">
-          <tr class="dt-thead-row bg-gray-50 dark:bg-gray-900/80 border-b-2 border-gray-200 dark:border-gray-700/60">
+          <tr class="dt-thead-row bg-gray-50 dark:bg-gray-900/80 border-b-2 border-gray-300 dark:border-gray-600">
 
             <th v-if="selectable" :class="[headerDensityClass, 'w-10 bg-gray-50 dark:bg-gray-900/80']">
               <input type="checkbox" :checked="allSelected" :indeterminate="someSelected"
@@ -751,39 +762,41 @@ defineExpose({ clearSelection, selected, filteredRows, confirmDelete });
                 :class="[
                   headerDensityClass,
                   'bg-gray-50 dark:bg-gray-900/80',
-                  'text-[11px] font-semibold uppercase tracking-wider whitespace-nowrap select-none',
-                  'text-gray-500 dark:text-gray-400',
+                  'text-[12px] font-bold uppercase tracking-wider whitespace-nowrap select-none',
+                  'text-gray-600 dark:text-gray-300',
                   col.align === 'center' ? 'text-center' : col.align === 'right' ? 'text-right' : 'text-left',
-                  col.sortable !== false ? 'cursor-pointer hover:text-gray-800 dark:hover:text-gray-200 transition-colors' : '',
+                  col.sortable !== false ? 'cursor-pointer hover:text-gray-900 dark:hover:text-white transition-colors' : '',
                 ]"
                 :style="col.width ? `width:${col.width};` : col.minWidth ? `min-width:${col.minWidth};` : ''"
                 @click="col.sortable !== false && toggleSort(col.key)"
                 :aria-sort="sortKey === col.key ? (sortDir === 'asc' ? 'ascending' : 'descending') : 'none'">
               <div class="flex items-center gap-1.5 group/hdr"
                    :class="col.align === 'center' ? 'justify-center' : col.align === 'right' ? 'justify-end' : ''">
-                <span :class="sortKey === col.key ? 'text-violet-600 dark:text-violet-400 font-bold' : ''">
+                <span :class="sortKey === col.key ? 'text-violet-600 dark:text-violet-400' : ''">
                   {{ col.label }}
                 </span>
-                <!-- Icônes tri bien visibles sur colonne active -->
+                <!-- Flèches de tri — chevrons simples nets -->
                 <span v-if="col.sortable !== false"
-                      class="flex flex-col ml-0.5 transition-opacity duration-150"
-                      :class="sortKey === col.key ? 'opacity-100' : 'opacity-25 group-hover/hdr:opacity-50'">
-                  <svg class="w-2.5 h-2.5"
-                       :class="sortKey === col.key && sortDir === 'asc' ? 'text-violet-600' : 'text-gray-400'"
-                       fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M7 14l5-5 5 5z"/>
+                      class="flex flex-col gap-[1px] ml-0.5 transition-opacity duration-150"
+                      :class="sortKey === col.key ? 'opacity-100' : 'opacity-30 group-hover/hdr:opacity-60'">
+                  <!-- Chevron haut -->
+                  <svg class="w-3 h-3"
+                       :class="sortKey === col.key && sortDir === 'asc' ? 'text-violet-600 dark:text-violet-400' : 'text-gray-400'"
+                       fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7"/>
                   </svg>
-                  <svg class="w-2.5 h-2.5 -mt-0.5"
-                       :class="sortKey === col.key && sortDir === 'desc' ? 'text-violet-600' : 'text-gray-400'"
-                       fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M7 10l5 5 5-5z"/>
+                  <!-- Chevron bas -->
+                  <svg class="w-3 h-3"
+                       :class="sortKey === col.key && sortDir === 'desc' ? 'text-violet-600 dark:text-violet-400' : 'text-gray-400'"
+                       fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
                   </svg>
                 </span>
               </div>
             </th>
 
             <th v-if="actions?.length || $slots['actions']"
-                :class="[headerDensityClass, 'bg-gray-50 dark:bg-gray-900/80 text-[11px] font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 text-right']">
+                :class="[headerDensityClass, 'bg-gray-50 dark:bg-gray-900/80 text-[12px] font-bold uppercase tracking-wider text-gray-600 dark:text-gray-300 text-right']">
               Actions
             </th>
           </tr>
@@ -888,7 +901,7 @@ defineExpose({ clearSelection, selected, filteredRows, confirmDelete });
                 <template v-else>
                   <slot :name="`cell-${col.key}`" :row="row" :value="row[col.key]" :col="col">
                     <span v-if="col.badge" :class="getBadgeClass(row[col.key], col)">{{ getCellValue(row, col) }}</span>
-                    <span v-else class="flex items-center gap-1 text-gray-800 dark:text-gray-200 group/cell">
+                    <span v-else class="flex items-center gap-1 text-gray-900 dark:text-gray-100 font-medium group/cell">
                       {{ getCellValue(row, col) }}
                       <svg v-if="col.editable && inlineEdit"
                            class="w-3 h-3 text-violet-400 opacity-0 group-hover/cell:opacity-100 flex-shrink-0 transition-opacity duration-150"
@@ -896,6 +909,18 @@ defineExpose({ clearSelection, selected, filteredRows, confirmDelete });
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                               d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                       </svg>
+                      <button v-if="row[col.key] != null && String(row[col.key]).trim() !== ''"
+                              type="button"
+                              class="opacity-0 group-hover/cell:opacity-100 transition-opacity duration-150 p-0.5 rounded text-gray-300 hover:text-gray-500 dark:text-gray-600 dark:hover:text-gray-300 flex-shrink-0 cursor-pointer"
+                              :title="dtCopiedKey === rowId(row) + '-' + col.key ? 'Copié !' : 'Copier'"
+                              @click.stop="dtCopy(String(row[col.key]), rowId(row) + '-' + col.key)">
+                        <svg v-if="dtCopiedKey !== rowId(row) + '-' + col.key" class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                        </svg>
+                        <svg v-else class="w-3 h-3 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                        </svg>
+                      </button>
                     </span>
                   </slot>
                 </template>

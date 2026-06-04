@@ -43,6 +43,23 @@
     }
 }
 
+@layer base {
+    /* ── Checkbox dark mode : fond sombre quand non cochée ──────────────────── */
+    .dark input[type="checkbox"] {
+        color-scheme: dark;
+        background-color: rgb(31 41 55); /* gray-800 */
+        border-color: rgb(75 85 99);     /* gray-600 */
+    }
+    .dark input[type="checkbox"]:checked {
+        background-color: rgb(123 116 240); /* primary */
+        border-color: rgb(123 116 240);
+    }
+    .dark input[type="checkbox"]:indeterminate {
+        background-color: rgb(123 116 240);
+        border-color: rgb(123 116 240);
+    }
+}
+
 @layer components {
     /* Focus ring cohérent */
     .focus-ring {

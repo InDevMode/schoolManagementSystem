@@ -15,6 +15,10 @@ export default defineConfig({
                     base: null,
                     includeAbsolute: false,
                 },
+                compilerOptions: {
+                    // Dire à Vue que em-emoji-picker est un web component natif
+                    isCustomElement: (tag) => tag.startsWith('em-'),
+                },
             },
         }),
     ],

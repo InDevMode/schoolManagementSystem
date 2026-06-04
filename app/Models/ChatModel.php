@@ -13,7 +13,7 @@ class ChatModel extends Model
 
     protected $table = 'chats';
     protected $fillable = ['receiver_id', 'sender_id', 'message', 'status', 'file',];
-    protected $hidden = ['is_delete'];
+    protected $hidden = [];  // is_delete doit être visible dans les réponses JSON
     protected $casts = [
         'created_date' => 'datetime',
     ];
@@ -38,8 +38,12 @@ class ChatModel extends Model
                             ->where('status', '>', -1);
                     });
             })
-            ->where('message', '!=', '')
-            // ->where('is_delete', '=', 0)
+            // Inclure les messages avec fichier même si message vide
+            ->where(function ($q) {
+                $q->where('message', '!=', '')->orWhereNotNull('file');
+            })
+            // NE PAS exclure les messages supprimés — on les affiche "Message supprimé"
+            // mais on les inclut pour maintenir la cohérence de la conversation
             ->orderBy('id', 'asc')
             ->get();
     }
@@ -75,22 +79,33 @@ class ChatModel extends Model
             ->whereIn('chats.id', function ($query) use ($user_id) {
                 $query->selectRaw('MAX(chats.id)')
                     ->from('chats')
-                    ->where('chats.status', '<', 2)
                     ->where(function ($sub) use ($user_id) {
                         $sub->where('chats.receiver_id', $user_id)
-                            ->orWhere('chats.sender_id', $user_id)
-                            ->where('chats.status', '>', -1);
+                            ->orWhere('chats.sender_id', $user_id);
+                    })
+                    ->where(function ($sub) {
+                        $sub->where('chats.is_delete', 0)
+                            ->orWhereNull('chats.is_delete');
                     })
                     ->groupBy(\Illuminate\Support\Facades\DB::raw('CASE WHEN chats.sender_id = ' . $user_id . ' THEN chats.receiver_id ELSE chats.sender_id END'));
             })
-            ->where('chats.is_delete', '=', 0)
+            ->where(function ($q) {
+                $q->where('chats.is_delete', 0)->orWhereNull('chats.is_delete');
+            })
             ->orderBy('chats.id', 'desc')
             ->get();
 
         $result = [];
         foreach ($getChatUser as $value) {
             $data['id'] = $value->id;
-            $data['message'] = $value->message;
+            // Aperçu : si message vide mais fichier, afficher le nom du fichier
+            if (empty($value->message) && !empty($value->file)) {
+                $ext = pathinfo($value->file, PATHINFO_EXTENSION);
+                $data['message'] = '📎 fichier.' . $ext;
+            } else {
+                $data['message'] = $value->message;
+            }
+            $data['file'] = $value->file;
             $data['created_date'] = $value->created_date;
             $data['status'] = $value->status;
             $data['is_delete'] = $value->is_delete;
