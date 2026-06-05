@@ -68,6 +68,13 @@ class RolesAndPermissionsSeeder extends Seeder
             // ── Actions examens & notes ──────────────────────────────────────
             'action.exams.create', 'action.exams.edit', 'action.exams.delete',
             'action.marks.manage',
+            // ── Bulletins ────────────────────────────────────────────────────
+            'view.bulletins.list',
+            'action.bulletins.generate', 'action.bulletins.publish',
+            // ── Personnel (Staff) ────────────────────────────────────────────
+            'view.staff.list', 'view.staff.leaves', 'view.staff.events',
+            'action.staff.create', 'action.staff.edit', 'action.staff.delete',
+            'action.staff.leaves', 'action.staff.events',
             // ── Actions présences ────────────────────────────────────────────
             'action.attendance.save',
             // ── Actions devoirs ──────────────────────────────────────────────
@@ -108,8 +115,7 @@ class RolesAndPermissionsSeeder extends Seeder
 
         // Admin : toutes les permissions (navigation + actions)
         $roles['admin']->syncPermissions($permissions);
-
-        // Teacher : navigation limitée + ses propres actions
+        // Teacher : navigation + ses propres actions (évaluations incluses)
         $roles['teacher']->syncPermissions([
             // Navigation
             'view.academics.timetable',
@@ -118,6 +124,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'view.homework.list', 'view.homework.reports',
             'view.communicate.noticeboard',
             // Actions
+            'action.exams.create', 'action.exams.edit',
             'action.marks.manage',
             'action.attendance.save',
             'action.homework.create', 'action.homework.edit', 'action.homework.delete',
@@ -130,10 +137,11 @@ class RolesAndPermissionsSeeder extends Seeder
             'noticeboard.view',
         ]);
 
-        // Student : lecture seule de ses propres données
+        // Student : lecture seule + bulletins
         $roles['student']->syncPermissions([
             'view.academics.timetable',
             'view.exams.list', 'view.exams.marks',
+            'view.bulletins.list',
             'view.attendance.report',
             'view.homework.list',
             'view.fees.collect',
@@ -145,10 +153,11 @@ class RolesAndPermissionsSeeder extends Seeder
             'fees.view', 'noticeboard.view',
         ]);
 
-        // Parent : suivi de ses enfants
+        // Parent : suivi des enfants + bulletins
         $roles['parent']->syncPermissions([
             'view.academics.timetable',
             'view.exams.list', 'view.exams.marks',
+            'view.bulletins.list',
             'view.attendance.report',
             'view.homework.list',
             'view.fees.collect',

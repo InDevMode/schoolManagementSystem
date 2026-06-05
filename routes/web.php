@@ -22,6 +22,10 @@ use App\Http\Controllers\TeacherController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\SocialAuthController;
 use App\Http\Controllers\WorkController;
+use App\Http\Controllers\EvaluationController;
+use App\Http\Controllers\BulletinController;
+use App\Http\Controllers\StaffController;
+use App\Http\Controllers\DeletionLogController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -221,6 +225,58 @@ Route::group(['middleware' => 'admin'], function () {
 
     Route::get('admin/test', [AdminController::class, 'test']);
 
+    // ── Évaluations béninoises (nouveaux types) ──────────────────────────────
+    Route::get('admin/evaluations/list',                           [EvaluationController::class, 'list'])->middleware('check_perm:view.exams.list');
+    Route::post('admin/evaluations/add',                          [EvaluationController::class, 'create'])->middleware('check_perm:action.exams.create');
+    Route::post('admin/evaluations/edit/{id}',                    [EvaluationController::class, 'update'])->middleware('check_perm:action.exams.edit');
+    Route::get('admin/evaluations/delete/{id}',                   [EvaluationController::class, 'delete'])->middleware('check_perm:action.exams.delete');
+    Route::post('admin/evaluations/status/{id}',                  [EvaluationController::class, 'changeStatus'])->middleware('check_perm:action.exams.edit');
+    Route::get('admin/evaluations/grade-entry',                   [EvaluationController::class, 'gradeEntry'])->middleware('check_perm:view.exams.marks');
+    Route::post('admin/evaluations/grades/save',                  [EvaluationController::class, 'saveGrades'])->middleware('check_perm:action.marks.manage');
+    Route::post('admin/evaluations/grades/validate',              [EvaluationController::class, 'validateGrades'])->middleware('check_perm:action.marks.manage');
+    Route::get('admin/evaluations/grades/pending',                [EvaluationController::class, 'pendingValidation'])->middleware('check_perm:view.exams.marks');
+    Route::get('admin/evaluations/subjects-by-class/{class_id}',  [EvaluationController::class, 'getSubjectsByClass'])->middleware('check_perm:view.exams.list');
+    Route::get('admin/evaluations/by-class-period',               [EvaluationController::class, 'getEvaluationsByClassPeriod'])->middleware('check_perm:view.exams.list');
+
+    // ── Bulletins ─────────────────────────────────────────────────────────────
+    Route::get('admin/bulletins/list',                            [BulletinController::class, 'list'])->middleware('check_perm:view.bulletins.list');
+    Route::post('admin/bulletins/generate',                       [BulletinController::class, 'generate'])->middleware('check_perm:action.bulletins.generate');
+    Route::post('admin/bulletins/generate-class',                 [BulletinController::class, 'generateForClass'])->middleware('check_perm:action.bulletins.generate');
+    Route::post('admin/bulletins/publish/{id}',                   [BulletinController::class, 'publish'])->middleware('check_perm:action.bulletins.publish');
+    Route::post('admin/bulletins/publish-all',                    [BulletinController::class, 'publishAll'])->middleware('check_perm:action.bulletins.publish');
+    Route::post('admin/bulletins/comment/{id}',                   [BulletinController::class, 'updateComment'])->middleware('check_perm:action.bulletins.generate');
+    Route::get('admin/bulletins/delete/{id}',                     [BulletinController::class, 'delete'])->middleware('check_perm:action.bulletins.generate');
+    Route::get('admin/bulletins/show/{id}',                       [BulletinController::class, 'show'])->middleware('check_perm:view.bulletins.list');
+    Route::get('admin/bulletins/print/{id}',                      [BulletinController::class, 'print'])->middleware('check_perm:view.bulletins.list');
+    Route::get('admin/bulletins/preview-averages',                [BulletinController::class, 'previewClassAverages'])->middleware('check_perm:view.bulletins.list');
+
+    // ── Personnel (Staff) ─────────────────────────────────────────────────────
+    Route::get('admin/staff/list',                                [StaffController::class, 'list'])->middleware('check_perm:view.staff.list');
+    Route::post('admin/staff/add',                                [StaffController::class, 'create'])->middleware('check_perm:action.staff.create');
+    Route::get('admin/staff/edit/{id}',                           [StaffController::class, 'edit'])->middleware('check_perm:action.staff.edit');
+    Route::post('admin/staff/edit/{id}',                          [StaffController::class, 'update'])->middleware('check_perm:action.staff.edit');
+    Route::get('admin/staff/delete/{id}',                         [StaffController::class, 'delete'])->middleware('check_perm:action.staff.delete');
+
+    // ── Types de congés ───────────────────────────────────────────────────────
+    Route::get('admin/staff/leave-types/list',                    [StaffController::class, 'leaveTypeList'])->middleware('check_perm:view.staff.leaves');
+    Route::post('admin/staff/leave-types/add',                    [StaffController::class, 'leaveTypeCreate'])->middleware('check_perm:action.staff.leaves');
+    Route::get('admin/staff/leave-types/edit/{id}',               [StaffController::class, 'leaveTypeEdit'])->middleware('check_perm:action.staff.leaves');
+    Route::post('admin/staff/leave-types/edit/{id}',              [StaffController::class, 'leaveTypeUpdate'])->middleware('check_perm:action.staff.leaves');
+    Route::get('admin/staff/leave-types/delete/{id}',             [StaffController::class, 'leaveTypeDelete'])->middleware('check_perm:action.staff.leaves');
+
+    // ── Congés du personnel ───────────────────────────────────────────────────
+    Route::get('admin/staff/leaves/list',                         [StaffController::class, 'leaveList'])->middleware('check_perm:view.staff.leaves');
+    Route::post('admin/staff/leaves/add',                         [StaffController::class, 'leaveCreate'])->middleware('check_perm:action.staff.leaves');
+    Route::post('admin/staff/leaves/approve/{id}',                [StaffController::class, 'leaveApprove'])->middleware('check_perm:action.staff.leaves');
+    Route::get('admin/staff/leaves/delete/{id}',                  [StaffController::class, 'leaveDelete'])->middleware('check_perm:action.staff.leaves');
+
+    // ── Événements ────────────────────────────────────────────────────────────
+    Route::get('admin/staff/events/list',                         [StaffController::class, 'eventList'])->middleware('check_perm:view.staff.events');
+    Route::post('admin/staff/events/add',                         [StaffController::class, 'eventCreate'])->middleware('check_perm:action.staff.events');
+    Route::get('admin/staff/events/edit/{id}',                    [StaffController::class, 'eventEdit'])->middleware('check_perm:action.staff.events');
+    Route::post('admin/staff/events/edit/{id}',                   [StaffController::class, 'eventUpdate'])->middleware('check_perm:action.staff.events');
+    Route::get('admin/staff/events/delete/{id}',                  [StaffController::class, 'eventDelete'])->middleware('check_perm:action.staff.events');
+
 });
 
 // ══════════════════════════════════════════════════════════════════════════════
@@ -259,6 +315,10 @@ Route::group(['middleware' => 'super_admin', 'prefix' => 'superadmin'], function
 
     // ── Édition inline cellule (super admin only) ──────────────────────────
     Route::post('users/inline-edit', [UserController::class, 'inlineCellEdit'])->name('superadmin.inline-edit');
+
+    // ── Journaux de suppression (super admin only) ─────────────────────────
+    Route::get('deletion-logs',       [DeletionLogController::class, 'list'])->name('superadmin.deletion-logs');
+    Route::get('deletion-logs/{id}',  [DeletionLogController::class, 'show'])->name('superadmin.deletion-logs.show');
 });
 
 Route::group(['middleware' => 'teacher'], function () {
@@ -290,6 +350,12 @@ Route::group(['middleware' => 'teacher'], function () {
     Route::post('teacher/add_marks_register', [ExaminationController::class, 'addTeacherMarkRegister']);
     Route::post('teacher/add_single_marks_register', [ExaminationController::class, 'addSingleTeacherMarkRegister']);
     Route::get('teacher/marks_register/print', [ExaminationController::class, 'studentExamResultPrint']);
+
+    // ── Évaluations béninoises — prof ─────────────────────────────────────
+    Route::get('teacher/evaluations',                  [EvaluationController::class, 'teacherList']);
+    Route::post('teacher/evaluations/add',             [EvaluationController::class, 'teacherCreate']);
+    Route::get('teacher/evaluations/grade-entry',      [EvaluationController::class, 'teacherGradeEntry']);
+    Route::post('teacher/evaluations/grades/save',     [EvaluationController::class, 'teacherSaveGrades']);
 
     // Student attendance url
     Route::get('teacher/attendance/student/list', [AttendanceController::class, 'attendanceStudentTeacher']);
@@ -338,6 +404,12 @@ Route::group(['middleware' => 'student'], function () {
     Route::get('student/my_exam_timetable', [ExaminationController::class, 'myExamTimetableStudent']);
     Route::get('student/my_exam_result', [ExaminationController::class, 'myExamResultStudent']);
     Route::get('student/my_exam_result/print', [ExaminationController::class, 'studentExamResultPrint']);
+
+    // ── Notes et bulletins — élève ────────────────────────────────────────
+    Route::get('student/my_grades',                          [EvaluationController::class, 'studentGrades']);
+    Route::get('student/my_bulletins',                       [BulletinController::class, 'studentBulletins']);
+    Route::get('student/my_bulletins/{id}',                  [BulletinController::class, 'studentBulletinShow']);
+    Route::get('student/my_bulletins/{id}/print',            [BulletinController::class, 'studentBulletinPrint']);
 
     // Student attendance url
     Route::get('student/my_attendance', [AttendanceController::class, 'myAttendance']);
@@ -390,6 +462,12 @@ Route::group(['middleware' => 'parent'], function () {
     // Parent student exam result url
     Route::get('parent/my_student/exam_result/{student_id}/result', [ExaminationController::class, 'parentStudentExamResult']);
     Route::get('parent/my_student/exam_result/print', [ExaminationController::class, 'studentExamResultPrint']);
+
+    // ── Notes et bulletins — parent ───────────────────────────────────────
+    Route::get('parent/my_student/{student_id}/grades',              [EvaluationController::class, 'parentStudentGrades']);
+    Route::get('parent/my_student/{student_id}/bulletins',           [BulletinController::class, 'parentStudentBulletins']);
+    Route::get('parent/my_student/{student_id}/bulletins/{id}',      [BulletinController::class, 'parentStudentBulletinShow']);
+    Route::get('parent/my_student/{student_id}/bulletins/{id}/print',[BulletinController::class, 'parentStudentBulletinPrint']);
 
     // Parent student attendance url
     Route::get('parent/my_student/attendance/{student_id}', [AttendanceController::class, 'parentStudentAttendance']);

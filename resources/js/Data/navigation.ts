@@ -28,11 +28,15 @@ export const adminNav: NavItem[] = [
     {
         id: 'examinations', label: 'Évaluations', icon: 'clipboard-document-list',
         children: [
-            { id: 'periods',        label: 'Périodes',       icon: 'calendar',           href: '/admin/examinations/period/list',        permission: 'view.exams.periods'   },
-            { id: 'exams',          label: 'Examens',        icon: 'clipboard-document', href: '/admin/examinations/exam/list',           permission: 'view.exams.list'      },
-            { id: 'schedules',      label: 'Programmations', icon: 'calendar-days',      href: '/admin/examinations/schedule/list',       permission: 'view.exams.schedules' },
-            { id: 'marks-register', label: 'Registres',      icon: 'table-cells',        href: '/admin/examinations/marks_register/list', permission: 'view.exams.marks'     },
-            { id: 'marks-grade',    label: 'Barèmes',        icon: 'chart-bar',          href: '/admin/examinations/marks_grade/list',    permission: 'view.exams.grades'    },
+            { id: 'periods',            label: 'Périodes',         icon: 'calendar',           href: '/admin/examinations/period/list',        permission: 'view.exams.periods'    },
+            { id: 'exams',              label: 'Sessions',         icon: 'clipboard-document', href: '/admin/examinations/exam/list',           permission: 'view.exams.list'       },
+            { id: 'evaluations',        label: 'Évaluations',      icon: 'pencil-square',      href: '/admin/evaluations/list',                 permission: 'view.exams.list'       },
+            { id: 'grade-entry',        label: 'Saisie des notes', icon: 'table-cells',        href: '/admin/evaluations/grade-entry',          permission: 'view.exams.marks'      },
+            { id: 'grades-pending',     label: 'À valider',        icon: 'check-badge',        href: '/admin/evaluations/grades/pending',       permission: 'action.marks.manage'   },
+            { id: 'bulletins',          label: 'Bulletins',        icon: 'document-text',      href: '/admin/bulletins/list',                   permission: 'view.bulletins.list'   },
+            { id: 'schedules',          label: 'Programmations',   icon: 'calendar-days',      href: '/admin/examinations/schedule/list',       permission: 'view.exams.schedules'  },
+            { id: 'marks-register',     label: 'Registres',        icon: 'table-cells',        href: '/admin/examinations/marks_register/list', permission: 'view.exams.marks'      },
+            { id: 'marks-grade',        label: 'Barèmes',          icon: 'chart-bar',          href: '/admin/examinations/marks_grade/list',    permission: 'view.exams.grades'     },
         ],
     },
     {
@@ -67,6 +71,15 @@ export const adminNav: NavItem[] = [
         id: 'settings', label: 'Paramètres', icon: 'cog-6-tooth',
         href: '/admin/settings', permission: 'view.settings',
     },
+    {
+        id: 'staff', label: 'Personnel & RH', icon: 'user-group',
+        children: [
+            { id: 'staff-list',        label: 'Personnel',        icon: 'users',          href: '/admin/staff/list',              permission: 'view.staff.list'   },
+            { id: 'staff-leaves',      label: 'Congés',           icon: 'calendar-days',  href: '/admin/staff/leaves/list',       permission: 'view.staff.leaves' },
+            { id: 'leave-types',       label: 'Types de congés',  icon: 'tag',            href: '/admin/staff/leave-types/list',  permission: 'view.staff.leaves' },
+            { id: 'staff-events',      label: 'Événements',       icon: 'sparkles',       href: '/admin/staff/events/list',       permission: 'view.staff.events' },
+        ],
+    },
 ];
 
 // ─── Super Admin nav ──────────────────────────────────────────────────────────
@@ -97,11 +110,24 @@ export const superAdminNav: NavItem[] = [
     {
         id: 'sa-examinations', label: 'Évaluations', icon: 'clipboard-document-list',
         children: [
-            { id: 'sa-periods',        label: 'Périodes',       icon: 'calendar',           href: '/admin/examinations/period/list',        permission: 'view.exams.periods'   },
-            { id: 'sa-exams',          label: 'Examens',        icon: 'clipboard-document', href: '/admin/examinations/exam/list',           permission: 'view.exams.list'      },
-            { id: 'sa-schedules',      label: 'Programmations', icon: 'calendar-days',      href: '/admin/examinations/schedule/list',       permission: 'view.exams.schedules' },
-            { id: 'sa-marks-register', label: 'Registres',      icon: 'table-cells',        href: '/admin/examinations/marks_register/list', permission: 'view.exams.marks'     },
-            { id: 'sa-marks-grade',    label: 'Barèmes',        icon: 'chart-bar',          href: '/admin/examinations/marks_grade/list',    permission: 'view.exams.grades'    },
+            { id: 'sa-periods',        label: 'Périodes',         icon: 'calendar',           href: '/admin/examinations/period/list',        permission: 'view.exams.periods'    },
+            { id: 'sa-exams',          label: 'Sessions',         icon: 'clipboard-document', href: '/admin/examinations/exam/list',           permission: 'view.exams.list'       },
+            { id: 'sa-evaluations',    label: 'Évaluations',      icon: 'pencil-square',      href: '/admin/evaluations/list',                 permission: 'view.exams.list'       },
+            { id: 'sa-grade-entry',    label: 'Saisie des notes', icon: 'table-cells',        href: '/admin/evaluations/grade-entry',          permission: 'view.exams.marks'      },
+            { id: 'sa-grades-pending', label: 'À valider',        icon: 'check-badge',        href: '/admin/evaluations/grades/pending',       permission: 'action.marks.manage'   },
+            { id: 'sa-bulletins',      label: 'Bulletins',        icon: 'document-text',      href: '/admin/bulletins/list',                   permission: 'view.bulletins.list'   },
+            { id: 'sa-schedules',      label: 'Programmations',   icon: 'calendar-days',      href: '/admin/examinations/schedule/list',       permission: 'view.exams.schedules'  },
+            { id: 'sa-marks-register', label: 'Registres',        icon: 'table-cells',        href: '/admin/examinations/marks_register/list', permission: 'view.exams.marks'      },
+            { id: 'sa-marks-grade',    label: 'Barèmes',          icon: 'chart-bar',          href: '/admin/examinations/marks_grade/list',    permission: 'view.exams.grades'     },
+        ],
+    },
+    {
+        id: 'sa-staff', label: 'Ressources Humaines', icon: 'user-group',
+        children: [
+            { id: 'sa-staff-list',   label: 'Personnel',       icon: 'users',         href: '/admin/staff/list',             permission: 'view.staff.list'   },
+            { id: 'sa-staff-leaves', label: 'Congés',          icon: 'calendar-days', href: '/admin/staff/leaves/list',      permission: 'view.staff.leaves' },
+            { id: 'sa-leave-types',  label: 'Types de congés', icon: 'tag',           href: '/admin/staff/leave-types/list', permission: 'view.staff.leaves' },
+            { id: 'sa-staff-events', label: 'Événements',      icon: 'sparkles',      href: '/admin/staff/events/list',      permission: 'view.staff.events' },
         ],
     },
     {
@@ -140,27 +166,11 @@ export const superAdminNav: NavItem[] = [
             { id: 'sa-roles',       label: 'Rôles',                 icon: 'shield-check',      href: '/superadmin/config/roles' },
             { id: 'sa-permissions', label: 'Permissions',           icon: 'key',               href: '/superadmin/config/permissions' },
             { id: 'sa-assign',      label: 'Attribuer permissions', icon: 'arrows-right-left', href: '/superadmin/config/assign' },
+            { id: 'sa-del-logs',    label: 'Journaux suppression',  icon: 'trash',             href: '/superadmin/deletion-logs' },
         ],
     },
 ];
 
-// ─── Teacher nav ──────────────────────────────────────────────────────────────
-export const teacherNav: NavItem[] = [
-    { id: 'dashboard',      label: 'Dashboard',         icon: 'home',                   href: '/teacher/dashboard' },
-    { id: 'my-students',    label: 'Mes Apprenants',    icon: 'user-group',             href: '/teacher/my_student' },
-    { id: 'class-subject',  label: 'Matières & Classes',icon: 'book-open',              href: '/teacher/class_subject' },
-    { id: 'marks-register', label: 'Registre',          icon: 'clipboard-document-list',href: '/teacher/marks_register' },
-    {
-        id: 'attendance', label: 'Présences', icon: 'user-check',
-        children: [
-            { id: 'attendance-list',   label: 'Saisie',   icon: 'pencil-square', href: '/teacher/attendance/student/list' },
-            { id: 'attendance-report', label: 'Rapports', icon: 'chart-bar',     href: '/teacher/attendance/report' },
-        ],
-    },
-    { id: 'homework',    label: 'Devoirs',       icon: 'pencil',   href: '/teacher/practicalworks/homework/list' },
-    { id: 'noticeboard', label: 'Notifications', icon: 'bell',     href: '/teacher/my_noticeboard' },
-    { id: 'calendar',    label: 'Calendrier',    icon: 'calendar', href: '/teacher/my_calendar' },
-];
 
 // ─── Student nav ──────────────────────────────────────────────────────────────
 export const studentNav: NavItem[] = [
@@ -168,6 +178,8 @@ export const studentNav: NavItem[] = [
     { id: 'subjects',    label: 'Mes Matières',    icon: 'book-open',               href: '/student/my_subject' },
     { id: 'timetable',   label: 'Emploi du temps', icon: 'calendar',                href: '/student/my_timetable' },
     { id: 'exams',       label: 'Évaluations',     icon: 'clipboard-document-list', href: '/student/my_exam_timetable' },
+    { id: 'grades',      label: 'Mes Notes',       icon: 'pencil-square',           href: '/student/my_grades' },
+    { id: 'bulletins',   label: 'Mes Bulletins',   icon: 'document-text',           href: '/student/my_bulletins' },
     { id: 'results',     label: 'Mes Résultats',   icon: 'chart-bar',               href: '/student/my_exam_result' },
     { id: 'attendance',  label: 'Ma Présence',     icon: 'user-check',              href: '/student/my_attendance' },
     { id: 'homework',    label: 'Mes Devoirs',     icon: 'pencil',                  href: '/student/my_homework' },
@@ -181,6 +193,26 @@ export const parentNav: NavItem[] = [
     { id: 'dashboard',   label: 'Dashboard',     icon: 'home',       href: '/parent/dashboard' },
     { id: 'my-students', label: 'Mes Enfants',   icon: 'user-group', href: '/parent/my_student' },
     { id: 'noticeboard', label: 'Notifications', icon: 'bell',       href: '/parent/my_noticeboard' },
+];
+
+// ─── Teacher nav (mis à jour) ─────────────────────────────────────────────────
+export const teacherNav: NavItem[] = [
+    { id: 'dashboard',      label: 'Dashboard',          icon: 'home',                    href: '/teacher/dashboard' },
+    { id: 'my-students',    label: 'Mes Apprenants',     icon: 'user-group',              href: '/teacher/my_student' },
+    { id: 'class-subject',  label: 'Matières & Classes', icon: 'book-open',               href: '/teacher/class_subject' },
+    { id: 'evaluations',    label: 'Évaluations',        icon: 'pencil-square',           href: '/teacher/evaluations' },
+    { id: 'grade-entry',    label: 'Saisie notes',       icon: 'clipboard-document-list', href: '/teacher/evaluations/grade-entry' },
+    { id: 'marks-register', label: 'Registre (ancien)',  icon: 'table-cells',             href: '/teacher/marks_register' },
+    {
+        id: 'attendance', label: 'Présences', icon: 'user-check',
+        children: [
+            { id: 'attendance-list',   label: 'Saisie',   icon: 'pencil-square', href: '/teacher/attendance/student/list' },
+            { id: 'attendance-report', label: 'Rapports', icon: 'chart-bar',     href: '/teacher/attendance/report' },
+        ],
+    },
+    { id: 'homework',    label: 'Devoirs',       icon: 'pencil',   href: '/teacher/practicalworks/homework/list' },
+    { id: 'noticeboard', label: 'Notifications', icon: 'bell',     href: '/teacher/my_noticeboard' },
+    { id: 'calendar',    label: 'Calendrier',    icon: 'calendar', href: '/teacher/my_calendar' },
 ];
 
 // ─── Map role → nav ───────────────────────────────────────────────────────────

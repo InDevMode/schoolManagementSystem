@@ -66,12 +66,26 @@
             <StatCard label="Devoirs"         :value="totalHomework" icon="pencil"                  color="success"   href="/admin/practicalworks/homework/list" />
         </div>
 
-        <!-- ── Ligne 3 : Présences du jour ── -->
+        <!-- ── Ligne RH : Personnel + Congés ── -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <StatCard label="Personnel actif"   :value="totalStaff ?? 0"         icon="user-group"   color="primary"   href="/admin/staff/list" />
+            <StatCard label="Congés en attente" :value="totalPendingLeaves ?? 0" icon="calendar-days" color="warning"  href="/admin/staff/leaves/list" />
+            <StatCard label="Éval. ouvertes"    :value="0"                       icon="pencil-square" color="info"     href="/admin/evaluations/list" />
+            <StatCard label="Bulletins brouillon" :value="0"                     icon="document-text" color="secondary" href="/admin/bulletins/list" />
+        </div>
+
+        <!-- ── Présences du jour ── -->
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
             <AttendanceBadge label="Présents"    :value="totalAttendanceStudentPresent" color="success" icon="user-check" />
             <AttendanceBadge label="En retard"   :value="totalAttendanceStudentLate"    color="warning" icon="calendar" />
             <AttendanceBadge label="Absents"     :value="totalAttendanceStudentAbsent"  color="danger"  icon="user-check" />
             <AttendanceBadge label="Demi-journée":value="totalAttendanceStudentHalfDay" color="info"    icon="calendar-days" />
+        </div>
+
+        <!-- ── Ligne 4 : Événements + Congés actifs ── -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <UpcomingEvents :events="upcomingEvents ?? []" see-all-href="/admin/staff/events/list"/>
+            <CurrentLeaves  :leaves="currentLeaves ?? []"  see-all-href="/admin/staff/leaves/list"/>
         </div>
 
         <!-- ── Ligne 4 : Graphique + Donut ── -->
@@ -187,8 +201,7 @@
         </div>
 
         <!-- ── Ligne 5 : Calendrier style Events (light/dark adaptatif) ── -->
-        <div :class="[
-            'rounded-2xl overflow-hidden border transition-colors duration-300',
+        <div :class="[            'rounded-2xl overflow-hidden border transition-colors duration-300',
             isDark
                 ? 'border-white/8'
                 : 'border-gray-200 shadow-card-md',
@@ -289,17 +302,17 @@
 
                             <!-- Mini label événement -->
                             <div
-                                v-if="getDayEvents(day).length"
+                                v-if="getDayEventsFromDb(day).length"
                                 class="absolute bottom-1.5 left-2 right-2 text-[9px] font-medium truncate leading-none"
-                                :style="{ color: getDayEvents(day)[0].highlightBg ? 'rgba(255,255,255,0.9)' : getDayEvents(day)[0].color }"
+                                :style="{ color: getDayEventsFromDb(day)[0].highlightBg ? 'rgba(255,255,255,0.9)' : getDayEventsFromDb(day)[0].color }"
                             >
-                                {{ getDayEvents(day)[0].title }}
+                                {{ getDayEventsFromDb(day)[0].title }}
                             </div>
 
                             <!-- Points si plusieurs événements -->
-                            <div v-if="getDayEvents(day).length > 1" class="flex gap-1 mt-auto">
+                            <div v-if="getDayEventsFromDb(day).length > 1" class="flex gap-1 mt-auto">
                                 <span
-                                    v-for="(ev, i) in getDayEvents(day).slice(0, 3)"
+                                    v-for="(ev, i) in getDayEventsFromDb(day).slice(0, 3)"
                                     :key="i"
                                     class="w-2 h-2 rounded-full"
                                     :style="{ background: ev.color }"
@@ -385,10 +398,12 @@ import { useDark } from '@vueuse/core';
 import StatCard from '@/Components/Dashboard/StatCard.vue';
 import BigStatCard from '@/Components/Dashboard/BigStatCard.vue';
 import AttendanceBadge from '@/Components/Dashboard/AttendanceBadge.vue';
+import UpcomingEvents from '@/Components/Dashboard/UpcomingEvents.vue';
+import CurrentLeaves from '@/Components/Dashboard/CurrentLeaves.vue';
 
 const isDark = useDark();
 
-defineProps<{
+const props = defineProps<{
     totalAdmin: number;
     totalTeacher: number;
     totalStudent: number;
@@ -459,7 +474,7 @@ const calendarEvents: CalEvent[] = [
 ];
 
 // Événements pour un jour donné (mois courant)
-const getDayEvents = (day: number): CalEvent[] =>
+const getDayEventsFromDb = (day: number): CalEvent[] =>
     calendarEvents.filter(e => e.day === day && e.month === calMonth.value);
 
 // Style de fond d'une case — adaptatif light/dark
@@ -467,7 +482,7 @@ const getDayStyle = (day: number): Record<string, string> => {
     if (isToday(day)) {
         return { background: '#7B74F0' };
     }
-    const evs = getDayEvents(day);
+    const evs = getDayEventsFromDb(day);
     if (evs.length && evs[0].highlight) {
         return { background: evs[0].highlightBg ?? '#ec4899' };
     }
@@ -483,7 +498,7 @@ const getDayStyle = (day: number): Record<string, string> => {
 
 // Couleur du texte selon le fond et le mode
 const getDayTextColor = (day: number): string => {
-    const evs = getDayEvents(day);
+    const evs = getDayEventsFromDb(day);
     if (evs.length && evs[0].highlight) return 'text-white';
     if (day === selectedDay.value) return isDark.value ? 'text-white' : 'text-primary-700';
     if (isWeekend(day)) return isDark.value ? 'text-white/40' : 'text-gray-400';
