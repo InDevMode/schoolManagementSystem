@@ -90,13 +90,36 @@
                 </span>
             </template>
 
+            <!-- Email -->
+            <template #cell-email="{ row }">
+                <div class="group/email flex items-center gap-1 min-w-0">
+                    <a :href="`mailto:${row.email}`"
+                       class="text-xs text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 truncate max-w-[160px] transition-colors"
+                       :title="row.email as string">
+                        {{ row.email }}
+                    </a>
+                    <button type="button"
+                            class="flex-shrink-0 opacity-0 group-hover/email:opacity-100 transition-opacity duration-150
+                                   p-0.5 rounded text-gray-400 hover:text-primary-600 hover:bg-primary-50
+                                   dark:hover:text-primary-400 dark:hover:bg-primary-900/20"
+                            :title="copiedField === `email-${row.id}` ? 'Copié !' : 'Copier l\'email'"
+                            @click.stop="copyToClipboard(row.email as string, `email-${row.id}`)">
+                        <svg v-if="copiedField !== `email-${row.id}`" class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                        </svg>
+                        <svg v-else class="w-3 h-3 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                        </svg>
+                    </button>
+                </div>
+            </template>
+
             <!-- Statut -->
             <template #cell-status="{ row }">
                 <AppBadge :variant="row.status == 1 ? 'success' : 'danger'" dot>
                     {{ row.status == 1 ? 'Actif' : 'Inactif' }}
                 </AppBadge>
             </template>
-
             <!-- En ligne -->
             <template #cell-online="{ row }">
                 <span class="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full"
@@ -426,6 +449,7 @@ const columns = computed(() => [
     { key: 'name',          label: '',              searchable: true,  visible: false },
     { key: 'admission_number', label: '',           searchable: true,  visible: false },
     { key: 'class_name',    label: 'Classe',        sortable: true,    searchable: true },
+    { key: 'email',         label: 'Email',         sortable: true,    searchable: true },
     { key: 'mobile_number', label: 'Téléphone',     editable: isSuperAdmin.value, dataType: 'tel' as const, searchable: true },
     { key: 'status',        label: 'Statut',        sortable: true,    searchable: false },
     { key: 'online',        label: 'En ligne',      sortable: false,   searchable: false },

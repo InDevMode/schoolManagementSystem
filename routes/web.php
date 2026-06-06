@@ -11,7 +11,6 @@ use App\Http\Controllers\ClassTeacherController;
 use App\Http\Controllers\ClassTimetableController;
 use App\Http\Controllers\CommunicateController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\ExaminationController;
 use App\Http\Controllers\FeesCollectionController;
 use App\Http\Controllers\ParentController;
 use App\Http\Controllers\PeriodController;
@@ -148,32 +147,11 @@ Route::group(['middleware' => 'admin'], function () {
     Route::post('admin/class_timetable/add',    [ClassTimetableController::class, 'add'])->middleware('check_perm:view.academics.timetable');
 
     // Period url
-    Route::get('admin/examinations/period/list',        [PeriodController::class, 'list'])->middleware('check_perm:view.exams.periods');
-    Route::post('admin/examinations/period/add',        [PeriodController::class, 'create'])->middleware('check_perm:view.exams.periods');
-    Route::post('admin/examinations/period/edit/{id}',  [PeriodController::class, 'update'])->middleware('check_perm:view.exams.periods');
-    Route::get('admin/examinations/period/delete/{id}', [PeriodController::class, 'delete'])->middleware('check_perm:view.exams.periods');
-
-    // Examinations url
-    Route::get('admin/examinations/exam/list',        [ExaminationController::class, 'list'])->middleware('check_perm:view.exams.list');
-    Route::post('admin/examinations/exam/add',        [ExaminationController::class, 'create'])->middleware('check_perm:action.exams.create');
-    Route::post('admin/examinations/exam/edit/{id}',  [ExaminationController::class, 'update'])->middleware('check_perm:action.exams.edit');
-    Route::get('admin/examinations/exam/delete/{id}', [ExaminationController::class, 'delete'])->middleware('check_perm:action.exams.delete');
-
-    // Schedule url
-    Route::get('admin/examinations/schedule/list',  [ExaminationController::class, 'scheduleList'])->middleware('check_perm:view.exams.schedules');
-    Route::post('admin/examinations/schedule/add',  [ExaminationController::class, 'scheduleCreate'])->middleware('check_perm:view.exams.schedules');
-
-    // Marks register url
-    Route::get('admin/examinations/marks_register/list',               [ExaminationController::class, 'marksRegister'])->middleware('check_perm:view.exams.marks');
-    Route::post('admin/examinations/marks_register/add',               [ExaminationController::class, 'addMarksRegister'])->middleware('check_perm:action.marks.manage');
-    Route::post('admin/examinations/marks_register/addSingleSubject',  [ExaminationController::class, 'addSingleMarksRegister'])->middleware('check_perm:action.marks.manage');
-    Route::get('admin/examinations/marks_register/print',              [ExaminationController::class, 'studentExamResultPrint'])->middleware('check_perm:view.exams.marks');
-
-    // Marks grade url
-    Route::get('admin/examinations/marks_grade/list',        [ExaminationController::class, 'listMarksGrade'])->middleware('check_perm:view.exams.grades');
-    Route::post('admin/examinations/marks_grade/add',        [ExaminationController::class, 'createMarksGrade'])->middleware('check_perm:view.exams.grades');
-    Route::post('admin/examinations/marks_grade/edit/{id}',  [ExaminationController::class, 'updateMarksGrade'])->middleware('check_perm:view.exams.grades');
-    Route::get('admin/examinations/marks_grade/delete/{id}', [ExaminationController::class, 'deleteMarksGrade'])->middleware('check_perm:view.exams.grades');
+    Route::get('admin/examinations/period/list',              [PeriodController::class, 'list'])->middleware('check_perm:view.exams.periods');
+    Route::post('admin/examinations/period/add',              [PeriodController::class, 'create'])->middleware('check_perm:view.exams.periods');
+    Route::post('admin/examinations/period/edit/{id}',        [PeriodController::class, 'update'])->middleware('check_perm:view.exams.periods');
+    Route::get('admin/examinations/period/delete/{id}',       [PeriodController::class, 'delete'])->middleware('check_perm:view.exams.periods');
+    Route::post('admin/examinations/period/set-current/{id}', [PeriodController::class, 'setCurrent'])->middleware('check_perm:view.exams.periods');
 
     // Attendance url
     Route::get('admin/attendance/students/list',        [AttendanceController::class, 'attendanceStudent'])->middleware('check_perm:view.attendance.manage');

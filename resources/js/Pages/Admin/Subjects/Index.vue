@@ -107,7 +107,7 @@
         <AppModal v-model="showDelete" title="Supprimer la matière" size="sm" persistent>
             <p class="text-sm text-gray-600 dark:text-gray-400">
                 Voulez-vous vraiment supprimer la matière <strong class="text-gray-900 dark:text-white">{{ deleteTarget?.name }}</strong> ?
-                Cette action est irréversible.
+                Elle sera masquée de l'affichage. Le super administrateur peut la retrouver dans l'historique.
             </p>
             <template #footer>
                 <AppButton variant="ghost" @click="showDelete = false">Annuler</AppButton>

@@ -33,14 +33,15 @@ class StaffLeaveModel extends Model
     {
         $q = self::select(
             'staff_leaves.*',
-            'staff.first_name',
-            'staff.last_name',
+            'users.name as first_name',
+            'users.last_name',
             'staff.role as staff_role',
             'leave_types.name as leave_type_name',
             'leave_types.color as leave_type_color',
             'approver.name as approver_name',
         )
             ->join('staff', 'staff.id', '=', 'staff_leaves.staff_id')
+            ->join('users', 'users.id', '=', 'staff.user_id')
             ->join('leave_types', 'leave_types.id', '=', 'staff_leaves.leave_type_id')
             ->leftJoin('users as approver', 'approver.id', '=', 'staff_leaves.approved_by')
             ->where('staff_leaves.is_delete', 0);

@@ -51,8 +51,21 @@ class EvaluationSeeder extends Seeder
         $evalCount  = 0;
         $gradeCount = 0;
 
-        // ── 3. Pour chaque classe ─────────────────────────────────────────────
-        foreach ($classes->take(3) as $class) {
+        // ── 3. Pour chaque classe qui a des élèves ────────────────────────────
+        $classesWithStudents = $classes->filter(function ($class) {
+            return User::where('class_id', $class->id)
+                ->where('user_type', 3)
+                ->where('is_delete', 0)
+                ->where('status', 1)
+                ->exists();
+        })->take(3);
+
+        if ($classesWithStudents->isEmpty()) {
+            $this->command->warn('  ⚠️  Aucune classe avec des élèves trouvée.');
+            return;
+        }
+
+        foreach ($classesWithStudents as $class) {
             // Élèves de la classe
             $students = User::where('class_id', $class->id)
                 ->where('user_type', 3)
@@ -107,7 +120,16 @@ class EvaluationSeeder extends Seeder
     private function seedPeriods(): array
     {
         $settings = DB::table('settings')->first();
-        $settingsId = $settings?->id ?? 1;
+        if (!$settings) {
+            $this->command->warn('  ⚠️  Aucun enregistrement dans settings. Création d\'un settings par défaut...');
+            $settingsId = DB::table('settings')->insertGetId([
+                'school_name' => 'Mon École',
+                'created_at'  => now(),
+                'updated_at'  => now(),
+            ]);
+        } else {
+            $settingsId = $settings->id;
+        }
 
         $periodsData = [
             [

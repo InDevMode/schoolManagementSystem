@@ -9,12 +9,10 @@ use App\Models\ClassTeacherModel;
 use App\Models\ClassTimetableModel;
 use App\Models\CommunicateModel;
 use App\Models\EvaluationModel;
-use App\Models\ExaminationModel;
 use App\Models\FeesCollectionModel;
 use App\Models\HomeworkModel;
 use App\Models\NoticeBoardMessageModel;
 use App\Models\PeriodModel;
-use App\Models\ScheduleModel;
 use App\Models\StaffEventModel;
 use App\Models\StaffLeaveModel;
 use App\Models\StaffModel;
@@ -62,7 +60,6 @@ class DashboardController extends Controller
                 $data['totalFeesCollections']      = FeesCollectionModel::getTotalFeesCollections();
                 $data['totalFeesCollectionsToday'] = FeesCollectionModel::getTotalFeesCollectionsToday();
                 $data['totalCommunicate']          = CommunicateModel::getTotalCommunicate();
-                $data['totalExam']                 = ExaminationModel::getTotalExam();
                 $data['totalNoticeBoard']          = NoticeBoardMessageModel::getTotalNoticeBoardMessage();
                 $data['totalHomework']             = HomeworkModel::getTotalHomework();
                 $data['totalWork']                 = WorkModel::getTotalWork();
@@ -76,12 +73,14 @@ class DashboardController extends Controller
                 $data['totalRoles']            = \Spatie\Permission\Models\Role::count();
                 $data['totalPermissions']      = \Spatie\Permission\Models\Permission::count();
                 // RH + nouveaux
-                $data['totalStaff']         = $this->safeStat(fn() => StaffModel::getTotalActive());
-                $data['totalPendingLeaves'] = $this->safeStat(fn() => StaffLeaveModel::getPendingCount());
-                $data['currentLeaves']      = $this->safeStat(fn() => StaffModel::getCurrentLeaves(), []);
-                $data['upcomingEvents']     = $upcomingEvents;
-                $data['calendarEvents']     = $calendarEvents;
-                $data['currentPeriod']      = $currentPeriod;
+                $data['totalStaff']          = $this->safeStat(fn() => StaffModel::getTotalActive());
+                $data['totalPendingLeaves']  = $this->safeStat(fn() => StaffLeaveModel::getPendingCount());
+                $data['totalPendingGrades']  = $this->safeStat(fn() => \App\Models\GradeModel::where('validated', false)->where('is_delete', 0)->count());
+                $data['totalUpcomingEvents'] = $this->safeStat(fn() => StaffEventModel::where('is_delete', 0)->whereDate('event_date', '>=', today())->count());
+                $data['currentLeaves']       = $this->safeStat(fn() => StaffModel::getCurrentLeaves(), []);
+                $data['upcomingEvents']      = $upcomingEvents;
+                $data['calendarEvents']      = $calendarEvents;
+                $data['currentPeriod']       = $currentPeriod;
                 return Inertia::render('Dashboard/SuperAdmin', $data);
 
             // ── Admin ────────────────────────────────────────────────────────
@@ -96,7 +95,6 @@ class DashboardController extends Controller
                 $data['totalFeesCollections']      = FeesCollectionModel::getTotalFeesCollections();
                 $data['totalFeesCollectionsToday'] = FeesCollectionModel::getTotalFeesCollectionsToday();
                 $data['totalCommunicate']          = CommunicateModel::getTotalCommunicate();
-                $data['totalExam']                 = ExaminationModel::getTotalExam();
                 $data['totalNoticeBoard']          = NoticeBoardMessageModel::getTotalNoticeBoardMessage();
                 $data['totalNoticeBoardTeacher']   = NoticeBoardMessageModel::getTotalNoticeBoardMessageTeacher();
                 $data['totalClassTimetable']       = ClassTimetableModel::getTotalClassTimetable();
@@ -110,12 +108,15 @@ class DashboardController extends Controller
                 $data['totalAttendanceStudentAbsent']   = StudentAttendanceModel::getTotalAttendanceTypeStudent(3);
                 $data['totalAttendanceStudentHalfDay']  = StudentAttendanceModel::getTotalAttendanceTypeStudent(4);
                 // RH + nouveaux
-                $data['totalStaff']         = $this->safeStat(fn() => StaffModel::getTotalActive());
-                $data['totalPendingLeaves'] = $this->safeStat(fn() => StaffLeaveModel::getPendingCount());
-                $data['currentLeaves']      = $this->safeStat(fn() => StaffModel::getCurrentLeaves(), []);
-                $data['upcomingEvents']     = $upcomingEvents;
-                $data['calendarEvents']     = $calendarEvents;
-                $data['currentPeriod']      = $currentPeriod;
+                $data['totalStaff']          = $this->safeStat(fn() => StaffModel::getTotalActive());
+                $data['totalPendingLeaves']  = $this->safeStat(fn() => StaffLeaveModel::getPendingCount());
+                $data['totalPendingGrades']  = $this->safeStat(fn() => \App\Models\GradeModel::where('validated', false)->where('is_delete', 0)->count());
+                $data['totalOpenEvals']      = $this->safeStat(fn() => \App\Models\EvaluationModel::where('status', 'open')->where('is_delete', 0)->count());
+                $data['totalDraftBulletins'] = $this->safeStat(fn() => \App\Models\BulletinModel::where('status', 'draft')->where('is_delete', 0)->count());
+                $data['currentLeaves']       = $this->safeStat(fn() => StaffModel::getCurrentLeaves(), []);
+                $data['upcomingEvents']      = $upcomingEvents;
+                $data['calendarEvents']      = $calendarEvents;
+                $data['currentPeriod']       = $currentPeriod;
                 return Inertia::render('Dashboard/Admin', $data);
 
             // ── Professeur ───────────────────────────────────────────────────
@@ -124,9 +125,6 @@ class DashboardController extends Controller
                 $data['totalTeacherStudent']  = User::getTotalTeacherStudent();
                 $data['totalTeacherClass']    = ClassTeacherModel::getTotalTeacherClass();
                 $data['totalTeacherSubject']  = ClassTeacherModel::getTotalTeacherSubject();
-                $data['totalExam']            = ExaminationModel::getTotalExam();
-                $data['totalExamTeacherToday']= ScheduleModel::getTotalExamClassTimebableTeacherToday();
-                $data['totalExamTeacher']     = ScheduleModel::getTotalExamClassTimebableTeacher();
                 $data['totalNoticeBoard']     = NoticeBoardMessageModel::getTotalNoticeBoardMessage();
                 $data['totalNoticeBoardTeacher'] = NoticeBoardMessageModel::getTotalNoticeBoardMessageTeacher();
                 // Nouveaux
@@ -147,7 +145,6 @@ class DashboardController extends Controller
                 $data['totalFeesCollections'] = FeesCollectionModel::getFeesCollectionsByStudent();
                 $data['totalFeesCollectionsAmoutPaidByStudent'] = FeesCollectionModel::getTotalFeesCollectionsAmountPaidByStudent();
                 $data['totalFeesCollectionsAmountStudent']      = FeesCollectionModel::getTotalFeesCollectionsAmountStudent();
-                $data['totalExamStudent']     = ScheduleModel::getTotalExamStudent();
                 $data['totalClassTimetableStudent'] = ClassTimetableModel::getTotalClassTimetableStudent();
                 $data['totalHomeworkStudent'] = HomeworkModel::getTotalHomeworkStudent();
                 $data['totalWorkStudent']     = WorkModel::getTotalWorkStudent();

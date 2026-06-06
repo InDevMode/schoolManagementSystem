@@ -3,7 +3,7 @@
         <div>
             <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Journaux de suppression</h1>
             <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
-                Historique complet de toutes les suppressions — visible uniquement par le super administrateur
+                Historique de tous les éléments masqués — seul le super administrateur peut consulter cet historique et les données d'origine.
             </p>
         </div>
 
@@ -56,7 +56,7 @@
                     </svg>
                     <div>
                         <p class="text-sm font-semibold text-danger-700 dark:text-danger-400">
-                            Enregistrement #{{ selectedLog.record_id }} supprimé de <code class="font-mono">{{ selectedLog.table_name }}</code>
+                            Enregistrement #{{ selectedLog.record_id }} masqué de <code class="font-mono">{{ selectedLog.table_name }}</code>
                         </p>
                         <p class="text-xs text-danger-600 dark:text-danger-500 mt-0.5">
                             Par {{ selectedLog.deleter_last_name }} {{ selectedLog.deleter_name }}

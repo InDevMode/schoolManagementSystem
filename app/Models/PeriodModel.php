@@ -15,15 +15,22 @@ class PeriodModel extends Model
     protected $fillable = [
         'settings_id',
         'name',
+        'type',
+        'order_number',
+        'school_year',
         'start_date',
         'end_date',
         'is_current',
         'status',
-        'created_by'
+        'created_by',
     ];
 
     protected $hidden = [
-        'is_delete'
+        'is_delete',
+    ];
+
+    protected $casts = [
+        'is_current' => 'boolean',
     ];
 
     public static function getSingle(int $id)
@@ -83,7 +90,8 @@ class PeriodModel extends Model
         return PeriodModel::select('periods.*')
             ->where('periods.is_delete', '=', 0)
             ->where('periods.status', '=', 1)
-            ->orderBy('periods.id', 'desc')
+            ->orderBy('periods.school_year', 'desc')
+            ->orderBy('periods.order_number', 'asc')
             ->get();
     }
 

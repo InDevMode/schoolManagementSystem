@@ -68,10 +68,10 @@
 
         <!-- ── Ligne RH : Personnel + Congés ── -->
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            <StatCard label="Personnel actif"   :value="totalStaff ?? 0"         icon="user-group"   color="primary"   href="/admin/staff/list" />
-            <StatCard label="Congés en attente" :value="totalPendingLeaves ?? 0" icon="calendar-days" color="warning"  href="/admin/staff/leaves/list" />
-            <StatCard label="Éval. ouvertes"    :value="0"                       icon="pencil-square" color="info"     href="/admin/evaluations/list" />
-            <StatCard label="Bulletins brouillon" :value="0"                     icon="document-text" color="secondary" href="/admin/bulletins/list" />
+            <StatCard label="Personnel actif"     :value="totalStaff ?? 0"          icon="user-group"    color="primary"   href="/admin/staff/list" />
+            <StatCard label="Congés en attente"   :value="totalPendingLeaves ?? 0"  icon="calendar-days" color="warning"   href="/admin/staff/leaves/list" />
+            <StatCard label="Éval. ouvertes"      :value="totalOpenEvals ?? 0"      icon="pencil-square" color="info"      href="/admin/evaluations/list" />
+            <StatCard label="Bulletins brouillon" :value="totalDraftBulletins ?? 0" icon="document-text" color="secondary" href="/admin/bulletins/list" />
         </div>
 
         <!-- ── Présences du jour ── -->
@@ -418,6 +418,12 @@ const props = defineProps<{
     totalAttendanceStudentLate: number;
     totalAttendanceStudentAbsent: number;
     totalAttendanceStudentHalfDay: number;
+    totalStaff?: number;
+    totalPendingLeaves?: number;
+    totalOpenEvals?: number;
+    totalDraftBulletins?: number;
+    upcomingEvents?: any[];
+    currentLeaves?: any[];
     [key: string]: unknown;
 }>();
 

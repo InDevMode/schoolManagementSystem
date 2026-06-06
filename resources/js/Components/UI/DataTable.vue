@@ -455,7 +455,7 @@ onUnmounted(()=>{
 const confirmDelete = (id: string|number, label = 'cet élément') => {
   openConfirm({
     title: 'Supprimer',
-    message: `Voulez-vous vraiment supprimer ${label} ? Cette action est irréversible.`,
+    message: `Voulez-vous vraiment supprimer ${label} ? L'élément sera masqué mais conservé dans l'historique.`,
     confirmLabel: 'Supprimer',
     variant: 'danger',
     onConfirm: () => emit('delete', [id]),
@@ -466,7 +466,7 @@ const handleBulkDelete = () => {
   const ids = selectedRows.value.map(r => r[props.rowKey ?? 'id'] as string|number);
   openConfirm({
     title: 'Supprimer la sélection',
-    message: `Voulez-vous vraiment supprimer ${ids.length} élément(s) ? Cette action est irréversible.`,
+    message: `Voulez-vous vraiment supprimer ${ids.length} élément(s) ? Ils seront masqués mais conservés dans l'historique.`,
     confirmLabel: 'Supprimer',
     variant: 'danger',
     onConfirm: () => { emit('delete', ids); clearSelection(); },
@@ -517,7 +517,7 @@ defineExpose({ clearSelection, selected, filteredRows, confirmDelete });
                 d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
         </svg>
         <input v-model="search" type="text"
-               placeholder="Rechercher… (ex: Jean, actif)"
+               placeholder="Rechercher… "
                title="Séparez plusieurs termes par des virgules pour une recherche combinée"
                class="w-full h-9 pl-9 pr-8 text-sm rounded-lg
                       border border-gray-200 dark:border-gray-600/60

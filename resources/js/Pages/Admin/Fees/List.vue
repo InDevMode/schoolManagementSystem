@@ -163,9 +163,10 @@ const paymentLabel = (type: string) => ({
 }[type] ?? type ?? '—');
 
 const deleteFees = (id: number) => {
-    if (confirm('Supprimer cette contribution ?')) {
-        router.get(`/admin/feescollections/collections/delete/${id}`);
-    }
+    router.get(`/admin/feescollections/collections/delete/${id}`, {}, {
+        onSuccess: () => toast.success('Contribution masquée.'),
+        onError:   () => toast.error('Erreur lors de la suppression.'),
+    });
 };
 
 const handleDelete = (ids: (string | number)[]) => {
