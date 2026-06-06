@@ -317,17 +317,8 @@ Route::group(['middleware' => 'teacher'], function () {
     // Teacher student url
     Route::get('teacher/my_student', [StudentController::class, 'myStudent']);
 
-    // Teacher side exam timetable
-    Route::get('teacher/my_exam_timetable', [ExaminationController::class, 'myExamTimetableTeacher']);
-
-    // Student calendar url
+    // Teacher calendar url
     Route::get('teacher/my_calendar', [CalendarController::class, 'myTeacherCalendar']);
-
-    // Teacher Marks register url
-    Route::get('teacher/marks_register', [ExaminationController::class, 'teacherMarkRegister']);
-    Route::post('teacher/add_marks_register', [ExaminationController::class, 'addTeacherMarkRegister']);
-    Route::post('teacher/add_single_marks_register', [ExaminationController::class, 'addSingleTeacherMarkRegister']);
-    Route::get('teacher/marks_register/print', [ExaminationController::class, 'studentExamResultPrint']);
 
     // ── Évaluations béninoises — prof ─────────────────────────────────────
     Route::get('teacher/evaluations',                  [EvaluationController::class, 'teacherList']);
@@ -378,11 +369,6 @@ Route::group(['middleware' => 'student'], function () {
     Route::get('student/my_subject', [SubjectController::class, 'studentSubject']);
     Route::get('student/my_timetable', [ClassTimetableController::class, 'studentTimetable']);
 
-    // Student side exam timetable
-    Route::get('student/my_exam_timetable', [ExaminationController::class, 'myExamTimetableStudent']);
-    Route::get('student/my_exam_result', [ExaminationController::class, 'myExamResultStudent']);
-    Route::get('student/my_exam_result/print', [ExaminationController::class, 'studentExamResultPrint']);
-
     // ── Notes et bulletins — élève ────────────────────────────────────────
     Route::get('student/my_grades',                          [EvaluationController::class, 'studentGrades']);
     Route::get('student/my_bulletins',                       [BulletinController::class, 'studentBulletins']);
@@ -430,16 +416,11 @@ Route::group(['middleware' => 'parent'], function () {
     // Parent route side show student
     Route::get('parent/my_student', [ParentController::class, 'parentStudent']);
     Route::get('parent/my_student/{student_id}/subject', [SubjectController::class, 'parentStudentSubject']);
-    Route::get('parent/my_student/exam_timetable/{student_id}/subject', [ExaminationController::class, 'parentStudentExamTimetable']);
     // Parent calendar url
     Route::get('parent/my_student/calendar/{student_id}/subject', [CalendarController::class, 'parentStudentExamCalendar']);
 
     // Parent student class timetable
     Route::get('parent/my_student/{class_id}/subject/{subject_id}/timetable/student/{student_id}', [ClassTimetableController::class, 'parentStudentSubjectTimetable']);
-
-    // Parent student exam result url
-    Route::get('parent/my_student/exam_result/{student_id}/result', [ExaminationController::class, 'parentStudentExamResult']);
-    Route::get('parent/my_student/exam_result/print', [ExaminationController::class, 'studentExamResultPrint']);
 
     // ── Notes et bulletins — parent ───────────────────────────────────────
     Route::get('parent/my_student/{student_id}/grades',              [EvaluationController::class, 'parentStudentGrades']);

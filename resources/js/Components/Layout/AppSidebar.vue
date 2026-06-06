@@ -191,17 +191,19 @@
                         'group flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-150',
                         collapsed ? 'justify-center' : '',
                         isActive(item)
-                            ? 'bg-primary-600 text-white shadow-md shadow-primary-600/25'
+                            ? 'bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300'
                             : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white',
                     ]"
                     :title="collapsed ? item.label : undefined"
                 >
-                    <!-- Icône -->
+                    <!-- Icône avec fond coloré style action-button -->
                     <span :class="[
-                        'flex-shrink-0 w-5 h-5 flex items-center justify-center',
-                        isActive(item) ? 'text-white' : 'text-gray-500 dark:text-gray-400 group-hover:text-primary-600 dark:group-hover:text-primary-400',
+                        'flex-shrink-0 w-7 h-7 rounded-lg flex items-center justify-center transition-all duration-150',
+                        isActive(item)
+                            ? 'bg-primary-600 text-white shadow-md shadow-primary-500/40'
+                            : 'bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 group-hover:bg-primary-600 group-hover:text-white group-hover:shadow-md group-hover:shadow-primary-500/40',
                     ]">
-                        <NavIcon :name="item.icon" class="w-5 h-5" />
+                        <NavIcon :name="item.icon" class="w-4 h-4" />
                     </span>
 
                     <!-- Label -->
@@ -238,12 +240,14 @@
                         @click="toggleMenu(item.id)"
                         :title="collapsed ? item.label : undefined"
                     >
-                        <!-- Icône -->
+                        <!-- Icône avec fond coloré style action-button -->
                         <span :class="[
-                            'flex-shrink-0 w-5 h-5 flex items-center justify-center',
-                            isParentActive(item) ? 'text-primary-600 dark:text-primary-400' : 'text-gray-500 dark:text-gray-400',
+                            'flex-shrink-0 w-7 h-7 rounded-lg flex items-center justify-center transition-all duration-150',
+                            isParentActive(item)
+                                ? 'bg-primary-600 text-white shadow-md shadow-primary-500/40'
+                                : 'bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 group-hover/parent:bg-primary-600 group-hover/parent:text-white group-hover/parent:shadow-md group-hover/parent:shadow-primary-500/40',
                         ]">
-                            <NavIcon :name="item.icon" class="w-5 h-5" />
+                            <NavIcon :name="item.icon" class="w-4 h-4" />
                         </span>
 
                         <Transition
@@ -285,19 +289,48 @@
                         leave-from-class="max-h-96 opacity-100"
                         leave-to-class="max-h-0 opacity-0"
                     >
-                        <div v-if="!collapsed && openMenus.has(item.id)" class="mt-0.5 ml-4 pl-3 border-l-2 border-gray-100 dark:border-gray-700 space-y-0.5">
+                        <div v-if="!collapsed && openMenus.has(item.id)" class="mt-1 ml-3 space-y-0.5">
                             <a
-                                v-for="child in item.children"
+                                v-for="(child, idx) in item.children"
                                 :key="child.id"
                                 :href="child.href"
                                 :class="[
-                                    'flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-all duration-150',
+                                    'group/child relative flex items-center gap-2.5 pl-6 pr-3 py-2 rounded-lg text-sm transition-all duration-150',
                                     isActiveChild(child)
-                                        ? 'bg-primary-600 text-white font-medium shadow-sm shadow-primary-600/20'
+                                        ? 'bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300 font-medium'
                                         : 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-800 dark:hover:text-gray-200 font-normal',
                                 ]"
                             >
-                                <NavIcon :name="child.icon" class="w-4 h-4 flex-shrink-0" />
+                                <!-- Connecteur en L arrondi -->
+                                <span class="pointer-events-none absolute left-0 top-0 flex h-full w-6 flex-col items-center" aria-hidden="true">
+                                    <span
+                                        :class="[
+                                            'w-px flex-1',
+                                            idx === item.children.length - 1 ? 'h-1/2 flex-none' : 'flex-1',
+                                            isActiveChild(child) ? 'bg-primary-400/60' : 'bg-gray-300 dark:bg-gray-600',
+                                        ]"
+                                        style="margin-top: 0;"
+                                    />
+                                    <svg viewBox="0 0 12 12" class="w-3 h-3 flex-shrink-0 -mt-px" fill="none" stroke="currentColor"
+                                        :class="isActiveChild(child) ? 'text-primary-400/60' : 'text-gray-300 dark:text-gray-600'"
+                                        stroke-width="1.5" stroke-linecap="round">
+                                        <path d="M1 0 V7 Q1 11 5 11 H12" />
+                                    </svg>
+                                    <span
+                                        v-if="idx < item.children.length - 1"
+                                        :class="['w-px flex-1', isActiveChild(child) ? 'bg-primary-400/60' : 'bg-gray-300 dark:bg-gray-600']"
+                                    />
+                                </span>
+
+                                <!-- Icône avec fond coloré style action-button -->
+                                <span :class="[
+                                    'flex-shrink-0 w-6 h-6 rounded-md flex items-center justify-center transition-all duration-150',
+                                    isActiveChild(child)
+                                        ? 'bg-primary-600 text-white shadow-sm shadow-primary-500/40'
+                                        : 'bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-500 group-hover/child:bg-primary-600 group-hover/child:text-white group-hover/child:shadow-sm group-hover/child:shadow-primary-500/40',
+                                ]">
+                                    <NavIcon :name="child.icon" class="w-3.5 h-3.5" />
+                                </span>
                                 <span class="truncate">{{ child.label }}</span>
                             </a>
                         </div>
