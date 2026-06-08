@@ -9,6 +9,8 @@ export { default as AppRadio }       from './AppRadio.vue';
 export { default as AppAlert }       from './AppAlert.vue';
 export { default as AppMultiSelect } from './AppMultiSelect.vue';
 export { default as AppRichEditor }  from './AppRichEditor.vue';
+export { default as AppCalendar }    from './AppCalendar.vue';
+export type { CalEvent }             from './AppCalendar.vue';
 export { default as DataTable }      from './DataTable.vue';
 export { default as ConfirmDialog }  from './ConfirmDialog.vue';
 export { default as ToastContainer } from './ToastContainer.vue';

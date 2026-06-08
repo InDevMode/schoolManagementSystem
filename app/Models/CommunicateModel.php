@@ -150,8 +150,23 @@ class CommunicateModel extends Model
             $results->whereDate('publish_date', '<=', Request::get('date_publish_to'));
         }
 
-        return $results->orderBy('communicates.id', 'desc')
+        $paginated = $results->orderBy('communicates.id', 'desc')
             ->paginate($perpage);
+
+        // Charger les destinataires pour chaque notice
+        $noticeIds  = $paginated->pluck('id')->toArray();
+        $recipients = NoticeBoardMessageModel::whereIn('communicates_id', $noticeIds)
+            ->get()
+            ->groupBy('communicates_id');
+
+        $paginated->getCollection()->transform(function ($notice) use ($recipients) {
+            $notice->recipients = isset($recipients[$notice->id])
+                ? $recipients[$notice->id]->pluck('message_to')->map(fn($v) => (string) $v)->toArray()
+                : [];
+            return $notice;
+        });
+
+        return $paginated;
     }
 
     public static function getTotalCommunicate()

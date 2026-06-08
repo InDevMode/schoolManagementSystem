@@ -143,6 +143,9 @@
             </template>
         </AppModal>
 
+    </div>
+</template>
+
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import { useForm, router } from '@inertiajs/vue3';

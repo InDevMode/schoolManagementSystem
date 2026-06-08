@@ -93,11 +93,14 @@ class ClassSubjectModel extends Model
             'teacher.name as teacher_name',
             'teacher.last_name as teacher_last_name'
         )
-
             ->join('subject', 'subject.id', '=', 'class_subject.subject_id')
             ->join('class', 'class.id', '=', 'class_subject.class_id')
-            ->join('class_teacher', 'class_teacher.class_id', '=', 'class.id')
-            ->join('users as teacher', 'teacher.id', '=', 'class_teacher.teacher_id')
+            ->leftJoin('class_teacher', function ($join) {
+                $join->on('class_teacher.class_id', '=', 'class.id')
+                     ->where('class_teacher.is_delete', '=', 0)
+                     ->where('class_teacher.status', '=', 1);
+            })
+            ->leftJoin('users as teacher', 'teacher.id', '=', 'class_teacher.teacher_id')
             ->where('class_subject.class_id', '=', $class_id)
             ->where('class_subject.is_delete', '=', 0)
             ->where('class_subject.status', '=', 1);

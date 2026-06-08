@@ -20,7 +20,7 @@
         <!-- Texte -->
         <div class="relative z-10 min-w-0 flex-1">
             <p class="text-xs text-gray-500 dark:text-gray-400 truncate">{{ label }}</p>
-            <p class="text-xl font-bold text-gray-900 dark:text-white">{{ value.toLocaleString('fr-FR') }}</p>
+            <p class="text-xl font-bold text-gray-900 dark:text-white">{{ (value ?? 0).toLocaleString('fr-FR') }}</p>
         </div>
 
         <!-- Flèche -->
@@ -36,13 +36,13 @@ import NavIcon from '@/Components/Layout/NavIcon.vue';
 
 interface Props {
     label: string;
-    value: number;
+    value?: number | null;
     icon: string;
     color?: 'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'info';
     href?: string;
 }
 
-const props = withDefaults(defineProps<Props>(), { color: 'primary' });
+const props = withDefaults(defineProps<Props>(), { color: 'primary', value: 0 });
 
 const colorMap: Record<string, { bubble: string; iconBg: string; icon: string }> = {
     primary:   { bubble: 'bg-primary-500',   iconBg: 'bg-primary-100 dark:bg-primary-900/40',   icon: 'text-primary-600 dark:text-primary-400' },

@@ -75,7 +75,7 @@
                     <!-- Toggle actif / inactif -->
                     <div class="flex items-center gap-1.5 flex-shrink-0">
                         <span :class="['text-xs font-medium', notice.is_active ? 'text-green-600 dark:text-green-400' : 'text-gray-400 dark:text-gray-500']">
-                            {{ notice.is_active ? 'Enabled' : 'Disabled' }}
+                            {{ notice.is_active ? 'Active' : 'Inactive' }}
                         </span>
                         <button
                             :class="[

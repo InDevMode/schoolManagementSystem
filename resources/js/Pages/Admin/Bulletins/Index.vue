@@ -10,10 +10,10 @@
         <!-- Génération en masse -->
         <div class="card p-5">
             <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-4">Générer les bulletins d'une classe</h3>
-            <div class="flex flex-wrap items-end gap-4">
-                <AppSelect v-model="genForm.class_id"  label="Classe"   :options="classOptions"  class="w-48" />
-                <AppSelect v-model="genForm.period_id" label="Période"  :options="periodOptions" class="w-48" />
-                <div class="flex gap-2">
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 items-end">
+                <AppSelect v-model="genForm.class_id"  label="Classe"   :options="classOptions"  :block="true" />
+                <AppSelect v-model="genForm.period_id" label="Période"  :options="periodOptions" :block="true" />
+                <div class="flex gap-2 flex-wrap">
                     <AppButton variant="secondary" :loading="previewing" @click="previewAverages">
                         Aperçu moyennes
                     </AppButton>
@@ -66,10 +66,10 @@
         </div>
 
         <!-- Filtres table -->
-        <div class="flex flex-wrap gap-3">
-            <AppSelect v-model="filters.period_id" :options="periodOptions" placeholder="Toutes les périodes" class="w-44" @change="applyFilters" />
-            <AppSelect v-model="filters.class_id"  :options="classOptions"  placeholder="Toutes les classes"  class="w-44" @change="applyFilters" />
-            <AppSelect v-model="filters.status"    :options="statusOpts"    placeholder="Tous les statuts"    class="w-40" @change="applyFilters" />
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <AppSelect v-model="filters.period_id" :options="periodOptions" placeholder="Toutes les périodes" :block="true" @change="applyFilters" />
+            <AppSelect v-model="filters.class_id"  :options="classOptions"  placeholder="Toutes les classes"  :block="true" @change="applyFilters" />
+            <AppSelect v-model="filters.status"    :options="statusOpts"    placeholder="Tous les statuts"    :block="true" @change="applyFilters" />
         </div>
 
         <!-- Table des bulletins -->

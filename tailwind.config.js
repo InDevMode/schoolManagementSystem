@@ -6,6 +6,13 @@ export default {
         './resources/views/**/*.blade.php',
         './resources/js/**/*.{vue,ts,js}',
     ],
+    safelist: [
+        // Variantes AppBadge dynamiques (typeMap) — purple, cyan, amber
+        // Les classes sont construites dynamiquement donc non détectées par le scanner Tailwind
+        'bg-purple-100', 'text-purple-700', 'dark:bg-purple-900/30', 'dark:text-purple-300', 'bg-purple-500',
+        'bg-cyan-100',   'text-cyan-700',   'dark:bg-cyan-900/30',   'dark:text-cyan-300',   'bg-cyan-500',
+        'bg-amber-100',  'text-amber-700',  'dark:bg-amber-900/30',  'dark:text-amber-300',  'bg-amber-500',
+    ],
     darkMode: 'class',
     theme: {
         extend: {
@@ -45,33 +52,41 @@ export default {
                 success: {
                     50:  '#f0fdf4',
                     100: '#dcfce7',
+                    300: '#86efac',
                     500: '#22c55e',
                     600: '#16a34a',
                     700: '#15803d',
+                    900: '#14532d',
                 },
                 // Danger
                 danger: {
                     50:  '#fff1f2',
                     100: '#ffe4e6',
+                    300: '#fca5a5',
                     500: '#ef4444',
                     600: '#dc2626',
                     700: '#b91c1c',
+                    900: '#7f1d1d',
                 },
                 // Warning
                 warning: {
                     50:  '#fffbeb',
                     100: '#fef3c7',
+                    300: '#fcd34d',
                     500: '#f59e0b',
                     600: '#d97706',
                     700: '#b45309',
+                    900: '#78350f',
                 },
                 // Info
                 info: {
                     50:  '#eff6ff',
                     100: '#dbeafe',
+                    300: '#93c5fd',
                     500: '#3b82f6',
                     600: '#2563eb',
                     700: '#1d4ed8',
+                    900: '#1e3a8a',
                 },
             },
             boxShadow: {

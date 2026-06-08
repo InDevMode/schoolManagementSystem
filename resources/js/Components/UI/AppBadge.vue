@@ -9,7 +9,7 @@
 import { computed } from 'vue';
 
 interface Props {
-    variant?: 'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'info' | 'gray';
+    variant?: 'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'info' | 'gray' | 'purple' | 'cyan' | 'amber';
     size?: 'sm' | 'md';
     dot?: boolean;
 }
@@ -28,12 +28,16 @@ const variantMap: Record<string, string> = {
     warning:   'bg-warning-100 text-warning-700 dark:bg-warning-900/30 dark:text-warning-300',
     info:      'bg-info-100 text-info-700 dark:bg-info-900/30 dark:text-info-300',
     gray:      'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300',
+    purple:    'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300',
+    cyan:      'bg-cyan-100 text-cyan-700 dark:bg-cyan-900/30 dark:text-cyan-300',
+    amber:     'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300',
 };
 
 const dotColorMap: Record<string, string> = {
     primary: 'bg-primary-500', secondary: 'bg-secondary-500',
     success: 'bg-success-500', danger: 'bg-danger-500',
     warning: 'bg-warning-500', info: 'bg-info-500', gray: 'bg-gray-400',
+    purple:  'bg-purple-500',  cyan: 'bg-cyan-500',  amber: 'bg-amber-500',
 };
 
 const sizeMap: Record<string, string> = {

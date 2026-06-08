@@ -168,7 +168,8 @@
         </div>
 
         <!-- ── Navigation ── -->
-        <nav class="flex-1 overflow-y-auto overflow-x-hidden px-3 pb-3 space-y-0.5 scrollbar-thin">
+        <nav class="flex-1 overflow-y-auto overflow-x-hidden px-3 pb-3 space-y-0.5
+                    [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
 
             <template v-for="item in filteredNav" :key="item.id">
 

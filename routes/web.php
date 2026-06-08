@@ -146,6 +146,9 @@ Route::group(['middleware' => 'admin'], function () {
     Route::post('admin/class_timetable/subject',[ClassTimetableController::class, 'getSubject'])->middleware('check_perm:view.academics.timetable');
     Route::post('admin/class_timetable/add',    [ClassTimetableController::class, 'add'])->middleware('check_perm:view.academics.timetable');
 
+    // Calendar admin url
+    Route::get('admin/calendar', [CalendarController::class, 'adminCalendar']);
+
     // Period url
     Route::get('admin/examinations/period/list',              [PeriodController::class, 'list'])->middleware('check_perm:view.exams.periods');
     Route::post('admin/examinations/period/add',              [PeriodController::class, 'create'])->middleware('check_perm:view.exams.periods');

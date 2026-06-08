@@ -25,8 +25,8 @@
             @delete="handleDelete"
         >
             <template #cell-type="{ row }">
-                <AppBadge variant="info">
-                    {{ row.type === 'theoretical' ? 'Théorique' : 'Pratique' }}
+                <AppBadge :variant="typeVariant(row.type)">
+                    {{ typeLabel(row.type) }}
                 </AppBadge>
             </template>
             <template #cell-status="{ row }">
@@ -164,8 +164,8 @@
 
                                 <div>
                                     <p class="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wide mb-2">Type</p>
-                                    <AppBadge variant="info">
-                                        {{ detailsTarget.type === 'theoretical' ? 'Théorique' : 'Pratique' }}
+                                    <AppBadge :variant="typeVariant(detailsTarget.type)">
+                                        {{ typeLabel(detailsTarget.type) }}
                                     </AppBadge>
                                 </div>
 
@@ -255,7 +255,23 @@ const statusOptions = [
 const typeOptions = [
     { value: 'theoretical', label: 'Théorique' },
     { value: 'practical',   label: 'Pratique' },
+    { value: 'technical',   label: 'Technique' },
+    { value: 'sport',       label: 'Sport / EPS' },
+    { value: 'artistic',    label: 'Artistique' },
+    { value: 'language',    label: 'Langue' },
 ];
+
+const typeMap: Record<string, { label: string; variant: string }> = {
+    theoretical: { label: 'Théorique',   variant: 'info'    },
+    practical:   { label: 'Pratique',    variant: 'purple'  },
+    technical:   { label: 'Technique',   variant: 'cyan'    },
+    sport:       { label: 'Sport / EPS', variant: 'success' },
+    artistic:    { label: 'Artistique',  variant: 'warning' },
+    language:    { label: 'Langue',      variant: 'amber'   },
+};
+
+const typeLabel   = (type: string) => typeMap[type]?.label   ?? type;
+const typeVariant = (type: string) => typeMap[type]?.variant ?? 'info';
 
 const columns = [
     { key: 'name',   label: 'Nom' },

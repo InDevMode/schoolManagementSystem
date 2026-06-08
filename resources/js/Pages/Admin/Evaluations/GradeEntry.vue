@@ -19,10 +19,10 @@
         <!-- Sélecteurs -->
         <div class="card p-5">
             <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-4">Sélectionner une évaluation</h3>
-            <div class="flex flex-wrap gap-4">
-                <AppSelect v-model="selectedClass" label="Classe" :options="classOptions" class="w-48" @change="onClassChange" />
-                <AppSelect v-model="selectedPeriod" label="Période" :options="periodOptions" class="w-48" @change="onPeriodChange" />
-                <AppSelect v-model="selectedEval" label="Évaluation" :options="evalOptions" class="w-64" @change="loadGrades" />
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <AppSelect v-model="selectedClass" label="Classe" :options="classOptions" :block="true" @change="onClassChange" />
+                <AppSelect v-model="selectedPeriod" label="Période" :options="periodOptions" :block="true" @change="onPeriodChange" />
+                <AppSelect v-model="selectedEval" label="Évaluation" :options="evalOptions" :block="true" @change="loadGrades" />
             </div>
         </div>
 

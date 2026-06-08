@@ -32,11 +32,11 @@
         </div>
 
         <!-- Filtres -->
-        <div class="flex flex-wrap gap-3">
-            <AppSelect v-model="filters.class_id" :options="classOptions" placeholder="Toutes les classes" class="w-44" @change="applyFilters" />
-            <AppSelect v-model="filters.period_id" :options="periodOptions" placeholder="Toutes les périodes" class="w-44" @change="applyFilters" />
-            <AppSelect v-model="filters.type" :options="typeOptions" placeholder="Tous les types" class="w-48" @change="applyFilters" />
-            <AppSelect v-model="filters.status" :options="statusOptions" placeholder="Tous les statuts" class="w-40" @change="applyFilters" />
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
+            <AppSelect v-model="filters.class_id" :options="classOptions" placeholder="Toutes les classes" :block="true" @change="applyFilters" />
+            <AppSelect v-model="filters.period_id" :options="periodOptions" placeholder="Toutes les périodes" :block="true" @change="applyFilters" />
+            <AppSelect v-model="filters.type" :options="typeOptions" placeholder="Tous les types" :block="true" @change="applyFilters" />
+            <AppSelect v-model="filters.status" :options="statusOptions" placeholder="Tous les statuts" :block="true" @change="applyFilters" />
         </div>
 
         <!-- Table -->
