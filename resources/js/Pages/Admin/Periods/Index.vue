@@ -115,7 +115,7 @@
                                         ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-400'
                                         : 'border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:border-gray-300',
                                 ]"
-                                @click="form.type = opt.value">
+                                @click="onTypeChange(opt.value)">
                                 {{ opt.label }}
                             </button>
                         </div>
@@ -158,7 +158,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { useForm, router } from '@inertiajs/vue3';
 import { AppButton, AppInput, AppSelect, AppModal, DataTable, AppBadge } from '@/Components/UI';
 import { useCan } from '@/Composables/useCan';
@@ -190,7 +190,8 @@ const editTarget = ref<Period | null>(null);
 const tableRef   = ref<any>(null);
 
 const typeOpts     = [{ value: 'trimestre', label: 'Trimestre' }, { value: 'semestre', label: 'Semestre' }];
-const orderNumbers = [1, 2, 3];
+// Numéro d'ordre dynamique selon le type : 3 pour trimestre, 2 pour semestre
+const orderNumbers = computed(() => form.type === 'semestre' ? [1, 2] : [1, 2, 3]);
 const statusOptions = [
     { value: '1', label: 'Active' },
     { value: '0', label: 'Inactive' },
@@ -225,6 +226,14 @@ const openCreate = () => {
     form.order_number = '1';
     form.status       = '1';
     showForm.value    = true;
+};
+
+const onTypeChange = (type: string) => {
+    form.type = type;
+    // Si on passe en semestre et que le numéro d'ordre est 3, on le remet à 1
+    if (type === 'semestre' && form.order_number === '3') {
+        form.order_number = '1';
+    }
 };
 
 const openEdit = (period: Period) => {

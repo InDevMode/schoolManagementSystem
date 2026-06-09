@@ -8,11 +8,29 @@
         </div>
 
         <!-- Filtres -->
-        <div class="flex flex-wrap gap-3">
-            <AppSelect v-model="filters.table_name" :options="tableOptions" placeholder="Toutes les tables" class="w-48" @change="applyFilters"/>
-            <AppInput  v-model="filters.date_from" type="date" class="w-40" @change="applyFilters"/>
-            <AppInput  v-model="filters.date_to"   type="date" class="w-40" @change="applyFilters"/>
-            <AppInput  v-model="filters.search" placeholder="Rechercher dans les raisons..." class="w-56" @input="applyFilters"/>
+        <div class="card p-4">
+            <div class="flex flex-row flex-wrap items-center gap-3">
+                <div class="flex-1 min-w-[160px]">
+                    <AppSelect v-model="filters.table_name" :options="tableOptions" placeholder="Toutes les tables" @change="applyFilters"/>
+                </div>
+                <div class="flex-1 min-w-[150px]">
+                    <AppInput v-model="filters.date_from" type="date" @change="applyFilters"/>
+                </div>
+                <div class="flex-1 min-w-[150px]">
+                    <AppInput v-model="filters.date_to" type="date" @change="applyFilters"/>
+                </div>
+                <div class="flex-1 min-w-[200px]">
+                    <AppInput v-model="filters.search" placeholder="Rechercher dans les raisons..." @input="applyFilters"/>
+                </div>
+                <button v-if="filters.table_name || filters.date_from || filters.date_to || filters.search"
+                    @click="filters = { table_name: '', date_from: '', date_to: '', search: '' }; applyFilters()"
+                    class="flex-shrink-0 px-3 py-2 rounded-lg text-xs font-medium
+                           text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200
+                           bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600
+                           transition-colors whitespace-nowrap">
+                    Réinitialiser
+                </button>
+            </div>
         </div>
 
         <!-- Table -->

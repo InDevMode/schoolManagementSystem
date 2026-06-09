@@ -194,24 +194,30 @@ const handleAction = (key: string, row: Record<string, unknown>) => {
                 <span class="text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">{{ mod }}</span>
                 <span class="text-xs text-gray-400 tabular-nums">{{ activeGrouped[mod].length }}</span>
             </div>
-            <div class="p-4 flex flex-wrap gap-2">
+            <div class="p-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2">
                 <div v-for="perm in activeGrouped[mod]" :key="perm.id"
-                     class="group inline-flex items-center gap-1.5 pl-3 pr-1.5 py-1.5 rounded-lg
+                     class="group flex items-center gap-1.5 pl-3 pr-1.5 py-1.5 rounded-lg
                             border border-gray-200 dark:border-gray-600
                             bg-white dark:bg-gray-800 hover:border-primary-300 dark:hover:border-primary-600
-                            transition-colors text-sm">
-                    <span class="font-mono text-xs text-gray-700 dark:text-gray-300">{{ perm.name }}</span>
-                    <div class="flex gap-0.5 ml-1">
+                            transition-colors">
+                    <span class="font-mono text-xs text-gray-700 dark:text-gray-300 truncate flex-1 min-w-0">{{ perm.name }}</span>
+                    <div class="flex gap-0.5 flex-shrink-0 ml-1">
                         <button @click="openEdit(perm)" title="Modifier"
-                                class="p-1 rounded text-gray-400 hover:text-amber-500 hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-colors">
-                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                class="w-6 h-6 rounded-lg inline-flex items-center justify-center
+                                       bg-amber-100 text-amber-600 hover:bg-amber-500 hover:text-white
+                                       dark:bg-amber-900/30 dark:text-amber-400 dark:hover:bg-amber-500 dark:hover:text-white
+                                       transition-all duration-150">
+                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                       d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                             </svg>
                         </button>
                         <button @click="softDelete(perm)" title="Supprimer"
-                                class="p-1 rounded text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
-                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                class="w-6 h-6 rounded-lg inline-flex items-center justify-center
+                                       bg-red-100 text-red-600 hover:bg-red-500 hover:text-white
+                                       dark:bg-red-900/30 dark:text-red-400 dark:hover:bg-red-500 dark:hover:text-white
+                                       transition-all duration-150">
+                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                       d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
                             </svg>

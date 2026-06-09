@@ -200,208 +200,26 @@
             </div>
         </div>
 
-        <!-- ── Ligne 5 : Calendrier style Events (light/dark adaptatif) ── -->
-        <div :class="[            'rounded-2xl overflow-hidden border transition-colors duration-300',
-            isDark
-                ? 'border-white/8'
-                : 'border-gray-200 shadow-card-md',
-        ]" :style="isDark ? 'background:#1a1a2e' : 'background:#f8f7ff'">
-            <div class="flex flex-col xl:flex-row">
-
-                <!-- ── Zone calendrier ── -->
-                <div class="flex-1 p-6">
-
-                    <!-- Header calendrier -->
-                    <div class="flex items-center justify-between mb-6">
-                        <div class="flex items-center gap-3">
-                            <h3 :class="['text-xl font-bold', isDark ? 'text-white' : 'text-gray-900']">
-                                {{ monthName }}
-                            </h3>
-                            <span class="text-xl font-bold text-primary-500">{{ calYear }}</span>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <button
-                                :class="[
-                                    'w-9 h-9 rounded-xl flex items-center justify-center transition-all',
-                                    isDark
-                                        ? 'bg-white/10 hover:bg-primary-600 text-white'
-                                        : 'bg-gray-200 hover:bg-primary-600 hover:text-white text-gray-600',
-                                ]"
-                                @click="prevMonth"
-                            >
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/>
-                                </svg>
-                            </button>
-                            <button
-                                :class="[
-                                    'px-4 py-1.5 rounded-xl text-xs font-semibold transition-all',
-                                    isDark
-                                        ? 'bg-white/10 hover:bg-primary-600 text-white'
-                                        : 'bg-gray-200 hover:bg-primary-600 hover:text-white text-gray-600',
-                                ]"
-                                @click="goToday"
-                            >
-                                Aujourd'hui
-                            </button>
-                            <button
-                                :class="[
-                                    'w-9 h-9 rounded-xl flex items-center justify-center transition-all',
-                                    isDark
-                                        ? 'bg-white/10 hover:bg-primary-600 text-white'
-                                        : 'bg-gray-200 hover:bg-primary-600 hover:text-white text-gray-600',
-                                ]"
-                                @click="nextMonth"
-                            >
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/>
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Jours de la semaine -->
-                    <div class="grid grid-cols-7 gap-2 mb-2">
-                        <div
-                            v-for="day in weekDays"
-                            :key="day"
-                            :class="[
-                                'text-center text-xs font-semibold py-2',
-                                isDark ? 'text-white/45' : 'text-gray-400',
-                            ]"
-                        >
-                            {{ day }}
-                        </div>
-                    </div>
-
-                    <!-- Grille des jours -->
-                    <div class="grid grid-cols-7 gap-2">
-                        <!-- Cases vides avant le 1er -->
-                        <div
-                            v-for="_ in firstDayOfMonth"
-                            :key="`empty-${_}`"
-                            class="rounded-xl h-16"
-                            :style="isDark ? 'background:rgba(255,255,255,0.03)' : 'background:rgba(0,0,0,0.03)'"
-                        />
-
-                        <!-- Jours du mois -->
-                        <button
-                            v-for="day in daysInMonth"
-                            :key="day"
-                            :class="[
-                                'relative rounded-xl h-16 flex flex-col items-start justify-start p-2 transition-all duration-150 text-left',
-                                isToday(day) ? 'ring-2 ring-primary-400' : '',
-                            ]"
-                            :style="getDayStyle(day)"
-                            @click="selectedDay = day"
-                        >
-                            <!-- Numéro du jour -->
-                            <span :class="['text-sm font-semibold leading-none', getDayTextColor(day)]">
-                                {{ day }}
-                            </span>
-
-                            <!-- Mini label événement -->
-                            <div
-                                v-if="getDayEventsFromDb(day).length"
-                                class="absolute bottom-1.5 left-2 right-2 text-[9px] font-medium truncate leading-none"
-                                :style="{ color: getDayEventsFromDb(day)[0].highlightBg ? 'rgba(255,255,255,0.9)' : getDayEventsFromDb(day)[0].color }"
-                            >
-                                {{ getDayEventsFromDb(day)[0].title }}
-                            </div>
-
-                            <!-- Points si plusieurs événements -->
-                            <div v-if="getDayEventsFromDb(day).length > 1" class="flex gap-1 mt-auto">
-                                <span
-                                    v-for="(ev, i) in getDayEventsFromDb(day).slice(0, 3)"
-                                    :key="i"
-                                    class="w-2 h-2 rounded-full"
-                                    :style="{ background: ev.color }"
-                                />
-                            </div>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- ── Panneau latéral : liste d'événements ── -->
-                <div
-                    :class="[
-                        'xl:w-72 border-t xl:border-t-0 xl:border-l flex flex-col',
-                        isDark ? 'border-white/8' : 'border-gray-200',
-                    ]"
-                >
-                    <div :class="['p-5 border-b', isDark ? 'border-white/8' : 'border-gray-200']">
-                        <h4 :class="['font-semibold text-sm', isDark ? 'text-white' : 'text-gray-900']">
-                            Liste des événements
-                        </h4>
-                        <p :class="['text-xs mt-0.5', isDark ? 'text-white/40' : 'text-gray-400']">
-                            {{ monthName }} {{ calYear }}
-                        </p>
-                    </div>
-
-                    <div :class="['flex-1 overflow-y-auto', isDark ? 'divide-white/6' : 'divide-gray-100', 'divide-y']">
-                        <div
-                            v-for="ev in calendarEvents"
-                            :key="ev.id"
-                            :class="[
-                                'p-4 transition-colors cursor-pointer',
-                                isDark ? 'hover:bg-white/5' : 'hover:bg-gray-50',
-                            ]"
-                        >
-                            <!-- Date + menu -->
-                            <div class="flex items-center justify-between mb-1">
-                                <span class="text-xs font-semibold" :style="{ color: ev.color }">
-                                    {{ ev.dateLabel }}
-                                </span>
-                                <button :class="isDark ? 'text-white/30 hover:text-white/70' : 'text-gray-300 hover:text-gray-500'" class="transition-colors">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01"/>
-                                    </svg>
-                                </button>
-                            </div>
-
-                            <!-- Titre -->
-                            <p :class="['text-sm font-bold leading-tight', isDark ? 'text-white' : 'text-gray-900']">
-                                {{ ev.title }}
-                            </p>
-
-                            <!-- Horaire + prix -->
-                            <div class="flex items-center justify-between mt-2">
-                                <div class="flex items-center gap-1.5">
-                                    <svg class="w-3.5 h-3.5" :class="isDark ? 'text-white/40' : 'text-gray-400'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                    </svg>
-                                    <span :class="['text-xs', isDark ? 'text-white/45' : 'text-gray-500']">{{ ev.time }}</span>
-                                </div>
-                                <span :class="['text-xs font-bold', isDark ? 'text-white' : 'text-gray-800']">{{ ev.price }}</span>
-                            </div>
-
-                            <!-- Barre de progression -->
-                            <div :class="['mt-2.5 h-1 rounded-full', isDark ? 'bg-white/10' : 'bg-gray-200']">
-                                <div class="h-1 rounded-full transition-all" :style="{ width: ev.progress + '%', background: ev.color }"/>
-                            </div>
-                            <p :class="['text-[10px] mt-1 text-right', isDark ? 'text-white/35' : 'text-gray-400']">
-                                {{ ev.seats }} places restantes
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </div>
+        <!-- ── Ligne 5 : Calendrier AppCalendar complet ── -->
+        <AppCalendar
+            title="Calendrier scolaire"
+            subtitle="Cours, événements et activités"
+            :course-events="[]"
+            :events="calendarEventsFormatted"
+        />
 
     </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
-import { useDark } from '@vueuse/core';
+import { computed } from 'vue';
 import StatCard from '@/Components/Dashboard/StatCard.vue';
 import BigStatCard from '@/Components/Dashboard/BigStatCard.vue';
 import AttendanceBadge from '@/Components/Dashboard/AttendanceBadge.vue';
 import UpcomingEvents from '@/Components/Dashboard/UpcomingEvents.vue';
 import CurrentLeaves from '@/Components/Dashboard/CurrentLeaves.vue';
-
-const isDark = useDark();
+import { AppCalendar } from '@/Components/UI';
+import type { CalEvent } from '@/Components/UI';
 
 const props = defineProps<{
     totalAdmin: number;
@@ -424,90 +242,49 @@ const props = defineProps<{
     totalDraftBulletins?: number;
     upcomingEvents?: any[];
     currentLeaves?: any[];
+    calendarEvents?: any[];
     [key: string]: unknown;
 }>();
 
-// ── Calendrier ───────────────────────────────────────────────────────────────
-const today       = new Date();
-const calMonth    = ref(today.getMonth());
-const calYear     = ref(today.getFullYear());
-const selectedDay = ref(today.getDate());
+const today = new Date();
+const months = ['Jan','Fév','Mar','Avr','Mai','Jun','Jul','Aoû','Sep','Oct','Nov','Déc'];
 
-const weekDays   = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
-const months     = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Jun', 'Jul', 'Aoû', 'Sep', 'Oct', 'Nov', 'Déc'];
-const monthNames = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+// Convertit les événements du backend en CalEvent[] pour AppCalendar
+const typeColors: Record<string, string> = {
+    academic: '#3b82f6', cultural: '#8b5cf6', administrative: '#f59e0b',
+    exam: '#ef4444', ceremony: '#10b981', trip: '#06b6d4',
+};
+const typeLabels: Record<string, string> = {
+    academic: 'Académique', cultural: 'Culturel', administrative: 'Administratif',
+    exam: 'Examen', ceremony: 'Cérémonie', trip: 'Sortie',
+};
 
-const monthName = computed(() => monthNames[calMonth.value]);
-
-const daysInMonth = computed(() =>
-    new Date(calYear.value, calMonth.value + 1, 0).getDate()
-);
-
-const firstDayOfMonth = computed(() => {
-    const d = new Date(calYear.value, calMonth.value, 1).getDay();
-    return d === 0 ? 6 : d - 1;
+const calendarEventsFormatted = computed<CalEvent[]>(() => {
+    if (props.calendarEvents?.length) {
+        return (props.calendarEvents as any[]).map(ev => ({
+            id:    ev.id,
+            title: ev.title,
+            start: ev.start ?? ev.event_date,
+            color: ev.color ?? typeColors[ev.extendedProps?.type ?? ev.event_type] ?? '#7B74F0',
+            start_time:  ev.start_time ?? ev.extendedProps?.start_time ?? '',
+            end_time:    ev.end_time   ?? ev.extendedProps?.end_time   ?? '',
+            extendedProps: {
+                type_label:  typeLabels[ev.extendedProps?.type ?? ev.event_type] ?? 'Événement',
+                description: ev.description ?? ev.extendedProps?.description ?? '',
+                location:    ev.location    ?? ev.extendedProps?.location    ?? '',
+                start_time:  ev.start_time  ?? ev.extendedProps?.start_time  ?? '',
+                end_time:    ev.end_time    ?? ev.extendedProps?.end_time    ?? '',
+            },
+        }));
+    }
+    // Données de démonstration si pas d'événements backend
+    const m = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0');
+    return [
+        { id: 1, title: 'Réunion parents',      start: `${m}-03`, color: '#f472b6', start_time: '08:00', end_time: '10:00', extendedProps: { type_label: 'Réunion',   location: 'Salle 1' } },
+        { id: 2, title: 'Examen Maths',          start: `${m}-08`, color: '#a78bfa', start_time: '09:00', end_time: '12:00', extendedProps: { type_label: 'Examen',    location: 'Grande salle' } },
+        { id: 3, title: 'Sortie scolaire',       start: `${m}-15`, color: '#34d399', start_time: '07:00', end_time: '18:00', extendedProps: { type_label: 'Sortie',    location: 'Extérieur' } },
+        { id: 4, title: 'Conseil de classe',     start: `${m}-22`, color: '#fb923c', start_time: '14:00', end_time: '16:00', extendedProps: { type_label: 'Conseil',   location: 'Salle des profs' } },
+        { id: 5, title: 'Remise des bulletins',  start: `${m}-28`, color: '#60a5fa', start_time: '10:00', end_time: '12:00', extendedProps: { type_label: 'Cérémonie', location: 'Préau' } },
+    ] as CalEvent[];
 });
-
-const isToday   = (day: number) => day === today.getDate() && calMonth.value === today.getMonth() && calYear.value === today.getFullYear();
-const isWeekend = (day: number) => { const dow = new Date(calYear.value, calMonth.value, day).getDay(); return dow === 0 || dow === 6; };
-
-const prevMonth = () => { if (calMonth.value === 0) { calMonth.value = 11; calYear.value--; } else calMonth.value--; selectedDay.value = 1; };
-const nextMonth = () => { if (calMonth.value === 11) { calMonth.value = 0; calYear.value++; } else calMonth.value++; selectedDay.value = 1; };
-const goToday   = () => { calMonth.value = today.getMonth(); calYear.value = today.getFullYear(); selectedDay.value = today.getDate(); };
-
-// ── Événements du calendrier (exemples statiques) ────────────────────────────
-interface CalEvent {
-    id: number;
-    day: number;
-    month: number; // 0-indexed
-    title: string;
-    color: string;
-    dateLabel: string;
-    time: string;
-    price: string;
-    progress: number;
-    seats: number;
-    highlight?: boolean; // case colorée en rose/violet
-    highlightBg?: string;
-}
-
-const calendarEvents: CalEvent[] = [
-    { id: 1, day: 3,  month: today.getMonth(), title: 'Réunion parents',    color: '#f472b6', dateLabel: `3 ${months[today.getMonth()]}`,  time: '08:00 - 10:00', price: 'Gratuit', progress: 72, seats: 23, highlight: true,  highlightBg: '#ec4899' },
-    { id: 2, day: 8,  month: today.getMonth(), title: 'Examen Maths',       color: '#a78bfa', dateLabel: `8 ${months[today.getMonth()]}`,  time: '09:00 - 12:00', price: 'Gratuit', progress: 45, seats: 17, highlight: false },
-    { id: 3, day: 15, month: today.getMonth(), title: 'Sortie scolaire',    color: '#34d399', dateLabel: `15 ${months[today.getMonth()]}`, time: '07:00 - 18:00', price: '5 000 F', progress: 90, seats: 4,  highlight: true,  highlightBg: '#7B74F0' },
-    { id: 4, day: 22, month: today.getMonth(), title: 'Conseil de classe',  color: '#fb923c', dateLabel: `22 ${months[today.getMonth()]}`, time: '14:00 - 16:00', price: 'Gratuit', progress: 60, seats: 13, highlight: false },
-    { id: 5, day: 28, month: today.getMonth(), title: 'Remise des bulletins',color: '#60a5fa', dateLabel: `28 ${months[today.getMonth()]}`, time: '10:00 - 12:00', price: 'Gratuit', progress: 30, seats: 30, highlight: false },
-];
-
-// Événements pour un jour donné (mois courant)
-const getDayEventsFromDb = (day: number): CalEvent[] =>
-    calendarEvents.filter(e => e.day === day && e.month === calMonth.value);
-
-// Style de fond d'une case — adaptatif light/dark
-const getDayStyle = (day: number): Record<string, string> => {
-    if (isToday(day)) {
-        return { background: '#7B74F0' };
-    }
-    const evs = getDayEventsFromDb(day);
-    if (evs.length && evs[0].highlight) {
-        return { background: evs[0].highlightBg ?? '#ec4899' };
-    }
-    if (day === selectedDay.value) {
-        return isDark.value
-            ? { background: 'rgba(124,58,237,0.35)' }
-            : { background: 'rgba(124,58,237,0.15)', border: '1px solid rgba(124,58,237,0.3)' };
-    }
-    return isDark.value
-        ? { background: 'rgba(255,255,255,0.05)' }
-        : { background: 'rgba(0,0,0,0.04)' };
-};
-
-// Couleur du texte selon le fond et le mode
-const getDayTextColor = (day: number): string => {
-    const evs = getDayEventsFromDb(day);
-    if (evs.length && evs[0].highlight) return 'text-white';
-    if (day === selectedDay.value) return isDark.value ? 'text-white' : 'text-primary-700';
-    if (isWeekend(day)) return isDark.value ? 'text-white/40' : 'text-gray-400';
-    return isDark.value ? 'text-white/80' : 'text-gray-700';
-};
 </script>

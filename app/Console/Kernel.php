@@ -12,7 +12,12 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        // $schedule->command('inspire')->hourly();
+        // Vérifie toutes les minutes les notifications dont la notice_date est atteinte,
+        // les active dans l'interface et envoie les emails aux destinataires.
+        $schedule->command('noticeboard:send-emails')
+                 ->everyMinute()
+                 ->withoutOverlapping()
+                 ->runInBackground();
     }
 
     /**

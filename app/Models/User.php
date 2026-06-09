@@ -251,7 +251,7 @@ class User extends Authenticatable
 
     public function getProfile(): string
     {
-        $path = base_path('upload/profile/' . $this->profile_picture);
+        $path = public_path('upload/profile/' . $this->profile_picture);
         if (!empty($this->profile_picture) && file_exists($path)) {
             return url('upload/profile/' . $this->profile_picture);
         }
@@ -403,7 +403,7 @@ class User extends Authenticatable
     {
         return User::select('users.*', 'class.name as class_name', 'parent.name as parent_name', 'parent.last_name as parent_last_name')
             ->join('class', 'class.id', '=', 'users.class_id')
-            ->join('users as parent', 'parent.id', '=', 'users.parent_id')
+            ->leftJoin('users as parent', 'parent.id', '=', 'users.parent_id')
             ->where('users.is_delete', '=', 0)
             ->where('users.status', '=', 1)
             ->where('users.user_type', '=', 3)

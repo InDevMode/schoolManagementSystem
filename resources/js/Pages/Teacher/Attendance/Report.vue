@@ -16,8 +16,8 @@
                     {{ row.student_last_name }} {{ row.student_name }}
                 </template>
                 <template #cell-attendance_type="{ row }">
-                    <AppBadge :variant="typeVariant(row.attendance_type as string)">
-                        {{ typeLabel(row.attendance_type as string) }}
+                    <AppBadge :variant="typeVariant(row.attendance_type as string | number)">
+                        {{ typeLabel(row.attendance_type as string | number) }}
                     </AppBadge>
                 </template>
                 <template #cell-attendance_date="{ row }">
@@ -58,19 +58,32 @@ const columns = [
     { key: 'attendance_date', label: 'Date' },
 ];
 
-const typeLabel = (type: string) => ({
+// Normalise les anciens entiers (1,2,3,4) et les nouvelles chaînes vers une clé uniforme
+const normalizeType = (type: string | number): string => {
+    const legacyMap: Record<string, string> = {
+        '1': 'present',
+        '2': 'late',
+        '3': 'absent',
+        '4': 'half_day',
+        '0': 'present',
+    };
+    const str = String(type ?? '').trim();
+    return legacyMap[str] ?? str;
+};
+
+const typeLabel = (type: string | number) => ({
     present:  'Présent',
     late:     'En retard',
     absent:   'Absent',
     half_day: 'Demi-journée',
-}[type] ?? type);
+}[normalizeType(type)] ?? String(type));
 
-const typeVariant = (type: string) => ({
+const typeVariant = (type: string | number): 'success' | 'warning' | 'danger' | 'info' => ({
     present:  'success',
     late:     'warning',
     absent:   'danger',
     half_day: 'info',
-}[type] as any ?? 'gray');
+}[normalizeType(type)] as any ?? 'gray');
 
 const formatDate = (d: string) =>
     new Date(d).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' });

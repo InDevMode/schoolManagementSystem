@@ -464,8 +464,16 @@
                                   hover:bg-gray-50 dark:hover:bg-gray-700/60
                                   hover:text-primary-600 dark:hover:text-primary-400
                                   transition-colors">
-                            <span class="w-7 h-7 rounded-lg bg-gray-100 dark:bg-gray-700 flex items-center justify-center flex-shrink-0">
-                                <NavIcon :name="link.icon" class="w-3.5 h-3.5 text-gray-500"/>
+                            <span :class="[
+                                'w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0',
+                                link.icon === 'user'        ? 'bg-primary-100 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400' :
+                                link.icon === 'lock'        ? 'bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400' :
+                                link.icon === 'cog-6-tooth' ? 'bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400' :
+                                link.icon === 'shield-check'? 'bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400' :
+                                link.icon === 'key'         ? 'bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400' :
+                                                              'bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400'
+                            ]">
+                                <NavIcon :name="link.icon" class="w-3.5 h-3.5"/>
                             </span>
                             {{ link.label }}
                         </a>

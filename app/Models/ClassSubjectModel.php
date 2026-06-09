@@ -83,31 +83,22 @@ class ClassSubjectModel extends Model
 
     public static function studentStubject(int $class_id, int $perPage)
     {
-
         $results = ClassSubjectModel::select(
             'class_subject.*',
             'class.name as class_name',
             'subject.name as subject_name',
             'subject.type as subject_type',
-            'subject.status as subject_status',
-            'teacher.name as teacher_name',
-            'teacher.last_name as teacher_last_name'
+            'subject.status as subject_status'
         )
             ->join('subject', 'subject.id', '=', 'class_subject.subject_id')
             ->join('class', 'class.id', '=', 'class_subject.class_id')
-            ->leftJoin('class_teacher', function ($join) {
-                $join->on('class_teacher.class_id', '=', 'class.id')
-                     ->where('class_teacher.is_delete', '=', 0)
-                     ->where('class_teacher.status', '=', 1);
-            })
-            ->leftJoin('users as teacher', 'teacher.id', '=', 'class_teacher.teacher_id')
             ->where('class_subject.class_id', '=', $class_id)
             ->where('class_subject.is_delete', '=', 0)
             ->where('class_subject.status', '=', 1);
 
         $filters = [
-            'class.name' => strtolower(Request::get('class_name')),
-            'subject.name' => strtolower(Request::get('subject_name')),
+            'class.name'               => strtolower(Request::get('class_name')),
+            'subject.name'             => strtolower(Request::get('subject_name')),
             'class_subject.created_at' => strtolower(Request::get('created_at')),
             'class_subject.updated_at' => strtolower(Request::get('updated_at')),
         ];
@@ -124,13 +115,11 @@ class ClassSubjectModel extends Model
         }
 
         $type = Request::get('subject_type');
-        if (in_array($type, ['theoretical', 'practical'], true)) {
+        if (!empty($type)) {
             $results->where('subject.type', $type);
         }
 
-
         return $results->orderBy('class_subject.id', 'desc')
-            ->groupBy('class_subject.id')
             ->paginate($perPage);
     }
 

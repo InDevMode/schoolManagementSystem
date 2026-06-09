@@ -25,12 +25,12 @@ class EvaluationController extends Controller
     public function list()
     {
         return Inertia::render('Admin/Evaluations/Index', [
-            'evaluations' => EvaluationModel::getAll(15),
-            'classes'     => ClassModel::getClass(),
-            'subjects'    => SubjectModel::getSubject(),
-            'periods'     => PeriodModel::getAllPeriods(),
-            'typeLabels'  => EvaluationModel::$typeLabels,
-            'typeCoeffs'  => EvaluationModel::$typeCoefficients,
+            'evaluations'   => EvaluationModel::getAll(15),
+            'classes'       => ClassModel::getClass(),
+            'periods'       => PeriodModel::getAllPeriods(),
+            'currentPeriod' => PeriodModel::getCurrentPeriod()->first(),
+            'typeLabels'    => EvaluationModel::$typeLabels,
+            'typeCoeffs'    => EvaluationModel::$typeCoefficients,
         ]);
     }
 
@@ -45,8 +45,9 @@ class EvaluationController extends Controller
         ]);
 
         try {
-            // Le coefficient est automatiquement défini selon le type
-            $coefficient = EvaluationModel::$typeCoefficients[$request->type] ?? 1;
+            // Le coefficient vient de l'assignation classe-matière, pas du type
+            $classSubject = ClassSubjectModel::getClassSubject((int) $request->class_id, (int) $request->subject_id);
+            $coefficient  = $classSubject?->coefficient ?? 1;
 
             $eval              = new EvaluationModel;
             $eval->class_id    = $request->class_id;
@@ -55,7 +56,7 @@ class EvaluationController extends Controller
             $eval->teacher_id  = $request->teacher_id ?? null;
             $eval->exam_id     = $request->exam_id ?? null;
             $eval->type        = $request->type;
-            $eval->coefficient = $request->coefficient ?? $coefficient;
+            $eval->coefficient = $coefficient;
             $eval->max_score   = $request->max_score ?? 20;
             $eval->eval_date   = $request->eval_date;
             $eval->title       = trim($request->title ?? '');
@@ -153,10 +154,11 @@ class EvaluationController extends Controller
     public function gradeEntry(Request $request)
     {
         $data = [
-            'classes'     => ClassModel::getClass(),
-            'periods'     => PeriodModel::getAllPeriods(),
-            'evaluations' => [],
-            'grades'      => [],
+            'classes'       => ClassModel::getClass(),
+            'periods'       => PeriodModel::getCurrentPeriod(), // saisie : période courante uniquement
+            'currentPeriod' => PeriodModel::getCurrentPeriod()->first(),
+            'evaluations'   => [],
+            'grades'        => [],
         ];
 
         if ($request->evaluation_id) {
@@ -284,11 +286,11 @@ class EvaluationController extends Controller
         $classes    = ClassTeacherModel::getMyClassSubjectGroup($teacher_id);
 
         return Inertia::render('Teacher/Evaluations/Index', [
-            'evaluations' => EvaluationModel::getByTeacherPaginated($teacher_id, 15),
-            'classes'     => $classes,
-            'periods'     => PeriodModel::getAllPeriods(),
-            'typeLabels'  => EvaluationModel::$typeLabels,
-            'typeCoeffs'  => EvaluationModel::$typeCoefficients,
+            'evaluations'   => EvaluationModel::getByTeacherPaginated($teacher_id, 15),
+            'classes'       => $classes,
+            'currentPeriod' => PeriodModel::getCurrentPeriod()->first(), // le prof ne voit que la période courante
+            'typeLabels'    => EvaluationModel::$typeLabels,
+            'typeCoeffs'    => EvaluationModel::$typeCoefficients,
         ]);
     }
 
@@ -303,7 +305,9 @@ class EvaluationController extends Controller
         ]);
 
         try {
-            $coefficient = EvaluationModel::$typeCoefficients[$request->type] ?? 1;
+            // Le coefficient vient de l'assignation classe-matière
+            $classSubject = ClassSubjectModel::getClassSubject((int) $request->class_id, (int) $request->subject_id);
+            $coefficient  = $classSubject?->coefficient ?? 1;
 
             $eval              = new EvaluationModel;
             $eval->class_id    = $request->class_id;
@@ -311,7 +315,7 @@ class EvaluationController extends Controller
             $eval->period_id   = $request->period_id;
             $eval->teacher_id  = Auth::id();
             $eval->type        = $request->type;
-            $eval->coefficient = $request->coefficient ?? $coefficient;
+            $eval->coefficient = $coefficient;
             $eval->max_score   = $request->max_score ?? 20;
             $eval->eval_date   = $request->eval_date;
             $eval->title       = trim($request->title ?? '');
@@ -331,10 +335,11 @@ class EvaluationController extends Controller
         $teacher_id = Auth::id();
         $classes    = ClassTeacherModel::getMyClassSubjectGroup($teacher_id);
         $data       = [
-            'classes'     => $classes,
-            'periods'     => PeriodModel::getAllPeriods(),
-            'evaluations' => [],
-            'grades'      => [],
+            'classes'       => $classes,
+            'periods'       => PeriodModel::getCurrentPeriod(), // période courante uniquement
+            'currentPeriod' => PeriodModel::getCurrentPeriod()->first(),
+            'evaluations'   => [],
+            'grades'        => [],
         ];
 
         if ($request->evaluation_id) {
@@ -411,11 +416,18 @@ class EvaluationController extends Controller
     // ──────────────────────────────────────────────────────────────────────────
 
     /**
-     * Retourne les matières d'une classe (pour les selects dépendants)
+     * Retourne les matières actives assignées à une classe (pour les selects dépendants)
+     * Retourne : subject_id, subject_name, coefficient
      */
     public function getSubjectsByClass(int $class_id)
     {
-        $subjects = ClassSubjectModel::getSubject($class_id);
+        $subjects = ClassSubjectModel::getSubject($class_id)
+            ->map(fn($s) => [
+                'subject_id'   => $s->subject_id,
+                'subject_name' => $s->subject_name,
+                'coefficient'  => $s->coefficient,
+            ]);
+
         return response()->json($subjects);
     }
 

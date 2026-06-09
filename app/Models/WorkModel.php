@@ -48,7 +48,8 @@ class WorkModel extends Model
             ->with([
                 'homeworks' => function ($query) {
                     $query->where('is_delete', 0);
-                }
+                },
+                'attachments',
             ])
             ->first();
     }
@@ -154,6 +155,101 @@ class WorkModel extends Model
     public function homeworks()
     {
         return $this->hasMany(HomeworkModel::class, 'work_id', 'id');
+    }
+
+    /** Pièces jointes du travail */
+    public function attachments()
+    {
+        return $this->hasMany(WorkAttachmentModel::class, 'work_id', 'id')
+            ->where('is_delete', 0)
+            ->orderBy('id');
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // Listing avec filtres communs — base réutilisable
+    // ─────────────────────────────────────────────────────────────────────────
+    private static function baseQuery(bool $onlyDeleted = false)
+    {
+        $q = WorkModel::select(
+                'works.*',
+                'class.name as class_name',
+                'subject.name as subject_name',
+                'users.name as created_by_name',
+                'users.last_name as created_by_last_name'
+            )
+            ->join('class',   'class.id',   '=', 'works.class_id')
+            ->join('subject', 'subject.id', '=', 'works.subject_id')
+            ->join('users',   'users.id',   '=', 'works.created_by');
+
+        if ($onlyDeleted) {
+            $q->where('works.is_delete', 1);
+        } else {
+            $q->where('works.is_delete', 0);
+        }
+
+        return $q;
+    }
+
+    private static function applyFilters($query)
+    {
+        $filters = [
+            'class.name'            => strtolower(Request::get('class_name')),
+            'subject.name'          => strtolower(Request::get('subject_name')),
+            'works.work_date'       => strtolower(Request::get('work_date')),
+            'works.submission_date' => strtolower(Request::get('submission_date')),
+            'works.created_at'      => strtolower(Request::get('created_at')),
+            'works.updated_at'      => strtolower(Request::get('updated_at')),
+        ];
+
+        foreach ($filters as $column => $value) {
+            if (!empty($value)) {
+                $query->where($column, 'like', '%' . $value . '%');
+            }
+        }
+
+        return $query;
+    }
+
+    /**
+     * Admin — voir tous les travaux (actifs)
+     */
+    public static function getWorksAdmin(int $perpage)
+    {
+        $q = static::baseQuery(false);
+        static::applyFilters($q);
+        return $q->orderBy('works.id', 'desc')->paginate($perpage);
+    }
+
+    /**
+     * Admin — corbeille (soft-deleted)
+     */
+    public static function getWorksAdminTrashed(int $perpage)
+    {
+        $q = static::baseQuery(true);
+        static::applyFilters($q);
+        return $q->orderBy('works.id', 'desc')->paginate($perpage);
+    }
+
+    /**
+     * Admin — ses propres travaux uniquement (pour l'édition sécurisée)
+     */
+    public static function getWorksByCreator(int $creatorId, int $perpage)
+    {
+        $q = static::baseQuery(false)->where('works.created_by', $creatorId);
+        static::applyFilters($q);
+        return $q->orderBy('works.id', 'desc')->paginate($perpage);
+    }
+
+    /**
+     * Teacher — travaux de ses classes uniquement
+     */
+    public static function getWorksTeacherOwn(int $teacherId, array $class_ids, int $perpage)
+    {
+        $q = static::baseQuery(false)
+            ->whereIn('works.class_id', $class_ids)
+            ->where('works.created_by', $teacherId);
+        static::applyFilters($q);
+        return $q->orderBy('works.id', 'desc')->paginate($perpage);
     }
 
     public static function getTotalWork()

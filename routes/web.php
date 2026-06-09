@@ -77,10 +77,10 @@ Route::group(['middleware' => 'admin'], function () {
 
     // Admin url
     Route::get('admin/admin/list',         [AdminController::class, 'list'])->middleware('check_perm:view.users.admins');
-    Route::post('admin/admin/add',         [AdminController::class, 'create'])->middleware('check_perm:action.users.create');
-    Route::post('admin/admin/edit/{id}',   [AdminController::class, 'update'])->middleware('check_perm:action.users.edit');
-    Route::get('admin/admin/delete/{id}',  [AdminController::class, 'delete'])->middleware('check_perm:action.users.delete');
-    Route::post('admin/admin/export',      [AdminController::class, 'exportAdmin'])->middleware('check_perm:view.users.admins');
+    Route::post('admin/admin/add',         [AdminController::class, 'create'])->middleware('check_perm:action.admins.create');
+    Route::post('admin/admin/edit/{id}',   [AdminController::class, 'update'])->middleware('check_perm:action.admins.edit');
+    Route::get('admin/admin/delete/{id}',  [AdminController::class, 'delete'])->middleware('check_perm:action.admins.delete');
+    Route::post('admin/admin/export',      [AdminController::class, 'exportAdmin'])->middleware('check_perm:action.admins.export');
 
     // Class url
     Route::get('admin/class/list',         [ClassController::class, 'list'])->middleware('check_perm:view.academics.classes');
@@ -103,27 +103,27 @@ Route::group(['middleware' => 'admin'], function () {
 
     // Student url
     Route::get('admin/student/list',         [StudentController::class, 'list'])->middleware('check_perm:view.users.students');
-    Route::post('admin/student/add',         [StudentController::class, 'create'])->middleware('check_perm:action.users.create');
-    Route::post('admin/student/edit/{id}',   [StudentController::class, 'update'])->middleware('check_perm:action.users.edit');
-    Route::get('admin/student/delete/{id}',  [StudentController::class, 'delete'])->middleware('check_perm:action.users.delete');
-    Route::post('admin/student/export',      [StudentController::class, 'exportStudent'])->middleware('check_perm:view.users.students');
+    Route::post('admin/student/add',         [StudentController::class, 'create'])->middleware('check_perm:action.students.create');
+    Route::post('admin/student/edit/{id}',   [StudentController::class, 'update'])->middleware('check_perm:action.students.edit');
+    Route::get('admin/student/delete/{id}',  [StudentController::class, 'delete'])->middleware('check_perm:action.students.delete');
+    Route::post('admin/student/export',      [StudentController::class, 'exportStudent'])->middleware('check_perm:action.students.export');
 
     // Teacher url
     Route::get('admin/teacher/list',         [TeacherController::class, 'list'])->middleware('check_perm:view.users.teachers');
-    Route::post('admin/teacher/add',         [TeacherController::class, 'create'])->middleware('check_perm:action.users.create');
-    Route::post('admin/teacher/edit/{id}',   [TeacherController::class, 'update'])->middleware('check_perm:action.users.edit');
-    Route::get('admin/teacher/delete/{id}',  [TeacherController::class, 'delete'])->middleware('check_perm:action.users.delete');
-    Route::post('admin/teacher/export',      [TeacherController::class, 'exportTeacher'])->middleware('check_perm:view.users.teachers');
+    Route::post('admin/teacher/add',         [TeacherController::class, 'create'])->middleware('check_perm:action.teachers.create');
+    Route::post('admin/teacher/edit/{id}',   [TeacherController::class, 'update'])->middleware('check_perm:action.teachers.edit');
+    Route::get('admin/teacher/delete/{id}',  [TeacherController::class, 'delete'])->middleware('check_perm:action.teachers.delete');
+    Route::post('admin/teacher/export',      [TeacherController::class, 'exportTeacher'])->middleware('check_perm:action.teachers.export');
 
     // Parent url
     Route::get('admin/parent/list',          [ParentController::class, 'list'])->middleware('check_perm:view.users.parents');
-    Route::post('admin/parent/add',          [ParentController::class, 'create'])->middleware('check_perm:action.users.create');
-    Route::post('admin/parent/edit/{id}',    [ParentController::class, 'update'])->middleware('check_perm:action.users.edit');
+    Route::post('admin/parent/add',          [ParentController::class, 'create'])->middleware('check_perm:action.parents.create');
+    Route::post('admin/parent/edit/{id}',    [ParentController::class, 'update'])->middleware('check_perm:action.parents.edit');
     Route::get('admin/parent/student/{id}',  [ParentController::class, 'student'])->middleware('check_perm:view.users.parents');
     Route::get('admin/parent/{parent_id}/assign_student_parent/{student_id}',  [ParentController::class, 'assignStudentParent'])->middleware('check_perm:view.users.parents');
     Route::get('admin/parent/des_assign_student_parent/{student_id}',          [ParentController::class, 'desAssignStudentParent'])->middleware('check_perm:view.users.parents');
-    Route::get('admin/parent/delete/{id}',   [ParentController::class, 'delete'])->middleware('check_perm:action.users.delete');
-    Route::post('admin/parent/export',       [ParentController::class, 'exportParent'])->middleware('check_perm:view.users.parents');
+    Route::get('admin/parent/delete/{id}',   [ParentController::class, 'delete'])->middleware('check_perm:action.parents.delete');
+    Route::post('admin/parent/export',       [ParentController::class, 'exportParent'])->middleware('check_perm:action.parents.export');
 
     // Admin account url
     Route::get('admin/account',  [UserController::class, 'myAccount']);
@@ -161,6 +161,7 @@ Route::group(['middleware' => 'admin'], function () {
     Route::post('admin/attendance/student/save',        [AttendanceController::class, 'attendanceStudentSave'])->middleware('check_perm:action.attendance.save');
     Route::get('admin/attendance/report',               [AttendanceController::class, 'attendanceReport'])->middleware('check_perm:view.attendance.report');
     Route::post('admin/attendance/report/export',       [AttendanceController::class, 'attendanceReportExport'])->middleware('check_perm:view.attendance.report');
+    Route::delete('admin/attendance/delete/{id}',       [AttendanceController::class, 'attendanceDelete'])->middleware('check_perm:action.attendance.save');
 
     // Communicate url
     Route::get('admin/communicate/noticeboard/list',           [CommunicateController::class, 'list'])->middleware('check_perm:view.communicate.noticeboard');
@@ -178,9 +179,13 @@ Route::group(['middleware' => 'admin'], function () {
     Route::get('admin/practicalworks/homework/list',                      [WorkController::class, 'practicalWorksList'])->middleware('check_perm:view.homework.list');
     Route::get('admin/practicalworks/homework/details/{id}',              [WorkController::class, 'practicalWorksDetails'])->middleware('check_perm:view.homework.list');
     Route::get('admin/practicalworks/homework/details-json/{id}',         [WorkController::class, 'practicalWorksDetailsJson'])->middleware('check_perm:view.homework.list');
+    Route::get('admin/practicalworks/homework/edit-json/{id}',            [WorkController::class, 'practicalWorksEditJson'])->middleware('check_perm:action.homework.edit');
     Route::get('admin/practicalworks/homework/getSubjectByClassId/{id}',  [WorkController::class, 'getSubjectByClassId'])->middleware('check_perm:view.homework.list');
     Route::post('admin/practicalworks/homework/create',                   [WorkController::class, 'practicalWorksCreate'])->middleware('check_perm:action.homework.create');
+    Route::post('admin/practicalworks/homework/edit/{id}',                [WorkController::class, 'practicalWorksUpdate'])->middleware('check_perm:action.homework.edit');
     Route::get('admin/practicalworks/homework/delete/{id}',               [WorkController::class, 'practicalWorksDelete'])->middleware('check_perm:action.homework.delete');
+    Route::get('admin/practicalworks/homework/restore/{id}',              [WorkController::class, 'practicalWorksRestore'])->middleware('check_perm:action.homework.delete');
+    Route::get('admin/practicalworks/homework/trash',                     [WorkController::class, 'practicalWorksTrashed'])->middleware('check_perm:view.homework.list');
     Route::get('admin/practicalworks/homework/submission/{id}',           [WorkController::class, 'homeworkSubmission'])->middleware('check_perm:view.homework.list');
     Route::get('admin/practicalworks/reports',                            [WorkController::class, 'homeworkReportList'])->middleware('check_perm:view.homework.reports');
     Route::get('admin/practicalworks/homework/reports/details/{id}',      [WorkController::class, 'homeworkReportDetails'])->middleware('check_perm:view.homework.reports');
@@ -291,8 +296,10 @@ Route::group(['middleware' => 'super_admin', 'prefix' => 'superadmin'], function
     Route::post('config/settings/save',          [UserController::class, 'updateSettingInfo'])->name('superadmin.settings.save');
 
     // ── Compte super admin ─────────────────────────────────────────────────
-    Route::get('account',  [UserController::class, 'myAccount'])->name('superadmin.account');
-    Route::post('account', [UserController::class, 'updateAdminAccount']);
+    Route::get('account',         [UserController::class, 'myAccount'])->name('superadmin.account');
+    Route::post('account',        [UserController::class, 'updateSuperAdminAccount'])->name('superadmin.account.update');
+    Route::get('change_password', [UserController::class, 'changePassword'])->name('superadmin.change_password');
+    Route::post('change_password',[UserController::class, 'updatePassword'])->name('superadmin.change_password.update');
 
     // ── Édition inline cellule (super admin only) ──────────────────────────
     Route::post('users/inline-edit', [UserController::class, 'inlineCellEdit'])->name('superadmin.inline-edit');
@@ -300,6 +307,12 @@ Route::group(['middleware' => 'super_admin', 'prefix' => 'superadmin'], function
     // ── Journaux de suppression (super admin only) ─────────────────────────
     Route::get('deletion-logs',       [DeletionLogController::class, 'list'])->name('superadmin.deletion-logs');
     Route::get('deletion-logs/{id}',  [DeletionLogController::class, 'show'])->name('superadmin.deletion-logs.show');
+
+    // ── Liste de tous les utilisateurs (super admin only) ──────────────────
+    Route::get('users',                           [UserController::class, 'allUsersList'])->name('superadmin.users');
+    Route::post('users/reset-password',           [UserController::class, 'resetUsersPassword'])->name('superadmin.users.reset-password');
+    Route::post('users/update/{id}',              [UserController::class, 'updateUserFromPanel'])->name('superadmin.users.update');
+    Route::post('users/delete/{id}',              [UserController::class, 'deleteUser'])->name('superadmin.users.delete');
 });
 
 Route::group(['middleware' => 'teacher'], function () {
@@ -345,8 +358,11 @@ Route::group(['middleware' => 'teacher'], function () {
     Route::get('teacher/practicalworks/homework/getSubjectByClassId/{id}', [WorkController::class, 'getSubjectByClassId']);
     Route::post('teacher/practicalworks/homework/add', [WorkController::class, 'teacherPracticalWorksCreate']);
     Route::get('teacher/practicalworks/homework/edit/{id}', [WorkController::class, 'teacherPracticalWorksEdit']);
+    Route::get('teacher/practicalworks/homework/edit-json/{id}', [WorkController::class, 'teacherPracticalWorksEditJson']);
     Route::post('teacher/practicalworks/homework/edit/{id}', [WorkController::class, 'teacherPracticalWorksUpdate']);
     Route::get('teacher/practicalworks/homework/delete/{id}', [WorkController::class, 'teacherPracticalWorksDelete']);
+    Route::get('teacher/practicalworks/homework/restore/{id}', [WorkController::class, 'teacherPracticalWorksRestore']);
+    Route::get('teacher/practicalworks/homework/trash', [WorkController::class, 'teacherPracticalWorksTrashed']);
 
     // Practical works submitted url
     Route::get('teacher/practicalworks/homework/submission/{id}', [WorkController::class, 'teacherHomeworkSubmission']);

@@ -55,19 +55,22 @@
                         v-for="opt in filteredOptions"
                         :key="opt.value"
                         :class="[
-                            'flex items-center gap-2.5 px-3 py-2 text-sm cursor-pointer transition-colors',
-                            isSelected(opt.value)
-                                ? 'bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300'
-                                : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700',
+                            'flex items-center gap-2.5 px-3 py-2 text-sm transition-colors',
+                            opt.disabled
+                                ? 'opacity-50 cursor-not-allowed bg-gray-50 dark:bg-gray-700/30'
+                                : isSelected(opt.value)
+                                    ? 'cursor-pointer bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300'
+                                    : 'cursor-pointer text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700',
                         ]"
-                        @click.stop="toggle(opt)"
+                        @click.stop="!opt.disabled && toggle(opt)"
                     >
                         <div :class="['w-4 h-4 rounded border-2 flex items-center justify-center flex-shrink-0 transition-colors', isSelected(opt.value) ? 'bg-primary-600 border-primary-600' : 'border-gray-300 dark:border-gray-500']">
                             <svg v-if="isSelected(opt.value)" class="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
                             </svg>
                         </div>
-                        {{ opt.label }}
+                        <span class="flex-1">{{ opt.label }}</span>
+                        <span v-if="opt.disabled" class="text-xs text-gray-400 bg-gray-100 dark:bg-gray-700 px-1.5 py-0.5 rounded-full">déjà assignée</span>
                     </li>
                 </ul>
             </div>

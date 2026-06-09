@@ -54,6 +54,23 @@
         <!-- ── DROITE : Icônes rondes avec badges + Avatar ── -->
         <div class="flex items-center gap-2 flex-shrink-0">
 
+            <!-- Icône Utilisateurs (super admin seulement) -->
+            <a v-if="user?.user_type === 0" href="/superadmin/users"
+               class="relative w-9 h-9 flex items-center justify-center rounded-full
+                      bg-gray-100 dark:bg-gray-800
+                      text-gray-500 dark:text-gray-400
+                      hover:bg-violet-50 dark:hover:bg-violet-900/20
+                      hover:text-violet-600 dark:hover:text-violet-400
+                      transition-colors"
+               aria-label="Tous les utilisateurs"
+               title="Tous les utilisateurs"
+            >
+                <svg style="width:18px;height:18px" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+                </svg>
+            </a>
+
             <!-- Notifications -->
             <div ref="notifRef" class="relative">
                 <button
@@ -177,11 +194,11 @@
                 >
                     <img :src="avatarUrl" :alt="user?.name"
                          class="w-8 h-8 rounded-full object-cover ring-2 ring-primary-200 dark:ring-primary-700 flex-shrink-0"/>
-                    <div class="hidden sm:block text-left">
-                        <p class="text-sm font-semibold text-gray-800 dark:text-white leading-tight whitespace-nowrap">
+                    <div class="hidden sm:block text-left max-w-[140px]">
+                        <p class="text-sm font-semibold text-gray-800 dark:text-white leading-tight truncate">
                             {{ user?.last_name }} {{ user?.name }}
                         </p>
-                        <p class="text-xs text-primary-600 dark:text-primary-400 leading-tight">{{ roleLabel }}</p>
+                        <p class="text-xs text-primary-600 dark:text-primary-400 leading-tight truncate">{{ roleLabel }}</p>
                     </div>
                     <svg :class="['w-3.5 h-3.5 text-gray-400 transition-transform duration-200 flex-shrink-0', profileOpen ? 'rotate-180' : '']"
                          fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -209,10 +226,10 @@
                             <div class="flex items-center gap-3">
                                 <img :src="avatarUrl" :alt="user?.name"
                                      class="w-12 h-12 rounded-full object-cover ring-2 ring-primary-300"/>
-                                <div>
-                                    <p class="font-bold text-gray-900 dark:text-white">{{ user?.last_name }} {{ user?.name }}</p>
+                                <div class="flex-1 min-w-0">
+                                    <p class="font-bold text-gray-900 dark:text-white truncate">{{ user?.last_name }} {{ user?.name }}</p>
                                     <p class="text-xs text-primary-600 dark:text-primary-400 font-medium mt-0.5">{{ roleLabel }}</p>
-                                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{{ user?.email }}</p>
+                                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5 truncate max-w-[180px]" :title="user?.email">{{ user?.email }}</p>
                                 </div>
                             </div>
                         </div>
@@ -223,8 +240,16 @@
                                       hover:bg-gray-50 dark:hover:bg-gray-700
                                       hover:text-primary-600 dark:hover:text-primary-400
                                       transition-colors">
-                                <span class="w-8 h-8 rounded-lg bg-gray-100 dark:bg-gray-700 flex items-center justify-center flex-shrink-0">
-                                    <NavIcon :name="link.icon" class="w-4 h-4 text-gray-500"/>
+                                <span :class="[
+                                    'w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0',
+                                    link.icon === 'user'        ? 'bg-primary-100 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400' :
+                                    link.icon === 'lock'        ? 'bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400' :
+                                    link.icon === 'cog-6-tooth' ? 'bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400' :
+                                    link.icon === 'shield-check'? 'bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400' :
+                                    link.icon === 'key'         ? 'bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400' :
+                                                                  'bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400'
+                                ]">
+                                    <NavIcon :name="link.icon" class="w-4 h-4"/>
                                 </span>
                                 {{ link.label }}
                             </a>
@@ -387,7 +412,8 @@ const profileLinks = computed(() => {
 const quickLinksMap: Record<number, { label: string; href: string; dot?: string; active?: boolean }[]> = {
     0: [
         { label: 'Tableau de bord',   href: '/superadmin/dashboard' },
-        { label: 'Rôles',             href: '/superadmin/config/roles', dot: '#7B74F0' },
+        { label: 'Utilisateurs',      href: '/superadmin/users',             dot: '#7c3aed' },
+        { label: 'Rôles',             href: '/superadmin/config/roles',      dot: '#7B74F0' },
         { label: 'Permissions',       href: '/superadmin/config/permissions' },
         { label: 'Attribution',       href: '/superadmin/config/assign' },
     ],

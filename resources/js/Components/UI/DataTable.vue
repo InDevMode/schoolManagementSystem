@@ -118,29 +118,40 @@ const visibleColumns = computed(() => props.columns.filter(c => visibleKeys.valu
 const filteredRows = computed(() => {
   let data = [...props.rows];
   if (search.value.trim()) {
-    // ── Multi-termes séparés par virgules ─────────────────────────────────────
-    // ex: "jean, actif" → chaque terme doit matcher au moins une colonne
     const terms = search.value
       .split(',')
       .map(t => t.trim().toLowerCase())
       .filter(t => t.length > 0);
+
+    const normalize = (s: string) =>
+      s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 
     data = data.filter(row => {
       const cols = filterCol.value
         ? visibleColumns.value.filter(c => c.key === filterCol.value)
         : visibleColumns.value.filter(c => c.searchable !== false);
 
-      // Tous les termes doivent être trouvés (AND logique entre termes)
-      return terms.every(term =>
-        cols.some(col => {
+      // Valeur composite nom complet (toutes combinaisons possibles)
+      const firstName  = normalize(String(row['name']      ?? row['first_name']  ?? ''));
+      const lastName   = normalize(String(row['last_name'] ?? row['surname']     ?? ''));
+      const fullName1  = `${firstName} ${lastName}`.trim();
+      const fullName2  = `${lastName} ${firstName}`.trim();
+      // Pareil pour le champ "apprenant" qui peut être préformaté
+      const studentField = normalize(String(row['student_name'] ?? row['full_name'] ?? ''));
+
+      return terms.every(term => {
+        const t = normalize(term);
+        // 1. Chercher dans la valeur composite nom complet
+        if (fullName1.includes(t) || fullName2.includes(t)) return true;
+        if (studentField && studentField.includes(t)) return true;
+        // 2. Chercher dans chaque colonne visible
+        return cols.some(col => {
           const v = row[col.key];
           if (v == null) return false;
-          const str = col.format ? col.format(v, row) : String(v);
-          return str.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').includes(
-            term.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-          );
-        })
-      );
+          const str = col.format ? normalize(col.format(v, row)) : normalize(String(v));
+          return str.includes(t);
+        });
+      });
     });
   }
   if (sortKey.value) {
@@ -493,6 +504,24 @@ const dtCopy = (text: string, key: string) => {
     dtCopiedKey.value = key;
     if (dtCopiedTimeout) clearTimeout(dtCopiedTimeout);
     dtCopiedTimeout = setTimeout(() => { dtCopiedKey.value = null; }, 1500);
+  }).catch(() => {});
+};
+
+// Copie ligne entière ─────────────────────────────────────
+const dtCopiedRowKey = ref<string | number | null>(null);
+let dtCopiedRowTimeout: ReturnType<typeof setTimeout> | null = null;
+const dtCopyRow = (row: Record<string, unknown>) => {
+  const text = visibleColumns.value
+    .map(col => {
+      const v = row[col.key];
+      const str = col.format ? col.format(v, row) : (v == null ? '' : String(v));
+      return `${col.label}: ${str}`;
+    })
+    .join(' | ');
+  navigator.clipboard.writeText(text).then(() => {
+    dtCopiedRowKey.value = rowId(row);
+    if (dtCopiedRowTimeout) clearTimeout(dtCopiedRowTimeout);
+    dtCopiedRowTimeout = setTimeout(() => { dtCopiedRowKey.value = null; }, 1500);
   }).catch(() => {});
 };
 defineExpose({ clearSelection, selected, filteredRows, confirmDelete });
@@ -911,13 +940,19 @@ defineExpose({ clearSelection, selected, filteredRows, confirmDelete });
                       </svg>
                       <button v-if="row[col.key] != null && String(row[col.key]).trim() !== ''"
                               type="button"
-                              class="opacity-0 group-hover/cell:opacity-100 transition-opacity duration-150 p-0.5 rounded text-gray-300 hover:text-gray-500 dark:text-gray-600 dark:hover:text-gray-300 flex-shrink-0 cursor-pointer"
-                              :title="dtCopiedKey === rowId(row) + '-' + col.key ? 'Copié !' : 'Copier'"
+                              class="transition-all duration-150 p-0.5 rounded flex-shrink-0 cursor-pointer
+                                     text-gray-300 dark:text-gray-600
+                                     hover:text-violet-600 dark:hover:text-violet-400
+                                     hover:bg-violet-50 dark:hover:bg-violet-900/20"
+                              :class="dtCopiedKey === rowId(row) + '-' + col.key
+                                ? 'opacity-100 text-emerald-500 dark:text-emerald-400'
+                                : 'opacity-40 group-hover/cell:opacity-100'"
+                              :title="dtCopiedKey === rowId(row) + '-' + col.key ? 'Copié !' : 'Copier cette cellule'"
                               @click.stop="dtCopy(String(row[col.key]), rowId(row) + '-' + col.key)">
-                        <svg v-if="dtCopiedKey !== rowId(row) + '-' + col.key" class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg v-if="dtCopiedKey !== rowId(row) + '-' + col.key" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
                         </svg>
-                        <svg v-else class="w-3 h-3 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg v-else class="w-3.5 h-3.5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
                         </svg>
                       </button>
@@ -929,47 +964,57 @@ defineExpose({ clearSelection, selected, filteredRows, confirmDelete });
               <td v-if="actions?.length || $slots['actions']"
                   :class="[densityClass, 'text-right border-b border-gray-100 dark:border-gray-700/60']">
                 <slot name="actions" :row="row" :index="idx">
-                  <div class="relative dt-row-menu inline-block">
-                    <button @click.stop="toggleRowMenu(rowId(row))"
-                            class="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-lg
-                                   text-gray-600 dark:text-gray-300 bg-white dark:bg-gray-800
-                                   border border-gray-200 dark:border-gray-600
-                                   hover:bg-gray-50 hover:border-gray-300 dark:hover:bg-gray-700
-                                   shadow-sm transition-all duration-150">
-                      Actions
-                      <svg class="w-3.5 h-3.5 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                  <div class="flex items-center justify-end gap-1.5">
+                    <!-- Bouton copier la ligne -->
+                    <button
+                        :title="dtCopiedRowKey === rowId(row) ? 'Ligne copiée !' : 'Copier la ligne'"
+                        class="w-8 h-8 inline-flex items-center justify-center rounded-xl transition-all duration-150 flex-shrink-0"
+                        :class="dtCopiedRowKey === rowId(row)
+                          ? 'bg-emerald-100 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400'
+                          : 'bg-gray-100 text-gray-400 hover:bg-violet-100 hover:text-violet-600 dark:bg-gray-700/50 dark:text-gray-500 dark:hover:bg-violet-900/30 dark:hover:text-violet-400'"
+                        @click.stop="dtCopyRow(row)">
+                      <svg v-if="dtCopiedRowKey !== rowId(row)" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                      </svg>
+                      <svg v-else class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
                       </svg>
                     </button>
-                    <Transition enter-active-class="transition duration-150 ease-out"
-                                enter-from-class="opacity-0 scale-95 translate-y-1"
-                                enter-to-class="opacity-100 scale-100 translate-y-0"
-                                leave-active-class="transition duration-100 ease-in"
-                                leave-from-class="opacity-100" leave-to-class="opacity-0 scale-95">
-                      <div v-if="openMenuRow === rowId(row)"
-                           class="absolute right-0 z-50 mt-1.5 w-52 origin-top-right
-                                  bg-white dark:bg-gray-800 rounded-xl
-                                  border border-gray-200 dark:border-gray-700
-                                  shadow-xl shadow-gray-200/70 dark:shadow-black/40
-                                  py-1 overflow-hidden" @click.stop>
-                        <template v-for="(action, aIdx) in actions" :key="action.key">
-                          <div v-if="aIdx > 0 && action.variant === 'danger'" class="my-1 border-t border-gray-100 dark:border-gray-700"/>
-                          <button v-if="!action.condition || action.condition(row)"
-                                  class="flex w-full items-center gap-2.5 px-4 py-2.5 text-sm font-medium transition-colors text-left"
-                                  :class="{
-                                    'text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20': action.variant === 'danger',
-                                    'text-amber-600 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/20': action.variant === 'warning',
-                                    'text-emerald-600 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-900/20': action.variant === 'success',
-                                    'text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20': action.variant === 'info',
-                                    'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50': !action.variant || action.variant === 'primary' || action.variant === 'ghost',
-                                  }"
-                                  @click="handleAction(action, row)">
-                            <span v-if="action.icon" v-html="action.icon" class="w-4 h-4 flex-shrink-0"/>
-                            {{ action.label }}
-                          </button>
-                        </template>
-                      </div>
-                    </Transition>
+                    <template v-for="action in actions" :key="action.key">
+                      <button v-if="!action.condition || action.condition(row)"
+                              :title="action.label"
+                              class="w-8 h-8 inline-flex items-center justify-center rounded-xl transition-all duration-150 flex-shrink-0"
+                              :class="{
+                                'bg-violet-100 text-violet-600 hover:bg-violet-600 hover:text-white dark:bg-violet-900/30 dark:text-violet-400 dark:hover:bg-violet-600 dark:hover:text-white': !action.variant || action.variant === 'primary',
+                                'bg-amber-100 text-amber-600 hover:bg-amber-500 hover:text-white dark:bg-amber-900/30 dark:text-amber-400 dark:hover:bg-amber-500 dark:hover:text-white': action.variant === 'warning',
+                                'bg-red-100 text-red-600 hover:bg-red-500 hover:text-white dark:bg-red-900/30 dark:text-red-400 dark:hover:bg-red-500 dark:hover:text-white': action.variant === 'danger',
+                                'bg-emerald-100 text-emerald-600 hover:bg-emerald-500 hover:text-white dark:bg-emerald-900/30 dark:text-emerald-400 dark:hover:bg-emerald-500 dark:hover:text-white': action.variant === 'success',
+                                'bg-blue-100 text-blue-600 hover:bg-blue-500 hover:text-white dark:bg-blue-900/30 dark:text-blue-400 dark:hover:bg-blue-500 dark:hover:text-white': action.variant === 'info',
+                              }"
+                              @click="handleAction(action, row)">
+                        <!-- Icône selon le key -->
+                        <svg v-if="action.key === 'view' || action.key === 'show'" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                        </svg>
+                        <svg v-else-if="action.key === 'edit' || action.key === 'update'" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                        </svg>
+                        <svg v-else-if="action.key === 'assign' || action.key === 'permissions'" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/>
+                        </svg>
+                        <svg v-else-if="action.key === 'delete' || action.key === 'remove'" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                        </svg>
+                        <svg v-else-if="action.key === 'restore'" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                        </svg>
+                        <!-- Icône générique si key inconnu -->
+                        <svg v-else class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"/>
+                        </svg>
+                      </button>
+                    </template>
                   </div>
                 </slot>
               </td>

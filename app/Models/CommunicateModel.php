@@ -20,6 +20,7 @@ class CommunicateModel extends Model
         "message",
         "created_by",
         "is_active",
+        "email_sent_at",
         "deleted_at",
         "deleted_reason",
     ];
@@ -27,8 +28,9 @@ class CommunicateModel extends Model
     protected $hidden = [];
 
     protected $casts = [
-        'is_active' => 'boolean',
-        'deleted_at' => 'datetime',
+        'is_active'      => 'boolean',
+        'deleted_at'     => 'datetime',
+        'email_sent_at'  => 'datetime',
     ];
 
     public static function getSingle($id)

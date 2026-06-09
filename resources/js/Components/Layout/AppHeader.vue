@@ -268,12 +268,13 @@ const notifications  = computed(() => (page.props.notifications  as any[]) ?? []
 const unreadMessages = computed(() => (page.props.unreadMessages as any[]) ?? []);
 
 const notifLinksMap: Record<number, string> = {
+    0: '/admin/communicate/noticeboard/list',
     1: '/admin/communicate/noticeboard/list',
     2: '/teacher/my_noticeboard',
     3: '/student/my_noticeboard',
     4: '/parent/my_noticeboard',
 };
-const notifLink = computed(() => notifLinksMap[user.value?.user_type ?? 0] ?? '#');
+const notifLink = computed(() => notifLinksMap[user.value?.user_type ?? 1] ?? '#');
 const stripHtml = (html: string) => html?.replace(/<[^>]*>/g, '') ?? '';
 
 // Fermer les dropdowns si clic en dehors
@@ -311,16 +312,20 @@ const avatarUrl  = computed(() => {
 });
 
 const roleLabelMap: Record<number, string> = {
-    1: 'Administrateur', 2: 'Professeur', 3: 'Apprenant', 4: 'Parent',
+    0: 'Super Admin', 1: 'Administrateur', 2: 'Professeur', 3: 'Apprenant', 4: 'Parent',
 };
-const roleLabel = computed(() => roleLabelMap[user.value?.user_type ?? 0] ?? 'Utilisateur');
+const roleLabel = computed(() => roleLabelMap[user.value?.user_type ?? -1] ?? 'Utilisateur');
 
 const homeLinks: Record<number, string> = {
-    1: '/admin/dashboard', 2: '/teacher/dashboard', 3: '/student/dashboard', 4: '/parent/dashboard',
+    0: '/superadmin/dashboard', 1: '/admin/dashboard', 2: '/teacher/dashboard', 3: '/student/dashboard', 4: '/parent/dashboard',
 };
-const homeLink = computed(() => homeLinks[user.value?.user_type ?? 0] ?? '/');
+const homeLink = computed(() => homeLinks[user.value?.user_type ?? 1] ?? '/');
 
 const profileLinksMap: Record<number, { href: string; icon: string; label: string }[]> = {
+    0: [
+        { href: '/superadmin/account',         icon: 'user',     label: 'Mon profil' },
+        { href: '/superadmin/change_password', icon: 'lock',     label: 'Mot de passe' },
+    ],
     1: [
         { href: '/admin/account',         icon: 'user',     label: 'Mon profil' },
         { href: '/admin/change_password',  icon: 'lock',     label: 'Mot de passe' },
@@ -339,7 +344,7 @@ const profileLinksMap: Record<number, { href: string; icon: string; label: strin
         { href: '/parent/change_password', icon: 'lock', label: 'Mot de passe' },
     ],
 };
-const profileLinks = computed(() => profileLinksMap[user.value?.user_type ?? 0] ?? []);
+const profileLinks = computed(() => profileLinksMap[user.value?.user_type ?? 1] ?? []);
 
 const isActive      = (item: NavItem) => {
     // Si un menu parent est manuellement sélectionné, seul lui est actif

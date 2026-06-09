@@ -35,10 +35,26 @@
         </div>
 
         <!-- Filtres -->
-        <div class="flex flex-wrap gap-3">
-            <AppSelect v-model="filters.event_type" :options="typeOptions" placeholder="Tous les types" class="w-48" @change="applyFilters"/>
-            <AppInput v-model="filters.date_from" label="" type="date" class="w-40" placeholder="Du" @change="applyFilters"/>
-            <AppInput v-model="filters.date_to"   label="" type="date" class="w-40" placeholder="Au" @change="applyFilters"/>
+        <div class="card p-4">
+            <div class="flex flex-row flex-wrap items-center gap-3">
+                <div class="flex-1 min-w-[180px]">
+                    <AppSelect v-model="filters.event_type" :options="typeOptions" placeholder="Tous les types" @change="applyFilters"/>
+                </div>
+                <div class="flex-1 min-w-[160px]">
+                    <AppInput v-model="filters.date_from" type="date" @change="applyFilters"/>
+                </div>
+                <div class="flex-1 min-w-[160px]">
+                    <AppInput v-model="filters.date_to" type="date" @change="applyFilters"/>
+                </div>
+                <button v-if="filters.event_type || filters.date_from || filters.date_to"
+                    @click="filters = { event_type: '', date_from: '', date_to: '' }; applyFilters()"
+                    class="flex-shrink-0 px-3 py-2 rounded-lg text-xs font-medium
+                           text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200
+                           bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600
+                           transition-colors whitespace-nowrap">
+                    Réinitialiser
+                </button>
+            </div>
         </div>
 
         <!-- Table -->

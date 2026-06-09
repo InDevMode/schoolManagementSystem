@@ -94,6 +94,33 @@
                     required
                     :error="createForm.errors.class_id"
                 />
+
+                <!-- Alerte toutes matières déjà assignées -->
+                <div
+                    v-if="createForm.class_id && availableCount === 0"
+                    class="flex items-start gap-2 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-xl p-3"
+                >
+                    <svg class="w-4 h-4 text-amber-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    <p class="text-xs text-amber-700 dark:text-amber-300">
+                        Toutes les matières sont déjà assignées à cette classe. Modifiez les assignations existantes si nécessaire.
+                    </p>
+                </div>
+
+                <!-- Info matières déjà assignées -->
+                <div
+                    v-else-if="createForm.class_id && alreadyAssignedSubjectIds.length > 0"
+                    class="flex items-start gap-2 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-3"
+                >
+                    <svg class="w-4 h-4 text-blue-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    <p class="text-xs text-blue-700 dark:text-blue-300">
+                        {{ alreadyAssignedSubjectIds.length }} matière(s) déjà assignée(s) à cette classe sont grisées et non sélectionnables.
+                    </p>
+                </div>
+
                 <AppMultiSelect
                     v-model="createForm.subject_ids"
                     label="Matières"
@@ -107,7 +134,14 @@
             </form>
             <template #footer>
                 <AppButton variant="ghost" @click="showCreateForm = false">Annuler</AppButton>
-                <AppButton type="submit" :form="createFormId" :loading="createForm.processing">Assigner</AppButton>
+                <AppButton
+                    type="submit"
+                    :form="createFormId"
+                    :loading="createForm.processing"
+                    :disabled="createForm.class_id !== '' && availableCount === 0"
+                >
+                    Assigner
+                </AppButton>
             </template>
         </AppModal>
 
@@ -125,7 +159,7 @@
                 <AppSelect
                     v-model="editForm.subject_id"
                     label="Matière"
-                    :options="subjectOptions"
+                    :options="subjectOptionsEdit"
                     placeholder="Sélectionner une matière"
                     required
                     :error="editForm.errors.subject_id"
@@ -250,7 +284,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import { useForm, router } from '@inertiajs/vue3';
 import { AppButton, AppInput, AppSelect, AppModal, DataTable, AppBadge } from '@/Components/UI';
 import AppMultiSelect from '@/Components/UI/AppMultiSelect.vue';
@@ -294,9 +328,11 @@ const showDetails    = ref(false);
 const editTarget    = ref<ClassSubject | null>(null);
 const detailsTarget = ref<ClassSubject | null>(null);
 
-const deleting = ref(false);
 const toast    = useToast();
 const tableRef = ref<InstanceType<typeof DataTable> | null>(null);
+
+// IDs des matières déjà assignées à la classe sélectionnée dans le formulaire de création
+const alreadyAssignedSubjectIds = ref<number[]>([]);
 
 const statusOptions = [
     { value: '1', label: 'Actif' },
@@ -307,7 +343,17 @@ const classOptions = computed(() =>
     props.classes.map(c => ({ value: String(c.id), label: c.name }))
 );
 
+/** Matières avec disabled=true si déjà assignées à la classe sélectionnée */
 const subjectOptions = computed(() =>
+    props.subjects.map(s => ({
+        value:    String(s.id),
+        label:    s.name,
+        disabled: alreadyAssignedSubjectIds.value.includes(s.id),
+    }))
+);
+
+/** Options pour le formulaire d'édition (toutes activées) */
+const subjectOptionsEdit = computed(() =>
     props.subjects.map(s => ({ value: String(s.id), label: s.name }))
 );
 
@@ -332,6 +378,32 @@ const editForm = useForm({
     status:      '1',
 });
 
+// ── Quand la classe change dans le formulaire création, recalculer les doublons ──
+watch(() => createForm.class_id, (newClassId) => {
+    if (!newClassId) {
+        alreadyAssignedSubjectIds.value = [];
+        createForm.subject_ids = [];
+        return;
+    }
+    const classIdNum = parseInt(newClassId);
+    // On cherche dans les données déjà chargées (pagination — on compare sur la page courante)
+    // Pour être exhaustif on fait un appel API
+    fetch(`/admin/practicalworks/homework/getSubjectByClassId/${newClassId}`, {
+        headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
+        credentials: 'same-origin',
+    })
+        .then(r => r.ok ? r.json() : { getSubject: [] })
+        .then(data => {
+            alreadyAssignedSubjectIds.value = (data.getSubject ?? []).map((s: any) => s.subject_id);
+        })
+        .catch(() => { alreadyAssignedSubjectIds.value = []; });
+
+    // Retirer de la sélection les matières déjà assignées
+    createForm.subject_ids = createForm.subject_ids.filter(
+        id => !alreadyAssignedSubjectIds.value.includes(parseInt(id))
+    );
+});
+
 const formatDate = (dateStr: string) => {
     if (!dateStr) return '—';
     return new Date(dateStr).toLocaleDateString('fr-FR', {
@@ -340,11 +412,18 @@ const formatDate = (dateStr: string) => {
     });
 };
 
+// ── Nombre de matières encore disponibles pour cette classe ──
+const availableCount = computed(() => {
+    if (!createForm.class_id) return props.subjects.length;
+    return props.subjects.filter(s => !alreadyAssignedSubjectIds.value.includes(s.id)).length;
+});
+
 // ── Ouvrir créer ─────────────────────────────────────────────────────────────
 const openCreate = () => {
     createForm.reset();
     createForm.coefficient = '1';
     createForm.status = '1';
+    alreadyAssignedSubjectIds.value = [];
     showCreateForm.value = true;
 };
 
@@ -366,11 +445,21 @@ const openDetails = (item: ClassSubject) => {
 
 // ── Soumettre créer ──────────────────────────────────────────────────────────
 const submitCreate = () => {
+    // Filtrer les matières déjà assignées avant soumission (sécurité côté client)
+    const filteredIds = createForm.subject_ids.filter(
+        id => !alreadyAssignedSubjectIds.value.includes(parseInt(id))
+    );
+
+    if (filteredIds.length === 0) {
+        toast.error('Toutes les matières sélectionnées sont déjà assignées à cette classe.');
+        return;
+    }
+
     const data = new FormData();
     data.append('class_id', createForm.class_id);
     data.append('coefficient', createForm.coefficient);
     data.append('status', createForm.status);
-    createForm.subject_ids.forEach(id => data.append('subject_id[]', id));
+    filteredIds.forEach(id => data.append('subject_id[]', id));
 
     router.post('/admin/assign_subject/add', data, {
         onSuccess: () => {
@@ -378,6 +467,10 @@ const submitCreate = () => {
             createForm.reset();
             createForm.coefficient = '1';
             createForm.status = '1';
+            alreadyAssignedSubjectIds.value = [];
+        },
+        onError: (errors) => {
+            toast.error(Object.values(errors)[0] as string || 'Erreur lors de l\'assignation.');
         },
     });
 };
@@ -387,6 +480,9 @@ const submitEdit = () => {
     if (!editTarget.value) return;
     editForm.post(`/admin/assign_subject/edit_single/${editTarget.value.id}`, {
         onSuccess: () => { showEditForm.value = false; },
+        onError: (errors) => {
+            toast.error(Object.values(errors)[0] as string || 'Erreur lors de la modification.');
+        },
     });
 };
 

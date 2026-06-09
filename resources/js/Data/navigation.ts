@@ -26,10 +26,10 @@ export const adminNav: NavItem[] = [
         ],
     },
     {
-        id: 'examinations', label: 'Évaluations', icon: 'clipboard-document-list',
+        id: 'examinations', label: 'Notes & Bulletins', icon: 'clipboard-document-list',
         children: [
             { id: 'periods',        label: 'Périodes',         icon: 'calendar',      href: '/admin/examinations/period/list',  permission: 'view.exams.periods'  },
-            { id: 'evaluations',    label: 'Évaluations',      icon: 'pencil-square', href: '/admin/evaluations/list',          permission: 'view.exams.list'     },
+            { id: 'evaluations',    label: 'Devoirs & Interros', icon: 'pencil-square', href: '/admin/evaluations/list',        permission: 'view.exams.list'     },
             { id: 'grade-entry',    label: 'Saisie des notes', icon: 'table-cells',   href: '/admin/evaluations/grade-entry',   permission: 'view.exams.marks'    },
             { id: 'grades-pending', label: 'À valider',        icon: 'check-badge',   href: '/admin/evaluations/grades/pending',permission: 'action.marks.manage' },
             { id: 'bulletins',      label: 'Bulletins',        icon: 'document-text', href: '/admin/bulletins/list',            permission: 'view.bulletins.list' },
@@ -104,17 +104,17 @@ export const superAdminNav: NavItem[] = [
         ],
     },
     {
-        id: 'sa-examinations', label: 'Évaluations', icon: 'clipboard-document-list',
+        id: 'sa-examinations', label: 'Notes & Bulletins', icon: 'clipboard-document-list',
         children: [
-            { id: 'sa-periods',        label: 'Périodes',         icon: 'calendar',      href: '/admin/examinations/period/list',  permission: 'view.exams.periods'  },
-            { id: 'sa-evaluations',    label: 'Évaluations',      icon: 'pencil-square', href: '/admin/evaluations/list',          permission: 'view.exams.list'     },
-            { id: 'sa-grade-entry',    label: 'Saisie des notes', icon: 'table-cells',   href: '/admin/evaluations/grade-entry',   permission: 'view.exams.marks'    },
-            { id: 'sa-grades-pending', label: 'À valider',        icon: 'check-badge',   href: '/admin/evaluations/grades/pending',permission: 'action.marks.manage' },
-            { id: 'sa-bulletins',      label: 'Bulletins',        icon: 'document-text', href: '/admin/bulletins/list',            permission: 'view.bulletins.list' },
+            { id: 'sa-periods',        label: 'Périodes',           icon: 'calendar',      href: '/admin/examinations/period/list',  permission: 'view.exams.periods'  },
+            { id: 'sa-evaluations',    label: 'Devoirs & Interros', icon: 'pencil-square', href: '/admin/evaluations/list',          permission: 'view.exams.list'     },
+            { id: 'sa-grade-entry',    label: 'Saisie des notes',   icon: 'table-cells',   href: '/admin/evaluations/grade-entry',   permission: 'view.exams.marks'    },
+            { id: 'sa-grades-pending', label: 'À valider',          icon: 'check-badge',   href: '/admin/evaluations/grades/pending',permission: 'action.marks.manage' },
+            { id: 'sa-bulletins',      label: 'Bulletins',          icon: 'document-text', href: '/admin/bulletins/list',            permission: 'view.bulletins.list' },
         ],
     },
     {
-        id: 'sa-staff', label: 'Ressources Humaines', icon: 'user-group',
+        id: 'sa-staff', label: 'Gestion RH', icon: 'user-group',
         children: [
             { id: 'sa-staff-list',   label: 'Personnel',       icon: 'users',         href: '/admin/staff/list',             permission: 'view.staff.list'   },
             { id: 'sa-staff-leaves', label: 'Congés',          icon: 'calendar-days', href: '/admin/staff/leaves/list',      permission: 'view.staff.leaves' },

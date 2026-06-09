@@ -21,99 +21,153 @@ class ClassSubjectController extends Controller
         ]);
     }
 
-    public function create(Request $request): \Illuminate\Foundation\Application|\Illuminate\Routing\Redirector|\Illuminate\Http\RedirectResponse|\Illuminate\Contracts\Foundation\Application
+    /**
+     * Assigner plusieurs matières à une classe.
+     * Si la paire (class_id, subject_id) existe déjà (même supprimée), on met à jour.
+     * Sinon on crée. On ne crée jamais deux fois la même paire.
+     */
+    public function create(Request $request)
     {
-        try {
+        $request->validate([
+            'class_id'    => 'required|integer|exists:class,id',
+            'subject_id'  => 'required|array|min:1',
+            'subject_id.*'=> 'integer|exists:subject,id',
+            'coefficient' => 'required|integer|min:1',
+            'status'      => 'required|in:0,1',
+        ]);
 
-            if (!empty($request->subject_id)) {
-                foreach ($request->subject_id as $subject_id) {
-                    $classSubjectAlreadyExist = ClassSubjectModel::getAlreadyExist($request->class_id, $subject_id);
-                    if (!empty($classSubjectAlreadyExist)) {
-                        $classSubjectAlreadyExist->status = $request->status;
-                        $classSubjectAlreadyExist->coefficient = $request->coefficient;
-                        $classSubjectAlreadyExist->save();
-                    }
-                    $classSubject = new ClassSubjectModel;
-                    $classSubject->class_id = $request->class_id;
+        try {
+            $skipped = 0;
+            $created = 0;
+
+            foreach ($request->subject_id as $subject_id) {
+                // Recherche toutes les entrées (même is_delete=1)
+                $existing = ClassSubjectModel::withoutGlobalScopes()
+                    ->where('class_id',   $request->class_id)
+                    ->where('subject_id', $subject_id)
+                    ->first();
+
+                if ($existing) {
+                    // Met à jour l'entrée existante (la réactive si supprimée)
+                    $existing->status      = $request->status;
+                    $existing->coefficient = $request->coefficient;
+                    $existing->is_delete   = 0;
+                    $existing->save();
+                    $skipped++;
+                } else {
+                    $classSubject             = new ClassSubjectModel();
+                    $classSubject->class_id   = $request->class_id;
                     $classSubject->subject_id = $subject_id;
-                    $classSubject->status = $request->status;
+                    $classSubject->status     = $request->status;
                     $classSubject->coefficient = $request->coefficient;
                     $classSubject->created_by = Auth::user()->id;
                     $classSubject->save();
-
+                    $created++;
                 }
-            } else {
-                return redirect()->back()->with('error', 'Veuillez bien remplir tous les champs s\'il vous plaît....');
             }
 
-            return redirect('admin/assign_subject/list')->with('success', 'Ces matières ont été bien assignées à cette classe avec succès.');
-        } catch (\Exception $e) {
-            Log::error("Erreur lors de la création de l'assignation de ces matières. " . $e->getMessage());
+            $msg = $created > 0
+                ? "{$created} matière(s) assignée(s) avec succès."
+                : "Les matières sélectionnées étaient déjà assignées et ont été mises à jour.";
 
-            return redirect()->back()->with('error', 'Vos informations ne sont pas correctes. Veuillez réessayer.');
+            return redirect('admin/assign_subject/list')->with('success', $msg);
+
+        } catch (\Exception $e) {
+            Log::error("Erreur assignation matières : " . $e->getMessage());
+            return redirect()->back()->with('error', 'Une erreur est survenue. Veuillez réessayer.');
         }
     }
 
-    public function update(Request $request): \Illuminate\Foundation\Application|\Illuminate\Routing\Redirector|\Illuminate\Http\RedirectResponse|\Illuminate\Contracts\Foundation\Application
+    /**
+     * Remplacer toutes les assignations d'une classe.
+     * Supprime les paires non présentes dans la nouvelle liste, crée ou met à jour les autres.
+     */
+    public function update(Request $request)
     {
-        try {
-            ClassSubjectModel::deleteSubjectAssign($request->class_id);
+        $request->validate([
+            'class_id'    => 'required|integer|exists:class,id',
+            'subject_id'  => 'required|array|min:1',
+            'subject_id.*'=> 'integer|exists:subject,id',
+            'coefficient' => 'required|integer|min:1',
+            'status'      => 'required|in:0,1',
+        ]);
 
-            if (!empty($request->subject_id)) {
-                foreach ($request->subject_id as $subject_id) {
-                    $classSubjectAlreadyExist = ClassSubjectModel::getAlreadyExist($request->class_id, $subject_id);
-                    if (!empty($classSubjectAlreadyExist)) {
-                        $classSubjectAlreadyExist->status = $request->status;
-                        $classSubjectAlreadyExist->coefficient = $request->coefficient;
-                        $classSubjectAlreadyExist->save();
-                    }
-                    $classSubject = new ClassSubjectModel;
-                    $classSubject->class_id = $request->class_id;
-                    $classSubject->subject_id = $subject_id;
-                    $classSubject->status = $request->status;
-                    $classSubject->coefficient = $request->coefficient;
-                    $classSubject->created_by = Auth::user()->id;
-                    $classSubject->save();
-                }
-            } else {
-                return redirect()->back()->with('error', 'Veuillez bien remplir tous les champs s\'il vous plaît....');
+        try {
+            $classId    = $request->class_id;
+            $subjectIds = array_map('intval', $request->subject_id);
+
+            // Soft-delete les assignations qui ne sont plus dans la liste
+            ClassSubjectModel::where('class_id', $classId)
+                ->where('is_delete', 0)
+                ->whereNotIn('subject_id', $subjectIds)
+                ->update(['is_delete' => 1]);
+
+            foreach ($subjectIds as $subject_id) {
+                ClassSubjectModel::withoutGlobalScopes()
+                    ->updateOrCreate(
+                        ['class_id' => $classId, 'subject_id' => $subject_id],
+                        [
+                            'status'      => $request->status,
+                            'coefficient' => $request->coefficient,
+                            'is_delete'   => 0,
+                            'created_by'  => Auth::user()->id,
+                        ]
+                    );
             }
 
-            return redirect('admin/assign_subject/list')->with('success', 'La modification de ces assignations ont été effectuée avec succès.');
-        } catch (\Exception $e) {
-            Log::error("Erreur lors de la modification de l'assignation de ces matières. " . $e->getMessage());
+            return redirect('admin/assign_subject/list')
+                ->with('success', 'Les assignations ont été mises à jour avec succès.');
 
-            return redirect()->back()->with('error', 'Vos informations ne sont pas correctes. Veuillez réessayer.');
+        } catch (\Exception $e) {
+            Log::error("Erreur mise à jour assignations : " . $e->getMessage());
+            return redirect()->back()->with('error', 'Une erreur est survenue. Veuillez réessayer.');
         }
     }
 
-    public function updateSingle(Request $request, $id): \Illuminate\Foundation\Application|\Illuminate\Routing\Redirector|\Illuminate\Http\RedirectResponse|\Illuminate\Contracts\Foundation\Application
+    /**
+     * Modifier une seule assignation (classe + matière + statut + coefficient).
+     * Bloque si la nouvelle paire (class_id, subject_id) existe déjà sur un autre enregistrement.
+     */
+    public function updateSingle(Request $request, $id)
     {
+        $request->validate([
+            'class_id'    => 'required|integer|exists:class,id',
+            'subject_id'  => 'required|integer|exists:subject,id',
+            'coefficient' => 'required|integer|min:1',
+            'status'      => 'required|in:0,1',
+        ]);
+
         try {
+            $classSubject = ClassSubjectModel::getSingle($id);
+            if (!$classSubject) abort(404);
 
-            $classSubjectAlreadyExist = ClassSubjectModel::getAlreadyExist($request->class_id, $request->subject_id);
-            if (!empty($classSubjectAlreadyExist)) {
-                $classSubjectAlreadyExist->status = $request->status;
-                $classSubjectAlreadyExist->coefficient = $request->coefficient;
-                $classSubjectAlreadyExist->save();
+            // Vérifier qu'une autre ligne n'a pas déjà la même paire
+            $conflict = ClassSubjectModel::where('class_id',   $request->class_id)
+                ->where('subject_id', $request->subject_id)
+                ->where('id',         '!=', $id)
+                ->where('is_delete',  0)
+                ->first();
 
-                return redirect('admin/assign_subject/list')->with('success', 'Le status de cette assignation a été modifié avec succès.');
-            }else{
-                $classSubject = ClassSubjectModel::getSingle($id);;
-                $classSubject->class_id = $request->class_id;
-                $classSubject->subject_id = $request->subject_id;
-                $classSubject->status = $request->status;
-                $classSubject->coefficient = $request->coefficient;
-                $classSubject->save();
+            if ($conflict) {
+                return redirect()->back()->with(
+                    'error',
+                    'Cette matière est déjà assignée à cette classe. Veuillez choisir une combinaison différente.'
+                );
             }
 
-            return redirect('admin/assign_subject/list')->with('success', 'Cette assignation a été modifiée avec succès.');
+            $classSubject->class_id    = $request->class_id;
+            $classSubject->subject_id  = $request->subject_id;
+            $classSubject->status      = $request->status;
+            $classSubject->coefficient = $request->coefficient;
+            $classSubject->save();
+
+            return redirect('admin/assign_subject/list')
+                ->with('success', 'L\'assignation a été modifiée avec succès.');
+
         } catch (\Exception $e) {
-            Log::error("Erreur lors de la modification de l'assignation de cette matière. " . $e->getMessage());
-
-            return redirect()->back()->with('error', 'Vos informations ne sont pas correctes. Veuillez réessayer.');
+            Log::error("Erreur modification assignation : " . $e->getMessage());
+            return redirect()->back()->with('error', 'Une erreur est survenue. Veuillez réessayer.');
         }
-
     }
 
     public function delete($id)
@@ -122,10 +176,10 @@ class ClassSubjectController extends Controller
         if ($classSubject) {
             $classSubject->is_delete = 1;
             $classSubject->save();
-            return redirect('admin/assign_subject/list')->with('success', 'Cette assignation a été supprimée avec succès.');
+            return redirect('admin/assign_subject/list')
+                ->with('success', 'Cette assignation a été supprimée avec succès.');
         } else {
             abort(404);
         }
     }
-
 }

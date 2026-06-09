@@ -217,121 +217,28 @@
             </div>
         </section>
 
-        <!-- ══ SECTION 8 : CALENDRIER DYNAMIQUE ══════════════════════════════ -->
+        <!-- ══ SECTION 8 : CALENDRIER ══════════════════════════════════════ -->
         <section>
-            <div :class="['rounded-2xl overflow-hidden border transition-colors', isDark ? 'border-white/8 bg-[#1a1a2e]' : 'border-gray-200 bg-[#f8f7ff] shadow-sm']">
-                <div class="flex flex-col xl:flex-row">
-
-                    <!-- Grille calendrier -->
-                    <div class="flex-1 p-5">
-                        <!-- Header -->
-                        <div class="flex items-center justify-between mb-5">
-                            <div class="flex items-center gap-2">
-                                <h3 :class="['text-base font-bold', isDark ? 'text-white' : 'text-gray-900']">{{ monthName }}</h3>
-                                <span class="text-base font-bold text-primary-500">{{ calYear }}</span>
-                            </div>
-                            <div class="flex items-center gap-1.5">
-                                <button :class="navBtnClass" @click="prevMonth">
-                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/>
-                                    </svg>
-                                </button>
-                                <button :class="['px-3 py-1.5 rounded-lg text-[11px] font-semibold transition-all', isDark ? 'bg-white/10 hover:bg-primary-600 text-white' : 'bg-gray-200 hover:bg-primary-600 hover:text-white text-gray-600']" @click="goToday">
-                                    Aujourd'hui
-                                </button>
-                                <button :class="navBtnClass" @click="nextMonth">
-                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/>
-                                    </svg>
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- Jours semaine -->
-                        <div class="grid grid-cols-7 gap-1.5 mb-1.5">
-                            <div v-for="d in weekDays" :key="d"
-                                :class="['text-center text-[10px] font-semibold py-1', isDark ? 'text-white/40' : 'text-gray-400']">
-                                {{ d }}
-                            </div>
-                        </div>
-
-                        <!-- Grille jours -->
-                        <div class="grid grid-cols-7 gap-1.5">
-                            <div v-for="_ in firstDayOfMonth" :key="`e${_}`" class="rounded-lg h-14"
-                                :style="isDark ? 'background:rgba(255,255,255,0.02)' : 'background:rgba(0,0,0,0.02)'"/>
-
-                            <button v-for="day in daysInMonth" :key="day"
-                                :class="['relative rounded-lg h-14 flex flex-col items-start justify-start p-1.5 transition-all text-left group', isToday(day) ? 'ring-2 ring-primary-400' : '']"
-                                :style="getDayStyle(day)"
-                                @click="selectedDay = day">
-                                <span :class="['text-xs font-bold leading-none', getDayTextColor(day)]">{{ day }}</span>
-                                <!-- Événement -->
-                                <div v-if="getDbDayEvents(day).length"
-                                    class="absolute bottom-1 left-1 right-1 text-[8px] font-semibold truncate leading-none rounded px-0.5 py-0.5"
-                                    :style="{ color: getDbDayEvents(day)[0].highlightBg ? 'rgba(255,255,255,0.95)' : getDbDayEvents(day)[0].color, background: getDbDayEvents(day)[0].highlightBg ? 'transparent' : 'rgba(0,0,0,0.06)' }">
-                                    {{ getDbDayEvents(day)[0].title }}
-                                </div>
-                                <!-- Plusieurs événements → points -->
-                                <div v-if="getDbDayEvents(day).length > 1" class="flex gap-0.5 absolute top-1 right-1">
-                                    <span v-for="(ev, i) in getDbDayEvents(day).slice(0,3)" :key="i"
-                                        class="w-1.5 h-1.5 rounded-full" :style="{ background: ev.color }"/>
-                                </div>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Panneau latéral événements -->
-                    <div :class="['xl:w-64 border-t xl:border-t-0 xl:border-l flex flex-col', isDark ? 'border-white/8' : 'border-gray-200']">
-                        <div :class="['px-4 py-3 border-b', isDark ? 'border-white/8' : 'border-gray-200']">
-                            <h4 :class="['text-xs font-bold', isDark ? 'text-white' : 'text-gray-900']">Liste des événements</h4>
-                            <p :class="['text-[10px] mt-0.5', isDark ? 'text-white/40' : 'text-gray-400']">{{ monthName }} {{ calYear }}</p>
-                        </div>
-                        <div class="flex-1 overflow-y-auto max-h-72 xl:max-h-none">
-                            <div v-if="!allCalEvents.length" class="px-4 py-6 text-center text-[10px] text-gray-400">
-                                Aucun événement ce mois
-                            </div>
-                            <div v-for="ev in allCalEvents" :key="ev.id"
-                                :class="['px-4 py-3 transition-colors cursor-pointer border-b last:border-0', isDark ? 'border-white/5 hover:bg-white/5' : 'border-gray-50 hover:bg-white']">
-                                <!-- Date + type -->
-                                <div class="flex items-center gap-1.5 mb-1">
-                                    <span class="w-1.5 h-1.5 rounded-full flex-shrink-0" :style="{ background: ev.color }"/>
-                                    <span class="text-[10px] font-bold" :style="{ color: ev.color }">
-                                        {{ fmtDay(ev.start) }} {{ fmtMonth(ev.start) }}
-                                    </span>
-                                    <span :class="['text-[9px] ml-auto px-1.5 py-0.5 rounded-full font-medium', isDark ? 'bg-white/10 text-white/60' : 'bg-gray-100 text-gray-500']">
-                                        {{ eventTypeLabel(ev.extendedProps?.type) }}
-                                    </span>
-                                </div>
-                                <p :class="['text-[11px] font-semibold leading-tight truncate', isDark ? 'text-white' : 'text-gray-900']">{{ ev.title }}</p>
-                                <div v-if="ev.extendedProps?.start_time" class="flex items-center gap-1 mt-1">
-                                    <svg class="w-2.5 h-2.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                    </svg>
-                                    <span :class="['text-[9px]', isDark ? 'text-white/40' : 'text-gray-400']">
-                                        {{ ev.extendedProps.start_time }}{{ ev.extendedProps.end_time ? ' – ' + ev.extendedProps.end_time : '' }}
-                                    </span>
-                                </div>
-                                <!-- Barre progression -->
-                                <div :class="['mt-1.5 h-0.5 rounded-full', isDark ? 'bg-white/10' : 'bg-gray-200']">
-                                    <div class="h-0.5 rounded-full" :style="{ width: ev.progress + '%', background: ev.color }"/>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <AppCalendar
+                title="Calendrier scolaire"
+                subtitle="Cours, événements et activités"
+                :course-events="[]"
+                :events="calendarEventsFormatted"
+            />
         </section>
 
     </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { computed } from 'vue';
 import { useDark } from '@vueuse/core';
 import AttendanceBadge from '@/Components/Dashboard/AttendanceBadge.vue';
 import HeroCard        from '@/Components/Dashboard/HeroCard.vue';
 import MiniCard        from '@/Components/Dashboard/MiniCard.vue';
 import AlertCard       from '@/Components/Dashboard/AlertCard.vue';
+import { AppCalendar } from '@/Components/UI';
+import type { CalEvent } from '@/Components/UI';
 
 const isDark = useDark();
 const props = defineProps<{
@@ -361,93 +268,47 @@ const props = defineProps<{
     [key: string]: unknown;
 }>();
 
-// ── Constantes ────────────────────────────────────────────────────────────────
-const today    = new Date();
-const months   = ['Jan','Fév','Mar','Avr','Mai','Jun','Jul','Aoû','Sep','Oct','Nov','Déc'];
-const monthNames = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
-const weekDays = ['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'];
+const today  = new Date();
+const months = ['Jan','Fév','Mar','Avr','Mai','Jun','Jul','Aoû','Sep','Oct','Nov','Déc'];
 
-const typeLabels: Record<string, string> = {
-    academic: 'Académique', cultural: 'Culturel', administrative: 'Administratif',
-    exam: 'Examen', ceremony: 'Cérémonie', trip: 'Sortie',
-};
 const typeColors: Record<string, string> = {
     academic: '#3b82f6', cultural: '#8b5cf6', administrative: '#f59e0b',
     exam: '#ef4444', ceremony: '#10b981', trip: '#06b6d4',
 };
-
-// ── Calendrier ────────────────────────────────────────────────────────────────
-const calMonth    = ref(today.getMonth());
-const calYear     = ref(today.getFullYear());
-const selectedDay = ref(today.getDate());
-
-const monthName       = computed(() => monthNames[calMonth.value]);
-const daysInMonth     = computed(() => new Date(calYear.value, calMonth.value + 1, 0).getDate());
-const firstDayOfMonth = computed(() => {
-    const d = new Date(calYear.value, calMonth.value, 1).getDay();
-    return d === 0 ? 6 : d - 1;
-});
-
-const prevMonth = () => { if (calMonth.value === 0) { calMonth.value = 11; calYear.value--; } else calMonth.value--; selectedDay.value = 1; };
-const nextMonth = () => { if (calMonth.value === 11) { calMonth.value = 0; calYear.value++; } else calMonth.value++; selectedDay.value = 1; };
-const goToday   = () => { calMonth.value = today.getMonth(); calYear.value = today.getFullYear(); selectedDay.value = today.getDate(); };
-
-const isToday   = (d: number) => d === today.getDate() && calMonth.value === today.getMonth() && calYear.value === today.getFullYear();
-const isWeekend = (d: number) => { const dw = new Date(calYear.value, calMonth.value, d).getDay(); return dw === 0 || dw === 6; };
-
-// Événements DB → format calendrier pour le mois courant
-const allCalEvents = computed(() => {
-    if (!props.calendarEvents?.length) return [];
-    return (props.calendarEvents as any[]).filter(ev => {
-        const d = new Date(ev.start);
-        return d.getMonth() === calMonth.value && d.getFullYear() === calYear.value;
-    }).map(ev => ({
-        ...ev,
-        progress: Math.floor(Math.random() * 60) + 30, // décoratif
-    }));
-});
-
-// Événements pour un jour donné (depuis la BDD via calendarEvents)
-const getDbDayEvents = (day: number) => {
-    if (!props.calendarEvents?.length) return [];
-    return (props.calendarEvents as any[]).filter(ev => {
-        const d = new Date(ev.start);
-        return d.getDate() === day && d.getMonth() === calMonth.value && d.getFullYear() === calYear.value;
-    }).map(ev => ({
-        id:          ev.id,
-        title:       ev.title,
-        color:       ev.color ?? typeColors[ev.extendedProps?.type] ?? '#7B74F0',
-        highlightBg: ev.color ?? null,
-    }));
+const typeLabels: Record<string, string> = {
+    academic: 'Académique', cultural: 'Culturel', administrative: 'Administratif',
+    exam: 'Examen', ceremony: 'Cérémonie', trip: 'Sortie',
 };
 
-// Styles des cases calendrier
-const getDayStyle = (day: number): Record<string, string> => {
-    if (isToday(day)) return { background: '#7B74F0' };
-    const evs = getDbDayEvents(day);
-    if (evs.length) return { background: (evs[0].color ?? '#7B74F0') + '33' };
-    if (day === selectedDay.value) {
-        return isDark.value
-            ? { background: 'rgba(124,58,237,0.25)' }
-            : { background: 'rgba(124,58,237,0.10)', border: '1px solid rgba(124,58,237,0.25)' };
+const calendarEventsFormatted = computed<CalEvent[]>(() => {
+    if (props.calendarEvents?.length) {
+        return (props.calendarEvents as any[]).map(ev => ({
+            id:    ev.id,
+            title: ev.title,
+            start: ev.start ?? ev.event_date,
+            color: ev.color ?? typeColors[ev.extendedProps?.type ?? ev.event_type] ?? '#7B74F0',
+            start_time:  ev.start_time ?? ev.extendedProps?.start_time ?? '',
+            end_time:    ev.end_time   ?? ev.extendedProps?.end_time   ?? '',
+            extendedProps: {
+                type_label:  typeLabels[ev.extendedProps?.type ?? ev.event_type] ?? 'Événement',
+                description: ev.description ?? ev.extendedProps?.description ?? '',
+                location:    ev.location    ?? ev.extendedProps?.location    ?? '',
+                start_time:  ev.start_time  ?? ev.extendedProps?.start_time  ?? '',
+                end_time:    ev.end_time    ?? ev.extendedProps?.end_time    ?? '',
+            },
+        }));
     }
-    return isDark.value ? { background: 'rgba(255,255,255,0.04)' } : { background: 'rgba(0,0,0,0.03)' };
-};
+    const m = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0');
+    return [
+        { id: 1, title: 'Réunion parents',     start: `${m}-03`, color: '#f472b6', start_time: '08:00', end_time: '10:00', extendedProps: { type_label: 'Réunion',   location: 'Salle 1' } },
+        { id: 2, title: 'Examen Maths',         start: `${m}-08`, color: '#a78bfa', start_time: '09:00', end_time: '12:00', extendedProps: { type_label: 'Examen',    location: 'Grande salle' } },
+        { id: 3, title: 'Sortie scolaire',      start: `${m}-15`, color: '#34d399', start_time: '07:00', end_time: '18:00', extendedProps: { type_label: 'Sortie',    location: 'Extérieur' } },
+        { id: 4, title: 'Conseil de classe',    start: `${m}-22`, color: '#fb923c', start_time: '14:00', end_time: '16:00', extendedProps: { type_label: 'Conseil',   location: 'Salle des profs' } },
+        { id: 5, title: 'Remise des bulletins', start: `${m}-28`, color: '#60a5fa', start_time: '10:00', end_time: '12:00', extendedProps: { type_label: 'Cérémonie', location: 'Préau' } },
+    ] as CalEvent[];
+});
 
-const getDayTextColor = (day: number): string => {
-    if (isToday(day)) return 'text-white';
-    const evs = getDbDayEvents(day);
-    if (evs.length) return isDark.value ? 'text-white' : 'text-gray-900';
-    if (day === selectedDay.value) return isDark.value ? 'text-white' : 'text-primary-700';
-    if (isWeekend(day)) return isDark.value ? 'text-white/35' : 'text-gray-400';
-    return isDark.value ? 'text-white/75' : 'text-gray-700';
-};
-
-// ── Helpers ───────────────────────────────────────────────────────────────────
-const navBtnClass = computed(() =>
-    `w-8 h-8 rounded-lg flex items-center justify-center transition-all ${isDark.value ? 'bg-white/10 hover:bg-primary-600 text-white' : 'bg-gray-200 hover:bg-primary-600 hover:text-white text-gray-600'}`
-);
-
+// ── Helpers dates (pour les sections Événements / Congés) ─────────────────────
 const fmtDay   = (d: string) => d ? new Date(d).getDate() : '';
 const fmtMonth = (d: string) => d ? months[new Date(d).getMonth()] : '';
 const fmtDate  = (d: string) => d ? new Date(d).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' }) : '—';

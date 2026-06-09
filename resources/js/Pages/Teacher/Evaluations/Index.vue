@@ -5,7 +5,7 @@
                 <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Mes évaluations</h1>
                 <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">{{ evaluations.total }} évaluation(s)</p>
             </div>
-            <AppButton @click="openCreate">
+            <AppButton :disabled="!currentPeriod" @click="openCreate">
                 <template #icon>
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
@@ -15,12 +15,51 @@
             </AppButton>
         </div>
 
+        <!-- Bandeau période courante -->
+        <div v-if="!currentPeriod"
+            class="flex items-center gap-3 px-4 py-3 rounded-xl bg-warning-50 dark:bg-warning-900/20 border border-warning-200 dark:border-warning-700">
+            <svg class="w-5 h-5 text-warning-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+            </svg>
+            <p class="text-sm text-warning-700 dark:text-warning-300">
+                <span class="font-semibold">Aucune période courante définie.</span>
+                La création d'évaluations est suspendue en attendant qu'un administrateur définisse la période en cours.
+            </p>
+        </div>
+        <div v-else
+            class="flex items-center gap-3 px-4 py-3 rounded-xl bg-success-50 dark:bg-success-900/20 border border-success-200 dark:border-success-700">
+            <svg class="w-5 h-5 text-success-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+            </svg>
+            <p class="text-sm text-success-700 dark:text-success-300">
+                Période courante : <span class="font-semibold">{{ currentPeriod.name }}</span>
+            </p>
+        </div>
+
         <!-- Filtres -->
-        <div class="flex flex-wrap gap-3">
-            <AppSelect v-model="filters.class_id"  :options="classOptions"  placeholder="Toutes les classes"  class="w-44" @change="applyFilters"/>
-            <AppSelect v-model="filters.period_id" :options="periodOptions" placeholder="Toutes les périodes" class="w-44" @change="applyFilters"/>
-            <AppSelect v-model="filters.type"      :options="typeOptions"   placeholder="Tous les types"      class="w-48" @change="applyFilters"/>
-            <AppSelect v-model="filters.status"    :options="statusOptions" placeholder="Tous les statuts"    class="w-40" @change="applyFilters"/>
+        <div class="card p-4">
+            <div class="flex flex-row flex-wrap items-center gap-3">
+                <div class="flex-1 min-w-[150px]">
+                    <AppSelect v-model="filters.class_id" :options="classOptions" placeholder="Toutes les classes" @change="applyFilters"/>
+                </div>
+                <div class="flex-1 min-w-[150px]">
+                    <AppSelect v-model="filters.period_id" :options="periodCurrentOptions" placeholder="Période courante" @change="applyFilters"/>
+                </div>
+                <div class="flex-1 min-w-[160px]">
+                    <AppSelect v-model="filters.type" :options="typeOptions" placeholder="Tous les types" @change="applyFilters"/>
+                </div>
+                <div class="flex-1 min-w-[150px]">
+                    <AppSelect v-model="filters.status" :options="statusOptions" placeholder="Tous les statuts" @change="applyFilters"/>
+                </div>
+                <button v-if="filters.class_id || filters.period_id || filters.type || filters.status"
+                    @click="filters = { class_id: '', period_id: '', type: '', status: '' }; applyFilters()"
+                    class="flex-shrink-0 px-3 py-2 rounded-lg text-xs font-medium
+                           text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200
+                           bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600
+                           transition-colors whitespace-nowrap">
+                    Réinitialiser
+                </button>
+            </div>
         </div>
 
         <!-- Table -->
@@ -50,14 +89,14 @@
         </DataTable>
 
         <!-- Modal Créer -->
-        <AppModal v-model="showForm" title="Nouvelle évaluation" size="lg">
+        <AppModal v-model="showForm" title="Nouvelle évaluation" size="xl">
             <form id="eval-form" @submit.prevent="submitForm" class="space-y-4">
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <AppSelect v-model="form.class_id"   label="Classe"   :options="classOptions"   required @change="onClassChange"/>
-                    <AppSelect v-model="form.subject_id" label="Matière"  :options="subjectOptions" required/>
+                    <AppSelect v-model="form.class_id" label="Classe" :options="classOptions" required @change="(v: string) => { form.class_id = v; onClassChange(v); }"/>
+                    <AppSelect v-model="form.subject_id" label="Matière"  :options="subjectOptions" required @change="onSubjectChange"/>
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <AppSelect v-model="form.period_id" label="Période" :options="periodOptions" required/>
+                    <AppSelect v-model="form.period_id" label="Période" :options="periodCurrentOptions" required :disabled="!!currentPeriod"/>
                     <AppInput  v-model="form.eval_date" label="Date"    type="date"              required/>
                 </div>
 
@@ -75,13 +114,27 @@
                             @click="selectType(key)">
                             <span class="w-3 h-3 rounded-full" :style="{ background: typeColors[key] }"/>
                             <span class="text-xs font-medium text-gray-700 dark:text-gray-300 text-center">{{ label }}</span>
-                            <span class="text-[10px] text-gray-400">Coeff. {{ typeCoeffs[key] }}</span>
                         </button>
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                    <AppInput v-model="form.coefficient" label="Coefficient" type="number" min="1" max="10"/>
+                    <!-- Coefficient en lecture seule -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+                            Coefficient
+                            <span class="text-[10px] text-gray-400 font-normal ml-1">(matière assignée)</span>
+                        </label>
+                        <div class="flex items-center gap-2 px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700/50">
+                            <span class="text-lg font-bold text-primary-600 dark:text-primary-400">
+                                {{ form.coefficient || '—' }}
+                            </span>
+                            <span class="text-xs text-gray-400">
+                                {{ form.subject_id ? 'lu depuis la matière' : 'sélectionnez une matière' }}
+                            </span>
+                        </div>
+                        <input type="hidden" :value="form.coefficient" name="coefficient"/>
+                    </div>
                     <AppInput v-model="form.max_score"   label="Note max"    type="number" min="1" max="100"/>
                     <AppInput v-model="form.title"       label="Titre (optionnel)" placeholder="Interrogation N°1"/>
                 </div>
@@ -106,9 +159,8 @@ const toast = useToast();
 const props = defineProps<{
     evaluations: { data: any[]; total: number; from: number; to: number; links: any[] };
     classes:     { id: number; name: string }[];
-    periods:     { id: number; name: string }[];
+    currentPeriod?: { id: number; name: string } | null;
     typeLabels:  Record<string, string>;
-    typeCoeffs:  Record<string, number>;
 }>();
 
 const typeColors: Record<string, string> = {
@@ -123,9 +175,18 @@ const filters    = ref({ class_id: '', period_id: '', type: '', status: '' });
 const dynamicSubjects = ref<any[]>([]);
 
 const classOptions   = computed(() => props.classes.map(c => ({ value: String(c.id), label: c.name })));
-const periodOptions  = computed(() => props.periods.map(p => ({ value: String(p.id), label: p.name })));
+// Le prof ne voit que la période courante dans son formulaire
+const periodCurrentOptions = computed(() =>
+    props.currentPeriod
+        ? [{ value: String(props.currentPeriod.id), label: props.currentPeriod.name }]
+        : []
+);
 const typeOptions    = computed(() => Object.entries(props.typeLabels).map(([k, v]) => ({ value: k, label: v })));
-const subjectOptions = computed(() => dynamicSubjects.value.map(s => ({ value: String(s.id ?? s.subject_id), label: s.name ?? s.subject_name })));
+// dynamicSubjects contient les matières actives assignées à la classe choisie
+// Structure : { subject_id, subject_name, coefficient }
+const subjectOptions = computed(() =>
+    dynamicSubjects.value.map(s => ({ value: String(s.subject_id), label: s.subject_name }))
+);
 const statusOptions  = [
     { value: 'draft',     label: 'Brouillon' },
     { value: 'open',      label: 'Ouverte' },
@@ -158,22 +219,36 @@ const openCreate = () => {
     form.type        = 'interrogation';
     form.coefficient = '1';
     form.max_score   = '20';
+    // Pré-sélectionner la période courante
+    form.period_id   = props.currentPeriod ? String(props.currentPeriod.id) : '';
     showForm.value   = true;
 };
 
 const selectType = (key: string) => {
-    form.type        = key;
-    form.coefficient = String(props.typeCoeffs[key] ?? 1);
+    form.type = key;
+    // Le coefficient vient de la matière, pas du type
 };
 
-const onClassChange = async () => {
-    if (!form.class_id) return;
+const onClassChange = async (newClassId?: string) => {
+    const classId = newClassId || form.class_id;
+    if (!classId) return;
+
+    dynamicSubjects.value = [];
+    form.subject_id  = '';
+    form.coefficient = '';
+
     try {
-        const res = await axios.get(`/admin/evaluations/subjects-by-class/${form.class_id}`);
+        const res = await axios.get(`/admin/evaluations/subjects-by-class/${classId}`);
         dynamicSubjects.value = res.data;
     } catch {
         dynamicSubjects.value = [];
     }
+};
+
+const onSubjectChange = () => {
+    if (!form.subject_id) return;
+    const found = dynamicSubjects.value.find(s => String(s.subject_id) === form.subject_id);
+    form.coefficient = found?.coefficient ? String(found.coefficient) : '';
 };
 
 const submitForm = () => {

@@ -25,9 +25,23 @@
         </div>
 
         <!-- Filtres -->
-        <div class="flex flex-wrap gap-3">
-            <AppSelect v-model="filters.status"   :options="statusFilterOpts" placeholder="Tous les statuts" class="w-44" @change="applyFilters"/>
-            <AppSelect v-model="filters.staff_id" :options="staffOptions"     placeholder="Tout le personnel" class="w-56" @change="applyFilters"/>
+        <div class="card p-4">
+            <div class="flex flex-row flex-wrap items-center gap-3">
+                <div class="flex-1 min-w-[160px]">
+                    <AppSelect v-model="filters.status" :options="statusFilterOpts" placeholder="Tous les statuts" @change="applyFilters"/>
+                </div>
+                <div class="flex-1 min-w-[200px]">
+                    <AppSelect v-model="filters.staff_id" :options="staffOptions" placeholder="Tout le personnel" @change="applyFilters"/>
+                </div>
+                <button v-if="filters.status || filters.staff_id"
+                    @click="filters = { status: '', staff_id: '' }; applyFilters()"
+                    class="flex-shrink-0 px-3 py-2 rounded-lg text-xs font-medium
+                           text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200
+                           bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600
+                           transition-colors whitespace-nowrap">
+                    Réinitialiser
+                </button>
+            </div>
         </div>
 
         <!-- Table -->

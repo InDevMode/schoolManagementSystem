@@ -60,6 +60,18 @@ class RolesAndPermissionsSeeder extends Seeder
             'view.communicate.noticeboard', 'view.communicate.mail',
             'view.settings',
 
+            // ── Actions CRUD sur les administrateurs (granulaires) ──────────
+            'action.admins.view', 'action.admins.create', 'action.admins.edit',
+            'action.admins.delete', 'action.admins.reset_password', 'action.admins.export',
+            // ── Actions CRUD sur les professeurs (granulaires) ───────────────
+            'action.teachers.view', 'action.teachers.create', 'action.teachers.edit',
+            'action.teachers.delete', 'action.teachers.reset_password', 'action.teachers.export',
+            // ── Actions CRUD sur les apprenants (granulaires) ────────────────
+            'action.students.view', 'action.students.create', 'action.students.edit',
+            'action.students.delete', 'action.students.reset_password', 'action.students.export',
+            // ── Actions CRUD sur les parents (granulaires) ───────────────────
+            'action.parents.view', 'action.parents.create', 'action.parents.edit',
+            'action.parents.delete', 'action.parents.reset_password', 'action.parents.export',
             // ── Actions CRUD sur les utilisateurs ────────────────────────────
             'action.users.create', 'action.users.edit', 'action.users.delete',
             // ── Actions CRUD académique ──────────────────────────────────────

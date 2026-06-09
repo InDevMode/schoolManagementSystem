@@ -194,12 +194,13 @@ interface EvalInfo {
 }
 
 const props = defineProps<{
-    classes:     { id: number; name: string }[];
-    periods:     { id: number; name: string }[];
-    evaluations: any[];
-    evaluation?: EvalInfo;
-    grades?:     GradeRow[];
-    stats?:      { min: number; max: number; average: number; count: number } | null;
+    classes:       { id: number; name: string }[];
+    periods:       { id: number; name: string }[];
+    currentPeriod?: { id: number; name: string } | null;
+    evaluations:   any[];
+    evaluation?:   EvalInfo;
+    grades?:       GradeRow[];
+    stats?:        { min: number; max: number; average: number; count: number } | null;
 }>();
 
 const typeLabels: Record<string, string> = {
@@ -216,7 +217,7 @@ const typeColors: Record<string, string> = {
 };
 
 const selectedClass  = ref('');
-const selectedPeriod = ref('');
+const selectedPeriod = ref(props.currentPeriod ? String(props.currentPeriod.id) : '');
 const selectedEval   = ref(props.evaluation ? String(props.evaluation.id) : '');
 const localGrades    = ref<GradeRow[]>((props.grades ?? []).map(g => ({ ...g, dirty: false })));
 const evalList       = ref<any[]>(props.evaluations ?? []);
@@ -224,7 +225,12 @@ const saving         = ref(false);
 const validating     = ref(false);
 
 const classOptions  = computed(() => props.classes.map(c => ({ value: String(c.id), label: c.name })));
-const periodOptions = computed(() => props.periods.map(p => ({ value: String(p.id), label: p.name })));
+// Saisie des notes : uniquement la période courante dans le select
+const periodOptions = computed(() =>
+    props.currentPeriod
+        ? [{ value: String(props.currentPeriod.id), label: props.currentPeriod.name }]
+        : props.periods.map(p => ({ value: String(p.id), label: p.name }))
+);
 const evalOptions   = computed(() => evalList.value.map(e => ({
     value: String(e.id),
     label: `${typeLabels[e.type] ?? e.type} — ${e.subject_name} (${e.eval_date})`,

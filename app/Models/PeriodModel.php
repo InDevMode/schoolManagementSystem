@@ -85,6 +85,9 @@ class PeriodModel extends Model
             ->paginate($perpage);
     }
 
+    /**
+     * Toutes les périodes actives — usage admin complet (super admin, bulletins, rapports…)
+     */
     public static function getAllPeriods()
     {
         return PeriodModel::select('periods.*')
@@ -92,6 +95,19 @@ class PeriodModel extends Model
             ->where('periods.status', '=', 1)
             ->orderBy('periods.school_year', 'desc')
             ->orderBy('periods.order_number', 'asc')
+            ->get();
+    }
+
+    /**
+     * Uniquement la période courante — pour les selects admin/prof lors de la création d'évaluations.
+     * Retourne une collection avec 0 ou 1 élément (cohérent avec getAllPeriods).
+     */
+    public static function getCurrentPeriod()
+    {
+        return PeriodModel::select('periods.*')
+            ->where('periods.is_delete', '=', 0)
+            ->where('periods.status', '=', 1)
+            ->where('periods.is_current', '=', true)
             ->get();
     }
 

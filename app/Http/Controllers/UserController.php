@@ -2,13 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\ResetPasswordAdminMail;
 use App\Models\SettingModel;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 
@@ -30,6 +34,58 @@ class UserController extends Controller
         return !empty($userData->profile_picture)
             ? $userData->getProfile()
             : asset('upload/default.jpg');
+    }
+
+    public function updateSuperAdminAccount(Request $request): \Illuminate\Foundation\Application|\Illuminate\Routing\Redirector|\Illuminate\Http\RedirectResponse|\Illuminate\Contracts\Foundation\Application
+    {
+        try {
+            $id = Auth::user()->id;
+            $admin = User::getSingle($id);
+            $adminMail = User::checkEmailSingle($request->email, $id);
+            $regex = '/^[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}$/i';
+
+            if (!$admin) {
+                return redirect()->back()->with('error', 'Cet utilisateur est introuvable.');
+            }
+
+            if ($adminMail) {
+                return redirect()->back()->with('error', 'Cet email est déjà utilisé par un autre utilisateur.');
+            }
+
+            if (!preg_match($regex, $request->email)) {
+                return redirect()->back()->with('error', "L'adresse email est invalide.");
+            }
+
+            if ($request->hasFile('profile_picture')) {
+                $file = $request->file('profile_picture');
+                $ext = $file->getClientOriginalExtension();
+                $randomStr = 'superadmin' . date('dmYHis') . Str::random(20);
+                $fileName = strtolower($randomStr) . '.' . $ext;
+
+                if (!empty($admin->profile_picture)) {
+                    $oldPath = public_path('upload/profile/' . $admin->profile_picture);
+                    if (file_exists($oldPath)) {
+                        unlink($oldPath);
+                    }
+                }
+
+                $file->move(public_path('upload/profile/'), $fileName);
+                $admin->profile_picture = $fileName;
+            }
+
+            $admin->name          = trim($request->name);
+            $admin->last_name     = trim($request->last_name);
+            $admin->email         = trim($request->email);
+            $admin->mobile_number = trim($request->mobile_number ?? '');
+            $admin->address       = trim($request->address ?? '');
+            $admin->save();
+
+            return redirect()->back()->with('success', 'Vos informations ont été modifiées avec succès.');
+
+        } catch (\Exception $e) {
+            Log::error("Erreur lors de la modification du profil super admin : " . $e->getMessage());
+            return redirect()->back()->with('error', 'Erreur lors de la modification. Veuillez réessayer.');
+        }
     }
 
     public function updateAdminAccount(Request $request): \Illuminate\Foundation\Application|\Illuminate\Routing\Redirector|\Illuminate\Http\RedirectResponse|\Illuminate\Contracts\Foundation\Application
@@ -65,14 +121,14 @@ class UserController extends Controller
 
                 // Supprimer l'ancienne photo si elle existe
                 if (!empty($admin->profile_picture)) {
-                    $oldPath = base_path('upload/profile/' . $admin->profile_picture);
+                    $oldPath = public_path('upload/profile/' . $admin->profile_picture);
                     if (file_exists($oldPath)) {
                         unlink($oldPath);
                     }
                 }
 
                 // Déplacer la nouvelle photo
-                $file->move(base_path('upload/profile/'), $fileName);
+                $file->move(public_path('upload/profile/'), $fileName);
                 $admin->profile_picture = $fileName;
             }
 
@@ -141,14 +197,14 @@ class UserController extends Controller
 
                 // Supprimer l'ancienne photo si elle existe
                 if (!empty($teacher->profile_picture)) {
-                    $oldPath = base_path('upload/profile/' . $teacher->profile_picture);
+                    $oldPath = public_path('upload/profile/' . $teacher->profile_picture);
                     if (file_exists($oldPath)) {
                         unlink($oldPath);
                     }
                 }
 
                 // Déplacer la nouvelle photo
-                $file->move(base_path('upload/profile/'), $fileName);
+                $file->move(public_path('upload/profile/'), $fileName);
                 $teacher->profile_picture = $fileName;
             }
 
@@ -218,14 +274,14 @@ class UserController extends Controller
 
                 // Supprimer l'ancienne photo si elle existe
                 if (!empty($student->profile_picture)) {
-                    $oldPath = base_path('upload/profile/' . $student->profile_picture);
+                    $oldPath = public_path('upload/profile/' . $student->profile_picture);
                     if (file_exists($oldPath)) {
                         unlink($oldPath);
                     }
                 }
 
                 // Déplacer la nouvelle photo
-                $file->move(base_path('upload/profile/'), $fileName);
+                $file->move(public_path('upload/profile/'), $fileName);
                 $student->profile_picture = $fileName;
             }
 
@@ -289,14 +345,14 @@ class UserController extends Controller
 
                 // Supprimer l'ancienne photo si elle existe
                 if (!empty($parent->profile_picture)) {
-                    $oldPath = base_path('upload/profile/' . $parent->profile_picture);
+                    $oldPath = public_path('upload/profile/' . $parent->profile_picture);
                     if (file_exists($oldPath)) {
                         unlink($oldPath);
                     }
                 }
 
                 // Déplacer la nouvelle photo
-                $file->move(base_path('upload/profile/'), $fileName);
+                $file->move(public_path('upload/profile/'), $fileName);
                 $parent->profile_picture = $fileName;
             }
 
@@ -369,17 +425,137 @@ class UserController extends Controller
         $request->validate(['ids' => 'required|array', 'ids.*' => 'integer|exists:users,id']);
 
         try {
-            $defaultPassword = Hash::make('password123');
-            User::whereIn('id', $request->ids)->update(['password' => $defaultPassword]);
+            $successCount = 0;
+            $failCount    = 0;
 
-            return response()->json([
-                'success' => true,
-                'message' => count($request->ids) . ' mot(s) de passe réinitialisé(s) avec succès. Nouveau mot de passe : password123',
-            ]);
+            foreach ($request->ids as $userId) {
+                $user = User::find((int) $userId);
+                if (!$user) {
+                    $failCount++;
+                    continue;
+                }
+
+                // Générer un mot de passe aléatoire sécurisé (12 caractères)
+                $plainPassword = Str::random(10) . rand(10, 99);
+
+                // Mettre à jour le mot de passe hashé
+                $user->password = Hash::make($plainPassword);
+                $user->save();
+
+                // Envoyer le mot de passe en clair par email
+                try {
+                    Mail::to($user->email)->send(new ResetPasswordAdminMail($user, $plainPassword));
+                } catch (\Exception $mailEx) {
+                    Log::warning("Reset password mail failed for user #{$user->id}: " . $mailEx->getMessage());
+                }
+
+                $successCount++;
+            }
+
+            $message = $successCount . ' mot(s) de passe réinitialisé(s) avec succès. '
+                . 'Chaque utilisateur a reçu son nouveau mot de passe par email.';
+
+            if ($failCount > 0) {
+                $message .= " ({$failCount} utilisateur(s) introuvable(s))";
+            }
+
+            return response()->json(['success' => true, 'message' => $message]);
         } catch (\Exception $e) {
             Log::error('Reset password error: ' . $e->getMessage());
             return response()->json(['success' => false, 'message' => 'Erreur lors de la réinitialisation.'], 500);
         }
+    }
+
+    /**
+     * Liste de tous les utilisateurs (super admin uniquement).
+     */
+    public function allUsersList(): \Inertia\Response
+    {
+        $perPage = min((int) request('per_page', 15), 100);
+
+        $query = User::select(
+                'users.*',
+                DB::raw('(SELECT COUNT(*) FROM model_has_permissions WHERE model_has_permissions.model_id = users.id AND model_has_permissions.model_type = \'App\\\\Models\\\\User\') as direct_permissions_count')
+            )
+            ->where('users.is_delete', 0);
+
+        // Filtres
+        $filters = [
+            'users.name'         => strtolower(request('name', '')),
+            'users.last_name'    => strtolower(request('last_name', '')),
+            'users.email'        => strtolower(request('email', '')),
+            'users.mobile_number'=> strtolower(request('mobile_number', '')),
+        ];
+
+        foreach ($filters as $column => $value) {
+            if (!empty($value)) {
+                $query->where($column, 'like', '%' . $value . '%');
+            }
+        }
+
+        $userType = request('user_type', '');
+        if (is_numeric($userType) && $userType !== '') {
+            $query->where('users.user_type', (int) $userType);
+        }
+
+        $status = request('status', '');
+        if (in_array($status, ['0', '1'], true)) {
+            $query->where('users.status', $status);
+        }
+
+        $users = $query->orderBy('users.id', 'desc')->paginate($perPage);
+
+        // Enrichir avec rôles, permissions count et nom d'école
+        $setting = SettingModel::getSingle(1);
+        $schoolName = $setting?->school_name ?? config('app.name');
+
+        $users->getCollection()->transform(function ($u) use ($schoolName) {
+            try {
+                $roles       = $u->getRoleNames()->toArray();
+                $permCount   = $u->getAllPermissions()
+                    ->filter(fn($p) => ($p->is_delete ?? 0) == 0)
+                    ->count();
+            } catch (\Exception $e) {
+                $roles     = [];
+                $permCount = 0;
+            }
+
+            $roleLabel = match ((int) $u->user_type) {
+                0 => 'Super Administrateur',
+                1 => 'Administrateur',
+                2 => 'Professeur',
+                3 => 'Apprenant',
+                4 => 'Parent',
+                default => $roles[0] ?? 'Rôle custom',
+            };
+
+            $u->role_label        = $roleLabel;
+            $u->role_names        = $roles;
+            $u->permissions_count = $permCount;
+            $u->school_name       = $schoolName;
+            $u->is_online         = Cache::has('OnlineUser.' . $u->id);
+            return $u;
+        });
+
+        return Inertia::render('SuperAdmin/Users/Index', [
+            'users' => $users,
+            'roles' => \Spatie\Permission\Models\Role::where('is_delete', 0)
+                ->orderBy('user_type')
+                ->get()
+                ->map(fn($r) => [
+                    'id'        => $r->id,
+                    'name'      => $r->name,
+                    'user_type' => $r->user_type,
+                    'label'     => match ((int) $r->user_type) {
+                        0 => 'Super Administrateur',
+                        1 => 'Administrateur',
+                        2 => 'Professeur',
+                        3 => 'Apprenant',
+                        4 => 'Parent',
+                        default => $r->name,
+                    },
+                ]),
+        ]);
     }
 
     public function changePassword()
@@ -489,6 +665,89 @@ class UserController extends Controller
             return redirect()->back()->with('error', 'Erreur lors de la modification des informations utilisateur. Veuillez réessayer.');
         }
 
+    }
+
+    /**
+     * Mise à jour d'un utilisateur depuis le panneau super admin.
+     */
+    public function updateUserFromPanel(Request $request, int $id): \Illuminate\Http\JsonResponse
+    {
+        if (!Auth::check() || Auth::user()->user_type !== 0) {
+            return response()->json(['success' => false, 'message' => 'Accès refusé.'], 403);
+        }
+
+        $request->validate([
+            'name'         => 'required|string|max:100',
+            'last_name'    => 'required|string|max:100',
+            'email'        => "required|email|unique:users,email,{$id}",
+            'mobile_number'=> 'nullable|string|max:20',
+            'status'       => 'required|in:0,1',
+            'user_type'    => 'required|integer|min:0|max:99',
+        ]);
+
+        try {
+            $user = User::find($id);
+            if (!$user) {
+                return response()->json(['success' => false, 'message' => 'Utilisateur introuvable.'], 404);
+            }
+
+            $oldUserType = (int) $user->user_type;
+            $newUserType = (int) $request->user_type;
+
+            $user->name          = trim($request->name);
+            $user->last_name     = trim($request->last_name);
+            $user->email         = trim($request->email);
+            $user->mobile_number = $request->mobile_number ? trim($request->mobile_number) : null;
+            $user->status        = $request->status;
+            $user->user_type     = $newUserType;
+            $user->save();
+
+            // Synchroniser le rôle Spatie si le user_type a changé
+            if ($oldUserType !== $newUserType) {
+                $role = \Spatie\Permission\Models\Role::where('user_type', $newUserType)->first();
+                if ($role) {
+                    $user->syncRoles([$role->name]);
+                }
+                \Spatie\Permission\PermissionRegistrar::class;
+                app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
+            }
+
+            Log::info("Super admin #{Auth::id()} a mis à jour l'utilisateur #{$id}");
+
+            return response()->json(['success' => true, 'message' => 'Utilisateur mis à jour avec succès.']);
+        } catch (\Exception $e) {
+            Log::error('updateUserFromPanel error: ' . $e->getMessage());
+            return response()->json(['success' => false, 'message' => 'Erreur lors de la mise à jour.'], 500);
+        }
+    }
+
+    /**
+     * Soft-delete d'un utilisateur (super admin uniquement).
+     */
+    public function deleteUser(int $id): \Illuminate\Http\JsonResponse
+    {
+        if (!Auth::check() || Auth::user()->user_type !== 0) {
+            return response()->json(['success' => false, 'message' => 'Accès refusé.'], 403);
+        }
+
+        if ($id === Auth::id()) {
+            return response()->json(['success' => false, 'message' => 'Vous ne pouvez pas supprimer votre propre compte.'], 403);
+        }
+
+        try {
+            $user = User::find($id);
+            if (!$user) {
+                return response()->json(['success' => false, 'message' => 'Utilisateur introuvable.'], 404);
+            }
+
+            $user->update(['is_delete' => 1]);
+            Log::info("Super admin #{Auth::id()} a supprimé l'utilisateur #{$id}");
+
+            return response()->json(['success' => true, 'message' => 'Utilisateur supprimé avec succès.']);
+        } catch (\Exception $e) {
+            Log::error('Delete user error: ' . $e->getMessage());
+            return response()->json(['success' => false, 'message' => 'Erreur lors de la suppression.'], 500);
+        }
     }
 
 }

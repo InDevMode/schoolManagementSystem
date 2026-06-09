@@ -16,10 +16,26 @@
         </div>
 
         <!-- Filtres -->
-        <div class="flex flex-wrap gap-3">
-            <AppSelect v-model="filters.role" :options="roleOptions" placeholder="Tous les rôles" class="w-44" @change="applyFilters"/>
-            <AppSelect v-model="filters.status" :options="statusOptions" placeholder="Tous les statuts" class="w-40" @change="applyFilters"/>
-            <AppInput v-model="filters.search" placeholder="Rechercher..." class="w-56" @input="applyFilters"/>
+        <div class="card p-4">
+            <div class="flex flex-row flex-wrap items-center gap-3">
+                <div class="flex-1 min-w-[150px]">
+                    <AppSelect v-model="filters.role" :options="roleOptions" placeholder="Tous les rôles" @change="applyFilters"/>
+                </div>
+                <div class="flex-1 min-w-[150px]">
+                    <AppSelect v-model="filters.status" :options="statusOptions" placeholder="Tous les statuts" @change="applyFilters"/>
+                </div>
+                <div class="flex-1 min-w-[180px]">
+                    <AppInput v-model="filters.search" placeholder="Rechercher..." @input="applyFilters"/>
+                </div>
+                <button v-if="filters.role || filters.status || filters.search"
+                    @click="filters = { role: '', status: '', search: '' }; applyFilters()"
+                    class="flex-shrink-0 px-3 py-2 rounded-lg text-xs font-medium
+                           text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200
+                           bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600
+                           transition-colors whitespace-nowrap">
+                    Réinitialiser
+                </button>
+            </div>
         </div>
 
         <!-- Grille de cartes -->
