@@ -43,8 +43,7 @@ class PeriodModel extends Model
         $results = PeriodModel::select('periods.*', 'created_by.name as created_by_name', 'settings.school_name as settings_school_name')
             ->join('settings', 'periods.settings_id', '=', 'settings.id')
             ->join('users as created_by', 'periods.created_by', '=', 'created_by.id')
-            ->where('periods.is_delete', '=', 0)
-            ->where('periods.is_current', '=', 0);
+            ->where('periods.is_delete', '=', 0);
 
         $filters = [
             'periods.name' => strtolower(Request::get('name')),

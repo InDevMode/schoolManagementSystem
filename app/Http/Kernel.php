@@ -38,6 +38,7 @@ class Kernel extends HttpKernel
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
             \App\Http\Middleware\OnlineUser::class,
             \App\Http\Middleware\HandleInertiaRequests::class,
+            \App\Http\Middleware\ForcePasswordChange::class,
         ],
 
         'api' => [
@@ -73,6 +74,7 @@ class Kernel extends HttpKernel
         'parent'      => \App\Http\Middleware\ParentMiddleware::class,
         'common'      => \App\Http\Middleware\CommonMiddleware::class,
         'check_perm'  => \App\Http\Middleware\CheckPermission::class,
+        'force_pwd'   => \App\Http\Middleware\ForcePasswordChange::class,
 
     ];
 }

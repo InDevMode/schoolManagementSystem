@@ -47,6 +47,10 @@ Route::post('forgot_password', [AuthController::class, 'changePassword'])->name(
 Route::get('reset/{token}', [AuthController::class, 'resetPassword'])->name('password.reset');
 Route::post('reset/{token}', [AuthController::class, 'resetAndChangePassword'])->name('password.update');
 
+// Changement de mot de passe forcé (après réinitialisation admin)
+Route::get('force-change-password',  [AuthController::class, 'forceChangePasswordForm'])->name('force-change-password')->middleware('auth');
+Route::post('force-change-password', [AuthController::class, 'forceChangePasswordUpdate'])->name('force-change-password.update')->middleware('auth');
+
 // OAuth Social Login (Google & Facebook)
 Route::get('auth/{provider}', [SocialAuthController::class, 'redirect'])->name('social.redirect');
 Route::get('auth/{provider}/callback', [SocialAuthController::class, 'callback'])->name('social.callback');

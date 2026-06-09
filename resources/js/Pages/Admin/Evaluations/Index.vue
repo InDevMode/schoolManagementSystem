@@ -141,9 +141,18 @@
                         :options="classOptions"
                         required
                         :error="form.errors.class_id"
-                        @change="(v: string) => { form.class_id = v; onClassChange(v); }"
                     />
-                    <AppSelect v-model="form.subject_id" label="Matière" :options="subjectOptions" required :error="form.errors.subject_id" @change="onSubjectChange" />
+                    <div>
+                        <AppSelect
+                            v-model="form.subject_id"
+                            label="Matière"
+                            :options="subjectOptions"
+                            required
+                            :disabled="!form.class_id || loadingSubjects"
+                            :error="form.errors.subject_id"
+                            :placeholder="loadingSubjects ? 'Chargement…' : (form.class_id ? 'Sélectionner une matière' : 'Choisir une classe d\'abord')"
+                        />
+                    </div>
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <!-- Période verrouillée sur la période courante -->
@@ -210,7 +219,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import { useForm, router } from '@inertiajs/vue3';
 import { AppButton, AppInput, AppSelect, AppModal, DataTable, AppBadge } from '@/Components/UI';
 import { useCan } from '@/Composables/useCan';
@@ -245,7 +254,6 @@ const props = defineProps<{
     typeCoeffs:  Record<string, number>;
 }>();
 
-// Couleurs fixes par type
 const typeColors: Record<string, string> = {
     interrogation:    '#3b82f6',
     devoir_surveille: '#f59e0b',
@@ -253,20 +261,17 @@ const typeColors: Record<string, string> = {
     examen_blanc:     '#ef4444',
 };
 
-const formId     = 'eval-form';
-const showForm   = ref(false);
-const editTarget = ref<Evaluation | null>(null);
-const tableRef   = ref<any>(null);
-const dynamicSubjects = ref<{ id: number; name: string }[]>([]);
+const formId          = 'eval-form';
+const showForm        = ref(false);
+const editTarget      = ref<Evaluation | null>(null);
+const tableRef        = ref<any>(null);
+const dynamicSubjects = ref<{ subject_id: number; subject_name: string; coefficient: number }[]>([]);
+const loadingSubjects = ref(false);
 
-// Filtres
 const filters = ref({ class_id: '', period_id: '', type: '', status: '' });
 
-const classOptions  = computed(() => props.classes.map(c => ({ value: String(c.id), label: c.name })));
-const typeOptions   = computed(() => Object.entries(props.typeLabels).map(([k, v]) => ({ value: k, label: v })));
-
-// periodOptions pour les filtres = toutes les périodes
-// periodCurrentOptions pour le formulaire = période courante uniquement
+const classOptions         = computed(() => props.classes.map(c => ({ value: String(c.id), label: c.name })));
+const typeOptions          = computed(() => Object.entries(props.typeLabels).map(([k, v]) => ({ value: k, label: v })));
 const periodOptions        = computed(() => props.periods.map(p => ({ value: String(p.id), label: p.name })));
 const periodCurrentOptions = computed(() =>
     props.currentPeriod
@@ -280,8 +285,6 @@ const statusOptions = [
     { value: 'validated', label: 'Validée' },
 ];
 
-// dynamicSubjects contient les matières actives assignées à la classe choisie
-// Structure : { subject_id, subject_name, coefficient }
 const subjectOptions = computed(() =>
     dynamicSubjects.value.map(s => ({ value: String(s.subject_id), label: s.subject_name }))
 );
@@ -292,75 +295,79 @@ const form = useForm({
     period_id:   '',
     teacher_id:  '',
     type:        'interrogation',
-    coefficient: '1',
+    coefficient: '',
     max_score:   '20',
     eval_date:   '',
     title:       '',
 });
 
-const selectType = (key: string) => {
-    form.type = key;
-    // Le coefficient ne change plus selon le type, il est défini par la matière assignée à la classe
-};
-
-const onClassChange = async (newClassId?: string) => {
-    // On utilise la valeur reçue en paramètre (ou form.class_id en fallback)
-    const classId = newClassId || form.class_id;
-    if (!classId) return;
-
-    dynamicSubjects.value = [];
+// ── Watch sur class_id : dès qu'il change, charger les matières ──────────
+watch(() => form.class_id, async (newClassId) => {
     form.subject_id  = '';
     form.coefficient = '';
+    dynamicSubjects.value = [];
 
+    if (!newClassId) return;
+
+    loadingSubjects.value = true;
     try {
-        const res = await axios.get(`/admin/evaluations/subjects-by-class/${classId}`);
+        const res = await axios.get(`/admin/evaluations/subjects-by-class/${newClassId}`);
         dynamicSubjects.value = res.data;
     } catch {
         dynamicSubjects.value = [];
+    } finally {
+        loadingSubjects.value = false;
     }
-};
+});
 
-// Quand on choisit une matière, on récupère son coefficient depuis class_subject
-const onSubjectChange = () => {
-    if (!form.subject_id) return;
-    const found = dynamicSubjects.value.find(s => String(s.subject_id) === form.subject_id);
-    form.coefficient = found?.coefficient ? String(found.coefficient) : '';
-};
+// ── Watch sur subject_id : remplir le coefficient dès la sélection ───────
+watch(() => form.subject_id, (newSubjectId) => {
+    if (!newSubjectId) { form.coefficient = ''; return; }
+    const found = dynamicSubjects.value.find(s => String(s.subject_id) === newSubjectId);
+    form.coefficient = found ? String(found.coefficient) : '';
+});
+
+const selectType = (key: string) => { form.type = key; };
 
 const openCreate = () => {
-    editTarget.value = null;
+    editTarget.value      = null;
+    dynamicSubjects.value = [];
     form.reset();
-    form.type        = 'interrogation';
-    form.coefficient = '1';
-    form.max_score   = '20';
-    // Pré-sélectionner la période courante
-    form.period_id   = props.currentPeriod ? String(props.currentPeriod.id) : '';
-    showForm.value   = true;
+    form.type      = 'interrogation';
+    form.max_score = '20';
+    form.period_id = props.currentPeriod ? String(props.currentPeriod.id) : '';
+    showForm.value = true;
 };
 
 const openEdit = async (eval_: Evaluation) => {
-    editTarget.value = eval_;
+    editTarget.value      = eval_;
+    dynamicSubjects.value = [];
+    form.reset();
+
+    // Charger d'abord les matières de la classe
+    loadingSubjects.value = true;
+    try {
+        const res = await axios.get(`/admin/evaluations/subjects-by-class/${eval_.class_id}`);
+        dynamicSubjects.value = res.data;
+    } catch {
+        dynamicSubjects.value = [];
+    } finally {
+        loadingSubjects.value = false;
+    }
+
+    // Puis remplir le formulaire (après le chargement pour que le watch coefficient fonctionne)
     form.class_id    = String(eval_.class_id);
+    form.subject_id  = String(eval_.subject_id);
     form.period_id   = String(eval_.period_id);
     form.type        = eval_.type;
     form.max_score   = String(eval_.max_score);
     form.eval_date   = eval_.eval_date;
     form.title       = eval_.title ?? '';
 
-    // Charger les matières de la classe pour avoir les coefficients
-    try {
-        const res = await axios.get(`/admin/evaluations/subjects-by-class/${eval_.class_id}`);
-        dynamicSubjects.value = res.data;
-    } catch {
-        dynamicSubjects.value = [];
-    }
+    const found      = dynamicSubjects.value.find(s => String(s.subject_id) === String(eval_.subject_id));
+    form.coefficient = found ? String(found.coefficient) : String(eval_.coefficient);
 
-    form.subject_id  = String(eval_.subject_id);
-    // Récupérer le coefficient depuis l'assignation
-    const found = dynamicSubjects.value.find(s => String(s.subject_id) === form.subject_id);
-    form.coefficient = found?.coefficient ? String(found.coefficient) : String(eval_.coefficient);
-
-    showForm.value   = true;
+    showForm.value = true;
 };
 
 const submitForm = () => {
@@ -403,13 +410,14 @@ const statusVariant = (s: string) => ({ draft: 'secondary', open: 'info', closed
 const statusLabel   = (s: string) => ({ draft: 'Brouillon', open: 'Ouverte', closed: 'Fermée', validated: 'Validée' }[s] ?? s);
 
 const columns = [
-    { key: 'class_name',   label: 'Classe' },
+    { key: 'class_name',   label: 'Classe'  },
     { key: 'subject_name', label: 'Matière' },
-    { key: 'type',         label: 'Type' },
-    { key: 'coefficient',  label: 'Coeff.' },
-    { key: 'max_score',    label: 'Sur' },
-    { key: 'eval_date',    label: 'Date' },
+    { key: 'type',         label: 'Type'    },
+    { key: 'coefficient',  label: 'Coeff.'  },
+    { key: 'max_score',    label: 'Sur'     },
+    { key: 'eval_date',    label: 'Date'    },
     { key: 'period_name',  label: 'Période' },
-    { key: 'status',       label: 'Statut' },
+    { key: 'status',       label: 'Statut'  },
 ];
 </script>
+

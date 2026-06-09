@@ -92,8 +92,17 @@
         <AppModal v-model="showForm" title="Nouvelle évaluation" size="xl">
             <form id="eval-form" @submit.prevent="submitForm" class="space-y-4">
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <AppSelect v-model="form.class_id" label="Classe" :options="classOptions" required @change="(v: string) => { form.class_id = v; onClassChange(v); }"/>
-                    <AppSelect v-model="form.subject_id" label="Matière"  :options="subjectOptions" required @change="onSubjectChange"/>
+                    <AppSelect v-model="form.class_id" label="Classe" :options="classOptions" required/>
+                    <div>
+                        <AppSelect
+                            v-model="form.subject_id"
+                            label="Matière"
+                            :options="subjectOptions"
+                            required
+                            :disabled="!form.class_id || loadingSubjects"
+                            :placeholder="loadingSubjects ? 'Chargement…' : (form.class_id ? 'Sélectionner une matière' : 'Choisir une classe d\'abord')"
+                        />
+                    </div>
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <AppSelect v-model="form.period_id" label="Période" :options="periodCurrentOptions" required :disabled="!!currentPeriod"/>
@@ -148,7 +157,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import { useForm, router } from '@inertiajs/vue3';
 import { AppButton, AppInput, AppSelect, AppModal, DataTable, AppBadge } from '@/Components/UI';
 import { useToast } from '@/Composables/useToast';
@@ -170,9 +179,10 @@ const typeColors: Record<string, string> = {
     examen_blanc:     '#ef4444',
 };
 
-const showForm   = ref(false);
-const filters    = ref({ class_id: '', period_id: '', type: '', status: '' });
-const dynamicSubjects = ref<any[]>([]);
+const showForm        = ref(false);
+const filters         = ref({ class_id: '', period_id: '', type: '', status: '' });
+const dynamicSubjects = ref<{ subject_id: number; subject_name: string; coefficient: number }[]>([]);
+const loadingSubjects = ref(false);
 
 const classOptions   = computed(() => props.classes.map(c => ({ value: String(c.id), label: c.name })));
 // Le prof ne voit que la période courante dans son formulaire
@@ -229,27 +239,31 @@ const selectType = (key: string) => {
     // Le coefficient vient de la matière, pas du type
 };
 
-const onClassChange = async (newClassId?: string) => {
-    const classId = newClassId || form.class_id;
-    if (!classId) return;
-
+// ── Watch sur class_id : charger les matières dès que la valeur change ───
+watch(() => form.class_id, async (newClassId) => {
+    form.subject_id       = '';
+    form.coefficient      = '';
     dynamicSubjects.value = [];
-    form.subject_id  = '';
-    form.coefficient = '';
 
+    if (!newClassId) return;
+
+    loadingSubjects.value = true;
     try {
-        const res = await axios.get(`/admin/evaluations/subjects-by-class/${classId}`);
+        const res = await axios.get(`/admin/evaluations/subjects-by-class/${newClassId}`);
         dynamicSubjects.value = res.data;
     } catch {
         dynamicSubjects.value = [];
+    } finally {
+        loadingSubjects.value = false;
     }
-};
+});
 
-const onSubjectChange = () => {
-    if (!form.subject_id) return;
-    const found = dynamicSubjects.value.find(s => String(s.subject_id) === form.subject_id);
-    form.coefficient = found?.coefficient ? String(found.coefficient) : '';
-};
+// ── Watch sur subject_id : remplir le coefficient ────────────────────────
+watch(() => form.subject_id, (newSubjectId) => {
+    if (!newSubjectId) { form.coefficient = ''; return; }
+    const found = dynamicSubjects.value.find(s => String(s.subject_id) === newSubjectId);
+    form.coefficient = found ? String(found.coefficient) : '';
+});
 
 const submitForm = () => {
     form.post('/teacher/evaluations/add', {

@@ -438,8 +438,9 @@ class UserController extends Controller
                 // Générer un mot de passe aléatoire sécurisé (12 caractères)
                 $plainPassword = Str::random(10) . rand(10, 99);
 
-                // Mettre à jour le mot de passe hashé
-                $user->password = Hash::make($plainPassword);
+                // Mettre à jour le mot de passe hashé + forcer le changement à la prochaine connexion
+                $user->password             = Hash::make($plainPassword);
+                $user->must_change_password = 1;
                 $user->save();
 
                 // Envoyer le mot de passe en clair par email
@@ -452,8 +453,15 @@ class UserController extends Controller
                 $successCount++;
             }
 
-            $message = $successCount . ' mot(s) de passe réinitialisé(s) avec succès. '
-                . 'Chaque utilisateur a reçu son nouveau mot de passe par email.';
+            $isSingle = count($request->ids) === 1;
+
+            if ($isSingle) {
+                $message = 'Mot de passe réinitialisé avec succès. '
+                    . 'L\'utilisateur recevra son nouveau mot de passe par email et devra le changer à sa prochaine connexion.';
+            } else {
+                $message = $successCount . ' mot(s) de passe réinitialisé(s) avec succès. '
+                    . 'Chaque utilisateur recevra son nouveau mot de passe par email et devra le modifier à sa prochaine connexion.';
+            }
 
             if ($failCount > 0) {
                 $message .= " ({$failCount} utilisateur(s) introuvable(s))";

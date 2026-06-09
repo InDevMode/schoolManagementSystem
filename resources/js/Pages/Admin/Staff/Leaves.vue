@@ -121,44 +121,37 @@
 
                             <!-- Actions -->
                             <td class="px-4 py-3">
-                                <div class="flex items-center justify-end gap-1.5">
+                                <div class="flex items-center justify-end gap-1">
                                     <template v-if="row.status === 'pending'">
                                         <!-- Approuver -->
                                         <button
-                                            class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all border
-                                                   bg-emerald-50 dark:bg-emerald-900/20
-                                                   border-emerald-200 dark:border-emerald-700/50
-                                                   text-emerald-700 dark:text-emerald-400
-                                                   hover:bg-emerald-100 dark:hover:bg-emerald-900/40
-                                                   focus:outline-none focus:ring-2 focus:ring-emerald-500/40"
+                                            class="w-8 h-8 rounded-lg flex items-center justify-center transition-colors
+                                                   bg-success-50 dark:bg-success-900/20 text-success-600 dark:text-success-400
+                                                   hover:bg-success-100 dark:hover:bg-success-900/40"
+                                            title="Approuver"
                                             @click="openApprove(row, 'approved')">
-                                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
                                             </svg>
-                                            Approuver
                                         </button>
                                         <!-- Rejeter -->
                                         <button
-                                            class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all border
-                                                   bg-red-50 dark:bg-red-900/20
-                                                   border-red-200 dark:border-red-700/50
-                                                   text-red-700 dark:text-red-400
-                                                   hover:bg-red-100 dark:hover:bg-red-900/40
-                                                   focus:outline-none focus:ring-2 focus:ring-red-500/40"
+                                            class="w-8 h-8 rounded-lg flex items-center justify-center transition-colors
+                                                   bg-danger-50 dark:bg-danger-900/20 text-danger-600 dark:text-danger-400
+                                                   hover:bg-danger-100 dark:hover:bg-danger-900/40"
+                                            title="Rejeter"
                                             @click="openApprove(row, 'rejected')">
-                                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/>
                                             </svg>
-                                            Rejeter
                                         </button>
                                     </template>
 
                                     <!-- Note admin si déjà traité -->
                                     <button v-if="row.admin_note"
-                                        class="p-1.5 rounded-lg transition-all
-                                               text-gray-400 dark:text-gray-500
-                                               hover:text-blue-600 dark:hover:text-blue-400
-                                               hover:bg-blue-50 dark:hover:bg-blue-900/20"
+                                        class="w-8 h-8 rounded-lg flex items-center justify-center transition-colors
+                                               bg-primary-50 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400
+                                               hover:bg-primary-100 dark:hover:bg-primary-900/40"
                                         :title="'Note : ' + row.admin_note"
                                         @click="openNote(row)">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -168,10 +161,10 @@
 
                                     <!-- Supprimer -->
                                     <button
-                                        class="p-1.5 rounded-lg transition-all
-                                               text-gray-400 dark:text-gray-500
-                                               hover:text-red-600 dark:hover:text-red-400
-                                               hover:bg-red-50 dark:hover:bg-red-900/20"
+                                        class="w-8 h-8 rounded-lg flex items-center justify-center transition-colors
+                                               bg-danger-50 dark:bg-danger-900/20 text-danger-400 dark:text-danger-500
+                                               hover:bg-danger-100 dark:hover:bg-danger-900/40 hover:text-danger-600 dark:hover:text-danger-400"
+                                        title="Supprimer"
                                         @click="openDelete(row)">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
@@ -185,24 +178,57 @@
             </div>
 
             <!-- Pagination -->
-            <div v-if="leaves.links?.length > 3"
+            <div v-if="leaves.last_page > 1"
                 class="flex items-center justify-between px-4 py-3 border-t border-gray-100 dark:border-gray-700">
                 <p class="text-xs text-gray-500 dark:text-gray-400">
-                    {{ leaves.from }}–{{ leaves.to }} sur {{ leaves.total }}
+                    {{ leaves.from }}–{{ leaves.to }} sur {{ leaves.total }} résultat(s)
                 </p>
                 <div class="flex items-center gap-1">
-                    <a v-for="link in leaves.links" :key="link.label"
-                        :href="link.url ?? '#'"
+                    <!-- Précédent -->
+                    <button
+                        :disabled="!leaves.prev_page_url"
+                        @click="leaves.prev_page_url && router.visit(leaves.prev_page_url, { preserveState: true })"
                         :class="[
-                            'px-3 py-1.5 rounded-lg text-xs font-medium transition-colors',
-                            link.active
-                                ? 'bg-primary-600 text-white'
-                                : link.url
-                                    ? 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'
-                                    : 'text-gray-300 dark:text-gray-600 pointer-events-none',
-                        ]"
-                        v-html="link.label"
-                    />
+                            'w-8 h-8 rounded-lg flex items-center justify-center text-xs transition-colors',
+                            leaves.prev_page_url
+                                ? 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'
+                                : 'text-gray-300 dark:text-gray-600 cursor-not-allowed',
+                        ]">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                        </svg>
+                    </button>
+
+                    <!-- Numéros de page -->
+                    <template v-for="link in leaves.links.slice(1, -1)" :key="link.label">
+                        <button
+                            @click="link.url && router.visit(link.url, { preserveState: true })"
+                            :class="[
+                                'w-8 h-8 rounded-lg flex items-center justify-center text-xs font-medium transition-colors',
+                                link.active
+                                    ? 'bg-primary-600 text-white'
+                                    : link.url
+                                        ? 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'
+                                        : 'text-gray-300 dark:text-gray-600 cursor-not-allowed',
+                            ]">
+                            {{ link.label }}
+                        </button>
+                    </template>
+
+                    <!-- Suivant -->
+                    <button
+                        :disabled="!leaves.next_page_url"
+                        @click="leaves.next_page_url && router.visit(leaves.next_page_url, { preserveState: true })"
+                        :class="[
+                            'w-8 h-8 rounded-lg flex items-center justify-center text-xs transition-colors',
+                            leaves.next_page_url
+                                ? 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'
+                                : 'text-gray-300 dark:text-gray-600 cursor-not-allowed',
+                        ]">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                        </svg>
+                    </button>
                 </div>
             </div>
         </div>
@@ -367,7 +393,7 @@ const toast = useToast();
 
 // ── Props ─────────────────────────────────────────────────────────────────────
 const props = defineProps<{
-    leaves:       { data: any[]; total: number; from: number; to: number; links: any[] };
+    leaves:       { data: any[]; total: number; from: number; to: number; last_page: number; prev_page_url: string|null; next_page_url: string|null; links: any[] };
     leaveTypes:   { id: number; name: string; color: string }[];
     staff:        any[];
     pendingCount: number;

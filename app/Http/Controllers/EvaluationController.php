@@ -419,9 +419,9 @@ class EvaluationController extends Controller
      * Retourne les matières actives assignées à une classe (pour les selects dépendants)
      * Retourne : subject_id, subject_name, coefficient
      */
-    public function getSubjectsByClass(int $class_id)
+    public function getSubjectsByClass(int|string $class_id)
     {
-        $subjects = ClassSubjectModel::getSubject($class_id)
+        $subjects = ClassSubjectModel::getSubject((int) $class_id)
             ->map(fn($s) => [
                 'subject_id'   => $s->subject_id,
                 'subject_name' => $s->subject_name,

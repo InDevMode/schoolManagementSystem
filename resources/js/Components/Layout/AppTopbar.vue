@@ -16,39 +16,46 @@
             </svg>
         </button>
 
-        <!-- ── GAUCHE : Barre de recherche ── -->
-        <div class="relative w-56 xl:w-72 flex-shrink-0">
-            <input
-                type="text"
-                placeholder="Rechercher..."
-                class="w-full pl-4 pr-10 py-2 text-sm rounded-full border-0
-                       bg-gray-100 dark:bg-gray-800
-                       text-gray-700 dark:text-gray-300
-                       placeholder-gray-400 dark:placeholder-gray-500
-                       focus:outline-none focus:ring-2 focus:ring-primary-500/30
-                       transition-all duration-200"
-            />
-            <svg class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none"
-                 fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-            </svg>
-        </div>
+        <!-- ── GAUCHE : Recherche globale (command palette) ── -->
+        <GlobalSearch />
 
-        <!-- ── CENTRE : Liens de navigation rapide ── -->
-        <nav class="flex-1 hidden md:flex items-center justify-center gap-6">
-            <a v-for="link in quickLinks" :key="link.href" :href="link.href"
-               :class="[
-                   'flex items-center gap-1.5 text-sm font-medium transition-colors whitespace-nowrap',
-                   link.active
-                       ? 'text-gray-900 dark:text-white'
-                       : 'text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200',
-               ]"
-            >
-                <!-- Point coloré pour les liens "live" -->
-                <span v-if="link.dot" class="w-1.5 h-1.5 rounded-full flex-shrink-0" :style="{ background: link.dot }"/>
-                {{ link.label }}
-            </a>
+        <!-- ── CENTRE : Sous-liens du menu actif (dynamique) ── -->
+        <nav class="flex-1 hidden md:flex items-center justify-center overflow-x-auto no-scrollbar">
+            <template v-if="activeSubLinks.length">
+                <!-- Label parent -->
+                <span class="flex items-center gap-1.5 text-sm font-semibold text-gray-700 dark:text-gray-300 whitespace-nowrap flex-shrink-0 mr-1">
+                    <NavIcon v-if="currentMenu" :name="currentMenu.icon" class="w-4 h-4 text-primary-600 dark:text-primary-400" />
+                    {{ currentMenu?.label }}
+                </span>
+                <!-- Séparateur -->
+                <svg class="w-4 h-4 text-gray-300 dark:text-gray-600 flex-shrink-0 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                </svg>
+                <!-- Sous-liens -->
+                <div class="flex items-center gap-0.5">
+                    <a
+                        v-for="child in activeSubLinks"
+                        :key="child.id"
+                        :href="child.href"
+                        :class="[
+                            'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap transition-colors flex-shrink-0',
+                            isActiveSubLink(child)
+                                ? 'bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300'
+                                : 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-800 dark:hover:text-gray-200',
+                        ]"
+                    >
+                        <NavIcon :name="child.icon" class="w-3.5 h-3.5 flex-shrink-0" />
+                        {{ child.label }}
+                    </a>
+                </div>
+            </template>
+            <template v-else>
+                <!-- Pas de sous-liens : afficher juste le menu actif -->
+                <span v-if="currentMenu" class="flex items-center gap-1.5 text-sm font-semibold text-gray-700 dark:text-gray-300">
+                    <NavIcon :name="currentMenu.icon" class="w-4 h-4 text-primary-600 dark:text-primary-400" />
+                    {{ currentMenu?.label }}
+                </span>
+            </template>
         </nav>
 
         <!-- ── DROITE : Icônes rondes avec badges + Avatar ── -->
@@ -341,7 +348,8 @@ import { ref, computed, onMounted, onUnmounted } from 'vue';
 import { usePage } from '@inertiajs/vue3';
 import { useNavigation } from '@/Composables/useNavigation';
 import NavIcon from '@/Components/Layout/NavIcon.vue';
-import type { PageProps } from '@/types';
+import GlobalSearch from '@/Components/Layout/GlobalSearch.vue';
+import type { NavItem, PageProps } from '@/types';
 
 const showLogoutConfirm = ref(false);
 
@@ -350,6 +358,10 @@ defineEmits<{ openMobile: [] }>();
 
 const page = usePage<PageProps>();
 const { currentMenu, currentSubItem, user } = useNavigation();
+
+// ── Sous-liens dynamiques du menu actif ──────────────────────────────────────
+const activeSubLinks = computed<NavItem[]>(() => currentMenu.value?.children ?? []);
+const isActiveSubLink = (item: NavItem) => currentSubItem.value?.id === item.id;
 
 // ── Utilisateur ──────────────────────────────────────────────────────────────
 const avatarUrl = computed(() => {
@@ -406,43 +418,6 @@ const profileLinks = computed(() => {
     const ut = user.value?.user_type ?? 1;
     // Rôles custom (≥5) : mêmes liens que admin
     return profileLinksMap[ut] ?? profileLinksMap[1] ?? [];
-});
-
-// ── Liens de navigation rapide (centre du header) ────────────────────────────
-const quickLinksMap: Record<number, { label: string; href: string; dot?: string; active?: boolean }[]> = {
-    0: [
-        { label: 'Tableau de bord',   href: '/superadmin/dashboard' },
-        { label: 'Utilisateurs',      href: '/superadmin/users',             dot: '#7c3aed' },
-        { label: 'Rôles',             href: '/superadmin/config/roles',      dot: '#7B74F0' },
-        { label: 'Permissions',       href: '/superadmin/config/permissions' },
-        { label: 'Attribution',       href: '/superadmin/config/assign' },
-    ],
-    1: [
-        { label: 'Tableau de bord', href: '/admin/dashboard' },
-        { label: 'Apprenants',      href: '/admin/student/list', dot: '#7B74F0' },
-        { label: 'Professeurs',     href: '/admin/teacher/list' },
-        { label: 'Paramètres',      href: '/admin/settings' },
-    ],
-    2: [
-        { label: 'Tableau de bord', href: '/teacher/dashboard' },
-        { label: 'Mes Apprenants',  href: '/teacher/my_student', dot: '#7B74F0' },
-        { label: 'Calendrier',      href: '/teacher/my_calendar' },
-    ],
-    3: [
-        { label: 'Tableau de bord', href: '/student/dashboard' },
-        { label: 'Mes Matières',    href: '/student/my_subject', dot: '#7B74F0' },
-        { label: 'Calendrier',      href: '/student/my_timetable' },
-    ],
-    4: [
-        { label: 'Tableau de bord', href: '/parent/dashboard' },
-        { label: 'Mes Enfants',     href: '/parent/my_student', dot: '#7B74F0' },
-    ],
-};
-
-const quickLinks = computed(() => {
-    const links = quickLinksMap[user.value?.user_type ?? 0] ?? [];
-    const path  = window.location.pathname;
-    return links.map(l => ({ ...l, active: path.startsWith(l.href) }));
 });
 
 // ── Notifications / Messages ─────────────────────────────────────────────────
