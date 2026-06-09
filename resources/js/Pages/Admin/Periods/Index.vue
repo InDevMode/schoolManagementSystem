@@ -62,7 +62,7 @@
                 <span class="text-sm font-bold text-gray-600 dark:text-gray-400">{{ row.order_number }}</span>
             </template>
             <template #cell-is_current="{ row }">
-                <AppBadge v-if="row.is_current" variant="success" dot>Courante</AppBadge>
+                <AppBadge v-if="row.is_current" variant="warning" dot>En cours</AppBadge>
                 <span v-else class="text-xs text-gray-300 dark:text-gray-600">—</span>
             </template>
             <template #cell-status="{ row }">
@@ -74,20 +74,22 @@
                 <div class="flex items-center justify-end gap-1">
                     <!-- Définir comme courante -->
                     <button v-if="!row.is_current"
-                        class="p-1.5 rounded-lg text-gray-400 hover:text-success-600 hover:bg-success-50 dark:hover:bg-success-900/20 transition-colors"
-                        title="Définir comme période courante"
+                        class="p-1.5 rounded-lg text-white bg-success-500 hover:bg-success-600 shadow-sm transition-colors"
+                        title="Définir comme période en cours"
                         @click="setCurrent(row.id)">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
                         </svg>
                     </button>
-                    <button class="p-1.5 rounded-lg text-gray-400 hover:text-primary-600 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors"
+                    <button class="p-1.5 rounded-lg text-white bg-primary-500 hover:bg-primary-600 shadow-sm transition-colors"
+                        title="Modifier"
                         @click="openEdit(row as any)">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                         </svg>
                     </button>
-                    <button class="p-1.5 rounded-lg text-gray-400 hover:text-danger-600 hover:bg-danger-50 dark:hover:bg-danger-900/20 transition-colors"
+                    <button class="p-1.5 rounded-lg text-white bg-danger-500 hover:bg-danger-600 shadow-sm transition-colors"
+                        title="Supprimer"
                         @click="tableRef?.confirmDelete(row.id as number, row.name as string)">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
@@ -204,7 +206,7 @@ const columns = [
     { key: 'school_year',  label: 'Année scolaire' },
     { key: 'start_date',   label: 'Début' },
     { key: 'end_date',     label: 'Fin' },
-    { key: 'is_current',   label: 'Courante' },
+    { key: 'is_current',   label: 'Période en cours' },
     { key: 'status',       label: 'Statut' },
 ];
 

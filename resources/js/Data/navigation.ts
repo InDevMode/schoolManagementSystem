@@ -26,7 +26,7 @@ export const adminNav: NavItem[] = [
         ],
     },
     {
-        id: 'examinations', label: 'Notes & Bulletins', icon: 'clipboard-document-list',
+        id: 'examinations', label: 'Examens & Sessions', icon: 'clipboard-document-list',
         children: [
             { id: 'periods',        label: 'Périodes',         icon: 'calendar',      href: '/admin/examinations/period/list',  permission: 'view.exams.periods'  },
             { id: 'evaluations',    label: 'Devoirs & Interros', icon: 'pencil-square', href: '/admin/evaluations/list',        permission: 'view.exams.list'     },
@@ -104,7 +104,7 @@ export const superAdminNav: NavItem[] = [
         ],
     },
     {
-        id: 'sa-examinations', label: 'Notes & Bulletins', icon: 'clipboard-document-list',
+        id: 'sa-examinations', label: 'Examens & Sessions', icon: 'clipboard-document-list',
         children: [
             { id: 'sa-periods',        label: 'Périodes',           icon: 'calendar',      href: '/admin/examinations/period/list',  permission: 'view.exams.periods'  },
             { id: 'sa-evaluations',    label: 'Devoirs & Interros', icon: 'pencil-square', href: '/admin/evaluations/list',          permission: 'view.exams.list'     },

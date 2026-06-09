@@ -43,6 +43,9 @@ php artisan serve
 npm run dev
 ```
 
+php artisan superadmin:sync-permissions
+
+
 ## Structure frontend
 
 ```

@@ -479,7 +479,7 @@ class UserController extends Controller
      */
     public function allUsersList(): \Inertia\Response
     {
-        $perPage = min((int) request('per_page', 15), 100);
+        $perPage = min((int) request('per_page', 5), 100);
 
         $query = User::select(
                 'users.*',
@@ -519,10 +519,19 @@ class UserController extends Controller
 
         $users->getCollection()->transform(function ($u) use ($schoolName) {
             try {
-                $roles       = $u->getRoleNames()->toArray();
-                $permCount   = $u->getAllPermissions()
-                    ->filter(fn($p) => ($p->is_delete ?? 0) == 0)
-                    ->count();
+                $roles = $u->getRoleNames()->toArray();
+
+                // Le super admin (user_type = 0) possède toutes les permissions par définition.
+                // On affiche le total réel de permissions en base plutôt que ce qui est stocké
+                // dans role_has_permissions (qui peut être désynchronisé).
+                if ((int) $u->user_type === 0) {
+                    $permCount = \Spatie\Permission\Models\Permission::where('guard_name', 'web')
+                        ->count();
+                } else {
+                    $permCount = $u->getAllPermissions()
+                        ->filter(fn($p) => ($p->is_delete ?? 0) == 0)
+                        ->count();
+                }
             } catch (\Exception $e) {
                 $roles     = [];
                 $permCount = 0;

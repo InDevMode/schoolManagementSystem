@@ -36,9 +36,14 @@ class SuperAdminSeeder extends Seeder
             Permission::firstOrCreate(['name' => $perm, 'guard_name' => 'web']);
         }
 
-        // Le super_admin a toutes les permissions existantes + les siennes
-        $allPermissions = Permission::all();
+        // Le super_admin doit toujours avoir TOUTES les permissions en base.
+        // On recharge après avoir créé les permissions RBAC pour être certain
+        // d'inclure celles créées par RolesAndPermissionsSeeder.
+        app()[PermissionRegistrar::class]->forgetCachedPermissions();
+        $allPermissions = Permission::where('guard_name', 'web')->get();
         $superAdminRole->syncPermissions($allPermissions);
+
+        $this->command->info("✅ Rôle super_admin synchronisé avec {$allPermissions->count()} permission(s).");
 
         // ── 2. Créer l'utilisateur super_admin ─────────────────────────────
         $superAdmin = User::firstOrCreate(

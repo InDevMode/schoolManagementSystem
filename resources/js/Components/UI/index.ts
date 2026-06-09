@@ -11,6 +11,7 @@ export { default as AppMultiSelect } from './AppMultiSelect.vue';
 export { default as AppRichEditor }  from './AppRichEditor.vue';
 export { default as AppCalendar }    from './AppCalendar.vue';
 export type { CalEvent }             from './AppCalendar.vue';
+export { default as AppPagination }  from './AppPagination.vue';
 export { default as DataTable }      from './DataTable.vue';
 export { default as ConfirmDialog }  from './ConfirmDialog.vue';
 export { default as ToastContainer } from './ToastContainer.vue';

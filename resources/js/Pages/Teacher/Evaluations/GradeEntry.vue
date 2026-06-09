@@ -29,10 +29,10 @@
         <div class="card p-4">
             <div class="flex flex-row flex-wrap items-center gap-3">
                 <div class="flex-1 min-w-[150px]">
-                    <AppSelect v-model="selectedClass" label="Classe" :options="classOptions" @change="onClassChange"/>
+                    <AppSelect v-model="selectedClass" label="Classe" :options="classOptions"/>
                 </div>
                 <div class="flex-1 min-w-[150px]">
-                    <AppSelect v-model="selectedPeriod" label="Période" :options="periodOptions" @change="loadEvals"/>
+                    <AppSelect v-model="selectedPeriod" label="Période" :options="periodOptions"/>
                 </div>
                 <div class="flex-1 min-w-[220px]">
                     <AppSelect v-model="selectedEval" label="Évaluation" :options="evalOptions" @change="loadGrades"/>
@@ -187,7 +187,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import { router } from '@inertiajs/vue3';
 import { AppButton, AppSelect, AppBadge } from '@/Components/UI';
 import { useToast } from '@/Composables/useToast';
@@ -263,9 +263,13 @@ const savedCount = computed(() =>
     localGrades.value.filter(g => g.score !== null && g.score !== '').length
 );
 
-const onClassChange = async () => {
-    if (selectedClass.value && selectedPeriod.value) loadEvals();
-};
+// ── Watch : recharger les évaluations dès que classe ou période changent ─────
+watch([selectedClass, selectedPeriod], ([cls, per]) => {
+    evalList.value     = [];
+    selectedEval.value = '';
+    localGrades.value  = [];
+    if (cls && per) loadEvals();
+});
 
 const loadEvals = async () => {
     if (!selectedClass.value || !selectedPeriod.value) return;

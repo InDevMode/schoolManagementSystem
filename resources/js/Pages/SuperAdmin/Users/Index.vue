@@ -328,17 +328,39 @@
                     <span v-if="users.total > 0">{{ users.from }}–{{ users.to }} sur {{ users.total }} résultat(s)</span>
                     <span v-else>Aucun résultat</span>
                 </p>
-                <div class="flex items-center gap-1.5 flex-wrap justify-center">
-                    <template v-for="link in users.links" :key="link.label">
+                <div class="flex items-center gap-1">
+                    <!-- Précédent -->
+                    <button :disabled="!users.prev_page_url"
+                            @click="users.prev_page_url && goToPage(users.prev_page_url)"
+                            class="w-8 h-8 flex items-center justify-center rounded-lg text-sm transition-colors
+                                   disabled:opacity-30 disabled:cursor-not-allowed
+                                   text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                        </svg>
+                    </button>
+                    <!-- Numéros de page -->
+                    <template v-for="link in users.links.slice(1, -1)" :key="link.label">
                         <button v-if="link.url" @click="goToPage(link.url)"
-                                :class="['min-w-[36px] h-9 px-2.5 rounded-lg text-sm font-medium transition-colors',
+                                :class="['w-8 h-8 flex items-center justify-center rounded-lg text-sm font-medium transition-colors',
                                     link.active ? 'bg-violet-600 text-white shadow-sm'
-                                               : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700']"
-                                v-html="link.label"/>
-                        <span v-else class="min-w-[36px] h-9 px-2.5 rounded-lg text-sm font-medium text-gray-300
-                                            dark:text-gray-600 cursor-not-allowed flex items-center justify-center"
-                              v-html="link.label"/>
+                                               : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700']">
+                            {{ link.label }}
+                        </button>
+                        <span v-else class="w-8 h-8 flex items-center justify-center text-sm text-gray-300 dark:text-gray-600">
+                            {{ link.label }}
+                        </span>
                     </template>
+                    <!-- Suivant -->
+                    <button :disabled="!users.next_page_url"
+                            @click="users.next_page_url && goToPage(users.next_page_url)"
+                            class="w-8 h-8 flex items-center justify-center rounded-lg text-sm transition-colors
+                                   disabled:opacity-30 disabled:cursor-not-allowed
+                                   text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                        </svg>
+                    </button>
                 </div>
             </div>
         </div>
@@ -693,6 +715,9 @@ interface RoleOption { id: number; name: string; user_type: number; label: strin
 interface PaginatedUsers {
     data: UserRow[];
     total: number; from: number; to: number;
+    last_page: number;
+    prev_page_url: string | null;
+    next_page_url: string | null;
     links: { url: string | null; label: string; active: boolean }[];
 }
 
@@ -705,7 +730,7 @@ const csrf = () =>
 
 // ── Filtres ───────────────────────────────────────────────────────────────────
 const filters    = reactive({ name: '', last_name: '', email: '', mobile_number: '', user_type: '', status: '' });
-const perPage    = ref(15);
+const perPage    = ref(5);
 
 const applyFilters = () => {
     const p: Record<string, string | number> = { per_page: perPage.value };
@@ -719,8 +744,8 @@ const applyFilters = () => {
 };
 const resetFilters = () => {
     Object.assign(filters, { name: '', last_name: '', email: '', mobile_number: '', user_type: '', status: '' });
-    perPage.value = 15;
-    router.get('/superadmin/users', { per_page: 15 }, { preserveState: false });
+    perPage.value = 5;
+    router.get('/superadmin/users', { per_page: 5 }, { preserveState: false });
 };
 const goToPage = (url: string) => router.get(url, {}, { preserveState: true });
 

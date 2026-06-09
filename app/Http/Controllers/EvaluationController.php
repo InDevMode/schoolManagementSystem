@@ -353,7 +353,10 @@ class EvaluationController extends Controller
         }
 
         if ($request->class_id && $request->period_id) {
-            $data['evaluations'] = EvaluationModel::getByTeacher($teacher_id, (int) $request->class_id);
+            $data['evaluations'] = EvaluationModel::getByClassAndPeriod(
+                (int) $request->class_id,
+                (int) $request->period_id
+            )->filter(fn($e) => $e->teacher_id === $teacher_id)->values();
         }
 
         return Inertia::render('Teacher/Evaluations/GradeEntry', $data);

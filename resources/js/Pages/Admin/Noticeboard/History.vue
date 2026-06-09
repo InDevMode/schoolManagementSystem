@@ -115,31 +115,7 @@
         </div>
 
         <!-- ── Pagination ────────────────────────────────────────────────────── -->
-        <div v-if="deleted.links?.length > 3"
-             class="flex flex-col sm:flex-row items-center justify-between gap-3 text-sm">
-            <span class="text-xs text-gray-500 dark:text-gray-400">
-                Affichage de <strong class="text-gray-900 dark:text-white">{{ deleted.from }}</strong>
-                à <strong class="text-gray-900 dark:text-white">{{ deleted.to }}</strong>
-                sur <strong class="text-gray-900 dark:text-white">{{ deleted.total }}</strong>
-            </span>
-            <div class="flex items-center gap-1">
-                <template v-for="link in deleted.links" :key="link.label">
-                    <component
-                        :is="link.url ? 'a' : 'span'"
-                        :href="link.url ?? undefined"
-                        :class="[
-                            'px-3 py-1.5 rounded-lg text-xs font-medium transition-colors',
-                            link.active
-                                ? 'bg-primary-600 text-white shadow-sm'
-                                : link.url
-                                    ? 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer'
-                                    : 'opacity-40 cursor-not-allowed text-gray-400',
-                        ]"
-                        v-html="link.label"
-                    />
-                </template>
-            </div>
-        </div>
+        <AppPagination :pagination="deleted" />
 
     </div>
 </template>
@@ -147,6 +123,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { router } from '@inertiajs/vue3';
+import { AppPagination } from '@/Components/UI';
 import { stripHtml } from '@/Utils/html';
 
 interface DeletedNotice {
@@ -165,6 +142,9 @@ defineProps<{
         total: number;
         from: number;
         to: number;
+        last_page: number;
+        prev_page_url: string | null;
+        next_page_url: string | null;
         links: { url: string | null; label: string; active: boolean }[];
     };
 }>();

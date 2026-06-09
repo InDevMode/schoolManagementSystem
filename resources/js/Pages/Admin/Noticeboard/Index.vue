@@ -183,31 +183,7 @@
         </div>
 
         <!-- ── Pagination ─────────────────────────────────────────────────────── -->
-        <div v-if="notices.links?.length > 3"
-             class="flex flex-col sm:flex-row items-center justify-between gap-3 text-sm text-gray-600 dark:text-gray-400">
-            <span class="text-xs">
-                Affichage de <strong class="text-gray-900 dark:text-white">{{ notices.from }}</strong>
-                à <strong class="text-gray-900 dark:text-white">{{ notices.to }}</strong>
-                sur <strong class="text-gray-900 dark:text-white">{{ notices.total }}</strong>
-            </span>
-            <div class="flex items-center gap-1">
-                <template v-for="link in notices.links" :key="link.label">
-                    <component
-                        :is="link.url ? 'a' : 'span'"
-                        :href="link.url ?? undefined"
-                        :class="[
-                            'px-3 py-1.5 rounded-lg text-xs font-medium transition-colors',
-                            link.active
-                                ? 'bg-primary-600 text-white shadow-sm'
-                                : link.url
-                                    ? 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer'
-                                    : 'opacity-40 cursor-not-allowed text-gray-400',
-                        ]"
-                        v-html="link.label"
-                    />
-                </template>
-            </div>
-        </div>
+        <AppPagination :pagination="notices" />
 
         <!-- ════════════════════════════════════════════════════════════════════
              Modal Créer / Modifier
@@ -382,7 +358,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useForm, router } from '@inertiajs/vue3';
-import { AppButton, AppInput, AppModal, AppRichEditor } from '@/Components/UI';
+import { AppButton, AppInput, AppModal, AppRichEditor, AppPagination } from '@/Components/UI';
 import { stripHtml } from '@/Utils/html';
 
 // ── Types ─────────────────────────────────────────────────────────────────────

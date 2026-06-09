@@ -4,6 +4,7 @@
  * Style inspiré des captures : fond blanc, rows aérées, actions icônes, dropdown propre.
  */
 import { ref, computed, watch, nextTick, onMounted, onUnmounted } from 'vue';
+import { router } from '@inertiajs/vue3';
 import * as XLSX from 'xlsx';
 
 export interface DtColumn {
@@ -56,6 +57,8 @@ const props = withDefaults(defineProps<{
   striped?: boolean;
   bordered?: boolean;
   showResetPassword?: boolean;
+  /** Pagination serveur (objet Laravel paginator) — si fourni, désactive la pagination client */
+  pagination?: { total: number; from: number; to: number; last_page: number; prev_page_url: string|null; next_page_url: string|null; links: any[] } | null;
   /** Activer l'édition inline persistée côté serveur (super admin) */
   inlineEdit?: boolean;
   /** URL endpoint pour persister l'édition inline (POST JSON {id, field, value}) */
@@ -67,7 +70,7 @@ const props = withDefaults(defineProps<{
 }>(), {
   loading: false, selectable: true, exportable: true,
   exportFilename: 'export', showTotals: true, density: 'normal',
-  defaultPerPage: 10, perPageOptions: () => [10,25,50,100],
+  defaultPerPage: 8, perPageOptions: () => [8,15,25,50],
   emptyText: 'Aucune donnée disponible', showCount: true,
   striped: false, bordered: false, showResetPassword: false,
   inlineEdit: false, inlineEditEndpoint: '', contextMenu: false,
@@ -1070,62 +1073,111 @@ defineExpose({ clearSelection, selected, filteredRows, confirmDelete });
     <div class="flex flex-wrap items-center justify-between gap-3 px-4 py-3
                 bg-white dark:bg-gray-800/80
                 border-t border-gray-200 dark:border-gray-700/60">
-      <p class="text-sm text-gray-500 dark:text-gray-400 tabular-nums">
-        <template v-if="filteredRows.length > 0">
-          {{ rangeFrom }} a {{ rangeTo }} sur
-          <span class="font-semibold text-gray-700 dark:text-gray-200">{{ filteredRows.length.toLocaleString('fr-FR') }}</span>
-          <template v-if="filteredRows.length !== rows.length">
-            &nbsp;<span class="text-gray-400">(filtre sur {{ rows.length.toLocaleString('fr-FR') }})</span>
-          </template>
-        </template>
-        <template v-else>Aucun resultat</template>
-      </p>
 
-      <div class="flex items-center gap-1">
-        <button :disabled="currentPage <= 1"
-                class="w-8 h-8 flex items-center justify-center rounded-lg text-sm transition-colors
-                       disabled:opacity-30 disabled:cursor-not-allowed text-gray-500 dark:text-gray-400
-                       hover:bg-gray-100 dark:hover:bg-gray-700"
-                @click="currentPage = 1" title="Premiere page">
-          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7"/>
-          </svg>
-        </button>
-        <button :disabled="currentPage <= 1"
-                class="w-8 h-8 flex items-center justify-center rounded-lg text-sm transition-colors
-                       disabled:opacity-30 disabled:cursor-not-allowed text-gray-500 dark:text-gray-400
-                       hover:bg-gray-100 dark:hover:bg-gray-700"
-                @click="currentPage--">
-          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
-          </svg>
-        </button>
-        <template v-for="p in visiblePages" :key="p">
-          <span v-if="p === '...'" class="w-8 h-8 flex items-center justify-center text-sm text-gray-400">...</span>
-          <button v-else
-                  :class="['w-8 h-8 flex items-center justify-center rounded-lg text-sm font-medium transition-colors',
-                           p === currentPage ? 'bg-violet-600 text-white shadow-sm' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700']"
-                  @click="currentPage = p as number">{{ p }}</button>
-        </template>
-        <button :disabled="currentPage >= totalPages"
-                class="w-8 h-8 flex items-center justify-center rounded-lg text-sm transition-colors
-                       disabled:opacity-30 disabled:cursor-not-allowed text-gray-500 dark:text-gray-400
-                       hover:bg-gray-100 dark:hover:bg-gray-700"
-                @click="currentPage++">
-          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-          </svg>
-        </button>
-        <button :disabled="currentPage >= totalPages"
-                class="w-8 h-8 flex items-center justify-center rounded-lg text-sm transition-colors
-                       disabled:opacity-30 disabled:cursor-not-allowed text-gray-500 dark:text-gray-400
-                       hover:bg-gray-100 dark:hover:bg-gray-700"
-                @click="currentPage = totalPages">
-          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7"/>
-          </svg>
-        </button>
-      </div>
+      <!-- ── Pagination SERVEUR (Laravel paginator) ── -->
+      <template v-if="pagination">
+        <p class="text-sm text-gray-500 dark:text-gray-400 tabular-nums">
+          <template v-if="pagination.total > 0">
+            {{ pagination.from }}–{{ pagination.to }} sur
+            <span class="font-semibold text-gray-700 dark:text-gray-200">{{ pagination.total.toLocaleString('fr-FR') }}</span>
+          </template>
+          <template v-else>Aucun résultat</template>
+        </p>
+        <div class="flex items-center gap-1">
+          <!-- Précédent -->
+          <button :disabled="!pagination.prev_page_url"
+                  class="w-8 h-8 flex items-center justify-center rounded-lg text-sm transition-colors
+                         disabled:opacity-30 disabled:cursor-not-allowed text-gray-500 dark:text-gray-400
+                         hover:bg-gray-100 dark:hover:bg-gray-700"
+                  @click="pagination.prev_page_url && router.visit(pagination.prev_page_url, { preserveState: true })">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+            </svg>
+          </button>
+          <!-- Numéros -->
+          <template v-for="link in pagination.links.slice(1, -1)" :key="link.label">
+            <button
+              @click="link.url && router.visit(link.url, { preserveState: true })"
+              :class="['w-8 h-8 flex items-center justify-center rounded-lg text-sm font-medium transition-colors',
+                       link.active
+                         ? 'bg-violet-600 text-white shadow-sm'
+                         : link.url
+                           ? 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'
+                           : 'text-gray-300 dark:text-gray-600 cursor-not-allowed']">
+              {{ link.label }}
+            </button>
+          </template>
+          <!-- Suivant -->
+          <button :disabled="!pagination.next_page_url"
+                  class="w-8 h-8 flex items-center justify-center rounded-lg text-sm transition-colors
+                         disabled:opacity-30 disabled:cursor-not-allowed text-gray-500 dark:text-gray-400
+                         hover:bg-gray-100 dark:hover:bg-gray-700"
+                  @click="pagination.next_page_url && router.visit(pagination.next_page_url, { preserveState: true })">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+            </svg>
+          </button>
+        </div>
+      </template>
+
+      <!-- ── Pagination CLIENT (locale) ── -->
+      <template v-else>
+        <p class="text-sm text-gray-500 dark:text-gray-400 tabular-nums">
+          <template v-if="filteredRows.length > 0">
+            {{ rangeFrom }} a {{ rangeTo }} sur
+            <span class="font-semibold text-gray-700 dark:text-gray-200">{{ filteredRows.length.toLocaleString('fr-FR') }}</span>
+            <template v-if="filteredRows.length !== rows.length">
+              &nbsp;<span class="text-gray-400">(filtre sur {{ rows.length.toLocaleString('fr-FR') }})</span>
+            </template>
+          </template>
+          <template v-else>Aucun resultat</template>
+        </p>
+        <div class="flex items-center gap-1">
+          <button :disabled="currentPage <= 1"
+                  class="w-8 h-8 flex items-center justify-center rounded-lg text-sm transition-colors
+                         disabled:opacity-30 disabled:cursor-not-allowed text-gray-500 dark:text-gray-400
+                         hover:bg-gray-100 dark:hover:bg-gray-700"
+                  @click="currentPage = 1" title="Premiere page">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7"/>
+            </svg>
+          </button>
+          <button :disabled="currentPage <= 1"
+                  class="w-8 h-8 flex items-center justify-center rounded-lg text-sm transition-colors
+                         disabled:opacity-30 disabled:cursor-not-allowed text-gray-500 dark:text-gray-400
+                         hover:bg-gray-100 dark:hover:bg-gray-700"
+                  @click="currentPage--">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+            </svg>
+          </button>
+          <template v-for="p in visiblePages" :key="p">
+            <span v-if="p === '...'" class="w-8 h-8 flex items-center justify-center text-sm text-gray-400">...</span>
+            <button v-else
+                    :class="['w-8 h-8 flex items-center justify-center rounded-lg text-sm font-medium transition-colors',
+                             p === currentPage ? 'bg-violet-600 text-white shadow-sm' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700']"
+                    @click="currentPage = p as number">{{ p }}</button>
+          </template>
+          <button :disabled="currentPage >= totalPages"
+                  class="w-8 h-8 flex items-center justify-center rounded-lg text-sm transition-colors
+                         disabled:opacity-30 disabled:cursor-not-allowed text-gray-500 dark:text-gray-400
+                         hover:bg-gray-100 dark:hover:bg-gray-700"
+                  @click="currentPage++">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+            </svg>
+          </button>
+          <button :disabled="currentPage >= totalPages"
+                  class="w-8 h-8 flex items-center justify-center rounded-lg text-sm transition-colors
+                         disabled:opacity-30 disabled:cursor-not-allowed text-gray-500 dark:text-gray-400
+                         hover:bg-gray-100 dark:hover:bg-gray-700"
+                  @click="currentPage = totalPages">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7"/>
+            </svg>
+          </button>
+        </div>
+      </template>
     </div>
     <!-- Dialog de confirmation -->
     <Teleport to="body">

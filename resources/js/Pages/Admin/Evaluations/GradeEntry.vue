@@ -20,8 +20,8 @@
         <div class="card p-5">
             <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-4">Sélectionner une évaluation</h3>
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <AppSelect v-model="selectedClass" label="Classe" :options="classOptions" :block="true" @change="onClassChange" />
-                <AppSelect v-model="selectedPeriod" label="Période" :options="periodOptions" :block="true" @change="onPeriodChange" />
+                <AppSelect v-model="selectedClass" label="Classe" :options="classOptions" :block="true" />
+                <AppSelect v-model="selectedPeriod" label="Période" :options="periodOptions" :block="true" />
                 <AppSelect v-model="selectedEval" label="Évaluation" :options="evalOptions" :block="true" @change="loadGrades" />
             </div>
         </div>
@@ -163,7 +163,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import { router } from '@inertiajs/vue3';
 import { AppButton, AppSelect, AppBadge } from '@/Components/UI';
 import { useToast } from '@/Composables/useToast';
@@ -238,13 +238,13 @@ const evalOptions   = computed(() => evalList.value.map(e => ({
 
 const savedCount = computed(() => localGrades.value.filter(g => g.score !== null && g.score !== '').length);
 
-const onClassChange = async () => {
-    if (!selectedClass.value || !selectedPeriod.value) return;
-    loadEvaluations();
-};
-const onPeriodChange = () => {
-    if (selectedClass.value) loadEvaluations();
-};
+// ── Watch : recharger les évaluations dès que classe ou période changent ─────
+watch([selectedClass, selectedPeriod], ([cls, per]) => {
+    evalList.value     = [];
+    selectedEval.value = '';
+    localGrades.value  = [];
+    if (cls && per) loadEvaluations();
+});
 
 const loadEvaluations = async () => {
     try {
