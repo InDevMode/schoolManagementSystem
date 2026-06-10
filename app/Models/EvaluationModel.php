@@ -92,8 +92,77 @@ class EvaluationModel extends Model
     }
 
     /**
-     * Évaluations d'un prof
+     * Retourne le détail du calcul de moyenne par groupe de type pour une matière.
+     * Utile pour l'affichage sur le bulletin (montrer la moyenne des interros, des devoirs, etc.)
+     *
+     * Retourne un tableau de la forme :
+     * [
+     *   'groups' => [
+     *     'interrogation'    => ['scores' => [12, 14], 'average' => 13.0, 'count' => 2],
+     *     'devoir_surveille' => ['scores' => [13, 15], 'average' => 14.0, 'count' => 2],
+     *     'travail_maison'   => ['scores' => [16],     'average' => 16.0, 'count' => 1],
+     *     'examen_blanc'     => ['scores' => [12],     'average' => 12.0, 'count' => 1],
+     *   ],
+     *   'subject_average'  => 13.75,   // (13+14+16+12)/4 — moyenne des groupes présents
+     *   'coefficient'      => 2,        // coefficient de la matière
+     *   'weighted_average' => 27.5,     // subject_average × coefficient
+     *   'groups_count'     => 4,
+     * ]
      */
+    public static function calculateSubjectAverageDetail(int $student_id, int $subject_id, int $period_id): array
+    {
+        $evaluations = self::where('subject_id', $subject_id)
+            ->where('period_id', $period_id)
+            ->where('is_delete', 0)
+            ->where('status', 'validated')
+            ->get();
+
+        $groups = [
+            'interrogation'    => ['scores' => [], 'average' => null, 'count' => 0],
+            'devoir_surveille' => ['scores' => [], 'average' => null, 'count' => 0],
+            'travail_maison'   => ['scores' => [], 'average' => null, 'count' => 0],
+            'examen_blanc'     => ['scores' => [], 'average' => null, 'count' => 0],
+        ];
+
+        $coefficient = 1; // sera écrasé dès la première évaluation trouvée
+
+        foreach ($evaluations as $eval) {
+            $coefficient = (float) ($eval->coefficient ?: 1);
+
+            $grade = GradeModel::where('evaluation_id', $eval->id)
+                ->where('student_id', $student_id)
+                ->where('is_delete', 0)
+                ->whereNotNull('score')
+                ->first();
+
+            if ($grade && array_key_exists($eval->type, $groups)) {
+                $maxScore        = (float) ($eval->max_score ?: 20);
+                $normalizedScore = $maxScore > 0 ? round(($grade->score / $maxScore) * 20, 4) : 0;
+                $groups[$eval->type]['scores'][] = $normalizedScore;
+            }
+        }
+
+        $groupAverages = [];
+        foreach ($groups as $type => &$data) {
+            $data['count'] = count($data['scores']);
+            if ($data['count'] > 0) {
+                $data['average']   = round(array_sum($data['scores']) / $data['count'], 2);
+                $groupAverages[]   = $data['average'];
+            }
+        }
+        unset($data);
+
+        $subjectAverage  = count($groupAverages) > 0 ? round(array_sum($groupAverages) / count($groupAverages), 2) : null;
+        $weightedAverage = $subjectAverage !== null ? round($subjectAverage * $coefficient, 2) : null;
+
+        return [
+            'groups'          => $groups,
+            'groups_count'    => count($groupAverages),
+            'subject_average' => $subjectAverage,
+            'coefficient'     => $coefficient,
+            'weighted_average'=> $weightedAverage,
+        ];
+    }
     public static function getByTeacher(int $teacher_id, ?int $class_id = null, ?int $subject_id = null)
     {
         $q = self::select(
@@ -141,8 +210,25 @@ class EvaluationModel extends Model
     }
 
     /**
-     * Calcule la moyenne d'un élève pour une matière sur une période
-     * Formule béninoise : Σ(note_sur_20 × coeff) / Σ(coefficients)
+     * Calcule la moyenne d'un élève pour une matière sur une période.
+     *
+     * Formule béninoise en deux étapes :
+     *
+     * Étape 1 — Moyenne par groupe de type :
+     *   Moy_interros = Σ(notes interros) / nb_interros
+     *   Moy_devoirs  = Σ(notes devoirs)  / nb_devoirs
+     *   Moy_TM       = Σ(notes TM)       / nb_TM
+     *   Moy_EB       = Σ(notes EB)       / nb_EB
+     *   (seuls les groupes ayant au moins une note sont comptés)
+     *
+     * Étape 2 — Moyenne des groupes × coefficient de la matière :
+     *   Moy_matière   = (Moy_interros + Moy_devoirs + Moy_TM + Moy_EB) / nb_groupes_présents
+     *   Note_coefficée = Moy_matière × coefficient_matière
+     *   (le coefficient est celui défini lors de l'assignation classe-matière,
+     *    récupéré sur l'évaluation elle-même — il est identique pour tous les types)
+     *
+     * Retourne la moyenne simple de la matière (sur 20), sans le coefficient.
+     * Le coefficient est appliqué ensuite dans BulletinModel::generate().
      */
     public static function calculateSubjectAverage(int $student_id, int $subject_id, int $period_id): ?float
     {
@@ -154,8 +240,13 @@ class EvaluationModel extends Model
 
         if ($evaluations->isEmpty()) return null;
 
-        $totalWeighted = 0;
-        $totalCoeff    = 0;
+        // Regrouper les notes par type d'évaluation
+        $groups = [
+            'interrogation'    => [],
+            'devoir_surveille' => [],
+            'travail_maison'   => [],
+            'examen_blanc'     => [],
+        ];
 
         foreach ($evaluations as $eval) {
             $grade = GradeModel::where('evaluation_id', $eval->id)
@@ -167,15 +258,27 @@ class EvaluationModel extends Model
             if ($grade) {
                 // Normaliser sur 20 si max_score différent de 20
                 $maxScore        = (float) ($eval->max_score ?: 20);
-                $normalizedScore = $maxScore > 0 ? ($grade->score / $maxScore) * 20 : 0;
+                $normalizedScore = $maxScore > 0 ? round(($grade->score / $maxScore) * 20, 4) : 0;
 
-                $totalWeighted += $normalizedScore * $eval->coefficient;
-                $totalCoeff    += $eval->coefficient;
+                if (array_key_exists($eval->type, $groups)) {
+                    $groups[$eval->type][] = $normalizedScore;
+                }
             }
         }
 
-        if ($totalCoeff === 0) return null;
+        // Étape 1 : moyenne par groupe (uniquement les groupes non vides)
+        $groupAverages = [];
+        foreach ($groups as $type => $scores) {
+            if (count($scores) > 0) {
+                $groupAverages[$type] = array_sum($scores) / count($scores);
+            }
+        }
 
-        return round($totalWeighted / $totalCoeff, 2);
+        if (empty($groupAverages)) return null;
+
+        // Étape 2 : moyenne des groupes (chaque groupe compte pour 1, peu importe son nombre d'évals)
+        $subjectAverage = array_sum($groupAverages) / count($groupAverages);
+
+        return round($subjectAverage, 2);
     }
 }

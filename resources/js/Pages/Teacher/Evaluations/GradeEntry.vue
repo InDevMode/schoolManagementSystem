@@ -12,7 +12,7 @@
                 </p>
             </div>
             <AppButton
-                v-if="evaluation && savedCount > 0"
+                v-if="evaluation && evaluation.status !== 'validated' && savedCount > 0"
                 variant="success"
                 :loading="saving"
                 @click="saveAll">
@@ -37,6 +37,24 @@
                 <div class="flex-1 min-w-[220px]">
                     <AppSelect v-model="selectedEval" label="Évaluation" :options="evalOptions"/>
                 </div>
+            </div>
+        </div>
+
+        <!-- Bandeau évaluation validée (lecture seule) -->
+        <div v-if="evaluation && evaluation.status === 'validated'"
+            class="flex items-center gap-3 px-4 py-3 rounded-lg
+                   bg-success-50 dark:bg-success-900/20 border border-success-200 dark:border-success-700">
+            <svg class="w-5 h-5 text-success-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+            </svg>
+            <div>
+                <p class="text-sm font-semibold text-success-700 dark:text-success-300">
+                    Évaluation validée — lecture seule
+                </p>
+                <p class="text-xs text-success-600 dark:text-success-400 mt-0.5">
+                    Les notes sont verrouillées. Contactez l'administration pour toute correction.
+                </p>
             </div>
         </div>
 
@@ -165,7 +183,7 @@
                 <p class="text-xs text-gray-400">
                     Saisie automatiquement envoyée après enregistrement. L'admin validera les notes.
                 </p>
-                <AppButton :loading="saving" @click="saveAll">
+                <AppButton v-if="evaluation && evaluation.status !== 'validated'" :loading="saving" @click="saveAll">
                     <template #icon>
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
@@ -173,6 +191,13 @@
                     </template>
                     Enregistrer les notes
                 </AppButton>
+                <span v-else class="flex items-center gap-1.5 text-xs text-success-600 dark:text-success-400 font-medium">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                    </svg>
+                    Notes validées — lecture seule
+                </span>
             </div>
         </div>
 
@@ -216,6 +241,7 @@ interface EvalInfo {
     subject_name: string;
     class_name:   string;
     class_id:     number;
+    status:       string;
 }
 
 const props = defineProps<{

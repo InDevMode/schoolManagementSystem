@@ -3,10 +3,13 @@
 
         <div class="flex items-center justify-between">
             <div>
-                <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Saisie des notes</h1>
+                <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
+                    {{ evaluation?.status === 'validated' ? 'Notes (lecture seule)' : 'Saisie des notes' }}
+                </h1>
                 <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">Saisie et validation selon le système béninois</p>
             </div>
-            <AppButton v-if="evaluation && savedCount > 0" variant="success" :loading="validating" @click="validateAll">
+            <!-- Bouton valider uniquement si l'éval n'est pas encore validée et qu'il y a des notes saisies -->
+            <AppButton v-if="evaluation && evaluation.status !== 'validated' && savedCount > 0" variant="success" :loading="validating" @click="validateAll">
                 <template #icon>
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
@@ -23,6 +26,25 @@
                 <AppSelect v-model="selectedClass" label="Classe" :options="classOptions" :block="true" />
                 <AppSelect v-model="selectedPeriod" label="Période" :options="periodOptions" :block="true" />
                 <AppSelect v-model="selectedEval" label="Évaluation" :options="evalOptions" :block="true" />
+            </div>
+        </div>
+
+        <!-- Bandeau évaluation validée (lecture seule) -->
+        <div v-if="evaluation && evaluation.status === 'validated'"
+            class="flex items-center gap-3 px-4 py-3 rounded-lg
+                   bg-success-50 dark:bg-success-900/20 border border-success-200 dark:border-success-700">
+            <svg class="w-5 h-5 text-success-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+            </svg>
+            <div>
+                <p class="text-sm font-semibold text-success-700 dark:text-success-300">
+                    Évaluation validée — consultation en lecture seule
+                </p>
+                <p class="text-xs text-success-600 dark:text-success-400 mt-0.5">
+                    La saisie et la modification des notes sont bloquées. Pour corriger une erreur, annulez la
+                    validation depuis la page <strong>« À valider »</strong>.
+                </p>
             </div>
         </div>
 
@@ -68,11 +90,12 @@
         <div v-if="evaluation && localGrades.length" class="card overflow-hidden">
             <div class="px-5 py-4 border-b border-gray-100 dark:border-gray-700 flex items-center justify-between">
                 <h3 class="font-semibold text-gray-900 dark:text-white">
-                    Saisie des notes — {{ evaluation.subject_name }}
+                    {{ evaluation.status === 'validated' ? 'Notes validées (lecture seule)' : 'Saisie des notes' }}
+                    — {{ evaluation.subject_name }}
                 </h3>
                 <div class="flex items-center gap-2">
                     <span class="text-xs text-gray-400">{{ savedCount }} / {{ localGrades.length }} saisis</span>
-                    <AppButton size="sm" :loading="saving" :disabled="editableCount === 0" @click="saveAll">
+                    <AppButton v-if="evaluation.status !== 'validated'" size="sm" :loading="saving" :disabled="editableCount === 0" @click="saveAll">
                         <template #icon>
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
@@ -216,6 +239,7 @@ interface EvalInfo {
     eval_date: string;
     subject_name: string;
     class_id: number;
+    status: string;
 }
 
 const props = defineProps<{

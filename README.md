@@ -139,3 +139,19 @@ resources/js/
 - [ ] Migration de toutes les pages CRUD en Vue + modals
 - [ ] Architecture Repository + Service (Phase 3)
 - [ ] Multi-tenant / multi-école (Phase 4)
+
+
+Option A — Manuel : un admin ferme manuellement l'évaluation quand la saisie est terminée, avant de valider.
+
+Option B — Automatique : un job qui tourne chaque nuit et passe en closed toutes les évals open dont la eval_date est dépassée d'un certain délai (ex : 7 jours après la date de l'évaluation).
+
+Ma recommandation pour ton contexte béninois : supprimer closed ou le garder uniquement comme étape manuelle facultative avant validation. Le flux simplifié qui suffit vraiment est :
+
+draft → open (saisie active) → validated (verrouillé, entre dans les bulletins)
+Le closed ajoute de la complexité sans vraie valeur si personne ne l'utilise.
+
+Qu'est-ce que tu préfères ?
+
+Garder closed avec un passage automatique basé sur la date
+Garder closed en passage manuel uniquement (bouton dans l'UI)
+Supprimer closed et simplifier à draft → open → validated

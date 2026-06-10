@@ -95,6 +95,17 @@ class EvaluationController extends Controller
             $eval = EvaluationModel::getSingle($id);
             if (!$eval) abort(404);
 
+            // ── Règle anti-fraude : une évaluation validée est IMMUABLE ────────────
+            // Même le super administrateur ne peut pas modifier une évaluation validée.
+            // Pour corriger une erreur, il faut d'abord annuler la validation des notes
+            // via la page "À valider" puis revenir ici.
+            if ($eval->status === 'validated') {
+                return redirect()->back()->with('error',
+                    'Cette évaluation est validée et ne peut plus être modifiée. ' .
+                    'Pour la corriger, annulez d\'abord la validation de ses notes dans la page « À valider ».'
+                );
+            }
+
             $eval->class_id    = $request->class_id ?? $eval->class_id;
             $eval->subject_id  = $request->subject_id ?? $eval->subject_id;
             $eval->period_id   = $request->period_id ?? $eval->period_id;
@@ -222,6 +233,15 @@ class EvaluationController extends Controller
             $eval = EvaluationModel::getSingle($request->evaluation_id);
             if (!$eval) {
                 return response()->json(['success' => false, 'message' => 'Évaluation introuvable.'], 404);
+            }
+
+            // ── Règle anti-fraude : évaluation validée = notes immuables ──────────
+            if ($eval->status === 'validated') {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Cette évaluation est validée. La saisie de notes est impossible. ' .
+                                 'Annulez la validation depuis la page « À valider » pour corriger une erreur.',
+                ], 403);
             }
 
             foreach ($request->grades as $gradeData) {

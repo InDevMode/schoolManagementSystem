@@ -326,11 +326,10 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue';
-import { router } from '@inertiajs/vue3';
+import { router, useForm, Link } from '@inertiajs/vue3';
 import { AppButton, AppInput, AppSelect, AppModal, AppBadge, DataTable } from '@/Components/UI';
 import UserAvatar from '@/Components/Shared/UserAvatar.vue';
 import { useToast } from '@/Composables/useToast';
-import { useForm } from '@inertiajs/vue3';
 import { useCan } from '@/Composables/useCan';
 
 interface Admin {
@@ -453,7 +452,7 @@ const submitForm = () => {
 const handleAction = (key: string, row: Record<string, unknown>) => {
     if (key === 'edit')    { openEdit(row as any); return; }
     if (key === 'view')    { openView(row as any); return; }
-    if (key === 'message') { window.location.href = `/chat?receiver_id=${row.id_encoded}`; return; }
+    if (key === 'message') { router.visit(`/chat?receiver_id=${row.id_encoded}`); return; }
     if (key === 'delete')  { tableRef.value?.confirmDelete(row.id as number, `${row.last_name} ${row.name}`); }
 };
 

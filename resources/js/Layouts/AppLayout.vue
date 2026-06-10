@@ -48,20 +48,33 @@ const page   = usePage();
 const toast  = useToast();
 
 // ── Bridge flash → toast ──────────────────────────────────────────────────────
-// À chaque navigation Inertia, on lit les flash et on les convertit en toast
-router.on('navigate', () => {
-    const flash = page.props.flash as { success?: string; error?: string; warning?: string } | undefined;
+// On garde trace du dernier message affiché pour éviter les doublons.
+// Le problème vient du fait que sur une redirection Inertia, le layout est
+// monté (mount lit initialFlash) ET l'event "navigate" se déclenche aussi.
+let lastShownFlash = '';
+
+const showFlash = (flash: { success?: string; error?: string; warning?: string } | undefined) => {
     if (!flash) return;
+
+    const key = [flash.success, flash.error, flash.warning].filter(Boolean).join('|');
+    if (!key || key === lastShownFlash) return;
+    lastShownFlash = key;
+
     if (flash.success) toast.success(flash.success, 5000);
     if (flash.error)   toast.error(flash.error,     6000);
     if (flash.warning) toast.warning(flash.warning, 5000);
-});
 
-// Aussi au premier chargement (page refresh) — les flash peuvent être présents dès le mount
-const initialFlash = page.props.flash as { success?: string; error?: string; warning?: string } | undefined;
-if (initialFlash?.success) toast.success(initialFlash.success, 5000);
-if (initialFlash?.error)   toast.error(initialFlash.error,     6000);
-if (initialFlash?.warning) toast.warning(initialFlash.warning, 5000);
+    // Réinitialiser après un délai pour permettre le même message sur une action future
+    setTimeout(() => { if (lastShownFlash === key) lastShownFlash = ''; }, 1000);
+};
+
+// Premier chargement (full page reload)
+showFlash(page.props.flash as any);
+
+// Navigations Inertia côté client
+router.on('navigate', () => {
+    showFlash(page.props.flash as any);
+});
 
 // ── État sidebar ─────────────────────────────────────────────────────────────
 const STORAGE_KEY = 'sidebar_collapsed';

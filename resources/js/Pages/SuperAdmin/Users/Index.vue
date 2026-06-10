@@ -280,12 +280,12 @@
                                             </svg>
                                         </button>
                                         <!-- Message -->
-                                        <a :href="`/chat?receiver_id=${encodedId(u.id)}`" title="Envoyer un message"
+                                        <Link :href="`/chat?receiver_id=${encodedId(u.id)}`" title="Envoyer un message"
                                            class="p-1.5 rounded-lg text-white bg-blue-500 hover:bg-blue-600 shadow-sm transition-all">
                                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
                                             </svg>
-                                        </a>
+                                        </Link>
                                         <!-- Réinitialiser MDP -->
                                         <button @click="openResetConfirm(u)" title="Réinitialiser le mot de passe"
                                                 class="p-1.5 rounded-lg text-white bg-amber-500 hover:bg-amber-600 shadow-sm transition-all">
@@ -395,7 +395,7 @@
                         </span>
                         Modifier
                     </button>
-                    <a :href="ctxMenu.user ? `/chat?receiver_id=${encodedId(ctxMenu.user.id)}` : '#'"
+                    <Link :href="ctxMenu.user ? `/chat?receiver_id=${encodedId(ctxMenu.user.id)}` : '#'"
                        class="ctx-item text-gray-700 dark:text-gray-300 hover:bg-blue-50 hover:text-blue-700">
                         <span class="ctx-icon bg-blue-100 dark:bg-blue-900/30 text-blue-600">
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -403,7 +403,7 @@
                             </svg>
                         </span>
                         Envoyer un message
-                    </a>
+                    </Link>
                     <button @click="openResetConfirm(ctxMenu.user!); closeContextMenu()"
                             class="ctx-item text-gray-700 dark:text-gray-300 hover:bg-amber-50 hover:text-amber-700">
                         <span class="ctx-icon bg-amber-100 dark:bg-amber-900/30 text-amber-600">
@@ -688,7 +688,7 @@
 
 <script setup lang="ts">
 import { ref, reactive, computed, onMounted, onUnmounted } from 'vue';
-import { router } from '@inertiajs/vue3';
+import { router, Link } from '@inertiajs/vue3';
 import { useToast } from '@/Composables/useToast';
 import AppLayout from '@/Layouts/AppLayout.vue';
 
