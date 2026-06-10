@@ -35,7 +35,7 @@
                     <AppSelect v-model="selectedPeriod" label="Période" :options="periodOptions"/>
                 </div>
                 <div class="flex-1 min-w-[220px]">
-                    <AppSelect v-model="selectedEval" label="Évaluation" :options="evalOptions" @change="loadGrades"/>
+                    <AppSelect v-model="selectedEval" label="Évaluation" :options="evalOptions"/>
                 </div>
             </div>
         </div>
@@ -219,13 +219,15 @@ interface EvalInfo {
 }
 
 const props = defineProps<{
-    classes:       { id: number; name: string }[];
-    periods:       { id: number; name: string }[];
-    currentPeriod?: { id: number; name: string } | null;
-    evaluations:   any[];
-    evaluation?:   EvalInfo;
-    grades?:       GradeRow[];
-    stats?:        { min: number; max: number; average: number; count: number } | null;
+    classes:           { id: number; name: string }[];
+    periods:           { id: number; name: string }[];
+    currentPeriod?:    { id: number; name: string } | null;
+    evaluations:       any[];
+    evaluation?:       EvalInfo;
+    grades?:           GradeRow[];
+    stats?:            { min: number; max: number; average: number; count: number } | null;
+    selectedClassId?:  number | null;
+    selectedPeriodId?: number | null;
 }>();
 
 const typeLabels: Record<string, string> = {
@@ -241,8 +243,8 @@ const typeColors: Record<string, string> = {
     examen_blanc:     '#ef4444',
 };
 
-const selectedClass  = ref('');
-const selectedPeriod = ref(props.currentPeriod ? String(props.currentPeriod.id) : '');
+const selectedClass  = ref(props.selectedClassId  ? String(props.selectedClassId)  : (props.evaluation ? String((props.evaluation as any).class_id ?? '') : ''));
+const selectedPeriod = ref(props.selectedPeriodId ? String(props.selectedPeriodId) : (props.currentPeriod ? String(props.currentPeriod.id) : ''));
 const selectedEval   = ref(props.evaluation ? String(props.evaluation.id) : '');
 const localGrades    = ref<GradeRow[]>((props.grades ?? []).map(g => ({ ...g, dirty: false })));
 const evalList       = ref<any[]>(props.evaluations ?? []);
@@ -264,20 +266,36 @@ const savedCount = computed(() =>
 );
 
 // ── Watch : recharger les évaluations dès que classe ou période changent ─────
+let initialLoad = true;
 watch([selectedClass, selectedPeriod], ([cls, per]) => {
+    if (initialLoad) {
+        initialLoad = false;
+        if (cls && per && evalList.value.length === 0) loadEvals(/* keepSelection= */true);
+        return;
+    }
     evalList.value     = [];
     selectedEval.value = '';
     localGrades.value  = [];
     if (cls && per) loadEvals();
+}, { immediate: true });
+
+// ── Watch : charger les notes quand on choisit une évaluation ─────────────
+watch(selectedEval, (val, oldVal) => {
+    if (val && val !== oldVal) loadGrades();
+    else if (!val) localGrades.value = [];
 });
 
-const loadEvals = async () => {
+const loadEvals = async (keepSelection = false) => {
     if (!selectedClass.value || !selectedPeriod.value) return;
     try {
         const res = await axios.get('/admin/evaluations/by-class-period', {
             params: { class_id: selectedClass.value, period_id: selectedPeriod.value },
         });
         evalList.value = res.data;
+        if (!keepSelection) {
+            selectedEval.value = '';
+            localGrades.value  = [];
+        }
     } catch {
         evalList.value = [];
     }
@@ -285,11 +303,13 @@ const loadEvals = async () => {
 
 const loadGrades = () => {
     if (!selectedEval.value) return;
-    router.get('/teacher/evaluations/grade-entry', { evaluation_id: selectedEval.value }, {
-        preserveState: true,
-        onSuccess: (page: any) => {
-            localGrades.value = (page.props.grades ?? []).map((g: GradeRow) => ({ ...g, dirty: false }));
-        },
+    router.get('/teacher/evaluations/grade-entry', {
+        evaluation_id: selectedEval.value,
+        class_id:      selectedClass.value,
+        period_id:     selectedPeriod.value,
+    }, {
+        preserveState: false,
+        preserveScroll: true,
     });
 };
 

@@ -118,6 +118,24 @@ class EvaluationController extends Controller
         $eval = EvaluationModel::getSingle($id);
         if (!$eval) abort(404);
 
+        $user     = Auth::user();
+        $userType = (int) $user->user_type;
+
+        // Règle 1 : une évaluation validée ne peut JAMAIS être supprimée
+        if ($eval->status === 'validated') {
+            return redirect()->back()->with('error', 'Une évaluation validée ne peut pas être supprimée.');
+        }
+
+        // Règle 2 : open ou closed → super admin uniquement
+        if (in_array($eval->status, ['open', 'closed']) && $userType !== 0) {
+            return redirect()->back()->with('error', 'Seul le Super Administrateur peut supprimer une évaluation ouverte ou fermée.');
+        }
+
+        // Règle 3 : draft → admin (user_type=1) et super admin (user_type=0)
+        if ($eval->status === 'draft' && !in_array($userType, [0, 1])) {
+            return redirect()->back()->with('error', 'Vous n\'avez pas la permission de supprimer cette évaluation.');
+        }
+
         // Journalisation avant suppression
         DeletionLogModel::log('evaluations', $eval->id, $eval->toArray());
 
@@ -154,19 +172,24 @@ class EvaluationController extends Controller
     public function gradeEntry(Request $request)
     {
         $data = [
-            'classes'       => ClassModel::getClass(),
-            'periods'       => PeriodModel::getCurrentPeriod(), // saisie : période courante uniquement
-            'currentPeriod' => PeriodModel::getCurrentPeriod()->first(),
-            'evaluations'   => [],
-            'grades'        => [],
+            'classes'           => ClassModel::getClass(),
+            'periods'           => PeriodModel::getCurrentPeriod(),
+            'currentPeriod'     => PeriodModel::getCurrentPeriod()->first(),
+            'evaluations'       => [],
+            'grades'            => [],
+            'selectedClassId'   => $request->class_id   ? (int) $request->class_id   : null,
+            'selectedPeriodId'  => $request->period_id  ? (int) $request->period_id  : null,
         ];
 
         if ($request->evaluation_id) {
             $eval = EvaluationModel::getSingle((int) $request->evaluation_id);
             if ($eval) {
-                $data['evaluation'] = $eval;
-                $data['grades']     = GradeModel::getGradesForEvaluation($eval->id, $eval->class_id);
-                $data['stats']      = GradeModel::getEvaluationStats($eval->id, (float) $eval->max_score);
+                $data['evaluation']      = $eval;
+                $data['grades']          = GradeModel::getGradesForEvaluation($eval->id, $eval->class_id);
+                $data['stats']           = GradeModel::getEvaluationStats($eval->id, (float) $eval->max_score);
+                // S'assurer que les sélecteurs restent synchronisés avec l'évaluation choisie
+                $data['selectedClassId']  = (int) $eval->class_id;
+                $data['selectedPeriodId'] = (int) $eval->period_id;
             }
         }
 
@@ -174,6 +197,12 @@ class EvaluationController extends Controller
             $data['evaluations'] = EvaluationModel::getByClassAndPeriod(
                 (int) $request->class_id,
                 (int) $request->period_id
+            );
+        } elseif (isset($data['evaluation'])) {
+            // Charger aussi la liste pour le select
+            $data['evaluations'] = EvaluationModel::getByClassAndPeriod(
+                (int) $data['evaluation']->class_id,
+                (int) $data['evaluation']->period_id
             );
         }
 
@@ -196,9 +225,18 @@ class EvaluationController extends Controller
             }
 
             foreach ($request->grades as $gradeData) {
+                // Refuser la modification d'une note déjà validée
+                $existing = GradeModel::where('student_id', $gradeData['student_id'])
+                    ->where('evaluation_id', $eval->id)
+                    ->where('is_delete', 0)
+                    ->first();
+
+                if ($existing && $existing->validated) {
+                    continue; // Note validée — on saute silencieusement
+                }
+
                 $score = isset($gradeData['score']) && $gradeData['score'] !== '' ? (float) $gradeData['score'] : null;
 
-                // Valider que la note ne dépasse pas la note max
                 if ($score !== null && $score > (float) $eval->max_score) {
                     return response()->json([
                         'success' => false,
@@ -262,6 +300,56 @@ class EvaluationController extends Controller
             return response()->json(['success' => true, 'message' => 'Notes validées avec succès.']);
         } catch (\Exception $e) {
             Log::error("Erreur validation notes : " . $e->getMessage());
+            return response()->json(['success' => false, 'message' => 'Une erreur est survenue.'], 500);
+        }
+    }
+
+    /**
+     * Rejeter une ou plusieurs notes (suppression logique — is_delete = 1)
+     * La note rejetée disparaît de la liste ; il faudra la re-saisir.
+     */
+    public function rejectGrades(Request $request)
+    {
+        $request->validate([
+            'grade_ids' => 'required|array',
+            'grade_ids.*' => 'integer',
+        ]);
+
+        try {
+            GradeModel::whereIn('id', $request->grade_ids)
+                ->where('validated', false) // on ne rejette que des notes non validées
+                ->update(['is_delete' => 1]);
+
+            return response()->json(['success' => true, 'message' => 'Note(s) rejetée(s) avec succès.']);
+        } catch (\Exception $e) {
+            Log::error("Erreur rejet notes : " . $e->getMessage());
+            return response()->json(['success' => false, 'message' => 'Une erreur est survenue.'], 500);
+        }
+    }
+
+    /**
+     * Annuler la validation d'une ou plusieurs notes (repasse validated = false)
+     * Uniquement accessible si la note EST validée — remet en attente de validation.
+     */
+    public function cancelValidation(Request $request)
+    {
+        $request->validate([
+            'grade_ids' => 'required|array',
+            'grade_ids.*' => 'integer',
+        ]);
+
+        try {
+            GradeModel::whereIn('id', $request->grade_ids)
+                ->where('validated', true)
+                ->update([
+                    'validated'    => false,
+                    'validated_by' => null,
+                    'validated_at' => null,
+                ]);
+
+            return response()->json(['success' => true, 'message' => 'Validation annulée. La note repasse en attente.']);
+        } catch (\Exception $e) {
+            Log::error("Erreur annulation validation : " . $e->getMessage());
             return response()->json(['success' => false, 'message' => 'Une erreur est survenue.'], 500);
         }
     }
@@ -335,20 +423,23 @@ class EvaluationController extends Controller
         $teacher_id = Auth::id();
         $classes    = ClassTeacherModel::getMyClassSubjectGroup($teacher_id);
         $data       = [
-            'classes'       => $classes,
-            'periods'       => PeriodModel::getCurrentPeriod(), // période courante uniquement
-            'currentPeriod' => PeriodModel::getCurrentPeriod()->first(),
-            'evaluations'   => [],
-            'grades'        => [],
+            'classes'          => $classes,
+            'periods'          => PeriodModel::getCurrentPeriod(),
+            'currentPeriod'    => PeriodModel::getCurrentPeriod()->first(),
+            'evaluations'      => [],
+            'grades'           => [],
+            'selectedClassId'  => $request->class_id  ? (int) $request->class_id  : null,
+            'selectedPeriodId' => $request->period_id ? (int) $request->period_id : null,
         ];
 
         if ($request->evaluation_id) {
             $eval = EvaluationModel::getSingle((int) $request->evaluation_id);
-            // Vérifier que le prof est bien le responsable
             if ($eval && $eval->teacher_id === $teacher_id) {
-                $data['evaluation'] = $eval;
-                $data['grades']     = GradeModel::getGradesForEvaluation($eval->id, $eval->class_id);
-                $data['stats']      = GradeModel::getEvaluationStats($eval->id, (float) $eval->max_score);
+                $data['evaluation']      = $eval;
+                $data['grades']          = GradeModel::getGradesForEvaluation($eval->id, $eval->class_id);
+                $data['stats']           = GradeModel::getEvaluationStats($eval->id, (float) $eval->max_score);
+                $data['selectedClassId']  = (int) $eval->class_id;
+                $data['selectedPeriodId'] = (int) $eval->period_id;
             }
         }
 
@@ -356,6 +447,11 @@ class EvaluationController extends Controller
             $data['evaluations'] = EvaluationModel::getByClassAndPeriod(
                 (int) $request->class_id,
                 (int) $request->period_id
+            )->filter(fn($e) => $e->teacher_id === $teacher_id)->values();
+        } elseif (isset($data['evaluation'])) {
+            $data['evaluations'] = EvaluationModel::getByClassAndPeriod(
+                (int) $data['evaluation']->class_id,
+                (int) $data['evaluation']->period_id
             )->filter(fn($e) => $e->teacher_id === $teacher_id)->values();
         }
 

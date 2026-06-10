@@ -44,7 +44,7 @@
                         :type="showPassword ? 'text' : 'password'"
                         placeholder="••••••••••"
                         required
-                        class="w-full pl-10 pr-12 py-3 rounded-xl text-sm outline-none transition-all duration-200 focus:ring-2 focus:ring-primary-500"
+                        class="w-full pl-10 pr-12 py-3 rounded-lg text-sm outline-none transition-all duration-200 focus:ring-2 focus:ring-primary-500"
                         :class="form.errors.password ? 'ring-2 ring-red-500' : ''"
                         :style="inputStyle"
                     />
@@ -97,7 +97,7 @@
                         :type="showConfirm ? 'text' : 'password'"
                         placeholder="••••••••••"
                         required
-                        class="w-full pl-10 pr-12 py-3 rounded-xl text-sm outline-none transition-all duration-200 focus:ring-2 focus:ring-primary-500"
+                        class="w-full pl-10 pr-12 py-3 rounded-lg text-sm outline-none transition-all duration-200 focus:ring-2 focus:ring-primary-500"
                         :class="confirmRingClass"
                         :style="inputStyle"
                     />
@@ -129,7 +129,7 @@
             <button
                 type="submit"
                 :disabled="form.processing || (!!form.confPassword && form.confPassword !== form.password)"
-                class="w-full py-3.5 px-4 rounded-xl font-semibold text-sm text-white transition-all duration-200 flex items-center justify-center gap-2 hover:opacity-90 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed"
+                class="w-full py-3.5 px-4 rounded-lg font-semibold text-sm text-white transition-all duration-200 flex items-center justify-center gap-2 hover:opacity-90 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed"
                 style="background: linear-gradient(135deg, #9189f5, #6660d4); box-shadow: 0 4px 18px rgba(123,116,240,0.35);"
             >
                 <svg v-if="form.processing" class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">

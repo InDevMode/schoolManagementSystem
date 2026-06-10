@@ -92,7 +92,7 @@
 
                             <!-- Dropdown notifications -->
                             <Transition enter-active-class="transition duration-150 ease-out" enter-from-class="opacity-0 translate-y-1" enter-to-class="opacity-100 translate-y-0" leave-active-class="transition duration-100 ease-in" leave-from-class="opacity-100 translate-y-0" leave-to-class="opacity-0 translate-y-1">
-                                <div v-if="notifOpen" class="absolute right-0 top-full mt-1 w-80 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-xl overflow-hidden z-50">
+                                <div v-if="notifOpen" class="absolute right-0 top-full mt-1 w-80 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 shadow-xl overflow-hidden z-50">
                                     <div class="px-4 py-3 border-b border-gray-100 dark:border-gray-700 flex items-center justify-between">
                                         <p class="text-sm font-semibold text-gray-900 dark:text-white">Notifications</p>
                                         <span class="text-xs text-gray-400">{{ notifications.length }}</span>
@@ -145,7 +145,7 @@
                         <!-- Profil -->
                         <div ref="profileRef" class="relative">
                             <button
-                                class="flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                                class="flex items-center gap-2.5 px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
                                 @click="profileOpen = !profileOpen"
                             >
                                 <img :src="avatarUrl" :alt="user?.name" class="w-8 h-8 rounded-full object-cover ring-2 ring-primary-200 dark:ring-primary-700" />
@@ -167,7 +167,7 @@
                                 leave-from-class="opacity-100 translate-y-0"
                                 leave-to-class="opacity-0 translate-y-1"
                             >
-                                <div v-if="profileOpen" class="absolute right-0 top-full mt-1 w-72 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-xl overflow-hidden z-50">
+                                <div v-if="profileOpen" class="absolute right-0 top-full mt-1 w-72 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 shadow-xl overflow-hidden z-50">
                                     <div class="px-5 py-4 bg-gradient-to-br from-primary-50 to-secondary-50 dark:from-primary-900/20 dark:to-secondary-900/20 border-b border-gray-100 dark:border-gray-700">
                                         <div class="flex items-center gap-3">
                                             <img :src="avatarUrl" :alt="user?.name" class="w-12 h-12 rounded-full object-cover ring-2 ring-primary-300" />
@@ -229,7 +229,7 @@
                                     : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white'
                             ]"
                         >
-                            <span :class="['w-5 h-5 rounded-md flex items-center justify-center flex-shrink-0', isActiveChild(child) ? 'bg-primary-100 dark:bg-primary-900/40' : 'bg-gray-100 dark:bg-gray-700']">
+                            <span :class="['w-5 h-5 rounded-lg flex items-center justify-center flex-shrink-0', isActiveChild(child) ? 'bg-primary-100 dark:bg-primary-900/40' : 'bg-gray-100 dark:bg-gray-700']">
                                 <NavIcon :name="child.icon" class="w-3 h-3" />
                             </span>
                             {{ child.label }}

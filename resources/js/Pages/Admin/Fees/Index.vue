@@ -77,7 +77,7 @@
         </div>
 
         <!-- Totaux -->
-        <div v-if="feesCollections.data.length > 0" class="flex flex-wrap items-center gap-6 px-4 py-3 bg-gray-50 dark:bg-gray-800/60 rounded-xl border border-gray-200 dark:border-gray-700 text-sm">
+        <div v-if="feesCollections.data.length > 0" class="flex flex-wrap items-center gap-6 px-4 py-3 bg-gray-50 dark:bg-gray-800/60 rounded-lg border border-gray-200 dark:border-gray-700 text-sm">
             <span class="text-gray-500 font-medium">Totaux :</span>
             <span class="text-gray-700 dark:text-gray-300">Total : <strong>{{ formatAmount(totalClassAmount) }}</strong></span>
             <span class="text-success-600 dark:text-success-400">Payé : <strong>{{ formatAmount(totalPaidAmount) }}</strong></span>
@@ -86,7 +86,7 @@
 
         <!-- Modal Paiement -->
         <AppModal v-model="showPayment" title="Enregistrer un paiement" size="md" persistent>
-            <div v-if="selectedStudent" class="mb-5 p-4 bg-gray-50 dark:bg-gray-700/40 rounded-xl">
+            <div v-if="selectedStudent" class="mb-5 p-4 bg-gray-50 dark:bg-gray-700/40 rounded-lg">
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="font-semibold text-gray-900 dark:text-white">{{ selectedStudent.student_last_name }} {{ selectedStudent.student_name }}</p>
@@ -123,19 +123,19 @@
                 />
 
                 <!-- Info Kkiapay -->
-                <div v-if="payForm.payment_type === 'kkiapay'" class="p-3 bg-amber-50 dark:bg-amber-900/20 rounded-xl text-xs text-amber-700 dark:text-amber-300">
+                <div v-if="payForm.payment_type === 'kkiapay'" class="p-3 bg-amber-50 dark:bg-amber-900/20 rounded-lg text-xs text-amber-700 dark:text-amber-300">
                     <p class="font-medium mb-1">Paiement via Kkiapay</p>
                     <p>Cliquez sur "Payer avec Kkiapay" pour ouvrir le widget de paiement.</p>
                 </div>
 
                 <!-- Info FedaPay -->
-                <div v-if="payForm.payment_type === 'fedapay'" class="p-3 bg-orange-50 dark:bg-orange-900/20 rounded-xl text-xs text-orange-700 dark:text-orange-300">
+                <div v-if="payForm.payment_type === 'fedapay'" class="p-3 bg-orange-50 dark:bg-orange-900/20 rounded-lg text-xs text-orange-700 dark:text-orange-300">
                     <p class="font-medium mb-1">Paiement via FedaPay</p>
                     <p>Vous serez redirigé vers la page de paiement FedaPay (Mobile Money, carte...).</p>
                 </div>
 
                 <!-- Info Stripe -->
-                <div v-if="payForm.payment_type === 'stripe'" class="p-3 bg-primary-50 dark:bg-primary-900/20 rounded-xl text-xs text-primary-700 dark:text-primary-300">
+                <div v-if="payForm.payment_type === 'stripe'" class="p-3 bg-primary-50 dark:bg-primary-900/20 rounded-lg text-xs text-primary-700 dark:text-primary-300">
                     <p class="font-medium mb-1">Paiement via Stripe</p>
                     <p>Vous serez redirigé vers la page de paiement sécurisée Stripe.</p>
                 </div>

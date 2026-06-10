@@ -112,7 +112,7 @@
         <!-- Modal Créer/Modifier -->
         <AppModal v-model="showForm" :title="editTarget ? 'Modifier le membre' : 'Ajouter un membre'" size="lg">
             <form :id="formId" @submit.prevent="submitForm" class="space-y-4">
-                <div class="p-3 rounded-xl bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800 text-xs text-blue-700 dark:text-blue-300">
+                <div class="p-3 rounded-lg bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800 text-xs text-blue-700 dark:text-blue-300">
                     💡 Le membre du personnel doit avoir un compte utilisateur. Sélectionnez-le depuis la liste.
                 </div>
                 <!-- Sélection user existant (prof, directeur, etc.) -->

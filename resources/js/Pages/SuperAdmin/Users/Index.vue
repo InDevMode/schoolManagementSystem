@@ -12,7 +12,7 @@
         </div>
 
         <!-- ── Bannière ────────────────────────────────────────────────────── -->
-        <div class="flex items-center gap-2.5 px-4 py-2.5 rounded-xl
+        <div class="flex items-center gap-2.5 px-4 py-2.5 rounded-lg
                     bg-violet-50 dark:bg-violet-900/20 border border-violet-200 dark:border-violet-700 text-sm">
             <svg class="w-4 h-4 text-violet-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -45,7 +45,7 @@
             </div>
             <div class="flex items-center gap-2 mt-3">
                 <button @click="applyFilters"
-                        class="px-4 py-2 rounded-xl text-sm font-medium bg-violet-600 hover:bg-violet-700
+                        class="px-4 py-2 rounded-lg text-sm font-medium bg-violet-600 hover:bg-violet-700
                                text-white transition-colors flex items-center gap-2">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
@@ -53,7 +53,7 @@
                     Filtrer
                 </button>
                 <button @click="resetFilters"
-                        class="px-4 py-2 rounded-xl text-sm font-medium border border-gray-200 dark:border-gray-600
+                        class="px-4 py-2 rounded-lg text-sm font-medium border border-gray-200 dark:border-gray-600
                                text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                     Réinitialiser
                 </button>
@@ -374,7 +374,7 @@
                         leave-from-class="opacity-100 scale-100" leave-to-class="opacity-0 scale-95">
                 <div v-if="ctxMenu.visible"
                      :style="{ top: ctxMenu.y + 'px', left: ctxMenu.x + 'px' }"
-                     class="fixed z-[9999] w-52 bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-gray-100
+                     class="fixed z-[9999] w-52 bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-100
                             dark:border-gray-700 overflow-hidden py-1"
                      @click.stop>
                     <button @click="openView(ctxMenu.user!); closeContextMenu()"
@@ -484,16 +484,16 @@
                         <!-- Footer -->
                         <div class="flex gap-2 px-5 pb-5">
                             <button @click="viewTarget = null"
-                                    class="flex-1 px-3 py-2 rounded-xl text-sm font-medium border border-gray-200 dark:border-gray-600
+                                    class="flex-1 px-3 py-2 rounded-lg text-sm font-medium border border-gray-200 dark:border-gray-600
                                            text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                                 Fermer
                             </button>
                             <button @click="openEdit(viewTarget!); viewTarget = null"
-                                    class="flex-1 px-3 py-2 rounded-xl text-sm font-medium bg-emerald-500 hover:bg-emerald-600 text-white transition-colors">
+                                    class="flex-1 px-3 py-2 rounded-lg text-sm font-medium bg-emerald-500 hover:bg-emerald-600 text-white transition-colors">
                                 Modifier
                             </button>
                             <button @click="openResetConfirm(viewTarget!); viewTarget = null"
-                                    class="flex-1 px-3 py-2 rounded-xl text-sm font-medium bg-amber-500 hover:bg-amber-600 text-white transition-colors">
+                                    class="flex-1 px-3 py-2 rounded-lg text-sm font-medium bg-amber-500 hover:bg-amber-600 text-white transition-colors">
                                 Réinit. MDP
                             </button>
                         </div>
@@ -514,7 +514,7 @@
                         <!-- Titre -->
                         <div class="flex items-center justify-between px-6 pt-5 pb-4 border-b border-gray-100 dark:border-gray-700">
                             <div class="flex items-center gap-3">
-                                <div class="w-9 h-9 rounded-xl bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center">
+                                <div class="w-9 h-9 rounded-lg bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center">
                                     <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                                     </svg>
@@ -578,12 +578,12 @@
                         <!-- Footer -->
                         <div class="flex gap-3 px-6 pb-6">
                             <button @click="editTarget = null"
-                                    class="flex-1 px-4 py-2.5 rounded-xl text-sm font-medium border border-gray-200 dark:border-gray-600
+                                    class="flex-1 px-4 py-2.5 rounded-lg text-sm font-medium border border-gray-200 dark:border-gray-600
                                            text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                                 Annuler
                             </button>
                             <button @click="submitEdit" :disabled="saving"
-                                    class="flex-1 px-4 py-2.5 rounded-xl text-sm font-medium bg-emerald-600 hover:bg-emerald-700
+                                    class="flex-1 px-4 py-2.5 rounded-lg text-sm font-medium bg-emerald-600 hover:bg-emerald-700
                                            text-white transition-colors disabled:opacity-50 flex items-center justify-center gap-2">
                                 <svg v-if="saving" class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
                                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
@@ -621,12 +621,12 @@
                         </div>
                         <div class="px-6 pb-6 flex gap-3 mt-2">
                             <button @click="resetTarget = null"
-                                    class="flex-1 px-4 py-2.5 rounded-xl text-sm font-medium border border-gray-200 dark:border-gray-600
+                                    class="flex-1 px-4 py-2.5 rounded-lg text-sm font-medium border border-gray-200 dark:border-gray-600
                                            text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                                 Annuler
                             </button>
                             <button @click="executeReset" :disabled="resetting"
-                                    class="flex-1 px-4 py-2.5 rounded-xl text-sm font-medium bg-amber-500 hover:bg-amber-600
+                                    class="flex-1 px-4 py-2.5 rounded-lg text-sm font-medium bg-amber-500 hover:bg-amber-600
                                            text-white transition-colors disabled:opacity-50 flex items-center justify-center gap-2">
                                 <svg v-if="resetting" class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
                                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
@@ -664,12 +664,12 @@
                         </div>
                         <div class="px-6 pb-6 flex gap-3 mt-2">
                             <button @click="deleteTarget = null"
-                                    class="flex-1 px-4 py-2.5 rounded-xl text-sm font-medium border border-gray-200 dark:border-gray-600
+                                    class="flex-1 px-4 py-2.5 rounded-lg text-sm font-medium border border-gray-200 dark:border-gray-600
                                            text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                                 Annuler
                             </button>
                             <button @click="executeDelete" :disabled="deleting"
-                                    class="flex-1 px-4 py-2.5 rounded-xl text-sm font-medium bg-red-600 hover:bg-red-700
+                                    class="flex-1 px-4 py-2.5 rounded-lg text-sm font-medium bg-red-600 hover:bg-red-700
                                            text-white transition-colors disabled:opacity-50 flex items-center justify-center gap-2">
                                 <svg v-if="deleting" class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
                                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
@@ -952,7 +952,7 @@ const permBadgeClass = (n: number) =>
 
 <style scoped>
 .input-field {
-    @apply w-full px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-600
+    @apply w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600
            bg-white dark:bg-gray-700 text-sm text-gray-700 dark:text-gray-200
            placeholder-gray-400 dark:placeholder-gray-500
            focus:outline-none focus:ring-2 focus:ring-violet-500/30 focus:border-violet-400
@@ -966,7 +966,7 @@ const permBadgeClass = (n: number) =>
     @apply block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1;
 }
 .info-card {
-    @apply bg-gray-50 dark:bg-gray-700/50 rounded-xl p-3 border border-gray-100 dark:border-gray-600;
+    @apply bg-gray-50 dark:bg-gray-700/50 rounded-lg p-3 border border-gray-100 dark:border-gray-600;
 }
 .info-label {
     @apply text-xs font-semibold uppercase tracking-wide text-gray-400 dark:text-gray-500 mb-1;

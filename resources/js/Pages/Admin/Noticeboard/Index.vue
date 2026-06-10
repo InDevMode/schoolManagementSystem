@@ -10,9 +10,9 @@
                 </p>
             </div>
             <div class="flex items-center gap-2">
-                <a
+                <Link
                     href="/admin/communicate/noticeboard/history"
-                    class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-medium
+                    class="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium
                            border border-gray-200 dark:border-gray-700
                            text-gray-600 dark:text-gray-400
                            hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
@@ -22,7 +22,7 @@
                               d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
                     </svg>
                     Historique
-                </a>
+                </Link>
                 <AppButton @click="openCreate">
                     <template #icon>
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -278,18 +278,18 @@
 
                 <!-- Dates -->
                 <div class="grid grid-cols-2 gap-3">
-                    <div class="bg-primary-50 dark:bg-primary-900/20 rounded-xl px-3 py-2.5">
+                    <div class="bg-primary-50 dark:bg-primary-900/20 rounded-lg px-3 py-2.5">
                         <p class="text-xs text-primary-600 dark:text-primary-400 font-medium uppercase tracking-wide">Publication</p>
                         <p class="text-sm font-semibold text-gray-800 dark:text-white mt-0.5">{{ formatDate(detailTarget.publish_date) }}</p>
                     </div>
-                    <div class="bg-secondary-50 dark:bg-secondary-900/20 rounded-xl px-3 py-2.5">
+                    <div class="bg-secondary-50 dark:bg-secondary-900/20 rounded-lg px-3 py-2.5">
                         <p class="text-xs text-secondary-600 dark:text-secondary-400 font-medium uppercase tracking-wide">Envoi notification</p>
                         <p class="text-sm font-semibold text-gray-800 dark:text-white mt-0.5">{{ formatDate(detailTarget.notice_date) }}</p>
                     </div>
                 </div>
 
                 <!-- Destinataires détaillés -->
-                <div class="bg-gray-50 dark:bg-gray-700/40 rounded-xl px-3 py-2.5">
+                <div class="bg-gray-50 dark:bg-gray-700/40 rounded-lg px-3 py-2.5">
                     <p class="text-xs text-gray-500 dark:text-gray-400 font-medium uppercase tracking-wide mb-2">Destinataires</p>
                     <div class="flex items-center gap-2 flex-wrap">
                         <span
@@ -309,7 +309,7 @@
                     <p class="text-xs text-gray-500 dark:text-gray-400 font-medium uppercase tracking-wide mb-2">Message</p>
                     <div
                         class="prose prose-sm dark:prose-invert max-w-none text-gray-700 dark:text-gray-300
-                               bg-gray-50 dark:bg-gray-700/40 rounded-xl p-4 max-h-64 overflow-y-auto"
+                               bg-gray-50 dark:bg-gray-700/40 rounded-lg p-4 max-h-64 overflow-y-auto"
                         v-html="detailTarget.message"
                     />
                 </div>
@@ -331,7 +331,7 @@
         ═════════════════════════════════════════════════════════════════════ -->
         <AppModal v-model="showDelete" title="Supprimer la notification" size="sm" persistent>
             <div class="flex items-start gap-3">
-                <div class="w-10 h-10 rounded-xl bg-danger-50 dark:bg-danger-900/20 flex items-center justify-center flex-shrink-0">
+                <div class="w-10 h-10 rounded-lg bg-danger-50 dark:bg-danger-900/20 flex items-center justify-center flex-shrink-0">
                     <svg class="w-5 h-5 text-danger-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                               d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
@@ -357,7 +357,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import { useForm, router } from '@inertiajs/vue3';
+import { useForm, router, Link } from '@inertiajs/vue3';
 import { AppButton, AppInput, AppModal, AppRichEditor, AppPagination } from '@/Components/UI';
 import { stripHtml } from '@/Utils/html';
 

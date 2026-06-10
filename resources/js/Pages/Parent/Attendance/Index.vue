@@ -46,7 +46,7 @@
         </DataTable>
 
         <!-- Total -->
-        <div class="flex items-center gap-6 px-4 py-3 bg-gray-50 dark:bg-gray-800/60 rounded-xl border border-gray-200 dark:border-gray-700 text-sm">
+        <div class="flex items-center gap-6 px-4 py-3 bg-gray-50 dark:bg-gray-800/60 rounded-lg border border-gray-200 dark:border-gray-700 text-sm">
             <span class="text-gray-500 font-medium">Total :</span>
             <span class="text-success-600 font-semibold">Présent : {{ classStudent?.present ?? 0 }}</span>
             <span class="text-warning-600 font-semibold">En retard : {{ classStudent?.late ?? 0 }}</span>

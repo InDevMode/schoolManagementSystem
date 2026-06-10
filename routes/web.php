@@ -12,6 +12,7 @@ use App\Http\Controllers\ClassTimetableController;
 use App\Http\Controllers\CommunicateController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FeesCollectionController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ParentController;
 use App\Http\Controllers\PeriodController;
 use App\Http\Controllers\RbacController;
@@ -58,6 +59,13 @@ Route::get('auth/{provider}/callback', [SocialAuthController::class, 'callback']
 
 Route::group(['middleware' => 'common'], function () {
     Route::get('chat', [ChatController::class, 'chat']);
+
+    // ── Notifications in-app ──────────────────────────────────────────────────
+    Route::get('notifications/poll',         [NotificationController::class, 'index'])->name('notifications.poll');
+    Route::post('notifications/{id}/read',   [NotificationController::class, 'markRead'])->name('notifications.read');
+    Route::post('notifications/read-all',    [NotificationController::class, 'markAllRead'])->name('notifications.read-all');
+    Route::delete('notifications/{id}',      [NotificationController::class, 'destroy'])->name('notifications.destroy');
+    Route::delete('notifications-clear-read',[NotificationController::class, 'clearRead'])->name('notifications.clear-read');
     Route::post('chat', [ChatController::class, 'sendMessage'])->name('chat.send');
     Route::put('/chat/{id}', [ChatController::class, 'updateMessage'])->name('chat.update');
 
@@ -224,6 +232,8 @@ Route::group(['middleware' => 'admin'], function () {
     Route::get('admin/evaluations/grade-entry',                   [EvaluationController::class, 'gradeEntry'])->middleware('check_perm:view.exams.marks');
     Route::post('admin/evaluations/grades/save',                  [EvaluationController::class, 'saveGrades'])->middleware('check_perm:action.marks.manage');
     Route::post('admin/evaluations/grades/validate',              [EvaluationController::class, 'validateGrades'])->middleware('check_perm:action.marks.manage');
+    Route::post('admin/evaluations/grades/reject',                [EvaluationController::class, 'rejectGrades'])->middleware('check_perm:action.marks.manage');
+    Route::post('admin/evaluations/grades/cancel-validation',     [EvaluationController::class, 'cancelValidation'])->middleware('check_perm:action.marks.manage');
     Route::get('admin/evaluations/grades/pending',                [EvaluationController::class, 'pendingValidation'])->middleware('check_perm:view.exams.marks');
     Route::get('admin/evaluations/subjects-by-class/{class_id}',  [EvaluationController::class, 'getSubjectsByClass'])->middleware('check_perm:view.exams.list');
     Route::get('admin/evaluations/by-class-period',               [EvaluationController::class, 'getEvaluationsByClassPeriod'])->middleware('check_perm:view.exams.list');

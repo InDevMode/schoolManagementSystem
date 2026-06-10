@@ -142,7 +142,7 @@
                             <!-- Header drawer -->
                             <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-gray-700">
                                 <div class="flex items-center gap-3">
-                                    <div class="w-9 h-9 rounded-xl bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center flex-shrink-0">
+                                    <div class="w-9 h-9 rounded-lg bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center flex-shrink-0">
                                         <svg class="w-5 h-5 text-primary-600 dark:text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                                         </svg>
@@ -174,7 +174,7 @@
                                 </div>
 
                                 <!-- Frais de scolarité -->
-                                <div class="rounded-xl bg-gray-50 dark:bg-gray-800 p-4">
+                                <div class="rounded-lg bg-gray-50 dark:bg-gray-800 p-4">
                                     <p class="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wide mb-1">Frais de scolarité</p>
                                     <p class="text-2xl font-bold text-primary-600 dark:text-primary-400">
                                         {{ Number(detailsTarget.amount).toLocaleString('fr-FR') }}

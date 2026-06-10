@@ -23,7 +23,7 @@
     </div>
 
     <div class="p-4 flex items-center justify-center">
-        <div class="w-full max-w-screen-xl bg-white shadow-lg mt-24 rounded-md">
+        <div class="w-full max-w-screen-xl bg-white shadow-lg mt-24 rounded-lg">
             @foreach($getTeacherTimetable as $teacherTimetable)
             <div class="bg-white shadow-md dark:border-strokedark dark:bg-boxdark border border-gray-300 p-4">
                 <div class="font-bold text-md mb-3 text-center bg-violet-100 text-violet-800 py-2 rounded">

@@ -1,6 +1,6 @@
 <template>
     <component
-        :is="href ? 'a' : 'button'"
+        :is="href ? Link : 'button'"
         :href="href"
         :type="href ? undefined : type"
         :disabled="disabled || loading"
@@ -22,6 +22,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue';
+import { Link } from '@inertiajs/vue3';
 
 interface Props {
     variant?: 'primary' | 'secondary' | 'danger' | 'success' | 'warning' | 'ghost' | 'outline';
@@ -42,7 +43,7 @@ const props = withDefaults(defineProps<Props>(), {
     block: false,
 });
 
-const base = 'inline-flex items-center justify-center font-medium rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-gray-900 disabled:opacity-50 disabled:cursor-not-allowed';
+const base = 'inline-flex items-center justify-center font-medium rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-gray-900 disabled:opacity-50 disabled:cursor-not-allowed';
 
 const variants: Record<string, string> = {
     primary:   'bg-primary-600 hover:bg-primary-700 text-white focus:ring-primary-500 shadow-sm',

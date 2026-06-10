@@ -96,30 +96,48 @@
                 </AppBadge>
             </template>
             <template #actions="{ row }">
-                <div class="flex items-center justify-end gap-1">
-                    <a :href="`/admin/bulletins/show/${row.id}`"
-                        class="p-1.5 rounded-lg text-gray-400 hover:text-primary-600 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors"
+                <div class="flex items-center justify-end gap-1.5">
+                    <!-- Voir le bulletin -->
+                    <Link :href="`/admin/bulletins/show/${row.id}`"
+                        class="p-1.5 rounded-lg transition-all duration-150
+                               text-white bg-violet-500 hover:bg-violet-600 active:bg-violet-700
+                               shadow-sm shadow-violet-200 dark:shadow-violet-900/40"
                         title="Voir le bulletin">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
                         </svg>
-                    </a>
+                    </Link>
+                    <!-- Imprimer -->
                     <a :href="`/admin/bulletins/print/${row.id}`" target="_blank"
-                        class="p-1.5 rounded-lg text-gray-400 hover:text-info-600 hover:bg-info-50 dark:hover:bg-info-900/20 transition-colors"
+                        class="p-1.5 rounded-lg transition-all duration-150
+                               text-white bg-blue-500 hover:bg-blue-600 active:bg-blue-700
+                               shadow-sm shadow-blue-200 dark:shadow-blue-900/40"
                         title="Imprimer">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
                         </svg>
                     </a>
+                    <!-- Publier (brouillon uniquement) -->
                     <button v-if="row.status === 'draft'"
-                        class="p-1.5 rounded-lg text-gray-400 hover:text-success-600 hover:bg-success-50 dark:hover:bg-success-900/20 transition-colors"
-                        title="Publier"
+                        class="p-1.5 rounded-lg transition-all duration-150
+                               text-white bg-emerald-500 hover:bg-emerald-600 active:bg-emerald-700
+                               shadow-sm shadow-emerald-200 dark:shadow-emerald-900/40"
+                        title="Publier le bulletin"
                         @click="publishOne(row.id as number)">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                         </svg>
                     </button>
+                    <!-- Déjà publié — indicateur -->
+                    <span v-else
+                        class="p-1.5 rounded-lg
+                               text-white bg-emerald-400/60 dark:bg-emerald-700/40 cursor-default"
+                        title="Déjà publié">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </span>
                 </div>
             </template>
         </DataTable>
@@ -128,7 +146,7 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue';
-import { router } from '@inertiajs/vue3';
+import { router, Link } from '@inertiajs/vue3';
 import { AppButton, AppSelect, AppBadge, DataTable } from '@/Components/UI';
 import { useToast } from '@/Composables/useToast';
 import axios from 'axios';

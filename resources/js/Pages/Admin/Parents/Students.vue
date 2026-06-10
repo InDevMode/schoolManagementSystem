@@ -5,13 +5,13 @@
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div class="flex items-center gap-4">
                 <!-- Bouton retour -->
-                <a href="/admin/parent/list"
-                   class="p-2 rounded-xl border border-gray-200 dark:border-gray-700 text-gray-500
+                <Link href="/admin/parent/list"
+                   class="p-2 rounded-lg border border-gray-200 dark:border-gray-700 text-gray-500
                           hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-700 transition-colors">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
                     </svg>
-                </a>
+                </Link>
                 <div>
                     <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
                         Enfants de {{ parent?.last_name }} {{ parent?.name }}
@@ -137,7 +137,7 @@
                                   d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                         </svg>
                         <input v-model="search" type="text" placeholder="Rechercher un apprenant..."
-                               class="w-full pl-9 pr-3 py-2 text-sm rounded-xl border border-gray-200 dark:border-gray-600
+                               class="w-full pl-9 pr-3 py-2 text-sm rounded-lg border border-gray-200 dark:border-gray-600
                                       bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300
                                       placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500/40 transition-all"/>
                     </div>
@@ -207,7 +207,7 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue';
-import { router } from '@inertiajs/vue3';
+import { router, Link } from '@inertiajs/vue3';
 import { AppBadge, ConfirmDialog } from '@/Components/UI';
 import { useToast } from '@/Composables/useToast';
 

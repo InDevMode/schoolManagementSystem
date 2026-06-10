@@ -30,7 +30,7 @@
   >
     <div class="col-span-3 flex items-center">
       <div class="flex flex-col gap-4 sm:flex-row sm:items-center">
-        <div class="h-12.5 w-15 rounded-md">
+        <div class="h-12.5 w-15 rounded-lg">
           <img src="./images/product/product-01.png" alt="Product" />
         </div>
         <p class="text-sm font-medium text-black dark:text-white">
@@ -56,7 +56,7 @@
   >
     <div class="col-span-3 flex items-center">
       <div class="flex flex-col gap-4 sm:flex-row sm:items-center">
-        <div class="h-12.5 w-15 rounded-md">
+        <div class="h-12.5 w-15 rounded-lg">
           <img src="./images/product/product-02.png" alt="Product" />
         </div>
         <p class="text-sm font-medium text-black dark:text-white">
@@ -82,7 +82,7 @@
   >
     <div class="col-span-3 flex items-center">
       <div class="flex flex-col gap-4 sm:flex-row sm:items-center">
-        <div class="h-12.5 w-15 rounded-md">
+        <div class="h-12.5 w-15 rounded-lg">
           <img src="./images/product/product-03.png" alt="Product" />
         </div>
         <p class="text-sm font-medium text-black dark:text-white">
@@ -108,7 +108,7 @@
   >
     <div class="col-span-3 flex items-center">
       <div class="flex flex-col gap-4 sm:flex-row sm:items-center">
-        <div class="h-12.5 w-15 rounded-md">
+        <div class="h-12.5 w-15 rounded-lg">
           <img src="./images/product/product-04.png" alt="Product" />
         </div>
         <p class="text-sm font-medium text-black dark:text-white">

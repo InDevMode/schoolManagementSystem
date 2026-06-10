@@ -12,7 +12,7 @@
 
         <!-- Infos élève -->
         <div v-if="student" class="card p-4 flex items-center gap-4">
-            <div class="w-10 h-10 rounded-xl bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center flex-shrink-0">
+            <div class="w-10 h-10 rounded-lg bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center flex-shrink-0">
                 <svg class="w-5 h-5 text-primary-600 dark:text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
                 </svg>
@@ -34,7 +34,7 @@
                         <div
                             v-for="day in allWeek"
                             :key="day.week_id"
-                            class="rounded-xl p-3 text-center min-h-[90px] flex flex-col items-center justify-center border transition-all"
+                            class="rounded-lg p-3 text-center min-h-[90px] flex flex-col items-center justify-center border transition-all"
                             :class="day.start_time
                                 ? 'border-primary-300 dark:border-primary-700 bg-primary-50 dark:bg-primary-900/20'
                                 : 'border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/30'"
@@ -75,7 +75,7 @@
                             <p class="text-sm font-semibold text-primary-600 dark:text-primary-400">
                                 {{ day.start_time }} – {{ day.end_time }}
                             </p>
-                            <div v-if="day.room_number" class="text-xs text-gray-500 bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded-md">
+                            <div v-if="day.room_number" class="text-xs text-gray-500 bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded-lg">
                                 Salle {{ day.room_number }}
                             </div>
                         </div>

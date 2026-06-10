@@ -45,7 +45,7 @@
         </div>
 
          <!-- Filter Section -->
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-8">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-8">
             <h2 class="text-lg font-semibold text-gray-800 dark:text-white mb-4 flex items-center gap-2">
                 <i class="fas fa-filter text-primary-600"></i>
                 Filtres de recherche
@@ -210,7 +210,7 @@
                                             </template>
                                         </div>
                                         <button @click="expanded = !expanded" x-transition.duration.300ms x-cloak
-                                            class="my-3 border-4 border-violet-600 py-2 px-4 text-violet-600 hover:text-white transition-all duration-300 rounded-md shadow-lg dark:text-white hover:bg-violet-600 text-sm font-medium">
+                                            class="my-3 border-4 border-violet-600 py-2 px-4 text-violet-600 hover:text-white transition-all duration-300 rounded-lg shadow-lg dark:text-white hover:bg-violet-600 text-sm font-medium">
                                             <span x-text="expanded ? 'Voir moins' : 'Voir plus'"></span>
                                         </button>
                                     </div>

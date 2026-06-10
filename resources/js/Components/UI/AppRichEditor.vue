@@ -1,7 +1,7 @@
 <template>
     <div>
         <div
-            class="rounded-xl border overflow-hidden"
+            class="rounded-lg border overflow-hidden"
             :class="[
                 error
                     ? 'border-danger-500 focus-within:ring-2 focus-within:ring-danger-500'
@@ -73,7 +73,7 @@
                 <div class="w-px h-5 bg-gray-300 dark:bg-gray-500 mx-1" />
 
                 <!-- Text color -->
-                <label class="relative cursor-pointer flex items-center justify-center w-7 h-7 rounded-md hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors" title="Couleur du texte">
+                <label class="relative cursor-pointer flex items-center justify-center w-7 h-7 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors" title="Couleur du texte">
                     <span
                         class="w-4 h-4 rounded border border-gray-400 dark:border-gray-500 block"
                         :style="{ backgroundColor: currentColor }"
@@ -144,7 +144,7 @@ const emit = defineEmits<{
 // ── Toolbar button class helper ─────────────────────────────────────────────
 function btnClass(active?: boolean) {
     return [
-        'flex items-center justify-center w-7 h-7 rounded-md transition-colors text-gray-700 dark:text-gray-300 flex-shrink-0',
+        'flex items-center justify-center w-7 h-7 rounded-lg transition-colors text-gray-700 dark:text-gray-300 flex-shrink-0',
         active
             ? 'bg-primary-100 dark:bg-primary-900/40 text-primary-700 dark:text-primary-300'
             : 'hover:bg-gray-200 dark:hover:bg-gray-600',

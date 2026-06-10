@@ -162,7 +162,7 @@
                                             </template>
                                         </div>
                                         <button @click="expanded = !expanded" x-transition.duration.300ms x-cloak
-                                            class="my-3 border-4 border-violet-600 py-2 px-4 text-violet-600 hover:text-white transition-all duration-300 rounded-md shadow-lg dark:text-white hover:bg-violet-600 text-sm font-medium">
+                                            class="my-3 border-4 border-violet-600 py-2 px-4 text-violet-600 hover:text-white transition-all duration-300 rounded-lg shadow-lg dark:text-white hover:bg-violet-600 text-sm font-medium">
                                             <span x-text="expanded ? 'Voir moins' : 'Voir plus'"></span>
                                         </button>
                                     </div>

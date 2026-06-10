@@ -16,7 +16,7 @@
             </AppButton>
         </div>
         <div v-if="isSuperAdmin"
-             class="flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-primary-50 dark:bg-primary-900/20 border border-primary-200 dark:border-primary-700 text-sm">
+             class="flex items-center gap-2.5 px-4 py-2.5 rounded-lg bg-primary-50 dark:bg-primary-900/20 border border-primary-200 dark:border-primary-700 text-sm">
             <svg class="w-4 h-4 text-primary-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                       d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
@@ -132,7 +132,7 @@
                                   d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                         </svg>
                     </button>
-                    <a :href="`/chat?receiver_id=${row.id_encoded}`" title="Message"
+                    <Link :href="`/chat?receiver_id=${row.id_encoded}`" title="Message"
                        class="p-1.5 rounded-lg transition-all duration-150
                               text-white bg-blue-500 hover:bg-blue-600 active:bg-blue-700
                               shadow-sm shadow-blue-200 dark:shadow-blue-900/40">
@@ -140,7 +140,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                   d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
                         </svg>
-                    </a>
+                    </Link>
                     <button v-if="canDelete" title="Supprimer"
                             @click="tableRef?.confirmDelete(row.id as number, `${row.last_name} ${row.name}`)"
                             class="p-1.5 rounded-lg transition-all duration-150
@@ -172,14 +172,14 @@
                     </svg>
                     Modifier
                 </button>
-                <a :href="`/chat?receiver_id=${(row as any).id_encoded}`"
+                <Link :href="`/chat?receiver_id=${(row as any).id_encoded}`"
                    class="flex items-center gap-2.5 px-3.5 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-700/60 hover:text-blue-700 transition-colors">
                     <svg class="w-4 h-4 text-blue-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                               d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
                     </svg>
                     Envoyer un message
-                </a>
+                </Link>
                 <template v-if="canDelete">
                     <div class="my-1 border-t border-gray-100 dark:border-gray-700"/>
                     <button @click="tableRef?.confirmDelete((row as any).id, `${row.last_name} ${row.name}`)"
@@ -233,35 +233,35 @@
                 </div>
                 <!-- Infos -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div class="bg-gray-50 dark:bg-gray-800/60 rounded-xl p-4 border border-gray-100 dark:border-gray-700">
+                    <div class="bg-gray-50 dark:bg-gray-800/60 rounded-lg p-4 border border-gray-100 dark:border-gray-700">
                         <p class="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-1.5">Téléphone</p>
                         <p class="text-sm font-semibold text-gray-800 dark:text-gray-200 font-mono">{{ viewTarget.mobile_number ?? '—' }}</p>
                     </div>
-                    <div class="bg-gray-50 dark:bg-gray-800/60 rounded-xl p-4 border border-gray-100 dark:border-gray-700">
+                    <div class="bg-gray-50 dark:bg-gray-800/60 rounded-lg p-4 border border-gray-100 dark:border-gray-700">
                         <p class="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-1.5">Genre</p>
                         <p class="text-sm font-semibold text-gray-800 dark:text-gray-200">{{ genderLabel(viewTarget.gender) }}</p>
                     </div>
-                    <div class="bg-gray-50 dark:bg-gray-800/60 rounded-xl p-4 border border-gray-100 dark:border-gray-700">
+                    <div class="bg-gray-50 dark:bg-gray-800/60 rounded-lg p-4 border border-gray-100 dark:border-gray-700">
                         <p class="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-1.5">Date de naissance</p>
                         <p class="text-sm font-semibold text-gray-800 dark:text-gray-200">{{ formatDate(viewTarget.date_of_birth) }}</p>
                     </div>
-                    <div class="bg-gray-50 dark:bg-gray-800/60 rounded-xl p-4 border border-gray-100 dark:border-gray-700">
+                    <div class="bg-gray-50 dark:bg-gray-800/60 rounded-lg p-4 border border-gray-100 dark:border-gray-700">
                         <p class="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-1.5">Date d'embauche</p>
                         <p class="text-sm font-semibold text-gray-800 dark:text-gray-200">{{ formatDate(viewTarget.admission_date) }}</p>
                     </div>
-                    <div class="bg-gray-50 dark:bg-gray-800/60 rounded-xl p-4 border border-gray-100 dark:border-gray-700">
+                    <div class="bg-gray-50 dark:bg-gray-800/60 rounded-lg p-4 border border-gray-100 dark:border-gray-700">
                         <p class="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-1.5">Situation matrimoniale</p>
                         <p class="text-sm font-semibold text-gray-800 dark:text-gray-200 capitalize">{{ viewTarget.marital_status ?? '—' }}</p>
                     </div>
-                    <div class="bg-gray-50 dark:bg-gray-800/60 rounded-xl p-4 border border-gray-100 dark:border-gray-700">
+                    <div class="bg-gray-50 dark:bg-gray-800/60 rounded-lg p-4 border border-gray-100 dark:border-gray-700">
                         <p class="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-1.5">Expérience</p>
                         <p class="text-sm font-semibold text-gray-800 dark:text-gray-200">{{ viewTarget.work_experience ? `${viewTarget.work_experience} an(s)` : '—' }}</p>
                     </div>
-                    <div v-if="viewTarget.address" class="sm:col-span-2 bg-gray-50 dark:bg-gray-800/60 rounded-xl p-4 border border-gray-100 dark:border-gray-700">
+                    <div v-if="viewTarget.address" class="sm:col-span-2 bg-gray-50 dark:bg-gray-800/60 rounded-lg p-4 border border-gray-100 dark:border-gray-700">
                         <p class="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-1.5">Adresse</p>
                         <p class="text-sm font-semibold text-gray-800 dark:text-gray-200">{{ viewTarget.address }}</p>
                     </div>
-                    <div v-if="viewTarget.note" class="sm:col-span-2 bg-gray-50 dark:bg-gray-800/60 rounded-xl p-4 border border-gray-100 dark:border-gray-700">
+                    <div v-if="viewTarget.note" class="sm:col-span-2 bg-gray-50 dark:bg-gray-800/60 rounded-lg p-4 border border-gray-100 dark:border-gray-700">
                         <p class="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-1.5">Note / Qualification</p>
                         <p class="text-sm text-gray-800 dark:text-gray-200">{{ viewTarget.note }}</p>
                     </div>

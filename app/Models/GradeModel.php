@@ -82,6 +82,7 @@ class GradeModel extends Model
             'evaluations.type as eval_type',
             'evaluations.eval_date',
             'evaluations.title as eval_title',
+            'evaluations.max_score',
             'subject.name as subject_name',
             'class.name as class_name',
         )

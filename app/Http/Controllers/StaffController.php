@@ -8,6 +8,8 @@ use App\Models\StaffEventModel;
 use App\Models\StaffLeaveModel;
 use App\Models\StaffModel;
 use App\Models\User;
+use App\Notifications\LeaveStatusChangedNotification;
+use App\Notifications\NewEventNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -248,6 +250,28 @@ class StaffController extends Controller
             $leave->admin_note  = trim($request->admin_note ?? '');
             $leave->save();
 
+            // Notifier le membre du personnel concerné (via son compte User si lié)
+            try {
+                $staff = StaffModel::find($leave->staff_id);
+                if ($staff && $staff->user_id) {
+                    $user = User::find($staff->user_id);
+                    if ($user) {
+                        $leaveType = LeaveTypeModel::find($leave->leave_type_id);
+                        $leaveTypeName = $leaveType?->name ?? 'Congé';
+                        $startDate = \Carbon\Carbon::parse($leave->start_date)->format('d/m/Y');
+
+                        $user->notify(new LeaveStatusChangedNotification(
+                            $request->status,
+                            $startDate,
+                            $leaveTypeName,
+                            $leave->admin_note
+                        ));
+                    }
+                }
+            } catch (\Exception $notifEx) {
+                Log::warning("Leave approve notification failed for leave #{$id}: " . $notifEx->getMessage());
+            }
+
             $msg = $request->status === 'approved' ? 'Congé approuvé.' : 'Congé rejeté.';
             return redirect()->back()->with('success', $msg);
         } catch (\Exception $e) {
@@ -301,6 +325,17 @@ class StaffController extends Controller
             $event->location   = trim($request->location ?? '');
             $event->created_by = Auth::id();
             $event->save();
+
+            // Notifier tous les utilisateurs actifs (admins, profs, élèves, parents)
+            try {
+                $eventDate = \Carbon\Carbon::parse($event->event_date)->format('d/m/Y');
+                $users = User::where('is_delete', 0)->where('status', 1)->get();
+                foreach ($users as $u) {
+                    $u->notify(new NewEventNotification($event->title, $eventDate, $event->event_type));
+                }
+            } catch (\Exception $notifEx) {
+                Log::warning("Event create notification failed: " . $notifEx->getMessage());
+            }
 
             return redirect()->back()->with('success', 'Événement créé avec succès.');
         } catch (\Exception $e) {

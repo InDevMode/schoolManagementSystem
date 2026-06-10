@@ -9,6 +9,7 @@ use App\Models\HomeworkModel;
 use App\Models\User;
 use App\Models\WorkAttachmentModel;
 use App\Models\WorkModel;
+use App\Notifications\NewHomeworkNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -113,7 +114,18 @@ class WorkController extends Controller
     public function practicalWorksEditJson($id)
     {
         $user = Auth::user();
-        $work = WorkModel::where('id', $id)->where('is_delete', 0)->first();
+
+        $work = WorkModel::select(
+                'works.*',
+                'class.name as class_name',
+                'subject.name as subject_name'
+            )
+            ->join('class',   'class.id',   '=', 'works.class_id')
+            ->join('subject', 'subject.id', '=', 'works.subject_id')
+            ->where('works.id', $id)
+            ->where('works.is_delete', 0)
+            ->first();
+
         abort_unless($work, 404);
 
         // Un admin ne peut modifier que ses propres travaux (sauf super_admin)
@@ -165,6 +177,37 @@ class WorkController extends Controller
             // Pièces jointes multiples
             if ($request->hasFile('attachments')) {
                 $this->saveAttachments($request->file('attachments'), $work->id, 'hw_admin');
+            }
+
+            // Notifier les élèves de la classe et leurs parents
+            try {
+                $class   = ClassModel::getSingle($work->class_id);
+                $subject = ClassSubjectModel::select('subject.name')
+                    ->join('subject', 'subject.id', '=', 'class_subject.subject_id')
+                    ->where('class_subject.subject_id', $work->subject_id)
+                    ->first();
+
+                $className      = $class?->name ?? 'votre classe';
+                $subjectName    = $subject?->name ?? 'une matière';
+                $submissionDate = \Carbon\Carbon::parse($work->submission_date)->format('d/m/Y');
+
+                $students = User::where('class_id', $work->class_id)
+                    ->where('user_type', 3)
+                    ->where('is_delete', 0)
+                    ->where('status', 1)
+                    ->get();
+
+                $notifiedParents = [];
+                foreach ($students as $student) {
+                    $student->notify(new NewHomeworkNotification($subjectName, $className, $submissionDate));
+                    if ($student->parent_id && !in_array($student->parent_id, $notifiedParents)) {
+                        $parent = User::find($student->parent_id);
+                        $parent?->notify(new NewHomeworkNotification($subjectName, $className, $submissionDate));
+                        $notifiedParents[] = $student->parent_id;
+                    }
+                }
+            } catch (\Exception $notifEx) {
+                Log::warning("Homework create notification failed: " . $notifEx->getMessage());
             }
 
             return redirect('admin/practicalworks/homework/list')
@@ -355,9 +398,17 @@ class WorkController extends Controller
     public function teacherPracticalWorksEditJson($id)
     {
         $teacherId = Auth::user()->id;
-        $work      = WorkModel::where('id', $id)
-            ->where('is_delete', 0)
-            ->where('created_by', $teacherId) // un prof ne voit que ses propres travaux
+
+        $work = WorkModel::select(
+                'works.*',
+                'class.name as class_name',
+                'subject.name as subject_name'
+            )
+            ->join('class',   'class.id',   '=', 'works.class_id')
+            ->join('subject', 'subject.id', '=', 'works.subject_id')
+            ->where('works.id', $id)
+            ->where('works.is_delete', 0)
+            ->where('works.created_by', $teacherId)
             ->first();
 
         abort_unless($work, 404);
@@ -404,6 +455,37 @@ class WorkController extends Controller
 
             if ($request->hasFile('attachments')) {
                 $this->saveAttachments($request->file('attachments'), $work->id, 'hw_teacher');
+            }
+
+            // Notifier les élèves de la classe et leurs parents
+            try {
+                $class   = ClassModel::getSingle($work->class_id);
+                $subject = ClassSubjectModel::select('subject.name')
+                    ->join('subject', 'subject.id', '=', 'class_subject.subject_id')
+                    ->where('class_subject.subject_id', $work->subject_id)
+                    ->first();
+
+                $className      = $class?->name ?? 'votre classe';
+                $subjectName    = $subject?->name ?? 'une matière';
+                $submissionDate = \Carbon\Carbon::parse($work->submission_date)->format('d/m/Y');
+
+                $students = User::where('class_id', $work->class_id)
+                    ->where('user_type', 3)
+                    ->where('is_delete', 0)
+                    ->where('status', 1)
+                    ->get();
+
+                $notifiedParents = [];
+                foreach ($students as $student) {
+                    $student->notify(new NewHomeworkNotification($subjectName, $className, $submissionDate));
+                    if ($student->parent_id && !in_array($student->parent_id, $notifiedParents)) {
+                        $parent = User::find($student->parent_id);
+                        $parent?->notify(new NewHomeworkNotification($subjectName, $className, $submissionDate));
+                        $notifiedParents[] = $student->parent_id;
+                    }
+                }
+            } catch (\Exception $notifEx) {
+                Log::warning("Homework teacher notification failed: " . $notifEx->getMessage());
             }
 
             return redirect('teacher/practicalworks/homework/list')

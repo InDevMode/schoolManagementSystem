@@ -8,6 +8,7 @@ use App\Models\ClassTimetableModel;
 use App\Models\SubjectModel;
 use App\Models\User;
 use App\Models\WeekModel;
+use App\Notifications\TimetableCreatedNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -115,6 +116,52 @@ class ClassTimetableController extends Controller
                         'room_number' => $slot['room_number'] ?? '',
                     ]);
                 }
+            }
+
+            // Notifier les élèves de la classe et leurs parents
+            try {
+                $class   = ClassModel::getSingle($request->class_id);
+                $subject = SubjectModel::getSingle($request->subject_id);
+
+                if ($class && $subject) {
+                    $className   = $class->name;
+                    $subjectName = $subject->name;
+
+                    // Tous les élèves actifs de la classe
+                    $students = User::where('class_id', $request->class_id)
+                        ->where('user_type', 3)
+                        ->where('is_delete', 0)
+                        ->where('status', 1)
+                        ->get();
+
+                    $notifiedParents = [];
+
+                    foreach ($students as $student) {
+                        $student->notify(new TimetableCreatedNotification($className, $subjectName));
+
+                        // Notifier le parent une seule fois (même parent peut avoir plusieurs enfants dans la classe)
+                        if ($student->parent_id && !in_array($student->parent_id, $notifiedParents)) {
+                            $parent = User::find($student->parent_id);
+                            $parent?->notify(new TimetableCreatedNotification($className, $subjectName));
+                            $notifiedParents[] = $student->parent_id;
+                        }
+                    }
+
+                    // Notifier les professeurs assignés à cette classe
+                    $teachers = User::join('class_teacher', 'class_teacher.teacher_id', '=', 'users.id')
+                        ->where('class_teacher.class_id', $request->class_id)
+                        ->where('class_teacher.is_delete', 0)
+                        ->where('users.is_delete', 0)
+                        ->where('users.status', 1)
+                        ->select('users.*')
+                        ->get();
+
+                    foreach ($teachers as $teacher) {
+                        $teacher->notify(new TimetableCreatedNotification($className, $subjectName));
+                    }
+                }
+            } catch (\Exception $notifEx) {
+                Log::warning("Timetable notification failed: " . $notifEx->getMessage());
             }
 
             return redirect('admin/class_timetable/list')

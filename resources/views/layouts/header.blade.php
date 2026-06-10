@@ -156,7 +156,7 @@
 
                               <!-- Dropdown Start -->
                               <div x-show="dropdownOpen" x-cloak
-                                    class="absolute -right-27 mt-6 flex h-90 w-75 flex-col rounded-xl border border-stroke bg-white shadow-xl dark:border-strokedark dark:bg-boxdark sm:right-0 sm:w-80">
+                                    class="absolute -right-27 mt-6 flex h-90 w-75 flex-col rounded-lg border border-stroke bg-white shadow-xl dark:border-strokedark dark:bg-boxdark sm:right-0 sm:w-80">
 
                                     <div class="px-4.5 py-3">
                                           <h5 class="text-sm font-medium text-bodydark2">
@@ -226,7 +226,7 @@
 
                               <!-- Dropdown Start -->
                               <div x-show="dropdownOpen" x-cloak
-                                    class="absolute -right-16 mt-6 flex max-h-[400px] w-75 flex-col rounded-xl border border-stroke bg-white shadow-xl overflow-y-auto dark:border-strokedark dark:bg-boxdark sm:right-0 sm:w-80">
+                                    class="absolute -right-16 mt-6 flex max-h-[400px] w-75 flex-col rounded-lg border border-stroke bg-white shadow-xl overflow-y-auto dark:border-strokedark dark:bg-boxdark sm:right-0 sm:w-80">
 
                                     <div class="px-4.5 py-3">
                                           <h5 class="text-sm font-medium text-bodydark2">

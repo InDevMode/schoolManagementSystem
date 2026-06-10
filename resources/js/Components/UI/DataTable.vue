@@ -688,7 +688,7 @@ defineExpose({ clearSelection, selected, filteredRows, confirmDelete });
           <div v-if="showColPicker"
                class="absolute right-0 top-full mt-1.5 w-52 z-50
                       bg-white dark:bg-gray-800
-                      rounded-xl border border-gray-200 dark:border-gray-600/60
+                      rounded-lg border border-gray-200 dark:border-gray-600/60
                       shadow-lg shadow-gray-200/60 dark:shadow-black/40 py-2">
             <div class="px-3 pb-2 mb-1 border-b border-gray-100 dark:border-gray-700 flex items-center justify-between">
               <span class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Colonnes</span>
@@ -731,7 +731,7 @@ defineExpose({ clearSelection, selected, filteredRows, confirmDelete });
           <div v-if="showExport"
                class="absolute right-0 top-full mt-1.5 w-44 z-50
                       bg-white dark:bg-gray-800
-                      rounded-xl border border-gray-200 dark:border-gray-600/60
+                      rounded-lg border border-gray-200 dark:border-gray-600/60
                       shadow-lg shadow-gray-200/60 dark:shadow-black/40 py-1.5">
             <div class="px-3 py-1.5 mb-1 border-b border-gray-100 dark:border-gray-700">
               <span class="text-xs text-gray-400 dark:text-gray-500">
@@ -971,7 +971,7 @@ defineExpose({ clearSelection, selected, filteredRows, confirmDelete });
                     <!-- Bouton copier la ligne -->
                     <button
                         :title="dtCopiedRowKey === rowId(row) ? 'Ligne copiée !' : 'Copier la ligne'"
-                        class="w-8 h-8 inline-flex items-center justify-center rounded-xl transition-all duration-150 flex-shrink-0"
+                        class="w-8 h-8 inline-flex items-center justify-center rounded-lg transition-all duration-150 flex-shrink-0"
                         :class="dtCopiedRowKey === rowId(row)
                           ? 'bg-emerald-100 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400'
                           : 'bg-gray-100 text-gray-400 hover:bg-violet-100 hover:text-violet-600 dark:bg-gray-700/50 dark:text-gray-500 dark:hover:bg-violet-900/30 dark:hover:text-violet-400'"
@@ -986,7 +986,7 @@ defineExpose({ clearSelection, selected, filteredRows, confirmDelete });
                     <template v-for="action in actions" :key="action.key">
                       <button v-if="!action.condition || action.condition(row)"
                               :title="action.label"
-                              class="w-8 h-8 inline-flex items-center justify-center rounded-xl transition-all duration-150 flex-shrink-0"
+                              class="w-8 h-8 inline-flex items-center justify-center rounded-lg transition-all duration-150 flex-shrink-0"
                               :class="{
                                 'bg-violet-100 text-violet-600 hover:bg-violet-600 hover:text-white dark:bg-violet-900/30 dark:text-violet-400 dark:hover:bg-violet-600 dark:hover:text-white': !action.variant || action.variant === 'primary',
                                 'bg-amber-100 text-amber-600 hover:bg-amber-500 hover:text-white dark:bg-amber-900/30 dark:text-amber-400 dark:hover:bg-amber-500 dark:hover:text-white': action.variant === 'warning',
@@ -1047,7 +1047,7 @@ defineExpose({ clearSelection, selected, filteredRows, confirmDelete });
                   enter-to-class="opacity-100 scale-100" leave-active-class="transition duration-100 ease-in" leave-to-class="opacity-0">
         <div v-if="ctxMenu.show" class="dt-ctx-menu fixed z-[9999] w-52
                     bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700
-                    rounded-xl shadow-2xl shadow-gray-300/60 dark:shadow-black/50 py-1.5 overflow-hidden"
+                    rounded-lg shadow-2xl shadow-gray-300/60 dark:shadow-black/50 py-1.5 overflow-hidden"
              :style="`left:${ctxMenu.x}px; top:${ctxMenu.y}px;`">
           <div class="px-3 py-1.5 mb-1 border-b border-gray-100 dark:border-gray-700">
             <span class="text-[10px] font-semibold uppercase tracking-wider text-gray-400">Actions rapides</span>
@@ -1199,7 +1199,7 @@ defineExpose({ clearSelection, selected, filteredRows, confirmDelete });
                             confirmDialog.variant === 'warning' ? 'bg-amber-400' : 'bg-blue-500']"/>
               <div class="p-6">
                 <div class="flex items-start gap-4">
-                  <div :class="['w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0',
+                  <div :class="['w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0',
                                 confirmDialog.variant === 'danger'  ? 'bg-red-100 dark:bg-red-900/30' :
                                 confirmDialog.variant === 'warning' ? 'bg-amber-100 dark:bg-amber-900/30' :
                                                                        'bg-blue-100 dark:bg-blue-900/30']">

@@ -8,7 +8,7 @@
         <!-- Trigger -->
         <div
             :class="[
-                'min-h-[42px] w-full rounded-xl border bg-white dark:bg-gray-800 px-3 py-2 cursor-pointer flex flex-wrap gap-1.5 items-center transition-all duration-200',
+                'min-h-[42px] w-full rounded-lg border bg-white dark:bg-gray-800 px-3 py-2 cursor-pointer flex flex-wrap gap-1.5 items-center transition-all duration-200',
                 isOpen ? 'ring-2 ring-primary-500 border-transparent' : 'border-gray-300 dark:border-gray-600',
                 error ? 'border-danger-500' : '',
             ]"
@@ -38,7 +38,7 @@
 
         <!-- Dropdown -->
         <Transition enter-active-class="animate-slide-down" leave-active-class="transition duration-100 ease-in" leave-to-class="opacity-0 scale-95">
-            <div v-if="isOpen" class="absolute z-50 mt-1 w-full bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-card-lg overflow-hidden">
+            <div v-if="isOpen" class="absolute z-50 mt-1 w-full bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 shadow-card-lg overflow-hidden">
                 <!-- Search -->
                 <div class="p-2 border-b border-gray-100 dark:border-gray-700">
                     <input

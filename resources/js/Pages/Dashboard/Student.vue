@@ -34,13 +34,13 @@
         <div v-if="myBulletins?.length" class="card p-5">
             <div class="flex items-center justify-between mb-4">
                 <h3 class="font-semibold text-gray-900 dark:text-white text-sm">Mes bulletins</h3>
-                <a href="/student/my_bulletins" class="text-xs text-primary-600 dark:text-primary-400 hover:underline">Voir tout</a>
+                <Link href="/student/my_bulletins" class="text-xs text-primary-600 dark:text-primary-400 hover:underline">Voir tout</Link>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                <a v-for="b in myBulletins" :key="b.id" :href="`/student/my_bulletins/${b.id}`"
-                    class="flex items-center gap-3 p-4 rounded-xl border border-gray-100 dark:border-gray-700 hover:border-primary-300 dark:hover:border-primary-700 hover:shadow-sm transition-all">
+                <Link v-for="b in myBulletins" :key="b.id" :href="`/student/my_bulletins/${b.id}`"
+                    class="flex items-center gap-3 p-4 rounded-lg border border-gray-100 dark:border-gray-700 hover:border-primary-300 dark:hover:border-primary-700 hover:shadow-sm transition-all">
                     <!-- Icône bulletin -->
-                    <div class="w-10 h-10 rounded-xl flex-shrink-0 flex items-center justify-center"
+                    <div class="w-10 h-10 rounded-lg flex-shrink-0 flex items-center justify-center"
                         :class="b.average >= 10 ? 'bg-success-50 dark:bg-success-900/20' : 'bg-danger-50 dark:bg-danger-900/20'">
                         <svg class="w-5 h-5" :class="b.average >= 10 ? 'text-success-600 dark:text-success-400' : 'text-danger-600 dark:text-danger-400'"
                             fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -56,7 +56,7 @@
                             Rang : {{ b.rank ? `${b.rank}/${b.total_students}` : '—' }}
                         </p>
                     </div>
-                </a>
+                </Link>
             </div>
         </div>
 
@@ -93,9 +93,9 @@
                         <div class="h-2 rounded-full bg-success-500 transition-all"
                             :style="{ width: paymentProgress + '%' }"/>
                     </div>
-                    <a href="/student/my_fees" class="block text-center text-xs font-medium text-primary-600 dark:text-primary-400 hover:underline mt-1">
+                    <Link href="/student/my_fees" class="block text-center text-xs font-medium text-primary-600 dark:text-primary-400 hover:underline mt-1">
                         Gérer mes contributions →
-                    </a>
+                    </Link>
                 </div>
             </div>
 
@@ -108,7 +108,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue';
-import { usePage } from '@inertiajs/vue3';
+import { usePage, Link } from '@inertiajs/vue3';
 import type { PageProps } from '@/types';
 import StatCard from '@/Components/Dashboard/StatCard.vue';
 import BigStatCard from '@/Components/Dashboard/BigStatCard.vue';

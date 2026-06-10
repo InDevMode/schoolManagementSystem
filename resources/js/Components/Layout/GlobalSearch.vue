@@ -15,7 +15,7 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
         </svg>
         <span class="flex-1 text-sm truncate">Rechercher...</span>
-        <kbd class="hidden xl:inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-md text-[10px] font-medium
+        <kbd class="hidden xl:inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-lg text-[10px] font-medium
                     bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600
                     text-gray-400 dark:text-gray-400 shadow-sm">
             Ctrl K
@@ -93,14 +93,14 @@
                                 <p class="px-3 pt-2 pb-1 text-[11px] font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500">
                                     Navigation rapide
                                 </p>
-                                <a
+                                <Link
                                     v-for="(item, idx) in recentOrAll"
                                     :key="item.id"
-                                    :href="item.href!"
+                                    :href="item.href"
                                     @mouseenter="activeIndex = idx"
                                     @click="close"
                                     :class="[
-                                        'group flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer transition-colors',
+                                        'group flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer transition-colors',
                                         activeIndex === idx
                                             ? 'bg-primary-50 dark:bg-primary-900/20'
                                             : 'hover:bg-gray-50 dark:hover:bg-gray-800',
@@ -126,7 +126,7 @@
                                          fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                                     </svg>
-                                </a>
+                                </Link>
                             </template>
 
                             <!-- Résultats groupés par section -->
@@ -134,7 +134,7 @@
                                 <template v-for="group in groupedResults" :key="group.parentId">
                                     <!-- Titre du groupe -->
                                     <div class="flex items-center gap-2 px-3 pt-3 pb-1.5">
-                                        <span class="w-5 h-5 rounded-md flex items-center justify-center bg-gray-100 dark:bg-gray-800 flex-shrink-0">
+                                        <span class="w-5 h-5 rounded-lg flex items-center justify-center bg-gray-100 dark:bg-gray-800 flex-shrink-0">
                                             <NavIcon :name="group.parentIcon" class="w-3 h-3 text-gray-500 dark:text-gray-400" />
                                         </span>
                                         <p class="text-[11px] font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500">
@@ -143,14 +143,14 @@
                                     </div>
 
                                     <!-- Items du groupe -->
-                                    <a
+                                    <Link
                                         v-for="item in group.items"
                                         :key="item.id"
-                                        :href="item.href!"
+                                        :href="item.href"
                                         @mouseenter="activeIndex = item.flatIndex"
                                         @click="close"
                                         :class="[
-                                            'group flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer transition-colors',
+                                            'group flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer transition-colors',
                                             activeIndex === item.flatIndex
                                                 ? 'bg-primary-50 dark:bg-primary-900/20'
                                                 : 'hover:bg-gray-50 dark:hover:bg-gray-800',
@@ -178,7 +178,7 @@
                                         ]">
                                             Aller →
                                         </span>
-                                    </a>
+                                    </Link>
                                 </template>
                             </template>
 
@@ -219,6 +219,7 @@
 
 <script setup lang="ts">
 import { ref, computed, watch, nextTick, onMounted, onUnmounted } from 'vue';
+import { router, Link } from '@inertiajs/vue3';
 import { useNavigation } from '@/Composables/useNavigation';
 import NavIcon from '@/Components/Layout/NavIcon.vue';
 import type { NavItem } from '@/types';
@@ -349,7 +350,7 @@ const selectActive = () => {
     const list = currentList.value;
     const item = list[activeIndex.value];
     if (item?.href) {
-        window.location.href = item.href;
+        router.visit(item.href);
         close();
     }
 };
@@ -392,7 +393,7 @@ onUnmounted(() => document.removeEventListener('keydown', onKeydown));
 <style scoped>
 .kbd-hint {
     @apply inline-flex items-center justify-center min-w-[22px] h-[22px] px-1
-           rounded-md text-[10px] font-medium
+           rounded-lg text-[10px] font-medium
            bg-white dark:bg-gray-700
            border border-gray-200 dark:border-gray-600
            text-gray-500 dark:text-gray-400

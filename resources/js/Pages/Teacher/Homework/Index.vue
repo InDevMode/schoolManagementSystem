@@ -97,7 +97,7 @@
                     <textarea
                         v-model="createForm.description"
                         rows="3"
-                        class="w-full rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+                        class="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
                     />
                 </div>
                 <!-- Pièces jointes multiples -->
@@ -106,7 +106,7 @@
                         Pièces jointes <span class="text-gray-400 font-normal">(optionnel)</span>
                     </label>
                     <div
-                        class="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-xl p-4 text-center cursor-pointer hover:border-primary-400 transition-colors"
+                        class="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-4 text-center cursor-pointer hover:border-primary-400 transition-colors"
                         @dragover.prevent
                         @drop.prevent="onDropCreate"
                         @click="createFileInput?.click()"
@@ -168,7 +168,7 @@
                     <textarea
                         v-model="editForm.description"
                         rows="3"
-                        class="w-full rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+                        class="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
                     />
                 </div>
                 <!-- Pièces jointes existantes -->
@@ -209,7 +209,7 @@
                 <div>
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Ajouter des fichiers</label>
                     <div
-                        class="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-xl p-4 text-center cursor-pointer hover:border-primary-400 transition-colors"
+                        class="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-4 text-center cursor-pointer hover:border-primary-400 transition-colors"
                         @dragover.prevent
                         @drop.prevent="onDropEdit"
                         @click="editFileInput?.click()"
@@ -429,7 +429,7 @@ const openEdit = async (id: number) => {
             classSubject:    `${json.work.class_id}:${json.work.subject_id}`,
             work_date:       json.work.work_date,
             submission_date: json.work.submission_date,
-            description:     json.work.description ?? '',
+            description:     stripHtml(json.work.description ?? ''),
         };
     } catch {
         toast.error('Erreur lors du chargement.');

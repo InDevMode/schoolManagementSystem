@@ -60,7 +60,7 @@
                     <div
                         v-for="(day, index) in week"
                         :key="day.week_id"
-                        class="grid grid-cols-12 gap-3 items-center p-3 rounded-xl border transition-all"
+                        class="grid grid-cols-12 gap-3 items-center p-3 rounded-lg border transition-all"
                         :class="timetableForm[index].start_time
                             ? 'border-primary-300 dark:border-primary-700 bg-primary-50/50 dark:bg-primary-900/10'
                             : 'border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/30'"

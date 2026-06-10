@@ -78,7 +78,7 @@
             <div class="card p-0 overflow-hidden">
                 <div class="flex items-center justify-between px-4 py-3 border-b border-gray-100 dark:border-gray-700">
                     <h3 class="text-sm font-semibold text-gray-900 dark:text-white">Prochains événements</h3>
-                    <a href="/admin/staff/events/list" class="text-xs text-primary-600 dark:text-primary-400 hover:underline">Voir tout</a>
+                    <Link href="/admin/staff/events/list" class="text-xs text-primary-600 dark:text-primary-400 hover:underline">Voir tout</Link>
                 </div>
                 <div class="divide-y divide-gray-50 dark:divide-gray-700/50">
                     <div v-if="!upcomingEvents?.length" class="px-4 py-6 text-center text-xs text-gray-400">
@@ -87,7 +87,7 @@
                     <div v-for="ev in (upcomingEvents ?? []).slice(0, 5)" :key="ev.id"
                         class="flex items-center gap-3 px-4 py-2.5 hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors">
                         <!-- Pastille date -->
-                        <div class="flex-shrink-0 w-10 h-10 rounded-xl flex flex-col items-center justify-center text-white font-bold text-xs"
+                        <div class="flex-shrink-0 w-10 h-10 rounded-lg flex flex-col items-center justify-center text-white font-bold text-xs"
                             :style="{ background: eventTypeColor(ev.event_type ?? ev.extendedProps?.type) }">
                             <span class="text-sm leading-none">{{ fmtDay(ev.event_date ?? ev.start) }}</span>
                             <span class="text-[9px] leading-none mt-0.5 uppercase">{{ fmtMonth(ev.event_date ?? ev.start) }}</span>
@@ -109,7 +109,7 @@
             <div class="card p-0 overflow-hidden">
                 <div class="flex items-center justify-between px-4 py-3 border-b border-gray-100 dark:border-gray-700">
                     <h3 class="text-sm font-semibold text-gray-900 dark:text-white">Personnel en congé</h3>
-                    <a href="/admin/staff/leaves/list" class="text-xs text-primary-600 dark:text-primary-400 hover:underline">Gérer les congés</a>
+                    <Link href="/admin/staff/leaves/list" class="text-xs text-primary-600 dark:text-primary-400 hover:underline">Gérer les congés</Link>
                 </div>
                 <div class="divide-y divide-gray-50 dark:divide-gray-700/50">
                     <div v-if="!currentLeaves?.length" class="px-4 py-6 text-center text-xs text-gray-400">
@@ -233,6 +233,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { useDark } from '@vueuse/core';
+import { Link } from '@inertiajs/vue3';
 import AttendanceBadge from '@/Components/Dashboard/AttendanceBadge.vue';
 import HeroCard        from '@/Components/Dashboard/HeroCard.vue';
 import MiniCard        from '@/Components/Dashboard/MiniCard.vue';

@@ -22,23 +22,23 @@
             <div class="h-1.5 bg-gradient-to-r from-green-600 via-yellow-400 to-red-500"/>
             <div class="p-6">
                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
-                    <div class="p-4 rounded-xl bg-primary-600 text-white">
+                    <div class="p-4 rounded-lg bg-primary-600 text-white">
                         <p class="text-xs opacity-80">Moyenne</p>
                         <p class="text-3xl font-black">{{ detail.bulletin?.average ? Number(detail.bulletin.average).toFixed(2) : '—' }}</p>
                         <p class="text-xs opacity-80">/20</p>
                     </div>
-                    <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-700">
+                    <div class="p-4 rounded-lg bg-gray-50 dark:bg-gray-700">
                         <p class="text-xs text-gray-400">Rang</p>
                         <p class="text-2xl font-bold text-gray-900 dark:text-white">
                             {{ detail.bulletin?.rank ? `${detail.bulletin.rank}ᵉ` : '—' }}
                         </p>
                         <p class="text-xs text-gray-400">sur {{ detail.bulletin?.total_students }}</p>
                     </div>
-                    <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-700">
+                    <div class="p-4 rounded-lg bg-gray-50 dark:bg-gray-700">
                         <p class="text-xs text-gray-400">Taux réussite</p>
                         <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ detail.bulletin?.class_success_rate ? detail.bulletin.class_success_rate + '%' : '—' }}</p>
                     </div>
-                    <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-700">
+                    <div class="p-4 rounded-lg bg-gray-50 dark:bg-gray-700">
                         <p class="text-xs text-gray-400">Appréciation</p>
                         <p class="text-base font-bold text-primary-600 dark:text-primary-400">{{ detail.bulletin?.appreciation ?? '—' }}</p>
                     </div>

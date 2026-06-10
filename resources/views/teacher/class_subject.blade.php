@@ -177,7 +177,7 @@
                                 </button>
                             </div>
                             <div
-                                class="absolute right-0 z-50 mt-2 w-56 origin-top-right rounded-md bg-white dark:bg-gray-800 ring-1 shadow-lg ring-black/5 focus:outline-hidden"
+                                class="absolute right-0 z-50 mt-2 w-56 origin-top-right rounded-lg bg-white dark:bg-gray-800 ring-1 shadow-lg ring-black/5 focus:outline-hidden"
                                 role="menu"
                                 aria-orientation="vertical"
                                 aria-labelledby="menu-button"

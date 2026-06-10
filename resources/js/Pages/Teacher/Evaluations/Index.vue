@@ -17,7 +17,7 @@
 
         <!-- Bandeau période courante -->
         <div v-if="!currentPeriod"
-            class="flex items-center gap-3 px-4 py-3 rounded-xl bg-warning-50 dark:bg-warning-900/20 border border-warning-200 dark:border-warning-700">
+            class="flex items-center gap-3 px-4 py-3 rounded-lg bg-warning-50 dark:bg-warning-900/20 border border-warning-200 dark:border-warning-700">
             <svg class="w-5 h-5 text-warning-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
             </svg>
@@ -27,7 +27,7 @@
             </p>
         </div>
         <div v-else
-            class="flex items-center gap-3 px-4 py-3 rounded-xl bg-success-50 dark:bg-success-900/20 border border-success-200 dark:border-success-700">
+            class="flex items-center gap-3 px-4 py-3 rounded-lg bg-success-50 dark:bg-success-900/20 border border-success-200 dark:border-success-700">
             <svg class="w-5 h-5 text-success-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
             </svg>
@@ -80,10 +80,10 @@
             </template>
             <template #actions="{ row }">
                 <div class="flex items-center justify-end gap-1">
-                    <a :href="`/teacher/evaluations/grade-entry?evaluation_id=${row.id}`"
+                    <Link :href="`/teacher/evaluations/grade-entry?evaluation_id=${row.id}`"
                         class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-success-50 dark:bg-success-900/20 text-success-700 dark:text-success-400 hover:bg-success-100 transition-colors">
                         Saisir les notes
-                    </a>
+                    </Link>
                 </div>
             </template>
         </DataTable>
@@ -115,7 +115,7 @@
                     <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
                         <button v-for="(label, key) in typeLabels" :key="key" type="button"
                             :class="[
-                                'flex flex-col items-center gap-1.5 p-3 rounded-xl border-2 transition-all',
+                                'flex flex-col items-center gap-1.5 p-3 rounded-lg border-2 transition-all',
                                 form.type === key
                                     ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20'
                                     : 'border-gray-200 dark:border-gray-700 hover:border-gray-300',
@@ -158,7 +158,7 @@
 
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue';
-import { useForm, router } from '@inertiajs/vue3';
+import { useForm, router, Link } from '@inertiajs/vue3';
 import { AppButton, AppInput, AppSelect, AppModal, DataTable, AppBadge } from '@/Components/UI';
 import { useToast } from '@/Composables/useToast';
 import axios from 'axios';

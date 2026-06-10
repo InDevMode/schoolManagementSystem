@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Mail\ResetPasswordAdminMail;
 use App\Models\SettingModel;
 use App\Models\User;
+use App\Notifications\PasswordResetByAdminNotification;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -450,6 +451,13 @@ class UserController extends Controller
                     Log::warning("Reset password mail failed for user #{$user->id}: " . $mailEx->getMessage());
                 }
 
+                // Notification in-app
+                try {
+                    $user->notify(new PasswordResetByAdminNotification());
+                } catch (\Exception $notifEx) {
+                    Log::warning("Reset password notification failed for user #{$user->id}: " . $notifEx->getMessage());
+                }
+
                 $successCount++;
             }
 
@@ -727,6 +735,15 @@ class UserController extends Controller
                 }
                 \Spatie\Permission\PermissionRegistrar::class;
                 app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
+
+                // Notifier l'utilisateur du changement de rôle
+                try {
+                    $roleLabels = [0=>'Super Administrateur',1=>'Administrateur',2=>'Professeur',3=>'Apprenant',4=>'Parent'];
+                    $roleLabel  = $role?->name ?? ($roleLabels[$newUserType] ?? "type {$newUserType}");
+                    $user->notify(new \App\Notifications\RoleChangedNotification($roleLabel));
+                } catch (\Exception $notifEx) {
+                    Log::warning("Role change notification failed for user #{$id}: " . $notifEx->getMessage());
+                }
             }
 
             Log::info("Super admin #{Auth::id()} a mis à jour l'utilisateur #{$id}");

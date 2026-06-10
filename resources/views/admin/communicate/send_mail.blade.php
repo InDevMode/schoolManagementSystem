@@ -38,7 +38,7 @@
                   </div>
 
                   <!-- Main Form Section -->
-                  <div class="bg-white rounded-xl shadow-md overflow-hidden dark:bg-gray-800 transition-colors duration-300">
+                  <div class="bg-white rounded-lg shadow-md overflow-hidden dark:bg-gray-800 transition-colors duration-300">
                         <div class="p-6 md:p-8">
                               <form action="{{ url('admin/communicate/send_mail') }}" method="post"
                                     enctype="multipart/form-data">

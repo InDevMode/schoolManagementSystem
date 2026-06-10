@@ -19,7 +19,7 @@
 
         <!-- Infos types -->
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div class="flex items-start gap-3 p-4 rounded-xl bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800">
+            <div class="flex items-start gap-3 p-4 rounded-lg bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800">
                 <svg class="w-5 h-5 text-blue-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                 </svg>
@@ -28,7 +28,7 @@
                     <p class="text-xs text-blue-600 dark:text-blue-400">2 semestres · Semestre 1 (Oct–Jan), Semestre 2 (Fév–Juin)</p>
                 </div>
             </div>
-            <div class="flex items-start gap-3 p-4 rounded-xl bg-purple-50 dark:bg-purple-900/20 border border-purple-100 dark:border-purple-800">
+            <div class="flex items-start gap-3 p-4 rounded-lg bg-purple-50 dark:bg-purple-900/20 border border-purple-100 dark:border-purple-800">
                 <svg class="w-5 h-5 text-purple-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                 </svg>
@@ -112,7 +112,7 @@
                         <div class="grid grid-cols-2 gap-2">
                             <button v-for="opt in typeOpts" :key="opt.value" type="button"
                                 :class="[
-                                    'py-2 px-3 rounded-xl border-2 text-xs font-semibold transition-all',
+                                    'py-2 px-3 rounded-lg border-2 text-xs font-semibold transition-all',
                                     form.type === opt.value
                                         ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-400'
                                         : 'border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:border-gray-300',
@@ -128,7 +128,7 @@
                         <div class="flex gap-2">
                             <button v-for="n in orderNumbers" :key="n" type="button"
                                 :class="[
-                                    'w-10 h-10 rounded-xl border-2 text-sm font-bold transition-all',
+                                    'w-10 h-10 rounded-lg border-2 text-sm font-bold transition-all',
                                     form.order_number === String(n)
                                         ? 'border-primary-500 bg-primary-600 text-white'
                                         : 'border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:border-primary-300',

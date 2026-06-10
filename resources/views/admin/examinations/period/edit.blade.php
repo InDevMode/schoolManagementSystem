@@ -24,7 +24,7 @@
                             ],
                         ]" />
 
-                  <div class="bg-white rounded-xl shadow-md overflow-hidden dark:bg-gray-700 transition-colors duration-300">
+                  <div class="bg-white rounded-lg shadow-md overflow-hidden dark:bg-gray-700 transition-colors duration-300">
                         <div class="p-6 md:p-8">
                               <form action="{{ url('admin/examinations/period/edit/' . $getPeriod->id) }}" method="post"
                                     enctype="multipart/form-data">

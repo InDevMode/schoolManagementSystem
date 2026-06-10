@@ -142,7 +142,7 @@
                                                 <a :href="chat.file_url" :download="fileBaseName(chat.file)" target="_blank"
                                                     class="flex items-center gap-3 px-4 py-3 text-white hover:bg-primary-700 transition-colors no-underline"
                                                     @click.stop>
-                                                    <div class="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center flex-shrink-0">
+                                                    <div class="w-10 h-10 rounded-lg bg-white/20 flex items-center justify-center flex-shrink-0">
                                                         <component :is="fileIcon(chat.file)" class="w-5 h-5 text-white" />
                                                     </div>
                                                     <div class="min-w-0 flex-1">
@@ -211,7 +211,7 @@
                                                 <a :href="chat.file_url" :download="fileBaseName(chat.file)" target="_blank"
                                                     class="flex items-center gap-3 px-4 py-3 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors no-underline"
                                                     @click.stop>
-                                                    <div class="w-10 h-10 rounded-xl bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center flex-shrink-0">
+                                                    <div class="w-10 h-10 rounded-lg bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center flex-shrink-0">
                                                         <component :is="fileIcon(chat.file)" class="w-5 h-5 text-primary-600 dark:text-primary-400" />
                                                     </div>
                                                     <div class="min-w-0 flex-1">
@@ -273,7 +273,7 @@
 
                             <!-- Prévisualisation fichier -->
                             <div v-if="pendingFile && !editing"
-                                class="flex items-center gap-3 mb-2 px-3 py-2 bg-gray-50 dark:bg-gray-700/50 rounded-xl border border-gray-200 dark:border-gray-600">
+                                class="flex items-center gap-3 mb-2 px-3 py-2 bg-gray-50 dark:bg-gray-700/50 rounded-lg border border-gray-200 dark:border-gray-600">
                                 <img v-if="pendingFileIsImage" :src="pendingFilePreview ?? ''"
                                     class="w-12 h-12 rounded-lg object-cover flex-shrink-0" />
                                 <div v-else class="w-12 h-12 rounded-lg bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center flex-shrink-0">
@@ -363,7 +363,7 @@
         <div v-if="lightboxSrc"
             class="fixed inset-0 z-[9999] bg-black/90 flex items-center justify-center p-4"
             @click="lightboxSrc = null; lightboxFile = null">
-            <img :src="lightboxSrc" class="max-w-full max-h-full rounded-xl shadow-2xl object-contain" @click.stop />
+            <img :src="lightboxSrc" class="max-w-full max-h-full rounded-lg shadow-2xl object-contain" @click.stop />
             <!-- Télécharger -->
             <a :href="lightboxSrc" :download="lightboxFile ? fileBaseName(lightboxFile) : 'image'"
                 target="_blank"

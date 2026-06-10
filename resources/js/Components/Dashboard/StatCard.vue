@@ -13,7 +13,7 @@
         <div :class="['absolute right-2 -bottom-6 w-12 h-12 rounded-full dark:opacity-0', bubbleBg]" style="opacity:0.07" />
 
         <!-- Icône -->
-        <div :class="['relative z-10 w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0', iconBg]">
+        <div :class="['relative z-10 w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0', iconBg]">
             <NavIcon :name="icon" :class="['w-4 h-4', iconColor]" />
         </div>
 

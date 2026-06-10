@@ -9,7 +9,7 @@
 
         <div v-if="leaves.length" class="flex flex-col gap-2">
             <div v-for="l in leaves" :key="l.id"
-                class="flex items-center gap-3 p-2.5 rounded-xl bg-gray-50 dark:bg-gray-700/50">
+                class="flex items-center gap-3 p-2.5 rounded-lg bg-gray-50 dark:bg-gray-700/50">
                 <!-- Avatar -->
                 <div class="w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center text-white text-xs font-bold"
                     :style="{ background: l.color ?? '#6366f1' }">

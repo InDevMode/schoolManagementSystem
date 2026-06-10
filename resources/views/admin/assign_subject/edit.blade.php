@@ -48,7 +48,7 @@
                   </div>
 
                   <div
-                        class="z-10 bg-white rounded-xl shadow-md overflow-visible dark:bg-gray-800 transition-colors duration-300">
+                        class="z-10 bg-white rounded-lg shadow-md overflow-visible dark:bg-gray-800 transition-colors duration-300">
                         <div class="p-6 md:p-8">
                               <form action="" method="post" enctype="multipart/form-data">
                                     {{ csrf_field() }}

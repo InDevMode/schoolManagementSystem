@@ -22,7 +22,7 @@
         });
     }
 }"
-      class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 w-full">
+      class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 w-full">
 
       <!-- Filtrage + Colonnes -->
       <div
@@ -30,13 +30,13 @@
             <!-- Filtre -->
             <div class="flex items-center gap-2 w-full sm:w-auto">
                   <input type="text" x-model="search" placeholder="Rechercher ...."
-                        class="w-full sm:w-96 px-3 py-2 border rounded-md dark:bg-gray-700 dark:text-gray-200 dark:border-gray-500 outline-none focus:ring-indigo-500 focus:border-indigo-500" />
+                        class="w-full sm:w-96 px-3 py-2 border rounded-lg dark:bg-gray-700 dark:text-gray-200 dark:border-gray-500 outline-none focus:ring-indigo-500 focus:border-indigo-500" />
             </div>
 
             <!-- Toggle colonnes -->
             <div class="relative" x-data="{ open: false }">
                   <button @click="open = !open"
-                        class="px-3 py-2 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 border border-gray-200 dark:border-gray-500 rounded-md text-sm font-medium">
+                        class="px-3 py-2 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 border border-gray-200 dark:border-gray-500 rounded-lg text-sm font-medium">
                         <i class="fas fa-filter text-indigo-500 me-2"></i>
                         Filtrer les colonnes
                   </button>

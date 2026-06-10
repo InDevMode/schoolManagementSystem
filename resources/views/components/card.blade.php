@@ -4,7 +4,7 @@
 ])
 
 <div
-      {{ $attributes->merge(['class' => 'bg-white rounded-xl shadow-sm border border-gray-200 dark:bg-gray-800 dark:border-gray-700 transition-colors duration-300']) }}>
+      {{ $attributes->merge(['class' => 'bg-white rounded-lg shadow-sm border border-gray-200 dark:bg-gray-800 dark:border-gray-700 transition-colors duration-300']) }}>
 
       {{-- Titre de la Card (optionnel) --}}
       @if ($title)

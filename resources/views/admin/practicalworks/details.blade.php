@@ -43,7 +43,7 @@
                 </nav>
             </div>
             <!-- Main Content -->
-            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden transition-colors duration-300">
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden transition-colors duration-300">
                 <!-- Class and Subject Info -->
                 <div class="bg-gradient-to-r from-violet-600 to-violet-700 text-white p-6">
                     <div class="flex items-center justify-between flex-wrap gap-4">

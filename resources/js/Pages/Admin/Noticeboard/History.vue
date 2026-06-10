@@ -4,9 +4,9 @@
         <!-- ── Header ───────────────────────────────────────────────────────── -->
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div class="flex items-center gap-3">
-                <a
+                <Link
                     href="/admin/communicate/noticeboard/list"
-                    class="w-9 h-9 rounded-xl flex items-center justify-center border border-gray-200 dark:border-gray-700
+                    class="w-9 h-9 rounded-lg flex items-center justify-center border border-gray-200 dark:border-gray-700
                            text-gray-500 hover:text-primary-600 hover:border-primary-400
                            dark:text-gray-400 dark:hover:text-primary-400 transition-colors"
                     title="Retour au tableau d'affichage"
@@ -14,7 +14,7 @@
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
                     </svg>
-                </a>
+                </Link>
                 <div>
                     <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Historique des suppressions</h1>
                     <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
@@ -122,7 +122,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import { router } from '@inertiajs/vue3';
+import { router, Link } from '@inertiajs/vue3';
 import { AppPagination } from '@/Components/UI';
 import { stripHtml } from '@/Utils/html';
 

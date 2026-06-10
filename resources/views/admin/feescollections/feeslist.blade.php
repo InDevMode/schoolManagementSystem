@@ -49,7 +49,7 @@
             </div>
 
             <!-- Filter Section -->
-            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-5">
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-5">
                   <h2 class="text-lg font-semibold text-gray-800 dark:text-white mb-4 flex items-center gap-2">
                         <i class="fas fa-filter text-primary-600"></i>
                         Filtres de recherche
@@ -216,7 +216,7 @@
 
             <!-- Results Section -->
             <div
-                  class="bg-white rounded-lg dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+                  class="bg-white rounded-lg dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
                   <!-- Table -->
                   <div class="relative overflow rounded-lg z-10">
                         <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
@@ -406,7 +406,7 @@
                                                                                     height="22"></iconify-icon></span>
                                                                   </button>
                                                             </div>
-                                                            <div class="absolute right-0 z-50 mt-2 w-56 origin-top-right rounded-md bg-white dark:bg-gray-800 ring-1 shadow-lg ring-black/5 focus:outline-hidden"
+                                                            <div class="absolute right-0 z-50 mt-2 w-56 origin-top-right rounded-lg bg-white dark:bg-gray-800 ring-1 shadow-lg ring-black/5 focus:outline-hidden"
                                                                   role="menu" aria-orientation="vertical"
                                                                   aria-labelledby="menu-button"
                                                                   tabindex="{{ $index + 1 }}" x-show="open"
@@ -423,7 +423,7 @@
                                                                               <div x-show="showConfirm" x-transition x-cloak
                                                                                     class="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
                                                                                     <div
-                                                                                          class="bg-white dark:bg-gray-800 rounded-xl shadow-2xl w-full max-w-2xl mx-auto overflow-hidden">
+                                                                                          class="bg-white dark:bg-gray-800 rounded-lg shadow-2xl w-full max-w-2xl mx-auto overflow-hidden">
                                                                                           <!-- Header -->
                                                                                           <div
                                                                                                 class="flex items-center justify-between px-6 py-4 bg-violet-600 dark:bg-violet-700">
@@ -682,7 +682,7 @@
                                                                                     <div
                                                                                           class="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
                                                                                           <div
-                                                                                                class="bg-white dark:bg-gray-800 rounded-xl shadow-2xl w-full max-w-2xl mx-auto overflow-hidden">
+                                                                                                class="bg-white dark:bg-gray-800 rounded-lg shadow-2xl w-full max-w-2xl mx-auto overflow-hidden">
                                                                                                 <div
                                                                                                       class="flex items-center justify-between p-4 border-b dakr:border-gray-600 border-gray-200 rounded-t bg-violet-500 dark:bg-gray-700">
                                                                                                       <h3

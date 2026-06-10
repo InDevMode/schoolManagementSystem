@@ -22,7 +22,7 @@
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <AppSelect v-model="selectedClass" label="Classe" :options="classOptions" :block="true" />
                 <AppSelect v-model="selectedPeriod" label="Période" :options="periodOptions" :block="true" />
-                <AppSelect v-model="selectedEval" label="Évaluation" :options="evalOptions" :block="true" @change="loadGrades" />
+                <AppSelect v-model="selectedEval" label="Évaluation" :options="evalOptions" :block="true" />
             </div>
         </div>
 
@@ -72,7 +72,7 @@
                 </h3>
                 <div class="flex items-center gap-2">
                     <span class="text-xs text-gray-400">{{ savedCount }} / {{ localGrades.length }} saisis</span>
-                    <AppButton size="sm" :loading="saving" @click="saveAll">
+                    <AppButton size="sm" :loading="saving" :disabled="editableCount === 0" @click="saveAll">
                         <template #icon>
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
@@ -83,7 +83,20 @@
                 </div>
             </div>
 
-            <div class="overflow-x-auto">
+            <!-- Bandeau notes verrouillées -->
+            <div v-if="validatedCount > 0"
+                class="flex items-center gap-3 mx-5 mt-4 px-4 py-2.5 rounded-lg
+                       bg-success-50 dark:bg-success-900/20 border border-success-200 dark:border-success-800">
+                <svg class="w-4 h-4 text-success-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                </svg>
+                <p class="text-xs text-success-700 dark:text-success-300">
+                    <span class="font-semibold">{{ validatedCount }} note(s) validée(s)</span>
+                    — ces notes sont verrouillées et ne peuvent plus être modifiées ni supprimées.
+                </p>
+            </div>
+
+            <div class="overflow-x-auto mt-2">
                 <table class="min-w-full divide-y divide-gray-100 dark:divide-gray-700">
                     <thead class="bg-gray-50 dark:bg-gray-800/60">
                         <tr>
@@ -100,7 +113,12 @@
                     </thead>
                     <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-100 dark:divide-gray-700">
                         <tr v-for="(g, i) in localGrades" :key="g.student_id"
-                            :class="['transition-colors', g.validated ? 'bg-green-50/30 dark:bg-green-900/10' : 'hover:bg-gray-50 dark:hover:bg-gray-700/40']">
+                            :class="[
+                                'transition-colors',
+                                g.validated
+                                    ? 'bg-success-50/40 dark:bg-success-900/10 opacity-75'
+                                    : 'hover:bg-gray-50 dark:hover:bg-gray-700/40'
+                            ]">
                             <td class="px-4 py-3 text-sm text-gray-500 w-10">{{ i + 1 }}</td>
                             <td class="px-4 py-3">
                                 <p class="text-sm font-medium text-gray-900 dark:text-white">
@@ -109,19 +127,24 @@
                             </td>
                             <td class="px-4 py-3 text-xs text-gray-400">{{ g.admission_number ?? '—' }}</td>
                             <td class="px-4 py-3">
+                                <!-- Note verrouillée -->
+                                <div v-if="g.validated"
+                                    class="w-20 mx-auto flex items-center justify-center gap-1.5 px-2 py-1.5 rounded-lg
+                                           bg-success-50 dark:bg-success-900/20 border border-success-200 dark:border-success-700">
+                                    <svg class="w-3 h-3 text-success-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                                    </svg>
+                                    <span class="text-sm font-bold text-success-700 dark:text-success-400">{{ g.score }}</span>
+                                </div>
+                                <!-- Note éditable -->
                                 <input
+                                    v-else
                                     v-model="g.score"
                                     type="number"
                                     :min="0"
                                     :max="evaluation.max_score"
                                     step="0.5"
-                                    :disabled="g.validated"
-                                    :class="[
-                                        'w-20 mx-auto block text-center text-sm rounded-lg border px-2 py-1.5 transition-colors',
-                                        g.validated
-                                            ? 'bg-gray-100 dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-400 cursor-not-allowed'
-                                            : scoreClass(g),
-                                    ]"
+                                    :class="['w-20 mx-auto block text-center text-sm rounded-lg border px-2 py-1.5 transition-colors', scoreClass(g)]"
                                     @input="g.dirty = true"
                                 />
                             </td>
@@ -134,13 +157,15 @@
                                     type="text"
                                     placeholder="Absent, Dispensé..."
                                     :disabled="g.validated"
-                                    class="w-28 text-xs rounded-lg border border-gray-200 dark:border-gray-600 bg-transparent px-2 py-1 dark:text-gray-300 placeholder-gray-300 dark:placeholder-gray-600 disabled:opacity-40"
+                                    class="w-28 text-xs rounded-lg border border-gray-200 dark:border-gray-600 bg-transparent px-2 py-1 dark:text-gray-300 placeholder-gray-300 dark:placeholder-gray-600 disabled:opacity-40 disabled:cursor-not-allowed"
                                     @input="g.dirty = true"
                                 />
                             </td>
                             <td class="px-4 py-3 text-center">
-                                <AppBadge :variant="g.validated ? 'success' : (g.score !== null ? 'info' : 'secondary')" dot>
-                                    {{ g.validated ? 'Validé' : (g.score !== null ? 'Saisi' : 'En attente') }}
+                                <AppBadge
+                                    :variant="g.validated ? 'success' : (g.score !== null && g.score !== '' ? 'info' : 'secondary')"
+                                    dot>
+                                    {{ g.validated ? 'Validé 🔒' : (g.score !== null && g.score !== '' ? 'Saisi' : 'En attente') }}
                                 </AppBadge>
                             </td>
                         </tr>
@@ -194,13 +219,15 @@ interface EvalInfo {
 }
 
 const props = defineProps<{
-    classes:       { id: number; name: string }[];
-    periods:       { id: number; name: string }[];
-    currentPeriod?: { id: number; name: string } | null;
-    evaluations:   any[];
-    evaluation?:   EvalInfo;
-    grades?:       GradeRow[];
-    stats?:        { min: number; max: number; average: number; count: number } | null;
+    classes:           { id: number; name: string }[];
+    periods:           { id: number; name: string }[];
+    currentPeriod?:    { id: number; name: string } | null;
+    evaluations:       any[];
+    evaluation?:       EvalInfo;
+    grades?:           GradeRow[];
+    stats?:            { min: number; max: number; average: number; count: number } | null;
+    selectedClassId?:  number | null;
+    selectedPeriodId?: number | null;
 }>();
 
 const typeLabels: Record<string, string> = {
@@ -216,8 +243,8 @@ const typeColors: Record<string, string> = {
     examen_blanc:     '#ef4444',
 };
 
-const selectedClass  = ref('');
-const selectedPeriod = ref(props.currentPeriod ? String(props.currentPeriod.id) : '');
+const selectedClass  = ref(props.selectedClassId  ? String(props.selectedClassId)  : (props.evaluation ? String(props.evaluation.class_id) : ''));
+const selectedPeriod = ref(props.selectedPeriodId ? String(props.selectedPeriodId) : (props.currentPeriod ? String(props.currentPeriod.id) : ''));
 const selectedEval   = ref(props.evaluation ? String(props.evaluation.id) : '');
 const localGrades    = ref<GradeRow[]>((props.grades ?? []).map(g => ({ ...g, dirty: false })));
 const evalList       = ref<any[]>(props.evaluations ?? []);
@@ -236,22 +263,42 @@ const evalOptions   = computed(() => evalList.value.map(e => ({
     label: `${typeLabels[e.type] ?? e.type} — ${e.subject_name} (${e.eval_date})`,
 })));
 
-const savedCount = computed(() => localGrades.value.filter(g => g.score !== null && g.score !== '').length);
+const savedCount    = computed(() => localGrades.value.filter(g => g.score !== null && g.score !== '').length);
+const validatedCount = computed(() => localGrades.value.filter(g => g.validated).length);
+const editableCount  = computed(() => localGrades.value.filter(g => !g.validated).length);
 
 // ── Watch : recharger les évaluations dès que classe ou période changent ─────
+let initialLoad = true;
 watch([selectedClass, selectedPeriod], ([cls, per]) => {
+    if (initialLoad) {
+        // Premier appel au montage : si les évals sont déjà dans les props, on ne refait pas la requête
+        initialLoad = false;
+        if (cls && per && evalList.value.length === 0) loadEvaluations(/* keepSelection= */true);
+        return;
+    }
     evalList.value     = [];
     selectedEval.value = '';
     localGrades.value  = [];
     if (cls && per) loadEvaluations();
+}, { immediate: true });
+
+// ── Watch : charger les notes quand on choisit une évaluation ─────────────
+watch(selectedEval, (val, oldVal) => {
+    if (val && val !== oldVal) loadGrades();
+    else if (!val) localGrades.value = [];
 });
 
-const loadEvaluations = async () => {
+const loadEvaluations = async (keepSelection = false) => {
     try {
         const res = await axios.get('/admin/evaluations/by-class-period', {
             params: { class_id: selectedClass.value, period_id: selectedPeriod.value },
         });
         evalList.value = res.data;
+        // Si on ne garde pas la sélection (changement de classe/période), reset
+        if (!keepSelection) {
+            selectedEval.value = '';
+            localGrades.value  = [];
+        }
     } catch {
         evalList.value = [];
     }
@@ -259,11 +306,13 @@ const loadEvaluations = async () => {
 
 const loadGrades = () => {
     if (!selectedEval.value) return;
-    router.get('/admin/evaluations/grade-entry', { evaluation_id: selectedEval.value }, {
-        preserveState: true,
-        onSuccess: (page: any) => {
-            localGrades.value = (page.props.grades ?? []).map((g: GradeRow) => ({ ...g, dirty: false }));
-        },
+    router.get('/admin/evaluations/grade-entry', {
+        evaluation_id: selectedEval.value,
+        class_id:      selectedClass.value,
+        period_id:     selectedPeriod.value,
+    }, {
+        preserveState: false,
+        preserveScroll: true,
     });
 };
 

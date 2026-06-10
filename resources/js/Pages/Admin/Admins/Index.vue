@@ -18,7 +18,7 @@
 
         <!-- Bannière mode super admin -->
         <div v-if="isSuperAdmin"
-             class="flex items-center gap-2.5 px-4 py-2.5 rounded-xl
+             class="flex items-center gap-2.5 px-4 py-2.5 rounded-lg
                     bg-primary-50 dark:bg-primary-900/20
                     border border-primary-200 dark:border-primary-700 text-sm">
             <svg class="w-4 h-4 text-primary-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -184,13 +184,13 @@
                     </svg>
                     Modifier
                 </button>
-                <a :href="`/chat?receiver_id=${row.id_encoded}`"
+                <Link :href="`/chat?receiver_id=${row.id_encoded}`"
                    class="flex items-center gap-2.5 px-3.5 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-700/60 hover:text-blue-700 transition-colors">
                     <svg class="w-4 h-4 text-blue-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
                     </svg>
                     Envoyer un message
-                </a>
+                </Link>
                 <template v-if="canDelete">
                     <div class="my-1 border-t border-gray-100 dark:border-gray-700"/>
                     <button @click="tableRef?.confirmDelete(row.id as number, `${row.last_name} ${row.name}`)"
@@ -250,19 +250,19 @@
 
                 <!-- Infos -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div class="bg-gray-50 dark:bg-gray-800/60 rounded-xl p-4 border border-gray-100 dark:border-gray-700">
+                    <div class="bg-gray-50 dark:bg-gray-800/60 rounded-lg p-4 border border-gray-100 dark:border-gray-700">
                         <p class="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-1">Rôle</p>
                         <p class="text-sm font-semibold text-primary-700 dark:text-primary-400">Administrateur</p>
                     </div>
-                    <div class="bg-gray-50 dark:bg-gray-800/60 rounded-xl p-4 border border-gray-100 dark:border-gray-700">
+                    <div class="bg-gray-50 dark:bg-gray-800/60 rounded-lg p-4 border border-gray-100 dark:border-gray-700">
                         <p class="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-1">Inscrit le</p>
                         <p class="text-sm font-semibold text-gray-800 dark:text-gray-200">{{ formatDate(viewTarget.created_at) }}</p>
                     </div>
-                    <div class="bg-gray-50 dark:bg-gray-800/60 rounded-xl p-4 border border-gray-100 dark:border-gray-700">
+                    <div class="bg-gray-50 dark:bg-gray-800/60 rounded-lg p-4 border border-gray-100 dark:border-gray-700">
                         <p class="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-1">Téléphone</p>
                         <p class="text-sm font-semibold text-gray-800 dark:text-gray-200 font-mono">{{ viewTarget.mobile_number ?? '—' }}</p>
                     </div>
-                    <div class="sm:col-span-2 bg-gray-50 dark:bg-gray-800/60 rounded-xl p-4 border border-gray-100 dark:border-gray-700">
+                    <div class="sm:col-span-2 bg-gray-50 dark:bg-gray-800/60 rounded-lg p-4 border border-gray-100 dark:border-gray-700">
                         <p class="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-1">Email</p>
                         <p class="text-sm font-semibold text-gray-800 dark:text-gray-200">{{ viewTarget.email }}</p>
                     </div>

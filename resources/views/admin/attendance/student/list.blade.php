@@ -39,7 +39,7 @@
                   présence pour définir le type de présence pour les apprenants </div>
 
             <!-- Filter Section -->
-            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-5">
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-5">
                   <h2 class="text-lg font-semibold text-gray-800 dark:text-white mb-4 flex items-center gap-2">
                         <i class="fas fa-filter text-primary-600"></i>
                         Filtres de recherche
@@ -107,7 +107,7 @@
 
             @if (!empty(Request::get('class_id')) && !empty(Request::get('attendance_date')))
                   <div
-                        class="bg-white rounded-lg dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+                        class="bg-white rounded-lg dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
                         <!-- Table -->
                         <div class="relative overflow rounded-lg z-10">
                               <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">

@@ -27,7 +27,7 @@
         </div>
 
         <!-- Filter Section -->
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-8">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-8">
             <h2 class="text-lg font-semibold text-gray-800 dark:text-white mb-4 flex items-center gap-2">
                 <i class="fas fa-filter text-primary-600"></i>
                 Filtres de recherche
@@ -137,7 +137,7 @@
             {{ $getWorks->links('vendor.pagination.tailwind') }}
         </div>
         <!-- Results Section -->
-        <div class="bg-white rounded-lg dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+        <div class="bg-white rounded-lg dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
             <!-- Table -->
             <div class="relative overflow rounded-lg z-10">
                 <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
@@ -209,7 +209,7 @@
                                     <div class="flex flex-col gap-2">
                                         @if ($works->document_file)
                                             <a href="{{ url('upload/practicalworks/' . $works->document_file) }}" target="_blank"
-                                                class="inline-flex items-center px-3 py-1.5 rounded-md bg-violet-600 text-white text-xs hover:bg-violet-700">
+                                                class="inline-flex items-center px-3 py-1.5 rounded-lg bg-violet-600 text-white text-xs hover:bg-violet-700">
                                                 <iconify-icon icon="mdi:file-download-outline" class="mr-2" width="18"
                                                     height="18"></iconify-icon>
                                                 Document original
@@ -218,7 +218,7 @@
                                         @if ($works->homework_document_file)
                                             <a href="{{ url('upload/homeworks/' . $works->homework_document_file) }}"
                                                 target="_blank"
-                                                class="inline-flex items-center px-3 py-1.5 rounded-md bg-emerald-600 text-white text-xs hover:bg-emerald-700">
+                                                class="inline-flex items-center px-3 py-1.5 rounded-lg bg-emerald-600 text-white text-xs hover:bg-emerald-700">
                                                 <iconify-icon icon="mdi:file-check-outline" class="mr-2" width="18"
                                                     height="18"></iconify-icon>
                                                 Travail soumis
@@ -246,7 +246,7 @@
                                         </button>
 
                                         <div x-show="open" @click.away="open = false" x-transition
-                                            class="absolute right-0 mt-2 w-44 z-50 bg-white dark:bg-gray-800 rounded-md shadow-lg py-1">
+                                            class="absolute right-0 mt-2 w-44 z-50 bg-white dark:bg-gray-800 rounded-lg shadow-lg py-1">
                                             @if ($works->homework_status)
                                                 <button @click="showModal = true; open = false"
                                                     class="w-full px-4 py-2 text-left text-sm text-gray-700 dark:text-gray-200 hover:text-amber-400 dark:hover:text-amber-400 flex items-center">
@@ -289,7 +289,7 @@
                                                     @if ($works->document_file)
                                                         <a href="{{ url('upload/practicalworks/' . $works->document_file) }}"
                                                             target="_blank"
-                                                            class="inline-flex items-center px-3 py-2 bg-violet-600 text-white rounded-md hover:bg-violet-700 text-sm">
+                                                            class="inline-flex items-center px-3 py-2 bg-violet-600 text-white rounded-lg hover:bg-violet-700 text-sm">
                                                             <iconify-icon icon="mdi:file-download-outline"
                                                                 class="mr-2"></iconify-icon>
                                                             Télécharger le document
@@ -298,7 +298,7 @@
                                                     @if ($works->homework_document_file)
                                                         <a href="{{ url('upload/practicalworks/' . $works->document_file) }}"
                                                             target="_blank"
-                                                            class="inline-flex items-center px-3 py-2 bg-emerald-600 text-white rounded-md hover:bg-emerald-700 text-sm">
+                                                            class="inline-flex items-center px-3 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 text-sm">
                                                             <iconify-icon icon="mdi:file-download-outline"
                                                                 class="mr-2"></iconify-icon>
                                                             Télécharger le document de l'apprenant
@@ -308,7 +308,7 @@
                                                     <!-- Description du professeur -->
                                                     <div>
                                                         <h4 class="text-base font-semibold text-violet-600 dark:text-violet-400 mb-2">Description du professeur</h4>
-                                                        <div class="text-start bg-gray-50 dark:bg-gray-700 p-3 rounded-md">
+                                                        <div class="text-start bg-gray-50 dark:bg-gray-700 p-3 rounded-lg">
                                                             {!! $works->description !!}
                                                         </div>
                                                     </div>
@@ -317,7 +317,7 @@
                                                     @if(!empty($works->homework_description))
                                                         <div>
                                                             <h4 class="text-base font-semibold text-emerald-600 dark:text-emerald-400 mb-2">Description de l'apprenant</h4>
-                                                            <div class="text-start bg-gray-50 dark:bg-gray-700 p-3 rounded-md">
+                                                            <div class="text-start bg-gray-50 dark:bg-gray-700 p-3 rounded-lg">
                                                                 {!! $works->homework_description !!}
                                                             </div>
                                                         </div>

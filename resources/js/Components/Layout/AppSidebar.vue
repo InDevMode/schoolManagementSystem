@@ -55,7 +55,7 @@
                         <div class="px-6 pb-6 flex gap-3 mt-2">
                             <button
                                 @click="showLogoutConfirm = false"
-                                class="flex-1 px-4 py-2.5 rounded-xl text-sm font-medium
+                                class="flex-1 px-4 py-2.5 rounded-lg text-sm font-medium
                                        border border-gray-200 dark:border-gray-600
                                        text-gray-700 dark:text-gray-300
                                        hover:bg-gray-50 dark:hover:bg-gray-700
@@ -65,7 +65,7 @@
                             </button>
                             <a
                                 href="/logout"
-                                class="flex-1 px-4 py-2.5 rounded-xl text-sm font-medium text-center
+                                class="flex-1 px-4 py-2.5 rounded-lg text-sm font-medium text-center
                                        bg-danger-600 hover:bg-danger-700 text-white
                                        transition-colors"
                             >
@@ -93,8 +93,8 @@
         <!-- ── En-tête sidebar ── -->
         <div class="flex items-center h-16 px-4 flex-shrink-0 border-b border-gray-100 dark:border-gray-800">
             <!-- Logo + nom -->
-            <a :href="homeLink" class="flex items-center gap-3 flex-1 min-w-0">
-                <div class="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 shadow-md"
+            <Link :href="homeLink" class="flex items-center gap-3 flex-1 min-w-0">
+                <div class="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 shadow-md"
                      style="background: linear-gradient(135deg, #9189f5, #7B74F0);">
                     <img v-if="logoUrl" :src="logoUrl" alt="Logo" class="w-6 h-6 object-contain rounded" />
                     <svg v-else class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -114,7 +114,7 @@
                         {{ schoolName }}
                     </span>
                 </Transition>
-            </a>
+            </Link>
 
             <!-- Bouton collapse (desktop) -->
             <button
@@ -142,7 +142,7 @@
                     v-model="searchQuery"
                     type="text"
                     placeholder="Rechercher..."
-                    class="w-full pl-9 pr-3 py-2 text-sm rounded-xl border-0
+                    class="w-full pl-9 pr-3 py-2 text-sm rounded-lg border-0
                            bg-gray-100 dark:bg-gray-800
                            text-gray-700 dark:text-gray-300
                            placeholder-gray-400 dark:placeholder-gray-500
@@ -153,7 +153,7 @@
         </div>
         <div v-else class="px-3 pt-4 pb-2 flex-shrink-0 flex justify-center">
             <button
-                class="w-9 h-9 rounded-xl flex items-center justify-center
+                class="w-9 h-9 rounded-lg flex items-center justify-center
                        bg-gray-100 dark:bg-gray-800 text-gray-400
                        hover:bg-primary-50 dark:hover:bg-primary-900/20 hover:text-primary-600
                        transition-colors"
@@ -185,11 +185,11 @@
                 </div>
 
                 <!-- Item simple (pas d'enfants) -->
-                <a
+                <Link
                     v-else-if="!item.children"
-                    :href="item.href"
+                    :href="item.href!"
                     :class="[
-                        'group flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-150',
+                        'group flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150',
                         collapsed ? 'justify-center' : '',
                         isActive(item)
                             ? 'bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300'
@@ -226,13 +226,13 @@
                                 transition-opacity duration-150 shadow-lg">
                         {{ item.label }}
                     </div>
-                </a>
+                </Link>
 
                 <!-- Item avec enfants (accordéon) -->
                 <div v-else class="relative group/parent">
                     <button
                         :class="[
-                            'w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-150',
+                            'w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150',
                             collapsed ? 'justify-center' : '',
                             isParentActive(item)
                                 ? 'bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300'
@@ -291,10 +291,10 @@
                         leave-to-class="max-h-0 opacity-0"
                     >
                         <div v-if="!collapsed && openMenus.has(item.id)" class="mt-1 ml-3 space-y-0.5">
-                            <a
+                            <Link
                                 v-for="(child, idx) in item.children"
                                 :key="child.id"
-                                :href="child.href"
+                                :href="child.href!"
                                 :class="[
                                     'group/child relative flex items-center gap-2.5 pl-6 pr-3 py-2 rounded-lg text-sm transition-all duration-150',
                                     isActiveChild(child)
@@ -325,7 +325,7 @@
 
                                 <!-- Icône avec fond coloré style action-button -->
                                 <span :class="[
-                                    'flex-shrink-0 w-6 h-6 rounded-md flex items-center justify-center transition-all duration-150',
+                                    'flex-shrink-0 w-6 h-6 rounded-lg flex items-center justify-center transition-all duration-150',
                                     isActiveChild(child)
                                         ? 'bg-primary-600 text-white shadow-sm shadow-primary-500/40'
                                         : 'bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-500 group-hover/child:bg-primary-600 group-hover/child:text-white group-hover/child:shadow-sm group-hover/child:shadow-primary-500/40',
@@ -333,23 +333,23 @@
                                     <NavIcon :name="child.icon" class="w-3.5 h-3.5" />
                                 </span>
                                 <span class="truncate">{{ child.label }}</span>
-                            </a>
+                            </Link>
                         </div>
                     </Transition>
 
                     <!-- Flyout collapsed — popup au survol -->
                     <div v-if="collapsed"
-                         class="absolute left-full top-0 ml-2 w-52 bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700
+                         class="absolute left-full top-0 ml-2 w-52 bg-white dark:bg-gray-800 rounded-lg border border-gray-100 dark:border-gray-700
                                 shadow-card-lg opacity-0 group-hover/parent:opacity-100 pointer-events-none group-hover/parent:pointer-events-auto
                                 transition-all duration-150 z-50 overflow-hidden">
                         <div class="px-3 py-2.5 border-b border-gray-100 dark:border-gray-700">
                             <p class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">{{ item.label }}</p>
                         </div>
                         <div class="py-1.5 px-2">
-                            <a
+                            <Link
                                 v-for="child in item.children"
                                 :key="child.id"
-                                :href="child.href"
+                                :href="child.href!"
                                 :class="[
                                     'flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-sm transition-colors',
                                     isActiveChild(child)
@@ -359,7 +359,7 @@
                             >
                                 <NavIcon :name="child.icon" class="w-4 h-4 flex-shrink-0" />
                                 {{ child.label }}
-                            </a>
+                            </Link>
                         </div>
                     </div>
                 </div>
@@ -373,7 +373,7 @@
         <!-- ── Toggle Dark/Light ── -->
         <div class="px-3 py-3 flex-shrink-0">
             <div :class="[
-                'flex rounded-xl overflow-hidden bg-gray-100 dark:bg-gray-800 p-1',
+                'flex rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-800 p-1',
                 collapsed ? 'justify-center' : '',
             ]">
                 <template v-if="!collapsed">
@@ -458,7 +458,7 @@
                     </div>
                     <!-- Liens -->
                     <div class="py-1.5">
-                        <a v-for="link in profileLinks" :key="link.href" :href="link.href"
+                        <Link v-for="link in profileLinks" :key="link.href" :href="link.href"
                            class="flex items-center gap-3 px-4 py-2.5 text-sm
                                   text-gray-700 dark:text-gray-300
                                   hover:bg-gray-50 dark:hover:bg-gray-700/60
@@ -476,7 +476,7 @@
                                 <NavIcon :name="link.icon" class="w-3.5 h-3.5"/>
                             </span>
                             {{ link.label }}
-                        </a>
+                        </Link>
                     </div>
                     <!-- Déconnexion -->
                     <div class="border-t border-gray-100 dark:border-gray-700 py-1.5">
@@ -499,7 +499,7 @@
 
         <!-- Bouton profil -->
         <button :class="[
-                'w-full flex items-center gap-3 p-2.5 rounded-xl transition-colors',
+                'w-full flex items-center gap-3 p-2.5 rounded-lg transition-colors',
                 'hover:bg-gray-100 dark:hover:bg-gray-800',
                 collapsed ? 'justify-center' : '',
                 profileOpen ? 'bg-gray-100 dark:bg-gray-800' : '',
@@ -547,7 +547,7 @@
 
 <script setup lang="ts">
 import { ref, computed, watch, onMounted, onUnmounted } from 'vue';
-import { usePage } from '@inertiajs/vue3';
+import { usePage, Link, router } from '@inertiajs/vue3';
 import { useDark, useToggle } from '@vueuse/core';
 import { useNavigation } from '@/Composables/useNavigation';
 import NavIcon from '@/Components/Layout/NavIcon.vue';

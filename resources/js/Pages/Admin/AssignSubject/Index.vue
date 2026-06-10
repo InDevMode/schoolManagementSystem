@@ -98,7 +98,7 @@
                 <!-- Alerte toutes matières déjà assignées -->
                 <div
                     v-if="createForm.class_id && availableCount === 0"
-                    class="flex items-start gap-2 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-xl p-3"
+                    class="flex items-start gap-2 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg p-3"
                 >
                     <svg class="w-4 h-4 text-amber-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
@@ -111,7 +111,7 @@
                 <!-- Info matières déjà assignées -->
                 <div
                     v-else-if="createForm.class_id && alreadyAssignedSubjectIds.length > 0"
-                    class="flex items-start gap-2 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-3"
+                    class="flex items-start gap-2 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-3"
                 >
                     <svg class="w-4 h-4 text-blue-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
@@ -198,7 +198,7 @@
                             <!-- Header -->
                             <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-gray-700">
                                 <div class="flex items-center gap-3">
-                                    <div class="w-9 h-9 rounded-xl bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center flex-shrink-0">
+                                    <div class="w-9 h-9 rounded-lg bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center flex-shrink-0">
                                         <svg class="w-5 h-5 text-indigo-600 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                                         </svg>
@@ -216,7 +216,7 @@
                             <!-- Body -->
                             <div v-if="detailsTarget" class="flex-1 overflow-y-auto px-6 py-5 space-y-5">
                                 <!-- Infos principales -->
-                                <div class="rounded-xl bg-indigo-50 dark:bg-indigo-900/20 p-4 space-y-3">
+                                <div class="rounded-lg bg-indigo-50 dark:bg-indigo-900/20 p-4 space-y-3">
                                     <div>
                                         <p class="text-xs font-medium text-indigo-400 uppercase tracking-wide mb-1">Classe</p>
                                         <p class="text-base font-semibold text-gray-900 dark:text-white">{{ detailsTarget.class_name }}</p>
@@ -228,12 +228,12 @@
                                 </div>
 
                                 <!-- Coefficient -->
-                                <div class="flex items-center justify-between rounded-xl bg-gray-50 dark:bg-gray-800 p-4">
+                                <div class="flex items-center justify-between rounded-lg bg-gray-50 dark:bg-gray-800 p-4">
                                     <div>
                                         <p class="text-xs font-medium text-gray-400 uppercase tracking-wide mb-1">Coefficient</p>
                                         <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ detailsTarget.coefficient ?? 1 }}</p>
                                     </div>
-                                    <div class="w-12 h-12 rounded-xl bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center">
+                                    <div class="w-12 h-12 rounded-lg bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center">
                                         <svg class="w-6 h-6 text-primary-600 dark:text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                                         </svg>

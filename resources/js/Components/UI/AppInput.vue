@@ -61,7 +61,7 @@ const slots   = useSlots();
 const inputId = computed(() => props.id ?? `input-${Math.random().toString(36).slice(2)}`);
 
 const inputClasses = computed(() => [
-    'w-full rounded-xl border bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100',
+    'w-full rounded-lg border bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100',
     'placeholder-gray-400 dark:placeholder-gray-500',
     'transition-all duration-200',
     'focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent',

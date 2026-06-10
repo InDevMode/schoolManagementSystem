@@ -20,7 +20,7 @@
 
             <div x-data="{ name: '{{ strtolower($chatUser['name']) }}', message: '{{ strtolower($chatUser['message']) }}' }"
                   x-show="search === '' || name.includes(search.toLowerCase()) || message.includes(search.toLowerCase())"
-                  class="chat-preview flex items-center justify-between mb-4 cursor-pointer transition duration-300 ease-in-out mx-3 p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-600
+                  class="chat-preview flex items-center justify-between mb-4 cursor-pointer transition duration-300 ease-in-out mx-3 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600
                    {{ $isActive ? 'bg-indigo-100 dark:bg-gray-600' : '' }}"
                   onclick="
                       if (typeof resetChatEditing === 'function') {

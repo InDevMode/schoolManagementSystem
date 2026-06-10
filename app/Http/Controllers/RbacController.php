@@ -11,6 +11,8 @@ use Inertia\Inertia;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\PermissionRegistrar;
+use App\Notifications\PermissionsChangedNotification;
+use App\Notifications\RoleChangedNotification;
 
 class RbacController extends Controller
 {
@@ -325,6 +327,17 @@ class RbacController extends Controller
         try {
             $role->syncPermissions($request->permissions);
             app()[PermissionRegistrar::class]->forgetCachedPermissions();
+
+            // Notifier tous les utilisateurs qui ont ce rôle
+            try {
+                $usersWithRole = User::role($role->name)->get();
+                foreach ($usersWithRole as $u) {
+                    $u->notify(new PermissionsChangedNotification());
+                }
+            } catch (\Exception $notifEx) {
+                Log::warning('RBAC assignSync notification: ' . $notifEx->getMessage());
+            }
+
             return back()->with('success', "Permissions du rôle « {$role->name} » mises à jour.");
         } catch (\Exception $e) {
             Log::error('RBAC assignSync: ' . $e->getMessage());
@@ -351,6 +364,14 @@ class RbacController extends Controller
             // (ne touche pas aux permissions héritées via les rôles)
             $user->syncPermissions($request->permissions);
             app()[PermissionRegistrar::class]->forgetCachedPermissions();
+
+            // Notifier l'utilisateur concerné
+            try {
+                $user->notify(new PermissionsChangedNotification());
+            } catch (\Exception $notifEx) {
+                Log::warning('RBAC assignUserSync notification: ' . $notifEx->getMessage());
+            }
+
             return back()->with('success', "Permissions directes de {$user->name} {$user->last_name} mises à jour.");
         } catch (\Exception $e) {
             Log::error('RBAC assignUserSync: ' . $e->getMessage());

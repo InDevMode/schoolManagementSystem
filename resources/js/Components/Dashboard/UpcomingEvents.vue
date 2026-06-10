@@ -10,9 +10,9 @@
 
         <div v-if="events.length" class="flex flex-col gap-3 flex-1">
             <div v-for="ev in events" :key="ev.id"
-                class="flex items-start gap-3 p-3 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700/40 transition-colors">
+                class="flex items-start gap-3 p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700/40 transition-colors">
                 <!-- Badge date -->
-                <div class="flex-shrink-0 w-10 h-10 rounded-xl flex flex-col items-center justify-center text-white text-center"
+                <div class="flex-shrink-0 w-10 h-10 rounded-lg flex flex-col items-center justify-center text-white text-center"
                     :style="{ background: ev.color ?? '#6366f1' }">
                     <span class="text-sm font-bold leading-none">{{ dayLabel(ev.event_date) }}</span>
                     <span class="text-[9px] leading-none mt-0.5 uppercase opacity-90">{{ monthLabel(ev.event_date) }}</span>

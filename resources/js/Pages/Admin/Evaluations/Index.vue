@@ -21,21 +21,21 @@
 
         <!-- Bandeau : aucune période courante -->
         <div v-if="!currentPeriod"
-            class="flex items-center gap-3 px-4 py-3 rounded-xl bg-warning-50 dark:bg-warning-900/20 border border-warning-200 dark:border-warning-700">
+            class="flex items-center gap-3 px-4 py-3 rounded-lg bg-warning-50 dark:bg-warning-900/20 border border-warning-200 dark:border-warning-700">
             <svg class="w-5 h-5 text-warning-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
             </svg>
             <p class="text-sm text-warning-700 dark:text-warning-300">
                 <span class="font-semibold">Aucune période courante définie.</span>
                 La création d'évaluations est bloquée. Allez dans
-                <a href="/admin/examinations/period/list" class="underline font-semibold hover:text-warning-900 dark:hover:text-warning-100">Périodes</a>
+                <Link href="/admin/examinations/period/list" class="underline font-semibold hover:text-warning-900 dark:hover:text-warning-100">Périodes</Link>
                 et cliquez sur "Définir comme courante".
             </p>
         </div>
 
         <!-- Bandeau : période courante active -->
         <div v-else
-            class="flex items-center gap-3 px-4 py-3 rounded-xl bg-success-50 dark:bg-success-900/20 border border-success-200 dark:border-success-700">
+            class="flex items-center gap-3 px-4 py-3 rounded-lg bg-success-50 dark:bg-success-900/20 border border-success-200 dark:border-success-700">
             <svg class="w-5 h-5 text-success-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
             </svg>
@@ -44,21 +44,48 @@
             </p>
         </div>
 
-        <!-- Légende des types -->
+        <!-- Filtres types — boutons actifs/inactifs -->
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            <div v-for="(label, key) in typeLabels" :key="key"
-                class="flex items-center gap-3 px-4 py-3 rounded-xl border border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-800">
-                <span class="w-3 h-3 rounded-full flex-shrink-0" :style="{ background: typeColors[key] }"/>
+            <button v-for="(label, key) in typeLabels" :key="key"
+                type="button"
+                :class="[
+                    'flex items-center gap-3 px-4 py-3 rounded-lg border-2 transition-all text-left',
+                    filters.type === key
+                        ? 'border-transparent shadow-sm'
+                        : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:border-gray-300 dark:hover:border-gray-600',
+                ]"
+                :style="filters.type === key ? { background: typeColors[key] + '18', borderColor: typeColors[key] } : {}"
+                @click="toggleTypeFilter(key)">
+                <span class="w-3 h-3 rounded-full flex-shrink-0 ring-2 ring-offset-1 transition-all"
+                    :style="{ background: typeColors[key], ringColor: typeColors[key] }"/>
                 <p class="text-xs font-semibold text-gray-900 dark:text-white">{{ label }}</p>
-            </div>
+                <span v-if="filters.type === key"
+                    class="ml-auto w-4 h-4 rounded-full flex items-center justify-center"
+                    :style="{ background: typeColors[key] }">
+                    <svg class="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
+                    </svg>
+                </span>
+            </button>
         </div>
 
-        <!-- Filtres -->
+        <!-- Filtres secondaires -->
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
             <AppSelect v-model="filters.class_id" :options="classOptions" placeholder="Toutes les classes" :block="true" @change="applyFilters" />
             <AppSelect v-model="filters.period_id" :options="periodOptions" placeholder="Toutes les périodes" :block="true" @change="applyFilters" />
-            <AppSelect v-model="filters.type" :options="typeOptions" placeholder="Tous les types" :block="true" @change="applyFilters" />
             <AppSelect v-model="filters.status" :options="statusOptions" placeholder="Tous les statuts" :block="true" @change="applyFilters" />
+            <button v-if="filters.class_id || filters.period_id || filters.type || filters.status"
+                type="button"
+                @click="filters = { class_id: '', period_id: '', type: '', status: '' }; applyFilters()"
+                class="flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-sm font-medium
+                       text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200
+                       bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600
+                       border border-gray-200 dark:border-gray-600 transition-colors">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+                Réinitialiser
+            </button>
         </div>
 
         <!-- Table -->
@@ -89,44 +116,63 @@
             </template>
 
             <template #cell-max_score="{ row }">
-                <span class="text-sm text-gray-600 dark:text-gray-400">/{{ row.max_score }}</span>
+                <span class="text-sm font-semibold text-gray-700 dark:text-gray-300">{{ row.max_score }}</span>
             </template>
 
             <template #actions="{ row }">
-                <div class="flex items-center justify-end gap-1">
+                <div class="flex items-center justify-end gap-1.5">
                     <!-- Saisie des notes -->
-                    <a :href="`/admin/evaluations/grade-entry?evaluation_id=${row.id}`"
-                        class="p-1.5 rounded-lg text-gray-400 hover:text-success-600 hover:bg-success-50 dark:hover:bg-success-900/20 transition-colors"
+                    <Link :href="`/admin/evaluations/grade-entry?evaluation_id=${row.id}`"
+                        class="p-1.5 rounded-lg transition-all duration-150
+                               text-white bg-violet-500 hover:bg-violet-600 active:bg-violet-700
+                               shadow-sm shadow-violet-200 dark:shadow-violet-900/40"
                         title="Saisir les notes">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                         </svg>
-                    </a>
-                    <!-- Modifier statut -->
+                    </Link>
+                    <!-- Valider -->
                     <button v-if="can('action.exams.edit') && row.status !== 'validated'"
-                        class="p-1.5 rounded-lg text-gray-400 hover:text-warning-600 hover:bg-warning-50 dark:hover:bg-warning-900/20 transition-colors"
+                        class="p-1.5 rounded-lg transition-all duration-150
+                               text-white bg-amber-500 hover:bg-amber-600 active:bg-amber-700
+                               shadow-sm shadow-amber-200 dark:shadow-amber-900/40"
                         title="Valider l'évaluation"
                         @click="validateEval(row as any)">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                         </svg>
                     </button>
                     <!-- Éditer -->
                     <button v-if="can('action.exams.edit')"
-                        class="p-1.5 rounded-lg text-gray-400 hover:text-primary-600 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors"
+                        class="p-1.5 rounded-lg transition-all duration-150
+                               text-white bg-emerald-500 hover:bg-emerald-600 active:bg-emerald-700
+                               shadow-sm shadow-emerald-200 dark:shadow-emerald-900/40"
+                        title="Modifier"
                         @click="openEdit(row as any)">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                         </svg>
                     </button>
                     <!-- Supprimer -->
-                    <button v-if="can('action.exams.delete')"
-                        class="p-1.5 rounded-lg text-gray-400 hover:text-danger-600 hover:bg-danger-50 dark:hover:bg-danger-900/20 transition-colors"
+                    <button
+                        v-if="canDeleteEval(row)"
+                        class="p-1.5 rounded-lg transition-all duration-150
+                               text-white bg-red-500 hover:bg-red-600 active:bg-red-700
+                               shadow-sm shadow-red-200 dark:shadow-red-900/40"
+                        :title="deleteTitle(row)"
                         @click="tableRef?.confirmDelete(row.id as number, row.title || (typeLabels[row.type] ?? row.type) as string)">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
                         </svg>
                     </button>
+                    <!-- Cadenas si validée et non supprimable -->
+                    <span v-else-if="row.status === 'validated'"
+                        class="p-1.5 rounded-lg text-gray-300 dark:text-gray-600 cursor-not-allowed"
+                        title="Évaluation validée — suppression impossible">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                        </svg>
+                    </span>
                 </div>
             </template>
         </DataTable>
@@ -166,7 +212,7 @@
                     <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
                         <button v-for="(label, key) in typeLabels" :key="key" type="button"
                             :class="[
-                                'flex flex-col items-center gap-1.5 p-3 rounded-xl border-2 transition-all text-center',
+                                'flex flex-col items-center gap-1.5 p-3 rounded-lg border-2 transition-all text-center',
                                 form.type === key
                                     ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20'
                                     : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600',
@@ -201,7 +247,7 @@
             </form>
 
             <!-- Note d'info -->
-            <div class="mt-4 p-3 rounded-xl bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800">
+            <div class="mt-4 p-3 rounded-lg bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800">
                 <p class="text-xs text-blue-700 dark:text-blue-300 font-medium">
                     💡 Le coefficient est celui défini lors de l'assignation de la matière à la classe — il ne peut pas être modifié ici.
                 </p>
@@ -219,14 +265,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue';
-import { useForm, router } from '@inertiajs/vue3';
+import { ref, computed, watch, nextTick } from 'vue';
+import { useForm, router, Link } from '@inertiajs/vue3';
 import { AppButton, AppInput, AppSelect, AppModal, DataTable, AppBadge } from '@/Components/UI';
 import { useCan } from '@/Composables/useCan';
 import { useToast } from '@/Composables/useToast';
 import axios from 'axios';
 
-const { can } = useCan();
+const { can, isSuperAdmin } = useCan();
 const toast   = useToast();
 
 interface Evaluation {
@@ -301,8 +347,14 @@ const form = useForm({
     title:       '',
 });
 
+// Flag pour bloquer le watch class_id pendant le chargement d'une édition
+let skipClassWatch = false;
+
 // ── Watch sur class_id : dès qu'il change, charger les matières ──────────
 watch(() => form.class_id, async (newClassId) => {
+    // Ne pas reset pendant openEdit (chargement pré-rempli)
+    if (skipClassWatch) return;
+
     form.subject_id  = '';
     form.coefficient = '';
     dynamicSubjects.value = [];
@@ -322,12 +374,38 @@ watch(() => form.class_id, async (newClassId) => {
 
 // ── Watch sur subject_id : remplir le coefficient dès la sélection ───────
 watch(() => form.subject_id, (newSubjectId) => {
+    // Ne pas écraser pendant openEdit (coefficient déjà assigné manuellement)
+    if (skipClassWatch) return;
     if (!newSubjectId) { form.coefficient = ''; return; }
     const found = dynamicSubjects.value.find(s => String(s.subject_id) === newSubjectId);
     form.coefficient = found ? String(found.coefficient) : '';
 });
 
 const selectType = (key: string) => { form.type = key; };
+
+/**
+ * Règles de suppression :
+ * - validated  → personne ne peut supprimer (même pas le super admin)
+ * - open/closed → super admin uniquement
+ * - draft       → admin + super admin
+ */
+const canDeleteEval = (row: Evaluation): boolean => {
+    if (row.status === 'validated') return false;
+    if (row.status === 'open' || row.status === 'closed') return isSuperAdmin.value;
+    // draft
+    return can('action.exams.delete');
+};
+
+const deleteTitle = (row: Evaluation): string => {
+    if (row.status === 'open')   return 'Réservé au Super Admin (statut : ouverte)';
+    if (row.status === 'closed') return 'Réservé au Super Admin (statut : fermée)';
+    return 'Supprimer';
+};
+
+const toggleTypeFilter = (key: string) => {
+    filters.value.type = filters.value.type === key ? '' : key;
+    applyFilters();
+};
 
 const openCreate = () => {
     editTarget.value      = null;
@@ -344,7 +422,10 @@ const openEdit = async (eval_: Evaluation) => {
     dynamicSubjects.value = [];
     form.reset();
 
-    // Charger d'abord les matières de la classe
+    // Bloquer le watch class_id pour éviter qu'il reset subject_id/coefficient
+    skipClassWatch = true;
+
+    // Charger les matières de la classe
     loadingSubjects.value = true;
     try {
         const res = await axios.get(`/admin/evaluations/subjects-by-class/${eval_.class_id}`);
@@ -355,7 +436,7 @@ const openEdit = async (eval_: Evaluation) => {
         loadingSubjects.value = false;
     }
 
-    // Puis remplir le formulaire (après le chargement pour que le watch coefficient fonctionne)
+    // Remplir le formulaire — le watch ne se déclenchera pas grâce au flag
     form.class_id    = String(eval_.class_id);
     form.subject_id  = String(eval_.subject_id);
     form.period_id   = String(eval_.period_id);
@@ -366,6 +447,10 @@ const openEdit = async (eval_: Evaluation) => {
 
     const found      = dynamicSubjects.value.find(s => String(s.subject_id) === String(eval_.subject_id));
     form.coefficient = found ? String(found.coefficient) : String(eval_.coefficient);
+
+    // Débloquer le watch après le prochain tick
+    await nextTick();
+    skipClassWatch = false;
 
     showForm.value = true;
 };

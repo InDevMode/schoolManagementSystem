@@ -158,7 +158,7 @@
 
                     <!-- Bouton Rafraîchir maintenant -->
                     <button
-                        class="w-full py-2 rounded-xl text-xs font-semibold
+                        class="w-full py-2 rounded-lg text-xs font-semibold
                                bg-gray-100 dark:bg-gray-700
                                text-gray-600 dark:text-gray-300
                                hover:bg-primary-50 dark:hover:bg-primary-900/20

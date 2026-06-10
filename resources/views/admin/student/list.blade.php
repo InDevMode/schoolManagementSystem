@@ -25,7 +25,7 @@
     </div>
 
     {{-- Filtres --}}
-    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-5">
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-5">
         <h2 class="text-base font-semibold text-gray-800 dark:text-white mb-4 flex items-center gap-2">
             <i class="fas fa-filter text-violet-600"></i>Filtres de recherche
         </h2>
@@ -237,7 +237,7 @@
                                     Actions <iconify-icon icon="mdi:chevron-down" width="16" height="16"></iconify-icon>
                                 </button>
                                 <div x-show="open" @click.away="open = false" x-transition
-                                    class="absolute right-0 z-50 mt-1.5 w-52 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-lg overflow-hidden">
+                                    class="absolute right-0 z-50 mt-1.5 w-52 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg overflow-hidden">
                                     <div class="py-1">
                                         <a href="{{ $editUrl }}" class="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-200 hover:bg-violet-50 dark:hover:bg-gray-700 hover:text-violet-700 transition-colors">
                                             <i class="fas fa-eye text-violet-500 w-4"></i>Voir les détails

@@ -118,7 +118,7 @@
                     <textarea
                         v-model="createForm.description"
                         rows="3"
-                        class="w-full rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+                        class="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
                     />
                 </div>
                 <!-- Pièces jointes multiples -->
@@ -127,7 +127,7 @@
                         Pièces jointes <span class="text-gray-400 font-normal">(optionnel — plusieurs fichiers acceptés)</span>
                     </label>
                     <div
-                        class="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-xl p-4 text-center cursor-pointer hover:border-primary-400 transition-colors"
+                        class="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-4 text-center cursor-pointer hover:border-primary-400 transition-colors"
                         @dragover.prevent
                         @drop.prevent="onDropCreate"
                         @click="createFileInput?.click()"
@@ -199,7 +199,7 @@
                     <textarea
                         v-model="editForm.description"
                         rows="3"
-                        class="w-full rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+                        class="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
                     />
                 </div>
                 <!-- Pièces jointes existantes -->
@@ -240,7 +240,7 @@
                 <div>
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Ajouter des fichiers</label>
                     <div
-                        class="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-xl p-4 text-center cursor-pointer hover:border-primary-400 transition-colors"
+                        class="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-4 text-center cursor-pointer hover:border-primary-400 transition-colors"
                         @dragover.prevent
                         @drop.prevent="onDropEdit"
                         @click="editFileInput?.click()"
@@ -289,7 +289,7 @@
                     <div><p class="text-xs text-gray-500 uppercase font-semibold">Date travail</p><p class="text-sm font-medium text-gray-900 dark:text-white mt-1">{{ formatDate(detailWork.work_date) }}</p></div>
                     <div><p class="text-xs text-gray-500 uppercase font-semibold">Date remise</p><p class="text-sm font-medium text-gray-900 dark:text-white mt-1">{{ formatDate(detailWork.submission_date) }}</p></div>
                 </div>
-                <div v-if="detailWork.description" class="bg-gray-50 dark:bg-gray-700/40 rounded-xl p-4">
+                <div v-if="detailWork.description" class="bg-gray-50 dark:bg-gray-700/40 rounded-lg p-4">
                     <p class="text-xs text-gray-500 uppercase font-semibold mb-2">Description</p>
                     <div class="text-sm text-gray-700 dark:text-gray-300 prose prose-sm dark:prose-invert max-w-none" v-html="detailWork.description" />
                 </div>
@@ -323,7 +323,7 @@
                 <!-- Soumissions -->
                 <div v-if="detailWork.homeworks?.length">
                     <p class="text-xs text-gray-500 uppercase font-semibold mb-3">Soumissions ({{ detailWork.homeworks.length }})</p>
-                    <div class="overflow-x-auto rounded-xl border border-gray-200 dark:border-gray-700">
+                    <div class="overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700">
                         <table class="w-full text-sm">
                             <thead class="bg-gray-50 dark:bg-gray-800/60">
                                 <tr>
@@ -610,7 +610,7 @@ const openEdit = async (id: number) => {
             subject_id:      String(json.work.subject_id),
             work_date:       json.work.work_date,
             submission_date: json.work.submission_date,
-            description:     json.work.description ?? '',
+            description:     stripHtml(json.work.description ?? ''),
         };
     } catch {
         toast.error('Erreur lors du chargement du travail.');

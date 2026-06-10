@@ -15,7 +15,7 @@
                 </div>
 
                 <div class="flex items-center gap-3">
-                    <div class="flex-1 text-center p-3 rounded-xl"
+                    <div class="flex-1 text-center p-3 rounded-lg"
                         :class="Number(b.average) >= 10 ? 'bg-success-50 dark:bg-success-900/20' : 'bg-danger-50 dark:bg-danger-900/20'">
                         <p class="text-2xl font-black" :class="Number(b.average) >= 10 ? 'text-success-600 dark:text-success-400' : 'text-danger-600 dark:text-danger-400'">
                             {{ b.average ? Number(b.average).toFixed(2) : '—' }}<span class="text-sm font-normal">/20</span>
@@ -29,10 +29,10 @@
                 </div>
 
                 <div class="flex gap-2 pt-2 border-t border-gray-100 dark:border-gray-700">
-                    <a :href="`/parent/my_student/${student.id}/bulletins/${b.id}`"
+                    <Link :href="`/parent/my_student/${student.id}/bulletins/${b.id}`"
                         class="flex-1 text-center text-xs font-medium py-2 rounded-lg bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-400 hover:bg-primary-100 transition-colors">
                         Voir le détail
-                    </a>
+                    </Link>
                     <a :href="`/parent/my_student/${student.id}/bulletins/${b.id}/print`" target="_blank"
                         class="p-2 rounded-lg text-gray-400 hover:text-primary-600 hover:bg-primary-50 transition-colors" title="Imprimer">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -51,5 +51,6 @@
 
 <script setup lang="ts">
 import { AppBadge } from '@/Components/UI';
+import { Link } from '@inertiajs/vue3';
 defineProps<{ bulletins: any[]; student: any }>();
 </script>

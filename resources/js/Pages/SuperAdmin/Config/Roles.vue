@@ -170,7 +170,7 @@ const handleAction = (key: string, row: Record<string, unknown>) => {
 
     <!-- Info rôles système -->
     <div v-if="!showDeleted"
-         class="flex items-start gap-3 p-4 rounded-xl bg-amber-50 dark:bg-amber-900/10 border border-amber-200 dark:border-amber-700/40">
+         class="flex items-start gap-3 p-4 rounded-lg bg-amber-50 dark:bg-amber-900/10 border border-amber-200 dark:border-amber-700/40">
         <svg class="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
@@ -353,7 +353,7 @@ const handleAction = (key: string, row: Record<string, unknown>) => {
 
                         <!-- Aperçu -->
                         <div v-if="form.name && form.user_type"
-                             class="flex items-start gap-3 p-3 rounded-xl bg-primary-50 dark:bg-primary-900/10
+                             class="flex items-start gap-3 p-3 rounded-lg bg-primary-50 dark:bg-primary-900/10
                                     border border-primary-200 dark:border-primary-700/40">
                             <svg class="w-4 h-4 text-primary-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -402,7 +402,7 @@ const handleAction = (key: string, row: Record<string, unknown>) => {
                     <div class="h-1 bg-red-500"/>
                     <div class="p-6">
                         <div class="flex items-start gap-3 mb-5">
-                            <div class="w-10 h-10 rounded-xl bg-red-100 dark:bg-red-900/30
+                            <div class="w-10 h-10 rounded-lg bg-red-100 dark:bg-red-900/30
                                         flex items-center justify-center flex-shrink-0">
                                 <svg class="w-5 h-5 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"

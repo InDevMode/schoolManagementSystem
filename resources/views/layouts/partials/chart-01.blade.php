@@ -32,7 +32,7 @@
     </div>
     <div class="flex w-full max-w-45 justify-end">
       <div
-        class="inline-flex items-center rounded-md bg-whiter p-1.5 dark:bg-meta-4"
+        class="inline-flex items-center rounded-lg bg-whiter p-1.5 dark:bg-meta-4"
       >
         <button
           class="rounded bg-white px-3 py-1 text-xs font-medium text-black shadow-card hover:bg-white hover:shadow-card dark:bg-boxdark dark:text-white dark:hover:bg-boxdark"

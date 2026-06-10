@@ -32,13 +32,13 @@
                         <!-- Boutons -->
                         <div class="flex items-center gap-3">
                             <button
-                                class="flex-1 px-4 py-2.5 text-sm font-medium rounded-xl border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                                class="flex-1 px-4 py-2.5 text-sm font-medium rounded-lg border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
                                 @click="$emit('update:modelValue', false); $emit('cancel')"
                             >
                                 {{ cancelLabel }}
                             </button>
                             <button
-                                :class="['flex-1 px-4 py-2.5 text-sm font-medium rounded-xl text-white transition-colors', confirmBg]"
+                                :class="['flex-1 px-4 py-2.5 text-sm font-medium rounded-lg text-white transition-colors', confirmBg]"
                                 @click="$emit('update:modelValue', false); $emit('confirm')"
                             >
                                 {{ confirmLabel }}

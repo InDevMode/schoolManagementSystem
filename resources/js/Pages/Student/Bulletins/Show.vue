@@ -24,7 +24,7 @@
 
             <div class="p-6 flex flex-col sm:flex-row items-start sm:items-center gap-4">
                 <!-- Photo -->
-                <div class="w-16 h-20 rounded-xl border-2 border-gray-200 dark:border-gray-600 overflow-hidden bg-gray-50 dark:bg-gray-700 flex-shrink-0">
+                <div class="w-16 h-20 rounded-lg border-2 border-gray-200 dark:border-gray-600 overflow-hidden bg-gray-50 dark:bg-gray-700 flex-shrink-0">
                     <img v-if="detail.bulletin?.profile_picture" :src="`/upload/profile/${detail.bulletin.profile_picture}`" class="w-full h-full object-cover"/>
                     <div v-else class="w-full h-full flex items-center justify-center text-3xl text-gray-200">👤</div>
                 </div>

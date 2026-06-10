@@ -50,7 +50,7 @@
         </div>
 
         <!-- Filter Section -->
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-8">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-8">
             <h2 class="text-lg font-semibold text-gray-800 dark:text-white mb-4 flex items-center gap-2">
                 <i class="fas fa-filter text-primary-600"></i>
                 Filtres de recherche
@@ -132,7 +132,7 @@
             {{ $getHomeworks->links('vendor.pagination.tailwind') }}
         </div>
         <!-- Results Section -->
-        <div class="bg-white rounded-lg dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+        <div class="bg-white rounded-lg dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
             <!-- Table -->
             <div class="relative overflow rounded-lg z-10">
                 <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
@@ -189,7 +189,7 @@
                                         @if (!empty($homeworks->homework_document_file))
                                             <a href="{{ url('upload/practicalworks/' . $homeworks->homework_document_file) }}"
                                                 target="_blank"
-                                                class="flex items-center justify-center bg-violet-600 text-white px-2.5 py-1.5 rounded-md text-sm font-medium"><iconify-icon
+                                                class="flex items-center justify-center bg-violet-600 text-white px-2.5 py-1.5 rounded-lg text-sm font-medium"><iconify-icon
                                                     icon="mdi:file-download-outline" width="24" height="24"
                                                     class="text-white"></iconify-icon>
                                                 Télécharger le document
@@ -218,7 +218,7 @@
                                                         icon="mdi:chevron-down" width="22" height="22"></iconify-icon></span>
                                             </button>
                                         </div>
-                                        <div class="absolute right-0 z-50 mt-2 w-56 origin-top-right rounded-md bg-white dark:bg-gray-800 ring-1 shadow-lg ring-black/5 focus:outline-hidden"
+                                        <div class="absolute right-0 z-50 mt-2 w-56 origin-top-right rounded-lg bg-white dark:bg-gray-800 ring-1 shadow-lg ring-black/5 focus:outline-hidden"
                                             role="menu" aria-orientation="vertical" aria-labelledby="menu-button"
                                             tabindex="{{ $index + 1 }}" x-show="open" @click.away="open = false" x-transition>
                                             <div class="py-1">
@@ -252,7 +252,7 @@
                                                                 @if ($homeworks->document_file)
                                                                     <a href="{{ url('upload/practicalworks/' . $homeworks->homework_document_file) }}"
                                                                         target="_blank"
-                                                                        class="inline-flex items-center px-3 py-2 bg-violet-600 text-white rounded-md hover:bg-violet-700 text-sm">
+                                                                        class="inline-flex items-center px-3 py-2 bg-violet-600 text-white rounded-lg hover:bg-violet-700 text-sm">
                                                                         <iconify-icon icon="mdi:file-download-outline"
                                                                             class="mr-2"></iconify-icon>
                                                                         Télécharger le document
@@ -269,7 +269,7 @@
                                                                                 class="text-base font-semibold text-emerald-600 dark:text-emerald-400 mb-2">
                                                                                 Description de l'apprenant</h4>
                                                                             <div
-                                                                                class="text-start bg-gray-50 dark:bg-gray-700 p-3 rounded-md">
+                                                                                class="text-start bg-gray-50 dark:bg-gray-700 p-3 rounded-lg">
                                                                                 {!! $homeworks->homework_description !!}
                                                                             </div>
                                                                         </div>

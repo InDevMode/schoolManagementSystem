@@ -58,5 +58,5 @@ const variantMap: Record<string, string> = {
     info:    'bg-info-50 text-info-700 border border-info-200 dark:bg-info-900/20 dark:text-info-300 dark:border-info-800',
 };
 
-const classes = computed(() => ['rounded-xl p-4', variantMap[props.variant]]);
+const classes = computed(() => ['rounded-lg p-4', variantMap[props.variant]]);
 </script>

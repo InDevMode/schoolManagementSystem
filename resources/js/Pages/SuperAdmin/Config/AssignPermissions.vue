@@ -150,7 +150,7 @@ const avatarUrl = (u: UserItem) => u.profile_picture ? `/upload/profile/${u.prof
     </div>
 
     <!-- Onglets -->
-    <div class="flex items-center gap-1 p-1 bg-gray-100 dark:bg-gray-800 rounded-xl w-fit">
+    <div class="flex items-center gap-1 p-1 bg-gray-100 dark:bg-gray-800 rounded-lg w-fit">
         <button @click="tab = 'role'"
                 :class="['px-5 py-2 text-sm font-medium rounded-lg transition-all',
                          tab === 'role' ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm' :
@@ -248,7 +248,7 @@ const avatarUrl = (u: UserItem) => u.profile_picture ? `/upload/profile/${u.prof
 
             <!-- Warning super_admin -->
             <div v-if="selectedRole?.name === 'super_admin'"
-                 class="flex items-center gap-3 p-3 rounded-xl bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-700/40">
+                 class="flex items-center gap-3 p-3 rounded-lg bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-700/40">
                 <svg class="w-4 h-4 text-red-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                           d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/>

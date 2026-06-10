@@ -8,6 +8,7 @@ use App\Models\DeletionLogModel;
 use App\Models\PeriodModel;
 use App\Models\SettingModel;
 use App\Models\User;
+use App\Notifications\BulletinPublishedNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -93,6 +94,28 @@ class BulletinController extends Controller
         $bulletin->status = 'published';
         $bulletin->save();
 
+        // Notifier l'élève et son parent
+        try {
+            $student = User::find($bulletin->student_id);
+            $period  = PeriodModel::find($bulletin->period_id);
+            $periodName = $period?->name ?? 'Période inconnue';
+
+            if ($student) {
+                $studentName = "{$student->name} {$student->last_name}";
+
+                // Notification à l'élève
+                $student->notify(new BulletinPublishedNotification($studentName, $periodName, $id, 'student'));
+
+                // Notification au parent s'il existe
+                if ($student->parent_id) {
+                    $parent = User::find($student->parent_id);
+                    $parent?->notify(new BulletinPublishedNotification($studentName, $periodName, $id, 'parent'));
+                }
+            }
+        } catch (\Exception $e) {
+            Log::warning("Bulletin publish notification failed for id #{$id}: " . $e->getMessage());
+        }
+
         return redirect()->back()->with('success', 'Bulletin publié avec succès.');
     }
 
@@ -107,14 +130,17 @@ class BulletinController extends Controller
         ]);
 
         try {
-            $count = BulletinModel::select('bulletins.id')
+            $bulletinsQuery = BulletinModel::select('bulletins.*')
                 ->join('users', 'users.id', '=', 'bulletins.student_id')
                 ->where('users.class_id', $request->class_id)
                 ->where('bulletins.period_id', $request->period_id)
                 ->where('bulletins.is_delete', 0)
-                ->where('bulletins.status', 'draft')
-                ->count();
+                ->where('bulletins.status', 'draft');
 
+            $bulletins = $bulletinsQuery->get();
+            $count = $bulletins->count();
+
+            // Mise à jour en base
             BulletinModel::select('bulletins.id')
                 ->join('users', 'users.id', '=', 'bulletins.student_id')
                 ->where('users.class_id', $request->class_id)
@@ -122,6 +148,27 @@ class BulletinController extends Controller
                 ->where('bulletins.is_delete', 0)
                 ->where('bulletins.status', 'draft')
                 ->update(['bulletins.status' => 'published']);
+
+            // Notifier chaque élève et son parent
+            try {
+                $period = PeriodModel::find($request->period_id);
+                $periodName = $period?->name ?? 'Période inconnue';
+
+                foreach ($bulletins as $bulletin) {
+                    $student = User::find($bulletin->student_id);
+                    if (!$student) continue;
+
+                    $studentName = "{$student->name} {$student->last_name}";
+                    $student->notify(new BulletinPublishedNotification($studentName, $periodName, $bulletin->id, 'student'));
+
+                    if ($student->parent_id) {
+                        $parent = User::find($student->parent_id);
+                        $parent?->notify(new BulletinPublishedNotification($studentName, $periodName, $bulletin->id, 'parent'));
+                    }
+                }
+            } catch (\Exception $notifEx) {
+                Log::warning("PublishAll notification failed: " . $notifEx->getMessage());
+            }
 
             return redirect()->back()->with('success', "{$count} bulletin(s) publié(s) avec succès.");
         } catch (\Exception $e) {

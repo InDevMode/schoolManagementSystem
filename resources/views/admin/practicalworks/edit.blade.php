@@ -46,7 +46,7 @@
             </div>
 
             <!-- Main Form Section -->
-            <div class="bg-white rounded-xl shadow-md overflow-hidden dark:bg-gray-800 transition-colors duration-300">
+            <div class="bg-white rounded-lg shadow-md overflow-hidden dark:bg-gray-800 transition-colors duration-300">
                 <div class="p-6 md:p-8">
                     <form action="{{ url('admin/practicalworks/homework/edit/' . $getWorks->id) }}" method="post"
                         enctype="multipart/form-data">
@@ -178,7 +178,7 @@
                             @if (!empty($getWorks->document_file))
                                 <a href="{{ url('upload/practicalworks/' . $getWorks->document_file) }}"
                                     target="_blank"
-                                    class="flex items-center justify-center bg-green-600 text-white px-2.5 py-2 rounded-md text-sm font-medium"><iconify-icon
+                                    class="flex items-center justify-center bg-green-600 text-white px-2.5 py-2 rounded-lg text-sm font-medium"><iconify-icon
                                         icon="mdi:file-download-outline" width="24" height="24"
                                         class="text-white"></iconify-icon>
                                     Télécharger</a>

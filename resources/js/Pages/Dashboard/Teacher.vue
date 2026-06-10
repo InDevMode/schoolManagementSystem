@@ -34,11 +34,11 @@
         <div v-if="myRecentEvaluations?.length" class="card p-5">
             <div class="flex items-center justify-between mb-4">
                 <h3 class="font-semibold text-gray-900 dark:text-white text-sm">Mes évaluations récentes</h3>
-                <a href="/teacher/evaluations" class="text-xs text-primary-600 dark:text-primary-400 hover:underline">Voir tout</a>
+                <Link href="/teacher/evaluations" class="text-xs text-primary-600 dark:text-primary-400 hover:underline">Voir tout</Link>
             </div>
             <div class="flex flex-col gap-2">
                 <div v-for="ev in myRecentEvaluations" :key="ev.id"
-                    class="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700/40 transition-colors">
+                    class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700/40 transition-colors">
                     <span class="w-2.5 h-2.5 rounded-full flex-shrink-0" :style="{ background: typeColors[ev.type] ?? '#6366f1' }"/>
                     <div class="flex-1 min-w-0">
                         <p class="text-sm font-medium text-gray-900 dark:text-white truncate">
@@ -50,10 +50,10 @@
                     <span :class="['text-xs px-2 py-0.5 rounded-full font-medium', statusClass(ev.status)]">
                         {{ statusLabel(ev.status) }}
                     </span>
-                    <a :href="`/teacher/evaluations/grade-entry?evaluation_id=${ev.id}`"
+                    <Link :href="`/teacher/evaluations/grade-entry?evaluation_id=${ev.id}`"
                         class="text-xs font-medium text-primary-600 dark:text-primary-400 hover:underline flex-shrink-0">
                         Saisir →
-                    </a>
+                    </Link>
                 </div>
             </div>
         </div>
@@ -70,9 +70,9 @@
                         {{ new Date().toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' }) }}
                     </span>
                 </div>
-                <a href="/teacher/class_subject"
-                    class="flex items-center gap-3 p-4 rounded-xl bg-primary-50 dark:bg-primary-900/20 hover:bg-primary-100 dark:hover:bg-primary-900/30 transition-colors">
-                    <div class="w-10 h-10 rounded-xl bg-primary-600 flex items-center justify-center flex-shrink-0">
+                <Link href="/teacher/class_subject"
+                    class="flex items-center gap-3 p-4 rounded-lg bg-primary-50 dark:bg-primary-900/20 hover:bg-primary-100 dark:hover:bg-primary-900/30 transition-colors">
+                    <div class="w-10 h-10 rounded-lg bg-primary-600 flex items-center justify-center flex-shrink-0">
                         <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                         </svg>
@@ -81,7 +81,7 @@
                         <p class="text-sm font-semibold text-primary-700 dark:text-primary-300">Voir mon emploi du temps</p>
                         <p class="text-xs text-primary-500 dark:text-primary-400">{{ totalExamTeacher }} cours planifiés</p>
                     </div>
-                </a>
+                </Link>
             </div>
         </div>
 
@@ -89,7 +89,7 @@
 </template>
 
 <script setup lang="ts">
-import { usePage } from '@inertiajs/vue3';
+import { usePage, Link } from '@inertiajs/vue3';
 import type { PageProps } from '@/types';
 import StatCard from '@/Components/Dashboard/StatCard.vue';
 import BigStatCard from '@/Components/Dashboard/BigStatCard.vue';

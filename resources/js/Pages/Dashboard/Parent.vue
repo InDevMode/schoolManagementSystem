@@ -36,18 +36,18 @@
                             </p>
                             <p class="text-xs text-gray-400">{{ child.student.class_name }}</p>
                         </div>
-                        <a :href="`/parent/my_student/${child.student.id}/bulletins`"
+                        <Link :href="`/parent/my_student/${child.student.id}/bulletins`"
                             class="ml-auto text-xs text-primary-600 dark:text-primary-400 hover:underline">
                             Tous les bulletins →
-                        </a>
+                        </Link>
                     </div>
 
                     <!-- Bulletins -->
                     <div v-if="child.bulletins?.length" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        <a v-for="b in child.bulletins" :key="b.id"
+                        <Link v-for="b in child.bulletins" :key="b.id"
                             :href="`/parent/my_student/${child.student.id}/bulletins/${b.id}`"
-                            class="flex items-center gap-3 p-3 rounded-xl border border-gray-100 dark:border-gray-700 hover:border-primary-300 dark:hover:border-primary-700 hover:shadow-sm transition-all">
-                            <div class="w-12 h-12 rounded-xl flex flex-col items-center justify-center flex-shrink-0"
+                            class="flex items-center gap-3 p-3 rounded-lg border border-gray-100 dark:border-gray-700 hover:border-primary-300 dark:hover:border-primary-700 hover:shadow-sm transition-all">
+                            <div class="w-12 h-12 rounded-lg flex flex-col items-center justify-center flex-shrink-0"
                                 :class="Number(b.average) >= 10 ? 'bg-success-50 dark:bg-success-900/20' : 'bg-danger-50 dark:bg-danger-900/20'">
                                 <span class="text-xs font-black"
                                     :class="Number(b.average) >= 10 ? 'text-success-700 dark:text-success-400' : 'text-danger-700 dark:text-danger-400'">
@@ -65,7 +65,7 @@
                             <svg class="w-4 h-4 text-gray-300 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                             </svg>
-                        </a>
+                        </Link>
                     </div>
                     <p v-else class="text-xs text-gray-400 italic">Aucun bulletin publié pour le moment.</p>
                 </div>
@@ -99,7 +99,7 @@
 </template>
 
 <script setup lang="ts">
-import { usePage } from '@inertiajs/vue3';
+import { usePage, Link } from '@inertiajs/vue3';
 import type { PageProps } from '@/types';
 import StatCard from '@/Components/Dashboard/StatCard.vue';
 import AttendanceBadge from '@/Components/Dashboard/AttendanceBadge.vue';

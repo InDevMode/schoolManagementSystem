@@ -20,7 +20,7 @@
         <!-- Aperçu des types (cards couleurs) -->
         <div v-if="leaveTypes.data.length" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
             <div v-for="lt in leaveTypes.data" :key="lt.id"
-                class="flex items-center gap-3 p-3 rounded-xl border border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-800">
+                class="flex items-center gap-3 p-3 rounded-lg border border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-800">
                 <span class="w-4 h-4 rounded-full flex-shrink-0" :style="{ background: lt.color ?? '#6366f1' }"/>
                 <div class="min-w-0">
                     <p class="text-xs font-semibold text-gray-900 dark:text-white truncate">{{ lt.name }}</p>
@@ -39,7 +39,7 @@
         >
             <template #cell-color="{ row }">
                 <div class="flex items-center gap-2">
-                    <span class="w-5 h-5 rounded-md border border-gray-200 dark:border-gray-600 flex-shrink-0"
+                    <span class="w-5 h-5 rounded-lg border border-gray-200 dark:border-gray-600 flex-shrink-0"
                         :style="{ background: row.color ?? '#6366f1' }"/>
                     <span class="text-xs font-mono text-gray-500 dark:text-gray-400">{{ row.color ?? '#6366f1' }}</span>
                 </div>
