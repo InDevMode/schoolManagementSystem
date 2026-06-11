@@ -82,6 +82,56 @@ Route::group(['middleware' => 'common'], function () {
     Route::get('/chat/{id}', [ChatController::class, 'deleteMessage'])->name('chat.delete');
 });
 
+// ══════════════════════════════════════════════════════════════════════════════
+// SUPER ADMIN — Configuration RBAC (user_type = 0)
+// ══════════════════════════════════════════════════════════════════════════════
+Route::group(['middleware' => 'super_admin', 'prefix' => 'superadmin'], function () {
+
+    Route::get('dashboard', [DashboardController::class, 'dashboard'])->name('superadmin.dashboard');
+
+    // ── Rôles ──────────────────────────────────────────────────────────────
+    Route::get('config/roles',              [RbacController::class, 'roleList'])->name('superadmin.roles');
+    Route::post('config/roles/add',         [RbacController::class, 'roleCreate'])->name('superadmin.roles.create');
+    Route::post('config/roles/edit/{id}',   [RbacController::class, 'roleUpdate'])->name('superadmin.roles.update');
+    Route::get('config/roles/delete/{id}',  [RbacController::class, 'roleDelete'])->name('superadmin.roles.delete');
+    Route::get('config/roles/restore/{id}', [RbacController::class, 'roleRestore'])->name('superadmin.roles.restore');
+
+    // ── Permissions ────────────────────────────────────────────────────────
+    Route::get('config/permissions',               [RbacController::class, 'permissionList'])->name('superadmin.permissions');
+    Route::post('config/permissions/add',          [RbacController::class, 'permissionCreate'])->name('superadmin.permissions.create');
+    Route::post('config/permissions/edit/{id}',    [RbacController::class, 'permissionUpdate'])->name('superadmin.permissions.update');
+    Route::get('config/permissions/delete/{id}',   [RbacController::class, 'permissionDelete'])->name('superadmin.permissions.delete');
+    Route::get('config/permissions/restore/{id}',  [RbacController::class, 'permissionRestore'])->name('superadmin.permissions.restore');
+
+    // ── Attribution permissions ────────────────────────────────────────────
+    Route::get('config/assign',                        [RbacController::class, 'assignList'])->name('superadmin.assign');
+    Route::post('config/assign/role/{roleId}/sync',    [RbacController::class, 'assignSync'])->name('superadmin.assign.sync');
+    Route::post('config/assign/user/{userId}/sync',    [RbacController::class, 'assignUserSync'])->name('superadmin.assign.user.sync');
+
+    // ── Paramètres système ─────────────────────────────────────────────────
+    Route::get('config/settings',                [UserController::class, 'settings'])->name('superadmin.settings');
+    Route::post('config/settings/save',          [UserController::class, 'updateSettingInfo'])->name('superadmin.settings.save');
+
+    // ── Compte super admin ─────────────────────────────────────────────────
+    Route::get('account',         [UserController::class, 'myAccount'])->name('superadmin.account');
+    Route::post('account',        [UserController::class, 'updateSuperAdminAccount'])->name('superadmin.account.update');
+    Route::get('change_password', [UserController::class, 'changePassword'])->name('superadmin.change_password');
+    Route::post('change_password',[UserController::class, 'updatePassword'])->name('superadmin.change_password.update');
+
+    // ── Édition inline cellule (super admin only) ──────────────────────────
+    Route::post('users/inline-edit', [UserController::class, 'inlineCellEdit'])->name('superadmin.inline-edit');
+
+    // ── Journaux de suppression (super admin only) ─────────────────────────
+    Route::get('deletion-logs',       [DeletionLogController::class, 'list'])->name('superadmin.deletion-logs');
+    Route::get('deletion-logs/{id}',  [DeletionLogController::class, 'show'])->name('superadmin.deletion-logs.show');
+
+    // ── Liste de tous les utilisateurs (super admin only) ──────────────────
+    Route::get('users',                           [UserController::class, 'allUsersList'])->name('superadmin.users');
+    Route::post('users/reset-password',           [UserController::class, 'resetUsersPassword'])->name('superadmin.users.reset-password');
+    Route::post('users/update/{id}',              [UserController::class, 'updateUserFromPanel'])->name('superadmin.users.update');
+    Route::post('users/delete/{id}',              [UserController::class, 'deleteUser'])->name('superadmin.users.delete');
+});
+
 Route::group(['middleware' => 'admin'], function () {
 
     // Dashboard
@@ -234,6 +284,7 @@ Route::group(['middleware' => 'admin'], function () {
     Route::post('admin/evaluations/grades/validate',              [EvaluationController::class, 'validateGrades'])->middleware('check_perm:action.marks.manage');
     Route::post('admin/evaluations/grades/reject',                [EvaluationController::class, 'rejectGrades'])->middleware('check_perm:action.marks.manage');
     Route::post('admin/evaluations/grades/cancel-validation',     [EvaluationController::class, 'cancelValidation'])->middleware('check_perm:action.marks.manage');
+    Route::post('admin/evaluations/cancel',                        [EvaluationController::class, 'cancelEvaluation'])->middleware('check_perm:action.exams.edit');
     Route::get('admin/evaluations/grades/pending',                [EvaluationController::class, 'pendingValidation'])->middleware('check_perm:view.exams.marks');
     Route::get('admin/evaluations/subjects-by-class/{class_id}',  [EvaluationController::class, 'getSubjectsByClass'])->middleware('check_perm:view.exams.list');
     Route::get('admin/evaluations/by-class-period',               [EvaluationController::class, 'getEvaluationsByClassPeriod'])->middleware('check_perm:view.exams.list');
@@ -277,56 +328,6 @@ Route::group(['middleware' => 'admin'], function () {
     Route::post('admin/staff/events/edit/{id}',                   [StaffController::class, 'eventUpdate'])->middleware('check_perm:action.staff.events');
     Route::get('admin/staff/events/delete/{id}',                  [StaffController::class, 'eventDelete'])->middleware('check_perm:action.staff.events');
 
-});
-
-// ══════════════════════════════════════════════════════════════════════════════
-// SUPER ADMIN — Configuration RBAC (user_type = 0)
-// ══════════════════════════════════════════════════════════════════════════════
-Route::group(['middleware' => 'super_admin', 'prefix' => 'superadmin'], function () {
-
-    Route::get('dashboard', [DashboardController::class, 'dashboard'])->name('superadmin.dashboard');
-
-    // ── Rôles ──────────────────────────────────────────────────────────────
-    Route::get('config/roles',              [RbacController::class, 'roleList'])->name('superadmin.roles');
-    Route::post('config/roles/add',         [RbacController::class, 'roleCreate'])->name('superadmin.roles.create');
-    Route::post('config/roles/edit/{id}',   [RbacController::class, 'roleUpdate'])->name('superadmin.roles.update');
-    Route::get('config/roles/delete/{id}',  [RbacController::class, 'roleDelete'])->name('superadmin.roles.delete');
-    Route::get('config/roles/restore/{id}', [RbacController::class, 'roleRestore'])->name('superadmin.roles.restore');
-
-    // ── Permissions ────────────────────────────────────────────────────────
-    Route::get('config/permissions',               [RbacController::class, 'permissionList'])->name('superadmin.permissions');
-    Route::post('config/permissions/add',          [RbacController::class, 'permissionCreate'])->name('superadmin.permissions.create');
-    Route::post('config/permissions/edit/{id}',    [RbacController::class, 'permissionUpdate'])->name('superadmin.permissions.update');
-    Route::get('config/permissions/delete/{id}',   [RbacController::class, 'permissionDelete'])->name('superadmin.permissions.delete');
-    Route::get('config/permissions/restore/{id}',  [RbacController::class, 'permissionRestore'])->name('superadmin.permissions.restore');
-
-    // ── Attribution permissions ────────────────────────────────────────────
-    Route::get('config/assign',                        [RbacController::class, 'assignList'])->name('superadmin.assign');
-    Route::post('config/assign/role/{roleId}/sync',    [RbacController::class, 'assignSync'])->name('superadmin.assign.sync');
-    Route::post('config/assign/user/{userId}/sync',    [RbacController::class, 'assignUserSync'])->name('superadmin.assign.user.sync');
-
-    // ── Paramètres système ─────────────────────────────────────────────────
-    Route::get('config/settings',                [UserController::class, 'settings'])->name('superadmin.settings');
-    Route::post('config/settings/save',          [UserController::class, 'updateSettingInfo'])->name('superadmin.settings.save');
-
-    // ── Compte super admin ─────────────────────────────────────────────────
-    Route::get('account',         [UserController::class, 'myAccount'])->name('superadmin.account');
-    Route::post('account',        [UserController::class, 'updateSuperAdminAccount'])->name('superadmin.account.update');
-    Route::get('change_password', [UserController::class, 'changePassword'])->name('superadmin.change_password');
-    Route::post('change_password',[UserController::class, 'updatePassword'])->name('superadmin.change_password.update');
-
-    // ── Édition inline cellule (super admin only) ──────────────────────────
-    Route::post('users/inline-edit', [UserController::class, 'inlineCellEdit'])->name('superadmin.inline-edit');
-
-    // ── Journaux de suppression (super admin only) ─────────────────────────
-    Route::get('deletion-logs',       [DeletionLogController::class, 'list'])->name('superadmin.deletion-logs');
-    Route::get('deletion-logs/{id}',  [DeletionLogController::class, 'show'])->name('superadmin.deletion-logs.show');
-
-    // ── Liste de tous les utilisateurs (super admin only) ──────────────────
-    Route::get('users',                           [UserController::class, 'allUsersList'])->name('superadmin.users');
-    Route::post('users/reset-password',           [UserController::class, 'resetUsersPassword'])->name('superadmin.users.reset-password');
-    Route::post('users/update/{id}',              [UserController::class, 'updateUserFromPanel'])->name('superadmin.users.update');
-    Route::post('users/delete/{id}',              [UserController::class, 'deleteUser'])->name('superadmin.users.delete');
 });
 
 Route::group(['middleware' => 'teacher'], function () {

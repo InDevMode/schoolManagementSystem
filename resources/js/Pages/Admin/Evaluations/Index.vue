@@ -121,8 +121,8 @@
 
             <template #actions="{ row }">
                 <div class="flex items-center justify-end gap-1.5">
-                    <!-- Saisie des notes — uniquement si l'éval n'est pas validée -->
-                    <Link v-if="row.status !== 'validated'"
+                    <!-- Saisie des notes — uniquement si l'éval n'est pas validée ni annulée -->
+                    <Link v-if="row.status !== 'validated' && row.status !== 'cancelled'"
                         :href="`/admin/evaluations/grade-entry?evaluation_id=${row.id}`"
                         class="p-1.5 rounded-lg transition-all duration-150
                                text-white bg-violet-500 hover:bg-violet-600 active:bg-violet-700
@@ -135,13 +135,16 @@
                                    m-6 9l2 2 4-4"/>
                         </svg>
                     </Link>
-                    <!-- Voir les notes (lecture seule) si validée -->
+                    <!-- Voir les notes (lecture seule) si validée ou annulée -->
                     <Link v-else
                         :href="`/admin/evaluations/grade-entry?evaluation_id=${row.id}`"
-                        class="p-1.5 rounded-lg transition-all duration-150
-                               text-gray-400 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600
-                               border border-gray-200 dark:border-gray-600"
-                        title="Voir les notes (lecture seule — évaluation validée)">
+                        :class="[
+                            'p-1.5 rounded-lg transition-all duration-150 shadow-sm',
+                            row.status === 'cancelled'
+                                ? 'text-white bg-amber-500 hover:bg-amber-600 active:bg-amber-700 shadow-amber-200 dark:shadow-amber-900/40'
+                                : 'text-white bg-indigo-500 hover:bg-indigo-600 active:bg-indigo-700 shadow-indigo-200 dark:shadow-indigo-900/40'
+                        ]"
+                        :title="row.status === 'cancelled' ? 'Évaluation annulée — lecture seule' : 'Voir les notes (lecture seule — évaluation validée)'">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
@@ -150,8 +153,8 @@
                                    -1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
                         </svg>
                     </Link>
-                    <!-- Éditer — masqué si l'éval est validée (anti-fraude) -->
-                    <button v-if="can('action.exams.edit') && row.status !== 'validated'"
+                    <!-- Éditer — masqué si l'éval est validée ou annulée -->
+                    <button v-if="can('action.exams.edit') && row.status !== 'validated' && row.status !== 'cancelled'"
                         class="p-1.5 rounded-lg transition-all duration-150
                                text-white bg-emerald-500 hover:bg-emerald-600 active:bg-emerald-700
                                shadow-sm shadow-emerald-200 dark:shadow-emerald-900/40"
@@ -175,7 +178,7 @@
                     </button>
                     <!-- Cadenas si validée et non supprimable -->
                     <span v-else-if="row.status === 'validated'"
-                        class="p-1.5 rounded-lg text-gray-300 dark:text-gray-600 cursor-not-allowed"
+                        class="p-1.5 rounded-lg text-white bg-success-500 dark:bg-success-600 cursor-not-allowed shadow-sm shadow-success-200 dark:shadow-success-900/40"
                         title="Évaluation validée — suppression impossible">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
@@ -337,6 +340,7 @@ const statusOptions = [
     { value: 'open',      label: 'Ouverte' },
     { value: 'closed',    label: 'Fermée' },
     { value: 'validated', label: 'Validée' },
+    { value: 'cancelled', label: 'Annulée' },
 ];
 
 const subjectOptions = computed(() =>
@@ -489,8 +493,8 @@ const applyFilters = () => {
     }, { preserveState: true });
 };
 
-const statusVariant = (s: string) => ({ draft: 'secondary', open: 'info', closed: 'warning', validated: 'success' }[s] ?? 'secondary') as any;
-const statusLabel   = (s: string) => ({ draft: 'Brouillon', open: 'Ouverte', closed: 'Fermée', validated: 'Validée' }[s] ?? s);
+const statusVariant = (s: string) => ({ draft: 'secondary', open: 'info', closed: 'warning', validated: 'success', cancelled: 'danger' }[s] ?? 'secondary') as any;
+const statusLabel   = (s: string) => ({ draft: 'Brouillon', open: 'Ouverte', closed: 'Fermée', validated: 'Validée', cancelled: 'Annulée' }[s] ?? s);
 
 const columns = [
     { key: 'class_name',   label: 'Classe'  },

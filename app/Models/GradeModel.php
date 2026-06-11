@@ -52,10 +52,17 @@ class GradeModel extends Model
             ->get();
 
         return $students->map(function ($student) use ($evaluation_id) {
+            // Note active (non supprimée)
             $grade = self::where('evaluation_id', $evaluation_id)
                 ->where('student_id', $student->student_id)
                 ->where('is_delete', 0)
                 ->first();
+
+            // Note rejetée (is_delete = 1) — pour informer l'interface
+            $rejected = !$grade && self::where('evaluation_id', $evaluation_id)
+                ->where('student_id', $student->student_id)
+                ->where('is_delete', 1)
+                ->exists();
 
             return [
                 'student_id'       => $student->student_id,
@@ -66,12 +73,15 @@ class GradeModel extends Model
                 'score'            => $grade?->score,
                 'validated'        => $grade?->validated ?? false,
                 'observation'      => $grade?->observation,
+                'rejected'         => $rejected, // true si la note a été rejetée et doit être re-saisie
             ];
         });
     }
 
     /**
      * Notes en attente de validation
+     * Ne retourne QUE les notes avec un score saisi (score NOT NULL)
+     * et dont l'évaluation n'est pas annulée (status != 'cancelled').
      */
     public static function getPendingValidation(int $perPage)
     {
@@ -91,8 +101,10 @@ class GradeModel extends Model
             ->join('subject', 'subject.id', '=', 'evaluations.subject_id')
             ->join('class', 'class.id', '=', 'evaluations.class_id')
             ->where('grades.validated', false)
+            ->whereNotNull('grades.score')
             ->where('grades.is_delete', 0)
             ->where('evaluations.is_delete', 0)
+            ->where('evaluations.status', '!=', 'cancelled') // ← exclure les évaluations annulées
             ->orderBy('grades.created_at', 'desc')
             ->paginate($perPage);
     }

@@ -4,7 +4,11 @@
         <div class="flex items-center justify-between">
             <div>
                 <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
-                    {{ evaluation?.status === 'validated' ? 'Notes (lecture seule)' : 'Saisie des notes' }}
+                    {{ evaluation?.status === 'validated'
+                        ? 'Notes (lecture seule)'
+                        : evaluation?.status === 'cancelled'
+                            ? 'Notes (évaluation annulée)'
+                            : 'Saisie des notes' }}
                 </h1>
                 <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">Saisie et validation selon le système béninois</p>
             </div>
@@ -35,6 +39,25 @@
                 <p class="text-xs text-success-600 dark:text-success-400 mt-0.5">
                     La saisie et la modification des notes sont bloquées. Pour corriger une erreur, annulez la
                     validation depuis la page <strong>« À valider »</strong>.
+                </p>
+            </div>
+        </div>
+
+        <!-- Bandeau évaluation annulée (lecture seule) -->
+        <div v-if="evaluation && evaluation.status === 'cancelled'"
+            class="flex items-center gap-3 px-4 py-3 rounded-lg
+                   bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700">
+            <svg class="w-5 h-5 text-amber-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/>
+            </svg>
+            <div>
+                <p class="text-sm font-semibold text-amber-700 dark:text-amber-300">
+                    Évaluation annulée — consultation en lecture seule
+                </p>
+                <p class="text-xs text-amber-600 dark:text-amber-400 mt-0.5">
+                    Cette évaluation a été annulée et <strong>ne sera pas prise en compte</strong> dans le calcul des moyennes.
+                    Les notes sont conservées à titre d'historique uniquement.
                 </p>
             </div>
         </div>
@@ -81,12 +104,16 @@
         <div v-if="evaluation && localGrades.length" class="card overflow-hidden">
             <div class="px-5 py-4 border-b border-gray-100 dark:border-gray-700 flex items-center justify-between">
                 <h3 class="font-semibold text-gray-900 dark:text-white">
-                    {{ evaluation.status === 'validated' ? 'Notes validées (lecture seule)' : 'Saisie des notes' }}
+                    {{ evaluation.status === 'validated'
+                        ? 'Notes validées (lecture seule)'
+                        : evaluation.status === 'cancelled'
+                            ? 'Notes (évaluation annulée — lecture seule)'
+                            : 'Saisie des notes' }}
                     — {{ evaluation.subject_name }}
                 </h3>
                 <div class="flex items-center gap-2">
                     <span class="text-xs text-gray-400">{{ savedCount }} / {{ localGrades.length }} saisis</span>
-                    <AppButton v-if="evaluation.status !== 'validated'" size="sm" :loading="saving" :disabled="editableCount === 0" @click="saveAll">
+                    <AppButton v-if="evaluation.status !== 'validated' && evaluation.status !== 'cancelled'" size="sm" :loading="saving" :disabled="!allEditableFilled" @click="saveAll">
                         <template #icon>
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
@@ -97,9 +124,37 @@
                 </div>
             </div>
 
+            <!-- Bandeau d'instructions (affiché si éval active, ni validée ni annulée) -->
+            <div v-if="evaluation.status !== 'validated' && evaluation.status !== 'cancelled'"
+                class="flex items-start gap-3 mx-5 mt-4 px-4 py-3 rounded-lg
+                       bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800">
+                <svg class="w-4 h-4 text-blue-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                <div class="text-xs text-blue-700 dark:text-blue-300 space-y-0.5">
+                    <p class="font-semibold">Veuillez saisir toutes les notes avant de pouvoir enregistrer.</p>
+                    <p>Les valeurs acceptées sont comprises entre <strong>0</strong> et <strong>20</strong>. N'oubliez pas d'ajouter une observation si possible (Absent, Passable, Bien…) — ce n'est pas obligatoire.</p>
+                    <p>Une fois toutes les notes saisies, le bouton <strong>Enregistrer</strong> s'activera. La validation se fait ensuite depuis la page <strong>« À valider »</strong>.</p>
+                </div>
+            </div>
+
+            <!-- Bandeau alerte : notes rejetées à re-saisir -->
+            <div v-if="rejectedCount > 0"
+                class="flex items-center gap-3 mx-5 mt-3 px-4 py-2.5 rounded-lg
+                       bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800">
+                <svg class="w-4 h-4 text-red-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                </svg>
+                <p class="text-xs text-red-700 dark:text-red-300">
+                    <span class="font-semibold">{{ rejectedCount }} note(s) rejetée(s)</span>
+                    — ces notes ont été annulées par l'administrateur et doivent être <strong>re-saisies</strong>.
+                    Elles sont indiquées en rouge dans le tableau ci-dessous.
+                </p>
+            </div>
+
             <!-- Bandeau notes verrouillées -->
             <div v-if="validatedCount > 0"
-                class="flex items-center gap-3 mx-5 mt-4 px-4 py-2.5 rounded-lg
+                class="flex items-center gap-3 mx-5 mt-3 px-4 py-2.5 rounded-lg
                        bg-success-50 dark:bg-success-900/20 border border-success-200 dark:border-success-800">
                 <svg class="w-4 h-4 text-success-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
@@ -131,24 +186,37 @@
                                 'transition-colors',
                                 g.validated
                                     ? 'bg-success-50/40 dark:bg-success-900/10 opacity-75'
-                                    : 'hover:bg-gray-50 dark:hover:bg-gray-700/40'
+                                    : evaluation.status === 'cancelled'
+                                        ? 'bg-gray-50/60 dark:bg-gray-800/40 opacity-70'
+                                        : g.rejected
+                                            ? 'bg-red-50/60 dark:bg-red-900/10'
+                                            : 'hover:bg-gray-50 dark:hover:bg-gray-700/40'
                             ]">
                             <td class="px-4 py-3 text-sm text-gray-500 w-10">{{ i + 1 }}</td>
                             <td class="px-4 py-3">
-                                <p class="text-sm font-medium text-gray-900 dark:text-white">
-                                    {{ g.last_name }} {{ g.name }}
-                                </p>
+                                <div class="flex items-center gap-1.5">
+                                    <p class="text-sm font-medium text-gray-900 dark:text-white">
+                                        {{ g.last_name }} {{ g.name }}
+                                    </p>
+                                    <!-- Indicateur note rejetée -->
+                                    <svg v-if="g.rejected" class="w-3.5 h-3.5 text-red-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" title="Note rejetée — à re-saisir">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                                    </svg>
+                                </div>
                             </td>
                             <td class="px-4 py-3 text-xs text-gray-400">{{ g.admission_number ?? '—' }}</td>
                             <td class="px-4 py-3">
-                                <!-- Note verrouillée -->
-                                <div v-if="g.validated"
-                                    class="w-20 mx-auto flex items-center justify-center gap-1.5 px-2 py-1.5 rounded-lg
-                                           bg-success-50 dark:bg-success-900/20 border border-success-200 dark:border-success-700">
-                                    <svg class="w-3 h-3 text-success-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                                <!-- Note verrouillée (validée ou éval annulée) -->
+                                <div v-if="g.validated || evaluation.status === 'cancelled'"
+                                    :class="['w-20 mx-auto flex items-center justify-center gap-1.5 px-2 py-1.5 rounded-lg border',
+                                             evaluation.status === 'cancelled'
+                                                ? 'bg-gray-100 dark:bg-gray-700/50 border-gray-300 dark:border-gray-600 text-gray-500 dark:text-gray-400'
+                                                : lockedBadgeClass(g)]">
+                                    <svg class="w-3 h-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path v-if="evaluation.status === 'cancelled'" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/>
+                                        <path v-else stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
                                     </svg>
-                                    <span class="text-sm font-bold text-success-700 dark:text-success-400">{{ g.score }}</span>
+                                    <span class="text-sm font-bold">{{ g.score ?? '—' }}</span>
                                 </div>
                                 <!-- Note éditable -->
                                 <input
@@ -156,10 +224,10 @@
                                     v-model="g.score"
                                     type="number"
                                     :min="0"
-                                    :max="evaluation.max_score"
+                                    :max="20"
                                     step="0.5"
                                     :class="['w-20 mx-auto block text-center text-sm rounded-lg border px-2 py-1.5 transition-colors', scoreClass(g)]"
-                                    @input="g.dirty = true"
+                                    @input="onScoreInput(g)"
                                 />
                             </td>
                             <td class="px-4 py-3 text-center text-sm font-medium" :class="scoreTextClass(g)">
@@ -169,51 +237,30 @@
                                 <input
                                     v-model="g.observation"
                                     type="text"
-                                    placeholder="Absent, Dispensé..."
-                                    :disabled="g.validated"
-                                    class="w-28 text-xs rounded-lg border border-gray-200 dark:border-gray-600 bg-transparent px-2 py-1 dark:text-gray-300 placeholder-gray-300 dark:placeholder-gray-600 disabled:opacity-40 disabled:cursor-not-allowed"
+                                    placeholder="Absent, Dispensé,Médicore, Passable, Assez-Bien,Bien, Très-Bien..."
+                                    :disabled="g.validated || evaluation.status === 'cancelled'"
+                                    class="w-full text-xs rounded-lg border border-gray-200 dark:border-gray-600 bg-transparent px-2 py-1 dark:text-gray-300 placeholder-gray-300 dark:placeholder-gray-600 disabled:opacity-40 disabled:cursor-not-allowed"
                                     @input="g.dirty = true"
                                 />
                             </td>
                             <td class="px-4 py-3 text-center">
                                 <AppBadge
-                                    :variant="g.validated ? 'success' : (g.score !== null && g.score !== '' ? 'info' : 'secondary')"
+                                    :variant="evaluation.status === 'cancelled'
+                                        ? 'warning'
+                                        : g.validated
+                                            ? 'success'
+                                            : g.rejected
+                                                ? 'danger'
+                                                : (g.score !== null && g.score !== '' ? 'info' : 'secondary')"
                                     dot>
-                                    {{ g.validated ? 'Validé 🔒' : (g.score !== null && g.score !== '' ? 'Saisi' : 'En attente') }}
+                                    {{ evaluation.status === 'cancelled'
+                                        ? 'Annulée 🚫'
+                                        : g.validated
+                                            ? 'Validé 🔒'
+                                            : g.rejected
+                                                ? 'Rejeté ⚠'
+                                                : (g.score !== null && g.score !== '' ? 'Saisi' : 'En attente') }}
                                 </AppBadge>
-                            </td>
-                            <!-- Bouton valider la note individuellement -->
-                            <td v-if="evaluation.status !== 'validated'" class="px-4 py-3 text-center">
-                                <!-- Déjà validée : cadenas -->
-                                <span v-if="g.validated"
-                                    class="inline-flex items-center justify-center w-7 h-7 rounded-lg
-                                           text-success-400 dark:text-success-600"
-                                    title="Note déjà validée">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
-                                    </svg>
-                                </span>
-                                <!-- Note saisie mais pas encore validée : bouton ✓ -->
-                                <button
-                                    v-else-if="g.score !== null && g.score !== ''"
-                                    class="inline-flex items-center justify-center w-7 h-7 rounded-lg transition-all
-                                           text-white bg-emerald-500 hover:bg-emerald-600 active:bg-emerald-700
-                                           shadow-sm shadow-emerald-200 dark:shadow-emerald-900/40
-                                           disabled:opacity-50 disabled:cursor-not-allowed"
-                                    :disabled="validatingGradeId === g.grade_id"
-                                    title="Valider cette note"
-                                    @click="validateSingle(g)">
-                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
-                                    </svg>
-                                </button>
-                                <!-- Pas de note : dash grisé -->
-                                <span v-else
-                                    class="inline-flex items-center justify-center w-7 h-7 text-gray-300 dark:text-gray-600"
-                                    title="Saisissez d'abord la note">
-                                    —
-                                </span>
                             </td>
                         </tr>
                     </tbody>
@@ -252,6 +299,7 @@ interface GradeRow {
     score: number | string | null;
     validated: boolean;
     observation: string | null;
+    rejected?: boolean;
     dirty?: boolean;
 }
 
@@ -311,7 +359,21 @@ const evalOptions    = computed(() => evalList.value.map(e => ({
 
 const savedCount     = computed(() => localGrades.value.filter(g => g.score !== null && g.score !== '').length);
 const validatedCount = computed(() => localGrades.value.filter(g => g.validated).length);
-const editableCount  = computed(() => localGrades.value.filter(g => !g.validated).length);
+const rejectedCount  = computed(() => localGrades.value.filter(g => g.rejected).length);
+
+// Le bouton Enregistrer n'est actif que si :
+// 1. Il y a au moins une note éditable (non validée, y compris les rejetées)
+// 2. TOUTES les notes éditables ont une valeur saisie (les rejetées doivent être re-saisies)
+// 3. TOUTES les valeurs saisies sont dans la plage 0-20
+const allEditableFilled = computed(() => {
+    const editables = localGrades.value.filter(g => !g.validated);
+    if (editables.length === 0) return false;
+    return editables.every(g => {
+        if (g.score === null || g.score === '') return false;
+        const v = Number(g.score);
+        return !isNaN(v) && v >= 0 && v <= 20;
+    });
+});
 
 // ── Watch : recharger les évaluations dès que classe ou période changent ─────
 let initialLoad = true;
@@ -375,7 +437,13 @@ const saveAll = async () => {
         });
         if (res.data.success) {
             toast.success(res.data.message);
-            localGrades.value.forEach(g => (g.dirty = false));
+            // Mise à jour locale immédiate : les notes re-saisies passent en "Saisi"
+            // et perdent leur flag rejected sans attendre un rechargement serveur
+            localGrades.value = localGrades.value.map(g => ({
+                ...g,
+                dirty:    false,
+                rejected: g.rejected && (g.score === null || g.score === '') ? true : false,
+            }));
         } else {
             toast.error(res.data.message);
         }
@@ -386,15 +454,37 @@ const saveAll = async () => {
     }
 };
 
+// Badge couleur pour les notes verrouillées (validées) — suit la même logique que scoreTextClass
+const lockedBadgeClass = (g: GradeRow) => {
+    const v   = Number(g.score);
+    const max = props.evaluation?.max_score ?? 20;
+    const on20 = (v / max) * 20;
+    if (on20 >= 14) return 'bg-success-50 dark:bg-success-900/20 border-success-200 dark:border-success-700 text-success-700 dark:text-success-400';
+    if (on20 >= 10) return 'bg-warning-50 dark:bg-warning-900/20 border-warning-200 dark:border-warning-700 text-warning-700 dark:text-warning-400';
+    return 'bg-danger-50 dark:bg-danger-900/20 border-danger-200 dark:border-danger-700 text-danger-700 dark:text-danger-400';
+};
+
 // Classe CSS input selon la note
 const scoreClass = (g: GradeRow) => {
     if (g.score === null || g.score === '') return 'border-gray-200 dark:border-gray-600 bg-transparent dark:text-gray-300';
     const v = Number(g.score);
+    if (isNaN(v) || v < 0 || v > 20) return 'border-danger-500 bg-danger-50 dark:bg-danger-900/20 text-danger-700 dark:text-danger-300 ring-1 ring-danger-400';
     const max = props.evaluation?.max_score ?? 20;
     const pct = (v / max) * 20;
     if (pct >= 14) return 'border-success-400 bg-success-50 dark:bg-success-900/20 text-success-700 dark:text-success-300';
     if (pct >= 10) return 'border-warning-400 bg-warning-50 dark:bg-warning-900/20 text-warning-700 dark:text-warning-300';
     return 'border-danger-400 bg-danger-50 dark:bg-danger-900/20 text-danger-700 dark:text-danger-300';
+};
+
+// Handler input : marque dirty et clampe doucement sans couper la frappe
+const onScoreInput = (g: GradeRow) => {
+    g.dirty = true;
+    if (g.score === '' || g.score === null) return;
+    const v = Number(g.score);
+    if (!isNaN(v)) {
+        if (v < 0) g.score = 0;
+        if (v > 20) g.score = 20;
+    }
 };
 
 const scoreTextClass = (g: GradeRow) => {

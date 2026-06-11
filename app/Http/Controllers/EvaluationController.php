@@ -25,7 +25,7 @@ class EvaluationController extends Controller
     public function list()
     {
         return Inertia::render('Admin/Evaluations/Index', [
-            'evaluations'   => EvaluationModel::getAll(15),
+            'evaluations'   => EvaluationModel::getAll(6),
             'classes'       => ClassModel::getClass(),
             'periods'       => PeriodModel::getAllPeriods(),
             'currentPeriod' => PeriodModel::getCurrentPeriod()->first(),
@@ -246,7 +246,7 @@ class EvaluationController extends Controller
             'evaluation_id'  => 'required|integer',
             'grades'         => 'required|array',
             'grades.*.student_id' => 'required|integer',
-            'grades.*.score'      => 'nullable|numeric|min:0',
+            'grades.*.score'      => 'nullable|numeric|min:0|max:20',
         ]);
 
         try {
@@ -265,16 +265,6 @@ class EvaluationController extends Controller
             }
 
             foreach ($request->grades as $gradeData) {
-                // Refuser la modification d'une note déjà validée
-                $existing = GradeModel::where('student_id', $gradeData['student_id'])
-                    ->where('evaluation_id', $eval->id)
-                    ->where('is_delete', 0)
-                    ->first();
-
-                if ($existing && $existing->validated) {
-                    continue; // Note validée — on saute silencieusement
-                }
-
                 $score = isset($gradeData['score']) && $gradeData['score'] !== '' ? (float) $gradeData['score'] : null;
 
                 if ($score !== null && $score > (float) $eval->max_score) {
@@ -284,19 +274,51 @@ class EvaluationController extends Controller
                     ]);
                 }
 
-                GradeModel::updateOrCreate(
-                    [
-                        'student_id'    => $gradeData['student_id'],
-                        'evaluation_id' => $eval->id,
-                    ],
-                    [
-                        'score'       => $score,
-                        'teacher_id'  => Auth::id(),
-                        'observation' => $gradeData['observation'] ?? null,
-                        'validated'   => false,
-                        'is_delete'   => 0,
-                    ]
-                );
+                // Chercher d'abord une note active non validée
+                $existing = GradeModel::where('student_id', $gradeData['student_id'])
+                    ->where('evaluation_id', $eval->id)
+                    ->where('is_delete', 0)
+                    ->first();
+
+                // Refuser la modification d'une note déjà validée
+                if ($existing && $existing->validated) {
+                    continue;
+                }
+
+                if ($existing) {
+                    // Mettre à jour la note active existante
+                    $existing->score       = $score;
+                    $existing->teacher_id  = Auth::id();
+                    $existing->observation = $gradeData['observation'] ?? null;
+                    $existing->save();
+                } else {
+                    // Chercher une note rejetée (is_delete=1) et la ressusciter
+                    $rejected = GradeModel::where('student_id', $gradeData['student_id'])
+                        ->where('evaluation_id', $eval->id)
+                        ->where('is_delete', 1)
+                        ->latest()
+                        ->first();
+
+                    if ($rejected) {
+                        $rejected->score       = $score;
+                        $rejected->teacher_id  = Auth::id();
+                        $rejected->observation = $gradeData['observation'] ?? null;
+                        $rejected->validated   = false;
+                        $rejected->is_delete   = 0;
+                        $rejected->save();
+                    } else {
+                        // Créer une nouvelle note
+                        GradeModel::create([
+                            'student_id'    => $gradeData['student_id'],
+                            'evaluation_id' => $eval->id,
+                            'score'         => $score,
+                            'teacher_id'    => Auth::id(),
+                            'observation'   => $gradeData['observation'] ?? null,
+                            'validated'     => false,
+                            'is_delete'     => 0,
+                        ]);
+                    }
+                }
             }
 
             return response()->json(['success' => true, 'message' => 'Notes enregistrées avec succès.']);
@@ -475,12 +497,73 @@ class EvaluationController extends Controller
     }
 
     /**
+     * Annuler une évaluation entière — elle sera exclue du calcul des moyennes.
+     *
+     * Cette action est distincte de la suppression :
+     * - L'évaluation reste en base avec status = 'cancelled'
+     * - Toutes ses notes passent à is_delete = 0, validated = false
+     * - Elle n'est plus prise en compte lors du calcul des bulletins
+     * - Elle peut être réactivée si nécessaire (status → open)
+     */
+    public function cancelEvaluation(Request $request)
+    {
+        $request->validate(['evaluation_id' => 'required|integer']);
+
+        try {
+            $eval = EvaluationModel::getSingle($request->evaluation_id);
+            if (!$eval) {
+                return response()->json(['success' => false, 'message' => 'Évaluation introuvable.'], 404);
+            }
+
+            // Marquer l'évaluation comme annulée
+            $eval->status = 'cancelled';
+            $eval->save();
+
+            // Remettre toutes les notes à l'état "non validé" mais les conserver
+            GradeModel::where('evaluation_id', $eval->id)
+                ->update([
+                    'validated'    => false,
+                    'validated_by' => null,
+                    'validated_at' => null,
+                ]);
+
+            $evalLabel = $eval->title ?: $eval->type;
+            return response()->json([
+                'success' => true,
+                'message' => "L'évaluation « {$evalLabel} » a été annulée et ne sera pas prise en compte dans le calcul des moyennes.",
+            ]);
+        } catch (\Exception $e) {
+            Log::error("Erreur annulation évaluation : " . $e->getMessage());
+            return response()->json(['success' => false, 'message' => 'Une erreur est survenue.'], 500);
+        }
+    }
+
+    /**
      * Notes en attente de validation
+     * Passe aussi totalStudents par évaluation pour que le frontend
+     * puisse désactiver "Valider tout" si des notes sont manquantes.
      */
     public function pendingValidation()
     {
+        $grades = GradeModel::getPendingValidation(100); // on charge tout pour le groupement
+
+        // Calculer le nombre total d'élèves actifs pour chaque évaluation concernée
+        $evalIds    = $grades->pluck('evaluation_id')->unique();
+        $evalCounts = \DB::table('evaluations')
+            ->join('users', function ($j) {
+                $j->on('users.class_id', '=', 'evaluations.class_id')
+                  ->where('users.user_type', 3)
+                  ->where('users.is_delete', 0)
+                  ->where('users.status', 1);
+            })
+            ->whereIn('evaluations.id', $evalIds)
+            ->groupBy('evaluations.id')
+            ->select('evaluations.id as evaluation_id', \DB::raw('COUNT(users.id) as total_students'))
+            ->pluck('total_students', 'evaluation_id');
+
         return Inertia::render('Admin/Evaluations/PendingValidation', [
-            'grades' => GradeModel::getPendingValidation(20),
+            'grades'      => $grades,
+            'evalCounts'  => $evalCounts, // Map<evaluation_id, total_students>
         ]);
     }
 

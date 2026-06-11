@@ -12,9 +12,10 @@
                 </p>
             </div>
             <AppButton
-                v-if="evaluation && evaluation.status !== 'validated' && savedCount > 0"
+                v-if="evaluation && evaluation.status !== 'validated'"
                 variant="success"
                 :loading="saving"
+                :disabled="!allEditableFilled"
                 @click="saveAll">
                 <template #icon>
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -141,7 +142,7 @@
                                     v-model="g.score"
                                     type="number"
                                     :min="0"
-                                    :max="evaluation.max_score"
+                                    :max="20"
                                     step="0.5"
                                     :disabled="g.validated"
                                     :class="[
@@ -150,7 +151,7 @@
                                             ? 'bg-gray-100 dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-400 cursor-not-allowed'
                                             : inputBorderClass(g),
                                     ]"
-                                    @input="g.dirty = true"
+                                    @input="onScoreInput(g)"
                                 />
                             </td>
                             <td class="px-4 py-3 text-center">
@@ -183,7 +184,7 @@
                 <p class="text-xs text-gray-400">
                     Saisie automatiquement envoyée après enregistrement. L'admin validera les notes.
                 </p>
-                <AppButton v-if="evaluation && evaluation.status !== 'validated'" :loading="saving" @click="saveAll">
+                <AppButton v-if="evaluation && evaluation.status !== 'validated'" :loading="saving" :disabled="!allEditableFilled" @click="saveAll">
                     <template #icon>
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
@@ -291,6 +292,18 @@ const savedCount = computed(() =>
     localGrades.value.filter(g => g.score !== null && g.score !== '').length
 );
 
+// Le bouton Enregistrer n'est actif que si toutes les notes éditables
+// sont saisies avec une valeur entre 0 et 20
+const allEditableFilled = computed(() => {
+    const editables = localGrades.value.filter(g => !g.validated);
+    if (editables.length === 0) return false;
+    return editables.every(g => {
+        if (g.score === null || g.score === '') return false;
+        const v = Number(g.score);
+        return !isNaN(v) && v >= 0 && v <= 20;
+    });
+});
+
 // ── Watch : recharger les évaluations dès que classe ou période changent ─────
 let initialLoad = true;
 watch([selectedClass, selectedPeriod], ([cls, per]) => {
@@ -372,10 +385,22 @@ const computeOn20 = (g: GradeRow): string => {
 
 const inputBorderClass = (g: GradeRow) => {
     if (g.score === null || g.score === '') return 'border-gray-200 dark:border-gray-600 bg-transparent dark:text-gray-300';
-    const v = (Number(g.score) / (props.evaluation?.max_score ?? 20)) * 20;
-    if (v >= 14) return 'border-success-400 bg-success-50 dark:bg-success-900/20 text-success-700 dark:text-success-300';
-    if (v >= 10) return 'border-warning-400 bg-warning-50 dark:bg-warning-900/20 text-warning-700 dark:text-warning-300';
+    const v = Number(g.score);
+    if (isNaN(v) || v < 0 || v > 20) return 'border-danger-500 bg-danger-50 dark:bg-danger-900/20 text-danger-700 dark:text-danger-300 ring-1 ring-danger-400';
+    const pct = (v / (props.evaluation?.max_score ?? 20)) * 20;
+    if (pct >= 14) return 'border-success-400 bg-success-50 dark:bg-success-900/20 text-success-700 dark:text-success-300';
+    if (pct >= 10) return 'border-warning-400 bg-warning-50 dark:bg-warning-900/20 text-warning-700 dark:text-warning-300';
     return 'border-danger-400 bg-danger-50 dark:bg-danger-900/20 text-danger-700 dark:text-danger-300';
+};
+
+const onScoreInput = (g: GradeRow) => {
+    g.dirty = true;
+    if (g.score === '' || g.score === null) return;
+    const v = Number(g.score);
+    if (!isNaN(v)) {
+        if (v < 0) g.score = 0;
+        if (v > 20) g.score = 20;
+    }
 };
 
 const scoreTextClass = (g: GradeRow) => {

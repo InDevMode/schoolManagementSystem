@@ -300,8 +300,12 @@ class BulletinModel extends Model
     }
 
     /**
-     * Détail complet d'un bulletin (matières + notes par évaluation)
-     * Utilisé pour la génération du bulletin PDF style béninois
+     * Détail complet d'un bulletin (matières + détail des évaluations par type)
+     * Utilisé pour la génération du bulletin PDF style béninois.
+     *
+     * Pour chaque matière du bulletin, on charge aussi le détail des évaluations
+     * validées (interrogations, devoirs, etc.) afin que le PDF puisse afficher
+     * chaque note individuellement.
      */
     public static function getFullDetail(int $bulletin_id): array
     {
@@ -317,6 +321,7 @@ class BulletinModel extends Model
 
         if (!$bulletin) return [];
 
+        // Matières avec leurs moyennes calculées (table bulletin_subjects)
         $subjects = DB::table('bulletin_subjects')
             ->select('bulletin_subjects.*', 'subject.name as subject_name')
             ->join('subject', 'subject.id', '=', 'bulletin_subjects.subject_id')
@@ -324,9 +329,20 @@ class BulletinModel extends Model
             ->orderBy('subject.name')
             ->get();
 
+        // Pour chaque matière, charger le détail des évaluations validées
+        // (excluant les cancelled et is_delete=1)
+        $subjectsWithDetail = $subjects->map(function ($subject) use ($bulletin) {
+            $detail = EvaluationModel::calculateSubjectAverageDetail(
+                $bulletin->student_id,
+                $subject->subject_id,
+                $bulletin->period_id
+            );
+            return array_merge((array) $subject, ['detail' => $detail]);
+        });
+
         return [
             'bulletin' => $bulletin,
-            'subjects' => $subjects,
+            'subjects' => $subjectsWithDetail,
         ];
     }
 }

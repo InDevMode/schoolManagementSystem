@@ -114,7 +114,7 @@ class EvaluationModel extends Model
         $evaluations = self::where('subject_id', $subject_id)
             ->where('period_id', $period_id)
             ->where('is_delete', 0)
-            ->where('status', 'validated')
+            ->where('status', 'validated')   // seules les évals entièrement validées, cancelled exclu
             ->get();
 
         $groups = [
@@ -235,7 +235,8 @@ class EvaluationModel extends Model
         $evaluations = self::where('subject_id', $subject_id)
             ->where('period_id', $period_id)
             ->where('is_delete', 0)
-            ->where('status', 'validated')
+            ->where('status', 'validated')   // seules les évals entièrement validées
+            // 'cancelled' est déjà exclu par la condition ci-dessus
             ->get();
 
         if ($evaluations->isEmpty()) return null;
