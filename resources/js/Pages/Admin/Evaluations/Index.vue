@@ -128,7 +128,6 @@
                                text-white bg-violet-500 hover:bg-violet-600 active:bg-violet-700
                                shadow-sm shadow-violet-200 dark:shadow-violet-900/40"
                         title="Saisir les notes">
-                        <!-- Icône "clipboard + stylo" = saisie de notes -->
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2
@@ -143,7 +142,6 @@
                                text-gray-400 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600
                                border border-gray-200 dark:border-gray-600"
                         title="Voir les notes (lecture seule — évaluation validée)">
-                        <!-- Icône "oeil" = lecture seule -->
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
@@ -152,18 +150,7 @@
                                    -1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
                         </svg>
                     </Link>
-                    <!-- Valider -->
-                    <button v-if="can('action.exams.edit') && row.status !== 'validated'"
-                        class="p-1.5 rounded-lg transition-all duration-150
-                               text-white bg-amber-500 hover:bg-amber-600 active:bg-amber-700
-                               shadow-sm shadow-amber-200 dark:shadow-amber-900/40"
-                        title="Valider l'évaluation (verrouille définitivement les notes)"
-                        @click="validateEval(row as any)">
-                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                        </svg>
-                    </button>
-                    <!-- Éditer — masqué si l'éval est validée (anti-fraude, tous rôles confondus) -->
+                    <!-- Éditer — masqué si l'éval est validée (anti-fraude) -->
                     <button v-if="can('action.exams.edit') && row.status !== 'validated'"
                         class="p-1.5 rounded-lg transition-all duration-150
                                text-white bg-emerald-500 hover:bg-emerald-600 active:bg-emerald-700
@@ -484,16 +471,6 @@ const submitForm = () => {
         onSuccess: () => { showForm.value = false; toast.success('Évaluation enregistrée avec succès.'); },
         onError:   () => toast.error('Veuillez vérifier les informations.'),
     });
-};
-
-const validateEval = async (eval_: Evaluation) => {
-    try {
-        await axios.post(`/admin/evaluations/status/${eval_.id}`, { status: 'validated' });
-        router.reload();
-        toast.success('Évaluation validée.');
-    } catch {
-        toast.error('Erreur lors de la validation.');
-    }
 };
 
 const handleDelete = (ids: (string | number)[]) => {

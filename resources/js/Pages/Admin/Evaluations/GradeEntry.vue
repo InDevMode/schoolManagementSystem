@@ -8,15 +8,6 @@
                 </h1>
                 <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">Saisie et validation selon le système béninois</p>
             </div>
-            <!-- Bouton valider uniquement si l'éval n'est pas encore validée et qu'il y a des notes saisies -->
-            <AppButton v-if="evaluation && evaluation.status !== 'validated' && savedCount > 0" variant="success" :loading="validating" @click="validateAll">
-                <template #icon>
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                    </svg>
-                </template>
-                Valider toutes les notes
-            </AppButton>
         </div>
 
         <!-- Sélecteurs -->
@@ -191,6 +182,39 @@
                                     {{ g.validated ? 'Validé 🔒' : (g.score !== null && g.score !== '' ? 'Saisi' : 'En attente') }}
                                 </AppBadge>
                             </td>
+                            <!-- Bouton valider la note individuellement -->
+                            <td v-if="evaluation.status !== 'validated'" class="px-4 py-3 text-center">
+                                <!-- Déjà validée : cadenas -->
+                                <span v-if="g.validated"
+                                    class="inline-flex items-center justify-center w-7 h-7 rounded-lg
+                                           text-success-400 dark:text-success-600"
+                                    title="Note déjà validée">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                                    </svg>
+                                </span>
+                                <!-- Note saisie mais pas encore validée : bouton ✓ -->
+                                <button
+                                    v-else-if="g.score !== null && g.score !== ''"
+                                    class="inline-flex items-center justify-center w-7 h-7 rounded-lg transition-all
+                                           text-white bg-emerald-500 hover:bg-emerald-600 active:bg-emerald-700
+                                           shadow-sm shadow-emerald-200 dark:shadow-emerald-900/40
+                                           disabled:opacity-50 disabled:cursor-not-allowed"
+                                    :disabled="validatingGradeId === g.grade_id"
+                                    title="Valider cette note"
+                                    @click="validateSingle(g)">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+                                    </svg>
+                                </button>
+                                <!-- Pas de note : dash grisé -->
+                                <span v-else
+                                    class="inline-flex items-center justify-center w-7 h-7 text-gray-300 dark:text-gray-600"
+                                    title="Saisissez d'abord la note">
+                                    —
+                                </span>
+                            </td>
                         </tr>
                     </tbody>
                 </table>
@@ -273,21 +297,19 @@ const selectedEval   = ref(props.evaluation ? String(props.evaluation.id) : '');
 const localGrades    = ref<GradeRow[]>((props.grades ?? []).map(g => ({ ...g, dirty: false })));
 const evalList       = ref<any[]>(props.evaluations ?? []);
 const saving         = ref(false);
-const validating     = ref(false);
 
 const classOptions  = computed(() => props.classes.map(c => ({ value: String(c.id), label: c.name })));
-// Saisie des notes : uniquement la période courante dans le select
 const periodOptions = computed(() =>
     props.currentPeriod
         ? [{ value: String(props.currentPeriod.id), label: props.currentPeriod.name }]
         : props.periods.map(p => ({ value: String(p.id), label: p.name }))
 );
-const evalOptions   = computed(() => evalList.value.map(e => ({
+const evalOptions    = computed(() => evalList.value.map(e => ({
     value: String(e.id),
     label: `${typeLabels[e.type] ?? e.type} — ${e.subject_name} (${e.eval_date})`,
 })));
 
-const savedCount    = computed(() => localGrades.value.filter(g => g.score !== null && g.score !== '').length);
+const savedCount     = computed(() => localGrades.value.filter(g => g.score !== null && g.score !== '').length);
 const validatedCount = computed(() => localGrades.value.filter(g => g.validated).length);
 const editableCount  = computed(() => localGrades.value.filter(g => !g.validated).length);
 
@@ -341,7 +363,6 @@ const loadGrades = () => {
 };
 
 const saveAll = async () => {
-    if (!props.evaluation) return;
     saving.value = true;
     try {
         const res = await axios.post('/admin/evaluations/grades/save', {
@@ -362,26 +383,6 @@ const saveAll = async () => {
         toast.error('Erreur lors de l\'enregistrement.');
     } finally {
         saving.value = false;
-    }
-};
-
-const validateAll = async () => {
-    if (!props.evaluation) return;
-    validating.value = true;
-    try {
-        const res = await axios.post('/admin/evaluations/grades/validate', {
-            evaluation_id: props.evaluation.id,
-        });
-        if (res.data.success) {
-            toast.success(res.data.message);
-            router.reload();
-        } else {
-            toast.error(res.data.message);
-        }
-    } catch {
-        toast.error('Erreur lors de la validation.');
-    } finally {
-        validating.value = false;
     }
 };
 

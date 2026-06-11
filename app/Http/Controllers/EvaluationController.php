@@ -157,15 +157,35 @@ class EvaluationController extends Controller
     }
 
     /**
-     * Changer le statut d'une évaluation (open, closed, validated)
+     * Changer le statut d'une évaluation.
+     *
+     * Le passage à "validated" est INTERDIT ici — il ne peut se faire
+     * qu'automatiquement via validateGrades() une fois que TOUTES les notes
+     * sont saisies ET validées une à une depuis la page « À valider ».
      */
     public function changeStatus(Request $request, int $id)
     {
-        $request->validate(['status' => 'required|in:draft,open,closed,validated']);
+        $request->validate(['status' => 'required|in:draft,open,closed']);
 
         try {
             $eval = EvaluationModel::getSingle($id);
             if (!$eval) abort(404);
+
+            // Bloquer toute tentative de passage manuel à "validated"
+            if ($request->status === 'validated') {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'La validation doit passer par la page « À valider » après saisie complète de toutes les notes.',
+                ], 422);
+            }
+
+            // Bloquer le retour en arrière depuis validated
+            if ($eval->status === 'validated') {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Une évaluation validée ne peut pas changer de statut. Annulez d\'abord les notes depuis « À valider ».',
+                ], 422);
+            }
 
             $eval->status = $request->status;
             $eval->save();
@@ -287,7 +307,17 @@ class EvaluationController extends Controller
     }
 
     /**
-     * Validation en masse des notes d'une évaluation
+     * Validation des notes d'une évaluation depuis la page « À valider ».
+     *
+     * RÈGLE STRICTE :
+     * - Avec grade_ids  → validation individuelle de ces notes uniquement.
+     *                     L'éval ne passe en "validated" que si toutes les
+     *                     conditions sont réunies (voir ci-dessous).
+     * - Sans grade_ids  → validation globale, BLOQUÉE si des notes manquent.
+     *
+     * L'évaluation ne passe en statut "validated" QUE SI :
+     *   1. Tous les élèves actifs de la classe ont une note saisie (score non null)
+     *   2. Toutes ces notes sont validées (validated = true)
      */
     public function validateGrades(Request $request)
     {
@@ -297,27 +327,97 @@ class EvaluationController extends Controller
         ]);
 
         try {
-            $query = GradeModel::where('evaluation_id', $request->evaluation_id)
-                ->where('is_delete', 0);
-
-            if ($request->grade_ids) {
-                $query->whereIn('id', $request->grade_ids);
-            }
-
-            $query->update([
-                'validated'    => true,
-                'validated_by' => Auth::id(),
-                'validated_at' => now(),
-            ]);
-
-            // Marquer l'évaluation comme validée
             $eval = EvaluationModel::getSingle($request->evaluation_id);
-            if ($eval) {
-                $eval->status = 'validated';
-                $eval->save();
+            if (!$eval) {
+                return response()->json(['success' => false, 'message' => 'Évaluation introuvable.'], 404);
             }
 
-            return response()->json(['success' => true, 'message' => 'Notes validées avec succès.']);
+            // Nombre total d'élèves actifs dans la classe
+            $totalStudents = User::where('class_id', $eval->class_id)
+                ->where('user_type', 3)
+                ->where('is_delete', 0)
+                ->where('status', 1)
+                ->count();
+
+            // ── Validation individuelle (grade_ids fournis) ───────────────────
+            if ($request->grade_ids && count($request->grade_ids) > 0) {
+
+                // Vérifier que chaque note ciblée a bien un score saisi
+                $gradesWithoutScore = GradeModel::whereIn('id', $request->grade_ids)
+                    ->where('evaluation_id', $eval->id)
+                    ->where('is_delete', 0)
+                    ->whereNull('score')
+                    ->count();
+
+                if ($gradesWithoutScore > 0) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Impossible de valider une note vide. Saisissez d\'abord la note.',
+                    ], 422);
+                }
+
+                GradeModel::whereIn('id', $request->grade_ids)
+                    ->where('evaluation_id', $eval->id)
+                    ->where('is_delete', 0)
+                    ->update([
+                        'validated'    => true,
+                        'validated_by' => Auth::id(),
+                        'validated_at' => now(),
+                    ]);
+
+                // Vérifier si TOUTES les conditions sont maintenant réunies pour valider l'éval :
+                // - Chaque élève actif a une note saisie
+                // - Toutes les notes sont validées
+                $savedGrades    = GradeModel::where('evaluation_id', $eval->id)
+                    ->where('is_delete', 0)->whereNotNull('score')->count();
+                $validatedGrades = GradeModel::where('evaluation_id', $eval->id)
+                    ->where('is_delete', 0)->where('validated', true)->count();
+
+                if ($totalStudents > 0
+                    && $savedGrades    >= $totalStudents
+                    && $validatedGrades >= $totalStudents
+                ) {
+                    $eval->status = 'validated';
+                    $eval->save();
+                    return response()->json(['success' => true, 'message' => 'Note validée. Toutes les notes sont complètes — évaluation validée automatiquement.']);
+                }
+
+                return response()->json(['success' => true, 'message' => 'Note(s) validée(s) avec succès.']);
+            }
+
+            // ── Validation globale ────────────────────────────────────────────
+            // Condition 1 : toutes les notes sont saisies
+            $savedGrades = GradeModel::where('evaluation_id', $eval->id)
+                ->where('is_delete', 0)
+                ->whereNotNull('score')
+                ->count();
+
+            if ($savedGrades < $totalStudents) {
+                $missing = $totalStudents - $savedGrades;
+                return response()->json([
+                    'success' => false,
+                    'message' => "{$missing} élève(s) n'ont pas encore de note saisie. "
+                               . "Saisissez toutes les notes avant de valider.",
+                    'missing' => $missing,
+                    'total'   => $totalStudents,
+                    'saved'   => $savedGrades,
+                ], 422);
+            }
+
+            // Toutes les notes présentes → les valider toutes en masse
+            GradeModel::where('evaluation_id', $eval->id)
+                ->where('is_delete', 0)
+                ->update([
+                    'validated'    => true,
+                    'validated_by' => Auth::id(),
+                    'validated_at' => now(),
+                ]);
+
+            $eval->status = 'validated';
+            $eval->save();
+
+            return response()->json(['success' => true, 'message' => 'Toutes les notes ont été validées. Évaluation clôturée.']);
+
         } catch (\Exception $e) {
             Log::error("Erreur validation notes : " . $e->getMessage());
             return response()->json(['success' => false, 'message' => 'Une erreur est survenue.'], 500);

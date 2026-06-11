@@ -155,3 +155,9 @@ Qu'est-ce que tu préfères ?
 Garder closed avec un passage automatique basé sur la date
 Garder closed en passage manuel uniquement (bouton dans l'UI)
 Supprimer closed et simplifier à draft → open → validated
+
+# Aperçu sans modification
+php artisan evaluations:reset-incomplete --dry-run
+
+# Appliquer la correction
+php artisan evaluations:reset-incomplete
