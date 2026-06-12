@@ -17,16 +17,35 @@ const props = defineProps<{
 
 // ── Filtres ────────────────────────────────────────────────────────────────
 const showDeleted = ref(false);
+const search      = ref('');
 const activePerms  = computed(() => props.permissions.filter(p => p.is_delete === 0));
 const deletedPerms = computed(() => props.permissions.filter(p => p.is_delete === 1));
 const shownPerms   = computed(() => showDeleted.value ? deletedPerms.value : activePerms.value);
 
+// ── Recherche ──────────────────────────────────────────────────────────────
+const filteredActivePerms = computed(() => {
+    const q = search.value.toLowerCase().trim();
+    if (!q) return activePerms.value;
+    return activePerms.value.filter(p =>
+        p.name.toLowerCase().includes(q) || p.module.toLowerCase().includes(q)
+    );
+});
+
+const filteredDeletedPerms = computed(() => {
+    const q = search.value.toLowerCase().trim();
+    if (!q) return deletedPerms.value;
+    return deletedPerms.value.filter(p =>
+        p.name.toLowerCase().includes(q) || p.module.toLowerCase().includes(q)
+    );
+});
+
 const activeGrouped  = computed(() => {
     const map: Record<string, Permission[]> = {};
-    activePerms.value.forEach(p => { (map[p.module] ??= []).push(p); });
+    filteredActivePerms.value.forEach(p => { (map[p.module] ??= []).push(p); });
     return map;
 });
 const activeModules = computed(() => Object.keys(activeGrouped.value).sort());
+const totalFiltered = computed(() => filteredActivePerms.value.length);
 
 // ── Vue active ─────────────────────────────────────────────────────────────
 const viewMode = ref<'grouped' | 'table'>('grouped');
@@ -152,11 +171,36 @@ const handleAction = (key: string, row: Record<string, unknown>) => {
         </div>
     </div>
 
+    <!-- Barre de recherche -->
+    <div class="relative max-w-sm">
+        <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none"
+             fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+        </svg>
+        <input v-model="search" type="text"
+               :placeholder="showDeleted ? 'Rechercher dans les supprimées...' : 'Rechercher une permission ou un module...'"
+               class="w-full pl-9 pr-8 py-2 text-sm rounded-lg border border-gray-200 dark:border-gray-600
+                      bg-white dark:bg-gray-800 text-gray-900 dark:text-white
+                      focus:outline-none focus:ring-2 focus:ring-primary-500/40 transition-colors
+                      placeholder-gray-400 dark:placeholder-gray-500"/>
+        <button v-if="search" @click="search = ''"
+                class="absolute right-2.5 top-1/2 -translate-y-1/2 p-0.5 rounded
+                       text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+        </button>
+    </div>
+    <p v-if="search && !showDeleted" class="text-xs text-gray-400 -mt-2">
+        {{ totalFiltered }} résultat{{ totalFiltered !== 1 ? 's' : '' }} pour « {{ search }} »
+    </p>
+
     <!-- Vue supprimées -->
     <template v-if="showDeleted">
-        <div v-if="!deletedPerms.length"
+        <div v-if="!filteredDeletedPerms.length"
              class="card p-10 text-center text-gray-400 dark:text-gray-500 text-sm">
-            Aucune permission supprimée.
+            {{ search ? `Aucune permission supprimée trouvée pour « ${search} ».` : 'Aucune permission supprimée.' }}
         </div>
         <div v-else class="card overflow-hidden">
             <div class="px-5 py-3 bg-red-50 dark:bg-red-900/10 border-b border-red-100 dark:border-red-800/30">
@@ -165,7 +209,7 @@ const handleAction = (key: string, row: Record<string, unknown>) => {
                 </p>
             </div>
             <div class="divide-y divide-gray-100 dark:divide-gray-700/50">
-                <div v-for="p in deletedPerms" :key="p.id"
+                <div v-for="p in filteredDeletedPerms" :key="p.id"
                      class="flex items-center justify-between px-5 py-3 hover:bg-gray-50 dark:hover:bg-gray-800/40">
                     <div>
                         <span class="font-mono text-sm text-gray-500 dark:text-gray-400 line-through">{{ p.name }}</span>
@@ -188,6 +232,16 @@ const handleAction = (key: string, row: Record<string, unknown>) => {
 
     <!-- Vue groupée actives -->
     <template v-else-if="viewMode === 'grouped'">
+        <!-- Aucun résultat -->
+        <div v-if="!activeModules.length"
+             class="card p-10 text-center">
+            <svg class="w-10 h-10 text-gray-300 dark:text-gray-600 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+            </svg>
+            <p class="text-sm text-gray-500 dark:text-gray-400">
+                Aucune permission trouvée pour « {{ search }} »
+            </p>
+        </div>
         <div v-for="mod in activeModules" :key="mod" class="card overflow-hidden">
             <div class="px-5 py-3 bg-gray-50 dark:bg-gray-800/60 border-b border-gray-100 dark:border-gray-700
                         flex items-center justify-between">
@@ -230,7 +284,7 @@ const handleAction = (key: string, row: Record<string, unknown>) => {
 
     <!-- Vue tableau actives -->
     <DataTable v-else
-        :rows="activePerms"
+        :rows="filteredActivePerms"
         :columns="columns"
         :actions="activeActions"
         row-key="id"

@@ -130,6 +130,7 @@ Route::group(['middleware' => 'super_admin', 'prefix' => 'superadmin'], function
     Route::post('users/reset-password',           [UserController::class, 'resetUsersPassword'])->name('superadmin.users.reset-password');
     Route::post('users/update/{id}',              [UserController::class, 'updateUserFromPanel'])->name('superadmin.users.update');
     Route::post('users/delete/{id}',              [UserController::class, 'deleteUser'])->name('superadmin.users.delete');
+    Route::post('users/export',                   [UserController::class, 'exportAllUsers'])->name('superadmin.users.export');
 });
 
 Route::group(['middleware' => 'admin'], function () {

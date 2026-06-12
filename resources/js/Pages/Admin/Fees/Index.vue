@@ -5,7 +5,16 @@
                 <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Collecter les contributions</h1>
                 <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">{{ feesCollections.total }} apprenant(s)</p>
             </div>
-            <AppSelect v-model="filters.class_id" :options="classOptions" placeholder="Filtrer par classe" class="w-48" @change="applyFilters" />
+            <div class="flex items-center gap-2">
+                <label class="text-sm font-medium text-gray-600 dark:text-gray-400 whitespace-nowrap">Filtrer par classe</label>
+                <AppSelect
+                    v-model="filters.class_id"
+                    :options="classOptions"
+                    placeholder="Toutes les classes"
+                    class="min-w-[200px]"
+                    @change="applyFilters"
+                />
+            </div>
         </div>
 
         <div class="card overflow-hidden">
@@ -63,11 +72,14 @@
                 <template #actions="{ row }">
                     <button
                         v-if="((row.remaning_amount as number) ?? (row.class_amount as number)) > 0"
-                        class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300 hover:bg-primary-100 dark:hover:bg-primary-900/40 transition-colors"
+                        class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg
+                               transition-all duration-150 text-white
+                               bg-primary-600 hover:bg-primary-700 active:bg-primary-800
+                               shadow-sm shadow-primary-300 dark:shadow-primary-900/50"
                         @click="openPayment(row as any)"
                     >
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4" />
                         </svg>
                         Collecter
                     </button>

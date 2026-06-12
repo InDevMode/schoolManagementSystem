@@ -72,6 +72,9 @@ class RolesAndPermissionsSeeder extends Seeder
             // ── Actions CRUD sur les parents (granulaires) ───────────────────
             'action.parents.view', 'action.parents.create', 'action.parents.edit',
             'action.parents.delete', 'action.parents.reset_password', 'action.parents.export',
+            'action.parents.manage_children',
+            // ── Accès gestion globale des utilisateurs ────────────────────────
+            'view.useradmins',
             // ── Actions CRUD sur les utilisateurs ────────────────────────────
             'action.users.create', 'action.users.edit', 'action.users.delete',
             // ── Actions CRUD académique ──────────────────────────────────────

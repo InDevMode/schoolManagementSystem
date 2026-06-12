@@ -70,7 +70,7 @@ const props = withDefaults(defineProps<{
 }>(), {
   loading: false, selectable: true, exportable: true,
   exportFilename: 'export', showTotals: true, density: 'normal',
-  defaultPerPage: 8, perPageOptions: () => [8,15,25,50],
+  defaultPerPage: 5, perPageOptions: () => [5,10,15,20,25,30,35,40,45,50],
   emptyText: 'Aucune donnée disponible', showCount: true,
   striped: false, bordered: false, showResetPassword: false,
   inlineEdit: false, inlineEditEndpoint: '', contextMenu: false,
@@ -93,7 +93,16 @@ const filterCol     = ref('');
 const sortKey       = ref('');
 const sortDir       = ref<'asc'|'desc'>('asc');
 const currentPage   = ref(1);
-const perPage       = ref(props.defaultPerPage);
+
+// Initialise perPage depuis l'URL si disponible (mode pagination serveur)
+const urlPerPage = (() => {
+  if (typeof window !== 'undefined') {
+    const p = parseInt(new URL(window.location.href).searchParams.get('per_page') ?? '');
+    if (!isNaN(p) && p > 0) return p;
+  }
+  return null;
+})();
+const perPage       = ref(urlPerPage ?? props.defaultPerPage);
 const selected      = ref<(string|number)[]>([]);
 const showExport    = ref(false);
 const showColPicker = ref(false);
@@ -226,7 +235,16 @@ const totalCols = computed(() =>
 
 // ── Watchers ─────────────────────────────────────────────────────────────────
 watch(search,  () => { currentPage.value=1; emit('search-change', search.value); });
-watch(perPage, () => { currentPage.value=1; });
+watch(perPage, (newVal) => {
+  currentPage.value = 1;
+  // En mode pagination serveur : on recharge la page avec le nouveau per_page
+  if (props.pagination) {
+    const url = new URL(window.location.href);
+    url.searchParams.set('per_page', String(newVal));
+    url.searchParams.set('page', '1');
+    router.visit(url.pathname + url.search, { preserveState: true, replace: true });
+  }
+});
 watch(selected, () => emit('selection-change', selectedRows.value));
 
 // ── Helpers ───────────────────────────────────────────────────────────────────

@@ -39,10 +39,10 @@ class CheckPermission
         // Refus — Inertia ou JSON
         if ($request->wantsJson() || $request->header('X-Inertia')) {
             return Inertia::render('Errors/403', [
-                'message' => "Permission requise : {$permission}",
+                'message' => "Veuillez contacter votre administrateur.",
             ])->toResponse($request)->setStatusCode(403);
         }
 
-        abort(403, "Accès refusé. Permission requise : {$permission}");
+        abort(403, "Accès refusé. Veuillez contacter votre administrateur.");
     }
 }

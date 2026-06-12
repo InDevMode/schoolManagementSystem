@@ -61,8 +61,8 @@
         <!-- ── DROITE : Icônes rondes avec badges + Avatar ── -->
         <div class="flex items-center gap-2 flex-shrink-0">
 
-            <!-- Icône Utilisateurs (super admin seulement) -->
-            <Link v-if="user?.user_type === 0" href="/superadmin/users"
+            <!-- Icône Utilisateurs (super admin ou admin avec permission view.useradmins) -->
+            <Link v-if="canViewAllUsers" href="/superadmin/users"
                class="relative w-9 h-9 flex items-center justify-center rounded-full
                       bg-gray-100 dark:bg-gray-800
                       text-gray-500 dark:text-gray-400
@@ -277,6 +277,7 @@
 import { ref, computed, onMounted, onUnmounted } from 'vue';
 import { usePage, Link } from '@inertiajs/vue3';
 import { useNavigation } from '@/Composables/useNavigation';
+import { useCan } from '@/Composables/useCan';
 import NavIcon from '@/Components/Layout/NavIcon.vue';
 import GlobalSearch from '@/Components/Layout/GlobalSearch.vue';
 import NotificationBell from '@/Components/UI/NotificationBell.vue';
@@ -289,6 +290,10 @@ defineEmits<{ openMobile: [] }>();
 
 const page = usePage<PageProps>();
 const { currentMenu, currentSubItem, user } = useNavigation();
+const { can, isSuperAdmin } = useCan();
+
+// Permission pour accéder à la gestion des utilisateurs (super admin ou admin avec permission)
+const canViewAllUsers = computed(() => isSuperAdmin.value || can('view.useradmins'));
 
 // ── Sous-liens dynamiques du menu actif ──────────────────────────────────────
 const activeSubLinks = computed<NavItem[]>(() => currentMenu.value?.children ?? []);

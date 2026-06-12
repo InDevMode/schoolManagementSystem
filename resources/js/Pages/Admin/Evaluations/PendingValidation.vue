@@ -41,6 +41,7 @@
                     <div class="flex items-center gap-2 flex-shrink-0">
                         <!-- Valider tout — actif uniquement si toutes les notes présentes -->
                         <AppButton
+                            v-if="can('action.marks.manage')"
                             size="sm"
                             variant="success"
                             :loading="validatingId === group.evaluation_id"
@@ -57,6 +58,7 @@
 
                         <!-- Annuler l'évaluation — exclue des moyennes -->
                         <AppButton
+                            v-if="can('action.exams.edit')"
                             size="sm"
                             variant="warning"
                             :loading="cancellingId === group.evaluation_id"
@@ -103,6 +105,7 @@
                                     <div class="flex items-center justify-end gap-1.5">
                                         <!-- ✓ Valider la note -->
                                         <button
+                                            v-if="can('action.marks.manage')"
                                             class="p-1.5 rounded-lg transition-all duration-150
                                                    text-white bg-emerald-500 hover:bg-emerald-600 active:bg-emerald-700
                                                    shadow-sm shadow-emerald-200 dark:shadow-emerald-900/40
@@ -116,6 +119,7 @@
                                         </button>
                                         <!-- ✕ Rejeter la note (devra être re-saisie) -->
                                         <button
+                                            v-if="can('action.marks.manage')"
                                             class="p-1.5 rounded-lg transition-all duration-150
                                                    text-white bg-red-500 hover:bg-red-600 active:bg-red-700
                                                    shadow-sm shadow-red-200 dark:shadow-red-900/40
@@ -190,10 +194,12 @@
 import { computed, ref } from 'vue';
 import { router } from '@inertiajs/vue3';
 import { AppButton, AppModal } from '@/Components/UI';
+import { useCan } from '@/Composables/useCan';
 import { useToast } from '@/Composables/useToast';
 import axios from 'axios';
 
 const toast = useToast();
+const { can } = useCan();
 
 const props = defineProps<{
     grades:     { data: any[]; total: number; from: number; to: number; links: any[] };

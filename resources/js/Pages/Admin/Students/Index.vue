@@ -156,6 +156,15 @@
                                   d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                         </svg>
                     </button>
+                    <!-- Réinitialiser MDP -->
+                    <button v-if="canResetPassword" title="Réinit. MDP" @click="handleResetPassword([row.id as number])"
+                            class="p-1.5 rounded-lg transition-all duration-150
+                                   text-white bg-amber-500 hover:bg-amber-600 active:bg-amber-700
+                                   shadow-sm shadow-amber-200 dark:shadow-amber-900/40">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/>
+                        </svg>
+                    </button>
                     <Link :href="`/chat?receiver_id=${row.id_encoded}`" title="Message"
                        class="p-1.5 rounded-lg transition-all duration-150
                               text-white bg-blue-500 hover:bg-blue-600 active:bg-blue-700
@@ -195,6 +204,13 @@
                               d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                     </svg>
                     Modifier
+                </button>
+                <button v-if="canResetPassword" @click="handleResetPassword([(row as any).id])"
+                        class="flex w-full items-center gap-2.5 px-3.5 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-amber-50 dark:hover:bg-gray-700/60 hover:text-amber-700 transition-colors">
+                    <svg class="w-4 h-4 text-amber-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/>
+                    </svg>
+                    Réinitialiser le mot de passe
                 </button>
                 <Link :href="`/chat?receiver_id=${(row as any).id_encoded}`"
                    class="flex items-center gap-2.5 px-3.5 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-700/60 hover:text-blue-700 transition-colors">

@@ -120,7 +120,7 @@
                                   d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                         </svg>
                     </button>
-                    <Link :href="`/admin/parent/student/${row.id}`" title="Gérer les enfants"
+                    <Link v-if="canManageChildren" :href="`/admin/parent/student/${row.id}`" title="Gérer les enfants"
                        class="p-1.5 rounded-lg transition-all duration-150
                               text-white bg-indigo-500 hover:bg-indigo-600 active:bg-indigo-700
                               shadow-sm shadow-indigo-200 dark:shadow-indigo-900/40">
@@ -129,6 +129,15 @@
                                   d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
                         </svg>
                     </Link>
+                    <!-- Réinitialiser MDP -->
+                    <button v-if="canResetPassword" title="Réinit. MDP" @click="handleResetPassword([row.id as number])"
+                            class="p-1.5 rounded-lg transition-all duration-150
+                                   text-white bg-amber-500 hover:bg-amber-600 active:bg-amber-700
+                                   shadow-sm shadow-amber-200 dark:shadow-amber-900/40">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/>
+                        </svg>
+                    </button>
                     <button v-if="canDelete" title="Supprimer"
                             @click="tableRef?.confirmDelete(row.id as number, `${row.last_name} ${row.name}`)"
                             class="p-1.5 rounded-lg transition-all duration-150
@@ -159,7 +168,7 @@
                     </svg>
                     Modifier
                 </button>
-                <Link :href="`/admin/parent/student/${(row as any).id}`"
+                <Link v-if="canManageChildren" :href="`/admin/parent/student/${(row as any).id}`"
                    class="flex items-center gap-2.5 px-3.5 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-primary-50 dark:hover:bg-gray-700/60 hover:text-primary-700 transition-colors">
                     <svg class="w-4 h-4 text-primary-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -167,6 +176,13 @@
                     </svg>
                     Gérer les enfants
                 </Link>
+                <button v-if="canResetPassword" @click="handleResetPassword([(row as any).id])"
+                        class="flex w-full items-center gap-2.5 px-3.5 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-amber-50 dark:hover:bg-gray-700/60 hover:text-amber-700 transition-colors">
+                    <svg class="w-4 h-4 text-amber-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/>
+                    </svg>
+                    Réinitialiser le mot de passe
+                </button>
                 <Link :href="`/chat?receiver_id=${(row as any).id_encoded}`"
                    class="flex items-center gap-2.5 px-3.5 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-700/60 hover:text-blue-700 transition-colors">
                     <svg class="w-4 h-4 text-blue-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -333,6 +349,7 @@ const canEdit          = computed(() => can('action.parents.edit'));
 const canDelete        = computed(() => can('action.parents.delete'));
 const canResetPassword = computed(() => can('action.parents.reset_password'));
 const canExport        = computed(() => can('action.parents.export'));
+const canManageChildren = computed(() => can('action.parents.manage_children'));
 
 const inlineEditEndpoint = '/superadmin/users/inline-edit';
 

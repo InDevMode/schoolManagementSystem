@@ -17,7 +17,7 @@
                     <AppButton variant="secondary" :loading="previewing" @click="previewAverages">
                         Aperçu moyennes
                     </AppButton>
-                    <AppButton :loading="generating" @click="generateAll">
+                    <AppButton v-if="can('action.bulletins.generate')" :loading="generating" @click="generateAll">
                         <template #icon>
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 11h.01M12 11h.01M15 11h.01M4 7h16a1 1 0 011 1v10a1 1 0 01-1 1H4a1 1 0 01-1-1V8a1 1 0 011-1z"/>
@@ -25,7 +25,7 @@
                         </template>
                         Générer tous les bulletins
                     </AppButton>
-                    <AppButton v-if="hasUnpublished" variant="success" :loading="publishing" @click="publishAll">
+                    <AppButton v-if="hasUnpublished && can('action.bulletins.publish')" variant="success" :loading="publishing" @click="publishAll">
                         Publier tous
                     </AppButton>
                 </div>
@@ -134,7 +134,7 @@
                         </svg>
                     </a>
                     <!-- Publier (brouillon uniquement) -->
-                    <button v-if="row.status === 'draft'"
+                    <button v-if="row.status === 'draft' && can('action.bulletins.publish')"
                         class="p-1.5 rounded-lg transition-all duration-150
                                text-white bg-emerald-500 hover:bg-emerald-600 active:bg-emerald-700
                                shadow-sm shadow-emerald-200 dark:shadow-emerald-900/40"
@@ -163,9 +163,11 @@
 import { ref, computed } from 'vue';
 import { router, Link } from '@inertiajs/vue3';
 import { AppButton, AppSelect, AppBadge, DataTable } from '@/Components/UI';
+import { useCan } from '@/Composables/useCan';
 import { useToast } from '@/Composables/useToast';
 import axios from 'axios';
 
+const { can } = useCan();
 const toast = useToast();
 
 const props = defineProps<{

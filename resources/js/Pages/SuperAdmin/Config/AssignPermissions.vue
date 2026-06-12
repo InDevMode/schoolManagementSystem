@@ -12,10 +12,24 @@ const props = defineProps<{ roles: RoleItem[]; users: UserItem[]; permissions: P
 // ── Onglets ────────────────────────────────────────────────────────────────
 const tab = ref<'role' | 'user'>('role');
 
+const switchTab = (t: 'role' | 'user') => {
+    tab.value = t;
+    permSearch.value = '';
+};
+
+// ── Recherche de permissions ──────────────────────────────────────────────
+const permSearch = ref('');
+
 // ── Permissions groupées par module ───────────────────────────────────────
+const filteredPermissions = computed(() => {
+    const q = permSearch.value.toLowerCase().trim();
+    if (!q) return props.permissions;
+    return props.permissions.filter(p => p.name.toLowerCase().includes(q) || p.module.toLowerCase().includes(q));
+});
+
 const modules = computed(() => {
     const map = new Map<string, PermItem[]>();
-    for (const p of props.permissions) {
+    for (const p of filteredPermissions.value) {
         if (!map.has(p.module)) map.set(p.module, []);
         map.get(p.module)!.push(p);
     }
@@ -151,7 +165,7 @@ const avatarUrl = (u: UserItem) => u.profile_picture ? `/upload/profile/${u.prof
 
     <!-- Onglets -->
     <div class="flex items-center gap-1 p-1 bg-gray-100 dark:bg-gray-800 rounded-lg w-fit">
-        <button @click="tab = 'role'"
+        <button @click="switchTab('role')"
                 :class="['px-5 py-2 text-sm font-medium rounded-lg transition-all',
                          tab === 'role' ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm' :
                                           'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300']">
@@ -162,7 +176,7 @@ const avatarUrl = (u: UserItem) => u.profile_picture ? `/upload/profile/${u.prof
             Par rôle
             <span class="ml-1.5 px-1.5 py-0.5 rounded-full text-xs bg-gray-200 dark:bg-gray-600 text-gray-600 dark:text-gray-300">{{ roles.length }}</span>
         </button>
-        <button @click="tab = 'user'"
+        <button @click="switchTab('user')"
                 :class="['px-5 py-2 text-sm font-medium rounded-lg transition-all',
                          tab === 'user' ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm' :
                                           'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300']">
@@ -256,6 +270,34 @@ const avatarUrl = (u: UserItem) => u.profile_picture ? `/upload/profile/${u.prof
                 <p class="text-sm text-red-700 dark:text-red-400">
                     <strong>super_admin</strong> possède toutes les permissions et ne peut pas être modifié.
                 </p>
+            </div>
+
+            <!-- Recherche permissions -->
+            <div class="relative">
+                <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none"
+                     fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                </svg>
+                <input v-model="permSearch" type="text" placeholder="Rechercher une permission..."
+                       class="w-full pl-9 pr-4 py-2 text-sm rounded-lg border border-gray-200 dark:border-gray-600
+                              bg-white dark:bg-gray-800 text-gray-900 dark:text-white
+                              focus:outline-none focus:ring-2 focus:ring-primary-500/40 transition-colors
+                              placeholder-gray-400 dark:placeholder-gray-500"/>
+                <button v-if="permSearch" @click="permSearch = ''"
+                        class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Aucun résultat -->
+            <div v-if="modules.size === 0" class="card p-8 text-center">
+                <svg class="w-10 h-10 text-gray-300 dark:text-gray-600 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                </svg>
+                <p class="text-sm text-gray-500 dark:text-gray-400">Aucune permission trouvée pour « {{ permSearch }} »</p>
             </div>
 
             <!-- Modules / permissions -->
@@ -407,6 +449,34 @@ const avatarUrl = (u: UserItem) => u.profile_picture ? `/upload/profile/${u.prof
                             {{ userSaving ? 'Sauvegarde...' : 'Enregistrer les permissions directes' }}
                         </button>
                     </div>
+                </div>
+
+                <!-- Recherche permissions utilisateur -->
+                <div class="relative">
+                    <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none"
+                         fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                    </svg>
+                    <input v-model="permSearch" type="text" placeholder="Rechercher une permission..."
+                           class="w-full pl-9 pr-4 py-2 text-sm rounded-lg border border-gray-200 dark:border-gray-600
+                                  bg-white dark:bg-gray-800 text-gray-900 dark:text-white
+                                  focus:outline-none focus:ring-2 focus:ring-primary-500/40 transition-colors
+                                  placeholder-gray-400 dark:placeholder-gray-500"/>
+                    <button v-if="permSearch" @click="permSearch = ''"
+                            class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Aucun résultat -->
+                <div v-if="modules.size === 0" class="card p-8 text-center">
+                    <svg class="w-10 h-10 text-gray-300 dark:text-gray-600 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                    </svg>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">Aucune permission trouvée pour « {{ permSearch }} »</p>
                 </div>
 
                 <!-- Modules/permissions utilisateur -->

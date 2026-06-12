@@ -7,7 +7,10 @@
             </div>
             <a
                 href="/admin/feescollections/feescollects/export"
-                class="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium rounded-lg border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold
+                       transition-all duration-150 text-white
+                       bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800
+                       shadow-sm shadow-emerald-200 dark:shadow-emerald-900/40"
             >
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
@@ -79,11 +82,13 @@
 
                 <template #actions="{ row }">
                     <button
-                        class="p-1.5 rounded-lg text-gray-400 hover:text-danger-600 hover:bg-danger-50 dark:hover:bg-danger-900/20 transition-colors"
+                        class="p-1.5 rounded-lg transition-all duration-150 text-white
+                               bg-red-500 hover:bg-red-600 active:bg-red-700
+                               shadow-sm shadow-red-200 dark:shadow-red-900/40"
                         title="Supprimer"
                         @click="tableRef?.confirmDelete(row.id as number, `paiement #${row.id}`)"
                     >
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                         </svg>
                     </button>
@@ -104,7 +109,10 @@
 import { computed, ref } from 'vue';
 import { router } from '@inertiajs/vue3';
 import { DataTable, AppBadge } from '@/Components/UI';
+import { useCan } from '@/Composables/useCan';
 import { useToast } from '@/Composables/useToast';
+
+const { can } = useCan();
 
 interface FeesCollection {
     id: number;

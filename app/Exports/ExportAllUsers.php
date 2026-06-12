@@ -2,8 +2,8 @@
 
 namespace App\Exports;
 
-use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithMapping;
@@ -12,25 +12,47 @@ use Maatwebsite\Excel\Concerns\WithColumnWidths;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class ExportAdmin implements FromCollection, WithMapping, WithHeadings, WithColumnWidths, WithStyles
+class ExportAllUsers implements FromCollection, WithMapping, WithHeadings, WithColumnWidths, WithStyles
 {
+    private Collection $users;
+
+    private static array $roleMap = [
+        0 => 'Super Administrateur',
+        1 => 'Administrateur',
+        2 => 'Professeur',
+        3 => 'Apprenant',
+        4 => 'Parent',
+    ];
+
     private static array $statusMap = [1 => 'Actif', 0 => 'Inactif'];
+
+    public function __construct(Collection $users)
+    {
+        $this->users = $users;
+    }
+
+    public function collection(): Collection
+    {
+        return $this->users;
+    }
 
     public function map($row): array
     {
-        $fullName = trim($row->last_name . ' ' . $row->name);
-        $status   = self::$statusMap[(int) $row->status] ?? '—';
-        $online   = Cache::has('OnlineUser.' . $row->id) ? 'En ligne' : 'Hors ligne';
+        $fullName  = trim($row->last_name . ' ' . $row->name);
+        $role      = self::$roleMap[(int) $row->user_type] ?? ('Rôle custom (' . $row->user_type . ')');
+        $status    = self::$statusMap[(int) $row->status] ?? '—';
+        $online    = Cache::has('OnlineUser.' . $row->id) ? 'En ligne' : 'Hors ligne';
 
         return [
             $row->id,
             $fullName,
             $row->email,
             $row->mobile_number ?? '—',
+            $role,
             $status,
             $online,
-            $this->formatDate($row->created_at),
-            $this->formatDate($row->updated_at),
+            $row->school_name ?? '—',
+            $this->formatDatetime($row->created_at),
         ];
     }
 
@@ -41,10 +63,11 @@ class ExportAdmin implements FromCollection, WithMapping, WithHeadings, WithColu
             'Prénoms et Nom',
             'Email',
             'Téléphone',
+            'Rôle',
             'Statut',
             'Présence',
-            'Date de création',
-            'Date de modification',
+            'École',
+            'Créé le',
         ];
     }
 
@@ -52,13 +75,14 @@ class ExportAdmin implements FromCollection, WithMapping, WithHeadings, WithColu
     {
         return [
             'A' => 8,
-            'B' => 35,
-            'C' => 35,
-            'D' => 18,
-            'E' => 12,
-            'F' => 14,
-            'G' => 22,
-            'H' => 22,
+            'B' => 32,
+            'C' => 32,
+            'D' => 16,
+            'E' => 22,
+            'F' => 12,
+            'G' => 14,
+            'H' => 20,
+            'I' => 22,
         ];
     }
 
@@ -73,18 +97,9 @@ class ExportAdmin implements FromCollection, WithMapping, WithHeadings, WithColu
         ];
     }
 
-    public function collection()
-    {
-        return User::getAllAdminList();
-    }
-
-    private function formatDate($date): string
+    private function formatDatetime($date): string
     {
         if (!$date) return '—';
-        try {
-            return Carbon::parse($date)->format('d/m/Y H:i:s');
-        } catch (\Exception $e) {
-            return '—';
-        }
+        try { return Carbon::parse($date)->format('d/m/Y H:i:s'); } catch (\Exception $e) { return '—'; }
     }
 }

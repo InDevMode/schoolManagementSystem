@@ -9,6 +9,21 @@
                     {{ users.total }} utilisateur(s) au total
                 </p>
             </div>
+            <!-- Bouton Export -->
+            <form method="POST" action="/superadmin/users/export">
+                <input type="hidden" name="_token" :value="csrf()"/>
+                <input type="hidden" name="user_type" :value="filters.user_type"/>
+                <input type="hidden" name="status" :value="filters.status"/>
+                <button type="submit"
+                        class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium
+                               bg-emerald-600 hover:bg-emerald-700 text-white transition-colors shadow-sm">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                    </svg>
+                    Exporter Excel
+                </button>
+            </form>
         </div>
 
         <!-- ── Bannière ────────────────────────────────────────────────────── -->
@@ -553,6 +568,7 @@
                                 <div>
                                     <label class="form-label">Statut <span class="text-red-500">*</span></label>
                                     <select v-model="editForm.status" class="input-field" required>
+                                        <option value="" disabled>Sélectionner un statut</option>
                                         <option value="1">Actif</option>
                                         <option value="0">Inactif</option>
                                     </select>
@@ -561,6 +577,7 @@
                                 <div class="sm:col-span-2">
                                     <label class="form-label">Rôle <span class="text-red-500">*</span></label>
                                     <select v-model="editForm.user_type" class="input-field" required>
+                                        <option value="" disabled>Sélectionner un rôle</option>
                                         <option v-for="r in roles" :key="r.id" :value="r.user_type">
                                             {{ r.label }}
                                         </option>

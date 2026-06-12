@@ -20,7 +20,7 @@ class ExportParent implements FromCollection, WithMapping, WithHeadings, WithCol
     {
         return [
             $row->id,
-            trim($row->name . ' ' . $row->last_name),
+            trim($row->last_name . ' ' . $row->name),
             $row->email,
             $row->mobile_number ?? '—',
             self::$genderMap[$row->gender] ?? ($row->gender ?? '—'),
@@ -28,8 +28,8 @@ class ExportParent implements FromCollection, WithMapping, WithHeadings, WithCol
             $row->occupation  ?? '—',
             self::$statusMap[(int) $row->status] ?? '—',
             Cache::has('OnlineUser.' . $row->id) ? 'En ligne' : 'Hors ligne',
-            $row->created_at ? $row->created_at->format('d-m-Y H:i:s') : '—',
-            $row->updated_at ? $row->updated_at->format('d-m-Y H:i:s') : '—',
+            $this->formatDatetime($row->created_at),
+            $this->formatDatetime($row->updated_at),
         ];
     }
 
@@ -65,5 +65,11 @@ class ExportParent implements FromCollection, WithMapping, WithHeadings, WithCol
     public function collection()
     {
         return User::getAllParentList();
+    }
+
+    private function formatDatetime($date): string
+    {
+        if (!$date) return '—';
+        try { return \Carbon\Carbon::parse($date)->format('d/m/Y H:i:s'); } catch (\Exception $e) { return '—'; }
     }
 }

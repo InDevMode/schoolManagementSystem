@@ -15,9 +15,31 @@ const props = defineProps<{ roles: Role[]; usedUserTypes: number[]; }>();
 
 // ── Filtres actifs/supprimés ───────────────────────────────────────────────
 const showDeleted  = ref(false);
+const search       = ref('');
 const activeRoles  = computed(() => props.roles.filter(r => r.is_delete === 0));
 const deletedRoles = computed(() => props.roles.filter(r => r.is_delete === 1));
-const shownRoles   = computed(() => showDeleted.value ? deletedRoles.value : activeRoles.value);
+
+// ── Recherche ──────────────────────────────────────────────────────────────
+const filteredActiveRoles = computed(() => {
+    const q = search.value.toLowerCase().trim();
+    if (!q) return activeRoles.value;
+    return activeRoles.value.filter(r =>
+        r.name.toLowerCase().includes(q) ||
+        (r.description ?? '').toLowerCase().includes(q) ||
+        String(r.user_type ?? '').includes(q)
+    );
+});
+
+const filteredDeletedRoles = computed(() => {
+    const q = search.value.toLowerCase().trim();
+    if (!q) return deletedRoles.value;
+    return deletedRoles.value.filter(r =>
+        r.name.toLowerCase().includes(q) ||
+        (r.description ?? '').toLowerCase().includes(q)
+    );
+});
+
+const shownRoles = computed(() => showDeleted.value ? filteredDeletedRoles.value : filteredActiveRoles.value);
 
 // ── Rôles système protégés (user_type 0-4) ────────────────────────────────
 const isSystem = (role: Role) => role.user_type !== null && role.user_type <= 4;
@@ -168,6 +190,31 @@ const handleAction = (key: string, row: Record<string, unknown>) => {
         </div>
     </div>
 
+    <!-- Barre de recherche -->
+    <div class="relative max-w-sm">
+        <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none"
+             fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+        </svg>
+        <input v-model="search" type="text"
+               :placeholder="showDeleted ? 'Rechercher dans les supprimés...' : 'Rechercher un rôle, une description...'"
+               class="w-full pl-9 pr-8 py-2 text-sm rounded-lg border border-gray-200 dark:border-gray-600
+                      bg-white dark:bg-gray-800 text-gray-900 dark:text-white
+                      focus:outline-none focus:ring-2 focus:ring-primary-500/40 transition-colors
+                      placeholder-gray-400 dark:placeholder-gray-500"/>
+        <button v-if="search" @click="search = ''"
+                class="absolute right-2.5 top-1/2 -translate-y-1/2 p-0.5 rounded
+                       text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+        </button>
+    </div>
+    <p v-if="search" class="text-xs text-gray-400 -mt-2">
+        {{ shownRoles.length }} résultat{{ shownRoles.length !== 1 ? 's' : '' }} pour « {{ search }} »
+    </p>
+
     <!-- Info rôles système -->
     <div v-if="!showDeleted"
          class="flex items-start gap-3 p-4 rounded-lg bg-amber-50 dark:bg-amber-900/10 border border-amber-200 dark:border-amber-700/40">
@@ -189,9 +236,9 @@ const handleAction = (key: string, row: Record<string, unknown>) => {
 
     <!-- Vue supprimés -->
     <template v-if="showDeleted">
-        <div v-if="!deletedRoles.length"
+        <div v-if="!filteredDeletedRoles.length"
              class="card p-10 text-center text-gray-400 dark:text-gray-500 text-sm">
-            Aucun rôle supprimé.
+            {{ search ? `Aucun rôle supprimé trouvé pour « ${search} ».` : 'Aucun rôle supprimé.' }}
         </div>
         <div v-else class="card overflow-hidden">
             <div class="px-5 py-3 bg-red-50 dark:bg-red-900/10 border-b border-red-100 dark:border-red-800/30">
@@ -200,7 +247,7 @@ const handleAction = (key: string, row: Record<string, unknown>) => {
                 </p>
             </div>
             <div class="divide-y divide-gray-100 dark:divide-gray-700/50">
-                <div v-for="r in deletedRoles" :key="r.id"
+                <div v-for="r in filteredDeletedRoles" :key="r.id"
                      class="flex items-center justify-between px-5 py-3 hover:bg-gray-50 dark:hover:bg-gray-800/40">
                     <div class="flex items-center gap-3">
                         <span class="font-medium text-gray-500 dark:text-gray-400 line-through">{{ r.name }}</span>
@@ -227,7 +274,7 @@ const handleAction = (key: string, row: Record<string, unknown>) => {
 
     <!-- Tableau actifs -->
     <DataTable v-else
-        :rows="activeRoles"
+        :rows="filteredActiveRoles"
         :columns="columns"
         :actions="activeActions"
         row-key="id"

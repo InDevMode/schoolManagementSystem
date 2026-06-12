@@ -21,7 +21,7 @@ class ExportTeacher implements FromCollection, WithMapping, WithHeadings, WithCo
     {
         return [
             $row->id,
-            trim($row->name . ' ' . $row->last_name),
+            trim($row->last_name . ' ' . $row->name),
             $row->email,
             $row->mobile_number       ?? '—',
             self::$genderMap[$row->gender] ?? ($row->gender ?? '—'),
@@ -35,8 +35,8 @@ class ExportTeacher implements FromCollection, WithMapping, WithHeadings, WithCo
             $row->work_experience     ?? '—',
             self::$statusMap[(int) $row->status] ?? '—',
             Cache::has('OnlineUser.' . $row->id) ? 'En ligne' : 'Hors ligne',
-            $row->created_at ? $row->created_at->format('d-m-Y H:i:s') : '—',
-            $row->updated_at ? $row->updated_at->format('d-m-Y H:i:s') : '—',
+            $this->formatDatetime($row->created_at),
+            $this->formatDatetime($row->updated_at),
         ];
     }
 
@@ -80,6 +80,13 @@ class ExportTeacher implements FromCollection, WithMapping, WithHeadings, WithCo
 
     private function formatDate(?string $date): string
     {
-        return $date ? Carbon::parse($date)->format('d-m-Y') : '—';
+        if (!$date) return '—';
+        try { return Carbon::parse($date)->format('d/m/Y'); } catch (\Exception $e) { return '—'; }
+    }
+
+    private function formatDatetime($date): string
+    {
+        if (!$date) return '—';
+        try { return Carbon::parse($date)->format('d/m/Y H:i:s'); } catch (\Exception $e) { return '—'; }
     }
 }

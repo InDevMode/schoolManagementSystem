@@ -6,6 +6,7 @@ use App\Mail\ResetPasswordAdminMail;
 use App\Models\SettingModel;
 use App\Models\User;
 use App\Notifications\PasswordResetByAdminNotification;
+use App\Exports\ExportAllUsers;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -16,6 +17,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
+use Maatwebsite\Excel\Facades\Excel;
 
 class UserController extends Controller
 {
@@ -588,7 +590,38 @@ class UserController extends Controller
         return Inertia::render('Profile/ChangePassword');
     }
 
-    public function updatePassword(Request $request): \Illuminate\Http\RedirectResponse
+    /**
+     * Export de tous les utilisateurs (super admin only).
+     */
+    public function exportAllUsers(Request $request)
+    {
+        $setting    = SettingModel::getSingle(1);
+        $schoolName = $setting?->school_name ?? config('app.name');
+
+        $query = User::select('users.*')
+            ->where('users.is_delete', 0);
+
+        $userType = $request->get('user_type', '');
+        if (is_numeric($userType) && $userType !== '') {
+            $query->where('users.user_type', (int) $userType);
+        }
+
+        $status = $request->get('status', '');
+        if (in_array($status, ['0', '1'], true)) {
+            $query->where('users.status', $status);
+        }
+
+        $users = $query->orderBy('users.id', 'desc')->get()->map(function ($u) use ($schoolName) {
+            $u->school_name = $schoolName;
+            $u->is_online   = Cache::has('OnlineUser.' . $u->id);
+            return $u;
+        });
+
+        return Excel::download(
+            new ExportAllUsers($users),
+            'utilisateurs_' . date('d_m_Y') . '.xlsx'
+        );
+    }    public function updatePassword(Request $request): \Illuminate\Http\RedirectResponse
     {
         try {
             $user = User::getSingle(Auth::user()->id);
