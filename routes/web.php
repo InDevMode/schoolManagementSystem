@@ -134,8 +134,9 @@ Route::group(['middleware' => 'super_admin', 'prefix' => 'superadmin'], function
 
 Route::group(['middleware' => 'admin'], function () {
 
-    // Dashboard
-    Route::get('admin/dashboard', [DashboardController::class, 'dashboard']);
+    // Dashboard (admin + rôles custom >= 5)
+    Route::get('admin/dashboard',  [DashboardController::class, 'dashboard']);
+    Route::get('dashboard',        [DashboardController::class, 'dashboard'])->name('dashboard.default');
 
     // Admin url
     Route::get('admin/admin/list',         [AdminController::class, 'list'])->middleware('check_perm:view.users.admins');

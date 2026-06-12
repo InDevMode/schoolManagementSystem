@@ -147,7 +147,7 @@
                             class="flex items-center justify-between bg-gray-50 dark:bg-gray-700/50 rounded-lg px-3 py-2"
                         >
                             <div class="flex items-center gap-2 min-w-0">
-                                <span class="text-lg">{{ fileIcon(f.name) }}</span>
+                                <FileTypeIcon :filename="f.name" size="sm" />
                                 <span class="text-sm text-gray-700 dark:text-gray-300 truncate">{{ f.name }}</span>
                                 <span class="text-xs text-gray-400 shrink-0">{{ formatFileSize(f.size) }}</span>
                             </div>
@@ -213,7 +213,7 @@
                             :class="{ 'opacity-40 line-through': attachmentsToRemove.includes(att.id) }"
                         >
                             <div class="flex items-center gap-2 min-w-0">
-                                <span class="text-lg">{{ fileIcon(att.file_name) }}</span>
+                                <FileTypeIcon :filename="att.file_name" size="sm" />
                                 <a :href="att.url" target="_blank" class="text-sm text-primary-600 hover:underline truncate">{{ att.file_name }}</a>
                                 <span class="text-xs text-gray-400 shrink-0">{{ att.readable_size }}</span>
                             </div>
@@ -255,7 +255,7 @@
                             class="flex items-center justify-between bg-gray-50 dark:bg-gray-700/50 rounded-lg px-3 py-2"
                         >
                             <div class="flex items-center gap-2 min-w-0">
-                                <span class="text-lg">{{ fileIcon(f.name) }}</span>
+                                <FileTypeIcon :filename="f.name" size="sm" />
                                 <span class="text-sm text-gray-700 dark:text-gray-300 truncate">{{ f.name }}</span>
                                 <span class="text-xs text-gray-400 shrink-0">{{ formatFileSize(f.size) }}</span>
                             </div>
@@ -304,7 +304,7 @@
                             target="_blank"
                             class="flex items-center gap-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg px-3 py-2 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors group"
                         >
-                            <span class="text-xl">{{ fileIcon(att.file_name) }}</span>
+                            <FileTypeIcon :filename="att.file_name" size="sm" />
                             <span class="text-sm text-gray-700 dark:text-gray-300 group-hover:text-primary-600 truncate flex-1">{{ att.file_name }}</span>
                             <span class="text-xs text-gray-400">{{ att.readable_size }}</span>
                             <svg class="w-4 h-4 text-gray-400 group-hover:text-primary-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -366,7 +366,7 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue';
 import { router } from '@inertiajs/vue3';
-import { AppButton, AppInput, AppSelect, AppModal, AppBadge, DataTable, ConfirmDialog } from '@/Components/UI';
+import { AppButton, AppInput, AppSelect, AppModal, AppBadge, DataTable, ConfirmDialog, FileTypeIcon } from '@/Components/UI';
 import { stripHtml } from '@/Utils/html';
 import { useToast } from '@/Composables/useToast';
 
@@ -497,17 +497,6 @@ const formatFileSize = (bytes: number) => {
     if (bytes < 1024) return bytes + ' o';
     if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' Ko';
     return (bytes / 1048576).toFixed(1) + ' Mo';
-};
-
-const fileIcon = (name: string) => {
-    const ext = name.split('.').pop()?.toLowerCase() ?? '';
-    if (['pdf'].includes(ext)) return '📄';
-    if (['doc', 'docx'].includes(ext)) return '📝';
-    if (['xls', 'xlsx'].includes(ext)) return '📊';
-    if (['ppt', 'pptx'].includes(ext)) return '📑';
-    if (['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'].includes(ext)) return '🖼️';
-    if (['zip', 'rar', '7z'].includes(ext)) return '📦';
-    return '📎';
 };
 
 // ─── Chargement des matières ───────────────────────────────────────────────────

@@ -26,7 +26,11 @@
                 <!-- Photo -->
                 <div class="w-16 h-20 rounded-lg border-2 border-gray-200 dark:border-gray-600 overflow-hidden bg-gray-50 dark:bg-gray-700 flex-shrink-0">
                     <img v-if="detail.bulletin?.profile_picture" :src="`/upload/profile/${detail.bulletin.profile_picture}`" class="w-full h-full object-cover"/>
-                    <div v-else class="w-full h-full flex items-center justify-center text-3xl text-gray-200">👤</div>
+                    <div v-else class="w-full h-full flex items-center justify-center bg-gray-100 dark:bg-gray-700">
+                        <svg class="w-8 h-8 text-gray-300 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                        </svg>
+                    </div>
                 </div>
                 <div class="flex-1">
                     <p class="text-xs text-gray-400 uppercase tracking-wider mb-1">{{ detail.bulletin?.period_type === 'semestre' ? 'BULLETIN SEMESTRIEL' : 'BULLETIN TRIMESTRIEL' }}</p>

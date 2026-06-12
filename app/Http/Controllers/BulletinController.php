@@ -24,7 +24,7 @@ class BulletinController extends Controller
     public function list()
     {
         return Inertia::render('Admin/Bulletins/Index', [
-            'bulletins' => BulletinModel::getAll(15),
+            'bulletins' => BulletinModel::getAll(5),
             'classes'   => ClassModel::getClass(),
             'periods'   => PeriodModel::getAllPeriods(),
         ]);

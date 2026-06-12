@@ -337,7 +337,9 @@ class BulletinModel extends Model
                 $subject->subject_id,
                 $bulletin->period_id
             );
-            return array_merge((array) $subject, ['detail' => $detail]);
+            // Ajouter le détail comme propriété de l'objet (pas array_merge qui casse la syntaxe ->)
+            $subject->detail = $detail;
+            return $subject;
         });
 
         return [

@@ -15,3 +15,4 @@ export { default as AppPagination }  from './AppPagination.vue';
 export { default as DataTable }      from './DataTable.vue';
 export { default as ConfirmDialog }  from './ConfirmDialog.vue';
 export { default as ToastContainer } from './ToastContainer.vue';
+export { default as FileTypeIcon }    from './FileTypeIcon.vue';

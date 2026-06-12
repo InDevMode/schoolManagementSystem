@@ -113,8 +113,28 @@
                         <tr v-for="(sub, i) in detail.subjects" :key="sub.subject_id"
                             :class="[i % 2 === 0 ? 'bg-white dark:bg-gray-800' : 'bg-gray-50 dark:bg-gray-700/50']">
                             <td class="px-4 py-2.5 font-medium text-gray-900 dark:text-white">{{ sub.subject_name }}</td>
-                            <td class="px-4 py-2.5 text-center text-gray-600 dark:text-gray-400">
-                                {{ sub.average ? Number(sub.average).toFixed(2) + ' / 20' : '—' }}
+                            <td class="px-4 py-2.5 text-center text-xs text-gray-600 dark:text-gray-400">
+                                <!-- Afficher les moyennes par groupe si disponibles -->
+                                <template v-if="sub.detail?.groups">
+                                    <div class="flex flex-col gap-0.5 text-left">
+                                        <span v-if="sub.detail.groups.interrogation?.count > 0" class="text-blue-600 dark:text-blue-400">
+                                            Int : {{ sub.detail.groups.interrogation.average?.toFixed(2) }}
+                                        </span>
+                                        <span v-if="sub.detail.groups.devoir_surveille?.count > 0" class="text-amber-600 dark:text-amber-400">
+                                            Dev : {{ sub.detail.groups.devoir_surveille.average?.toFixed(2) }}
+                                        </span>
+                                        <span v-if="sub.detail.groups.travail_maison?.count > 0" class="text-emerald-600 dark:text-emerald-400">
+                                            TM : {{ sub.detail.groups.travail_maison.average?.toFixed(2) }}
+                                        </span>
+                                        <span v-if="sub.detail.groups.examen_blanc?.count > 0" class="text-red-600 dark:text-red-400">
+                                            EB : {{ sub.detail.groups.examen_blanc.average?.toFixed(2) }}
+                                        </span>
+                                        <span v-if="sub.detail.groups_count === 0" class="text-gray-400">—</span>
+                                    </div>
+                                </template>
+                                <template v-else>
+                                    {{ sub.average ? Number(sub.average).toFixed(2) + ' / 20' : '—' }}
+                                </template>
                             </td>
                             <td class="px-4 py-2.5 text-center font-bold text-primary-600 dark:text-primary-400">{{ sub.coefficient }}</td>
                             <td class="px-4 py-2.5 text-center">

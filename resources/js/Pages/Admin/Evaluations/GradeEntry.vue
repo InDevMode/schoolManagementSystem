@@ -253,13 +253,33 @@
                                                 ? 'danger'
                                                 : (g.score !== null && g.score !== '' ? 'info' : 'secondary')"
                                     dot>
-                                    {{ evaluation.status === 'cancelled'
-                                        ? 'Annulée 🚫'
-                                        : g.validated
-                                            ? 'Validé 🔒'
-                                            : g.rejected
-                                                ? 'Rejeté ⚠'
-                                                : (g.score !== null && g.score !== '' ? 'Saisi' : 'En attente') }}
+                                    <span class="inline-flex items-center gap-1">
+                                        <!-- Annulée -->
+                                        <template v-if="evaluation.status === 'cancelled'">
+                                            <svg class="w-3 h-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/>
+                                            </svg>
+                                            Annulée
+                                        </template>
+                                        <!-- Validée -->
+                                        <template v-else-if="g.validated">
+                                            <svg class="w-3 h-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                                            </svg>
+                                            Validée
+                                        </template>
+                                        <!-- Rejetée -->
+                                        <template v-else-if="g.rejected">
+                                            <svg class="w-3 h-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                                            </svg>
+                                            Rejetée
+                                        </template>
+                                        <!-- Saisie ou En attente -->
+                                        <template v-else>
+                                            {{ g.score !== null && g.score !== '' ? 'Saisi' : 'En attente' }}
+                                        </template>
+                                    </span>
                                 </AppBadge>
                             </td>
                         </tr>
