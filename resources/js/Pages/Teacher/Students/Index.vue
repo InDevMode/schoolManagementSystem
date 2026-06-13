@@ -112,100 +112,91 @@
             </template>
         </DataTable>
 
-        <!-- Drawer détails apprenant -->
-        <Teleport to="body">
-            <Transition
-                enter-active-class="transition-all duration-300 ease-out"
-                leave-active-class="transition-all duration-200 ease-in"
-                enter-from-class="opacity-0"
-                enter-to-class="opacity-100"
-                leave-from-class="opacity-100"
-                leave-to-class="opacity-0"
-            >
-                <div v-if="showDetails" class="fixed inset-0 z-50 flex justify-end" @click.self="showDetails = false">
-                    <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" @click="showDetails = false"/>
-                    <Transition
-                        enter-active-class="transition-transform duration-300 ease-out"
-                        leave-active-class="transition-transform duration-200 ease-in"
-                        enter-from-class="translate-x-full"
-                        enter-to-class="translate-x-0"
-                        leave-from-class="translate-x-0"
-                        leave-to-class="translate-x-full"
-                    >
-                        <div v-if="showDetails"
-                             class="relative w-full max-w-sm bg-white dark:bg-gray-900 h-full shadow-2xl flex flex-col">
+        <!-- Modal détails apprenant — style settings panel -->
+        <DetailModal
+            v-model="showDetails"
+            :title="detailsTarget ? `${detailsTarget.last_name} ${detailsTarget.name}` : ''"
+            :subtitle="detailsTarget?.class_name ?? 'Apprenant'"
+            :initials="detailsTarget ? (detailsTarget.last_name?.[0] ?? '') + (detailsTarget.name?.[0] ?? '') : '?'"
+            :tabs="studentTabs"
+            default-tab="profile"
+            size="lg"
+        >
+            <template #avatar>
+                <div class="relative">
+                    <div class="w-16 h-16 rounded-2xl flex items-center justify-center text-xl font-bold text-white shadow-md"
+                         :style="{ backgroundColor: avatarColor(detailsTarget?.last_name ?? '') }">
+                        {{ detailsTarget?.last_name?.[0]?.toUpperCase() }}{{ detailsTarget?.name?.[0]?.toUpperCase() }}
+                    </div>
+                    <span :class="['absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-white dark:border-gray-800 shadow-sm', detailsTarget?.is_online ? 'bg-emerald-400' : 'bg-gray-300']" />
+                </div>
+            </template>
 
-                            <!-- Header drawer -->
-                            <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-9 h-9 rounded-lg flex items-center justify-center text-sm font-bold text-white flex-shrink-0"
-                                         :style="{ backgroundColor: avatarColor(detailsTarget?.last_name ?? '') }">
-                                        {{ detailsTarget?.last_name?.[0]?.toUpperCase() }}{{ detailsTarget?.name?.[0]?.toUpperCase() }}
+            <template #sidebar-footer>
+                <Link v-if="detailsTarget"
+                    :href="`/chat?receiver_id=${detailsTarget.id_encoded}`"
+                    class="flex items-center justify-center gap-2 w-full px-3 py-2 rounded-xl bg-primary-600 hover:bg-primary-700 text-white text-xs font-semibold transition-colors shadow-sm">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                    </svg>
+                    Envoyer un message
+                </Link>
+            </template>
+
+            <template #default="{ activeTab }">
+                <div v-if="detailsTarget">
+                    <!-- PROFIL -->
+                    <div v-show="activeTab === 'profile'" class="space-y-5">
+                        <!-- Bannière -->
+                        <div class="relative rounded-2xl overflow-hidden p-5"
+                             :style="`background: linear-gradient(135deg, ${avatarColor(detailsTarget.last_name)}, ${avatarColor(detailsTarget.last_name)}cc)`">
+                            <div class="absolute inset-0 opacity-10" style="background-image:radial-gradient(circle at 80% 20%, white 0%, transparent 60%)"/>
+                            <div class="relative flex items-center gap-4">
+                                <div class="w-14 h-14 rounded-xl flex items-center justify-center text-lg font-bold text-white ring-4 ring-white/30 shadow-xl"
+                                     :style="{ backgroundColor: avatarColor(detailsTarget.last_name) + '80' }">
+                                    {{ detailsTarget.last_name?.[0]?.toUpperCase() }}{{ detailsTarget.name?.[0]?.toUpperCase() }}
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <h2 class="text-base font-bold text-white truncate">{{ detailsTarget.last_name }} {{ detailsTarget.name }}</h2>
+                                    <p class="text-white/70 text-xs mt-0.5">{{ detailsTarget.email }}</p>
+                                    <div class="flex items-center gap-2 mt-2 flex-wrap">
+                                        <span :class="['px-2 py-0.5 rounded-full text-xs font-semibold', detailsTarget.status == 1 ? 'bg-emerald-400/30 text-emerald-100' : 'bg-red-400/30 text-red-100']">
+                                            {{ detailsTarget.status == 1 ? '✓ Actif' : '✗ Inactif' }}
+                                        </span>
+                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-white/10 text-white/80">
+                                            <span class="w-1.5 h-1.5 rounded-full" :class="detailsTarget.is_online ? 'bg-emerald-400' : 'bg-gray-400'"/>
+                                            {{ detailsTarget.is_online ? 'En ligne' : 'Hors ligne' }}
+                                        </span>
                                     </div>
-                                    <div>
-                                        <h2 class="text-base font-semibold text-gray-900 dark:text-white">
-                                            {{ detailsTarget?.last_name }} {{ detailsTarget?.name }}
-                                        </h2>
-                                        <p class="text-xs text-gray-500 dark:text-gray-400">Apprenant</p>
-                                    </div>
                                 </div>
-                                <button @click="showDetails = false"
-                                        class="p-1.5 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                                    </svg>
-                                </button>
-                            </div>
-
-                            <!-- Corps drawer -->
-                            <div v-if="detailsTarget" class="flex-1 overflow-y-auto px-6 py-5 space-y-4">
-
-                                <!-- Statut + présence -->
-                                <div class="flex items-center gap-2 flex-wrap">
-                                    <AppBadge :variant="detailsTarget.status == 1 ? 'success' : 'danger'" dot>
-                                        {{ detailsTarget.status == 1 ? 'Actif' : 'Inactif' }}
-                                    </AppBadge>
-                                    <span class="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full"
-                                          :class="detailsTarget.is_online
-                                            ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-400'
-                                            : 'bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400'">
-                                        <span class="w-1.5 h-1.5 rounded-full"
-                                              :class="detailsTarget.is_online ? 'bg-emerald-500 animate-pulse' : 'bg-gray-400'"/>
-                                        {{ detailsTarget.is_online ? 'En ligne' : 'Hors ligne' }}
-                                    </span>
-                                </div>
-
-                                <!-- Champs -->
-                                <div class="space-y-3">
-                                    <InfoRow label="Classe"          :value="detailsTarget.class_name" highlight />
-                                    <InfoRow label="N° d'admission"  :value="detailsTarget.admission_number" mono />
-                                    <InfoRow label="N° de rôle"      :value="detailsTarget.roll_number" mono />
-                                    <InfoRow label="Email"           :value="detailsTarget.email" />
-                                    <InfoRow label="Téléphone"       :value="detailsTarget.mobile_number" mono />
-                                    <InfoRow label="Genre"           :value="genderLabel(detailsTarget.gender)" />
-                                    <InfoRow label="Date de naissance" :value="formatDate(detailsTarget.date_of_birth)" />
-                                    <InfoRow label="Date d'admission"  :value="formatDate(detailsTarget.admission_date)" />
-                                    <InfoRow label="Groupe sanguin"  :value="detailsTarget.blood_group?.toUpperCase()" />
-                                </div>
-                            </div>
-
-                            <!-- Footer drawer -->
-                            <div class="px-6 py-4 border-t border-gray-200 dark:border-gray-700">
-                                <Link v-if="detailsTarget"
-                                   :href="`/chat?receiver_id=${detailsTarget.id_encoded}`"
-                                   class="flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-lg bg-primary-600 hover:bg-primary-700 text-white text-sm font-semibold transition-colors shadow-sm">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                              d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
-                                    </svg>
-                                    Envoyer un message
-                                </Link>
                             </div>
                         </div>
-                    </Transition>
+                        <!-- Infos grille -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <InfoCard label="Classe" :value="detailsTarget.class_name" highlight />
+                            <InfoCard label="N° d'admission" :value="detailsTarget.admission_number" mono />
+                            <InfoCard label="N° de rôle" :value="detailsTarget.roll_number" mono />
+                            <InfoCard label="Téléphone" :value="detailsTarget.mobile_number" mono />
+                            <InfoCard label="Genre" :value="genderLabel(detailsTarget.gender)" />
+                            <InfoCard label="Email" :value="detailsTarget.email" />
+                        </div>
+                    </div>
+
+                    <!-- MÉDICAL -->
+                    <div v-show="activeTab === 'medical'" class="space-y-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <InfoCard label="Date de naissance" :value="formatDate(detailsTarget.date_of_birth)" />
+                            <InfoCard label="Groupe sanguin" :value="detailsTarget.blood_group?.toUpperCase()" />
+                            <InfoCard label="Date d'admission" :value="formatDate(detailsTarget.admission_date)" />
+                        </div>
+                    </div>
                 </div>
-            </Transition>
-        </Teleport>
+            </template>
+
+            <template #footer>
+                <AppButton variant="ghost" @click="showDetails = false">Fermer</AppButton>
+            </template>
+        </DetailModal>
 
     </div>
 </template>
@@ -213,9 +204,51 @@
 <script setup lang="ts">
 import { ref, computed, h, defineComponent } from 'vue';
 import { Link } from '@inertiajs/vue3';
-import { DataTable, AppBadge } from '@/Components/UI';
+import { DataTable, AppBadge, AppButton, DetailModal } from '@/Components/UI';
 
-interface Student {
+// ── Composant InfoCard réutilisable ──────────────────────────────────────────
+const InfoCard = defineComponent({
+    props: {
+        label:     { type: String, required: true },
+        value:     { type: String, default: '' },
+        highlight: { type: Boolean, default: false },
+        mono:      { type: Boolean, default: false },
+        badge:     { type: String, default: '' },
+    },
+    setup(p) {
+        return () => h('div', {
+            class: 'bg-gray-50 dark:bg-gray-800/60 rounded-xl p-4 border border-gray-100 dark:border-gray-700/60',
+        }, [
+            h('p', { class: 'text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-1.5' }, p.label),
+            p.badge
+                ? h('span', {
+                    class: ['inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold',
+                        p.badge === 'success'
+                            ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400'
+                            : 'bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400'].join(' '),
+                }, [h('span', { class: ['w-1.5 h-1.5 rounded-full', p.badge === 'success' ? 'bg-emerald-500' : 'bg-red-400'].join(' ') }), p.value || '—'])
+                : h('p', {
+                    class: ['text-sm font-semibold', p.highlight ? 'text-primary-700 dark:text-primary-400' : 'text-gray-800 dark:text-gray-200', p.mono ? 'font-mono' : ''].filter(Boolean).join(' '),
+                }, p.value || '—'),
+        ]);
+    },
+});
+
+// ── Onglets du modal de détails ───────────────────────────────────────────────
+const studentTabs = [
+    {
+        id: 'profile',
+        label: 'Profil',
+        description: 'Informations personnelles',
+        icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>',
+    },
+    {
+        id: 'medical',
+        label: 'Médical',
+        description: 'Santé et dates',
+        icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>',
+    },
+];
     id:               number;
     name:             string;
     last_name:        string;
@@ -245,27 +278,6 @@ const props = defineProps<{
     };
 }>();
 
-// ── Composant interne InfoRow ──────────────────────────────────────────────
-const InfoRow = defineComponent({
-    props: {
-        label:     { type: String, required: true },
-        value:     { type: String, default: '' },
-        highlight: { type: Boolean, default: false },
-        mono:      { type: Boolean, default: false },
-    },
-    setup(p) {
-        return () => h('div', { class: 'flex items-center justify-between py-2 border-b border-gray-100 dark:border-gray-800 last:border-0' }, [
-            h('span', { class: 'text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wide' }, p.label),
-            h('span', {
-                class: [
-                    'text-sm font-semibold',
-                    p.highlight ? 'text-primary-600 dark:text-primary-400' : 'text-gray-800 dark:text-gray-200',
-                    p.mono      ? 'font-mono' : '',
-                ].join(' ')
-            }, p.value || '—'),
-        ]);
-    },
-});
 
 // ── State ──────────────────────────────────────────────────────────────────
 

@@ -293,7 +293,7 @@ const { currentMenu, currentSubItem, user } = useNavigation();
 const { can, isSuperAdmin } = useCan();
 
 // Permission pour accéder à la gestion des utilisateurs (super admin ou admin avec permission)
-const canViewAllUsers = computed(() => isSuperAdmin.value || can('view.useradmins'));
+const canViewAllUsers = computed(() => isSuperAdmin.value || can('view.users.all'));
 
 // ── Sous-liens dynamiques du menu actif ──────────────────────────────────────
 const activeSubLinks = computed<NavItem[]>(() => currentMenu.value?.children ?? []);

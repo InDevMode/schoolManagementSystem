@@ -10,6 +10,7 @@ use App\Models\StaffModel;
 use App\Models\User;
 use App\Notifications\LeaveStatusChangedNotification;
 use App\Notifications\NewEventNotification;
+use App\Notifications\StaffAddedNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -23,8 +24,9 @@ class StaffController extends Controller
 
     public function list()
     {
+        $perPage = min((int) request('per_page', 15), 100);
         return Inertia::render('Admin/Staff/Index', [
-            'staff'      => StaffModel::getAll(15),
+            'staff'      => StaffModel::getAll($perPage),
             'roleLabels' => StaffModel::$roles,
             'users'      => User::select('id', 'name', 'last_name', 'user_type')
                 ->whereIn('user_type', [1, 2])   // admin + teacher uniquement
@@ -59,6 +61,22 @@ class StaffController extends Controller
             $staff->user_id    = $request->user_id ?? null;
             $staff->created_by = Auth::id();
             $staff->save();
+
+            // Notification in-app à l'utilisateur lié s'il existe
+            try {
+                if ($staff->user_id) {
+                    $user = User::find($staff->user_id);
+                    if ($user) {
+                        $roleLabel = StaffModel::$roles[$staff->role] ?? $staff->role;
+                        $hireDate  = $staff->hire_date
+                            ? \Carbon\Carbon::parse($staff->hire_date)->format('d/m/Y')
+                            : '';
+                        $user->notify(new StaffAddedNotification($roleLabel, $hireDate));
+                    }
+                }
+            } catch (\Exception $notifEx) {
+                Log::warning("Staff create notification failed: " . $notifEx->getMessage());
+            }
 
             return redirect()->back()->with('success', 'Membre du personnel ajouté avec succès.');
         } catch (\Exception $e) {
@@ -125,8 +143,9 @@ class StaffController extends Controller
 
     public function leaveTypeList()
     {
+        $perPage = min((int) request('per_page', 15), 100);
         return Inertia::render('Admin/Staff/LeaveTypes', [
-            'leaveTypes' => LeaveTypeModel::getAllPaginated(15),
+            'leaveTypes' => LeaveTypeModel::getAllPaginated($perPage),
         ]);
     }
 
@@ -202,8 +221,9 @@ class StaffController extends Controller
 
     public function leaveList()
     {
+        $perPage = min((int) request('per_page', 15), 100);
         return Inertia::render('Admin/Staff/Leaves', [
-            'leaves'     => StaffLeaveModel::getAll(15),
+            'leaves'     => StaffLeaveModel::getAll($perPage),
             'leaveTypes' => LeaveTypeModel::getAll(),
             'staff'      => StaffModel::getAllActive(),
             'pendingCount' => StaffLeaveModel::getPendingCount(),
@@ -298,8 +318,9 @@ class StaffController extends Controller
 
     public function eventList()
     {
+        $perPage = min((int) request('per_page', 15), 100);
         return Inertia::render('Admin/Staff/Events', [
-            'events'      => StaffEventModel::getAll(15),
+            'events'      => StaffEventModel::getAll($perPage),
             'typeLabels'  => StaffEventModel::$typeLabels,
             'typeColors'  => StaffEventModel::$typeColors,
             'calendarEvents' => StaffEventModel::getCalendarEvents(),

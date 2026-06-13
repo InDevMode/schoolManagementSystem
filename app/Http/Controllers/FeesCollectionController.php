@@ -22,16 +22,18 @@ class FeesCollectionController extends Controller
 {
     public function list()
     {
+        $perPage = min((int) request('per_page', 15), 100);
         return Inertia::render('Admin/Fees/Index', [
             'classes' => ClassModel::getClass(),
-            'feesCollections' => User::getFeesCollectionStudent(15),
+            'feesCollections' => User::getFeesCollectionStudent($perPage),
         ]);
     }
 
     public function feesList()
     {
+        $perPage = min((int) request('per_page', 15), 100);
         return Inertia::render('Admin/Fees/List', [
-            'feesCollections' => FeesCollectionModel::getFeesCollections(15),
+            'feesCollections' => FeesCollectionModel::getFeesCollections($perPage),
         ]);
     }
 

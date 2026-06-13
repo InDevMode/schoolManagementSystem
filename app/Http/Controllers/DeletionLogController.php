@@ -12,8 +12,9 @@ class DeletionLogController extends Controller
      */
     public function list()
     {
+        $perPage = min((int) request('per_page', 20), 100);
         return Inertia::render('SuperAdmin/DeletionLogs/Index', [
-            'logs'       => DeletionLogModel::getAll(20),
+            'logs'       => DeletionLogModel::getAll($perPage),
             'tableNames' => DeletionLogModel::getTableNames(),
         ]);
     }

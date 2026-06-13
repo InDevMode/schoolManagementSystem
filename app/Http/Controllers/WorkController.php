@@ -93,11 +93,10 @@ class WorkController extends Controller
         $work = WorkModel::getWorkIdWithHomeworks($id);
         abort_unless($work, 404);
 
-        // Ajouter les URLs des pièces jointes
+        // Forcer l'inclusion des accessors calculés sur chaque pièce jointe
         if ($work->attachments) {
             $work->attachments->each(function ($att) {
-                $att->url = $att->url;
-                $att->readable_size = $att->readable_size;
+                $att->append(['url', 'readable_size']);
             });
         }
 
@@ -135,8 +134,7 @@ class WorkController extends Controller
 
         $work->load('attachments');
         $work->attachments->each(function ($att) {
-            $att->url           = $att->url;
-            $att->readable_size = $att->readable_size;
+            $att->append(['url', 'readable_size']);
         });
 
         return response()->json(['work' => $work]);
@@ -415,8 +413,7 @@ class WorkController extends Controller
 
         $work->load('attachments');
         $work->attachments->each(function ($att) {
-            $att->url           = $att->url;
-            $att->readable_size = $att->readable_size;
+            $att->append(['url', 'readable_size']);
         });
 
         return response()->json(['work' => $work]);
@@ -619,7 +616,7 @@ class WorkController extends Controller
             ->where('works.is_delete', 1)
             ->where('works.created_by', $teacherId)
             ->orderBy('works.id', 'desc')
-            ->paginate(15);
+            ->paginate(min((int) request('per_page', 15), 100));
 
         return Inertia::render('Teacher/Homework/Trash', [
             'works' => $trashed,
@@ -660,8 +657,7 @@ class WorkController extends Controller
         if ($work) {
             $work->load('attachments');
             $work->attachments->each(function ($att) {
-                $att->url           = $att->url;
-                $att->readable_size = $att->readable_size;
+                $att->append(['url', 'readable_size']);
             });
         }
         return Inertia::render('Student/Homework/Submission', [

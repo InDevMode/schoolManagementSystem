@@ -10,7 +10,7 @@
                 </p>
             </div>
             <!-- Bouton Export -->
-            <form method="POST" action="/superadmin/users/export">
+            <form v-if="canExport" method="POST" action="/superadmin/users/export">
                 <input type="hidden" name="_token" :value="csrf()"/>
                 <input type="hidden" name="user_type" :value="filters.user_type"/>
                 <input type="hidden" name="status" :value="filters.status"/>
@@ -27,7 +27,7 @@
         </div>
 
         <!-- ── Bannière ────────────────────────────────────────────────────── -->
-        <div class="flex items-center gap-2.5 px-4 py-2.5 rounded-lg
+        <div v-if="isSuperAdmin" class="flex items-center gap-2.5 px-4 py-2.5 rounded-lg
                     bg-violet-50 dark:bg-violet-900/20 border border-violet-200 dark:border-violet-700 text-sm">
             <svg class="w-4 h-4 text-violet-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -90,7 +90,7 @@
         <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm overflow-hidden">
 
             <!-- Barre sélection en masse -->
-            <div v-if="selectedIds.length > 0"
+            <div v-if="selectedIds.length > 0 && canReset"
                  class="flex items-center gap-3 px-5 py-3 bg-violet-50 dark:bg-violet-900/20
                          border-b border-violet-100 dark:border-violet-800">
                 <span class="text-sm font-medium text-violet-700 dark:text-violet-300">
@@ -146,7 +146,7 @@
                                 </td>
 
                                 <!-- Utilisateur -->
-                                <td class="px-4 py-3" @dblclick="openEdit(u)">
+                                <td class="px-4 py-3" @dblclick="canEdit && openEdit(u)">
                                     <div class="flex items-center gap-3 min-w-[180px]">
                                         <div class="relative flex-shrink-0">
                                             <img v-if="u.profile_picture"
@@ -189,7 +189,7 @@
                                 </td>
 
                                 <!-- Email -->
-                                <td class="px-4 py-3 max-w-[200px]" @dblclick="openEdit(u)">
+                                <td class="px-4 py-3 max-w-[200px]" @dblclick="canEdit && openEdit(u)">
                                     <div class="group/email flex items-center gap-1">
                                         <span class="text-sm text-gray-700 dark:text-gray-300 truncate" :title="u.email">
                                             {{ u.email }}
@@ -213,7 +213,7 @@
                                 </td>
 
                                 <!-- Téléphone -->
-                                <td class="px-4 py-3 whitespace-nowrap" @dblclick="openEdit(u)">
+                                <td class="px-4 py-3 whitespace-nowrap" @dblclick="canEdit && openEdit(u)">
                                     <div class="group/tel flex items-center gap-1">
                                         <span class="text-sm font-mono text-gray-600 dark:text-gray-400">
                                             {{ u.mobile_number ?? '—' }}
@@ -237,7 +237,7 @@
                                 </td>
 
                                 <!-- Rôle -->
-                                <td class="px-4 py-3 whitespace-nowrap" @dblclick="openEdit(u)">
+                                <td class="px-4 py-3 whitespace-nowrap" @dblclick="canEdit && openEdit(u)">
                                     <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold"
                                           :class="roleStyle(u.user_type).badge">
                                         <span class="w-1.5 h-1.5 rounded-full flex-shrink-0" :class="roleStyle(u.user_type).dot"/>
@@ -288,7 +288,7 @@
                                             </svg>
                                         </button>
                                         <!-- Modifier -->
-                                        <button @click="openEdit(u)" title="Modifier"
+                                        <button v-if="canEdit" @click="openEdit(u)" title="Modifier"
                                                 class="p-1.5 rounded-lg text-white bg-emerald-500 hover:bg-emerald-600 shadow-sm transition-all">
                                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
@@ -302,14 +302,14 @@
                                             </svg>
                                         </Link>
                                         <!-- Réinitialiser MDP -->
-                                        <button @click="openResetConfirm(u)" title="Réinitialiser le mot de passe"
+                                        <button v-if="canReset" @click="openResetConfirm(u)" title="Réinitialiser le mot de passe"
                                                 class="p-1.5 rounded-lg text-white bg-amber-500 hover:bg-amber-600 shadow-sm transition-all">
                                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/>
                                             </svg>
                                         </button>
                                         <!-- Supprimer -->
-                                        <button v-if="u.user_type !== 0" @click="openDeleteConfirm(u)" title="Supprimer"
+                                        <button v-if="canDelete && u.user_type !== 0" @click="openDeleteConfirm(u)" title="Supprimer"
                                                 class="p-1.5 rounded-lg text-white bg-red-500 hover:bg-red-600 shadow-sm transition-all">
                                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
@@ -738,7 +738,15 @@ interface PaginatedUsers {
     links: { url: string | null; label: string; active: boolean }[];
 }
 
-const props = defineProps<{ users: PaginatedUsers; roles: RoleOption[] }>();
+const props = defineProps<{
+    users: PaginatedUsers;
+    roles: RoleOption[];
+    isSuperAdmin: boolean;
+    canEdit: boolean;
+    canDelete: boolean;
+    canReset: boolean;
+    canExport: boolean;
+}>();
 const toast = useToast();
 
 // ── CSRF helper ───────────────────────────────────────────────────────────────

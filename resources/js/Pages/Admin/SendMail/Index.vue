@@ -69,7 +69,7 @@
                 </div>
 
                 <div class="flex justify-end pt-2">
-                    <AppButton type="submit" :loading="form.processing">
+                    <AppButton v-if="can('action.mail.send')" type="submit" :loading="form.processing">
                         <template #icon>
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" /></svg>
                         </template>
@@ -85,7 +85,12 @@
 import { computed } from 'vue';
 import { useForm } from '@inertiajs/vue3';
 import { AppButton, AppInput, AppRichEditor } from '@/Components/UI';
+import { useCan } from '@/Composables/useCan';
+import { useToast } from '@/Composables/useToast';
 import AppMultiSelect from '@/Components/UI/AppMultiSelect.vue';
+
+const { can } = useCan();
+const toast   = useToast();
 
 interface UserItem {
     id: number;
@@ -117,7 +122,11 @@ const form = useForm({
 
 const submitForm = () => {
     form.post('/admin/communicate/send_mail', {
-        onSuccess: () => form.reset(),
+        onSuccess: () => {
+            form.reset();
+            toast.success('Les mails ont été envoyés avec succès.');
+        },
+        onError: () => toast.error('Erreur lors de l\'envoi. Veuillez réessayer.'),
     });
 };
 

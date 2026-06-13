@@ -204,70 +204,82 @@
             </template>
         </DataTable>
 
-        <!-- Modal Détails Administrateur -->
-        <AppModal v-model="showView" title="Détails de l'administrateur" size="md">
-            <div v-if="viewTarget" class="space-y-5">
+        <!-- Modal Détails Administrateur — style settings panel -->
+        <DetailModal
+            v-model="showView"
+            :title="viewTarget ? `${viewTarget.last_name} ${viewTarget.name}` : ''"
+            subtitle="Administrateur"
+            :initials="viewTarget ? (viewTarget.last_name?.[0] ?? '') + (viewTarget.name?.[0] ?? '') : '?'"
+            :tabs="adminTabs"
+            default-tab="profile"
+            size="lg"
+        >
+            <template #avatar>
+                <div class="relative">
+                    <img v-if="viewTarget?.profile_picture"
+                         :src="`/upload/profile/${viewTarget.profile_picture}`"
+                         class="w-16 h-16 rounded-2xl object-cover shadow-md ring-2 ring-white dark:ring-gray-700"/>
+                    <div v-else class="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary-500 to-violet-600 flex items-center justify-center shadow-md">
+                        <span class="text-xl font-bold text-white">
+                            {{ (viewTarget?.last_name?.[0] ?? '') }}{{ (viewTarget?.name?.[0] ?? '') }}
+                        </span>
+                    </div>
+                    <span :class="['absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-white dark:border-gray-800 shadow-sm', viewTarget?.is_online ? 'bg-emerald-400' : 'bg-gray-300']" />
+                </div>
+            </template>
 
-                <!-- Header profil -->
-                <div class="relative rounded-2xl overflow-hidden bg-gradient-to-br from-primary-600 to-violet-700 p-6">
-                    <div class="absolute inset-0 opacity-10"
-                         style="background-image:radial-gradient(circle at 80% 20%, white 0%, transparent 60%)"/>
-                    <div class="relative flex items-center gap-4">
-                        <div class="relative flex-shrink-0">
-                            <img v-if="viewTarget.profile_picture"
-                                 :src="`/upload/profile/${viewTarget.profile_picture}`"
-                                 class="w-16 h-16 rounded-full object-cover ring-4 ring-white/30 shadow-xl"/>
-                            <div v-else
-                                 class="w-16 h-16 rounded-full bg-white/20 backdrop-blur flex items-center justify-center ring-4 ring-white/30 shadow-xl">
-                                <span class="text-xl font-bold text-white">
-                                    {{ (viewTarget.last_name?.[0] ?? '') }}{{ (viewTarget.name?.[0] ?? '') }}
-                                </span>
-                            </div>
-                            <span class="absolute bottom-0.5 right-0.5 w-3.5 h-3.5 rounded-full border-2 border-white shadow-sm"
-                                  :class="viewTarget.is_online ? 'bg-emerald-400' : 'bg-gray-400'"/>
-                        </div>
-                        <div class="flex-1 min-w-0">
-                            <h2 class="text-lg font-bold text-white truncate">
-                                {{ viewTarget.last_name }} {{ viewTarget.name }}
-                            </h2>
-                            <p class="text-primary-200 text-sm mt-0.5">{{ viewTarget.email }}</p>
-                            <div class="flex items-center gap-2 mt-2 flex-wrap">
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold"
-                                      :class="viewTarget.status == 1
-                                        ? 'bg-emerald-400/30 text-emerald-100'
-                                        : 'bg-red-400/30 text-red-100'">
-                                    {{ viewTarget.status == 1 ? '✓ Actif' : '✗ Inactif' }}
-                                </span>
-                                <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-white/10 text-white/80">
-                                    <span class="w-1.5 h-1.5 rounded-full"
+            <template #sidebar-footer>
+                <Link v-if="viewTarget" :href="`/chat?receiver_id=${viewTarget.id_encoded}`"
+                    class="flex items-center justify-center gap-2 w-full px-3 py-2 rounded-xl bg-primary-600 hover:bg-primary-700 text-white text-xs font-semibold transition-colors shadow-sm">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                    </svg>
+                    Envoyer un message
+                </Link>
+            </template>
+
+            <template #default="{ activeTab }">
+                <div v-if="viewTarget">
+                    <div v-show="activeTab === 'profile'" class="space-y-5">
+                        <!-- Bannière -->
+                        <div class="relative rounded-2xl overflow-hidden bg-gradient-to-br from-primary-600 to-violet-700 p-5">
+                            <div class="absolute inset-0 opacity-10" style="background-image:radial-gradient(circle at 80% 20%, white 0%, transparent 60%)"/>
+                            <div class="relative flex items-center gap-4">
+                                <div class="relative flex-shrink-0">
+                                    <img v-if="viewTarget.profile_picture"
+                                         :src="`/upload/profile/${viewTarget.profile_picture}`"
+                                         class="w-14 h-14 rounded-xl object-cover ring-4 ring-white/30 shadow-xl"/>
+                                    <div v-else class="w-14 h-14 rounded-xl bg-white/20 backdrop-blur flex items-center justify-center ring-4 ring-white/30 shadow-xl">
+                                        <span class="text-lg font-bold text-white">{{ viewTarget.last_name?.[0] }}{{ viewTarget.name?.[0] }}</span>
+                                    </div>
+                                    <span class="absolute -bottom-1 -right-1 w-3.5 h-3.5 rounded-full border-2 border-white shadow-sm"
                                           :class="viewTarget.is_online ? 'bg-emerald-400' : 'bg-gray-400'"/>
-                                    {{ viewTarget.is_online ? 'En ligne' : 'Hors ligne' }}
-                                </span>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <h2 class="text-base font-bold text-white truncate">{{ viewTarget.last_name }} {{ viewTarget.name }}</h2>
+                                    <p class="text-primary-200 text-xs mt-0.5">{{ viewTarget.email }}</p>
+                                    <div class="flex items-center gap-2 mt-2 flex-wrap">
+                                        <span :class="['px-2 py-0.5 rounded-full text-xs font-semibold', viewTarget.status == 1 ? 'bg-emerald-400/30 text-emerald-100' : 'bg-red-400/30 text-red-100']">
+                                            {{ viewTarget.status == 1 ? '✓ Actif' : '✗ Inactif' }}
+                                        </span>
+                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-white/10 text-white/80">
+                                            <span class="w-1.5 h-1.5 rounded-full" :class="viewTarget.is_online ? 'bg-emerald-400' : 'bg-gray-400'"/>
+                                            {{ viewTarget.is_online ? 'En ligne' : 'Hors ligne' }}
+                                        </span>
+                                    </div>
+                                </div>
                             </div>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <InfoCard label="Rôle" value="Administrateur" highlight />
+                            <InfoCard label="Téléphone" :value="viewTarget.mobile_number" mono />
+                            <InfoCard label="Email" :value="viewTarget.email" />
+                            <InfoCard label="Inscrit le" :value="formatDate(viewTarget.created_at)" />
+                            <InfoCard label="Statut" :badge="viewTarget.status == 1 ? 'success' : 'danger'" :value="viewTarget.status == 1 ? 'Actif' : 'Inactif'" />
                         </div>
                     </div>
                 </div>
-
-                <!-- Infos -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div class="bg-gray-50 dark:bg-gray-800/60 rounded-lg p-4 border border-gray-100 dark:border-gray-700">
-                        <p class="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-1">Rôle</p>
-                        <p class="text-sm font-semibold text-primary-700 dark:text-primary-400">Administrateur</p>
-                    </div>
-                    <div class="bg-gray-50 dark:bg-gray-800/60 rounded-lg p-4 border border-gray-100 dark:border-gray-700">
-                        <p class="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-1">Inscrit le</p>
-                        <p class="text-sm font-semibold text-gray-800 dark:text-gray-200">{{ formatDate(viewTarget.created_at) }}</p>
-                    </div>
-                    <div class="bg-gray-50 dark:bg-gray-800/60 rounded-lg p-4 border border-gray-100 dark:border-gray-700">
-                        <p class="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-1">Téléphone</p>
-                        <p class="text-sm font-semibold text-gray-800 dark:text-gray-200 font-mono">{{ viewTarget.mobile_number ?? '—' }}</p>
-                    </div>
-                    <div class="sm:col-span-2 bg-gray-50 dark:bg-gray-800/60 rounded-lg p-4 border border-gray-100 dark:border-gray-700">
-                        <p class="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-1">Email</p>
-                        <p class="text-sm font-semibold text-gray-800 dark:text-gray-200">{{ viewTarget.email }}</p>
-                    </div>
-                </div>
-            </div>
+            </template>
 
             <template #footer>
                 <AppButton variant="ghost" @click="showView = false">Fermer</AppButton>
@@ -280,7 +292,7 @@
                     Modifier
                 </AppButton>
             </template>
-        </AppModal>
+        </DetailModal>
 
         <!-- Modal Créer / Modifier -->
         <AppModal v-model="showForm" :title="editTarget ? 'Modifier l\'administrateur' : 'Nouvel administrateur'" size="lg">
@@ -325,17 +337,46 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, h, defineComponent } from 'vue';
 import { router, useForm, Link } from '@inertiajs/vue3';
-import { AppButton, AppInput, AppSelect, AppModal, AppBadge, DataTable } from '@/Components/UI';
+import { AppButton, AppInput, AppSelect, AppModal, AppBadge, DataTable, DetailModal } from '@/Components/UI';
 import UserAvatar from '@/Components/Shared/UserAvatar.vue';
 import { useToast } from '@/Composables/useToast';
+
+// ── Composant InfoCard réutilisable ──────────────────────────────────────────
+const InfoCard = defineComponent({
+    props: {
+        label:     { type: String, required: true },
+        value:     { type: String, default: '' },
+        highlight: { type: Boolean, default: false },
+        mono:      { type: Boolean, default: false },
+        badge:     { type: String, default: '' },
+    },
+    setup(p) {
+        return () => h('div', {
+            class: 'bg-gray-50 dark:bg-gray-800/60 rounded-xl p-4 border border-gray-100 dark:border-gray-700/60',
+        }, [
+            h('p', { class: 'text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-1.5' }, p.label),
+            p.badge
+                ? h('span', {
+                    class: ['inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold',
+                        p.badge === 'success'
+                            ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400'
+                            : 'bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400'].join(' '),
+                }, [h('span', { class: ['w-1.5 h-1.5 rounded-full', p.badge === 'success' ? 'bg-emerald-500' : 'bg-red-400'].join(' ') }), p.value || '—'])
+                : h('p', {
+                    class: ['text-sm font-semibold', p.highlight ? 'text-primary-700 dark:text-primary-400' : 'text-gray-800 dark:text-gray-200', p.mono ? 'font-mono' : ''].filter(Boolean).join(' '),
+                }, p.value || '—'),
+        ]);
+    },
+});
 import { useCan } from '@/Composables/useCan';
 
 interface Admin {
     id: number; name: string; last_name: string; email: string;
     status: number; profile_picture: string | null; created_at: string;
     is_online?: boolean; mobile_number?: string;
+    id_encoded?: string;
 }
 
 const props = defineProps<{
@@ -368,6 +409,15 @@ const previewUrl = ref<string | null>(null);
 const picFile    = ref<File | null>(null);
 
 const statusOptions = [{ value: '1', label: 'Actif' }, { value: '0', label: 'Inactif' }];
+
+const adminTabs = [
+    {
+        id: 'profile',
+        label: 'Profil',
+        description: 'Informations personnelles',
+        icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>',
+    },
+];
 
 // Actions pour le menu contextuel
 const rowActions = computed(() => [

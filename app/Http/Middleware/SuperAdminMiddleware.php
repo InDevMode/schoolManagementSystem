@@ -19,7 +19,11 @@ class SuperAdminMiddleware
             return $next($request);
         }
 
-        Auth::logout();
-        return redirect(url(''));
+        // Ne pas déconnecter — simplement rediriger vers le dashboard approprié
+        if (!Auth::check()) {
+            return redirect(url('login'));
+        }
+
+        return redirect(url('dashboard'));
     }
 }

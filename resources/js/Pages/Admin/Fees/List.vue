@@ -6,6 +6,7 @@
                 <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">{{ feesCollections.total }} contribution(s)</p>
             </div>
             <a
+                v-if="can('view.fees.reports')"
                 href="/admin/feescollections/feescollects/export"
                 class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold
                        transition-all duration-150 text-white
@@ -82,6 +83,7 @@
 
                 <template #actions="{ row }">
                     <button
+                        v-if="can('action.fees.delete')"
                         class="p-1.5 rounded-lg transition-all duration-150 text-white
                                bg-red-500 hover:bg-red-600 active:bg-red-700
                                shadow-sm shadow-red-200 dark:shadow-red-900/40"

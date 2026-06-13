@@ -7,6 +7,10 @@ export const adminNav: NavItem[] = [
         href: '/admin/dashboard', permission: 'view.dashboard.admin',
     },
     {
+        id: 'all-users', label: 'Gestion utilisateurs', icon: 'users',
+        href: '/superadmin/users', permission: 'view.users.all',
+    },
+    {
         id: 'users', label: 'Utilisateurs', icon: 'users',
         children: [
             { id: 'admins',   label: 'Administrateurs', icon: 'shield',        href: '/admin/admin/list',   permission: 'view.users.admins'   },
@@ -83,6 +87,10 @@ export const superAdminNav: NavItem[] = [
     {
         id: 'dashboard', label: 'Dashboard', icon: 'home',
         href: '/superadmin/dashboard',
+    },
+    {
+        id: 'sa-all-users', label: 'Gestion utilisateurs', icon: 'users',
+        href: '/superadmin/users', permission: 'view.users.all',
     },
     {
         id: 'users', label: 'Utilisateurs', icon: 'users',

@@ -124,16 +124,16 @@ Route::group(['middleware' => 'super_admin', 'prefix' => 'superadmin'], function
     // ── Journaux de suppression (super admin only) ─────────────────────────
     Route::get('deletion-logs',       [DeletionLogController::class, 'list'])->name('superadmin.deletion-logs');
     Route::get('deletion-logs/{id}',  [DeletionLogController::class, 'show'])->name('superadmin.deletion-logs.show');
-
-    // ── Liste de tous les utilisateurs (super admin only) ──────────────────
-    Route::get('users',                           [UserController::class, 'allUsersList'])->name('superadmin.users');
-    Route::post('users/reset-password',           [UserController::class, 'resetUsersPassword'])->name('superadmin.users.reset-password');
-    Route::post('users/update/{id}',              [UserController::class, 'updateUserFromPanel'])->name('superadmin.users.update');
-    Route::post('users/delete/{id}',              [UserController::class, 'deleteUser'])->name('superadmin.users.delete');
-    Route::post('users/export',                   [UserController::class, 'exportAllUsers'])->name('superadmin.users.export');
 });
 
 Route::group(['middleware' => 'admin'], function () {
+
+    // ── Gestion de tous les utilisateurs (super admin + admin avec permission) ──
+    Route::get('superadmin/users',                           [UserController::class, 'allUsersList'])->name('superadmin.users')->middleware('check_perm:view.users.all');
+    Route::post('superadmin/users/reset-password',           [UserController::class, 'resetUsersPassword'])->name('superadmin.users.reset-password')->middleware('check_perm:view.users.all');
+    Route::post('superadmin/users/update/{id}',              [UserController::class, 'updateUserFromPanel'])->name('superadmin.users.update')->middleware('check_perm:action.users.edit');
+    Route::post('superadmin/users/delete/{id}',              [UserController::class, 'deleteUser'])->name('superadmin.users.delete')->middleware('check_perm:action.users.delete');
+    Route::post('superadmin/users/export',                   [UserController::class, 'exportAllUsers'])->name('superadmin.users.export')->middleware('check_perm:view.users.all');
 
     // Dashboard (admin + rôles custom >= 5)
     Route::get('admin/dashboard',  [DashboardController::class, 'dashboard']);
@@ -376,6 +376,7 @@ Route::group(['middleware' => 'teacher'], function () {
     Route::post('teacher/practicalworks/homework/add', [WorkController::class, 'teacherPracticalWorksCreate']);
     Route::get('teacher/practicalworks/homework/edit/{id}', [WorkController::class, 'teacherPracticalWorksEdit']);
     Route::get('teacher/practicalworks/homework/edit-json/{id}', [WorkController::class, 'teacherPracticalWorksEditJson']);
+    Route::get('teacher/practicalworks/homework/details-json/{id}', [WorkController::class, 'practicalWorksDetailsJson']);
     Route::post('teacher/practicalworks/homework/edit/{id}', [WorkController::class, 'teacherPracticalWorksUpdate']);
     Route::get('teacher/practicalworks/homework/delete/{id}', [WorkController::class, 'teacherPracticalWorksDelete']);
     Route::get('teacher/practicalworks/homework/restore/{id}', [WorkController::class, 'teacherPracticalWorksRestore']);

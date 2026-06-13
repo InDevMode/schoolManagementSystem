@@ -17,6 +17,7 @@ class ChatController extends Controller
     public function chat(Request $request)
     {
         $sender_id = Auth::user()->id;
+        $user      = Auth::user();
         User::updateLastLogin($sender_id);
 
         $getChatUser = ChatModel::getChatUser($sender_id);
@@ -40,12 +41,123 @@ class ChatController extends Controller
             })->values();
         }
 
+        // ── Contacts suggérés selon le rôle de l'utilisateur ──────────────────
+        $chatContacts = $this->getChatContactsByRole($user);
+
         return \Inertia\Inertia::render('Chat/Index', [
-            'contacts'    => $getChatUser,
-            'receiver'    => $receiver,
-            'chats'       => $getChats,
-            'receiver_id' => $request->receiver_id ?? null,
+            'contacts'     => $getChatUser,
+            'chatContacts' => $chatContacts,
+            'receiver'     => $receiver,
+            'chats'        => $getChats,
+            'receiver_id'  => $request->receiver_id ?? null,
         ]);
+    }
+
+    /**
+     * Retourne la liste de contacts suggérés selon le rôle :
+     *  - Apprenant (3)  : tous les apprenants de sa classe
+     *  - Professeur (2) : tous les apprenants de ses classes assignées
+     *  - Parent (4)     : ses enfants assignés
+     *  - Admin/Super    : tous les utilisateurs actifs
+     */
+    private function getChatContactsByRole($user): array
+    {
+        $userType = (int) $user->user_type;
+        $myId     = $user->id;
+
+        switch ($userType) {
+            // ── Apprenant : camarades de classe ──────────────────────────────
+            case 3:
+                $classId = $user->class_id;
+                if (!$classId) return [];
+                return User::select('users.id', 'users.name', 'users.last_name', 'users.profile_picture', 'users.last_login', 'users.user_type')
+                    ->where('users.user_type', 3)
+                    ->where('users.class_id', $classId)
+                    ->where('users.id', '!=', $myId)
+                    ->where('users.is_delete', 0)
+                    ->where('users.status', 1)
+                    ->orderBy('users.last_name')
+                    ->get()
+                    ->map(fn($u) => $this->formatChatContact($u, 'Apprenant'))
+                    ->values()
+                    ->toArray();
+
+            // ── Professeur : apprenants de ses classes ────────────────────────
+            case 2:
+                return User::select('users.id', 'users.name', 'users.last_name', 'users.profile_picture', 'users.last_login', 'users.user_type', 'class.name as class_name')
+                    ->join('class', 'class.id', '=', 'users.class_id')
+                    ->join('class_teacher', 'class_teacher.class_id', '=', 'class.id')
+                    ->where('class_teacher.teacher_id', $myId)
+                    ->where('class_teacher.is_delete', 0)
+                    ->where('class_teacher.status', 1)
+                    ->where('users.user_type', 3)
+                    ->where('users.is_delete', 0)
+                    ->where('users.status', 1)
+                    ->orderBy('class.name')
+                    ->orderBy('users.last_name')
+                    ->groupBy('users.id', 'users.name', 'users.last_name', 'users.profile_picture', 'users.last_login', 'users.user_type', 'class.name')
+                    ->get()
+                    ->map(fn($u) => $this->formatChatContact($u, 'Apprenant', $u->class_name ?? null))
+                    ->values()
+                    ->toArray();
+
+            // ── Parent : ses enfants ──────────────────────────────────────────
+            case 4:
+                return User::select('users.id', 'users.name', 'users.last_name', 'users.profile_picture', 'users.last_login', 'users.user_type', 'class.name as class_name')
+                    ->leftJoin('class', 'class.id', '=', 'users.class_id')
+                    ->where('users.parent_id', $myId)
+                    ->where('users.user_type', 3)
+                    ->where('users.is_delete', 0)
+                    ->orderBy('users.last_name')
+                    ->get()
+                    ->map(fn($u) => $this->formatChatContact($u, 'Apprenant', $u->class_name ?? null))
+                    ->values()
+                    ->toArray();
+
+            // ── Admin / Super Admin : tous utilisateurs actifs ────────────────
+            default:
+                return User::select('users.id', 'users.name', 'users.last_name', 'users.profile_picture', 'users.last_login', 'users.user_type')
+                    ->where('users.id', '!=', $myId)
+                    ->where('users.is_delete', 0)
+                    ->where('users.status', 1)
+                    ->whereIn('users.user_type', [1, 2, 3, 4])
+                    ->orderBy('users.user_type')
+                    ->orderBy('users.last_name')
+                    ->limit(100)
+                    ->get()
+                    ->map(function ($u) {
+                        $role = match ((int) $u->user_type) {
+                            1 => 'Administrateur', 2 => 'Professeur',
+                            3 => 'Apprenant',      4 => 'Parent',
+                            default => 'Utilisateur',
+                        };
+                        return $this->formatChatContact($u, $role);
+                    })
+                    ->values()
+                    ->toArray();
+        }
+    }
+
+    private function formatChatContact($user, string $role, ?string $className = null): array
+    {
+        $lastLogin   = $user->last_login;
+        $isOnline    = $lastLogin && \Carbon\Carbon::parse($lastLogin)->diffInMinutes(now()) <= 5;
+        $profilePic  = $user->profile_picture
+            ? url('upload/profile/' . $user->profile_picture)
+            : url('upload/default.jpg');
+
+        return [
+            'id'              => $user->id,
+            'id_encoded'      => base64_encode((string) $user->id),
+            'name'            => $user->last_name . ' ' . $user->name,
+            'first_name'      => $user->name,
+            'last_name'       => $user->last_name,
+            'role'            => $role,
+            'class_name'      => $className,
+            'profile_picture' => $profilePic,
+            'is_online'       => $isOnline,
+            'last_login'      => $lastLogin,
+        ];
     }
 
     public function sendMessage(Request $request)
@@ -185,10 +297,12 @@ class ChatController extends Controller
     public function pollContacts(Request $request)
     {
         $sender_id = Auth::id();
+        $user      = Auth::user();
         User::updateLastLogin($sender_id);
 
         return response()->json([
-            'contacts' => ChatModel::getChatUser($sender_id),
+            'contacts'     => ChatModel::getChatUser($sender_id),
+            'chatContacts' => $this->getChatContactsByRole($user),
         ]);
     }
 

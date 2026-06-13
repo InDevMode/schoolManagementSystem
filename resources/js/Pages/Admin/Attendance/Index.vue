@@ -34,7 +34,7 @@
                         {{ savedCount }} / {{ students.length }} enregistré(s)
                     </span>
                 </div>
-                <AppButton size="sm" :loading="saving" @click="saveAll" :disabled="pendingCount === 0">
+                <AppButton v-if="can('action.attendance.save')" size="sm" :loading="saving" @click="saveAll" :disabled="pendingCount === 0">
                     Enregistrer {{ pendingCount > 0 ? `(${pendingCount})` : '' }}
                 </AppButton>
             </div>
@@ -110,6 +110,9 @@ import { ref, computed, reactive, watch } from 'vue';
 import { router } from '@inertiajs/vue3';
 import axios from 'axios';
 import { AppButton, AppInput, AppSelect } from '@/Components/UI';
+import { useCan } from '@/Composables/useCan';
+
+const { can } = useCan();
 
 interface Student   { id: number; name: string; last_name: string; }
 interface ClassItem { id: number; name: string; }

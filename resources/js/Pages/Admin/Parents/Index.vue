@@ -205,63 +205,83 @@
             </template>
         </DataTable>
 
-        <!-- Modal Détails Parent -->
-        <AppModal v-model="showView" title="Détails du parent" size="md">
-            <div v-if="viewTarget" class="space-y-5">
-                <div class="relative rounded-2xl overflow-hidden bg-gradient-to-br from-blue-600 to-indigo-700 p-6">
-                    <div class="absolute inset-0 opacity-10"
-                         style="background-image:radial-gradient(circle at 80% 20%, white 0%, transparent 60%)"/>
-                    <div class="relative flex items-center gap-4">
-                        <div class="relative flex-shrink-0">
-                            <img v-if="viewTarget.profile_picture"
-                                 :src="`/upload/profile/${viewTarget.profile_picture}`"
-                                 class="w-16 h-16 rounded-full object-cover ring-4 ring-white/30 shadow-xl"/>
-                            <div v-else
-                                 class="w-16 h-16 rounded-full bg-white/20 backdrop-blur flex items-center justify-center ring-4 ring-white/30 shadow-xl">
-                                <span class="text-xl font-bold text-white">
-                                    {{ (viewTarget.last_name?.[0] ?? '') }}{{ (viewTarget.name?.[0] ?? '') }}
-                                </span>
+        <!-- Modal Détails Parent — style settings panel -->
+        <DetailModal
+            v-model="showView"
+            :title="viewTarget ? `${viewTarget.last_name} ${viewTarget.name}` : ''"
+            subtitle="Parent"
+            :initials="viewTarget ? (viewTarget.last_name?.[0] ?? '') + (viewTarget.name?.[0] ?? '') : '?'"
+            :tabs="parentTabs"
+            default-tab="profile"
+            size="lg"
+        >
+            <template #avatar>
+                <div class="relative">
+                    <img v-if="viewTarget?.profile_picture"
+                         :src="`/upload/profile/${viewTarget.profile_picture}`"
+                         class="w-16 h-16 rounded-2xl object-cover shadow-md ring-2 ring-white dark:ring-gray-700"/>
+                    <div v-else class="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-md">
+                        <span class="text-xl font-bold text-white">
+                            {{ (viewTarget?.last_name?.[0] ?? '') }}{{ (viewTarget?.name?.[0] ?? '') }}
+                        </span>
+                    </div>
+                    <span :class="['absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-white dark:border-gray-800 shadow-sm', viewTarget?.is_online ? 'bg-emerald-400' : 'bg-gray-300']" />
+                </div>
+            </template>
+
+            <template #sidebar-footer>
+                <Link v-if="viewTarget" :href="`/chat?receiver_id=${viewTarget.id_encoded}`"
+                    class="flex items-center justify-center gap-2 w-full px-3 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold transition-colors shadow-sm">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                    </svg>
+                    Envoyer un message
+                </Link>
+            </template>
+
+            <template #default="{ activeTab }">
+                <div v-if="viewTarget">
+                    <!-- PROFIL -->
+                    <div v-show="activeTab === 'profile'" class="space-y-5">
+                        <div class="relative rounded-2xl overflow-hidden bg-gradient-to-br from-blue-600 to-indigo-700 p-5">
+                            <div class="absolute inset-0 opacity-10" style="background-image:radial-gradient(circle at 80% 20%, white 0%, transparent 60%)"/>
+                            <div class="relative flex items-center gap-4">
+                                <div class="relative flex-shrink-0">
+                                    <img v-if="viewTarget.profile_picture"
+                                         :src="`/upload/profile/${viewTarget.profile_picture}`"
+                                         class="w-14 h-14 rounded-xl object-cover ring-4 ring-white/30 shadow-xl"/>
+                                    <div v-else class="w-14 h-14 rounded-xl bg-white/20 backdrop-blur flex items-center justify-center ring-4 ring-white/30 shadow-xl">
+                                        <span class="text-lg font-bold text-white">{{ viewTarget.last_name?.[0] }}{{ viewTarget.name?.[0] }}</span>
+                                    </div>
+                                    <span class="absolute -bottom-1 -right-1 w-3.5 h-3.5 rounded-full border-2 border-white shadow-sm"
+                                          :class="viewTarget.is_online ? 'bg-emerald-400' : 'bg-gray-400'"/>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <h2 class="text-base font-bold text-white truncate">{{ viewTarget.last_name }} {{ viewTarget.name }}</h2>
+                                    <p class="text-blue-100 text-xs mt-0.5">{{ viewTarget.email }}</p>
+                                    <div class="flex items-center gap-2 mt-2 flex-wrap">
+                                        <span :class="['px-2 py-0.5 rounded-full text-xs font-semibold', viewTarget.status == 1 ? 'bg-emerald-400/30 text-emerald-100' : 'bg-red-400/30 text-red-100']">
+                                            {{ viewTarget.status == 1 ? '✓ Actif' : '✗ Inactif' }}
+                                        </span>
+                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-white/10 text-white/80">
+                                            <span class="w-1.5 h-1.5 rounded-full" :class="viewTarget.is_online ? 'bg-emerald-400' : 'bg-gray-400'"/>
+                                            {{ viewTarget.is_online ? 'En ligne' : 'Hors ligne' }}
+                                        </span>
+                                    </div>
+                                </div>
                             </div>
-                            <span class="absolute bottom-0.5 right-0.5 w-3.5 h-3.5 rounded-full border-2 border-white shadow-sm"
-                                  :class="viewTarget.is_online ? 'bg-emerald-400' : 'bg-gray-400'"/>
                         </div>
-                        <div class="flex-1 min-w-0">
-                            <h2 class="text-lg font-bold text-white truncate">{{ viewTarget.last_name }} {{ viewTarget.name }}</h2>
-                            <p class="text-blue-100 text-sm mt-0.5">{{ viewTarget.email }}</p>
-                            <div class="flex items-center gap-2 mt-2 flex-wrap">
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold"
-                                      :class="viewTarget.status == 1 ? 'bg-emerald-400/30 text-emerald-100' : 'bg-red-400/30 text-red-100'">
-                                    {{ viewTarget.status == 1 ? '✓ Actif' : '✗ Inactif' }}
-                                </span>
-                                <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-white/10 text-white/80">
-                                    <span class="w-1.5 h-1.5 rounded-full" :class="viewTarget.is_online ? 'bg-emerald-400' : 'bg-gray-400'"/>
-                                    {{ viewTarget.is_online ? 'En ligne' : 'Hors ligne' }}
-                                </span>
-                            </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <InfoCard label="Téléphone" :value="viewTarget.mobile_number" mono />
+                            <InfoCard label="Genre" :value="viewTarget.gender === 'male' ? 'Masculin' : viewTarget.gender === 'female' ? 'Féminin' : viewTarget.gender" />
+                            <InfoCard label="Profession" :value="viewTarget.occupation" />
+                            <InfoCard label="Statut" :badge="viewTarget.status == 1 ? 'success' : 'danger'" :value="viewTarget.status == 1 ? 'Actif' : 'Inactif'" />
+                            <InfoCard v-if="viewTarget.address" label="Adresse" :value="viewTarget.address" />
                         </div>
                     </div>
                 </div>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div class="bg-gray-50 dark:bg-gray-800/60 rounded-lg p-4 border border-gray-100 dark:border-gray-700">
-                        <p class="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-1">Téléphone</p>
-                        <p class="text-sm font-semibold text-gray-800 dark:text-gray-200 font-mono">{{ viewTarget.mobile_number ?? '—' }}</p>
-                    </div>
-                    <div class="bg-gray-50 dark:bg-gray-800/60 rounded-lg p-4 border border-gray-100 dark:border-gray-700">
-                        <p class="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-1">Genre</p>
-                        <p class="text-sm font-semibold text-gray-800 dark:text-gray-200">
-                            {{ viewTarget.gender === 'male' ? 'Masculin' : viewTarget.gender === 'female' ? 'Féminin' : '—' }}
-                        </p>
-                    </div>
-                    <div class="bg-gray-50 dark:bg-gray-800/60 rounded-lg p-4 border border-gray-100 dark:border-gray-700">
-                        <p class="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-1">Profession</p>
-                        <p class="text-sm font-semibold text-gray-800 dark:text-gray-200">{{ viewTarget.occupation ?? '—' }}</p>
-                    </div>
-                    <div v-if="viewTarget.address" class="bg-gray-50 dark:bg-gray-800/60 rounded-lg p-4 border border-gray-100 dark:border-gray-700">
-                        <p class="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-1">Adresse</p>
-                        <p class="text-sm font-semibold text-gray-800 dark:text-gray-200">{{ viewTarget.address }}</p>
-                    </div>
-                </div>
-            </div>
+            </template>
+
             <template #footer>
                 <AppButton variant="ghost" @click="showView = false">Fermer</AppButton>
                 <AppButton v-if="canEdit" @click="showView = false; openEdit(viewTarget!)">
@@ -273,7 +293,7 @@
                     Modifier
                 </AppButton>
             </template>
-        </AppModal>
+        </DetailModal>
 
         <!-- Modal Formulaire -->
         <AppModal v-model="showForm" :title="editTarget ? 'Modifier le parent' : 'Nouveau parent'" size="lg">
@@ -324,18 +344,47 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, h, defineComponent } from 'vue';
 import { router, Link } from '@inertiajs/vue3';
-import { AppButton, AppInput, AppSelect, AppModal, DataTable, AppBadge } from '@/Components/UI';
+import { AppButton, AppInput, AppSelect, AppModal, DataTable, AppBadge, DetailModal } from '@/Components/UI';
 import UserAvatar from '@/Components/Shared/UserAvatar.vue';
 import { useToast } from '@/Composables/useToast';
 import { useCan } from '@/Composables/useCan';
+
+// ── Composant InfoCard réutilisable ──────────────────────────────────────────
+const InfoCard = defineComponent({
+    props: {
+        label:     { type: String, required: true },
+        value:     { type: String, default: '' },
+        highlight: { type: Boolean, default: false },
+        mono:      { type: Boolean, default: false },
+        badge:     { type: String, default: '' },
+    },
+    setup(p) {
+        return () => h('div', {
+            class: 'bg-gray-50 dark:bg-gray-800/60 rounded-xl p-4 border border-gray-100 dark:border-gray-700/60',
+        }, [
+            h('p', { class: 'text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-1.5' }, p.label),
+            p.badge
+                ? h('span', {
+                    class: ['inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold',
+                        p.badge === 'success'
+                            ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400'
+                            : 'bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400'].join(' '),
+                }, [h('span', { class: ['w-1.5 h-1.5 rounded-full', p.badge === 'success' ? 'bg-emerald-500' : 'bg-red-400'].join(' ') }), p.value || '—'])
+                : h('p', {
+                    class: ['text-sm font-semibold', p.highlight ? 'text-primary-700 dark:text-primary-400' : 'text-gray-800 dark:text-gray-200', p.mono ? 'font-mono' : ''].filter(Boolean).join(' '),
+                }, p.value || '—'),
+        ]);
+    },
+});
 
 interface Parent {
     id: number; name: string; last_name: string; email: string;
     status: number; gender: string; mobile_number: string;
     occupation: string; address: string;
     profile_picture: string | null; is_online?: boolean;
+    id_encoded?: string;
 }
 
 const props = defineProps<{
@@ -369,6 +418,15 @@ const tableRef   = ref<InstanceType<typeof DataTable> | null>(null);
 
 const statusOptions = [{ value: '1', label: 'Actif' }, { value: '0', label: 'Inactif' }];
 const genderOptions = [{ value: 'male', label: 'Masculin' }, { value: 'female', label: 'Féminin' }, { value: 'other', label: 'Autre' }];
+
+const parentTabs = [
+    {
+        id: 'profile',
+        label: 'Profil',
+        description: 'Informations personnelles',
+        icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>',
+    },
+];
 
 const columns = computed(() => [
     { key: 'user',          label: 'Parent',     searchable: false },

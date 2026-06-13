@@ -23,8 +23,9 @@ class BulletinController extends Controller
 
     public function list()
     {
+        $perPage = min((int) request('per_page', 5), 100);
         return Inertia::render('Admin/Bulletins/Index', [
-            'bulletins' => BulletinModel::getAll(5),
+            'bulletins' => BulletinModel::getAll($perPage),
             'classes'   => ClassModel::getClass(),
             'periods'   => PeriodModel::getAllPeriods(),
         ]);

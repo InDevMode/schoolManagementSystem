@@ -74,7 +74,7 @@
                     </div>
 
                     <!-- Toggle actif / inactif -->
-                    <div class="flex items-center gap-1.5 flex-shrink-0">
+                    <div v-if="can('action.noticeboard.manage')" class="flex items-center gap-1.5 flex-shrink-0">
                         <span :class="['text-xs font-medium', notice.is_active ? 'text-green-600 dark:text-green-400' : 'text-gray-400 dark:text-gray-500']">
                             {{ notice.is_active ? 'Active' : 'Inactive' }}
                         </span>
@@ -158,6 +158,7 @@
                         </button>
                         <!-- Modifier -->
                         <button
+                            v-if="can('action.noticeboard.manage')"
                             class="p-1.5 rounded-lg text-gray-400 hover:text-primary-600 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors"
                             title="Modifier"
                             @click="openEdit(notice)"
@@ -169,6 +170,7 @@
                         </button>
                         <!-- Supprimer -->
                         <button
+                            v-if="can('action.noticeboard.manage')"
                             class="p-1.5 rounded-lg text-gray-400 hover:text-danger-600 hover:bg-danger-50 dark:hover:bg-danger-900/20 transition-colors"
                             title="Supprimer"
                             @click="openDelete(notice)"
@@ -323,7 +325,7 @@
 
             <template #footer>
                 <AppButton variant="ghost" @click="showDetail = false">Fermer</AppButton>
-                <AppButton @click="openEdit(detailTarget!); showDetail = false">Modifier</AppButton>
+                <AppButton v-if="can('action.noticeboard.manage')" @click="openEdit(detailTarget!); showDetail = false">Modifier</AppButton>
             </template>
         </AppModal>
 
@@ -361,9 +363,11 @@ import { ref, computed } from 'vue';
 import { useForm, router, Link } from '@inertiajs/vue3';
 import { AppButton, AppInput, AppModal, AppRichEditor, AppPagination } from '@/Components/UI';
 import { useCan } from '@/Composables/useCan';
+import { useToast } from '@/Composables/useToast';
 import { stripHtml } from '@/Utils/html';
 
 const { can } = useCan();
+const toast   = useToast();
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 interface Notice {
@@ -467,13 +471,21 @@ const submitForm = () => {
     const url = editTarget.value
         ? `/admin/communicate/noticeboard/edit/${editTarget.value.id}`
         : '/admin/communicate/noticeboard/add';
-    form.post(url, { onSuccess: () => { showForm.value = false; } });
+    form.post(url, {
+        onSuccess: () => {
+            showForm.value = false;
+            toast.success(editTarget.value ? 'Notification modifiée avec succès.' : 'Notification créée avec succès.');
+        },
+        onError: () => toast.error('Veuillez vérifier les informations.'),
+    });
 };
 
 const confirmDelete = () => {
     if (!deleteTarget.value) return;
     deleting.value = true;
     router.post(`/admin/communicate/noticeboard/delete/${deleteTarget.value.id}`, {}, {
+        onSuccess: () => toast.success('Notification supprimée avec succès.'),
+        onError:   () => toast.error('Erreur lors de la suppression.'),
         onFinish: () => { deleting.value = false; showDelete.value = false; },
     });
 };
@@ -481,6 +493,8 @@ const confirmDelete = () => {
 const toggleNotice = (notice: Notice) => {
     toggling.value = notice.id;
     router.post(`/admin/communicate/noticeboard/toggle/${notice.id}`, {}, {
+        onSuccess: () => toast.success(notice.is_active ? 'Notification désactivée.' : 'Notification activée.'),
+        onError:   () => toast.error('Erreur lors du changement de statut.'),
         onFinish: () => { toggling.value = null; },
     });
 };

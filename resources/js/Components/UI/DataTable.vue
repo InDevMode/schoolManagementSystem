@@ -483,6 +483,21 @@ onUnmounted(()=>{
   document.removeEventListener('keydown', onKeyDown);
 });
 
+// ── Navigation pagination serveur ─────────────────────────────────────────────
+// Injecte toujours per_page dans l'URL pour que le backend respecte la valeur choisie
+const goServerPage = (url: string) => {
+  const u = new URL(url, window.location.origin);
+  u.searchParams.set('per_page', String(perPage.value));
+  // Préserver les autres query params de l'URL courante (filtres, etc.)
+  const current = new URL(window.location.href);
+  current.searchParams.forEach((val, key) => {
+    if (key !== 'page' && key !== 'per_page' && !u.searchParams.has(key)) {
+      u.searchParams.set(key, val);
+    }
+  });
+  router.visit(u.pathname + u.search, { preserveState: true });
+};
+
 // ── Public API ────────────────────────────────────────────────────────────────
 const confirmDelete = (id: string|number, label = 'cet élément') => {
   openConfirm({
@@ -1107,7 +1122,7 @@ defineExpose({ clearSelection, selected, filteredRows, confirmDelete });
                   class="w-8 h-8 flex items-center justify-center rounded-lg text-sm transition-colors
                          disabled:opacity-30 disabled:cursor-not-allowed text-gray-500 dark:text-gray-400
                          hover:bg-gray-100 dark:hover:bg-gray-700"
-                  @click="pagination.prev_page_url && router.visit(pagination.prev_page_url, { preserveState: true })">
+                  @click="pagination.prev_page_url && goServerPage(pagination.prev_page_url)">
             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
             </svg>
@@ -1115,7 +1130,7 @@ defineExpose({ clearSelection, selected, filteredRows, confirmDelete });
           <!-- Numéros -->
           <template v-for="link in pagination.links.slice(1, -1)" :key="link.label">
             <button
-              @click="link.url && router.visit(link.url, { preserveState: true })"
+              @click="link.url && goServerPage(link.url)"
               :class="['w-8 h-8 flex items-center justify-center rounded-lg text-sm font-medium transition-colors',
                        link.active
                          ? 'bg-violet-600 text-white shadow-sm'
@@ -1130,7 +1145,7 @@ defineExpose({ clearSelection, selected, filteredRows, confirmDelete });
                   class="w-8 h-8 flex items-center justify-center rounded-lg text-sm transition-colors
                          disabled:opacity-30 disabled:cursor-not-allowed text-gray-500 dark:text-gray-400
                          hover:bg-gray-100 dark:hover:bg-gray-700"
-                  @click="pagination.next_page_url && router.visit(pagination.next_page_url, { preserveState: true })">
+                  @click="pagination.next_page_url && goServerPage(pagination.next_page_url)">
             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
             </svg>

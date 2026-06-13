@@ -24,8 +24,9 @@ class EvaluationController extends Controller
 
     public function list()
     {
+        $perPage = min((int) request('per_page', 6), 100);
         return Inertia::render('Admin/Evaluations/Index', [
-            'evaluations'   => EvaluationModel::getAll(6),
+            'evaluations'   => EvaluationModel::getAll($perPage),
             'classes'       => ClassModel::getClass(),
             'periods'       => PeriodModel::getAllPeriods(),
             'currentPeriod' => PeriodModel::getCurrentPeriod()->first(),

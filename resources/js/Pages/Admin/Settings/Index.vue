@@ -8,7 +8,7 @@
         <AppAlert v-if="successMsg" variant="success" :message="successMsg" dismissible />
         <AppAlert v-if="errorMsg"   variant="danger"  :message="errorMsg"   dismissible />
 
-        <form @submit.prevent="submitForm" enctype="multipart/form-data" class="space-y-6">
+        <form @submit.prevent="can('action.settings.manage') && submitForm()" enctype="multipart/form-data" class="space-y-6">
 
             <!-- Informations générales -->
             <div class="card p-6 space-y-4">
@@ -122,7 +122,7 @@
             </div>
 
             <div class="flex justify-end">
-                <AppButton type="submit" :loading="submitting" size="lg">
+                <AppButton v-if="can('action.settings.manage')" type="submit" :loading="submitting" size="lg">
                     Enregistrer les paramètres
                 </AppButton>
             </div>
@@ -134,6 +134,9 @@
 import { ref } from 'vue';
 import { router } from '@inertiajs/vue3';
 import { AppButton, AppInput, AppSelect, AppAlert } from '@/Components/UI';
+import { useCan } from '@/Composables/useCan';
+
+const { can } = useCan();
 
 interface Setting {
     school_name?:        string;

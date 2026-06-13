@@ -71,7 +71,7 @@
                 <!-- Actions -->
                 <template #actions="{ row }">
                     <button
-                        v-if="((row.remaning_amount as number) ?? (row.class_amount as number)) > 0"
+                        v-if="can('action.fees.collect') && ((row.remaning_amount as number) ?? (row.class_amount as number)) > 0"
                         class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg
                                transition-all duration-150 text-white
                                bg-primary-600 hover:bg-primary-700 active:bg-primary-800
@@ -83,7 +83,8 @@
                         </svg>
                         Collecter
                     </button>
-                    <AppBadge v-else variant="success" dot>Soldé</AppBadge>
+                    <AppBadge v-else-if="((row.remaning_amount as number) ?? (row.class_amount as number)) <= 0" variant="success" dot>Soldé</AppBadge>
+                    <span v-else class="text-xs text-gray-400 italic">—</span>
                 </template>
             </DataTable>
         </div>
@@ -207,7 +208,10 @@
 import { ref, computed } from 'vue';
 import { router, usePage } from '@inertiajs/vue3';
 import { AppSelect, DataTable, AppBadge, AppModal, AppButton, AppInput } from '@/Components/UI';
+import { useCan } from '@/Composables/useCan';
 import type { PageProps } from '@/types';
+
+const { can } = useCan();
 
 interface FeesStudent {
     [key: string]: unknown;

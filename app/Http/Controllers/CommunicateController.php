@@ -6,6 +6,8 @@ use App\Mail\SendMailUserMail;
 use App\Models\CommunicateModel;
 use App\Models\NoticeBoardMessageModel;
 use App\Models\User;
+use App\Notifications\MailSentNotification;
+use App\Notifications\NoticeBoardNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -35,11 +37,20 @@ class CommunicateController extends Controller
             $noticeBoard->save();
 
             if (!empty($request->message_to)) {
+                $senderName = auth()->user()->name . ' ' . auth()->user()->last_name;
+                $notification = new NoticeBoardNotification($noticeBoard->title, $senderName);
+
                 foreach ($request->message_to as $message_to) {
                     $noticeBoardMessage = new NoticeBoardMessageModel;
                     $noticeBoardMessage->communicates_id = $noticeBoard->id;
                     $noticeBoardMessage->message_to = $message_to;
                     $noticeBoardMessage->save();
+
+                    // Notification in-app pour chaque utilisateur du groupe ciblé
+                    $recipients = User::getUserByUserType((int) $message_to);
+                    foreach ($recipients as $recipient) {
+                        $recipient->notify($notification);
+                    }
                 }
             }
 
@@ -194,6 +205,9 @@ class CommunicateController extends Controller
     public function sendMailCreate(Request $request)
     {
         try {
+            $senderName = auth()->user()->name . ' ' . auth()->user()->last_name;
+            $notification = new MailSentNotification($request->subject, $senderName);
+
             // Envoi aux destinataires individuels
             if (!empty($request->user_ids)) {
                 foreach ($request->user_ids as $userId) {
@@ -203,6 +217,9 @@ class CommunicateController extends Controller
                         $user->send_message = $request->message;
                         $user->send_subject = $request->subject;
                         Mail::to($user->email)->send(new SendMailUserMail($user));
+
+                        // Notification in-app
+                        $user->notify($notification);
                     }
                 }
             }
@@ -217,6 +234,9 @@ class CommunicateController extends Controller
                                 $user->send_message = $request->message;
                                 $user->send_subject = $request->subject;
                                 Mail::to($user->email)->send(new SendMailUserMail($user));
+
+                                // Notification in-app
+                                $user->notify($notification);
                             }
                         }
                     }

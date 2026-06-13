@@ -77,9 +77,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from 'vue';
+import { ref, computed, reactive } from 'vue';
 import { router } from '@inertiajs/vue3';
 import { AppBadge, DataTable } from '@/Components/UI';
+import { useCan } from '@/Composables/useCan';
+
+const { can } = useCan();
 
 interface AttendanceRecord {
     id: number;
@@ -108,7 +111,7 @@ const columns = [
     { key: 'attendance_date', label: 'Date' },
 ];
 
-const tableActions = [
+const tableActions = computed(() => can('action.attendance.save') ? [
     {
         key: 'delete',
         label: 'Supprimer',
@@ -118,7 +121,7 @@ const tableActions = [
                </svg>`,
         variant: 'danger' as const,
     },
-];
+] : []);
 
 // ── Suppression ───────────────────────────────────────────────────────────────
 const deleting = ref(false);

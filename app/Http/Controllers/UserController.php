@@ -485,7 +485,7 @@ class UserController extends Controller
     }
 
     /**
-     * Liste de tous les utilisateurs (super admin uniquement).
+     * Liste de tous les utilisateurs (super admin + utilisateurs avec permission view.users.all).
      */
     public function allUsersList(): \Inertia\Response
     {
@@ -566,6 +566,11 @@ class UserController extends Controller
 
         return Inertia::render('SuperAdmin/Users/Index', [
             'users' => $users,
+            'isSuperAdmin' => Auth::user()->user_type === 0,
+            'canEdit'   => Auth::user()->user_type === 0 || Auth::user()->can('action.users.edit'),
+            'canDelete' => Auth::user()->user_type === 0 || Auth::user()->can('action.users.delete'),
+            'canReset'  => Auth::user()->user_type === 0 || Auth::user()->can('view.users.all'),
+            'canExport' => Auth::user()->user_type === 0 || Auth::user()->can('view.users.all'),
             'roles' => \Spatie\Permission\Models\Role::where('is_delete', 0)
                 ->orderBy('user_type')
                 ->get()
@@ -730,7 +735,13 @@ class UserController extends Controller
      */
     public function updateUserFromPanel(Request $request, int $id): \Illuminate\Http\JsonResponse
     {
-        if (!Auth::check() || Auth::user()->user_type !== 0) {
+        if (!Auth::check()) {
+            return response()->json(['success' => false, 'message' => 'Non authentifié.'], 401);
+        }
+
+        $authUser = Auth::user();
+        // Super admin ou utilisateur avec la permission action.users.edit
+        if ($authUser->user_type !== 0 && !$authUser->can('action.users.edit')) {
             return response()->json(['success' => false, 'message' => 'Accès refusé.'], 403);
         }
 
@@ -789,11 +800,16 @@ class UserController extends Controller
     }
 
     /**
-     * Soft-delete d'un utilisateur (super admin uniquement).
+     * Soft-delete d'un utilisateur (super admin ou utilisateur avec permission action.users.delete).
      */
     public function deleteUser(int $id): \Illuminate\Http\JsonResponse
     {
-        if (!Auth::check() || Auth::user()->user_type !== 0) {
+        if (!Auth::check()) {
+            return response()->json(['success' => false, 'message' => 'Non authentifié.'], 401);
+        }
+
+        $authUser = Auth::user();
+        if ($authUser->user_type !== 0 && !$authUser->can('action.users.delete')) {
             return response()->json(['success' => false, 'message' => 'Accès refusé.'], 403);
         }
 
