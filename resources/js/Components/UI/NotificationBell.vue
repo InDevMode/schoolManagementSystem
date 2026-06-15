@@ -114,7 +114,7 @@
                             :class="[
                                 'flex items-start gap-3 px-4 py-3 border-b border-gray-50 dark:border-gray-700/30 last:border-0 transition-colors group',
                                 !notif.read_at
-                                    ? 'bg-blue-50/50 dark:bg-blue-900/10 hover:bg-blue-50 dark:hover:bg-blue-900/20'
+                                    ? 'bg-violet-50/50 dark:bg-violet-900/10 hover:bg-violet-50 dark:hover:bg-violet-900/20'
                                     : 'hover:bg-gray-50 dark:hover:bg-gray-700/40',
                             ]"
                         >
@@ -134,8 +134,8 @@
                                     <p :class="['text-sm font-medium truncate', !notif.read_at ? 'text-gray-900 dark:text-white' : 'text-gray-600 dark:text-gray-300']">
                                         {{ notif.title }}
                                     </p>
-                                    <!-- Point bleu si non lu -->
-                                    <span v-if="!notif.read_at" class="w-2 h-2 rounded-full bg-blue-500 flex-shrink-0 mt-1.5" />
+                                    <!-- Point violet si non lu -->
+                                    <span v-if="!notif.read_at" class="w-2 h-2 rounded-full bg-violet-500 flex-shrink-0 mt-1.5" />
                                 </div>
                                 <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5 line-clamp-2 leading-relaxed">
                                     {{ notif.message }}

@@ -95,7 +95,7 @@
                         Par <strong class="text-gray-600 dark:text-gray-300 font-medium">{{ notice.created_by_name }}</strong>
                     </span>
                     <button
-                        class="p-1.5 rounded-lg text-gray-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors"
+                        class="p-1.5 rounded-lg text-gray-400 hover:text-violet-600 hover:bg-violet-50 dark:hover:bg-violet-900/20 transition-colors"
                         title="Voir les détails"
                         @click="openDetail(notice)"
                     >

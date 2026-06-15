@@ -197,8 +197,8 @@
                                         <button
                                             type="button"
                                             class="opacity-0 group-hover/email:opacity-100 transition-opacity duration-150 flex-shrink-0
-                                                   p-0.5 rounded text-gray-400 hover:text-blue-600 hover:bg-blue-50
-                                                   dark:hover:text-blue-400 dark:hover:bg-blue-900/20"
+                                                   p-0.5 rounded text-gray-400 hover:text-violet-600 hover:bg-violet-50
+                                                   dark:hover:text-violet-400 dark:hover:bg-violet-900/20"
                                             :title="copied === `email-${u.id}` ? 'Copié !' : 'Copier l\'email'"
                                             @click.stop="copy(u.email, `email-${u.id}`)"
                                         >
@@ -296,7 +296,7 @@
                                         </button>
                                         <!-- Message -->
                                         <Link :href="`/chat?receiver_id=${encodedId(u.id)}`" title="Envoyer un message"
-                                           class="p-1.5 rounded-lg text-white bg-blue-500 hover:bg-blue-600 shadow-sm transition-all">
+                                           class="p-1.5 rounded-lg text-white bg-violet-500 hover:bg-violet-600 shadow-sm transition-all">
                                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
                                             </svg>
@@ -401,7 +401,7 @@
                         </span>
                         Voir les détails
                     </button>
-                    <button @click="openEdit(ctxMenu.user!); closeContextMenu()"
+                    <button v-if="canEdit" @click="openEdit(ctxMenu.user!); closeContextMenu()"
                             class="ctx-item text-gray-700 dark:text-gray-300 hover:bg-emerald-50 hover:text-emerald-700">
                         <span class="ctx-icon bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600">
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -411,15 +411,15 @@
                         Modifier
                     </button>
                     <Link :href="ctxMenu.user ? `/chat?receiver_id=${encodedId(ctxMenu.user.id)}` : '#'"
-                       class="ctx-item text-gray-700 dark:text-gray-300 hover:bg-blue-50 hover:text-blue-700">
-                        <span class="ctx-icon bg-blue-100 dark:bg-blue-900/30 text-blue-600">
+                       class="ctx-item text-gray-700 dark:text-gray-300 hover:bg-violet-50 hover:text-violet-700">
+                        <span class="ctx-icon bg-violet-100 dark:bg-violet-900/30 text-violet-600">
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
                             </svg>
                         </span>
                         Envoyer un message
                     </Link>
-                    <button @click="openResetConfirm(ctxMenu.user!); closeContextMenu()"
+                    <button v-if="canReset" @click="openResetConfirm(ctxMenu.user!); closeContextMenu()"
                             class="ctx-item text-gray-700 dark:text-gray-300 hover:bg-amber-50 hover:text-amber-700">
                         <span class="ctx-icon bg-amber-100 dark:bg-amber-900/30 text-amber-600">
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -428,7 +428,7 @@
                         </span>
                         Réinitialiser MDP
                     </button>
-                    <template v-if="ctxMenu.user?.user_type !== 0">
+                    <template v-if="canDelete && ctxMenu.user?.user_type !== 0">
                         <div class="my-1 border-t border-gray-100 dark:border-gray-700"/>
                         <button @click="openDeleteConfirm(ctxMenu.user!); closeContextMenu()"
                                 class="ctx-item text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20">
@@ -503,11 +503,11 @@
                                            text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                                 Fermer
                             </button>
-                            <button @click="openEdit(viewTarget!); viewTarget = null"
+                            <button v-if="canEdit" @click="openEdit(viewTarget!); viewTarget = null"
                                     class="flex-1 px-3 py-2 rounded-lg text-sm font-medium bg-emerald-500 hover:bg-emerald-600 text-white transition-colors">
                                 Modifier
                             </button>
-                            <button @click="openResetConfirm(viewTarget!); viewTarget = null"
+                            <button v-if="canReset" @click="openResetConfirm(viewTarget!); viewTarget = null"
                                     class="flex-1 px-3 py-2 rounded-lg text-sm font-medium bg-amber-500 hover:bg-amber-600 text-white transition-colors">
                                 Réinit. MDP
                             </button>

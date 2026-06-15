@@ -24,6 +24,18 @@ class GradeModel extends Model
         'score'        => 'float',
     ];
 
+    // ── Relations ────────────────────────────────────────────────────────────
+
+    public function evaluation(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(EvaluationModel::class, 'evaluation_id');
+    }
+
+    public function student(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(User::class, 'student_id');
+    }
+
     public static function getSingle(int $id): ?self
     {
         return self::find($id);

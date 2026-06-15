@@ -74,7 +74,8 @@ class RolesAndPermissionsSeeder extends Seeder
             'action.parents.delete', 'action.parents.reset_password', 'action.parents.export',
             'action.parents.manage_children',
             // ── Accès gestion globale des utilisateurs ────────────────────────
-            'view.useradmins',
+            'view.useradmins',       // ancien nom (rétrocompat)
+            'view.users.all',        // nouveau nom utilisé par la page /superadmin/users
             // ── Actions CRUD sur les utilisateurs ────────────────────────────
             'action.users.create', 'action.users.edit', 'action.users.delete',
             // ── Actions CRUD académique ──────────────────────────────────────

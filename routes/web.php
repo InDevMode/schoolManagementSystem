@@ -188,6 +188,8 @@ Route::group(['middleware' => 'admin'], function () {
     Route::get('admin/parent/des_assign_student_parent/{student_id}',          [ParentController::class, 'desAssignStudentParent'])->middleware('check_perm:view.users.parents');
     Route::get('admin/parent/delete/{id}',   [ParentController::class, 'delete'])->middleware('check_perm:action.parents.delete');
     Route::post('admin/parent/export',       [ParentController::class, 'exportParent'])->middleware('check_perm:action.parents.export');
+    // Enfants d'un parent (JSON — pour le modal de détail)
+    Route::get('admin/parent/{id}/children', [ParentController::class, 'parentChildren'])->middleware('check_perm:view.users.parents');
 
     // Admin account url
     Route::get('admin/account',  [UserController::class, 'myAccount']);
@@ -204,6 +206,8 @@ Route::group(['middleware' => 'admin'], function () {
     Route::post('admin/assign_class/edit/{id}',        [ClassTeacherController::class, 'update'])->middleware('check_perm:view.academics.assign_classes');
     Route::post('admin/assign_class/edit_single/{id}', [ClassTeacherController::class, 'updateSingle'])->middleware('check_perm:view.academics.assign_classes');
     Route::get('admin/assign_class/delete/{id}',       [ClassTeacherController::class, 'delete'])->middleware('check_perm:view.academics.assign_classes');
+    // Classes d'un professeur (JSON — pour le modal de détail)
+    Route::get('admin/teacher/{id}/classes',           [ClassTeacherController::class, 'teacherClasses'])->middleware('check_perm:view.users.teachers');
 
     // Class timetable url
     Route::get('admin/class_timetable/list',    [ClassTimetableController::class, 'list'])->middleware('check_perm:view.academics.timetable');
@@ -354,10 +358,11 @@ Route::group(['middleware' => 'teacher'], function () {
     Route::get('teacher/my_calendar', [CalendarController::class, 'myTeacherCalendar']);
 
     // ── Évaluations béninoises — prof ─────────────────────────────────────
-    Route::get('teacher/evaluations',                  [EvaluationController::class, 'teacherList']);
-    Route::post('teacher/evaluations/add',             [EvaluationController::class, 'teacherCreate']);
-    Route::get('teacher/evaluations/grade-entry',      [EvaluationController::class, 'teacherGradeEntry']);
-    Route::post('teacher/evaluations/grades/save',     [EvaluationController::class, 'teacherSaveGrades']);
+    Route::get('teacher/evaluations',                      [EvaluationController::class, 'teacherList']);
+    Route::post('teacher/evaluations/add',                 [EvaluationController::class, 'teacherCreate']);
+    Route::get('teacher/evaluations/grade-entry',          [EvaluationController::class, 'teacherGradeEntry']);
+    Route::post('teacher/evaluations/grades/save',         [EvaluationController::class, 'teacherSaveGrades']);
+    Route::post('teacher/evaluations/{id}/cancel',         [EvaluationController::class, 'teacherCancelEvaluation']);
 
     // Student attendance url
     Route::get('teacher/attendance/student/list', [AttendanceController::class, 'attendanceStudentTeacher']);
@@ -458,6 +463,8 @@ Route::group(['middleware' => 'parent'], function () {
 
     // Parent student class timetable
     Route::get('parent/my_student/{class_id}/subject/{subject_id}/timetable/student/{student_id}', [ClassTimetableController::class, 'parentStudentSubjectTimetable']);
+    // Emploi du temps complet d'une classe (JSON — pour le modal de la page Mes Enfants)
+    Route::get('parent/my_student/{class_id}/timetable/full', [ClassTimetableController::class, 'parentClassFullTimetable']);
 
     // ── Notes et bulletins — parent ───────────────────────────────────────
     Route::get('parent/my_student/{student_id}/grades',              [EvaluationController::class, 'parentStudentGrades']);

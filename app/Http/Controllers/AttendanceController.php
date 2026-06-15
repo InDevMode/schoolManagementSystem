@@ -194,19 +194,56 @@ class AttendanceController extends Controller
 
     public function myAttendance()
     {
+        $studentId = Auth::user()->id;
+
+        $counts = StudentAttendanceModel::where('student_id', $studentId)
+            ->where('is_delete', 0)
+            ->selectRaw("
+                SUM(attendance_type = 'present')  as present,
+                SUM(attendance_type = 'late')     as late,
+                SUM(attendance_type = 'absent')   as absent,
+                SUM(attendance_type = 'half_day') as half_day
+            ")
+            ->first();
+
+        $classStudent = [
+            'present'  => (int) ($counts->present  ?? 0),
+            'late'     => (int) ($counts->late      ?? 0),
+            'absent'   => (int) ($counts->absent    ?? 0),
+            'half_day' => (int) ($counts->half_day  ?? 0),
+        ];
+
         return Inertia::render('Student/Attendance/Index', [
-            'attendance'   => StudentAttendanceModel::getMyAttendance(Auth::user()->id, 10),
-            'classStudent' => StudentAttendanceModel::getClassStudent(Auth::user()->id),
+            'attendance'   => StudentAttendanceModel::getMyAttendance($studentId, 10),
+            'classStudent' => $classStudent,
         ]);
     }
 
     public function parentStudentAttendance(int $student_id)
     {
         $student = User::getSingle($student_id);
+
+        $counts = StudentAttendanceModel::where('student_id', $student_id)
+            ->where('is_delete', 0)
+            ->selectRaw("
+                SUM(attendance_type = 'present')  as present,
+                SUM(attendance_type = 'late')     as late,
+                SUM(attendance_type = 'absent')   as absent,
+                SUM(attendance_type = 'half_day') as half_day
+            ")
+            ->first();
+
+        $classStudent = [
+            'present'  => (int) ($counts->present  ?? 0),
+            'late'     => (int) ($counts->late      ?? 0),
+            'absent'   => (int) ($counts->absent    ?? 0),
+            'half_day' => (int) ($counts->half_day  ?? 0),
+        ];
+
         return Inertia::render('Parent/Attendance/Index', [
             'student'      => $student,
             'attendance'   => StudentAttendanceModel::getMyAttendance($student_id, 10),
-            'classStudent' => StudentAttendanceModel::getClassStudent($student_id),
+            'classStudent' => $classStudent,
         ]);
     }
 

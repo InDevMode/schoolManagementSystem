@@ -149,8 +149,31 @@ class ParentController extends Controller
     {
         $id = Auth::id();
         return Inertia::render('Parent/Students/Index', [
-            'myStudents' => User::getMyStudent(15, $id),
+            'myStudents' => User::getMyStudent(50, $id),
         ]);
+    }
+
+    /**
+     * Retourne les enfants d'un parent (JSON, pour le modal admin).
+     */
+    public function parentChildren(int $id): \Illuminate\Http\JsonResponse
+    {
+        $children = User::where('parent_id', $id)
+            ->where('is_delete', 0)
+            ->get(['id', 'name', 'last_name', 'profile_picture', 'admission_number', 'class_id'])
+            ->map(function ($s) {
+                $class = $s->class_id ? \App\Models\ClassModel::getSingle($s->class_id) : null;
+                return [
+                    'id'               => $s->id,
+                    'name'             => $s->name,
+                    'last_name'        => $s->last_name,
+                    'profile_picture'  => $s->profile_picture,
+                    'admission_number' => $s->admission_number,
+                    'class_name'       => $class?->name ?? null,
+                ];
+            });
+
+        return response()->json(['children' => $children]);
     }
 
     public function exportParent()

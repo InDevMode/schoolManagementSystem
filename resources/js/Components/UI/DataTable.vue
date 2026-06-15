@@ -273,7 +273,7 @@ const getBadgeClass = (value: unknown, col: DtColumn): string => {
   if (/inactif|refus|rejet|annul|supprim|absent|chec|suspendu|cancel/.test(v))
     return 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-50 text-red-700 ring-1 ring-red-200 dark:bg-red-500/10 dark:text-red-400 dark:ring-red-500/20';
   if (/info|nouveau|brouillon/.test(v))
-    return 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700 ring-1 ring-blue-200 dark:bg-blue-500/10 dark:text-blue-400 dark:ring-blue-500/20';
+    return 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-violet-50 text-violet-700 ring-1 ring-violet-200 dark:bg-violet-500/10 dark:text-violet-400 dark:ring-violet-500/20';
   return 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600 ring-1 ring-gray-200 dark:bg-white/10 dark:text-white/60 dark:ring-white/10';
 };
 
@@ -282,7 +282,7 @@ const getBulkActionClass = (variant: DtBulkAction['variant']='primary'): string 
   success:'bg-emerald-600 hover:bg-emerald-700 text-white',
   warning:'bg-amber-500 hover:bg-amber-600 text-white',
   danger: 'bg-red-600 hover:bg-red-700 text-white',
-  info:   'bg-blue-600 hover:bg-blue-700 text-white',
+  info:   'bg-violet-600 hover:bg-violet-700 text-white',
 }[variant!]);
 
 const formatTotal = (col: DtColumn, total: number): string =>
@@ -509,6 +509,16 @@ const confirmDelete = (id: string|number, label = 'cet élément') => {
   });
 };
 
+const confirmResetPassword = (id: string|number, label = 'cet utilisateur') => {
+  openConfirm({
+    title: 'Réinitialiser le mot de passe',
+    message: `Voulez-vous vraiment réinitialiser le mot de passe de ${label} ?`,
+    confirmLabel: 'Réinitialiser',
+    variant: 'warning',
+    onConfirm: () => emit('reset-password', [id]),
+  });
+};
+
 const handleBulkDelete = () => {
   const ids = selectedRows.value.map(r => r[props.rowKey ?? 'id'] as string|number);
   openConfirm({
@@ -560,7 +570,7 @@ const dtCopyRow = (row: Record<string, unknown>) => {
     dtCopiedRowTimeout = setTimeout(() => { dtCopiedRowKey.value = null; }, 1500);
   }).catch(() => {});
 };
-defineExpose({ clearSelection, selected, filteredRows, confirmDelete });
+defineExpose({ clearSelection, selected, filteredRows, confirmDelete, confirmResetPassword });
 </script>
 
 <template>
@@ -782,7 +792,7 @@ defineExpose({ clearSelection, selected, filteredRows, confirmDelete });
             <button @click="exportData('csv')"
                     class="w-full flex items-center gap-2.5 px-3 py-2 text-sm text-gray-700 dark:text-gray-300
                            hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
-              <svg class="w-4 h-4 text-blue-600 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
+              <svg class="w-4 h-4 text-violet-600 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6zm-1 1.5L18.5 9H13V3.5z"/>
               </svg>
               CSV (.csv)
@@ -1025,7 +1035,7 @@ defineExpose({ clearSelection, selected, filteredRows, confirmDelete });
                                 'bg-amber-100 text-amber-600 hover:bg-amber-500 hover:text-white dark:bg-amber-900/30 dark:text-amber-400 dark:hover:bg-amber-500 dark:hover:text-white': action.variant === 'warning',
                                 'bg-red-100 text-red-600 hover:bg-red-500 hover:text-white dark:bg-red-900/30 dark:text-red-400 dark:hover:bg-red-500 dark:hover:text-white': action.variant === 'danger',
                                 'bg-emerald-100 text-emerald-600 hover:bg-emerald-500 hover:text-white dark:bg-emerald-900/30 dark:text-emerald-400 dark:hover:bg-emerald-500 dark:hover:text-white': action.variant === 'success',
-                                'bg-blue-100 text-blue-600 hover:bg-blue-500 hover:text-white dark:bg-blue-900/30 dark:text-blue-400 dark:hover:bg-blue-500 dark:hover:text-white': action.variant === 'info',
+                                'bg-violet-100 text-violet-600 hover:bg-violet-500 hover:text-white dark:bg-violet-900/30 dark:text-violet-400 dark:hover:bg-violet-500 dark:hover:text-white': action.variant === 'info',
                               }"
                               @click="handleAction(action, row)">
                         <!-- Icône selon le key -->
@@ -1229,13 +1239,13 @@ defineExpose({ clearSelection, selected, filteredRows, confirmDelete });
                         border border-gray-200 dark:border-gray-700 overflow-hidden">
               <div :class="['h-1 w-full',
                             confirmDialog.variant === 'danger'  ? 'bg-red-500' :
-                            confirmDialog.variant === 'warning' ? 'bg-amber-400' : 'bg-blue-500']"/>
+                            confirmDialog.variant === 'warning' ? 'bg-amber-400' : 'bg-violet-500']"/>
               <div class="p-6">
                 <div class="flex items-start gap-4">
                   <div :class="['w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0',
                                 confirmDialog.variant === 'danger'  ? 'bg-red-100 dark:bg-red-900/30' :
                                 confirmDialog.variant === 'warning' ? 'bg-amber-100 dark:bg-amber-900/30' :
-                                                                       'bg-blue-100 dark:bg-blue-900/30']">
+                                                                       'bg-violet-100 dark:bg-violet-900/30']">
                     <svg v-if="confirmDialog.variant === 'danger'"
                          class="w-5 h-5 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -1246,7 +1256,7 @@ defineExpose({ clearSelection, selected, filteredRows, confirmDelete });
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
                     </svg>
-                    <svg v-else class="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg v-else class="w-5 h-5 text-violet-600 dark:text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                     </svg>
@@ -1267,7 +1277,7 @@ defineExpose({ clearSelection, selected, filteredRows, confirmDelete });
                           :class="['px-4 py-2 text-sm font-semibold rounded-lg text-white transition-colors',
                                    confirmDialog.variant === 'danger'  ? 'bg-red-600 hover:bg-red-700' :
                                    confirmDialog.variant === 'warning' ? 'bg-amber-500 hover:bg-amber-600' :
-                                                                          'bg-blue-600 hover:bg-blue-700']">
+                                                                          'bg-violet-600 hover:bg-violet-700']">
                     {{ confirmDialog.confirmLabel }}
                   </button>
                 </div>

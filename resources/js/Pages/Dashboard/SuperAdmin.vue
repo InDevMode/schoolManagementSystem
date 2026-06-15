@@ -231,9 +231,9 @@
                                     <span class="text-sm text-gray-700 dark:text-gray-300">Moyenne la plus faible</span>
                                     <span class="text-lg font-black text-red-600 dark:text-red-400">{{ lowAverage ?? '—' }}/20</span>
                                 </div>
-                                <div class="flex items-center justify-between p-3 rounded-lg bg-blue-50 dark:bg-blue-900/20">
+                                <div class="flex items-center justify-between p-3 rounded-lg bg-violet-50 dark:bg-violet-900/20">
                                     <span class="text-sm text-gray-700 dark:text-gray-300">Taux de réussite</span>
-                                    <span class="text-lg font-black text-blue-600 dark:text-blue-400">{{ successRate ?? '—' }}%</span>
+                                    <span class="text-lg font-black text-violet-600 dark:text-violet-400">{{ successRate ?? '—' }}%</span>
                                 </div>
                             </div>
                         </div>
@@ -367,7 +367,7 @@
                                 <a href="/superadmin/config/roles" class="block p-3 rounded-lg border border-gray-100 dark:border-gray-700 hover:border-violet-300 dark:hover:border-violet-700 text-center text-xs font-semibold text-violet-600 dark:text-violet-400 transition-colors">
                                     Gérer les rôles
                                 </a>
-                                <a href="/superadmin/config/permissions" class="block p-3 rounded-lg border border-gray-100 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-700 text-center text-xs font-semibold text-blue-600 dark:text-blue-400 transition-colors">
+                                <a href="/superadmin/config/permissions" class="block p-3 rounded-lg border border-gray-100 dark:border-gray-700 hover:border-violet-300 dark:hover:border-violet-700 text-center text-xs font-semibold text-violet-600 dark:text-violet-400 transition-colors">
                                     Gérer les permissions
                                 </a>
                             </div>

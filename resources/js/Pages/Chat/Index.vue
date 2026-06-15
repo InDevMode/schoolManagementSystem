@@ -22,9 +22,9 @@
                         <div class="flex items-center justify-between mb-4">
                             <h2 class="text-lg font-bold text-gray-900 dark:text-white">Messages</h2>
                             <div class="flex items-center gap-1">
-                                <!-- Bouton nouveau message (ouvre l'onglet contacts) -->
+                                <!-- Bouton nouveau message — ouvre le modal contacts -->
                                 <button
-                                    @click="activeTab = 'contacts'"
+                                    @click="showNewMessageModal = true"
                                     class="p-2 rounded-xl text-gray-500 dark:text-gray-400 hover:bg-primary-50 dark:hover:bg-primary-900/20 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
                                     title="Nouveau message">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -226,6 +226,131 @@
                         </div>
                     </div>
                 </aside>
+
+                <!-- ══ MODAL NOUVEAU MESSAGE ══════════════════════════════════════ -->
+                <Teleport to="body">
+                    <Transition
+                        enter-active-class="transition duration-200 ease-out"
+                        enter-from-class="opacity-0"
+                        enter-to-class="opacity-100"
+                        leave-active-class="transition duration-150 ease-in"
+                        leave-to-class="opacity-0">
+                        <div v-if="showNewMessageModal"
+                            class="fixed inset-0 z-50 flex items-center justify-center p-4"
+                            @click.self="showNewMessageModal = false">
+                            <!-- Overlay -->
+                            <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" @click="showNewMessageModal = false"/>
+
+                            <!-- Panneau modal -->
+                            <div class="relative z-10 w-full max-w-md rounded-2xl bg-white dark:bg-gray-800 shadow-2xl flex flex-col overflow-hidden"
+                                style="max-height: 75vh">
+
+                                <!-- En-tête -->
+                                <div class="flex items-center justify-between px-5 py-4 border-b border-gray-100 dark:border-gray-700">
+                                    <div>
+                                        <h3 class="text-base font-bold text-gray-900 dark:text-white">Nouveau message</h3>
+                                        <p class="text-xs text-gray-400 mt-0.5">{{ localChatContacts.length }} contact{{ localChatContacts.length > 1 ? 's' : '' }} disponible{{ localChatContacts.length > 1 ? 's' : '' }}</p>
+                                    </div>
+                                    <button @click="showNewMessageModal = false"
+                                        class="p-1.5 rounded-xl text-gray-400 hover:text-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                        </svg>
+                                    </button>
+                                </div>
+
+                                <!-- Barre de recherche -->
+                                <div class="px-4 py-3 border-b border-gray-100 dark:border-gray-700">
+                                    <div class="relative">
+                                        <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                                        </svg>
+                                        <input
+                                            v-model="modalContactSearch"
+                                            type="text"
+                                            placeholder="Rechercher un contact…"
+                                            class="w-full pl-9 pr-4 py-2 text-sm bg-gray-50 dark:bg-gray-700/60 border border-gray-200 dark:border-gray-600 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
+                                        />
+                                    </div>
+                                </div>
+
+                                <!-- Liste des contacts -->
+                                <div class="flex-1 overflow-y-auto">
+                                    <template v-if="filteredModalContacts.length">
+                                        <!-- Groupement par classe si disponible -->
+                                        <template v-if="hasClassGroups">
+                                            <template v-for="group in modalContactGroups" :key="group.label">
+                                                <div class="px-4 py-2 bg-gray-50/80 dark:bg-gray-700/40 sticky top-0 z-10">
+                                                    <p class="text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">
+                                                        {{ group.label }}
+                                                    </p>
+                                                </div>
+                                                <a v-for="contact in group.contacts" :key="contact.id"
+                                                    :href="`/chat?receiver_id=${contact.id_encoded}`"
+                                                    @click="showNewMessageModal = false"
+                                                    class="flex items-center gap-3 px-4 py-3 cursor-pointer transition-all border-b border-gray-50 dark:border-gray-700/30 hover:bg-primary-50 dark:hover:bg-primary-900/20 group/item">
+                                                    <div class="relative flex-shrink-0">
+                                                        <img :src="contact.profile_picture" :alt="contact.name"
+                                                            class="w-10 h-10 rounded-full object-cover bg-gray-200 ring-2 ring-white dark:ring-gray-800" @error="onImgError"/>
+                                                        <span :class="[
+                                                            'absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full border-2 border-white dark:border-gray-800',
+                                                            contact.is_online ? 'bg-emerald-500' : 'bg-gray-300 dark:bg-gray-500'
+                                                        ]"/>
+                                                    </div>
+                                                    <div class="flex-1 min-w-0">
+                                                        <p class="text-sm font-semibold text-gray-900 dark:text-white truncate group-hover/item:text-primary-700 dark:group-hover/item:text-primary-300 transition-colors">
+                                                            {{ contact.name }}
+                                                        </p>
+                                                        <p class="text-xs text-gray-400 truncate">
+                                                            {{ contact.role }}
+                                                            <span v-if="contact.is_online" class="text-emerald-500"> · En ligne</span>
+                                                        </p>
+                                                    </div>
+                                                    <svg class="w-4 h-4 text-gray-300 dark:text-gray-600 group-hover/item:text-primary-400 flex-shrink-0 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                                                    </svg>
+                                                </a>
+                                            </template>
+                                        </template>
+                                        <template v-else>
+                                            <a v-for="contact in filteredModalContacts" :key="contact.id"
+                                                :href="`/chat?receiver_id=${contact.id_encoded}`"
+                                                @click="showNewMessageModal = false"
+                                                class="flex items-center gap-3 px-4 py-3 cursor-pointer transition-all border-b border-gray-50 dark:border-gray-700/30 hover:bg-primary-50 dark:hover:bg-primary-900/20 group/item">
+                                                <div class="relative flex-shrink-0">
+                                                    <img :src="contact.profile_picture" :alt="contact.name"
+                                                        class="w-10 h-10 rounded-full object-cover bg-gray-200 ring-2 ring-white dark:ring-gray-800" @error="onImgError"/>
+                                                    <span :class="[
+                                                        'absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full border-2 border-white dark:border-gray-800',
+                                                        contact.is_online ? 'bg-emerald-500' : 'bg-gray-300 dark:bg-gray-500'
+                                                    ]"/>
+                                                </div>
+                                                <div class="flex-1 min-w-0">
+                                                    <p class="text-sm font-semibold text-gray-900 dark:text-white truncate group-hover/item:text-primary-700 dark:group-hover/item:text-primary-300 transition-colors">
+                                                        {{ contact.name }}
+                                                    </p>
+                                                    <p class="text-xs text-gray-400">
+                                                        {{ contact.role }}
+                                                        <span v-if="contact.is_online" class="text-emerald-500"> · En ligne</span>
+                                                    </p>
+                                                </div>
+                                                <svg class="w-4 h-4 text-gray-300 dark:text-gray-600 group-hover/item:text-primary-400 flex-shrink-0 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                                                </svg>
+                                            </a>
+                                        </template>
+                                    </template>
+                                    <div v-else class="flex flex-col items-center justify-center py-12 text-center px-4">
+                                        <svg class="w-10 h-10 text-gray-300 dark:text-gray-600 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                        </svg>
+                                        <p class="text-sm text-gray-400 dark:text-gray-500">Aucun contact trouvé</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </Transition>
+                </Teleport>
 
                 <!-- ══════════════════════════════════════════
                      COLONNE CENTRALE — Zone de messages
@@ -759,6 +884,10 @@ const showSearchBar  = ref(false);
 const msgSearch      = ref('');
 const msgSearchInput = ref<HTMLInputElement>();
 
+// ── Modal nouveau message ─────────────────────────────────────────────────────
+const showNewMessageModal = ref(false);
+const modalContactSearch  = ref('');
+
 // ── Refs DOM ──────────────────────────────────────────────────────────────────
 const messagesContainer = ref<HTMLElement>();
 const textarea          = ref<HTMLTextAreaElement>();
@@ -851,6 +980,28 @@ const contactGroups = computed(() => {
     const groups: Record<string, any[]> = {};
     for (const c of filteredChatContacts.value) {
         const key = c.class_name ?? 'Autres';
+        if (!groups[key]) groups[key] = [];
+        groups[key].push(c);
+    }
+    return Object.entries(groups).map(([label, contacts]) => ({ label, contacts }));
+});
+
+// ── Filtre modal nouveau message ──────────────────────────────────────────────
+const filteredModalContacts = computed(() => {
+    if (!modalContactSearch.value) return localChatContacts.value;
+    const q = modalContactSearch.value.toLowerCase();
+    return localChatContacts.value.filter(c =>
+        c.name?.toLowerCase().includes(q) ||
+        c.role?.toLowerCase().includes(q) ||
+        c.class_name?.toLowerCase().includes(q)
+    );
+});
+
+const modalContactGroups = computed(() => {
+    if (!filteredModalContacts.value.some((c: any) => c.class_name)) return [];
+    const groups: Record<string, any[]> = {};
+    for (const c of filteredModalContacts.value) {
+        const key = (c as any).class_name ?? 'Autres';
         if (!groups[key]) groups[key] = [];
         groups[key].push(c);
     }

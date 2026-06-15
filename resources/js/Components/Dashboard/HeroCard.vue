@@ -58,7 +58,7 @@ const props = defineProps<{
 
 const palettes = {
     violet: { bg: 'bg-gradient-to-br from-violet-500 to-purple-700',  circle: 'bg-white', iconBg: 'bg-white/20' },
-    blue:   { bg: 'bg-gradient-to-br from-blue-500 to-indigo-700',    circle: 'bg-white', iconBg: 'bg-white/20' },
+    blue:   { bg: 'bg-gradient-to-br from-violet-500 to-purple-700',  circle: 'bg-white', iconBg: 'bg-white/20' },
     amber:  { bg: 'bg-gradient-to-br from-amber-400 to-orange-600',   circle: 'bg-white', iconBg: 'bg-white/20' },
     green:  { bg: 'bg-gradient-to-br from-emerald-500 to-teal-700',   circle: 'bg-white', iconBg: 'bg-white/20' },
     rose:   { bg: 'bg-gradient-to-br from-rose-500 to-pink-700',      circle: 'bg-white', iconBg: 'bg-white/20' },

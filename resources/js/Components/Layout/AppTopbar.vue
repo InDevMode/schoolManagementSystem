@@ -86,8 +86,8 @@
                class="relative w-9 h-9 flex items-center justify-center rounded-full
                       bg-gray-100 dark:bg-gray-800
                       text-gray-500 dark:text-gray-400
-                      hover:bg-blue-50 dark:hover:bg-blue-900/20
-                      hover:text-blue-600 transition-colors"
+                      hover:bg-violet-50 dark:hover:bg-violet-900/20
+                      hover:text-violet-600 transition-colors"
                aria-label="Messages"
             >
                 <svg style="width:18px;height:18px" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -96,7 +96,7 @@
                 </svg>
                 <span v-if="msgCount > 0"
                       class="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1
-                             bg-blue-500 text-white text-[10px] font-bold
+                             bg-violet-500 text-white text-[10px] font-bold
                              rounded-full flex items-center justify-center leading-none ring-2 ring-white dark:ring-gray-900">
                     {{ msgCount > 99 ? '99+' : msgCount }}
                 </span>

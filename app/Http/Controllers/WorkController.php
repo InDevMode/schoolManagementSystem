@@ -34,18 +34,23 @@ class WorkController extends Controller
         foreach ($files as $file) {
             if (!$file->isValid()) continue;
 
-            $ext      = $file->getClientOriginalExtension();
-            $original = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
-            $slug     = Str::slug(mb_substr($original, 0, 40));
-            $fileName = $prefix . '_' . date('dmYHis') . '_' . Str::random(8) . '_' . $slug . '.' . $ext;
+            // Capturer toutes les métadonnées AVANT le move() car le fichier
+            // temporaire est supprimé dès que move() est appelé.
+            $originalName = $file->getClientOriginalName();
+            $ext          = $file->getClientOriginalExtension();
+            $fileSize     = $file->getSize();
+            $original     = pathinfo($originalName, PATHINFO_FILENAME);
+            $slug         = Str::slug(mb_substr($original, 0, 40));
+            $fileName     = $prefix . '_' . date('dmYHis') . '_' . Str::random(8) . '_' . $slug . '.' . $ext;
+
             $file->move(public_path('upload/practicalworks'), $fileName);
 
             WorkAttachmentModel::create([
                 'work_id'   => $workId,
-                'file_name' => $file->getClientOriginalName(),
+                'file_name' => $originalName,
                 'file_path' => $fileName,
                 'file_ext'  => strtolower($ext),
-                'file_size' => $file->getSize(),
+                'file_size' => $fileSize,
             ]);
         }
     }

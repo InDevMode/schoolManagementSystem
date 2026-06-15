@@ -5,8 +5,10 @@
                 <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Mes notes</h1>
                 <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">Résultats par période et par matière</p>
             </div>
-            <!-- Sélecteur période -->
-            <AppSelect v-model="selectedPeriod" :options="periodOptions" class="w-48" @change="changePeriod"/>
+            <!-- Sélecteur période — taille réduite, aligné à droite -->
+            <div class="flex-shrink-0 w-40">
+                <AppSelect v-model="selectedPeriod" :options="periodOptions" @change="changePeriod"/>
+            </div>
         </div>
 
         <!-- Résumé si notes disponibles -->

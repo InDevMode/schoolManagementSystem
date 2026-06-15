@@ -145,7 +145,7 @@
                     <div class="flex items-center gap-0.5 flex-shrink-0">
                         <!-- Détails -->
                         <button
-                            class="p-1.5 rounded-lg text-gray-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors"
+                            class="p-1.5 rounded-lg text-gray-400 hover:text-violet-600 hover:bg-violet-50 dark:hover:bg-violet-900/20 transition-colors"
                             title="Voir les détails"
                             @click="openDetail(notice)"
                         >

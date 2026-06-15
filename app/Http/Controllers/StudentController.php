@@ -4,10 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Exports\ExportStudent;
 use App\Models\ClassModel;
+use App\Models\ClassTeacherModel;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
@@ -161,8 +163,32 @@ class StudentController extends Controller
 
     public function myStudent()
     {
+        $teacherId = Auth::id();
+
+        // Compte d'élèves par classe pour ce professeur
+        $studentsByClass = \App\Models\ClassTeacherModel::select(
+                'class.id as class_id',
+                'class.name as class_name',
+                \Illuminate\Support\Facades\DB::raw('COUNT(DISTINCT users.id) as student_count')
+            )
+            ->join('class', 'class.id', '=', 'class_teacher.class_id')
+            ->join('users', function ($join) {
+                $join->on('users.class_id', '=', 'class.id')
+                     ->where('users.user_type', 3)
+                     ->where('users.is_delete', 0)
+                     ->where('users.status', 1);
+            })
+            ->where('class_teacher.teacher_id', $teacherId)
+            ->where('class_teacher.status', 1)
+            ->where('class_teacher.is_delete', 0)
+            ->where('class.is_delete', 0)
+            ->where('class.status', 1)
+            ->groupBy('class.id', 'class.name')
+            ->get();
+
         return Inertia::render('Teacher/Students/Index', [
-            'students' => User::getTeacherStudent(15, Auth::id()),
+            'students'       => User::getTeacherStudent(15, $teacherId),
+            'studentsByClass' => $studentsByClass,
         ]);
     }
 

@@ -1,10 +1,21 @@
 <template>
     <div class="space-y-6">
-        <div class="flex items-center justify-between">
-            <div>
-                <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Bulletin de {{ detail.bulletin?.student_last_name }} {{ detail.bulletin?.student_name }}</h1>
-                <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">{{ detail.bulletin?.period_name }}</p>
+        <div class="flex items-center justify-between gap-4">
+            <!-- Retour -->
+            <div class="flex items-center gap-3">
+                <Link :href="`/parent/my_student/${student.id}/bulletins`"
+                      class="p-2 rounded-lg border border-gray-200 dark:border-gray-700 text-gray-500
+                             hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-700 transition-colors flex-shrink-0">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                    </svg>
+                </Link>
+                <div>
+                    <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Bulletin de {{ detail.bulletin?.student_last_name }} {{ detail.bulletin?.student_name }}</h1>
+                    <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">{{ detail.bulletin?.period_name }}</p>
+                </div>
             </div>
+            <!-- Imprimer -->
             <a :href="`/parent/my_student/${student.id}/bulletins/${detail.bulletin?.id}/print`" target="_blank">
                 <AppButton variant="secondary">
                     <template #icon>
@@ -78,6 +89,7 @@
 </template>
 
 <script setup lang="ts">
+import { Link } from '@inertiajs/vue3';
 import { AppButton } from '@/Components/UI';
 defineProps<{ detail: { bulletin: any; subjects: any[] }; student: any; settings?: any }>();
 const avgClass = (avg: number) => {

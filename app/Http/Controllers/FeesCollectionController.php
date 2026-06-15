@@ -7,6 +7,7 @@ use App\Models\ClassModel;
 use App\Models\FeesCollectionModel;
 use App\Models\SettingModel;
 use App\Models\User;
+use App\Notifications\FeesPaymentNotification;
 use FedaPay\FedaPay;
 use FedaPay\Transaction as FedaTransaction;
 use Illuminate\Http\Request;
@@ -80,6 +81,9 @@ class FeesCollectionController extends Controller
                     $fees->payment_status = 'Paid';
                     $fees->save();
 
+                    // Notifier l'apprenant et son parent
+                    $this->notifyPayment($fees, $getStudent);
+
                     return back()->with('success', 'Paiement enregistré avec succès.');
 
                 case 'kkiapay':
@@ -98,6 +102,9 @@ class FeesCollectionController extends Controller
                     $fees->kkiapay_payment_id = $transactionId;
                     $fees->payment_status = 'Paid';
                     $fees->save();
+
+                    // Notifier l'apprenant et son parent
+                    $this->notifyPayment($fees, $getStudent);
 
                     return back()->with('success', 'Paiement Kkiapay validé et enregistré.');
 
@@ -177,6 +184,10 @@ class FeesCollectionController extends Controller
                     $fees->payment_status     = 'Paid';
                     $fees->fedapay_transaction_id = $pending['transaction_id'];
                     $fees->save();
+
+                    // Notifier l'apprenant et son parent
+                    $student = User::find($fees->student_id);
+                    if ($student) $this->notifyPayment($fees, $student);
 
                     session()->forget('fedapay_pending');
                     return redirect('admin/feescollections/collections/list')
@@ -271,8 +282,11 @@ class FeesCollectionController extends Controller
             $fees->created_by = intval($metadata->created_by);
             $fees->payment_status = $request->st;
             $fees->payment_data = json_encode($request->all());
-
             $fees->save();
+
+            // Notifier l'apprenant et son parent
+            $student = User::find($fees->student_id);
+            if ($student) $this->notifyPayment($fees, $student);
 
             return redirect('admin/feescollections/collections/list')
                 ->with('success', 'Paiement PayPal validé et contribution enregistrée.');
@@ -300,8 +314,11 @@ class FeesCollectionController extends Controller
             $fees->remark = $metadata->remark;
             $fees->created_by = intval($metadata->created_by);
             $fees->stripe_session_id = $session->id;
-
             $fees->save();
+
+            // Notifier l'apprenant et son parent
+            $student = User::find($fees->student_id);
+            if ($student) $this->notifyPayment($fees, $student);
 
             return redirect('admin/feescollections/collections/list')
                 ->with('success', 'Paiement Stripe validé et contribution enregistrée.');
@@ -399,6 +416,9 @@ class FeesCollectionController extends Controller
                     $fees->kkiapay_payment_id = $transactionId;
                     $fees->payment_status = 'Paid';
                     $fees->save();
+
+                    // Notifier l'apprenant et son parent
+                    $this->notifyPayment($fees, $getStudent);
 
                     return redirect('student/my_fees')
                         ->with('success', 'Paiement Kkiapay validé et contribution enregistrée.');
@@ -536,6 +556,10 @@ class FeesCollectionController extends Controller
                 $fees->payment_data = json_encode($request->all());
                 $fees->save();
 
+                // Notifier l'apprenant et son parent
+                $student = User::find($fees->student_id);
+                if ($student) $this->notifyPayment($fees, $student);
+
                 return redirect('student/myfees')->with('success', 'Paiement validé avec succès.');
             }
         }
@@ -555,6 +579,10 @@ class FeesCollectionController extends Controller
                 $fees->payment_status = 'Paid';
                 $fees->payment_data = json_encode($session);
                 $fees->save();
+
+                // Notifier l'apprenant et son parent
+                $student = User::find($fees->student_id);
+                if ($student) $this->notifyPayment($fees, $student);
             }
             return redirect('student/my_fees')->with('success', 'Paiement validé avec succès.');
         }
@@ -630,6 +658,9 @@ class FeesCollectionController extends Controller
                     $fees->payment_status = 'Paid';
                     $fees->save();
 
+                    // Notifier l'apprenant et son parent
+                    $this->notifyPayment($fees, $getStudent);
+
                     return redirect('parent/my_student/feescollections/' . $student_id)
                         ->with('success', 'Paiement Kkiapay validé et contribution enregistrée.');
 
@@ -672,8 +703,11 @@ class FeesCollectionController extends Controller
             $fees->created_by = intval($metadata->created_by);
             $fees->payment_status = $request->st;
             $fees->payment_data = json_encode($request->all());
-
             $fees->save();
+
+            // Notifier l'apprenant et son parent
+            $student = User::find($fees->student_id);
+            if ($student) $this->notifyPayment($fees, $student);
 
             return redirect('parent/my_student/feescollections/' . $metadata->student_id)
                 ->with('success', 'Paiement PayPal validé et contribution enregistrée.');
@@ -701,8 +735,11 @@ class FeesCollectionController extends Controller
             $fees->remark = $metadata->remark;
             $fees->created_by = intval($metadata->created_by);
             $fees->stripe_session_id = $session->id;
-
             $fees->save();
+
+            // Notifier l'apprenant et son parent
+            $student = User::find($fees->student_id);
+            if ($student) $this->notifyPayment($fees, $student);
 
             return redirect('parent/my_student/feescollections/' . $metadata->student_id)
                 ->with('success', 'Paiement Stripe validé et contribution enregistrée.');
@@ -786,6 +823,41 @@ class FeesCollectionController extends Controller
     public function exportFeesCollects()
     {
         return Excel::download(new ExportFeesCollection, 'fees_collects_' . date('d_m_Y') . '.xlsx');
+    }
+
+    // ──────────────────────────────────────────────────────────────────────────
+    // HELPER — Notification paiement
+    // ──────────────────────────────────────────────────────────────────────────
+
+    /**
+     * Envoie une notification de paiement à l'apprenant et à son parent (si défini).
+     */
+    private function notifyPayment(FeesCollectionModel $fees, $student): void
+    {
+        try {
+            $studentUser = User::find($fees->student_id);
+            if (!$studentUser) return;
+
+            $studentName = trim(($studentUser->last_name ?? '') . ' ' . ($studentUser->name ?? ''));
+
+            $notification = new FeesPaymentNotification(
+                $studentName,
+                (int) $fees->paid_amount,
+                (int) $fees->remaning_amount,
+                $fees->payment_type ?? 'cash'
+            );
+
+            // Notifier l'apprenant
+            $studentUser->notify($notification);
+
+            // Notifier le parent une seule fois
+            if ($studentUser->parent_id) {
+                $parent = User::find($studentUser->parent_id);
+                $parent?->notify($notification);
+            }
+        } catch (\Exception $e) {
+            Log::warning('Fees payment notification failed: ' . $e->getMessage());
+        }
     }
 
 }

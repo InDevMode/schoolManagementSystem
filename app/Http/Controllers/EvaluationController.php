@@ -450,18 +450,51 @@ class EvaluationController extends Controller
     /**
      * Rejeter une ou plusieurs notes (suppression logique — is_delete = 1)
      * La note rejetée disparaît de la liste ; il faudra la re-saisir.
+     * Notifie le professeur concerné.
      */
     public function rejectGrades(Request $request)
     {
         $request->validate([
-            'grade_ids' => 'required|array',
+            'grade_ids'   => 'required|array',
             'grade_ids.*' => 'integer',
         ]);
 
         try {
+            // Récupérer les notes avec leurs infos avant suppression logique
+            $grades = GradeModel::with(['evaluation', 'student'])
+                ->whereIn('id', $request->grade_ids)
+                ->where('validated', false)
+                ->get();
+
             GradeModel::whereIn('id', $request->grade_ids)
-                ->where('validated', false) // on ne rejette que des notes non validées
+                ->where('validated', false)
                 ->update(['is_delete' => 1]);
+
+            // Notifier les professeurs concernés
+            $byTeacher = $grades->groupBy(fn($g) => $g->evaluation?->teacher_id);
+            foreach ($byTeacher as $teacherId => $teacherGrades) {
+                if (!$teacherId) continue;
+                $teacher = User::find($teacherId);
+                if (!$teacher) continue;
+
+                // Grouper par évaluation pour un message lisible
+                $byEval = $teacherGrades->groupBy('evaluation_id');
+                foreach ($byEval as $evalId => $evalGrades) {
+                    $eval = $evalGrades->first()->evaluation;
+                    $evalLabel = $eval?->title
+                        ?: (EvaluationModel::$typeLabels[$eval?->type ?? ''] ?? $eval?->type ?? '');
+                    $studentNames = $evalGrades->map(fn($g) => $g->student ? trim($g->student->last_name . ' ' . $g->student->name) : "Élève #{$g->student_id}")->join(', ');
+                    $count = $evalGrades->count();
+
+                    $teacher->notify(new \App\Notifications\GradeRejectedNotification(
+                        $evalId,
+                        $evalLabel,
+                        $eval?->class_id,
+                        $count,
+                        $studentNames
+                    ));
+                }
+            }
 
             return response()->json(['success' => true, 'message' => 'Note(s) rejetée(s) avec succès.']);
         } catch (\Exception $e) {
@@ -499,12 +532,7 @@ class EvaluationController extends Controller
 
     /**
      * Annuler une évaluation entière — elle sera exclue du calcul des moyennes.
-     *
-     * Cette action est distincte de la suppression :
-     * - L'évaluation reste en base avec status = 'cancelled'
-     * - Toutes ses notes passent à is_delete = 0, validated = false
-     * - Elle n'est plus prise en compte lors du calcul des bulletins
-     * - Elle peut être réactivée si nécessaire (status → open)
+     * Notifie le professeur si c'est l'admin qui annule.
      */
     public function cancelEvaluation(Request $request)
     {
@@ -528,7 +556,20 @@ class EvaluationController extends Controller
                     'validated_at' => null,
                 ]);
 
-            $evalLabel = $eval->title ?: $eval->type;
+            $evalLabel = $eval->title ?: (EvaluationModel::$typeLabels[$eval->type ?? ''] ?? $eval->type);
+
+            // Notifier le professeur si c'est l'admin qui annule
+            if ($eval->teacher_id && (int)$eval->teacher_id !== Auth::id()) {
+                $teacher = User::find($eval->teacher_id);
+                if ($teacher) {
+                    $teacher->notify(new \App\Notifications\EvaluationCancelledByAdminNotification(
+                        $eval->id,
+                        $evalLabel,
+                        $eval->class_id
+                    ));
+                }
+            }
+
             return response()->json([
                 'success' => true,
                 'message' => "L'évaluation « {$evalLabel} » a été annulée et ne sera pas prise en compte dans le calcul des moyennes.",
@@ -577,10 +618,49 @@ class EvaluationController extends Controller
         $teacher_id = Auth::id();
         $classes    = ClassTeacherModel::getMyClassSubjectGroup($teacher_id);
 
+        // IDs des classes du prof
+        $classIds = $classes->pluck('class_id')->unique()->values()->toArray();
+
+        // Évaluations : uniquement celles créées par ce prof ET dans SES classes
+        $perPage = min((int) request('per_page', 15), 100);
+        $q = EvaluationModel::select(
+                'evaluations.*',
+                'class.name as class_name',
+                'subject.name as subject_name',
+                'periods.name as period_name'
+            )
+            ->join('class', 'class.id', '=', 'evaluations.class_id')
+            ->join('subject', 'subject.id', '=', 'evaluations.subject_id')
+            ->leftJoin('periods', 'periods.id', '=', 'evaluations.period_id')
+            ->where('evaluations.teacher_id', $teacher_id)
+            ->whereIn('evaluations.class_id', $classIds)
+            ->where('evaluations.is_delete', 0);
+
+        if ($v = request('class_id'))   $q->where('evaluations.class_id', $v);
+        if ($v = request('period_id'))  $q->where('evaluations.period_id', $v);
+        if ($v = request('type'))       $q->where('evaluations.type', $v);
+        if ($v = request('status'))     $q->where('evaluations.status', $v);
+
+        $evaluations = $q->orderBy('evaluations.eval_date', 'desc')->paginate($perPage);
+
+        // Compter les notes rejetées par évaluation pour ce prof
+        $evalIds      = $evaluations->pluck('id')->toArray();
+        $rejectedMap  = \App\Models\GradeModel::where('is_delete', 1)
+            ->whereIn('evaluation_id', $evalIds)
+            ->where('teacher_id', $teacher_id)
+            ->groupBy('evaluation_id')
+            ->selectRaw('evaluation_id, COUNT(*) as count')
+            ->pluck('count', 'evaluation_id');
+
+        $evaluations->getCollection()->transform(function ($e) use ($rejectedMap) {
+            $e->rejected_count = $rejectedMap[$e->id] ?? 0;
+            return $e;
+        });
+
         return Inertia::render('Teacher/Evaluations/Index', [
-            'evaluations'   => EvaluationModel::getByTeacherPaginated($teacher_id, 15),
+            'evaluations'   => $evaluations,
             'classes'       => $classes,
-            'currentPeriod' => PeriodModel::getCurrentPeriod()->first(), // le prof ne voit que la période courante
+            'currentPeriod' => PeriodModel::getCurrentPeriod()->first(),
             'typeLabels'    => EvaluationModel::$typeLabels,
             'typeCoeffs'    => EvaluationModel::$typeCoefficients,
         ]);
@@ -597,6 +677,12 @@ class EvaluationController extends Controller
         ]);
 
         try {
+            // Vérifier que la classe appartient bien au prof
+            $myClassIds = ClassTeacherModel::getMyClassSubjectGroup(Auth::id())->pluck('class_id')->toArray();
+            if (!in_array((int) $request->class_id, $myClassIds)) {
+                return redirect()->back()->with('error', 'Vous n\'êtes pas assigné à cette classe.');
+            }
+
             // Le coefficient vient de l'assignation classe-matière
             $classSubject = ClassSubjectModel::getClassSubject((int) $request->class_id, (int) $request->subject_id);
             $coefficient  = $classSubject?->coefficient ?? 1;
@@ -638,12 +724,19 @@ class EvaluationController extends Controller
 
         if ($request->evaluation_id) {
             $eval = EvaluationModel::getSingle((int) $request->evaluation_id);
-            if ($eval && $eval->teacher_id === $teacher_id) {
-                $data['evaluation']      = $eval;
-                $data['grades']          = GradeModel::getGradesForEvaluation($eval->id, $eval->class_id);
-                $data['stats']           = GradeModel::getEvaluationStats($eval->id, (float) $eval->max_score);
+            // Sécurité : le prof ne peut accéder qu'à SES évaluations
+            if ($eval && (int)$eval->teacher_id === $teacher_id) {
+                $data['evaluation']       = $eval;
+                $data['grades']           = GradeModel::getGradesForEvaluation($eval->id, $eval->class_id);
+                $data['stats']            = GradeModel::getEvaluationStats($eval->id, (float) $eval->max_score);
                 $data['selectedClassId']  = (int) $eval->class_id;
                 $data['selectedPeriodId'] = (int) $eval->period_id;
+                // Notes rejetées (is_delete=1) pour cette évaluation — le prof doit les re-saisir
+                $data['rejectedGrades'] = GradeModel::select('grades.*', 'users.name', 'users.last_name', 'users.admission_number')
+                    ->join('users', 'users.id', '=', 'grades.student_id')
+                    ->where('grades.evaluation_id', $eval->id)
+                    ->where('grades.is_delete', 1)
+                    ->get();
             }
         }
 
@@ -651,12 +744,12 @@ class EvaluationController extends Controller
             $data['evaluations'] = EvaluationModel::getByClassAndPeriod(
                 (int) $request->class_id,
                 (int) $request->period_id
-            )->filter(fn($e) => $e->teacher_id === $teacher_id)->values();
+            )->filter(fn($e) => (int)$e->teacher_id === $teacher_id)->values();
         } elseif (isset($data['evaluation'])) {
             $data['evaluations'] = EvaluationModel::getByClassAndPeriod(
                 (int) $data['evaluation']->class_id,
                 (int) $data['evaluation']->period_id
-            )->filter(fn($e) => $e->teacher_id === $teacher_id)->values();
+            )->filter(fn($e) => (int)$e->teacher_id === $teacher_id)->values();
         }
 
         return Inertia::render('Teacher/Evaluations/GradeEntry', $data);
@@ -664,8 +757,72 @@ class EvaluationController extends Controller
 
     public function teacherSaveGrades(Request $request)
     {
-        // Déléguer à la méthode admin (même logique)
+        $teacher_id = Auth::id();
+
+        $request->validate([
+            'evaluation_id'       => 'required|integer',
+            'grades'              => 'required|array',
+            'grades.*.student_id' => 'required|integer',
+            'grades.*.score'      => 'nullable|numeric|min:0|max:20',
+        ]);
+
+        $eval = EvaluationModel::getSingle($request->evaluation_id);
+        if (!$eval) {
+            return response()->json(['success' => false, 'message' => 'Évaluation introuvable.'], 404);
+        }
+
+        // Le prof ne peut saisir que si l'évaluation lui appartient et est OUVERTE
+        if ((int)$eval->teacher_id !== $teacher_id) {
+            return response()->json(['success' => false, 'message' => 'Accès refusé.'], 403);
+        }
+
+        if ($eval->status !== 'open') {
+            return response()->json([
+                'success' => false,
+                'message' => 'La saisie de notes est possible uniquement si l\'évaluation est ouverte.',
+            ], 403);
+        }
+
+        // Déléguer à la méthode admin (même logique de sauvegarde)
         return $this->saveGrades($request);
+    }
+
+    /**
+     * Le professeur annule sa propre évaluation.
+     * Seules les évaluations non encore validées peuvent être annulées.
+     */
+    public function teacherCancelEvaluation(int $id)
+    {
+        $teacher_id = Auth::id();
+        $eval = EvaluationModel::getSingle($id);
+
+        if (!$eval) {
+            return response()->json(['success' => false, 'message' => 'Évaluation introuvable.'], 404);
+        }
+
+        if ((int)$eval->teacher_id !== $teacher_id) {
+            return response()->json(['success' => false, 'message' => 'Accès refusé.'], 403);
+        }
+
+        if ($eval->status === 'validated') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Impossible d\'annuler une évaluation validée. Contactez l\'administration.',
+            ], 422);
+        }
+
+        $eval->status = 'cancelled';
+        $eval->save();
+
+        // Remettre toutes les notes à l'état "non validé"
+        GradeModel::where('evaluation_id', $eval->id)
+            ->update(['validated' => false, 'validated_by' => null, 'validated_at' => null]);
+
+        $evalLabel = $eval->title ?: (EvaluationModel::$typeLabels[$eval->type] ?? $eval->type);
+        return response()->json([
+            'success' => true,
+            'message' => "L'évaluation « {$evalLabel} » a été annulée.",
+        ]);
     }
 
     // ──────────────────────────────────────────────────────────────────────────

@@ -215,7 +215,7 @@ const submitHomework = () => {
 
     // Route correcte : POST /student/my_homework/submission/{id}
     router.post(`/student/my_homework/submission/${props.work.id}`, data, {
-        onSuccess: () => toast.success('Travail soumis avec succès.'),
+        onSuccess: () => { /* Le flash Laravel affiché par AppLayout suffit */ },
         onError:   () => toast.error('Erreur lors de la soumission. Veuillez réessayer.'),
         onFinish:  () => { submitting.value = false; },
     });

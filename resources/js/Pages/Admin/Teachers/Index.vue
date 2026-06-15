@@ -67,8 +67,8 @@
                             <p class="text-xs text-gray-500">{{ row.email }}</p>
                             <button type="button"
                                     class="ml-1.5 opacity-0 group-hover/email:opacity-100 transition-opacity duration-150
-                                           p-0.5 rounded text-gray-400 hover:text-blue-600 hover:bg-blue-50
-                                           dark:hover:text-blue-400 dark:hover:bg-blue-900/20"
+                                           p-0.5 rounded text-gray-400 hover:text-violet-600 hover:bg-violet-50
+                                           dark:hover:text-violet-400 dark:hover:bg-violet-900/20"
                                     :title="copiedField === `email-${row.id}` ? 'Copié !' : 'Copier l\'email'"
                                     @click.stop="copyToClipboard(row.email as string, `email-${row.id}`)">
                                 <svg v-if="copiedField !== `email-${row.id}`" class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -133,7 +133,7 @@
                         </svg>
                     </button>
                     <!-- Réinitialiser MDP -->
-                    <button v-if="canResetPassword" title="Réinit. MDP" @click="handleResetPassword([row.id as number])"
+                    <button v-if="canResetPassword" title="Réinit. MDP" @click="tableRef?.confirmResetPassword(row.id as number, `${row.last_name} ${row.name}`)"
                             class="p-1.5 rounded-lg transition-all duration-150
                                    text-white bg-amber-500 hover:bg-amber-600 active:bg-amber-700
                                    shadow-sm shadow-amber-200 dark:shadow-amber-900/40">
@@ -143,8 +143,8 @@
                     </button>
                     <Link :href="`/chat?receiver_id=${row.id_encoded}`" title="Message"
                        class="p-1.5 rounded-lg transition-all duration-150
-                              text-white bg-blue-500 hover:bg-blue-600 active:bg-blue-700
-                              shadow-sm shadow-blue-200 dark:shadow-blue-900/40">
+                              text-white bg-violet-500 hover:bg-violet-600 active:bg-violet-700
+                              shadow-sm shadow-violet-200 dark:shadow-violet-900/40">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                   d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
@@ -181,7 +181,7 @@
                     </svg>
                     Modifier
                 </button>
-                <button v-if="canResetPassword" @click="handleResetPassword([(row as any).id])"
+                <button v-if="canResetPassword" @click="tableRef?.confirmResetPassword((row as any).id, `${row.last_name} ${row.name}`)"
                         class="flex w-full items-center gap-2.5 px-3.5 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-amber-50 dark:hover:bg-gray-700/60 hover:text-amber-700 transition-colors">
                     <svg class="w-4 h-4 text-amber-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/>
@@ -189,8 +189,8 @@
                     Réinitialiser le mot de passe
                 </button>
                 <Link :href="`/chat?receiver_id=${(row as any).id_encoded}`"
-                   class="flex items-center gap-2.5 px-3.5 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-700/60 hover:text-blue-700 transition-colors">
-                    <svg class="w-4 h-4 text-blue-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                   class="flex items-center gap-2.5 px-3.5 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-violet-50 dark:hover:bg-gray-700/60 hover:text-violet-700 transition-colors">
+                    <svg class="w-4 h-4 text-violet-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                               d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
                     </svg>
@@ -295,6 +295,94 @@
                             <InfoCard v-if="viewTarget.address" label="Adresse" :value="viewTarget.address" />
                             <InfoCard v-if="viewTarget.note" label="Note / Qualification" :value="viewTarget.note" />
                         </div>
+                    </div>
+
+                    <!-- CLASSES -->
+                    <div v-show="activeTab === 'classes'" class="space-y-4">
+
+                        <!-- Loading -->
+                        <div v-if="loadingClasses" class="flex items-center justify-center py-12">
+                            <svg class="w-7 h-7 animate-spin text-primary-500" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
+                            </svg>
+                        </div>
+
+                        <template v-else>
+                            <!-- Empty -->
+                            <div v-if="teacherClasses.length === 0"
+                                 class="flex flex-col items-center justify-center py-12 text-center">
+                                <div class="w-12 h-12 rounded-xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center mb-3">
+                                    <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                              d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                                    </svg>
+                                </div>
+                                <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Aucune classe assignée</p>
+                                <p class="text-xs text-gray-400 dark:text-gray-500 mt-1">Ce professeur n'a pas encore de classe attribuée.</p>
+                            </div>
+
+                            <!-- Liste des classes -->
+                            <div v-else class="space-y-2">
+                                <p class="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-3">
+                                    {{ teacherClasses.length }} classe{{ teacherClasses.length > 1 ? 's' : '' }} assignée{{ teacherClasses.length > 1 ? 's' : '' }}
+                                </p>
+                                <div
+                                    v-for="cls in teacherClasses"
+                                    :key="cls.id"
+                                    class="flex items-center gap-3 p-3 rounded-xl border border-gray-100 dark:border-gray-700
+                                           bg-gray-50 dark:bg-gray-800/60 hover:bg-white dark:hover:bg-gray-800
+                                           transition-colors duration-150"
+                                >
+                                    <!-- Icône classe -->
+                                    <div class="w-9 h-9 rounded-lg bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center flex-shrink-0">
+                                        <svg class="w-4 h-4 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                  d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                                        </svg>
+                                    </div>
+
+                                    <!-- Infos -->
+                                    <div class="flex-1 min-w-0">
+                                        <p class="text-sm font-semibold text-gray-900 dark:text-white truncate">
+                                            {{ cls.name }}
+                                        </p>
+                                        <p class="text-xs text-gray-500 dark:text-gray-400">
+                                            {{ cls.students }} apprenant{{ cls.students > 1 ? 's' : '' }}
+                                        </p>
+                                    </div>
+
+                                    <!-- Statut -->
+                                    <span :class="[
+                                        'flex-shrink-0 inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold',
+                                        cls.status === 1
+                                            ? 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400'
+                                            : 'bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400'
+                                    ]">
+                                        <span :class="['w-1.5 h-1.5 rounded-full', cls.status === 1 ? 'bg-emerald-500' : 'bg-gray-400']"/>
+                                        {{ cls.status === 1 ? 'Actif' : 'Inactif' }}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <!-- Bouton vers la page d'assignation -->
+                            <div class="pt-2 border-t border-gray-100 dark:border-gray-700">
+                                <Link
+                                    href="/admin/assign_class/list"
+                                    class="flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-xl
+                                           border border-dashed border-emerald-300 dark:border-emerald-600
+                                           text-emerald-600 dark:text-emerald-400 text-xs font-semibold
+                                           hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-colors"
+                                    @click="showView = false"
+                                >
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                              d="M12 4v16m8-8H4"/>
+                                    </svg>
+                                    Gérer les assignations de classes
+                                </Link>
+                            </div>
+                        </template>
                     </div>
                 </div>
             </template>
@@ -448,6 +536,32 @@ const picFile    = ref<File | null>(null);
 const toast      = useToast();
 const tableRef   = ref<InstanceType<typeof DataTable> | null>(null);
 
+// ── Classes assignées au professeur ──────────────────────────────────────────
+interface TeacherClass {
+    id: number;
+    name: string;
+    status: number;
+    students: number;
+}
+const teacherClasses  = ref<TeacherClass[]>([]);
+const loadingClasses  = ref(false);
+
+const loadTeacherClasses = async (teacherId: number) => {
+    loadingClasses.value = true;
+    teacherClasses.value = [];
+    try {
+        const res  = await fetch(`/admin/teacher/${teacherId}/classes`, {
+            headers: { Accept: 'application/json' },
+        });
+        const data = await res.json();
+        teacherClasses.value = data.classes ?? [];
+    } catch {
+        teacherClasses.value = [];
+    } finally {
+        loadingClasses.value = false;
+    }
+};
+
 const statusOptions  = [{ value: '1', label: 'Actif' }, { value: '0', label: 'Inactif' }];
 const genderOptions  = [{ value: 'male', label: 'Masculin' }, { value: 'female', label: 'Féminin' }, { value: 'other', label: 'Autre' }];
 const maritalOptions = [{ value: 'single', label: 'Célibataire' }, { value: 'married', label: 'Marié(e)' }, { value: 'divorced', label: 'Divorcé(e)' }];
@@ -464,6 +578,12 @@ const teacherTabs = [
         label: 'Carrière',
         description: 'Emploi et expérience',
         icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>',
+    },
+    {
+        id: 'classes',
+        label: 'Classes',
+        description: 'Classes assignées',
+        icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>',
     },
 ];
 
@@ -499,7 +619,7 @@ const openCreate = () => {
     editTarget.value = null; previewUrl.value = null; picFile.value = null;
     form.value = emptyForm(); showForm.value = true;
 };
-const openView = (t: Teacher) => { viewTarget.value = t; showView.value = true; };
+const openView = (t: Teacher) => { viewTarget.value = t; showView.value = true; loadTeacherClasses(t.id); };
 const openEdit = (t: Teacher) => {
     editTarget.value = t;
     previewUrl.value = t.profile_picture ? `/upload/profile/${t.profile_picture}` : null;

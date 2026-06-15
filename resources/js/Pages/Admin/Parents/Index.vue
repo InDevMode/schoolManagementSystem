@@ -65,8 +65,8 @@
                             <p class="text-xs text-gray-500">{{ row.email }}</p>
                             <button type="button"
                                     class="ml-1.5 opacity-0 group-hover/email:opacity-100 transition-opacity duration-150
-                                           p-0.5 rounded text-gray-400 hover:text-blue-600 hover:bg-blue-50
-                                           dark:hover:text-blue-400 dark:hover:bg-blue-900/20"
+                                           p-0.5 rounded text-gray-400 hover:text-violet-600 hover:bg-violet-50
+                                           dark:hover:text-violet-400 dark:hover:bg-violet-900/20"
                                     :title="copiedField === `email-${row.id}` ? 'Copié !' : 'Copier l\'email'"
                                     @click.stop="copyToClipboard(row.email as string, `email-${row.id}`)">
                                 <svg v-if="copiedField !== `email-${row.id}`" class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -130,7 +130,7 @@
                         </svg>
                     </Link>
                     <!-- Réinitialiser MDP -->
-                    <button v-if="canResetPassword" title="Réinit. MDP" @click="handleResetPassword([row.id as number])"
+                    <button v-if="canResetPassword" title="Réinit. MDP" @click="tableRef?.confirmResetPassword(row.id as number, `${row.last_name} ${row.name}`)"
                             class="p-1.5 rounded-lg transition-all duration-150
                                    text-white bg-amber-500 hover:bg-amber-600 active:bg-amber-700
                                    shadow-sm shadow-amber-200 dark:shadow-amber-900/40">
@@ -176,7 +176,7 @@
                     </svg>
                     Gérer les enfants
                 </Link>
-                <button v-if="canResetPassword" @click="handleResetPassword([(row as any).id])"
+                <button v-if="canResetPassword" @click="tableRef?.confirmResetPassword((row as any).id, `${row.last_name} ${row.name}`)"
                         class="flex w-full items-center gap-2.5 px-3.5 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-amber-50 dark:hover:bg-gray-700/60 hover:text-amber-700 transition-colors">
                     <svg class="w-4 h-4 text-amber-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/>
@@ -184,8 +184,8 @@
                     Réinitialiser le mot de passe
                 </button>
                 <Link :href="`/chat?receiver_id=${(row as any).id_encoded}`"
-                   class="flex items-center gap-2.5 px-3.5 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-700/60 hover:text-blue-700 transition-colors">
-                    <svg class="w-4 h-4 text-blue-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                   class="flex items-center gap-2.5 px-3.5 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-violet-50 dark:hover:bg-gray-700/60 hover:text-violet-700 transition-colors">
+                    <svg class="w-4 h-4 text-violet-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                               d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
                     </svg>
@@ -220,7 +220,7 @@
                     <img v-if="viewTarget?.profile_picture"
                          :src="`/upload/profile/${viewTarget.profile_picture}`"
                          class="w-16 h-16 rounded-2xl object-cover shadow-md ring-2 ring-white dark:ring-gray-700"/>
-                    <div v-else class="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-md">
+                    <div v-else class="w-16 h-16 rounded-2xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center shadow-md">
                         <span class="text-xl font-bold text-white">
                             {{ (viewTarget?.last_name?.[0] ?? '') }}{{ (viewTarget?.name?.[0] ?? '') }}
                         </span>
@@ -231,7 +231,7 @@
 
             <template #sidebar-footer>
                 <Link v-if="viewTarget" :href="`/chat?receiver_id=${viewTarget.id_encoded}`"
-                    class="flex items-center justify-center gap-2 w-full px-3 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold transition-colors shadow-sm">
+                    class="flex items-center justify-center gap-2 w-full px-3 py-2 rounded-xl bg-violet-600 hover:bg-violet-700 text-white text-xs font-semibold transition-colors shadow-sm">
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
                     </svg>
@@ -243,7 +243,7 @@
                 <div v-if="viewTarget">
                     <!-- PROFIL -->
                     <div v-show="activeTab === 'profile'" class="space-y-5">
-                        <div class="relative rounded-2xl overflow-hidden bg-gradient-to-br from-blue-600 to-indigo-700 p-5">
+                        <div class="relative rounded-2xl overflow-hidden bg-gradient-to-br from-violet-600 to-purple-700 p-5">
                             <div class="absolute inset-0 opacity-10" style="background-image:radial-gradient(circle at 80% 20%, white 0%, transparent 60%)"/>
                             <div class="relative flex items-center gap-4">
                                 <div class="relative flex-shrink-0">
@@ -258,7 +258,7 @@
                                 </div>
                                 <div class="flex-1 min-w-0">
                                     <h2 class="text-base font-bold text-white truncate">{{ viewTarget.last_name }} {{ viewTarget.name }}</h2>
-                                    <p class="text-blue-100 text-xs mt-0.5">{{ viewTarget.email }}</p>
+                                    <p class="text-violet-100 text-xs mt-0.5">{{ viewTarget.email }}</p>
                                     <div class="flex items-center gap-2 mt-2 flex-wrap">
                                         <span :class="['px-2 py-0.5 rounded-full text-xs font-semibold', viewTarget.status == 1 ? 'bg-emerald-400/30 text-emerald-100' : 'bg-red-400/30 text-red-100']">
                                             {{ viewTarget.status == 1 ? '✓ Actif' : '✗ Inactif' }}
@@ -278,6 +278,100 @@
                             <InfoCard label="Statut" :badge="viewTarget.status == 1 ? 'success' : 'danger'" :value="viewTarget.status == 1 ? 'Actif' : 'Inactif'" />
                             <InfoCard v-if="viewTarget.address" label="Adresse" :value="viewTarget.address" />
                         </div>
+                    </div>
+
+                    <!-- ENFANTS -->
+                    <div v-show="activeTab === 'children'" class="space-y-4">
+                        <!-- Loading -->
+                        <div v-if="loadingChildren" class="flex items-center justify-center py-12">
+                            <svg class="w-7 h-7 animate-spin text-primary-500" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
+                            </svg>
+                        </div>
+
+                        <!-- Liste des enfants -->
+                        <template v-else>
+                            <div v-if="parentChildren.length === 0"
+                                 class="flex flex-col items-center justify-center py-12 text-center">
+                                <div class="w-12 h-12 rounded-xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center mb-3">
+                                    <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                              d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                    </svg>
+                                </div>
+                                <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Aucun enfant assigné</p>
+                                <p class="text-xs text-gray-400 dark:text-gray-500 mt-1">Ce parent n'a pas encore d'enfants associés.</p>
+                            </div>
+
+                            <div v-else class="space-y-2">
+                                <p class="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-3">
+                                    {{ parentChildren.length }} enfant{{ parentChildren.length > 1 ? 's' : '' }}
+                                </p>
+                                <div
+                                    v-for="child in parentChildren"
+                                    :key="child.id"
+                                    class="flex items-center gap-3 p-3 rounded-xl border border-gray-100 dark:border-gray-700
+                                           bg-gray-50 dark:bg-gray-800/60 hover:bg-white dark:hover:bg-gray-800
+                                           transition-colors duration-150"
+                                >
+                                    <!-- Avatar -->
+                                    <div class="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0 bg-primary-100 dark:bg-primary-900/40 flex items-center justify-center">
+                                        <img v-if="child.profile_picture"
+                                             :src="`/upload/profile/${child.profile_picture}`"
+                                             class="w-full h-full object-cover"/>
+                                        <span v-else class="text-sm font-bold text-primary-700 dark:text-primary-300">
+                                            {{ (child.last_name?.[0] ?? '') }}{{ (child.name?.[0] ?? '') }}
+                                        </span>
+                                    </div>
+
+                                    <!-- Infos -->
+                                    <div class="flex-1 min-w-0">
+                                        <p class="text-sm font-semibold text-gray-900 dark:text-white truncate">
+                                            {{ child.last_name }} {{ child.name }}
+                                        </p>
+                                        <p class="text-xs text-gray-500 dark:text-gray-400 truncate">
+                                            {{ child.class_name ?? 'Aucune classe' }}
+                                            <span v-if="child.admission_number" class="ml-1 text-gray-400">· {{ child.admission_number }}</span>
+                                        </p>
+                                    </div>
+
+                                    <!-- Link to manage -->
+                                    <Link
+                                        v-if="canManageChildren"
+                                        :href="`/admin/parent/student/${viewTarget?.id}`"
+                                        class="p-1.5 rounded-lg text-indigo-500 hover:bg-indigo-50 dark:hover:bg-indigo-900/20
+                                               hover:text-indigo-700 transition-colors flex-shrink-0"
+                                        title="Gérer les enfants"
+                                        @click="showView = false"
+                                    >
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                  d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                                        </svg>
+                                    </Link>
+                                </div>
+                            </div>
+
+                            <!-- Lien gérer les enfants -->
+                            <div class="pt-2 border-t border-gray-100 dark:border-gray-700">
+                                <Link
+                                    v-if="canManageChildren && viewTarget"
+                                    :href="`/admin/parent/student/${viewTarget.id}`"
+                                    class="flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-xl
+                                           border border-dashed border-indigo-300 dark:border-indigo-600
+                                           text-indigo-600 dark:text-indigo-400 text-xs font-semibold
+                                           hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-colors"
+                                    @click="showView = false"
+                                >
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                              d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                    </svg>
+                                    Gérer les enfants de ce parent
+                                </Link>
+                            </div>
+                        </template>
                     </div>
                 </div>
             </template>
@@ -416,6 +510,31 @@ const picFile    = ref<File | null>(null);
 const toast      = useToast();
 const tableRef   = ref<InstanceType<typeof DataTable> | null>(null);
 
+// ── Enfants du parent ─────────────────────────────────────────────────────────
+interface ChildStudent {
+    id: number; name: string; last_name: string;
+    class_name: string | null; admission_number: string | null;
+    profile_picture: string | null;
+}
+const parentChildren   = ref<ChildStudent[]>([]);
+const loadingChildren  = ref(false);
+
+const loadParentChildren = async (parentId: number) => {
+    loadingChildren.value = true;
+    parentChildren.value  = [];
+    try {
+        const res  = await fetch(`/admin/parent/${parentId}/children`, {
+            headers: { Accept: 'application/json' },
+        });
+        const data = await res.json();
+        parentChildren.value = data.children ?? [];
+    } catch {
+        parentChildren.value = [];
+    } finally {
+        loadingChildren.value = false;
+    }
+};
+
 const statusOptions = [{ value: '1', label: 'Actif' }, { value: '0', label: 'Inactif' }];
 const genderOptions = [{ value: 'male', label: 'Masculin' }, { value: 'female', label: 'Féminin' }, { value: 'other', label: 'Autre' }];
 
@@ -425,6 +544,12 @@ const parentTabs = [
         label: 'Profil',
         description: 'Informations personnelles',
         icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>',
+    },
+    {
+        id: 'children',
+        label: 'Enfants',
+        description: 'Enfants associés à ce parent',
+        icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>',
     },
 ];
 
@@ -458,7 +583,7 @@ const openCreate = () => {
     editTarget.value = null; previewUrl.value = null; picFile.value = null;
     form.value = emptyForm(); showForm.value = true;
 };
-const openView = (p: Parent) => { viewTarget.value = p; showView.value = true; };
+const openView = (p: Parent) => { viewTarget.value = p; showView.value = true; loadParentChildren(p.id); };
 const openEdit = (p: Parent) => {
     editTarget.value = p;
     previewUrl.value = p.profile_picture ? `/upload/profile/${p.profile_picture}` : null;

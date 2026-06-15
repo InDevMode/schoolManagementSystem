@@ -23,7 +23,7 @@
             </svg>
             <p class="text-sm text-warning-700 dark:text-warning-300">
                 <span class="font-semibold">Aucune période courante définie.</span>
-                La création d'évaluations est suspendue en attendant qu'un administrateur définisse la période en cours.
+                La création d'évaluations est suspendue.
             </p>
         </div>
         <div v-else
@@ -70,20 +70,58 @@
                     {{ typeLabels[row.type] ?? row.type }}
                 </span>
             </template>
+
             <template #cell-coefficient="{ row }">
                 <span class="inline-flex items-center justify-center w-7 h-7 rounded-lg text-xs font-bold bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-400">
                     ×{{ row.coefficient }}
                 </span>
             </template>
+
             <template #cell-status="{ row }">
-                <AppBadge :variant="statusVariant(row.status)" dot>{{ statusLabel(row.status) }}</AppBadge>
+                <div class="flex items-center gap-2 flex-wrap">
+                    <AppBadge :variant="statusVariant(row.status)" dot>{{ statusLabel(row.status) }}</AppBadge>
+                    <!-- Alerte notes rejetées -->
+                    <span v-if="row.rejected_count > 0 && row.status === 'open'"
+                        class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-bold
+                               bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400
+                               border border-orange-300 dark:border-orange-600 animate-pulse">
+                        <svg class="w-3 h-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+                        </svg>
+                        {{ row.rejected_count }} note{{ row.rejected_count > 1 ? 's' : '' }} rejetée{{ row.rejected_count > 1 ? 's' : '' }}
+                    </span>
+                </div>
             </template>
+
             <template #actions="{ row }">
-                <div class="flex items-center justify-end gap-1">
-                    <Link :href="`/teacher/evaluations/grade-entry?evaluation_id=${row.id}`"
-                        class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-success-50 dark:bg-success-900/20 text-success-700 dark:text-success-400 hover:bg-success-100 transition-colors">
+                <div class="flex items-center justify-end gap-1.5">
+                    <!-- Bouton contextuel selon statut -->
+                    <Link v-if="row.status === 'open'"
+                        :href="`/teacher/evaluations/grade-entry?evaluation_id=${row.id}`"
+                        class="px-2.5 py-1 rounded-lg text-xs font-semibold
+                               bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-400
+                               hover:bg-primary-100 transition-colors whitespace-nowrap">
                         Saisir les notes
                     </Link>
+                    <Link v-else
+                        :href="`/teacher/evaluations/grade-entry?evaluation_id=${row.id}`"
+                        class="px-2.5 py-1 rounded-lg text-xs font-semibold
+                               bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300
+                               hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors whitespace-nowrap">
+                        Voir les notes
+                    </Link>
+
+                    <!-- Bouton annuler (uniquement si pas validée) -->
+                    <button v-if="row.status !== 'validated' && row.status !== 'cancelled'"
+                        @click="confirmCancel(row)"
+                        title="Annuler cette évaluation"
+                        class="p-1.5 rounded-lg text-xs font-semibold
+                               bg-danger-50 dark:bg-danger-900/20 text-danger-600 dark:text-danger-400
+                               hover:bg-danger-100 transition-colors">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
                 </div>
             </template>
         </DataTable>
@@ -106,7 +144,7 @@
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <AppSelect v-model="form.period_id" label="Période" :options="periodCurrentOptions" required :disabled="!!currentPeriod"/>
-                    <AppInput  v-model="form.eval_date" label="Date"    type="date"              required/>
+                    <AppInput  v-model="form.eval_date" label="Date"    type="date" required/>
                 </div>
 
                 <!-- Types d'évaluation -->
@@ -128,7 +166,6 @@
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                    <!-- Coefficient en lecture seule -->
                     <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
                             Coefficient
@@ -144,13 +181,39 @@
                         </div>
                         <input type="hidden" :value="form.coefficient" name="coefficient"/>
                     </div>
-                    <AppInput v-model="form.max_score"   label="Note max"    type="number" min="1" max="100"/>
-                    <AppInput v-model="form.title"       label="Titre (optionnel)" placeholder="Interrogation N°1"/>
+                    <AppInput v-model="form.max_score" label="Note max"       type="number" min="1" max="100"/>
+                    <AppInput v-model="form.title"     label="Titre (optionnel)" placeholder="Interrogation N°1"/>
                 </div>
             </form>
             <template #footer>
                 <AppButton variant="ghost" @click="showForm = false">Annuler</AppButton>
                 <AppButton type="submit" form="eval-form" :loading="form.processing">Créer</AppButton>
+            </template>
+        </AppModal>
+
+        <!-- Modal confirmation annulation -->
+        <AppModal v-model="showCancelModal" title="Annuler l'évaluation" size="sm">
+            <div class="space-y-3">
+                <div class="flex items-start gap-3 p-3 rounded-lg bg-danger-50 dark:bg-danger-900/20 border border-danger-200 dark:border-danger-700">
+                    <svg class="w-5 h-5 text-danger-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+                    </svg>
+                    <div>
+                        <p class="text-sm font-semibold text-danger-700 dark:text-danger-300">
+                            Confirmer l'annulation
+                        </p>
+                        <p class="text-xs text-danger-600 dark:text-danger-400 mt-1">
+                            L'évaluation <span class="font-bold">« {{ cancelTarget?.type ? (typeLabels[cancelTarget.type] ?? cancelTarget.type) : '' }}
+                            {{ cancelTarget?.class_name ? '— ' + cancelTarget.class_name : '' }} »</span>
+                            sera annulée et exclue du calcul des moyennes.
+                            Cette action est irréversible sans l'aide de l'administration.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <template #footer>
+                <AppButton variant="ghost" @click="showCancelModal = false">Annuler</AppButton>
+                <AppButton variant="danger" :loading="cancelling" @click="doCancel">Confirmer l'annulation</AppButton>
             </template>
         </AppModal>
     </div>
@@ -165,11 +228,22 @@ import axios from 'axios';
 
 const toast = useToast();
 
+interface EvalRow {
+    id:             number;
+    type:           string;
+    class_name:     string;
+    subject_name:   string;
+    coefficient:    number;
+    eval_date:      string;
+    status:         string;
+    rejected_count: number;
+}
+
 const props = defineProps<{
-    evaluations: { data: any[]; total: number; from: number; to: number; links: any[] };
-    classes:     { id: number; name: string }[];
+    evaluations:  { data: EvalRow[]; total: number; from: number; to: number; links: any[] };
+    classes:      { id: number; class_id: number; class_name: string }[];
     currentPeriod?: { id: number; name: string } | null;
-    typeLabels:  Record<string, string>;
+    typeLabels:   Record<string, string>;
 }>();
 
 const typeColors: Record<string, string> = {
@@ -180,28 +254,31 @@ const typeColors: Record<string, string> = {
 };
 
 const showForm        = ref(false);
+const showCancelModal = ref(false);
+const cancelTarget    = ref<EvalRow | null>(null);
+const cancelling      = ref(false);
 const filters         = ref({ class_id: '', period_id: '', type: '', status: '' });
 const dynamicSubjects = ref<{ subject_id: number; subject_name: string; coefficient: number }[]>([]);
 const loadingSubjects = ref(false);
 
-const classOptions   = computed(() => props.classes.map(c => ({ value: String(c.id), label: c.name })));
-// Le prof ne voit que la période courante dans son formulaire
+// Les classes sont celles du prof (format ClassTeacherModel: {class_id, class_name})
+const classOptions = computed(() =>
+    props.classes.map(c => ({ value: String(c.class_id), label: c.class_name }))
+);
 const periodCurrentOptions = computed(() =>
     props.currentPeriod
         ? [{ value: String(props.currentPeriod.id), label: props.currentPeriod.name }]
         : []
 );
-const typeOptions    = computed(() => Object.entries(props.typeLabels).map(([k, v]) => ({ value: k, label: v })));
-// dynamicSubjects contient les matières actives assignées à la classe choisie
-// Structure : { subject_id, subject_name, coefficient }
+const typeOptions   = computed(() => Object.entries(props.typeLabels).map(([k, v]) => ({ value: k, label: v })));
 const subjectOptions = computed(() =>
     dynamicSubjects.value.map(s => ({ value: String(s.subject_id), label: s.subject_name }))
 );
-const statusOptions  = [
-    { value: 'draft',     label: 'Brouillon' },
+const statusOptions = [
     { value: 'open',      label: 'Ouverte' },
     { value: 'closed',    label: 'Fermée' },
     { value: 'validated', label: 'Validée' },
+    { value: 'cancelled', label: 'Annulée' },
 ];
 
 const form = useForm({
@@ -226,27 +303,20 @@ const columns = [
 
 const openCreate = () => {
     form.reset();
-    form.type        = 'interrogation';
+    form.type      = 'interrogation';
     form.coefficient = '1';
-    form.max_score   = '20';
-    // Pré-sélectionner la période courante
-    form.period_id   = props.currentPeriod ? String(props.currentPeriod.id) : '';
-    showForm.value   = true;
+    form.max_score = '20';
+    form.period_id = props.currentPeriod ? String(props.currentPeriod.id) : '';
+    showForm.value = true;
 };
 
-const selectType = (key: string) => {
-    form.type = key;
-    // Le coefficient vient de la matière, pas du type
-};
+const selectType = (key: string) => { form.type = key; };
 
-// ── Watch sur class_id : charger les matières dès que la valeur change ───
 watch(() => form.class_id, async (newClassId) => {
     form.subject_id       = '';
     form.coefficient      = '';
     dynamicSubjects.value = [];
-
     if (!newClassId) return;
-
     loadingSubjects.value = true;
     try {
         const res = await axios.get(`/admin/evaluations/subjects-by-class/${newClassId}`);
@@ -258,7 +328,6 @@ watch(() => form.class_id, async (newClassId) => {
     }
 });
 
-// ── Watch sur subject_id : remplir le coefficient ────────────────────────
 watch(() => form.subject_id, (newSubjectId) => {
     if (!newSubjectId) { form.coefficient = ''; return; }
     const found = dynamicSubjects.value.find(s => String(s.subject_id) === newSubjectId);
@@ -281,6 +350,43 @@ const applyFilters = () => {
     }, { preserveState: true });
 };
 
-const statusVariant = (s: string): any => ({ draft: 'secondary', open: 'info', closed: 'warning', validated: 'success' }[s] ?? 'secondary');
-const statusLabel   = (s: string) => ({ draft: 'Brouillon', open: 'Ouverte', closed: 'Fermée', validated: 'Validée' }[s] ?? s);
+const confirmCancel = (row: EvalRow) => {
+    cancelTarget.value  = row;
+    showCancelModal.value = true;
+};
+
+const doCancel = async () => {
+    if (!cancelTarget.value) return;
+    cancelling.value = true;
+    try {
+        const res = await axios.post(`/teacher/evaluations/${cancelTarget.value.id}/cancel`);
+        if (res.data.success) {
+            toast.success(res.data.message);
+            showCancelModal.value = false;
+            router.reload({ only: ['evaluations'] });
+        } else {
+            toast.error(res.data.message);
+        }
+    } catch {
+        toast.error('Erreur lors de l\'annulation.');
+    } finally {
+        cancelling.value = false;
+    }
+};
+
+const statusVariant = (s: string): any => ({
+    draft:     'secondary',
+    open:      'info',
+    closed:    'warning',
+    validated: 'success',
+    cancelled: 'danger',
+}[s] ?? 'secondary');
+
+const statusLabel = (s: string) => ({
+    draft:     'Brouillon',
+    open:      'Ouverte',
+    closed:    'Fermée',
+    validated: 'Validée',
+    cancelled: 'Annulée',
+}[s] ?? s);
 </script>

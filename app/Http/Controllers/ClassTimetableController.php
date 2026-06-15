@@ -216,6 +216,17 @@ class ClassTimetableController extends Controller
     }
 
     // ─────────────────────────────────────────────────────────────────────
+    // PARENT — emploi du temps complet d'une classe (JSON pour le modal)
+    // ─────────────────────────────────────────────────────────────────────
+
+    public function parentClassFullTimetable($class_id): \Illuminate\Http\JsonResponse
+    {
+        return response()->json([
+            'timetable' => $this->buildStudentTimetableMatrix((int) $class_id),
+        ]);
+    }
+
+    // ─────────────────────────────────────────────────────────────────────
     // PARENT — emploi du temps d'une matière pour l'enfant
     // ─────────────────────────────────────────────────────────────────────
 

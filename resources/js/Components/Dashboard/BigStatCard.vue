@@ -73,7 +73,7 @@ const colorMap: Record<string, {
         trend:  'bg-white/20 text-white',
     },
     info: {
-        card:   'bg-gradient-to-br from-blue-400 to-blue-600',
+        card:   'bg-gradient-to-br from-violet-400 to-violet-600',
         bubble: 'bg-white',
         iconBg: 'bg-white/20',
         icon:   'text-white',

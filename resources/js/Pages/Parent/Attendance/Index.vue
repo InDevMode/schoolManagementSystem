@@ -1,10 +1,19 @@
 <template>
     <div class="space-y-6">
-        <div>
-            <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Présence de mon apprenant</h1>
-            <p v-if="student" class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
-                {{ student.last_name }} {{ student.name }}
-            </p>
+        <div class="flex items-center gap-4">
+            <Link href="/parent/my_student"
+                  class="p-2 rounded-lg border border-gray-200 dark:border-gray-700 text-gray-500
+                         hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-700 transition-colors flex-shrink-0">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                </svg>
+            </Link>
+            <div>
+                <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Présence de mon apprenant</h1>
+                <p v-if="student" class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
+                    {{ student.last_name }} {{ student.name }}
+                </p>
+            </div>
         </div>
 
         <!-- Stats -->
@@ -58,6 +67,7 @@
 
 <script setup lang="ts">
 import { DataTable, AppBadge } from '@/Components/UI';
+import { Link } from '@inertiajs/vue3';
 
 interface AttendanceRecord {
     [key: string]: unknown;

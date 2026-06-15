@@ -291,6 +291,14 @@ class BulletinController extends Controller
         $student = User::find($student_id);
         if (!$student || $student->parent_id !== Auth::id()) abort(403);
 
+        // Enrichir avec le nom de la classe
+        if ($student->class_id) {
+            $class = ClassModel::getSingle($student->class_id);
+            $student->class_name = $class?->name ?? null;
+        } else {
+            $student->class_name = null;
+        }
+
         $bulletins = BulletinModel::getByStudent($student_id);
 
         return Inertia::render('Parent/Bulletins/Index', [
@@ -303,6 +311,14 @@ class BulletinController extends Controller
     {
         $student = User::find($student_id);
         if (!$student || $student->parent_id !== Auth::id()) abort(403);
+
+        // Enrichir avec le nom de la classe
+        if ($student->class_id) {
+            $class = ClassModel::getSingle($student->class_id);
+            $student->class_name = $class?->name ?? null;
+        } else {
+            $student->class_name = null;
+        }
 
         $bulletin = BulletinModel::getSingle($id);
         if (!$bulletin || $bulletin->student_id !== $student_id || $bulletin->status !== 'published') {

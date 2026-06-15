@@ -19,13 +19,13 @@
 
         <!-- Infos types -->
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div class="flex items-start gap-3 p-4 rounded-lg bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800">
-                <svg class="w-5 h-5 text-blue-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="flex items-start gap-3 p-4 rounded-lg bg-violet-50 dark:bg-violet-900/20 border border-violet-100 dark:border-violet-800">
+                <svg class="w-5 h-5 text-violet-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                 </svg>
                 <div>
-                    <p class="text-xs font-semibold text-blue-700 dark:text-blue-300">Écoles publiques</p>
-                    <p class="text-xs text-blue-600 dark:text-blue-400">2 semestres · Semestre 1 (Oct–Jan), Semestre 2 (Fév–Juin)</p>
+                    <p class="text-xs font-semibold text-violet-700 dark:text-violet-300">Écoles publiques</p>
+                    <p class="text-xs text-violet-600 dark:text-violet-400">2 semestres · Semestre 1 (Oct–Jan), Semestre 2 (Fév–Juin)</p>
                 </div>
             </div>
             <div class="flex items-start gap-3 p-4 rounded-lg bg-purple-50 dark:bg-purple-900/20 border border-purple-100 dark:border-purple-800">
@@ -52,7 +52,7 @@
                 <span :class="[
                     'inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold',
                     row.type === 'semestre'
-                        ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400'
+                        ? 'bg-violet-50 dark:bg-violet-900/20 text-violet-700 dark:text-violet-400'
                         : 'bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-400',
                 ]">
                     {{ row.type === 'semestre' ? 'Semestre' : 'Trimestre' }}

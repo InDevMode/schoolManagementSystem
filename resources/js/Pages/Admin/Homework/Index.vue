@@ -385,62 +385,89 @@
 
                 <!-- Soumissions -->
                 <div class="rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
-                    <div class="px-4 py-2.5 bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
+                    <!-- En-tête avec compteur cliquable -->
+                    <button
+                        type="button"
+                        class="w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-800 flex items-center justify-between hover:bg-gray-100 dark:hover:bg-gray-700/60 transition-colors"
+                        @click="showSubmissions = !showSubmissions"
+                    >
                         <div class="flex items-center gap-2">
                             <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                             </svg>
                             <span class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Soumissions</span>
                         </div>
-                        <span v-if="detailWork.homeworks?.length"
-                              class="text-xs bg-success-100 dark:bg-success-900/30 text-success-700 dark:text-success-300 font-semibold px-2 py-0.5 rounded-full">
-                            {{ detailWork.homeworks.length }}
-                        </span>
-                    </div>
-                    <div v-if="detailWork.homeworks?.length" class="overflow-x-auto">
-                        <table class="w-full text-sm">
-                            <thead class="bg-gray-50/50 dark:bg-gray-800/40">
-                                <tr>
-                                    <th class="px-4 py-2.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Apprenant</th>
-                                    <th class="px-4 py-2.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Statut</th>
-                                    <th class="px-4 py-2.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Date</th>
-                                    <th class="px-4 py-2.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Fichier</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-gray-100 dark:divide-gray-700 bg-white dark:bg-gray-800">
-                                <tr v-for="hw in detailWork.homeworks" :key="hw.id" class="hover:bg-gray-50 dark:hover:bg-gray-700/40 transition-colors">
-                                    <td class="px-4 py-3 font-medium text-gray-900 dark:text-white">
-                                        {{ hw.student_last_name }} {{ hw.student_name }}
-                                    </td>
-                                    <td class="px-4 py-3">
-                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold
-                                                     bg-success-100 dark:bg-success-900/30 text-success-700 dark:text-success-300">
-                                            <span class="w-1.5 h-1.5 rounded-full bg-success-500"/>
-                                            {{ hw.status }}
-                                        </span>
-                                    </td>
-                                    <td class="px-4 py-3 text-xs text-gray-500">{{ formatDate(hw.created_at) }}</td>
-                                    <td class="px-4 py-3">
-                                        <a v-if="hw.document_file"
-                                           :href="`/upload/homeworks/${hw.document_file}`"
-                                           target="_blank"
-                                           class="inline-flex items-center gap-1 text-xs text-primary-600 hover:text-primary-700 font-medium hover:underline">
-                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                                            </svg>
-                                            Voir
-                                        </a>
-                                        <span v-else class="text-gray-300 text-xs">—</span>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div v-else class="py-8 text-center">
-                        <svg class="w-8 h-8 text-gray-300 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                        </svg>
-                        <p class="text-sm text-gray-400">Aucune soumission pour ce travail.</p>
+                        <div class="flex items-center gap-2">
+                            <!-- Compteur X / total -->
+                            <span class="text-xs font-semibold px-2.5 py-0.5 rounded-full"
+                                  :class="(detailWork.homeworks?.length ?? 0) > 0
+                                    ? 'bg-success-100 dark:bg-success-900/30 text-success-700 dark:text-success-300'
+                                    : 'bg-gray-100 dark:bg-gray-700 text-gray-500'">
+                                {{ detailWork.homeworks?.length ?? 0 }}
+                                <span class="opacity-60">/ {{ detailWork.total_students ?? '?' }}</span>
+                            </span>
+                            <!-- Chevron -->
+                            <svg class="w-4 h-4 text-gray-400 transition-transform duration-200"
+                                 :class="showSubmissions ? 'rotate-180' : ''"
+                                 fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </div>
+                    </button>
+
+                    <!-- Liste déroulante -->
+                    <div v-show="showSubmissions">
+                        <div v-if="detailWork.homeworks?.length" class="divide-y divide-gray-100 dark:divide-gray-700">
+                            <div v-for="hw in detailWork.homeworks" :key="hw.id"
+                                 class="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700/40 transition-colors">
+                                <!-- Avatar initiales -->
+                                <div class="w-8 h-8 rounded-full bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center shrink-0">
+                                    <span class="text-xs font-bold text-primary-600 dark:text-primary-400">
+                                        {{ ((hw.student?.last_name ?? hw.student_last_name ?? '?')[0] ?? '?').toUpperCase() }}
+                                    </span>
+                                </div>
+                                <!-- Nom -->
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-sm font-medium text-gray-900 dark:text-white truncate">
+                                        {{ hw.student?.last_name ?? hw.student_last_name ?? '—' }}
+                                        {{ hw.student?.name ?? hw.student_name ?? '' }}
+                                    </p>
+                                    <p class="text-xs text-gray-400">{{ formatDate(hw.created_at) }}</p>
+                                </div>
+                                <!-- Statut traduit -->
+                                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold shrink-0"
+                                      :class="{
+                                          'bg-success-100 dark:bg-success-900/30 text-success-700 dark:text-success-300': hw.status === 'submitted',
+                                          'bg-warning-100 dark:bg-warning-900/30 text-warning-700 dark:text-warning-300': hw.status === 'late',
+                                          'bg-gray-100 dark:bg-gray-700 text-gray-500': !['submitted','late'].includes(hw.status),
+                                      }">
+                                    <span class="w-1.5 h-1.5 rounded-full"
+                                          :class="{
+                                              'bg-success-500': hw.status === 'submitted',
+                                              'bg-warning-500': hw.status === 'late',
+                                              'bg-gray-400': !['submitted','late'].includes(hw.status),
+                                          }"/>
+                                    {{ statusLabel(hw.status) }}
+                                </span>
+                                <!-- Fichier -->
+                                <a v-if="hw.document_file"
+                                   :href="`/upload/homeworks/${hw.document_file}`"
+                                   target="_blank"
+                                   class="inline-flex items-center gap-1 text-xs text-primary-600 hover:text-primary-700 font-medium hover:underline shrink-0">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                    </svg>
+                                    Voir
+                                </a>
+                                <span v-else class="text-xs text-gray-300 shrink-0">—</span>
+                            </div>
+                        </div>
+                        <div v-else class="py-8 text-center">
+                            <svg class="w-8 h-8 text-gray-300 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                            <p class="text-sm text-gray-400">Aucune soumission pour ce travail.</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -461,7 +488,7 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue';
 import { router } from '@inertiajs/vue3';
-import { AppButton, AppInput, AppSelect, AppModal, AppBadge, DataTable, ConfirmDialog, FileTypeIcon } from '@/Components/UI';
+import { AppButton, AppInput, AppSelect, AppModal, DataTable, ConfirmDialog, FileTypeIcon } from '@/Components/UI';
 import { stripHtml } from '@/Utils/html';
 import { useToast } from '@/Composables/useToast';
 
@@ -489,10 +516,16 @@ interface Attachment {
 
 interface WorkDetail extends Work {
     document_file: string | null;
+    total_students?: number;
     attachments?: Attachment[];
     homeworks?: {
-        id: number; student_name: string; student_last_name: string;
-        status: string; document_file: string | null; created_at: string;
+        id: number;
+        status: string;
+        document_file: string | null;
+        created_at: string;
+        student_name?: string;
+        student_last_name?: string;
+        student?: { id: number; name: string; last_name: string };
     }[];
 }
 
@@ -526,6 +559,17 @@ const loadingDetails = ref(false);
 const detailWork = ref<WorkDetail | null>(null);
 const editWork   = ref<WorkDetail | null>(null);
 const editWorkId = ref<number | null>(null);
+
+// État accordéon soumissions
+const showSubmissions = ref(true);
+
+// Traduction des statuts
+const statusLabel = (s: string) => ({
+    submitted: 'Soumis',
+    late:      'En retard',
+    graded:    'Noté',
+    rejected:  'Rejeté',
+}[s] ?? s);
 
 // Sujets chargés dynamiquement
 const createSubjects = ref<{ id: number; name: string }[]>([]);
@@ -727,6 +771,7 @@ const openDetails = async (id: number) => {
     showDetails.value    = true;
     loadingDetails.value = true;
     detailWork.value     = null;
+    showSubmissions.value = true;
     try {
         const res  = await fetch(`/admin/practicalworks/homework/details-json/${id}`, { headers: { Accept: 'application/json' } });
         const json = await res.json();

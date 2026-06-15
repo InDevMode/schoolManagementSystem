@@ -80,8 +80,8 @@
                             <button
                                 type="button"
                                 class="ml-1.5 opacity-0 group-hover/email:opacity-100 transition-opacity duration-150
-                                       p-0.5 rounded text-gray-400 hover:text-blue-600 hover:bg-blue-50
-                                       dark:hover:text-blue-400 dark:hover:bg-blue-900/20"
+                                       p-0.5 rounded text-gray-400 hover:text-violet-600 hover:bg-violet-50
+                                       dark:hover:text-violet-400 dark:hover:bg-violet-900/20"
                                 :title="copiedField === `email-${row.id}` ? 'Copié !' : 'Copier l\'email'"
                                 @click.stop="copyToClipboard(row.email as string, `email-${row.id}`)"
                             >
@@ -146,7 +146,7 @@
                         </svg>
                     </button>
                     <!-- Réinitialiser MDP -->
-                    <button v-if="canResetPassword" title="Réinit. MDP" @click="handleResetPassword([row.id as number])"
+                    <button v-if="canResetPassword" title="Réinit. MDP" @click="tableRef?.confirmResetPassword(row.id as number, `${row.last_name} ${row.name}`)"
                             class="p-1.5 rounded-lg transition-all duration-150
                                    text-white bg-amber-500 hover:bg-amber-600 active:bg-amber-700
                                    shadow-sm shadow-amber-200 dark:shadow-amber-900/40">
@@ -185,8 +185,8 @@
                     Modifier
                 </button>
                 <Link :href="`/chat?receiver_id=${row.id_encoded}`"
-                   class="flex items-center gap-2.5 px-3.5 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-700/60 hover:text-blue-700 transition-colors">
-                    <svg class="w-4 h-4 text-blue-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                   class="flex items-center gap-2.5 px-3.5 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-violet-50 dark:hover:bg-gray-700/60 hover:text-violet-700 transition-colors">
+                    <svg class="w-4 h-4 text-violet-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
                     </svg>
                     Envoyer un message

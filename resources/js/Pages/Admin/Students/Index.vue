@@ -66,8 +66,8 @@
                             <p class="text-xs text-gray-500 font-mono">{{ row.admission_number ?? '—' }}</p>
                             <button v-if="row.admission_number" type="button"
                                     class="ml-1.5 opacity-0 group-hover/num:opacity-100 transition-opacity duration-150
-                                           p-0.5 rounded text-gray-400 hover:text-blue-600 hover:bg-blue-50
-                                           dark:hover:text-blue-400 dark:hover:bg-blue-900/20"
+                                           p-0.5 rounded text-gray-400 hover:text-violet-600 hover:bg-violet-50
+                                           dark:hover:text-violet-400 dark:hover:bg-violet-900/20"
                                     :title="copiedField === `num-${row.id}` ? 'Copié !' : 'Copier le n° admission'"
                                     @click.stop="copyToClipboard(row.admission_number as string, `num-${row.id}`)">
                                 <svg v-if="copiedField !== `num-${row.id}`" class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -157,7 +157,7 @@
                         </svg>
                     </button>
                     <!-- Réinitialiser MDP -->
-                    <button v-if="canResetPassword" title="Réinit. MDP" @click="handleResetPassword([row.id as number])"
+                    <button v-if="canResetPassword" title="Réinit. MDP" @click="tableRef?.confirmResetPassword(row.id as number, `${row.last_name} ${row.name}`)"
                             class="p-1.5 rounded-lg transition-all duration-150
                                    text-white bg-amber-500 hover:bg-amber-600 active:bg-amber-700
                                    shadow-sm shadow-amber-200 dark:shadow-amber-900/40">
@@ -167,8 +167,8 @@
                     </button>
                     <Link :href="`/chat?receiver_id=${row.id_encoded}`" title="Message"
                        class="p-1.5 rounded-lg transition-all duration-150
-                              text-white bg-blue-500 hover:bg-blue-600 active:bg-blue-700
-                              shadow-sm shadow-blue-200 dark:shadow-blue-900/40">
+                              text-white bg-violet-500 hover:bg-violet-600 active:bg-violet-700
+                              shadow-sm shadow-violet-200 dark:shadow-violet-900/40">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                   d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
@@ -205,7 +205,7 @@
                     </svg>
                     Modifier
                 </button>
-                <button v-if="canResetPassword" @click="handleResetPassword([(row as any).id])"
+                <button v-if="canResetPassword" @click="tableRef?.confirmResetPassword((row as any).id, `${row.last_name} ${row.name}`)"
                         class="flex w-full items-center gap-2.5 px-3.5 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-amber-50 dark:hover:bg-gray-700/60 hover:text-amber-700 transition-colors">
                     <svg class="w-4 h-4 text-amber-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/>
@@ -213,8 +213,8 @@
                     Réinitialiser le mot de passe
                 </button>
                 <Link :href="`/chat?receiver_id=${(row as any).id_encoded}`"
-                   class="flex items-center gap-2.5 px-3.5 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-700/60 hover:text-blue-700 transition-colors">
-                    <svg class="w-4 h-4 text-blue-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                   class="flex items-center gap-2.5 px-3.5 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-violet-50 dark:hover:bg-gray-700/60 hover:text-violet-700 transition-colors">
+                    <svg class="w-4 h-4 text-violet-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                               d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
                     </svg>

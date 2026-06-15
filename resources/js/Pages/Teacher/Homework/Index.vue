@@ -45,19 +45,35 @@
             </template>
             <template #actions="{ row }">
                 <div class="flex items-center justify-end gap-1">
-                    <!-- Voir soumissions -->
-                    <a
-                        :href="`/teacher/practicalworks/homework/submission/${row.id}`"
-                        class="p-1.5 rounded-lg text-gray-400 hover:text-primary-600 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors inline-flex"
-                        title="Voir les soumissions"
+                    <!-- Voir détails -->
+                    <button
+                        class="p-1.5 rounded-lg transition-all duration-150
+                               text-white bg-violet-500 hover:bg-violet-600 active:bg-violet-700
+                               shadow-sm shadow-violet-200 dark:shadow-violet-900/40"
+                        title="Voir les détails"
+                        @click="openDetails(row.id as number)"
                     >
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0zM2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                         </svg>
+                    </button>
+                    <!-- Voir soumissions -->
+                    <a
+                        :href="`/teacher/practicalworks/homework/submission/${row.id}`"
+                        class="p-1.5 rounded-lg transition-all duration-150
+                               text-white bg-primary-500 hover:bg-primary-600 active:bg-primary-700
+                               shadow-sm shadow-primary-200 dark:shadow-primary-900/40 inline-flex"
+                        title="Voir les soumissions"
+                    >
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                        </svg>
                     </a>
                     <!-- Modifier -->
                     <button
-                        class="p-1.5 rounded-lg text-gray-400 hover:text-warning-600 hover:bg-warning-50 dark:hover:bg-warning-900/20 transition-colors"
+                        class="p-1.5 rounded-lg transition-all duration-150
+                               text-white bg-amber-500 hover:bg-amber-600 active:bg-amber-700
+                               shadow-sm shadow-amber-200 dark:shadow-amber-900/40"
                         title="Modifier"
                         @click="openEdit(row.id as number)"
                     >
@@ -67,7 +83,9 @@
                     </button>
                     <!-- Supprimer -->
                     <button
-                        class="p-1.5 rounded-lg text-gray-400 hover:text-danger-600 hover:bg-danger-50 dark:hover:bg-danger-900/20 transition-colors"
+                        class="p-1.5 rounded-lg transition-all duration-150
+                               text-white bg-red-500 hover:bg-red-600 active:bg-red-700
+                               shadow-sm shadow-red-200 dark:shadow-red-900/40"
                         title="Mettre à la corbeille"
                         @click="confirmDelete(row.id as number, row.class_name as string)"
                     >
@@ -243,6 +261,213 @@
             </template>
         </AppModal>
 
+        <!-- Modal Détails -->
+        <AppModal v-model="showDetails" title="Détails du travail" size="xl">
+            <div v-if="loadingDetails" class="flex items-center justify-center py-16">
+                <svg class="animate-spin w-8 h-8 text-primary-600" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+                </svg>
+            </div>
+            <div v-else-if="detailWork" class="space-y-5">
+
+                <!-- Bannière classe / matière -->
+                <div class="flex items-center gap-4 p-4 rounded-xl bg-gradient-to-r from-primary-50 to-violet-50 dark:from-primary-900/20 dark:to-violet-900/20 border border-primary-100 dark:border-primary-800">
+                    <div class="w-12 h-12 rounded-xl bg-primary-600 flex items-center justify-center shrink-0 shadow-md shadow-primary-200 dark:shadow-primary-900/40">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                        </svg>
+                    </div>
+                    <div class="min-w-0">
+                        <p class="text-xs font-medium text-primary-600 dark:text-primary-400 uppercase tracking-wide">Travail de maison</p>
+                        <p class="text-base font-bold text-gray-900 dark:text-white truncate">{{ detailWork.subject_name }}</p>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">Classe : <span class="font-medium text-gray-700 dark:text-gray-200">{{ detailWork.class_name }}</span></p>
+                    </div>
+                </div>
+
+                <!-- Dates -->
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="flex items-center gap-3 p-3 rounded-xl bg-violet-50 dark:bg-violet-900/20 border border-violet-100 dark:border-violet-800">
+                        <div class="w-9 h-9 rounded-lg bg-violet-100 dark:bg-violet-800 flex items-center justify-center shrink-0">
+                            <svg class="w-4 h-4 text-violet-600 dark:text-violet-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="text-xs text-violet-600 dark:text-violet-400 font-medium">Date du travail</p>
+                            <p class="text-sm font-semibold text-gray-900 dark:text-white">{{ formatDate(detailWork.work_date) }}</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3 p-3 rounded-xl bg-orange-50 dark:bg-orange-900/20 border border-orange-100 dark:border-orange-800">
+                        <div class="w-9 h-9 rounded-lg bg-orange-100 dark:bg-orange-800 flex items-center justify-center shrink-0">
+                            <svg class="w-4 h-4 text-orange-600 dark:text-orange-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="text-xs text-orange-600 dark:text-orange-400 font-medium">Date de remise</p>
+                            <p class="text-sm font-semibold text-gray-900 dark:text-white">{{ formatDate(detailWork.submission_date) }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Description -->
+                <div v-if="detailWork.description" class="rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+                    <div class="px-4 py-2.5 bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 flex items-center gap-2">
+                        <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h12" />
+                        </svg>
+                        <span class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Description</span>
+                    </div>
+                    <div class="p-4 prose prose-sm dark:prose-invert max-w-none text-gray-700 dark:text-gray-300" v-html="detailWork.description" />
+                </div>
+
+                <!-- Pièces jointes -->
+                <div v-if="detailWork.attachments?.length" class="rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+                    <div class="px-4 py-2.5 bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
+                            </svg>
+                            <span class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Pièces jointes</span>
+                        </div>
+                        <span class="text-xs bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 font-semibold px-2 py-0.5 rounded-full">
+                            {{ detailWork.attachments.length }}
+                        </span>
+                    </div>
+                    <div class="divide-y divide-gray-100 dark:divide-gray-700">
+                        <a
+                            v-for="att in detailWork.attachments"
+                            :key="att.id"
+                            :href="att.url"
+                            target="_blank"
+                            class="flex items-center gap-3 px-4 py-3 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors group"
+                        >
+                            <FileTypeIcon :filename="att.file_name" size="sm" />
+                            <span class="text-sm text-gray-700 dark:text-gray-300 group-hover:text-primary-600 dark:group-hover:text-primary-400 truncate flex-1 font-medium">
+                                {{ att.file_name }}
+                            </span>
+                            <span class="text-xs text-gray-400 shrink-0">{{ att.readable_size }}</span>
+                            <svg class="w-4 h-4 text-gray-300 group-hover:text-primary-500 shrink-0 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+                <!-- Fichier legacy -->
+                <div v-else-if="detailWork.document_file" class="rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+                    <div class="px-4 py-2.5 bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+                        <span class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Document</span>
+                    </div>
+                    <div class="p-4">
+                        <a :href="`/upload/practicalworks/${detailWork.document_file}`" target="_blank"
+                           class="inline-flex items-center gap-2 text-sm text-primary-600 hover:text-primary-700 font-medium">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                            </svg>
+                            Télécharger le document
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Soumissions accordéon -->
+                <div class="rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+                    <button
+                        type="button"
+                        class="w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-800 flex items-center justify-between hover:bg-gray-100 dark:hover:bg-gray-700/60 transition-colors"
+                        @click="showSubmissions = !showSubmissions"
+                    >
+                        <div class="flex items-center gap-2">
+                            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                            <span class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Soumissions</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs font-semibold px-2.5 py-0.5 rounded-full"
+                                  :class="(detailWork.homeworks?.length ?? 0) > 0
+                                    ? 'bg-success-100 dark:bg-success-900/30 text-success-700 dark:text-success-300'
+                                    : 'bg-gray-100 dark:bg-gray-700 text-gray-500'">
+                                {{ detailWork.homeworks?.length ?? 0 }}
+                                <span class="opacity-60">/ {{ detailWork.total_students ?? '?' }}</span>
+                            </span>
+                            <svg class="w-4 h-4 text-gray-400 transition-transform duration-200"
+                                 :class="showSubmissions ? 'rotate-180' : ''"
+                                 fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </div>
+                    </button>
+                    <div v-show="showSubmissions">
+                        <div v-if="detailWork.homeworks?.length" class="divide-y divide-gray-100 dark:divide-gray-700">
+                            <div v-for="hw in detailWork.homeworks" :key="hw.id"
+                                 class="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700/40 transition-colors">
+                                <div class="w-8 h-8 rounded-full bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center shrink-0">
+                                    <span class="text-xs font-bold text-primary-600 dark:text-primary-400">
+                                        {{ ((hw.student?.last_name ?? hw.student_last_name ?? '?')[0] ?? '?').toUpperCase() }}
+                                    </span>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-sm font-medium text-gray-900 dark:text-white truncate">
+                                        {{ hw.student?.last_name ?? hw.student_last_name ?? '—' }}
+                                        {{ hw.student?.name ?? hw.student_name ?? '' }}
+                                    </p>
+                                    <p class="text-xs text-gray-400">{{ formatDate(hw.created_at) }}</p>
+                                </div>
+                                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold shrink-0"
+                                      :class="{
+                                          'bg-success-100 dark:bg-success-900/30 text-success-700 dark:text-success-300': hw.status === 'submitted',
+                                          'bg-warning-100 dark:bg-warning-900/30 text-warning-700 dark:text-warning-300': hw.status === 'late',
+                                          'bg-gray-100 dark:bg-gray-700 text-gray-500': !['submitted','late'].includes(hw.status),
+                                      }">
+                                    <span class="w-1.5 h-1.5 rounded-full"
+                                          :class="{
+                                              'bg-success-500': hw.status === 'submitted',
+                                              'bg-warning-500': hw.status === 'late',
+                                              'bg-gray-400': !['submitted','late'].includes(hw.status),
+                                          }"/>
+                                    {{ statusLabel(hw.status) }}
+                                </span>
+                                <a v-if="hw.document_file"
+                                   :href="`/upload/homeworks/${hw.document_file}`"
+                                   target="_blank"
+                                   class="inline-flex items-center gap-1 text-xs text-primary-600 hover:text-primary-700 font-medium hover:underline shrink-0">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                    </svg>
+                                    Voir
+                                </a>
+                                <span v-else class="text-xs text-gray-300 shrink-0">—</span>
+                            </div>
+                        </div>
+                        <div v-else class="py-8 text-center">
+                            <svg class="w-8 h-8 text-gray-300 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                            <p class="text-sm text-gray-400">Aucune soumission pour ce travail.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Lien vers les soumissions -->
+                <div class="flex justify-end pt-1">
+                    <a
+                        :href="detailWork ? `/teacher/practicalworks/homework/submission/${detailWork.id}` : '#'"
+                        class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium
+                               bg-primary-600 hover:bg-primary-700 text-white transition-colors shadow-sm"
+                    >
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                        </svg>
+                        Voir les soumissions
+                    </a>
+                </div>
+            </div>
+            <template #footer>
+                <AppButton variant="ghost" @click="showDetails = false">Fermer</AppButton>
+            </template>
+        </AppModal>
+
         <!-- Confirm Delete -->
         <ConfirmDialog
             v-model="showConfirmDelete"
@@ -283,7 +508,18 @@ interface Attachment {
 }
 
 interface WorkDetail extends Work {
+    document_file?: string | null;
+    total_students?: number;
     attachments?: Attachment[];
+    homeworks?: {
+        id: number;
+        status: string;
+        document_file: string | null;
+        created_at: string;
+        student_name?: string;
+        student_last_name?: string;
+        student?: { id: number; name: string; last_name: string };
+    }[];
 }
 
 // ─── Props ─────────────────────────────────────────────────────────────────────
@@ -299,9 +535,21 @@ const editFormId   = 'teacher-hw-edit';
 
 const showCreateForm = ref(false);
 const showEditForm   = ref(false);
+const showDetails    = ref(false);
+const showSubmissions = ref(true);
 const submitting     = ref(false);
 const loadingEdit    = ref(false);
+const loadingDetails = ref(false);
+const detailWork     = ref<WorkDetail | null>(null);
 const editWork       = ref<WorkDetail | null>(null);
+
+// Traduction des statuts
+const statusLabel = (s: string) => ({
+    submitted: 'Soumis',
+    late:      'En retard',
+    graded:    'Noté',
+    rejected:  'Rejeté',
+}[s] ?? s);
 const editWorkId     = ref<number | null>(null);
 
 const createFileInput = ref<HTMLInputElement | null>(null);
@@ -381,6 +629,27 @@ const openCreate = () => {
     createForm.value = { classSubject: '', work_date: '', submission_date: '', description: '' };
     createFiles.value = [];
     showCreateForm.value = true;
+};
+
+const openDetails = async (id: number) => {
+    showDetails.value     = true;
+    loadingDetails.value  = true;
+    detailWork.value      = null;
+    showSubmissions.value = true;
+    try {
+        const res  = await fetch(`/teacher/practicalworks/homework/details-json/${id}`, {
+            headers: { Accept: 'application/json' },
+            credentials: 'same-origin',
+        });
+        if (!res.ok) { toast.error('Erreur lors du chargement.'); showDetails.value = false; return; }
+        const json = await res.json();
+        detailWork.value = json.work ?? null;
+    } catch {
+        toast.error('Erreur lors du chargement.');
+        showDetails.value = false;
+    } finally {
+        loadingDetails.value = false;
+    }
 };
 
 const submitCreate = () => {

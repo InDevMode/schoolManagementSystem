@@ -34,7 +34,7 @@ class WorkModel extends Model
 
     public static function getWorkIdWithHomeworks(int $workId)
     {
-        return WorkModel::select(
+        $work = WorkModel::select(
             'works.*',
             'class.name as class_name',
             'subject.name as subject_name',
@@ -47,11 +47,22 @@ class WorkModel extends Model
             ->where('works.is_delete', 0)
             ->with([
                 'homeworks' => function ($query) {
-                    $query->where('is_delete', 0);
+                    $query->where('is_delete', 0)
+                          ->with(['student:id,name,last_name']);
                 },
                 'attachments',
             ])
             ->first();
+
+        if ($work) {
+            // Total des élèves de la classe pour afficher X/total soumis
+            $work->total_students = \App\Models\User::where('class_id', $work->class_id)
+                ->where('user_type', 3)
+                ->where('is_delete', 0)
+                ->count();
+        }
+
+        return $work;
     }
 
 

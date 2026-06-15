@@ -284,7 +284,7 @@ const tabs = [
 
 const typeLabels: Record<string, string> = { interrogation: 'Interrogation', devoir_surveille: 'Devoir surveillé', travail_maison: 'Travail maison', examen_blanc: 'Examen blanc' };
 const typeColors: Record<string, string> = { interrogation: '#3b82f6', devoir_surveille: '#f59e0b', travail_maison: '#10b981', examen_blanc: '#ef4444', academic: '#3b82f6', cultural: '#8b5cf6', administrative: '#f59e0b', exam: '#ef4444', ceremony: '#10b981', trip: '#06b6d4' };
-const statusClass = (s: string) => ({ draft: 'bg-gray-100 dark:bg-gray-700 text-gray-600', open: 'bg-blue-100 dark:bg-blue-900/30 text-blue-700', closed: 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700', validated: 'bg-green-100 dark:bg-green-900/30 text-green-700' }[s] ?? 'bg-gray-100 text-gray-600');
+const statusClass = (s: string) => ({ draft: 'bg-gray-100 dark:bg-gray-700 text-gray-600', open: 'bg-violet-100 dark:bg-violet-900/30 text-violet-700', closed: 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700', validated: 'bg-green-100 dark:bg-green-900/30 text-green-700' }[s] ?? 'bg-gray-100 text-gray-600');
 const statusLabel = (s: string) => ({ draft: 'Brouillon', open: 'Ouverte', closed: 'Fermée', validated: 'Validée' }[s] ?? s);
 const fmtDate = (d: string) => d ? new Date(d).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' }) : '—';
 

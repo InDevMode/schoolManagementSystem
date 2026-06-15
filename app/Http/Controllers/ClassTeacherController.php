@@ -118,10 +118,73 @@ class ClassTeacherController extends Controller
         }
     }
 
-    public function myClassSubject()
+    /**
+     * Retourne les classes assignées à un professeur (JSON — pour le modal admin).
+     */
+    public function teacherClasses(int $teacher_id): \Illuminate\Http\JsonResponse
     {
+        $classes = ClassTeacherModel::select(
+                'class_teacher.id',
+                'class_teacher.status',
+                'class.id as class_id',
+                'class.name as class_name',
+            )
+            ->join('class', 'class.id', '=', 'class_teacher.class_id')
+            ->where('class_teacher.teacher_id', $teacher_id)
+            ->where('class_teacher.is_delete', 0)
+            ->where('class.is_delete', 0)
+            ->orderBy('class.name')
+            ->get()
+            ->map(fn($row) => [
+                'id'         => $row->class_id,
+                'name'       => $row->class_name,
+                'status'     => (int) $row->status,
+                // Nombre d'élèves
+                'students'   => \App\Models\User::where('class_id', $row->class_id)
+                    ->where('user_type', 3)
+                    ->where('is_delete', 0)
+                    ->where('status', 1)
+                    ->count(),
+            ]);
+
+        return response()->json(['classes' => $classes]);
+    }
+
+    public function myClassSubject()
+    {        $teacherId = Auth::user()->id;
+
+        $classSubjects = ClassTeacherModel::getMyClassSubjectGroup($teacherId);
+
+        // Pour chaque classe, on enrichit avec les matières et le nombre d'élèves
+        $classSubjects = $classSubjects->map(function ($item) {
+            // Matières assignées à cette classe
+            $item->subjects = \App\Models\ClassSubjectModel::select(
+                    'class_subject.id',
+                    'class_subject.coefficient',
+                    'subject.id as subject_id',
+                    'subject.name as subject_name',
+                    'subject.type as subject_type',
+                )
+                ->join('subject', 'subject.id', '=', 'class_subject.subject_id')
+                ->where('class_subject.class_id', $item->class_id)
+                ->where('class_subject.is_delete', 0)
+                ->where('class_subject.status', 1)
+                ->where('subject.status', 1)
+                ->orderBy('subject.name')
+                ->get();
+
+            // Nombre d'élèves dans cette classe
+            $item->student_count = \App\Models\User::where('class_id', $item->class_id)
+                ->where('user_type', 3)
+                ->where('is_delete', 0)
+                ->where('status', 1)
+                ->count();
+
+            return $item;
+        });
+
         return Inertia::render('Teacher/ClassSubject/Index', [
-            'classSubjects' => ClassTeacherModel::getMyClassSubjectGroup(Auth::user()->id),
+            'classSubjects' => $classSubjects,
         ]);
     }
 
