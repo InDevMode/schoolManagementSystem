@@ -145,21 +145,21 @@ const typeHeaderColor: Record<string, string> = {
     present:  'text-emerald-600 dark:text-emerald-400',
     late:     'text-amber-600 dark:text-amber-400',
     absent:   'text-red-600 dark:text-red-400',
-    half_day: 'text-blue-600 dark:text-blue-400',
+    half_day: 'text-violet-600 dark:text-violet-400',
 };
 
 const checkboxActiveClass: Record<string, string> = {
     present:  'border-emerald-500 bg-emerald-500',
     late:     'border-amber-500  bg-amber-500',
     absent:   'border-red-500    bg-red-500',
-    half_day: 'border-blue-500   bg-blue-500',
+    half_day: 'border-violet-500   bg-violet-500',
 };
 
 const rowBgColor: Record<string, string> = {
     present:  'bg-emerald-50/40 dark:bg-emerald-900/10',
     late:     'bg-amber-50/40   dark:bg-amber-900/10',
     absent:   'bg-red-50/40     dark:bg-red-900/10',
-    half_day: 'bg-blue-50/40    dark:bg-blue-900/10',
+    half_day: 'bg-violet-50/40    dark:bg-violet-900/10',
 };
 
 const normalize = (v: string | number | undefined | null): string | null => {

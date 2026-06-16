@@ -127,11 +127,11 @@
             <!-- Bandeau d'instructions (affiché si éval active, ni validée ni annulée) -->
             <div v-if="evaluation.status !== 'validated' && evaluation.status !== 'cancelled'"
                 class="flex items-start gap-3 mx-5 mt-4 px-4 py-3 rounded-lg
-                       bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800">
-                <svg class="w-4 h-4 text-blue-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                       bg-violet-50 dark:bg-violet-900/20 border border-violet-200 dark:border-violet-800">
+                <svg class="w-4 h-4 text-violet-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                 </svg>
-                <div class="text-xs text-blue-700 dark:text-blue-300 space-y-0.5">
+                <div class="text-xs text-violet-700 dark:text-violet-300 space-y-0.5">
                     <p class="font-semibold">Veuillez saisir toutes les notes avant de pouvoir enregistrer.</p>
                     <p>Les valeurs acceptées sont comprises entre <strong>0</strong> et <strong>20</strong>. N'oubliez pas d'ajouter une observation si possible (Absent, Passable, Bien…) — ce n'est pas obligatoire.</p>
                     <p>Une fois toutes les notes saisies, le bouton <strong>Enregistrer</strong> s'activera. La validation se fait ensuite depuis la page <strong>« À valider »</strong>.</p>

@@ -50,7 +50,7 @@ const colorMap: Record<string, { bubble: string; iconBg: string; icon: string }>
     success:   { bubble: 'bg-green-500',     iconBg: 'bg-green-100 dark:bg-green-900/40',       icon: 'text-green-600 dark:text-green-400' },
     danger:    { bubble: 'bg-red-500',       iconBg: 'bg-red-100 dark:bg-red-900/40',           icon: 'text-red-600 dark:text-red-400' },
     warning:   { bubble: 'bg-amber-500',     iconBg: 'bg-amber-100 dark:bg-amber-900/40',       icon: 'text-amber-600 dark:text-amber-400' },
-    info:      { bubble: 'bg-blue-500',      iconBg: 'bg-blue-100 dark:bg-blue-900/40',         icon: 'text-blue-600 dark:text-blue-400' },
+    info:      { bubble: 'bg-violet-500',      iconBg: 'bg-violet-100 dark:bg-violet-900/40',         icon: 'text-violet-600 dark:text-violet-400' },
 };
 
 const c         = computed(() => colorMap[props.color]);

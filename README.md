@@ -161,3 +161,45 @@ php artisan evaluations:reset-incomplete --dry-run
 
 # Appliquer la correction
 php artisan evaluations:reset-incomplete
+
+
+
+🏫 Création de l'école : Lycée Moderne de Cotonou
+  ✅ Admin : admin@lmc.bj / Admin@LMC2025
+  ✅ 2 classe(s) créée(s)
+  ✅ 6 matière(s) créée(s)
+  ✅ 2 professeur(s) créé(s) — mot de passe : Prof@1234
+  ✅ 4 apprenant(s) créé(s) — mot de passe : Eleve@1234
+  ✅ 2 parent(s) créé(s) — mot de passe : Parent@1234
+  ✅ Matières assignées aux classes
+
+🏫 Création de l'école : Collège Saint-Michel
+  ✅ Admin : admin@csm.bj / Admin@CSM2025
+  ✅ 2 classe(s) créée(s)
+  ✅ 6 matière(s) créée(s)
+  ✅ 2 professeur(s) créé(s) — mot de passe : Prof@1234
+  ✅ 4 apprenant(s) créé(s) — mot de passe : Eleve@1234
+  ✅ 2 parent(s) créé(s) — mot de passe : Parent@1234
+  ✅ Matières assignées aux classes
+
+🏫 Création de l'école : École Primaire Les Étoiles
+  ✅ Admin : admin@epe.bj / Admin@EPE2025
+  ✅ 2 classe(s) créée(s)
+  ✅ 6 matière(s) créée(s)
+  ✅ 2 professeur(s) créé(s) — mot de passe : Prof@1234
+  ✅ 4 apprenant(s) créé(s) — mot de passe : Eleve@1234
+  ✅ 2 parent(s) créé(s) — mot de passe : Parent@1234
+  ✅ Matières assignées aux classes
+
+══════════════════════════════════════════════
+✅ Multi-école seed terminé !
+
++----------------------------+--------------+---------------+
+| École                      | Admin email  | Mot de passe  |
++----------------------------+--------------+---------------+
+| Lycée Moderne de Cotonou   | admin@lmc.bj | Admin@LMC2025 |
+| Collège Saint-Michel       | admin@csm.bj | Admin@CSM2025 |
+| École Primaire Les Étoiles | admin@epe.bj | Admin@EPE2025 |
++----------------------------+--------------+---------------+
+
+Professeurs : Prof@1234  |  Apprenants : Eleve@1234  |  Parents : Parent@1234

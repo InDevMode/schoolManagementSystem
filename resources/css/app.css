@@ -81,3 +81,16 @@
         @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
     }
 }
+
+@layer utilities {
+    /* Cacher la scrollbar tout en gardant le scroll fonctionnel */
+    .no-scrollbar {
+        -ms-overflow-style: none;  /* IE/Edge */
+        scrollbar-width: none;     /* Firefox */
+    }
+    .no-scrollbar::-webkit-scrollbar {
+        display: none !important;
+        width: 0 !important;
+        height: 0 !important;
+    }
+}

@@ -81,7 +81,7 @@ const colorMap: Record<string, { bubble: string; iconBg: string; icon: string; s
     success: { bubble: 'bg-emerald-500',   iconBg: 'bg-emerald-50 dark:bg-emerald-900/30',   icon: 'text-emerald-600 dark:text-emerald-400',   spark: '#10B981' },
     warning: { bubble: 'bg-amber-500',     iconBg: 'bg-amber-50 dark:bg-amber-900/30',       icon: 'text-amber-600 dark:text-amber-400',       spark: '#F59E0B' },
     danger:  { bubble: 'bg-red-500',       iconBg: 'bg-red-50 dark:bg-red-900/30',           icon: 'text-red-600 dark:text-red-400',           spark: '#EF4444' },
-    info:    { bubble: 'bg-blue-500',      iconBg: 'bg-blue-50 dark:bg-blue-900/30',         icon: 'text-blue-600 dark:text-blue-400',         spark: '#3B82F6' },
+    info:    { bubble: 'bg-violet-500',      iconBg: 'bg-violet-50 dark:bg-violet-900/30',         icon: 'text-violet-600 dark:text-violet-400',         spark: '#8B5CF6' },
     violet:  { bubble: 'bg-violet-500',    iconBg: 'bg-violet-50 dark:bg-violet-900/30',     icon: 'text-violet-600 dark:text-violet-400',     spark: '#8B5CF6' },
     amber:   { bubble: 'bg-orange-500',    iconBg: 'bg-orange-50 dark:bg-orange-900/30',     icon: 'text-orange-600 dark:text-orange-400',     spark: '#F97316' },
 };

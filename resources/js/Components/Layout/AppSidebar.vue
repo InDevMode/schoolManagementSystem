@@ -175,7 +175,7 @@
 
                 <!-- Séparateur de section (label) -->
                 <div v-if="item.type === 'separator' && !collapsed"
-                     class="pt-4 pb-1 px-2">
+                     class="pt-4 pb-1 px-3">
                     <span class="text-[10px] font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500">
                         {{ item.label }}
                     </span>

@@ -113,12 +113,12 @@
                 <!-- Info matières déjà assignées -->
                 <div
                     v-else-if="createForm.class_id && alreadyAssignedSubjectIds.length > 0"
-                    class="flex items-start gap-2 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-3"
+                    class="flex items-start gap-2 bg-violet-50 dark:bg-violet-900/20 border border-violet-200 dark:border-violet-800 rounded-lg p-3"
                 >
-                    <svg class="w-4 h-4 text-blue-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-4 h-4 text-violet-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                     </svg>
-                    <p class="text-xs text-blue-700 dark:text-blue-300">
+                    <p class="text-xs text-violet-700 dark:text-violet-300">
                         {{ alreadyAssignedSubjectIds.length }} matière(s) déjà assignée(s) à cette classe sont grisées et non sélectionnables.
                     </p>
                 </div>

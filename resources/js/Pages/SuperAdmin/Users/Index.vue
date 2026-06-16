@@ -1,7 +1,7 @@
 <template>
     <div class="space-y-6" @click="closeContextMenu">
 
-        <!-- ── Header ─────────────────────────────────────────────────────── -->
+        <!-- â”€â”€ Header â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
                 <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Tous les utilisateurs</h1>
@@ -26,7 +26,7 @@
             </form>
         </div>
 
-        <!-- ── Bannière ────────────────────────────────────────────────────── -->
+        <!-- â”€â”€ BanniÃ¨re â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
         <div v-if="isSuperAdmin" class="flex items-center gap-2.5 px-4 py-2.5 rounded-lg
                     bg-violet-50 dark:bg-violet-900/20 border border-violet-200 dark:border-violet-700 text-sm">
             <svg class="w-4 h-4 text-violet-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -34,18 +34,18 @@
                       d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
             </svg>
             <span class="text-violet-700 dark:text-violet-300 font-medium">Vue Super Admin</span>
-            <span class="text-violet-600 dark:text-violet-400">— Double-clic sur une cellule pour éditer · Clic droit pour le menu rapide</span>
+            <span class="text-violet-600 dark:text-violet-400">â€” Double-clic sur une cellule pour Ã©diter Â· Clic droit pour le menu rapide</span>
         </div>
 
-        <!-- ── Filtres ─────────────────────────────────────────────────────── -->
+        <!-- â”€â”€ Filtres â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
         <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm p-4">
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3">
                 <input v-model="filters.name"          type="text" placeholder="Nom..."       class="input-field" @keyup.enter="applyFilters"/>
-                <input v-model="filters.last_name"     type="text" placeholder="Prénoms..."   class="input-field" @keyup.enter="applyFilters"/>
+                <input v-model="filters.last_name"     type="text" placeholder="PrÃ©noms..."   class="input-field" @keyup.enter="applyFilters"/>
                 <input v-model="filters.email"         type="text" placeholder="Email..."     class="input-field" @keyup.enter="applyFilters"/>
-                <input v-model="filters.mobile_number" type="text" placeholder="Téléphone..." class="input-field" @keyup.enter="applyFilters"/>
+                <input v-model="filters.mobile_number" type="text" placeholder="TÃ©lÃ©phone..." class="input-field" @keyup.enter="applyFilters"/>
                 <select v-model="filters.user_type" class="input-field">
-                    <option value="">Tous les rôles</option>
+                    <option value="">Tous les rÃ´les</option>
                     <option value="0">Super Administrateur</option>
                     <option value="1">Administrateur</option>
                     <option value="2">Professeur</option>
@@ -70,7 +70,7 @@
                 <button @click="resetFilters"
                         class="px-4 py-2 rounded-lg text-sm font-medium border border-gray-200 dark:border-gray-600
                                text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
-                    Réinitialiser
+                    RÃ©initialiser
                 </button>
                 <div class="ml-auto flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
                     <span>Afficher</span>
@@ -86,15 +86,15 @@
             </div>
         </div>
 
-        <!-- ── Tableau ─────────────────────────────────────────────────────── -->
+        <!-- â”€â”€ Tableau â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
         <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm overflow-hidden">
 
-            <!-- Barre sélection en masse -->
+            <!-- Barre sÃ©lection en masse -->
             <div v-if="selectedIds.length > 0 && canReset"
                  class="flex items-center gap-3 px-5 py-3 bg-violet-50 dark:bg-violet-900/20
                          border-b border-violet-100 dark:border-violet-800">
                 <span class="text-sm font-medium text-violet-700 dark:text-violet-300">
-                    {{ selectedIds.length }} sélectionné(s)
+                    {{ selectedIds.length }} sÃ©lectionnÃ©(s)
                 </span>
                 <button @click="openBulkReset"
                         class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium
@@ -103,11 +103,11 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                               d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/>
                     </svg>
-                    Réinitialiser les MDP sélectionnés
+                    RÃ©initialiser les MDP sÃ©lectionnÃ©s
                 </button>
                 <button @click="selectedIds = []"
                         class="text-xs text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 ml-auto">
-                    Tout déselectionner
+                    Tout dÃ©selectionner
                 </button>
             </div>
 
@@ -120,12 +120,12 @@
                             </th>
                             <th class="px-4 py-3 text-left font-semibold text-gray-600 dark:text-gray-300 whitespace-nowrap">Utilisateur</th>
                             <th class="px-4 py-3 text-left font-semibold text-gray-600 dark:text-gray-300 whitespace-nowrap">Email</th>
-                            <th class="px-4 py-3 text-left font-semibold text-gray-600 dark:text-gray-300 whitespace-nowrap">Téléphone</th>
-                            <th class="px-4 py-3 text-left font-semibold text-gray-600 dark:text-gray-300 whitespace-nowrap">Rôle</th>
+                            <th class="px-4 py-3 text-left font-semibold text-gray-600 dark:text-gray-300 whitespace-nowrap">TÃ©lÃ©phone</th>
+                            <th class="px-4 py-3 text-left font-semibold text-gray-600 dark:text-gray-300 whitespace-nowrap">RÃ´le</th>
                             <th class="px-4 py-3 text-center font-semibold text-gray-600 dark:text-gray-300 whitespace-nowrap">Permissions</th>
-                            <th class="px-4 py-3 text-left font-semibold text-gray-600 dark:text-gray-300 whitespace-nowrap">École</th>
+                            <th class="px-4 py-3 text-left font-semibold text-gray-600 dark:text-gray-300 whitespace-nowrap">Ã‰cole</th>
                             <th class="px-4 py-3 text-center font-semibold text-gray-600 dark:text-gray-300 whitespace-nowrap">Statut</th>
-                            <th class="px-4 py-3 text-left font-semibold text-gray-600 dark:text-gray-300 whitespace-nowrap">Créé le</th>
+                            <th class="px-4 py-3 text-left font-semibold text-gray-600 dark:text-gray-300 whitespace-nowrap">CrÃ©Ã© le</th>
                             <th class="px-4 py-3 text-right font-semibold text-gray-600 dark:text-gray-300 whitespace-nowrap pr-5">Actions</th>
                         </tr>
                     </thead>
@@ -162,7 +162,7 @@
                                                   :class="u.is_online ? 'bg-emerald-400' : 'bg-gray-300 dark:bg-gray-600'"/>
                                         </div>
                                         <div class="min-w-0">
-                                            <!-- Nom avec icône copie au hover -->
+                                            <!-- Nom avec icÃ´ne copie au hover -->
                                             <div class="group/name flex items-center gap-1">
                                                 <p class="font-semibold text-gray-900 dark:text-white truncate text-sm">
                                                     {{ u.last_name }} {{ u.name }}
@@ -172,7 +172,7 @@
                                                     class="opacity-0 group-hover/name:opacity-100 transition-opacity duration-150
                                                            p-0.5 rounded text-gray-400 hover:text-violet-600 hover:bg-violet-50
                                                            dark:hover:text-violet-400 dark:hover:bg-violet-900/20 flex-shrink-0"
-                                                    :title="copied === `name-${u.id}` ? 'Copié !' : 'Copier le nom'"
+                                                    :title="copied === `name-${u.id}` ? 'CopiÃ© !' : 'Copier le nom'"
                                                     @click.stop="copy(`${u.last_name} ${u.name}`, `name-${u.id}`)"
                                                 >
                                                     <svg v-if="copied !== `name-${u.id}`" class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -199,7 +199,7 @@
                                             class="opacity-0 group-hover/email:opacity-100 transition-opacity duration-150 flex-shrink-0
                                                    p-0.5 rounded text-gray-400 hover:text-violet-600 hover:bg-violet-50
                                                    dark:hover:text-violet-400 dark:hover:bg-violet-900/20"
-                                            :title="copied === `email-${u.id}` ? 'Copié !' : 'Copier l\'email'"
+                                            :title="copied === `email-${u.id}` ? 'CopiÃ© !' : 'Copier l\'email'"
                                             @click.stop="copy(u.email, `email-${u.id}`)"
                                         >
                                             <svg v-if="copied !== `email-${u.id}`" class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -212,18 +212,18 @@
                                     </div>
                                 </td>
 
-                                <!-- Téléphone -->
+                                <!-- TÃ©lÃ©phone -->
                                 <td class="px-4 py-3 whitespace-nowrap" @dblclick="canEdit && openEdit(u)">
                                     <div class="group/tel flex items-center gap-1">
                                         <span class="text-sm font-mono text-gray-600 dark:text-gray-400">
-                                            {{ u.mobile_number ?? '—' }}
+                                            {{ u.mobile_number ?? 'â€”' }}
                                         </span>
                                         <button v-if="u.mobile_number"
                                             type="button"
                                             class="opacity-0 group-hover/tel:opacity-100 transition-opacity duration-150 flex-shrink-0
                                                    p-0.5 rounded text-gray-400 hover:text-emerald-600 hover:bg-emerald-50
                                                    dark:hover:text-emerald-400 dark:hover:bg-emerald-900/20"
-                                            :title="copied === `tel-${u.id}` ? 'Copié !' : 'Copier'"
+                                            :title="copied === `tel-${u.id}` ? 'CopiÃ© !' : 'Copier'"
                                             @click.stop="copy(u.mobile_number!, `tel-${u.id}`)"
                                         >
                                             <svg v-if="copied !== `tel-${u.id}`" class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -236,7 +236,7 @@
                                     </div>
                                 </td>
 
-                                <!-- Rôle -->
+                                <!-- RÃ´le -->
                                 <td class="px-4 py-3 whitespace-nowrap" @dblclick="canEdit && openEdit(u)">
                                     <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold"
                                           :class="roleStyle(u.user_type).badge">
@@ -253,10 +253,10 @@
                                     </span>
                                 </td>
 
-                                <!-- École -->
+                                <!-- Ã‰cole -->
                                 <td class="px-4 py-3 max-w-[150px]">
                                     <span class="text-xs text-gray-600 dark:text-gray-400 truncate block" :title="u.school_name ?? ''">
-                                        {{ u.school_name ?? '—' }}
+                                        {{ u.school_name ?? 'â€”' }}
                                     </span>
                                 </td>
 
@@ -281,7 +281,7 @@
                                 <td class="px-4 py-3 pr-5">
                                     <div class="flex items-center justify-end gap-1.5">
                                         <!-- Voir -->
-                                        <button @click="openView(u)" title="Voir les détails"
+                                        <button @click="openView(u)" title="Voir les dÃ©tails"
                                                 class="p-1.5 rounded-lg text-white bg-violet-500 hover:bg-violet-600 shadow-sm transition-all">
                                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0zM2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
@@ -301,8 +301,8 @@
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
                                             </svg>
                                         </Link>
-                                        <!-- Réinitialiser MDP -->
-                                        <button v-if="canReset" @click="openResetConfirm(u)" title="Réinitialiser le mot de passe"
+                                        <!-- RÃ©initialiser MDP -->
+                                        <button v-if="canReset" @click="openResetConfirm(u)" title="RÃ©initialiser le mot de passe"
                                                 class="p-1.5 rounded-lg text-white bg-amber-500 hover:bg-amber-600 shadow-sm transition-all">
                                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/>
@@ -327,7 +327,7 @@
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
                                         </svg>
                                     </div>
-                                    <p class="text-gray-500 dark:text-gray-400 font-medium">Aucun utilisateur trouvé</p>
+                                    <p class="text-gray-500 dark:text-gray-400 font-medium">Aucun utilisateur trouvÃ©</p>
                                     <button @click="resetFilters" class="text-sm text-violet-600 hover:underline">Effacer les filtres</button>
                                 </div>
                             </td>
@@ -340,11 +340,11 @@
             <div class="flex flex-col sm:flex-row items-center justify-between gap-3 px-5 py-4
                         border-t border-gray-100 dark:border-gray-700">
                 <p class="text-sm text-gray-500 dark:text-gray-400">
-                    <span v-if="users.total > 0">{{ users.from }}–{{ users.to }} sur {{ users.total }} résultat(s)</span>
-                    <span v-else>Aucun résultat</span>
+                    <span v-if="users.total > 0">{{ users.from }}â€“{{ users.to }} sur {{ users.total }} rÃ©sultat(s)</span>
+                    <span v-else>Aucun rÃ©sultat</span>
                 </p>
                 <div class="flex items-center gap-1">
-                    <!-- Précédent -->
+                    <!-- PrÃ©cÃ©dent -->
                     <button :disabled="!users.prev_page_url"
                             @click="users.prev_page_url && goToPage(users.prev_page_url)"
                             class="w-8 h-8 flex items-center justify-center rounded-lg text-sm transition-colors
@@ -354,7 +354,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
                         </svg>
                     </button>
-                    <!-- Numéros de page -->
+                    <!-- NumÃ©ros de page -->
                     <template v-for="link in users.links.slice(1, -1)" :key="link.label">
                         <button v-if="link.url" @click="goToPage(link.url)"
                                 :class="['w-8 h-8 flex items-center justify-center rounded-lg text-sm font-medium transition-colors',
@@ -380,9 +380,9 @@
             </div>
         </div>
 
-        <!-- ══════════════════════════════════════════════════════════════════
+        <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
              MENU CONTEXTUEL (clic droit)
-        ══════════════════════════════════════════════════════════════════ -->
+        â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
         <Teleport to="body">
             <Transition enter-active-class="transition duration-100 ease-out" enter-from-class="opacity-0 scale-95"
                         enter-to-class="opacity-100 scale-100" leave-active-class="transition duration-75 ease-in"
@@ -399,7 +399,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0zM2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
                             </svg>
                         </span>
-                        Voir les détails
+                        Voir les dÃ©tails
                     </button>
                     <button v-if="canEdit" @click="openEdit(ctxMenu.user!); closeContextMenu()"
                             class="ctx-item text-gray-700 dark:text-gray-300 hover:bg-emerald-50 hover:text-emerald-700">
@@ -426,7 +426,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/>
                             </svg>
                         </span>
-                        Réinitialiser MDP
+                        RÃ©initialiser MDP
                     </button>
                     <template v-if="canDelete && ctxMenu.user?.user_type !== 0">
                         <div class="my-1 border-t border-gray-100 dark:border-gray-700"/>
@@ -444,9 +444,9 @@
             </Transition>
         </Teleport>
 
-        <!-- ══════════════════════════════════════════════════════════════════
-             MODAL VOIR DÉTAILS
-        ══════════════════════════════════════════════════════════════════ -->
+        <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+             MODAL VOIR DÃ‰TAILS
+        â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
         <Teleport to="body">
             <Transition enter-active-class="transition duration-200 ease-out" enter-from-class="opacity-0" enter-to-class="opacity-100"
                         leave-active-class="transition duration-150 ease-in" leave-from-class="opacity-100" leave-to-class="opacity-0">
@@ -478,7 +478,7 @@
                                     <div class="flex items-center gap-2 mt-2 flex-wrap">
                                         <span class="px-2 py-0.5 rounded-full text-xs font-semibold"
                                               :class="viewTarget.status == 1 ? 'bg-emerald-400/30 text-emerald-100' : 'bg-red-400/30 text-red-100'">
-                                            {{ viewTarget.status == 1 ? '✓ Actif' : '✗ Inactif' }}
+                                            {{ viewTarget.status == 1 ? 'âœ“ Actif' : 'âœ— Inactif' }}
                                         </span>
                                         <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-white/10 text-white/80">
                                             <span class="w-1.5 h-1.5 rounded-full" :class="viewTarget.is_online ? 'bg-emerald-400' : 'bg-gray-400'"/>
@@ -490,11 +490,11 @@
                         </div>
                         <!-- Corps -->
                         <div class="p-5 grid grid-cols-2 gap-3">
-                            <div class="info-card"><p class="info-label">Rôle</p><p class="text-sm font-semibold text-violet-700 dark:text-violet-400">{{ viewTarget.role_label }}</p></div>
+                            <div class="info-card"><p class="info-label">RÃ´le</p><p class="text-sm font-semibold text-violet-700 dark:text-violet-400">{{ viewTarget.role_label }}</p></div>
                             <div class="info-card"><p class="info-label">Permissions</p><p class="text-sm font-bold text-gray-800 dark:text-gray-200">{{ viewTarget.permissions_count }}</p></div>
-                            <div class="info-card"><p class="info-label">Téléphone</p><p class="text-sm font-mono text-gray-700 dark:text-gray-300">{{ viewTarget.mobile_number ?? '—' }}</p></div>
-                            <div class="info-card"><p class="info-label">Créé le</p><p class="text-sm text-gray-700 dark:text-gray-300">{{ formatDate(viewTarget.created_at) }}</p></div>
-                            <div class="info-card col-span-2"><p class="info-label">École</p><p class="text-sm text-gray-700 dark:text-gray-300">{{ viewTarget.school_name ?? '—' }}</p></div>
+                            <div class="info-card"><p class="info-label">TÃ©lÃ©phone</p><p class="text-sm font-mono text-gray-700 dark:text-gray-300">{{ viewTarget.mobile_number ?? 'â€”' }}</p></div>
+                            <div class="info-card"><p class="info-label">CrÃ©Ã© le</p><p class="text-sm text-gray-700 dark:text-gray-300">{{ formatDate(viewTarget.created_at) }}</p></div>
+                            <div class="info-card col-span-2"><p class="info-label">Ã‰cole</p><p class="text-sm text-gray-700 dark:text-gray-300">{{ viewTarget.school_name ?? 'â€”' }}</p></div>
                         </div>
                         <!-- Footer -->
                         <div class="flex gap-2 px-5 pb-5">
@@ -509,7 +509,7 @@
                             </button>
                             <button v-if="canReset" @click="openResetConfirm(viewTarget!); viewTarget = null"
                                     class="flex-1 px-3 py-2 rounded-lg text-sm font-medium bg-amber-500 hover:bg-amber-600 text-white transition-colors">
-                                Réinit. MDP
+                                RÃ©init. MDP
                             </button>
                         </div>
                     </div>
@@ -517,9 +517,9 @@
             </Transition>
         </Teleport>
 
-        <!-- ══════════════════════════════════════════════════════════════════
+        <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
              MODAL MODIFICATION
-        ══════════════════════════════════════════════════════════════════ -->
+        â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
         <Teleport to="body">
             <Transition enter-active-class="transition duration-200 ease-out" enter-from-class="opacity-0" enter-to-class="opacity-100"
                         leave-active-class="transition duration-150 ease-in" leave-from-class="opacity-100" leave-to-class="opacity-0">
@@ -550,7 +550,7 @@
                         <form @submit.prevent="submitEdit" class="p-6 space-y-4">
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div>
-                                    <label class="form-label">Prénoms <span class="text-red-500">*</span></label>
+                                    <label class="form-label">PrÃ©noms <span class="text-red-500">*</span></label>
                                     <input v-model="editForm.last_name" type="text" class="input-field" required/>
                                 </div>
                                 <div>
@@ -562,28 +562,28 @@
                                     <input v-model="editForm.email" type="email" class="input-field" required/>
                                 </div>
                                 <div>
-                                    <label class="form-label">Téléphone</label>
+                                    <label class="form-label">TÃ©lÃ©phone</label>
                                     <input v-model="editForm.mobile_number" type="text" class="input-field"/>
                                 </div>
                                 <div>
                                     <label class="form-label">Statut <span class="text-red-500">*</span></label>
                                     <select v-model="editForm.status" class="input-field" required>
-                                        <option value="" disabled>Sélectionner un statut</option>
+                                        <option value="" disabled>SÃ©lectionner un statut</option>
                                         <option value="1">Actif</option>
                                         <option value="0">Inactif</option>
                                     </select>
                                 </div>
-                                <!-- Rôle -->
+                                <!-- RÃ´le -->
                                 <div class="sm:col-span-2">
-                                    <label class="form-label">Rôle <span class="text-red-500">*</span></label>
+                                    <label class="form-label">RÃ´le <span class="text-red-500">*</span></label>
                                     <select v-model="editForm.user_type" class="input-field" required>
-                                        <option value="" disabled>Sélectionner un rôle</option>
+                                        <option value="" disabled>SÃ©lectionner un rÃ´le</option>
                                         <option v-for="r in roles" :key="r.id" :value="r.user_type">
                                             {{ r.label }}
                                         </option>
                                     </select>
                                     <p class="text-xs text-gray-400 dark:text-gray-500 mt-1">
-                                        Changer le rôle met à jour automatiquement les permissions associées.
+                                        Changer le rÃ´le met Ã  jour automatiquement les permissions associÃ©es.
                                     </p>
                                 </div>
                             </div>
@@ -614,9 +614,9 @@
             </Transition>
         </Teleport>
 
-        <!-- ══════════════════════════════════════════════════════════════════
-             MODAL CONFIRMATION RÉINITIALISATION MDP
-        ══════════════════════════════════════════════════════════════════ -->
+        <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+             MODAL CONFIRMATION RÃ‰INITIALISATION MDP
+        â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
         <Teleport to="body">
             <Transition enter-active-class="transition duration-200 ease-out" enter-from-class="opacity-0" enter-to-class="opacity-100"
                         leave-active-class="transition duration-150 ease-in" leave-from-class="opacity-100" leave-to-class="opacity-0">
@@ -629,9 +629,9 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/>
                                 </svg>
                             </div>
-                            <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-1">Réinitialiser le mot de passe</h3>
+                            <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-1">RÃ©initialiser le mot de passe</h3>
                             <p class="text-sm text-gray-500 dark:text-gray-400">
-                                Un nouveau mot de passe aléatoire sera généré et envoyé par email à
+                                Un nouveau mot de passe alÃ©atoire sera gÃ©nÃ©rÃ© et envoyÃ© par email Ã 
                                 <strong class="text-gray-800 dark:text-gray-200">{{ resetTarget.last_name }} {{ resetTarget.name }}</strong>
                                 (<span class="font-mono text-xs">{{ resetTarget.email }}</span>).
                             </p>
@@ -657,9 +657,9 @@
             </Transition>
         </Teleport>
 
-        <!-- ══════════════════════════════════════════════════════════════════
+        <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
              MODAL CONFIRMATION SUPPRESSION
-        ══════════════════════════════════════════════════════════════════ -->
+        â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
         <Teleport to="body">
             <Transition enter-active-class="transition duration-200 ease-out" enter-from-class="opacity-0" enter-to-class="opacity-100"
                         leave-active-class="transition duration-150 ease-in" leave-from-class="opacity-100" leave-to-class="opacity-0">
@@ -674,9 +674,9 @@
                             </div>
                             <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-1">Supprimer l'utilisateur</h3>
                             <p class="text-sm text-gray-500 dark:text-gray-400">
-                                Êtes-vous sûr de vouloir supprimer
+                                ÃŠtes-vous sÃ»r de vouloir supprimer
                                 <strong class="text-gray-800 dark:text-gray-200">{{ deleteTarget.last_name }} {{ deleteTarget.name }}</strong> ?
-                                Cette action est réversible depuis les journaux.
+                                Cette action est rÃ©versible depuis les journaux.
                             </p>
                         </div>
                         <div class="px-6 pb-6 flex gap-3 mt-2">
@@ -711,7 +711,7 @@ import AppLayout from '@/Layouts/AppLayout.vue';
 
 defineOptions({ layout: AppLayout });
 
-// ── Types ─────────────────────────────────────────────────────────────────────
+// â”€â”€ Types â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 interface UserRow {
     id: number;
     name: string;
@@ -742,6 +742,7 @@ const props = defineProps<{
     users: PaginatedUsers;
     roles: RoleOption[];
     isSuperAdmin: boolean;
+    canView: boolean;
     canEdit: boolean;
     canDelete: boolean;
     canReset: boolean;
@@ -749,11 +750,11 @@ const props = defineProps<{
 }>();
 const toast = useToast();
 
-// ── CSRF helper ───────────────────────────────────────────────────────────────
+// â”€â”€ CSRF helper â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const csrf = () =>
     (document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement)?.content ?? '';
 
-// ── Filtres ───────────────────────────────────────────────────────────────────
+// â”€â”€ Filtres â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const filters    = reactive({ name: '', last_name: '', email: '', mobile_number: '', user_type: '', status: '' });
 const perPage    = ref(5);
 
@@ -774,7 +775,7 @@ const resetFilters = () => {
 };
 const goToPage = (url: string) => router.get(url, {}, { preserveState: true });
 
-// ── Sélection ─────────────────────────────────────────────────────────────────
+// â”€â”€ SÃ©lection â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const selectedIds = ref<number[]>([]);
 const allSelected = computed(() =>
     props.users.data.length > 0 && props.users.data.every(u => selectedIds.value.includes(u.id))
@@ -787,7 +788,7 @@ const toggleSelect = (id: number) => {
     i === -1 ? selectedIds.value.push(id) : selectedIds.value.splice(i, 1);
 };
 
-// ── Copie presse-papier ───────────────────────────────────────────────────────
+// â”€â”€ Copie presse-papier â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const copied = ref<string | null>(null);
 let copyTimer: ReturnType<typeof setTimeout> | null = null;
 const copy = (text: string, key: string) => {
@@ -798,13 +799,13 @@ const copy = (text: string, key: string) => {
     }).catch(() => toast.error('Impossible de copier.'));
 };
 
-// ── Contexte menu (clic droit) ────────────────────────────────────────────────
+// â”€â”€ Contexte menu (clic droit) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const ctxMenu = reactive<{ visible: boolean; x: number; y: number; user: UserRow | null }>({
     visible: false, x: 0, y: 0, user: null,
 });
 const openContextMenu = (e: MouseEvent, u: UserRow) => {
     e.preventDefault();
-    // Ajuste pour ne pas dépasser l'écran
+    // Ajuste pour ne pas dÃ©passer l'Ã©cran
     const margin = 8;
     const menuW = 208; const menuH = 220;
     ctxMenu.x = Math.min(e.clientX, window.innerWidth  - menuW - margin);
@@ -824,11 +825,11 @@ onUnmounted(() => {
 });
 const onEsc = (e: KeyboardEvent) => { if (e.key === 'Escape') closeContextMenu(); };
 
-// ── Modal Voir ────────────────────────────────────────────────────────────────
+// â”€â”€ Modal Voir â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const viewTarget = ref<UserRow | null>(null);
 const openView   = (u: UserRow) => { viewTarget.value = u; };
 
-// ── Modal Modifier ────────────────────────────────────────────────────────────
+// â”€â”€ Modal Modifier â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const editTarget = ref<UserRow | null>(null);
 const editForm   = reactive({ name: '', last_name: '', email: '', mobile_number: '', status: '1', user_type: 1 });
 const saving     = ref(false);
@@ -868,25 +869,25 @@ const submitEdit = async () => {
             editTarget.value = null;
             router.reload({ only: ['users'] });
         } else {
-            editError.value = json.message ?? 'Erreur lors de la mise à jour.';
+            editError.value = json.message ?? 'Erreur lors de la mise Ã  jour.';
         }
     } catch {
-        editError.value = 'Erreur réseau.';
+        editError.value = 'Erreur rÃ©seau.';
     } finally {
         saving.value = false;
     }
 };
 
-// ── Réinitialisation MDP (individuelle + masse) ────────────────────────────────
+// â”€â”€ RÃ©initialisation MDP (individuelle + masse) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const resetTarget = ref<UserRow | null>(null);
 const resetting   = ref(false);
 
 const openResetConfirm  = (u: UserRow) => { resetTarget.value = u; };
 const openBulkReset     = () => {
-    // Pour la masse on ouvre une confirmation générique en réutilisant le même modal
-    // On crée un faux user représentant la sélection
+    // Pour la masse on ouvre une confirmation gÃ©nÃ©rique en rÃ©utilisant le mÃªme modal
+    // On crÃ©e un faux user reprÃ©sentant la sÃ©lection
     resetTarget.value = {
-        id: -1, name: 'sélectionnés', last_name: `${selectedIds.value.length} utilisateur(s)`,
+        id: -1, name: 'sÃ©lectionnÃ©s', last_name: `${selectedIds.value.length} utilisateur(s)`,
         email: selectedIds.value.length + ' adresses email',
         mobile_number: null, user_type: -1, status: 1, profile_picture: null,
         created_at: '', is_online: false, role_label: '', role_names: [],
@@ -913,13 +914,13 @@ const executeReset = async () => {
             toast.error(json.message);
         }
     } catch {
-        toast.error('Erreur réseau.');
+        toast.error('Erreur rÃ©seau.');
     } finally {
         resetting.value = false;
     }
 };
 
-// ── Suppression ───────────────────────────────────────────────────────────────
+// â”€â”€ Suppression â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const deleteTarget = ref<UserRow | null>(null);
 const deleting     = ref(false);
 
@@ -941,14 +942,14 @@ const executeDelete = async () => {
             toast.error(json.message);
         }
     } catch {
-        toast.error('Erreur réseau.');
+        toast.error('Erreur rÃ©seau.');
     } finally {
         deleting.value = false;
     }
 };
 
-// ── Helpers visuels ───────────────────────────────────────────────────────────
-const formatDate = (d: string) => d ? new Date(d).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' }) : '—';
+// â”€â”€ Helpers visuels â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+const formatDate = (d: string) => d ? new Date(d).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' }) : 'â€”';
 const initials   = (u: UserRow) => ((u.last_name?.[0] ?? '') + (u.name?.[0] ?? '')).toUpperCase() || '?';
 const encodedId  = (id: number) => btoa(String(id));
 

@@ -16,6 +16,7 @@ use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ParentController;
 use App\Http\Controllers\PeriodController;
 use App\Http\Controllers\RbacController;
+use App\Http\Controllers\SchoolController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\TeacherController;
@@ -124,13 +125,19 @@ Route::group(['middleware' => 'super_admin', 'prefix' => 'superadmin'], function
     // ── Journaux de suppression (super admin only) ─────────────────────────
     Route::get('deletion-logs',       [DeletionLogController::class, 'list'])->name('superadmin.deletion-logs');
     Route::get('deletion-logs/{id}',  [DeletionLogController::class, 'show'])->name('superadmin.deletion-logs.show');
+
+    // ── Gestion des écoles (multi-tenant) ──────────────────────────────────
+    Route::get('schools',             [SchoolController::class, 'list'])->name('superadmin.schools');
+    Route::post('schools/add',        [SchoolController::class, 'create'])->name('superadmin.schools.create');
+    Route::post('schools/edit/{id}',  [SchoolController::class, 'update'])->name('superadmin.schools.update');
+    Route::get('schools/delete/{id}', [SchoolController::class, 'delete'])->name('superadmin.schools.delete');
 });
 
 Route::group(['middleware' => 'admin'], function () {
 
     // ── Gestion de tous les utilisateurs (super admin + admin avec permission) ──
     Route::get('superadmin/users',                           [UserController::class, 'allUsersList'])->name('superadmin.users')->middleware('check_perm:view.users.all');
-    Route::post('superadmin/users/reset-password',           [UserController::class, 'resetUsersPassword'])->name('superadmin.users.reset-password')->middleware('check_perm:view.users.all');
+    Route::post('superadmin/users/reset-password',           [UserController::class, 'resetUsersPassword'])->name('superadmin.users.reset-password')->middleware('check_perm:action.users.reset_password');
     Route::post('superadmin/users/update/{id}',              [UserController::class, 'updateUserFromPanel'])->name('superadmin.users.update')->middleware('check_perm:action.users.edit');
     Route::post('superadmin/users/delete/{id}',              [UserController::class, 'deleteUser'])->name('superadmin.users.delete')->middleware('check_perm:action.users.delete');
     Route::post('superadmin/users/export',                   [UserController::class, 'exportAllUsers'])->name('superadmin.users.export')->middleware('check_perm:view.users.all');
@@ -265,9 +272,9 @@ Route::group(['middleware' => 'admin'], function () {
     Route::get('admin/feescollections/collections/delete/{id}',           [FeesCollectionController::class, 'deleteFees'])->middleware('check_perm:action.fees.delete');
     Route::post('admin/feescollections/feescollects/export',              [FeesCollectionController::class, 'exportFeesCollects'])->middleware('check_perm:view.fees.reports');
 
-    // Settings url
-    Route::get('admin/settings',                [UserController::class, 'settings'])->middleware('check_perm:view.settings');
-    Route::post('admin/settings/setting_data',  [UserController::class, 'updateSettingInfo'])->middleware('check_perm:action.settings.manage');
+    // Settings url — admin d'école (SchoolController) — super admin bloqué ici
+    Route::get('admin/settings',                [SchoolController::class, 'settings'])->middleware('check_perm:view.settings');
+    Route::post('admin/settings/setting_data',  [SchoolController::class, 'updateSettings'])->middleware('check_perm:action.settings.manage');
 
     // Payment callbacks (pas de check_perm — callbacks externes)
     Route::get('admin/feescollections_paypal/payment_success',  [FeesCollectionController::class, 'paypalAdminSuccess']);

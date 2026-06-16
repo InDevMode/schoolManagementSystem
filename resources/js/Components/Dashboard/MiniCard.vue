@@ -41,7 +41,7 @@ const palettes: Record<string, { bg: string; text: string }> = {
     orange: { bg: 'bg-orange-100 dark:bg-orange-900/30', text: 'text-orange-600 dark:text-orange-400' },
     rose:   { bg: 'bg-rose-100 dark:bg-rose-900/30',  text: 'text-rose-600 dark:text-rose-400' },
     violet: { bg: 'bg-violet-100 dark:bg-violet-900/30', text: 'text-violet-600 dark:text-violet-400' },
-    blue:   { bg: 'bg-blue-100 dark:bg-blue-900/30',  text: 'text-blue-600 dark:text-blue-400' },
+    blue:   { bg: 'bg-violet-100 dark:bg-violet-900/30', text: 'text-violet-600 dark:text-violet-400' },
 };
 
 const p            = computed(() => palettes[props.color ?? 'slate']);

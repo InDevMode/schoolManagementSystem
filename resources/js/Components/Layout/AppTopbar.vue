@@ -17,45 +17,51 @@
         </button>
 
         <!-- ── GAUCHE : Recherche globale (command palette) ── -->
-        <GlobalSearch />
+        <div class="flex-shrink-0">
+            <GlobalSearch />
+        </div>
 
         <!-- ── CENTRE : Sous-liens du menu actif (dynamique) ── -->
-        <nav class="flex-1 hidden md:flex items-center justify-center overflow-x-auto no-scrollbar">
-            <template v-if="activeSubLinks.length">
-                <!-- Label parent -->
-                <span class="flex items-center gap-1.5 text-sm font-semibold text-gray-700 dark:text-gray-300 whitespace-nowrap flex-shrink-0 mr-1">
-                    <NavIcon v-if="currentMenu" :name="currentMenu.icon" class="w-4 h-4 text-primary-600 dark:text-primary-400" />
-                    {{ currentMenu?.label }}
-                </span>
-                <!-- Séparateur -->
-                <svg class="w-4 h-4 text-gray-300 dark:text-gray-600 flex-shrink-0 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-                </svg>
-                <!-- Sous-liens -->
-                <div class="flex items-center gap-0.5">
-                    <Link
-                        v-for="child in activeSubLinks"
-                        :key="child.id"
-                        :href="child.href!"
-                        :class="[
-                            'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap transition-colors flex-shrink-0',
-                            isActiveSubLink(child)
-                                ? 'bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300'
-                                : 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-800 dark:hover:text-gray-200',
-                        ]"
-                    >
-                        <NavIcon :name="child.icon" class="w-3.5 h-3.5 flex-shrink-0" />
-                        {{ child.label }}
-                    </Link>
-                </div>
-            </template>
-            <template v-else>
-                <!-- Pas de sous-liens : afficher juste le menu actif -->
-                <span v-if="currentMenu" class="flex items-center gap-1.5 text-sm font-semibold text-gray-700 dark:text-gray-300">
-                    <NavIcon :name="currentMenu.icon" class="w-4 h-4 text-primary-600 dark:text-primary-400" />
-                    {{ currentMenu?.label }}
-                </span>
-            </template>
+        <nav class="flex-1 min-w-0 hidden md:block overflow-x-auto no-scrollbar"
+             style="-ms-overflow-style:none;scrollbar-width:none;"
+             @wheel.passive="onNavWheel">
+            <div class="flex items-center gap-0 whitespace-nowrap">
+                <template v-if="activeSubLinks.length">
+                    <!-- Label parent -->
+                    <span class="flex items-center gap-1.5 text-sm font-semibold text-gray-700 dark:text-gray-300 flex-shrink-0 mr-1">
+                        <NavIcon v-if="currentMenu" :name="currentMenu.icon" class="w-4 h-4 text-primary-600 dark:text-primary-400 flex-shrink-0" />
+                        {{ currentMenu?.label }}
+                    </span>
+                    <!-- Séparateur -->
+                    <svg class="w-4 h-4 text-gray-300 dark:text-gray-600 flex-shrink-0 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                    </svg>
+                    <!-- Sous-liens -->
+                    <div class="flex items-center gap-0.5">
+                        <Link
+                            v-for="child in activeSubLinks"
+                            :key="child.id"
+                            :href="child.href!"
+                            :class="[
+                                'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap transition-colors flex-shrink-0',
+                                isActiveSubLink(child)
+                                    ? 'bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300'
+                                    : 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-800 dark:hover:text-gray-200',
+                            ]"
+                        >
+                            <NavIcon :name="child.icon" class="w-3.5 h-3.5 flex-shrink-0" />
+                            {{ child.label }}
+                        </Link>
+                    </div>
+                </template>
+                <template v-else>
+                    <!-- Pas de sous-liens : afficher juste le menu actif -->
+                    <span v-if="currentMenu" class="flex items-center gap-1.5 text-sm font-semibold text-gray-700 dark:text-gray-300 flex-shrink-0">
+                        <NavIcon :name="currentMenu.icon" class="w-4 h-4 text-primary-600 dark:text-primary-400" />
+                        {{ currentMenu?.label }}
+                    </span>
+                </template>
+            </div>
         </nav>
 
         <!-- ── DROITE : Icônes rondes avec badges + Avatar ── -->
@@ -363,6 +369,15 @@ const msgCount       = computed(() => unreadMessages.value.length);
 // ── Dropdowns ────────────────────────────────────────────────────────────────
 const profileOpen = ref(false);
 const profileRef  = ref<HTMLElement | null>(null);
+
+// ── Scroll horizontal sur la nav centrale avec la molette ────────────────────
+const onNavWheel = (e: WheelEvent) => {
+    const nav = e.currentTarget as HTMLElement;
+    if (nav && e.deltaY !== 0) {
+        e.preventDefault();
+        nav.scrollLeft += e.deltaY;
+    }
+};
 
 const handleClickOutside = (e: MouseEvent) => {
     if (profileRef.value && !profileRef.value.contains(e.target as Node)) profileOpen.value = false;

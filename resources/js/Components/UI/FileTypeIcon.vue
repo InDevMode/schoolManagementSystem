@@ -43,7 +43,7 @@ const iconPath = computed(() => {
 // ── Couleur selon type ────────────────────────────────────────────────────────
 const colorClass = computed(() => {
     if (ext.value === 'pdf')                                               return 'text-red-600 dark:text-red-400';
-    if (['doc', 'docx', 'odt', 'txt'].includes(ext.value))                return 'text-blue-600 dark:text-blue-400';
+    if (['doc', 'docx', 'odt', 'txt'].includes(ext.value))                return 'text-violet-600 dark:text-violet-400';
     if (['xls', 'xlsx', 'csv', 'ods'].includes(ext.value))                return 'text-emerald-600 dark:text-emerald-400';
     if (['ppt', 'pptx', 'odp'].includes(ext.value))                       return 'text-orange-600 dark:text-orange-400';
     if (['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'bmp'].includes(ext.value)) return 'text-violet-600 dark:text-violet-400';
@@ -55,7 +55,7 @@ const colorClass = computed(() => {
 
 const bgClass = computed(() => {
     if (ext.value === 'pdf')                                               return 'bg-red-50 dark:bg-red-900/20';
-    if (['doc', 'docx', 'odt', 'txt'].includes(ext.value))                return 'bg-blue-50 dark:bg-blue-900/20';
+    if (['doc', 'docx', 'odt', 'txt'].includes(ext.value))                return 'bg-violet-50 dark:bg-violet-900/20';
     if (['xls', 'xlsx', 'csv', 'ods'].includes(ext.value))                return 'bg-emerald-50 dark:bg-emerald-900/20';
     if (['ppt', 'pptx', 'odp'].includes(ext.value))                       return 'bg-orange-50 dark:bg-orange-900/20';
     if (['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'].includes(ext.value)) return 'bg-violet-50 dark:bg-violet-900/20';

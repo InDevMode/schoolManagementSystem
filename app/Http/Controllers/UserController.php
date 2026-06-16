@@ -427,6 +427,14 @@ class UserController extends Controller
     {
         $request->validate(['ids' => 'required|array', 'ids.*' => 'integer|exists:users,id']);
 
+        $currentUser  = Auth::user();
+        $isSuperAdmin = $currentUser->user_type === 0;
+
+        // Vérifier la permission
+        if (! $isSuperAdmin && ! $currentUser->can('action.users.reset_password')) {
+            return response()->json(['success' => false, 'message' => 'Permission refusée.'], 403);
+        }
+
         try {
             $successCount = 0;
             $failCount    = 0;
@@ -434,6 +442,18 @@ class UserController extends Controller
             foreach ($request->ids as $userId) {
                 $user = User::find((int) $userId);
                 if (!$user) {
+                    $failCount++;
+                    continue;
+                }
+
+                // Scoping multi-tenant : un admin ne peut réinitialiser que les users de son école
+                if (! $isSuperAdmin && $user->school_id !== $currentUser->school_id) {
+                    $failCount++;
+                    continue;
+                }
+
+                // Pas de réinitialisation du super admin
+                if ($user->user_type === 0) {
                     $failCount++;
                     continue;
                 }
@@ -485,10 +505,15 @@ class UserController extends Controller
     }
 
     /**
-     * Liste de tous les utilisateurs (super admin + utilisateurs avec permission view.users.all).
+     * Liste des utilisateurs — avec scoping multi-tenant.
+     *
+     * Super admin (user_type=0) : voit TOUS les utilisateurs de toutes les écoles.
+     * Admin / rôle custom       : voit UNIQUEMENT les utilisateurs de son école (school_id).
      */
     public function allUsersList(): \Inertia\Response
     {
+        $currentUser = Auth::user();
+        $isSuperAdmin = $currentUser->user_type === 0;
         $perPage = min((int) request('per_page', 5), 100);
 
         $query = User::select(
@@ -497,12 +522,22 @@ class UserController extends Controller
             )
             ->where('users.is_delete', 0);
 
-        // Filtres
+        // ── Scoping multi-tenant ──────────────────────────────────────────
+        // Un admin ne voit que les utilisateurs de son école.
+        // Le super admin voit tout (pas de contrainte school_id).
+        if (! $isSuperAdmin) {
+            $query->where('users.school_id', $currentUser->school_id);
+            // Un admin ne peut pas se voir lui-même dans la liste (optionnel — on le garde)
+            // et ne voit jamais le super admin
+            $query->where('users.user_type', '!=', 0);
+        }
+
+        // ── Filtres ───────────────────────────────────────────────────────
         $filters = [
-            'users.name'         => strtolower(request('name', '')),
-            'users.last_name'    => strtolower(request('last_name', '')),
-            'users.email'        => strtolower(request('email', '')),
-            'users.mobile_number'=> strtolower(request('mobile_number', '')),
+            'users.name'          => strtolower(request('name', '')),
+            'users.last_name'     => strtolower(request('last_name', '')),
+            'users.email'         => strtolower(request('email', '')),
+            'users.mobile_number' => strtolower(request('mobile_number', '')),
         ];
 
         foreach ($filters as $column => $value) {
@@ -523,20 +558,17 @@ class UserController extends Controller
 
         $users = $query->orderBy('users.id', 'desc')->paginate($perPage);
 
-        // Enrichir avec rôles, permissions count et nom d'école
-        $setting = SettingModel::getSingle(1);
-        $schoolName = $setting?->school_name ?? config('app.name');
+        // ── Enrichissement ────────────────────────────────────────────────
+        // Précharger toutes les écoles concernées pour éviter N+1
+        $schoolIds = $users->getCollection()->pluck('school_id')->filter()->unique()->values();
+        $schools   = \App\Models\School::whereIn('id', $schoolIds)->get()->keyBy('id');
 
-        $users->getCollection()->transform(function ($u) use ($schoolName) {
+        $users->getCollection()->transform(function ($u) use ($schools) {
             try {
                 $roles = $u->getRoleNames()->toArray();
 
-                // Le super admin (user_type = 0) possède toutes les permissions par définition.
-                // On affiche le total réel de permissions en base plutôt que ce qui est stocké
-                // dans role_has_permissions (qui peut être désynchronisé).
                 if ((int) $u->user_type === 0) {
-                    $permCount = \Spatie\Permission\Models\Permission::where('guard_name', 'web')
-                        ->count();
+                    $permCount = \Spatie\Permission\Models\Permission::where('guard_name', 'web')->count();
                 } else {
                     $permCount = $u->getAllPermissions()
                         ->filter(fn($p) => ($p->is_delete ?? 0) == 0)
@@ -556,21 +588,26 @@ class UserController extends Controller
                 default => $roles[0] ?? 'Rôle custom',
             };
 
+            // Nom de l'école depuis la table schools (multi-tenant)
+            $school = $u->school_id ? ($schools[$u->school_id] ?? null) : null;
+
             $u->role_label        = $roleLabel;
             $u->role_names        = $roles;
             $u->permissions_count = $permCount;
-            $u->school_name       = $schoolName;
+            $u->school_name       = $school?->school_name ?? '—';
             $u->is_online         = Cache::has('OnlineUser.' . $u->id);
             return $u;
         });
 
+        // ── Permissions granulaires passées au frontend ───────────────────
         return Inertia::render('SuperAdmin/Users/Index', [
-            'users' => $users,
-            'isSuperAdmin' => Auth::user()->user_type === 0,
-            'canEdit'   => Auth::user()->user_type === 0 || Auth::user()->can('action.users.edit'),
-            'canDelete' => Auth::user()->user_type === 0 || Auth::user()->can('action.users.delete'),
-            'canReset'  => Auth::user()->user_type === 0 || Auth::user()->can('view.users.all'),
-            'canExport' => Auth::user()->user_type === 0 || Auth::user()->can('view.users.all'),
+            'users'       => $users,
+            'isSuperAdmin' => $isSuperAdmin,
+            'canView'     => true, // déjà filtré par check_perm:view.users.all
+            'canEdit'     => $isSuperAdmin || $currentUser->can('action.users.edit'),
+            'canReset'    => $isSuperAdmin || $currentUser->can('action.users.reset_password'),
+            'canDelete'   => $isSuperAdmin || $currentUser->can('action.users.delete'),
+            'canExport'   => $isSuperAdmin || $currentUser->can('view.users.all'),
             'roles' => \Spatie\Permission\Models\Role::where('is_delete', 0)
                 ->orderBy('user_type')
                 ->get()
@@ -596,15 +633,21 @@ class UserController extends Controller
     }
 
     /**
-     * Export de tous les utilisateurs (super admin only).
+     * Export des utilisateurs — avec scoping multi-tenant.
      */
     public function exportAllUsers(Request $request)
     {
-        $setting    = SettingModel::getSingle(1);
-        $schoolName = $setting?->school_name ?? config('app.name');
+        $currentUser  = Auth::user();
+        $isSuperAdmin = $currentUser->user_type === 0;
 
         $query = User::select('users.*')
             ->where('users.is_delete', 0);
+
+        // Scoping multi-tenant
+        if (! $isSuperAdmin) {
+            $query->where('users.school_id', $currentUser->school_id)
+                  ->where('users.user_type', '!=', 0);
+        }
 
         $userType = $request->get('user_type', '');
         if (is_numeric($userType) && $userType !== '') {
@@ -616,8 +659,14 @@ class UserController extends Controller
             $query->where('users.status', $status);
         }
 
-        $users = $query->orderBy('users.id', 'desc')->get()->map(function ($u) use ($schoolName) {
-            $u->school_name = $schoolName;
+        // Précharger les écoles
+        $users = $query->orderBy('users.id', 'desc')->get();
+        $schoolIds = $users->pluck('school_id')->filter()->unique();
+        $schools   = \App\Models\School::whereIn('id', $schoolIds)->get()->keyBy('id');
+
+        $users = $users->map(function ($u) use ($schools) {
+            $school = $u->school_id ? ($schools[$u->school_id] ?? null) : null;
+            $u->school_name = $school?->school_name ?? '—';
             $u->is_online   = Cache::has('OnlineUser.' . $u->id);
             return $u;
         });
@@ -645,13 +694,20 @@ class UserController extends Controller
         }
     }
 
+    /**
+     * Paramètres — super admin uniquement (config globale settings id=1).
+     * Les admins d'école utilisent SchoolController::settings() via /admin/settings.
+     */
     public function settings()
     {
+        // Seul le super admin accède à cette route (superadmin.settings)
+        // Les admins sont redirigés par la route vers SchoolController::settings()
         $setting = SettingModel::getSingle(1);
         return Inertia::render('Admin/Settings/Index', [
             'setting'    => $setting,
             'faviconUrl' => $setting?->getFavicon() ?? asset('upload/favicon.png'),
             'logoUrl'    => $setting?->getLogo()    ?? asset('upload/logo.png'),
+            'isSchool'   => false,
         ]);
     }
 
@@ -760,6 +816,11 @@ class UserController extends Controller
                 return response()->json(['success' => false, 'message' => 'Utilisateur introuvable.'], 404);
             }
 
+            // Scoping multi-tenant : un admin ne peut modifier qu'un utilisateur de son école
+            if ($authUser->user_type !== 0 && $user->school_id !== $authUser->school_id) {
+                return response()->json(['success' => false, 'message' => 'Accès refusé — utilisateur hors de votre école.'], 403);
+            }
+
             $oldUserType = (int) $user->user_type;
             $newUserType = (int) $request->user_type;
 
@@ -821,6 +882,11 @@ class UserController extends Controller
             $user = User::find($id);
             if (!$user) {
                 return response()->json(['success' => false, 'message' => 'Utilisateur introuvable.'], 404);
+            }
+
+            // Scoping multi-tenant : un admin ne peut supprimer qu'un utilisateur de son école
+            if ($authUser->user_type !== 0 && $user->school_id !== $authUser->school_id) {
+                return response()->json(['success' => false, 'message' => 'Accès refusé — utilisateur hors de votre école.'], 403);
             }
 
             $user->update(['is_delete' => 1]);

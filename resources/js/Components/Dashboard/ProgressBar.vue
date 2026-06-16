@@ -44,7 +44,7 @@ const barMap: Record<string, string> = {
     success: 'bg-emerald-500',
     warning: 'bg-amber-500',
     danger:  'bg-red-500',
-    info:    'bg-blue-500',
+    info:    'bg-violet-500',
     violet:  'bg-violet-500',
 };
 const textMap: Record<string, string> = {
@@ -52,7 +52,7 @@ const textMap: Record<string, string> = {
     success: 'text-emerald-600 dark:text-emerald-400',
     warning: 'text-amber-600 dark:text-amber-400',
     danger:  'text-red-600 dark:text-red-400',
-    info:    'text-blue-600 dark:text-blue-400',
+    info:    'text-violet-600 dark:text-violet-400',
     violet:  'text-violet-600 dark:text-violet-400',
 };
 

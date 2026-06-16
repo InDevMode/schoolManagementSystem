@@ -52,6 +52,7 @@ class User extends Authenticatable
         'provider_id',
         'last_login',
         'user_type',  // nécessaire pour la création d'utilisateurs à rôles custom
+        'school_id',  // multi-tenant — null pour le super admin
     ];
 
     /**
@@ -77,15 +78,30 @@ class User extends Authenticatable
         'last_login' => 'datetime',
     ];
 
+    // ── Relations ─────────────────────────────────────────────────────────────
+
+    /** École à laquelle appartient cet utilisateur (null pour le super admin) */
+    public function school(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(\App\Models\School::class, 'school_id');
+    }
+
+    // ── Helpers ───────────────────────────────────────────────────────────────
+
     public static function getSingle(int $id)
     {
         return User::find($id);
     }
 
-    public static function getAllAdmin(int $perPage)
+    public static function getAllAdmin(int $perPage, ?int $schoolId = null)
     {
         $results = User::select('users.*')
             ->where('user_type', '=', 1);
+
+        // Scoping multi-tenant
+        if ($schoolId !== null) {
+            $results->where('users.school_id', $schoolId);
+        }
 
         $filters = [
             'users.name' => strtolower(Request::get('name')),

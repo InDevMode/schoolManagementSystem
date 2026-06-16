@@ -117,14 +117,14 @@
             <div class="card overflow-hidden">
                 <div class="px-5 py-4 border-b border-gray-100 dark:border-gray-700">
                     <h2 class="text-base font-semibold text-gray-900 dark:text-white flex items-center gap-2">
-                        <span class="w-7 h-7 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
-                            <svg class="w-4 h-4 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <span class="w-7 h-7 rounded-lg bg-violet-100 dark:bg-violet-900/30 flex items-center justify-center">
+                            <svg class="w-4 h-4 text-violet-600 dark:text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                       d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
                             </svg>
                         </span>
                         Apprenants sans parent
-                        <span class="ml-1 px-2 py-0.5 rounded-full text-xs font-bold bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">
+                        <span class="ml-1 px-2 py-0.5 rounded-full text-xs font-bold bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-400">
                             {{ filteredStudentList.length }}
                         </span>
                     </h2>
@@ -156,11 +156,11 @@
                     <div v-for="student in filteredStudentList" :key="student.id"
                          class="flex items-center gap-3 px-5 py-3.5 hover:bg-gray-50 dark:hover:bg-gray-800/60 transition-colors">
                         <!-- Avatar -->
-                        <div class="w-9 h-9 rounded-full overflow-hidden flex-shrink-0 bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
+                        <div class="w-9 h-9 rounded-full overflow-hidden flex-shrink-0 bg-violet-100 dark:bg-violet-900/30 flex items-center justify-center">
                             <img v-if="student.profile_picture"
                                  :src="`/upload/profile/${student.profile_picture}`"
                                  class="w-full h-full object-cover"/>
-                            <span v-else class="text-xs font-bold text-blue-700 dark:text-blue-300">
+                            <span v-else class="text-xs font-bold text-violet-700 dark:text-violet-300">
                                 {{ (student.last_name?.[0] ?? '') }}{{ (student.name?.[0] ?? '') }}
                             </span>
                         </div>

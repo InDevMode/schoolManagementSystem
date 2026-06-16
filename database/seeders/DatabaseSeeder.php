@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
             SuperAdminSeeder::class,
             StaffAndEventsSeeder::class,
             EvaluationSeeder::class,
+            MultiSchoolSeeder::class,
         ]);
     }
 }

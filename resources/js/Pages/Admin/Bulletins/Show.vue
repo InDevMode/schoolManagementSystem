@@ -117,7 +117,7 @@
                                 <!-- Afficher les moyennes par groupe si disponibles -->
                                 <template v-if="sub.detail?.groups">
                                     <div class="flex flex-col gap-0.5 text-left">
-                                        <span v-if="sub.detail.groups.interrogation?.count > 0" class="text-blue-600 dark:text-blue-400">
+                                        <span v-if="sub.detail.groups.interrogation?.count > 0" class="text-violet-600 dark:text-violet-400">
                                             Int : {{ sub.detail.groups.interrogation.average?.toFixed(2) }}
                                         </span>
                                         <span v-if="sub.detail.groups.devoir_surveille?.count > 0" class="text-amber-600 dark:text-amber-400">

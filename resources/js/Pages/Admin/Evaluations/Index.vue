@@ -258,8 +258,8 @@
             </form>
 
             <!-- Note d'info -->
-            <div class="mt-4 p-3 rounded-lg bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800">
-                <p class="text-xs text-blue-700 dark:text-blue-300 font-medium">
+            <div class="mt-4 p-3 rounded-lg bg-violet-50 dark:bg-violet-900/20 border border-violet-100 dark:border-violet-800">
+                <p class="text-xs text-violet-700 dark:text-violet-300 font-medium">
                     💡 Le coefficient est celui défini lors de l'assignation de la matière à la classe — il ne peut pas être modifié ici.
                 </p>
             </div>

@@ -162,7 +162,8 @@ export const superAdminNav: NavItem[] = [
     {
         id: 'configuration', label: 'Configuration', icon: 'cog-6-tooth',
         children: [
-            { id: 'sa-settings',    label: 'Paramètres',            icon: 'cog-6-tooth',       href: '/superadmin/config/settings' },
+            { id: 'sa-schools',     label: 'Écoles',                icon: 'building-library',  href: '/superadmin/schools' },
+            { id: 'sa-settings',    label: 'Paramètres système',    icon: 'cog-6-tooth',       href: '/superadmin/config/settings' },
             { id: 'sa-roles',       label: 'Rôles',                 icon: 'shield-check',      href: '/superadmin/config/roles' },
             { id: 'sa-permissions', label: 'Permissions',           icon: 'key',               href: '/superadmin/config/permissions' },
             { id: 'sa-assign',      label: 'Attribuer permissions', icon: 'arrows-right-left', href: '/superadmin/config/assign' },
