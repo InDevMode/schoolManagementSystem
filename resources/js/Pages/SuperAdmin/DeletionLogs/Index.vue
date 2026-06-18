@@ -113,7 +113,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import { router } from '@inertiajs/vue3';
-import { AppButton, AppInput, AppSelect, AppModal, DataTable } from '@/Components/UI';
+import { PageHeader, AppButton, AppInput, AppSelect, AppModal, DataTable } from '@/Components/UI';
 
 const props = defineProps<{
     logs:       { data: any[]; total: number; from: number; to: number; links: any[] };

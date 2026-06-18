@@ -3,6 +3,7 @@ import { ref, computed } from 'vue';
 import { router } from '@inertiajs/vue3';
 import DataTable from '@/Components/UI/DataTable.vue';
 import type { DtColumn, DtAction } from '@/Components/UI/DataTable.vue';
+import { PageHeader } from '@/Components/UI';
 
 interface Role {
     id: number; name: string; guard_name: string;

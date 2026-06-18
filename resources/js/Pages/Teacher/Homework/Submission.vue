@@ -76,7 +76,7 @@
 </template>
 
 <script setup lang="ts">
-import { AppBadge, DataTable } from '@/Components/UI';
+import { PageHeader, AppBadge, DataTable } from '@/Components/UI';
 import { Link } from '@inertiajs/vue3';
 
 interface HomeworkSubmission {

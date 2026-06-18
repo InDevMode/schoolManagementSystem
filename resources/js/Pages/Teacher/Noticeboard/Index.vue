@@ -179,7 +179,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import { AppButton, AppModal, AppPagination } from '@/Components/UI';
+import { PageHeader, AppButton, AppModal, AppPagination } from '@/Components/UI';
 import { stripHtml } from '@/Utils/html';
 
 interface Notice {

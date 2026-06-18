@@ -707,6 +707,7 @@
 import { ref, reactive, computed, onMounted, onUnmounted } from 'vue';
 import { router, Link } from '@inertiajs/vue3';
 import { useToast } from '@/Composables/useToast';
+import { PageHeader } from '@/Components/UI';
 import AppLayout from '@/Layouts/AppLayout.vue';
 
 defineOptions({ layout: AppLayout });

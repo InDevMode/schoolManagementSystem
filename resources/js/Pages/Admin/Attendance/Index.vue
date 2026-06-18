@@ -112,7 +112,7 @@
 import { ref, computed, reactive, watch } from 'vue';
 import { router } from '@inertiajs/vue3';
 import axios from 'axios';
-import { AppButton, AppInput, AppSelect } from '@/Components/UI';
+import { PageHeader, AppButton, AppInput, AppSelect } from '@/Components/UI';
 import { useCan } from '@/Composables/useCan';
 
 const { can } = useCan();

@@ -226,7 +226,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import { Link } from '@inertiajs/vue3';
-import { AppModal, AppButton } from '@/Components/UI';
+import { PageHeader, AppModal, AppButton } from '@/Components/UI';
 
 interface Student {
     id: number;

@@ -113,7 +113,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import { router } from '@inertiajs/vue3';
-import { DataTable, AppBadge } from '@/Components/UI';
+import { PageHeader, DataTable, AppBadge } from '@/Components/UI';
 import { useCan } from '@/Composables/useCan';
 import { useToast } from '@/Composables/useToast';
 

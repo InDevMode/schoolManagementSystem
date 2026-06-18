@@ -225,7 +225,7 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue';
 import { useForm, router, Link } from '@inertiajs/vue3';
-import { AppButton, AppInput, AppSelect, AppModal, DataTable, AppBadge } from '@/Components/UI';
+import { PageHeader, AppButton, AppInput, AppSelect, AppModal, DataTable, AppBadge } from '@/Components/UI';
 import { useToast } from '@/Composables/useToast';
 import axios from 'axios';
 

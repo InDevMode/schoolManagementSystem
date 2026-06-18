@@ -78,7 +78,7 @@
 </template>
 
 <script setup lang="ts">
-import { AppBadge } from '@/Components/UI';
+import { PageHeader, AppBadge } from '@/Components/UI';
 import { Link } from '@inertiajs/vue3';
 
 defineProps<{ bulletins: any[] }>();

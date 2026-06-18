@@ -65,7 +65,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { router } from '@inertiajs/vue3';
-import { AppButton, DataTable } from '@/Components/UI';
+import { PageHeader, AppButton, DataTable } from '@/Components/UI';
 import { stripHtml } from '@/Utils/html';
 import { useToast } from '@/Composables/useToast';
 

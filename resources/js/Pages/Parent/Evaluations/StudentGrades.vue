@@ -74,7 +74,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import { router } from '@inertiajs/vue3';
-import { AppSelect } from '@/Components/UI';
+import { PageHeader, AppSelect } from '@/Components/UI';
 
 const props = defineProps<{
     student:             any;

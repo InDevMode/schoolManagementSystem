@@ -105,6 +105,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue';
+import { PageHeader } from '@/Components/UI';
 
 defineProps<{ subjects: any }>();
 

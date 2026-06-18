@@ -307,7 +307,7 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue';
 import { router } from '@inertiajs/vue3';
-import { AppButton, AppSelect, AppBadge } from '@/Components/UI';
+import { PageHeader, AppButton, AppSelect, AppBadge } from '@/Components/UI';
 import { useToast } from '@/Composables/useToast';
 import axios from 'axios';
 

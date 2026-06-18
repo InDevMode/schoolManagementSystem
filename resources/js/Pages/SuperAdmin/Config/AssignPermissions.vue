@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import { router } from '@inertiajs/vue3';
+import { PageHeader } from '@/Components/UI';
 
 interface RoleItem  { id: number; name: string; user_type: number | null; description: string | null; permissions: string[]; }
 interface UserItem  { id: number; name: string; last_name: string; email: string; user_type: number;

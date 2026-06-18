@@ -483,7 +483,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import { router } from '@inertiajs/vue3';
-import { AppButton, AppInput, AppSelect, AppModal, DataTable, ConfirmDialog, FileTypeIcon } from '@/Components/UI';
+import { PageHeader, AppButton, AppInput, AppSelect, AppModal, DataTable, ConfirmDialog, FileTypeIcon } from '@/Components/UI';
 import { stripHtml } from '@/Utils/html';
 import { useToast } from '@/Composables/useToast';
 

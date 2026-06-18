@@ -291,7 +291,7 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue';
 import { useForm, router } from '@inertiajs/vue3';
-import { AppButton, AppInput, AppSelect, AppModal, DataTable, AppBadge } from '@/Components/UI';
+import { PageHeader, AppButton, AppInput, AppSelect, AppModal, DataTable, AppBadge } from '@/Components/UI';
 import AppMultiSelect from '@/Components/UI/AppMultiSelect.vue';
 import { useCan } from '@/Composables/useCan';
 import { useToast } from '@/Composables/useToast';

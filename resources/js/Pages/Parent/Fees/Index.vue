@@ -35,6 +35,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { Link } from '@inertiajs/vue3';
+import { PageHeader } from '@/Components/UI';
 
 const props = defineProps<{
     student: { id: number; name: string; last_name: string } | null;

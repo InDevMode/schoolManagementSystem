@@ -137,6 +137,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue';
+import { PageHeader } from '@/Components/UI';
 
 interface Subject {
     id:            number;

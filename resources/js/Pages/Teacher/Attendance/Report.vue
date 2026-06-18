@@ -32,7 +32,7 @@
 </template>
 
 <script setup lang="ts">
-import { AppBadge, DataTable } from '@/Components/UI';
+import { PageHeader, AppBadge, DataTable } from '@/Components/UI';
 
 interface AttendanceRecord {
     id: number;

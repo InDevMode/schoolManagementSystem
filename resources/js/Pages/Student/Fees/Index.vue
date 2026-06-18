@@ -85,7 +85,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue';
-import { DataTable, AppBadge } from '@/Components/UI';
+import { PageHeader, DataTable, AppBadge } from '@/Components/UI';
 
 interface FeesRecord {
     [key: string]: unknown;

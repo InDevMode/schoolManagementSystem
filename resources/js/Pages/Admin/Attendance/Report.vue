@@ -80,7 +80,7 @@
 <script setup lang="ts">
 import { ref, computed, reactive } from 'vue';
 import { router } from '@inertiajs/vue3';
-import { AppBadge, DataTable } from '@/Components/UI';
+import { PageHeader, AppBadge, DataTable } from '@/Components/UI';
 import { useCan } from '@/Composables/useCan';
 
 const { can } = useCan();

@@ -112,7 +112,7 @@
 import { ref, computed, reactive, watch } from 'vue';
 import { router } from '@inertiajs/vue3';
 import axios from 'axios';
-import { AppButton, AppInput, AppSelect } from '@/Components/UI';
+import { PageHeader, AppButton, AppInput, AppSelect } from '@/Components/UI';
 
 interface Student    { id: number; name: string; last_name: string; }
 interface ClassItem  { id: number; class_id: number; class_name: string; }

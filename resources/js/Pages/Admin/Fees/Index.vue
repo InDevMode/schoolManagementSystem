@@ -210,7 +210,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import { router, usePage } from '@inertiajs/vue3';
-import { AppSelect, DataTable, AppBadge, AppModal, AppButton, AppInput } from '@/Components/UI';
+import { PageHeader, AppSelect, DataTable, AppBadge, AppModal, AppButton, AppInput } from '@/Components/UI';
 import { useCan } from '@/Composables/useCan';
 import type { PageProps } from '@/types';
 

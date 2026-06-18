@@ -256,7 +256,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import { useForm, router } from '@inertiajs/vue3';
-import { AppButton, AppSelect, AppModal, DataTable, AppBadge } from '@/Components/UI';
+import { PageHeader, AppButton, AppSelect, AppModal, DataTable, AppBadge } from '@/Components/UI';
 import AppMultiSelect from '@/Components/UI/AppMultiSelect.vue';
 import { useCan } from '@/Composables/useCan';
 import { useToast } from '@/Composables/useToast';

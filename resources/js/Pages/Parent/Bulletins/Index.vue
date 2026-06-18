@@ -133,5 +133,6 @@
 
 <script setup lang="ts">
 import { Link } from '@inertiajs/vue3';
+import { PageHeader } from '@/Components/UI';
 defineProps<{ bulletins: any[]; student: any }>();
 </script>

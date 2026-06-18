@@ -339,7 +339,7 @@
 <script setup lang="ts">
 import { ref, reactive } from 'vue';
 import { router, usePage } from '@inertiajs/vue3';
-import { AppInput, AppSelect, AppModal, AppAlert } from '@/Components/UI';
+import { PageHeader, AppInput, AppSelect, AppModal, AppAlert } from '@/Components/UI';
 
 interface School {
     id: number;

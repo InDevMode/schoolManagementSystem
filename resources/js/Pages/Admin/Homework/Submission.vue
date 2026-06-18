@@ -75,7 +75,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { Link } from '@inertiajs/vue3';
-import { DataTable, AppBadge } from '@/Components/UI';
+import { PageHeader, DataTable, AppBadge } from '@/Components/UI';
 import { stripHtml } from '@/Utils/html';
 
 interface HomeworkSubmission {

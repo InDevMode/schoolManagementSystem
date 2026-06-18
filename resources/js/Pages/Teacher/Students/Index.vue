@@ -226,7 +226,7 @@
 <script setup lang="ts">
 import { ref, computed, h, defineComponent } from 'vue';
 import { Link } from '@inertiajs/vue3';
-import { DataTable, AppBadge, AppButton, DetailModal } from '@/Components/UI';
+import { PageHeader, DataTable, AppBadge, AppButton, DetailModal } from '@/Components/UI';
 
 // ── Composant InfoCard réutilisable ──────────────────────────────────────────
 const InfoCard = defineComponent({

@@ -173,7 +173,7 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue';
-import { DataTable, AppBadge, AppModal, AppButton } from '@/Components/UI';
+import { PageHeader, DataTable, AppBadge, AppModal, AppButton } from '@/Components/UI';
 import { stripHtml } from '@/Utils/html';
 
 interface Work {

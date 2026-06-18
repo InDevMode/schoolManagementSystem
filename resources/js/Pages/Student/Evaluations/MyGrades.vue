@@ -124,7 +124,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import { router } from '@inertiajs/vue3';
-import { AppSelect, AppBadge } from '@/Components/UI';
+import { PageHeader, AppSelect, AppBadge } from '@/Components/UI';
 
 const props = defineProps<{
     grades:              any[];

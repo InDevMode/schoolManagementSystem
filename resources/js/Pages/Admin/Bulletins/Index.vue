@@ -177,7 +177,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import { router, Link } from '@inertiajs/vue3';
-import { AppButton, AppSelect, AppBadge, DataTable } from '@/Components/UI';
+import { PageHeader, AppButton, AppSelect, AppBadge, DataTable } from '@/Components/UI';
 import { useCan } from '@/Composables/useCan';
 import { useToast } from '@/Composables/useToast';
 import axios from 'axios';
