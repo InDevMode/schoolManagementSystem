@@ -1,10 +1,11 @@
 <template>
     <Teleport to="body">
+        <!-- Backdrop séparé avec fondu -->
         <Transition
-            enter-active-class="transition duration-200 ease-out"
+            enter-active-class="transition duration-400 ease-out"
             enter-from-class="opacity-0"
             enter-to-class="opacity-100"
-            leave-active-class="transition duration-150 ease-in"
+            leave-active-class="transition duration-300 ease-in"
             leave-from-class="opacity-100"
             leave-to-class="opacity-0"
         >
@@ -12,18 +13,18 @@
                 <!-- Backdrop -->
                 <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" />
 
-                <!-- Panel -->
+                <!-- Panel — animation "ouverture en œil" : scale scaleY part de 0.05 → 1 avec opacité -->
                 <Transition
-                    enter-active-class="transition duration-200 ease-out"
-                    enter-from-class="opacity-0 scale-95 translate-y-2"
-                    enter-to-class="opacity-100 scale-100 translate-y-0"
-                    leave-active-class="transition duration-150 ease-in"
-                    leave-from-class="opacity-100 scale-100 translate-y-0"
-                    leave-to-class="opacity-0 scale-95 translate-y-2"
+                    enter-active-class="transition-[opacity,transform] duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)]"
+                    enter-from-class="opacity-0 scale-x-100 scale-y-[0.04]"
+                    enter-to-class="opacity-100 scale-x-100 scale-y-100"
+                    leave-active-class="transition-[opacity,transform] duration-300 ease-in"
+                    leave-from-class="opacity-100 scale-x-100 scale-y-100"
+                    leave-to-class="opacity-0 scale-x-100 scale-y-[0.04]"
                 >
                     <div
                         v-if="modelValue"
-                        :class="['relative bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full flex flex-col max-h-[90vh]', sizeClass]"
+                        :class="['relative bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full flex flex-col max-h-[90vh] origin-center', sizeClass]"
                         role="dialog"
                         :aria-label="title"
                     >

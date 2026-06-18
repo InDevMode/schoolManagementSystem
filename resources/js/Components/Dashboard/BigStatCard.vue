@@ -22,7 +22,7 @@
             <p class="text-sm font-medium opacity-80" :class="textColor">{{ label }}</p>
             <p class="text-3xl font-bold mt-0.5" :class="textColor">
                 <span v-if="prefix" class="text-base font-semibold mr-1 opacity-70">{{ prefix }}</span>
-                {{ value.toLocaleString('fr-FR') }}
+                {{ (value ?? 0).toLocaleString('fr-FR') }}
             </p>
             <!-- Trend badge -->
             <div v-if="trend" class="flex items-center gap-1 mt-1.5">
@@ -51,7 +51,7 @@ import NavIcon from '@/Components/Layout/NavIcon.vue';
 
 interface Props {
     label: string;
-    value: number;
+    value?: number | null;
     icon: string;
     color?: 'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'info';
     href?: string;
@@ -59,7 +59,7 @@ interface Props {
     prefix?: string;
 }
 
-const props = withDefaults(defineProps<Props>(), { color: 'primary' });
+const props = withDefaults(defineProps<Props>(), { color: 'primary', value: 0 });
 
 const colorMap: Record<string, {
     card: string; bubble: string; iconBg: string; icon: string; text: string; trend: string;
@@ -73,7 +73,7 @@ const colorMap: Record<string, {
         trend:  'bg-white/20 text-white',
     },
     info: {
-        card:   'bg-gradient-to-br from-blue-400 to-blue-600',
+        card:   'bg-gradient-to-br from-violet-400 to-violet-600',
         bubble: 'bg-white',
         iconBg: 'bg-white/20',
         icon:   'text-white',
@@ -97,7 +97,7 @@ const colorMap: Record<string, {
         trend:  'bg-white/20 text-white',
     },
     secondary: {
-        card:   'bg-gradient-to-br from-indigo-400 to-indigo-600',
+        card:   'bg-gradient-to-br from-primary-400 to-primary-600',
         bubble: 'bg-white',
         iconBg: 'bg-white/20',
         icon:   'text-white',

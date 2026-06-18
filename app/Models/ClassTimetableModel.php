@@ -37,20 +37,21 @@ class ClassTimetableModel extends Model
     public static function getSubject(int $class_id)
     {
         return ClassSubjectModel::select(
-            'class_subject.*',
+            'class_subject.id',
+            'class_subject.class_id',
+            'class_subject.subject_id',
+            'class_subject.coefficient',
+            'class_subject.status',
             'subject.name as subject_name',
             'subject.type as subject_type'
         )
             ->join('subject', 'subject.id', '=', 'class_subject.subject_id')
             ->join('class', 'class.id', '=', 'class_subject.class_id')
-            ->join('users', 'users.id', '=', 'class_subject.created_by')
             ->where('class_subject.class_id', '=', $class_id)
             ->where('class_subject.is_delete', '=', 0)
             ->where('class_subject.status', '=', 1)
             ->orderBy('class_subject.id', 'desc')
-            ->groupBy('class_subject.id')
             ->get();
-
     }
 
     public static function getTotalClassTimetable()

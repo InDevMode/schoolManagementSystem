@@ -6,6 +6,8 @@ use App\Mail\SendMailUserMail;
 use App\Models\CommunicateModel;
 use App\Models\NoticeBoardMessageModel;
 use App\Models\User;
+use App\Notifications\MailSentNotification;
+use App\Notifications\NoticeBoardNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -17,7 +19,7 @@ class CommunicateController extends Controller
     public function list()
     {
         return Inertia::render('Admin/Noticeboard/Index', [
-            'notices' => CommunicateModel::getNoticeBoard(15),
+            'notices' => CommunicateModel::getNoticeBoardWithRecipients(12),
         ]);
     }
 
@@ -35,11 +37,20 @@ class CommunicateController extends Controller
             $noticeBoard->save();
 
             if (!empty($request->message_to)) {
+                $senderName = auth()->user()->name . ' ' . auth()->user()->last_name;
+                $notification = new NoticeBoardNotification($noticeBoard->title, $senderName);
+
                 foreach ($request->message_to as $message_to) {
                     $noticeBoardMessage = new NoticeBoardMessageModel;
                     $noticeBoardMessage->communicates_id = $noticeBoard->id;
                     $noticeBoardMessage->message_to = $message_to;
                     $noticeBoardMessage->save();
+
+                    // Notification in-app pour chaque utilisateur du groupe ciblé
+                    $recipients = User::getUserByUserType((int) $message_to);
+                    foreach ($recipients as $recipient) {
+                        $recipient->notify($notification);
+                    }
                 }
             }
 
@@ -55,10 +66,10 @@ class CommunicateController extends Controller
 
     public function edit(int $id)
     {
-        $notice = CommunicateModel::getSingle($id);
+        $notice = CommunicateModel::getSingleWithRecipients($id);
         abort_unless($notice, 404);
         return Inertia::render('Admin/Noticeboard/Index', [
-            'notices'    => CommunicateModel::getNoticeBoard(15),
+            'notices'    => CommunicateModel::getNoticeBoardWithRecipients(12),
             'editNotice' => $notice,
         ]);
     }
@@ -102,14 +113,64 @@ class CommunicateController extends Controller
     {
         try {
             $noticeBoard = CommunicateModel::getSingle($id);
+            abort_unless($noticeBoard, 404);
             $noticeBoard->is_delete = 1;
+            $noticeBoard->deleted_at = now();
             $noticeBoard->save();
 
             NoticeBoardMessageModel::deleteNoticeBoardMessage($id);
-            return redirect('admin/communicate/noticeboard/list')->with('success', 'Ce  message de notification a été supprimé avec succès.');
+            return redirect('admin/communicate/noticeboard/list')->with('success', 'Ce message de notification a été supprimé avec succès.');
         } catch (\Exception $e) {
-            Log::error("Erreur lors de la suppression d'un  message de notification : " . $e->getMessage());
+            Log::error("Erreur lors de la suppression d'un message de notification : " . $e->getMessage());
             return redirect()->back()->with('error', 'Vos informations ne sont pas correctes. Veuillez réessayer.');
+        }
+    }
+
+    /**
+     * Activer / désactiver une notification
+     */
+    public function toggle($id)
+    {
+        try {
+            $noticeBoard = CommunicateModel::getSingle($id);
+            abort_unless($noticeBoard, 404);
+            $noticeBoard->is_active = $noticeBoard->is_active ? 0 : 1;
+            $noticeBoard->save();
+
+            $label = $noticeBoard->is_active ? 'activée' : 'désactivée';
+            return redirect()->back()->with('success', "La notification a été $label avec succès.");
+        } catch (\Exception $e) {
+            Log::error("Erreur lors du toggle d'une notification : " . $e->getMessage());
+            return redirect()->back()->with('error', 'Une erreur est survenue. Veuillez réessayer.');
+        }
+    }
+
+    /**
+     * Historique des notifications supprimées
+     */
+    public function history()
+    {
+        return Inertia::render('Admin/Noticeboard/History', [
+            'deleted' => CommunicateModel::getDeletedNoticeBoard(15),
+        ]);
+    }
+
+    /**
+     * Restaurer une notification supprimée
+     */
+    public function restore($id)
+    {
+        try {
+            $noticeBoard = CommunicateModel::find($id);
+            abort_unless($noticeBoard && $noticeBoard->is_delete == 1, 404);
+            $noticeBoard->is_delete = 0;
+            $noticeBoard->deleted_at = null;
+            $noticeBoard->save();
+
+            return redirect()->back()->with('success', 'La notification a été restaurée avec succès.');
+        } catch (\Exception $e) {
+            Log::error("Erreur lors de la restauration d'une notification : " . $e->getMessage());
+            return redirect()->back()->with('error', 'Une erreur est survenue. Veuillez réessayer.');
         }
     }
 
@@ -144,6 +205,9 @@ class CommunicateController extends Controller
     public function sendMailCreate(Request $request)
     {
         try {
+            $senderName = auth()->user()->name . ' ' . auth()->user()->last_name;
+            $notification = new MailSentNotification($request->subject, $senderName);
+
             // Envoi aux destinataires individuels
             if (!empty($request->user_ids)) {
                 foreach ($request->user_ids as $userId) {
@@ -153,6 +217,9 @@ class CommunicateController extends Controller
                         $user->send_message = $request->message;
                         $user->send_subject = $request->subject;
                         Mail::to($user->email)->send(new SendMailUserMail($user));
+
+                        // Notification in-app
+                        $user->notify($notification);
                     }
                 }
             }
@@ -167,6 +234,9 @@ class CommunicateController extends Controller
                                 $user->send_message = $request->message;
                                 $user->send_subject = $request->subject;
                                 Mail::to($user->email)->send(new SendMailUserMail($user));
+
+                                // Notification in-app
+                                $user->notify($notification);
                             }
                         }
                     }

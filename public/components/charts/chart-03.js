@@ -20,7 +20,7 @@ const chart03 = () => {
     },
     colors: ["#465FFF", "#9CB9FF"],
     chart: {
-      fontFamily: "Outfit, sans-serif",
+      fontFamily: "Inter, sans-serif",
       height: 310,
       type: "area",
       toolbar: {

@@ -97,6 +97,7 @@ const confirmError = computed(() => {
 const userType = computed(() => page.props.auth?.user?.user_type ?? 1);
 
 const updateUrlMap: Record<number, string> = {
+    0: '/superadmin/change_password',
     1: '/admin/change_password',
     2: '/teacher/change_password',
     3: '/student/change_password',

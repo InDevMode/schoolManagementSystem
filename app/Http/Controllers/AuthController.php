@@ -100,14 +100,56 @@ class AuthController extends Controller
         return redirect('/login');
     }
 
+    /**
+     * Affiche la page de changement forcé de mot de passe.
+     */
+    public function forceChangePasswordForm()
+    {
+        // Si l'utilisateur n'a pas à changer son mot de passe, on le redirige
+        if (!Auth::check() || (int) (Auth::user()->must_change_password ?? 0) !== 1) {
+            return $this->redirectByRole(Auth::user()->user_type);
+        }
+
+        return Inertia::render('Auth/ForceChangePassword', [
+            'user' => [
+                'name'      => Auth::user()->name,
+                'last_name' => Auth::user()->last_name,
+                'email'     => Auth::user()->email,
+            ],
+        ]);
+    }
+
+    /**
+     * Traite le changement forcé de mot de passe.
+     */
+    public function forceChangePasswordUpdate(Request $request)
+    {
+        $request->validate([
+            'password'     => 'required|string|min:6',
+            'confPassword' => 'required|same:password',
+        ]);
+
+        $user = User::find(Auth::id());
+        abort_unless($user, 404);
+
+        $user->password             = Hash::make($request->password);
+        $user->must_change_password = 0;
+        $user->save();
+
+        return redirect($this->redirectByRole($user->user_type)->getTargetUrl())
+            ->with('success', 'Votre mot de passe a été mis à jour avec succès. Bienvenue !');
+    }
+
     private function redirectByRole(int $userType)
     {
-        return match ($userType) {
-            1 => redirect('/admin/dashboard'),
-            2 => redirect('/teacher/dashboard'),
-            3 => redirect('/student/dashboard'),
-            4 => redirect('/parent/dashboard'),
-            default => redirect('/login'),
+        return match (true) {
+            $userType === 0          => redirect('/superadmin/dashboard'),
+            $userType === 1          => redirect('/admin/dashboard'),
+            $userType === 2          => redirect('/teacher/dashboard'),
+            $userType === 3          => redirect('/student/dashboard'),
+            $userType === 4          => redirect('/parent/dashboard'),
+            $userType >= 5           => redirect('/admin/dashboard'), // rôles custom
+            default                  => redirect('/login'),
         };
     }
 }

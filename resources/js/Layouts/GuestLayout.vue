@@ -55,7 +55,7 @@
 
                 <!-- Logo + Nom de l'école -->
                 <div class="flex items-center gap-3 mb-10">
-                    <div class="w-11 h-11 rounded-xl flex items-center justify-center shadow-lg"
+                    <div class="w-11 h-11 rounded-lg flex items-center justify-center shadow-lg"
                          style="background: rgba(255,255,255,0.2); backdrop-filter: blur(8px);">
                         <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -94,25 +94,25 @@
                         <text x="102" y="117" font-size="10" fill="white" font-weight="bold" text-anchor="middle" font-family="sans-serif">248</text>
                         <text x="102" y="129" font-size="5.5" fill="#c4b5fd" text-anchor="middle" font-family="sans-serif">Élèves</text>
 
-                        <rect x="136" y="104" width="52" height="32" rx="5" fill="#7c3aed" opacity="0.65"/>
+                        <rect x="136" y="104" width="52" height="32" rx="5" fill="#7B74F0" opacity="0.65"/>
                         <text x="162" y="117" font-size="10" fill="white" font-weight="bold" text-anchor="middle" font-family="sans-serif">32</text>
                         <text x="162" y="129" font-size="5.5" fill="#c4b5fd" text-anchor="middle" font-family="sans-serif">Profs</text>
 
-                        <rect x="196" y="104" width="52" height="32" rx="5" fill="#6d28d9" opacity="0.65"/>
+                        <rect x="196" y="104" width="52" height="32" rx="5" fill="#6660d4" opacity="0.65"/>
                         <text x="222" y="117" font-size="10" fill="white" font-weight="bold" text-anchor="middle" font-family="sans-serif">12</text>
                         <text x="222" y="129" font-size="5.5" fill="#c4b5fd" text-anchor="middle" font-family="sans-serif">Classes</text>
 
                         <!-- Graphique barres -->
                         <rect x="76" y="144" width="172" height="54" rx="5" fill="rgba(79,70,229,0.18)"/>
                         <text x="162" y="155" font-size="5.5" fill="#a78bfa" text-anchor="middle" font-family="sans-serif">Présences ce mois</text>
-                        <rect x="86" y="183" width="12" height="12" rx="2" fill="#7c3aed" opacity="0.9"/>
-                        <rect x="102" y="175" width="12" height="20" rx="2" fill="#6d28d9" opacity="0.9"/>
-                        <rect x="118" y="169" width="12" height="26" rx="2" fill="#8b5cf6" opacity="0.9"/>
-                        <rect x="134" y="178" width="12" height="17" rx="2" fill="#7c3aed" opacity="0.9"/>
+                        <rect x="86" y="183" width="12" height="12" rx="2" fill="#7B74F0" opacity="0.9"/>
+                        <rect x="102" y="175" width="12" height="20" rx="2" fill="#6660d4" opacity="0.9"/>
+                        <rect x="118" y="169" width="12" height="26" rx="2" fill="#9189f5" opacity="0.9"/>
+                        <rect x="134" y="178" width="12" height="17" rx="2" fill="#7B74F0" opacity="0.9"/>
                         <rect x="150" y="172" width="12" height="23" rx="2" fill="#4f46e5" opacity="0.9"/>
-                        <rect x="166" y="165" width="12" height="30" rx="2" fill="#6d28d9" opacity="0.9"/>
-                        <rect x="182" y="176" width="12" height="19" rx="2" fill="#8b5cf6" opacity="0.9"/>
-                        <rect x="198" y="170" width="12" height="25" rx="2" fill="#7c3aed" opacity="0.9"/>
+                        <rect x="166" y="165" width="12" height="30" rx="2" fill="#6660d4" opacity="0.9"/>
+                        <rect x="182" y="176" width="12" height="19" rx="2" fill="#9189f5" opacity="0.9"/>
+                        <rect x="198" y="170" width="12" height="25" rx="2" fill="#7B74F0" opacity="0.9"/>
                         <rect x="214" y="167" width="12" height="28" rx="2" fill="#4f46e5" opacity="0.9"/>
 
                         <!-- Barre progression -->
@@ -170,7 +170,7 @@
                         <!-- Dégradés -->
                         <defs>
                             <linearGradient id="pg" x1="0" y1="0" x2="1" y2="0">
-                                <stop offset="0%" stop-color="#7c3aed"/>
+                                <stop offset="0%" stop-color="#7B74F0"/>
                                 <stop offset="100%" stop-color="#a78bfa"/>
                             </linearGradient>
                         </defs>
@@ -214,19 +214,19 @@
             <div class="absolute top-4 right-4 z-20">
                 <button
                     @click="toggleDark()"
-                    class="w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-200 hover:scale-110"
+                    class="w-10 h-10 rounded-lg flex items-center justify-center transition-all duration-200 hover:scale-110"
                     :style="toggleBtnStyle"
                     :aria-label="isDark ? 'Passer en mode clair' : 'Passer en mode sombre'"
                 >
                     <!-- Soleil (mode clair) -->
                     <svg v-if="isDark" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                         :style="{ color: isDark ? '#fbbf24' : '#6d28d9' }">
+                         :style="{ color: isDark ? '#fbbf24' : '#6660d4' }">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                               d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
                     </svg>
                     <!-- Lune (mode sombre) -->
                     <svg v-else class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                         style="color: #6d28d9;">
+                         style="color: #7B74F0;">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                               d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
                     </svg>
@@ -235,8 +235,8 @@
 
             <!-- Logo mobile -->
             <div class="lg:hidden flex items-center gap-2 mb-8">
-                <div class="w-10 h-10 rounded-xl flex items-center justify-center"
-                     style="background: linear-gradient(135deg, #8b5cf6, #6d28d9);">
+                <div class="w-10 h-10 rounded-lg flex items-center justify-center"
+                     style="background: linear-gradient(135deg, #9189f5, #7B74F0);">
                     <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z"/>
                     </svg>
@@ -272,9 +272,9 @@ const appName = computed(() => {
     return s?.school_name || 'School Management';
 });
 
-// Panneau gauche : violet lumineux comme la capture (pas trop sombre)
+// Panneau gauche : violet periwinkle doux comme le bouton "Goals"
 const leftPanelStyle = computed(() => ({
-    background: 'linear-gradient(145deg, #8b5cf6 0%, #7c3aed 45%, #6d28d9 100%)',
+    background: 'linear-gradient(145deg, #9189f5 0%, #7B74F0 45%, #6660d4 100%)',
 }));
 
 // Panneau droit : adapté dark/light
@@ -284,7 +284,7 @@ const rightPanelStyle = computed(() => ({
 
 // Bouton toggle
 const toggleBtnStyle = computed(() => ({
-    background: isDark.value ? 'rgba(255,255,255,0.08)' : 'rgba(109,40,217,0.08)',
-    border: isDark.value ? '1px solid rgba(255,255,255,0.12)' : '1px solid rgba(109,40,217,0.15)',
+    background: isDark.value ? 'rgba(255,255,255,0.08)' : 'rgba(123,116,240,0.08)',
+    border: isDark.value ? '1px solid rgba(255,255,255,0.12)' : '1px solid rgba(123,116,240,0.15)',
 }));
 </script>

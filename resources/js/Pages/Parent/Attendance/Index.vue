@@ -1,11 +1,23 @@
 <template>
     <div class="space-y-6">
-        <div>
-            <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Présence de mon apprenant</h1>
-            <p v-if="student" class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
-                {{ student.last_name }} {{ student.name }}
-            </p>
-        </div>
+        <PageHeader title="Présence de mon apprenant" :subtitle="student ? `${student.last_name} ${student.name}` : 'Suivi des présences'" color="cyan">
+            <template #icon>
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
+                </svg>
+            </template>
+            <template #actions>
+                <Link href="/parent/my_student"
+                      class="inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-700
+                             text-sm font-medium text-gray-500 hover:text-primary-600 hover:border-primary-400
+                             dark:text-gray-400 dark:hover:text-primary-400 transition-colors">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                    </svg>
+                    Retour
+                </Link>
+            </template>
+        </PageHeader>
 
         <!-- Stats -->
         <div v-if="classStudent" class="grid grid-cols-2 sm:grid-cols-4 gap-4">
@@ -46,7 +58,7 @@
         </DataTable>
 
         <!-- Total -->
-        <div class="flex items-center gap-6 px-4 py-3 bg-gray-50 dark:bg-gray-800/60 rounded-xl border border-gray-200 dark:border-gray-700 text-sm">
+        <div class="flex items-center gap-6 px-4 py-3 bg-gray-50 dark:bg-gray-800/60 rounded-lg border border-gray-200 dark:border-gray-700 text-sm">
             <span class="text-gray-500 font-medium">Total :</span>
             <span class="text-success-600 font-semibold">Présent : {{ classStudent?.present ?? 0 }}</span>
             <span class="text-warning-600 font-semibold">En retard : {{ classStudent?.late ?? 0 }}</span>
@@ -58,6 +70,7 @@
 
 <script setup lang="ts">
 import { DataTable, AppBadge } from '@/Components/UI';
+import { Link } from '@inertiajs/vue3';
 
 interface AttendanceRecord {
     [key: string]: unknown;

@@ -4,8 +4,8 @@
 
 @layer base {
     :root {
-        --color-primary: 124 58 237;   /* violet-600 */
-        --color-secondary: 99 102 241; /* indigo-500 */
+        --color-primary: 123 116 240;   /* #7B74F0 periwinkle doux */
+        --color-secondary: 99 102 241;  /* indigo-500 */
     }
 
     html {
@@ -14,6 +14,14 @@
 
     body {
         @apply font-inter text-gray-800 dark:text-gray-100 bg-gray-50 dark:bg-gray-900;
+        font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* Forcer Inter sur TOUS les éléments — override Flowbite/AdminLTE */
+    *, *::before, *::after {
+        font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif !important;
     }
 
     * {
@@ -32,6 +40,23 @@
     }
     ::-webkit-scrollbar-thumb:hover {
         @apply bg-primary-400;
+    }
+}
+
+@layer base {
+    /* ── Checkbox dark mode : fond sombre quand non cochée ──────────────────── */
+    .dark input[type="checkbox"] {
+        color-scheme: dark;
+        background-color: rgb(31 41 55); /* gray-800 */
+        border-color: rgb(75 85 99);     /* gray-600 */
+    }
+    .dark input[type="checkbox"]:checked {
+        background-color: rgb(123 116 240); /* primary */
+        border-color: rgb(123 116 240);
+    }
+    .dark input[type="checkbox"]:indeterminate {
+        background-color: rgb(123 116 240);
+        border-color: rgb(123 116 240);
     }
 }
 
@@ -54,5 +79,18 @@
     /* Badge */
     .badge {
         @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+    }
+}
+
+@layer utilities {
+    /* Cacher la scrollbar tout en gardant le scroll fonctionnel */
+    .no-scrollbar {
+        -ms-overflow-style: none;  /* IE/Edge */
+        scrollbar-width: none;     /* Firefox */
+    }
+    .no-scrollbar::-webkit-scrollbar {
+        display: none !important;
+        width: 0 !important;
+        height: 0 !important;
     }
 }

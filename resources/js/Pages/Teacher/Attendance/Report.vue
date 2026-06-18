@@ -1,9 +1,12 @@
 <template>
     <div class="space-y-6">
-        <div>
-            <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Rapport de présences</h1>
-            <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">Historique des présences de vos classes</p>
-        </div>
+        <PageHeader title="Rapport de présences" subtitle="Historique des présences de vos classes" color="cyan">
+            <template #icon>
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
+                </svg>
+            </template>
+        </PageHeader>
 
         <div class="card overflow-hidden">
             <DataTable
@@ -16,8 +19,8 @@
                     {{ row.student_last_name }} {{ row.student_name }}
                 </template>
                 <template #cell-attendance_type="{ row }">
-                    <AppBadge :variant="typeVariant(row.attendance_type as string)">
-                        {{ typeLabel(row.attendance_type as string) }}
+                    <AppBadge :variant="typeVariant(row.attendance_type as string | number)">
+                        {{ typeLabel(row.attendance_type as string | number) }}
                     </AppBadge>
                 </template>
                 <template #cell-attendance_date="{ row }">
@@ -58,19 +61,32 @@ const columns = [
     { key: 'attendance_date', label: 'Date' },
 ];
 
-const typeLabel = (type: string) => ({
+// Normalise les anciens entiers (1,2,3,4) et les nouvelles chaînes vers une clé uniforme
+const normalizeType = (type: string | number): string => {
+    const legacyMap: Record<string, string> = {
+        '1': 'present',
+        '2': 'late',
+        '3': 'absent',
+        '4': 'half_day',
+        '0': 'present',
+    };
+    const str = String(type ?? '').trim();
+    return legacyMap[str] ?? str;
+};
+
+const typeLabel = (type: string | number) => ({
     present:  'Présent',
     late:     'En retard',
     absent:   'Absent',
     half_day: 'Demi-journée',
-}[type] ?? type);
+}[normalizeType(type)] ?? String(type));
 
-const typeVariant = (type: string) => ({
+const typeVariant = (type: string | number): 'success' | 'warning' | 'danger' | 'info' => ({
     present:  'success',
     late:     'warning',
     absent:   'danger',
     half_day: 'info',
-}[type] as any ?? 'gray');
+}[normalizeType(type)] as any ?? 'gray');
 
 const formatDate = (d: string) =>
     new Date(d).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' });

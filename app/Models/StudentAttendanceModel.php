@@ -27,7 +27,10 @@ class StudentAttendanceModel extends Model
 
     public static function checkAlreadyAttendance(int $studentId, int $classId, string $date)
     {
-        return StudentAttendanceModel::where('student_id', $studentId)->where('class_id', $classId)->where('attendance_date', $date)->first();
+        return StudentAttendanceModel::where('student_id', $studentId)
+            ->where('class_id', $classId)
+            ->where('attendance_date', $date)
+            ->first(); // Inclut is_delete=1 pour pouvoir le restaurer
     }
 
     public static function getStudentAttendance(int $perpage)
@@ -59,7 +62,7 @@ class StudentAttendanceModel extends Model
         }
 
         $attendanceType = Request::get('attendance_type');
-        if (in_array($attendanceType, ['1', '2', '3', '4'], true)) {
+        if (in_array($attendanceType, ['present', 'late', 'absent', 'half_day'], true)) {
             $results->where('attendances.attendance_type', $attendanceType);
         }
 

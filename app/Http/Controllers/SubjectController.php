@@ -86,7 +86,7 @@ class SubjectController extends Controller
     public function studentSubject()
     {
         return Inertia::render('Student/Subjects/Index', [
-            'subjects' => ClassSubjectModel::studentStubject(15, Auth::user()->class_id),
+            'subjects' => ClassSubjectModel::studentStubject(Auth::user()->class_id, 15),
         ]);
     }
 
@@ -94,8 +94,8 @@ class SubjectController extends Controller
     {
         $student = User::getSingle($student_id);
         return Inertia::render('Parent/Subjects/Index', [
-            'student' => $student,
-            'subjects' => ClassSubjectModel::studentStubject(15, $student->class_id),
+            'student'  => $student,
+            'subjects' => ClassSubjectModel::studentStubject($student->class_id, 15),
         ]);
     }
 }

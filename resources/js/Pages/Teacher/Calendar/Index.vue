@@ -1,60 +1,94 @@
 <template>
-    <div class="space-y-6">
-        <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Mon Calendrier</h1>
-
-        <div class="card p-5">
-            <h2 class="font-semibold text-gray-900 dark:text-white mb-4">Emploi du temps par classe</h2>
-            <div v-if="classTimetable?.length" class="overflow-x-auto">
-                <table class="min-w-full text-sm">
-                    <thead>
-                        <tr class="bg-gray-50 dark:bg-gray-700">
-                            <th class="px-4 py-2 text-left text-xs font-semibold text-gray-500 uppercase">Classe</th>
-                            <th class="px-4 py-2 text-left text-xs font-semibold text-gray-500 uppercase">Matière</th>
-                            <th class="px-4 py-2 text-left text-xs font-semibold text-gray-500 uppercase">Jour</th>
-                            <th class="px-4 py-2 text-left text-xs font-semibold text-gray-500 uppercase">Horaire</th>
-                            <th class="px-4 py-2 text-left text-xs font-semibold text-gray-500 uppercase">Salle</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
-                        <tr v-for="(item, i) in classTimetable" :key="i">
-                            <td class="px-4 py-3 font-medium text-gray-900 dark:text-white">{{ item.class_name }}</td>
-                            <td class="px-4 py-3 text-gray-600 dark:text-gray-400">{{ item.subject_name }}</td>
-                            <td class="px-4 py-3 text-gray-600 dark:text-gray-400">{{ item.week_name }}</td>
-                            <td class="px-4 py-3 text-gray-600 dark:text-gray-400">{{ item.start_time }} - {{ item.end_time }}</td>
-                            <td class="px-4 py-3 text-gray-600 dark:text-gray-400">{{ item.room_number }}</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <p v-else class="text-gray-400 text-center py-4">Aucun emploi du temps disponible.</p>
-        </div>
-
-        <div class="card p-5">
-            <h2 class="font-semibold text-gray-900 dark:text-white mb-4">Calendrier des examens</h2>
-            <div v-if="examTimetable?.length" class="overflow-x-auto">
-                <table class="min-w-full text-sm">
-                    <thead>
-                        <tr class="bg-gray-50 dark:bg-gray-700">
-                            <th class="px-4 py-2 text-left text-xs font-semibold text-gray-500 uppercase">Examen</th>
-                            <th class="px-4 py-2 text-left text-xs font-semibold text-gray-500 uppercase">Matière</th>
-                            <th class="px-4 py-2 text-left text-xs font-semibold text-gray-500 uppercase">Date</th>
-                            <th class="px-4 py-2 text-left text-xs font-semibold text-gray-500 uppercase">Horaire</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
-                        <tr v-for="(item, i) in examTimetable" :key="i">
-                            <td class="px-4 py-3 font-medium text-gray-900 dark:text-white">{{ item.exam_name }}</td>
-                            <td class="px-4 py-3 text-gray-600 dark:text-gray-400">{{ item.subject_name }}</td>
-                            <td class="px-4 py-3 text-gray-600 dark:text-gray-400">{{ item.exam_date }}</td>
-                            <td class="px-4 py-3 text-gray-600 dark:text-gray-400">{{ item.start_time }} - {{ item.end_time }}</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <p v-else class="text-gray-400 text-center py-4">Aucun examen planifié.</p>
-        </div>
-    </div>
+    <AppCalendar
+        title="Mon Calendrier"
+        subtitle="Emploi du temps par classe et matière"
+        :course-events="courseEvents"
+        :events="events"
+        :legend="legend"
+    />
 </template>
+
 <script setup lang="ts">
-defineProps<{ classTimetable: any[]; examTimetable: any[] }>();
+import { computed } from 'vue';
+import { AppCalendar } from '@/Components/UI';
+import type { CalEvent } from '@/Components/UI';
+import {
+    buildCourseEvents,
+    buildCourseLegend,
+    COURSE_COLORS,
+    type SubjectTimetableRow,
+} from '@/Composables/useTimetableEvents';
+
+interface TimetableItem {
+    class_name:   string;
+    subject_name: string;
+    week_id?:     number;
+    week_name:    string;
+    week_day:     number;   // 1=Lun … 7=Dim
+    start_time:   string;
+    end_time:     string;
+    room_number:  string;
+}
+
+const props = defineProps<{
+    classTimetable: TimetableItem[];
+    events:         CalEvent[];
+}>();
+
+/**
+ * Convertit le tableau plat classTimetable en SubjectTimetableRow[]
+ * (une entrée par "classe – matière" unique, avec weeks reconstituées).
+ */
+const timetableMatrix = computed<SubjectTimetableRow[]>(() => {
+    // Grouper par "classe – matière"
+    const map = new Map<string, SubjectTimetableRow>();
+    const weekIds = new Map<string, number>(); // week_name → pseudo-id
+
+    // Construire les semaines disponibles depuis les données
+    const allWeeks: { week_name: string; day: number }[] = [];
+    const seenWeeks = new Set<string>();
+    props.classTimetable.forEach(item => {
+        if (!seenWeeks.has(item.week_name)) {
+            seenWeeks.add(item.week_name);
+            allWeeks.push({ week_name: item.week_name, day: item.week_day });
+            weekIds.set(item.week_name, allWeeks.length);
+        }
+    });
+
+    props.classTimetable.forEach(item => {
+        const key = `${item.class_name} — ${item.subject_name}`;
+        if (!map.has(key)) {
+            // Créer l'entrée avec toutes les semaines vides
+            map.set(key, {
+                name:  key,
+                weeks: allWeeks.map(w => ({
+                    week_id:     weekIds.get(w.week_name) ?? 0,
+                    week_name:   w.week_name,
+                    day:         w.day,
+                    start_time:  '',
+                    end_time:    '',
+                    room_number: '',
+                })),
+            });
+        }
+        // Remplir le créneau du bon jour
+        const entry = map.get(key)!;
+        const weekSlot = entry.weeks.find(w => w.week_name === item.week_name);
+        if (weekSlot) {
+            weekSlot.start_time  = item.start_time;
+            weekSlot.end_time    = item.end_time;
+            weekSlot.room_number = item.room_number;
+        }
+    });
+
+    return Array.from(map.values());
+});
+
+const courseEvents = computed(() => buildCourseEvents(timetableMatrix.value));
+
+const legend = computed(() =>
+    Array.from(new Map(
+        timetableMatrix.value.map((s, i) => [s.name, { label: s.name, color: COURSE_COLORS[i % COURSE_COLORS.length] }])
+    ).values())
+);
 </script>

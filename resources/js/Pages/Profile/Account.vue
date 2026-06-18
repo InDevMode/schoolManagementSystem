@@ -46,9 +46,8 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue';
-import { useForm, usePage } from '@inertiajs/vue3';
+import { useForm } from '@inertiajs/vue3';
 import { AppButton, AppInput } from '@/Components/UI';
-import type { PageProps } from '@/types';
 
 interface UserData {
     id: number;
@@ -66,16 +65,15 @@ const props = defineProps<{
     profilePictureUrl: string;
 }>();
 
-const page = usePage<PageProps>();
 const previewUrl = ref<string | null>(null);
-const picFile    = ref<File | null>(null);
 
 const roleLabelMap: Record<number, string> = {
-    1: 'Administrateur', 2: 'Professeur', 3: 'Apprenant', 4: 'Parent',
+    0: 'Super Admin', 1: 'Administrateur', 2: 'Professeur', 3: 'Apprenant', 4: 'Parent',
 };
 const roleLabel = computed(() => roleLabelMap[props.userData.user_type] ?? 'Utilisateur');
 
 const updateUrlMap: Record<number, string> = {
+    0: '/superadmin/account',
     1: '/admin/account',
     2: '/teacher/account',
     3: '/student/account',
@@ -84,30 +82,23 @@ const updateUrlMap: Record<number, string> = {
 const updateUrl = computed(() => updateUrlMap[props.userData.user_type] ?? '/admin/account');
 
 const form = useForm({
-    name:          props.userData.name,
-    last_name:     props.userData.last_name,
-    email:         props.userData.email,
-    mobile_number: props.userData.mobile_number ?? '',
-    address:       props.userData.address ?? '',
+    name:             props.userData.name,
+    last_name:        props.userData.last_name,
+    email:            props.userData.email,
+    mobile_number:    props.userData.mobile_number ?? '',
+    address:          props.userData.address ?? '',
+    profile_picture:  null as File | null,
 });
 
 const onFileChange = (e: Event) => {
     const file = (e.target as HTMLInputElement).files?.[0];
     if (file) {
-        picFile.value = file;
+        form.profile_picture = file;
         previewUrl.value = URL.createObjectURL(file);
     }
 };
 
 const submitForm = () => {
-    const data = new FormData();
-    data.append('name',          form.name);
-    data.append('last_name',     form.last_name);
-    data.append('email',         form.email);
-    data.append('mobile_number', form.mobile_number);
-    data.append('address',       form.address);
-    if (picFile.value) data.append('profile_picture', picFile.value);
-
     form.post(updateUrl.value, {
         forceFormData: true,
     });

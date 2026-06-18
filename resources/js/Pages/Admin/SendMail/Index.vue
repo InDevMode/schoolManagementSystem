@@ -1,9 +1,12 @@
 <template>
     <div class="space-y-6 max-w-2xl mx-auto">
-        <div>
-            <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Envoyer un mail</h1>
-            <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">Envoyez un email à un ou plusieurs utilisateurs</p>
-        </div>
+        <PageHeader title="Envoyer un mail" subtitle="Envoyez un email à un ou plusieurs utilisateurs" color="indigo">
+            <template #icon>
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                </svg>
+            </template>
+        </PageHeader>
 
         <div class="card p-6">
             <form @submit.prevent="submitForm" class="space-y-4">
@@ -69,7 +72,7 @@
                 </div>
 
                 <div class="flex justify-end pt-2">
-                    <AppButton type="submit" :loading="form.processing">
+                    <AppButton v-if="can('action.mail.send')" type="submit" :loading="form.processing">
                         <template #icon>
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" /></svg>
                         </template>
@@ -84,8 +87,13 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { useForm } from '@inertiajs/vue3';
-import { AppButton, AppInput, AppRichEditor } from '@/Components/UI';
+import { PageHeader, AppButton, AppInput, AppRichEditor } from '@/Components/UI';
+import { useCan } from '@/Composables/useCan';
+import { useToast } from '@/Composables/useToast';
 import AppMultiSelect from '@/Components/UI/AppMultiSelect.vue';
+
+const { can } = useCan();
+const toast   = useToast();
 
 interface UserItem {
     id: number;
@@ -117,7 +125,11 @@ const form = useForm({
 
 const submitForm = () => {
     form.post('/admin/communicate/send_mail', {
-        onSuccess: () => form.reset(),
+        onSuccess: () => {
+            form.reset();
+            toast.success('Les mails ont été envoyés avec succès.');
+        },
+        onError: () => toast.error('Erreur lors de l\'envoi. Veuillez réessayer.'),
     });
 };
 

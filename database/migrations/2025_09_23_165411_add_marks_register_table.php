@@ -10,6 +10,10 @@ return new class extends Migration {
      */
     public function up(): void
     {
+        if (Schema::hasTable('marks_register')) {
+            return; // Table déjà présente en base, rien à faire
+        }
+
         Schema::create('marks_register', function (Blueprint $table) {
             $table->id();
             $table->Integer('student_id')->unsigned()->nullable()->foreign('student_id')->references('id')->on('users')->onDelete('cascade');

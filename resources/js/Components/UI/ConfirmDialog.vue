@@ -9,7 +9,7 @@
             leave-to-class="opacity-0"
         >
             <div v-if="modelValue" class="fixed inset-0 z-[9998] flex items-center justify-center p-4">
-                <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" @click="$emit('cancel')" />
+                <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" @click="$emit('update:modelValue', false); $emit('cancel')" />
                 <Transition
                     enter-active-class="transition duration-150 ease-out"
                     enter-from-class="opacity-0 scale-95"
@@ -32,14 +32,14 @@
                         <!-- Boutons -->
                         <div class="flex items-center gap-3">
                             <button
-                                class="flex-1 px-4 py-2.5 text-sm font-medium rounded-xl border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
-                                @click="$emit('cancel')"
+                                class="flex-1 px-4 py-2.5 text-sm font-medium rounded-lg border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                                @click="$emit('update:modelValue', false); $emit('cancel')"
                             >
                                 {{ cancelLabel }}
                             </button>
                             <button
-                                :class="['flex-1 px-4 py-2.5 text-sm font-medium rounded-xl text-white transition-colors', confirmBg]"
-                                @click="$emit('confirm')"
+                                :class="['flex-1 px-4 py-2.5 text-sm font-medium rounded-lg text-white transition-colors', confirmBg]"
+                                @click="$emit('update:modelValue', false); $emit('confirm')"
                             >
                                 {{ confirmLabel }}
                             </button>

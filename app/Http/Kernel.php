@@ -38,6 +38,7 @@ class Kernel extends HttpKernel
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
             \App\Http\Middleware\OnlineUser::class,
             \App\Http\Middleware\HandleInertiaRequests::class,
+            \App\Http\Middleware\ForcePasswordChange::class,
         ],
 
         'api' => [
@@ -66,11 +67,14 @@ class Kernel extends HttpKernel
         'signed' => \App\Http\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
-        'admin' => \App\Http\Middleware\AdminMiddleware::class,
-        'teacher' => \App\Http\Middleware\TeacherMiddleware::class,
-        'student' => \App\Http\Middleware\StudentMiddleware::class,
-        'parent' => \App\Http\Middleware\ParentMiddleware::class,
-        'common' => \App\Http\Middleware\CommonMiddleware::class,
+        'admin'       => \App\Http\Middleware\AdminMiddleware::class,
+        'super_admin' => \App\Http\Middleware\SuperAdminMiddleware::class,
+        'teacher'     => \App\Http\Middleware\TeacherMiddleware::class,
+        'student'     => \App\Http\Middleware\StudentMiddleware::class,
+        'parent'      => \App\Http\Middleware\ParentMiddleware::class,
+        'common'      => \App\Http\Middleware\CommonMiddleware::class,
+        'check_perm'  => \App\Http\Middleware\CheckPermission::class,
+        'force_pwd'   => \App\Http\Middleware\ForcePasswordChange::class,
 
     ];
 }

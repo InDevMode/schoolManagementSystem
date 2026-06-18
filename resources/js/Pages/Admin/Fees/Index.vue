@@ -1,12 +1,24 @@
-<template>
+﻿<template>
     <div class="space-y-6">
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div>
-                <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Collecter les contributions</h1>
-                <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">{{ feesCollections.total }} apprenant(s)</p>
-            </div>
-            <AppSelect v-model="filters.class_id" :options="classOptions" placeholder="Filtrer par classe" class="w-48" @change="applyFilters" />
-        </div>
+        <PageHeader title="Collecter les contributions" :subtitle="`${feesCollections.total} apprenant(s)`" color="emerald">
+            <template #icon>
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/>
+                </svg>
+            </template>
+            <template #actions>
+                <div class="flex items-center gap-2">
+                    <label class="text-sm font-medium text-gray-600 dark:text-gray-400 whitespace-nowrap">Filtrer par classe</label>
+                    <AppSelect
+                        v-model="filters.class_id"
+                        :options="classOptions"
+                        placeholder="Toutes les classes"
+                        class="min-w-[200px]"
+                        @change="applyFilters"
+                    />
+                </div>
+            </template>
+        </PageHeader>
 
         <div class="card overflow-hidden">
             <DataTable
@@ -62,22 +74,26 @@
                 <!-- Actions -->
                 <template #actions="{ row }">
                     <button
-                        v-if="((row.remaning_amount as number) ?? (row.class_amount as number)) > 0"
-                        class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300 hover:bg-primary-100 dark:hover:bg-primary-900/40 transition-colors"
+                        v-if="can('action.fees.collect') && ((row.remaning_amount as number) ?? (row.class_amount as number)) > 0"
+                        class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg
+                               transition-all duration-150 text-white
+                               bg-primary-600 hover:bg-primary-700 active:bg-primary-800
+                               shadow-sm shadow-primary-300 dark:shadow-primary-900/50"
                         @click="openPayment(row as any)"
                     >
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4" />
                         </svg>
                         Collecter
                     </button>
-                    <AppBadge v-else variant="success" dot>Soldé</AppBadge>
+                    <AppBadge v-else-if="((row.remaning_amount as number) ?? (row.class_amount as number)) <= 0" variant="success" dot>Soldé</AppBadge>
+                    <span v-else class="text-xs text-gray-400 italic">—</span>
                 </template>
             </DataTable>
         </div>
 
         <!-- Totaux -->
-        <div v-if="feesCollections.data.length > 0" class="flex flex-wrap items-center gap-6 px-4 py-3 bg-gray-50 dark:bg-gray-800/60 rounded-xl border border-gray-200 dark:border-gray-700 text-sm">
+        <div v-if="feesCollections.data.length > 0" class="flex flex-wrap items-center gap-6 px-4 py-3 bg-gray-50 dark:bg-gray-800/60 rounded-lg border border-gray-200 dark:border-gray-700 text-sm">
             <span class="text-gray-500 font-medium">Totaux :</span>
             <span class="text-gray-700 dark:text-gray-300">Total : <strong>{{ formatAmount(totalClassAmount) }}</strong></span>
             <span class="text-success-600 dark:text-success-400">Payé : <strong>{{ formatAmount(totalPaidAmount) }}</strong></span>
@@ -86,7 +102,7 @@
 
         <!-- Modal Paiement -->
         <AppModal v-model="showPayment" title="Enregistrer un paiement" size="md" persistent>
-            <div v-if="selectedStudent" class="mb-5 p-4 bg-gray-50 dark:bg-gray-700/40 rounded-xl">
+            <div v-if="selectedStudent" class="mb-5 p-4 bg-gray-50 dark:bg-gray-700/40 rounded-lg">
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="font-semibold text-gray-900 dark:text-white">{{ selectedStudent.student_last_name }} {{ selectedStudent.student_name }}</p>
@@ -123,19 +139,19 @@
                 />
 
                 <!-- Info Kkiapay -->
-                <div v-if="payForm.payment_type === 'kkiapay'" class="p-3 bg-amber-50 dark:bg-amber-900/20 rounded-xl text-xs text-amber-700 dark:text-amber-300">
+                <div v-if="payForm.payment_type === 'kkiapay'" class="p-3 bg-amber-50 dark:bg-amber-900/20 rounded-lg text-xs text-amber-700 dark:text-amber-300">
                     <p class="font-medium mb-1">Paiement via Kkiapay</p>
                     <p>Cliquez sur "Payer avec Kkiapay" pour ouvrir le widget de paiement.</p>
                 </div>
 
                 <!-- Info FedaPay -->
-                <div v-if="payForm.payment_type === 'fedapay'" class="p-3 bg-orange-50 dark:bg-orange-900/20 rounded-xl text-xs text-orange-700 dark:text-orange-300">
+                <div v-if="payForm.payment_type === 'fedapay'" class="p-3 bg-orange-50 dark:bg-orange-900/20 rounded-lg text-xs text-orange-700 dark:text-orange-300">
                     <p class="font-medium mb-1">Paiement via FedaPay</p>
                     <p>Vous serez redirigé vers la page de paiement FedaPay (Mobile Money, carte...).</p>
                 </div>
 
                 <!-- Info Stripe -->
-                <div v-if="payForm.payment_type === 'stripe'" class="p-3 bg-indigo-50 dark:bg-indigo-900/20 rounded-xl text-xs text-indigo-700 dark:text-indigo-300">
+                <div v-if="payForm.payment_type === 'stripe'" class="p-3 bg-primary-50 dark:bg-primary-900/20 rounded-lg text-xs text-primary-700 dark:text-primary-300">
                     <p class="font-medium mb-1">Paiement via Stripe</p>
                     <p>Vous serez redirigé vers la page de paiement sécurisée Stripe.</p>
                 </div>
@@ -195,7 +211,10 @@
 import { ref, computed } from 'vue';
 import { router, usePage } from '@inertiajs/vue3';
 import { AppSelect, DataTable, AppBadge, AppModal, AppButton, AppInput } from '@/Components/UI';
+import { useCan } from '@/Composables/useCan';
 import type { PageProps } from '@/types';
+
+const { can } = useCan();
 
 interface FeesStudent {
     [key: string]: unknown;

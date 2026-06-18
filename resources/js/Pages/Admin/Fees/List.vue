@@ -1,20 +1,27 @@
 <template>
     <div class="space-y-6">
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div>
-                <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Rapports des contributions</h1>
-                <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">{{ feesCollections.total }} contribution(s)</p>
-            </div>
-            <a
-                href="/admin/feescollections/feescollects/export"
-                class="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium rounded-xl border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
-            >
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+        <PageHeader title="Rapports des contributions" :subtitle="`${feesCollections.total} contribution(s)`" color="emerald">
+            <template #icon>
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                 </svg>
-                Exporter Excel
-            </a>
-        </div>
+            </template>
+            <template #actions>
+                <a
+                    v-if="can('view.fees.reports')"
+                    href="/admin/feescollections/feescollects/export"
+                    class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold
+                           transition-all duration-150 text-white
+                           bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800
+                           shadow-sm shadow-emerald-200 dark:shadow-emerald-900/40"
+                >
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                    </svg>
+                    Exporter Excel
+                </a>
+            </template>
+        </PageHeader>
 
         <!-- Résumé -->
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
@@ -79,11 +86,14 @@
 
                 <template #actions="{ row }">
                     <button
-                        class="p-1.5 rounded-lg text-gray-400 hover:text-danger-600 hover:bg-danger-50 dark:hover:bg-danger-900/20 transition-colors"
+                        v-if="can('action.fees.delete')"
+                        class="p-1.5 rounded-lg transition-all duration-150 text-white
+                               bg-red-500 hover:bg-red-600 active:bg-red-700
+                               shadow-sm shadow-red-200 dark:shadow-red-900/40"
                         title="Supprimer"
                         @click="tableRef?.confirmDelete(row.id as number, `paiement #${row.id}`)"
                     >
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                         </svg>
                     </button>
@@ -92,7 +102,7 @@
         </div>
 
         <!-- Totaux -->
-        <div v-if="feesCollections.data.length > 0" class="flex flex-wrap items-center gap-6 px-4 py-3 bg-gray-50 dark:bg-gray-800/60 rounded-xl border border-gray-200 dark:border-gray-700 text-sm">
+        <div v-if="feesCollections.data.length > 0" class="flex flex-wrap items-center gap-6 px-4 py-3 bg-gray-50 dark:bg-gray-800/60 rounded-lg border border-gray-200 dark:border-gray-700 text-sm">
             <span class="text-gray-500 font-medium">Totaux :</span>
             <span class="text-success-600 dark:text-success-400">Payé : <strong>{{ formatAmount(totalPaid) }}</strong></span>
             <span class="text-danger-600 dark:text-danger-400">Reste : <strong>{{ formatAmount(totalRemaining) }}</strong></span>
@@ -104,7 +114,10 @@
 import { computed, ref } from 'vue';
 import { router } from '@inertiajs/vue3';
 import { DataTable, AppBadge } from '@/Components/UI';
+import { useCan } from '@/Composables/useCan';
 import { useToast } from '@/Composables/useToast';
+
+const { can } = useCan();
 
 interface FeesCollection {
     id: number;
@@ -163,9 +176,10 @@ const paymentLabel = (type: string) => ({
 }[type] ?? type ?? '—');
 
 const deleteFees = (id: number) => {
-    if (confirm('Supprimer cette contribution ?')) {
-        router.get(`/admin/feescollections/collections/delete/${id}`);
-    }
+    router.get(`/admin/feescollections/collections/delete/${id}`, {}, {
+        onSuccess: () => toast.success('Contribution masquée.'),
+        onError:   () => toast.error('Erreur lors de la suppression.'),
+    });
 };
 
 const handleDelete = (ids: (string | number)[]) => {

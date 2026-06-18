@@ -16,8 +16,22 @@ class ParentController extends Controller
 {
     public function list()
     {
+        $perPage = min((int) request('per_page', 15), 100);
+        $parents = User::getAllParent($perPage);
+
+        // Enrichir avec school_name (évite le N+1)
+        $schoolIds = $parents->getCollection()->pluck('school_id')->filter()->unique()->values();
+        $schools   = \App\Models\School::whereIn('id', $schoolIds)->get()->keyBy('id');
+
+        $parents->getCollection()->transform(function ($p) use ($schools) {
+            $p->is_online   = \Illuminate\Support\Facades\Cache::has('OnlineUser.' . $p->id);
+            $school         = $p->school_id ? ($schools[$p->school_id] ?? null) : null;
+            $p->school_name = $school?->school_name ?? null;
+            return $p;
+        });
+
         return Inertia::render('Admin/Parents/Index', [
-            'parents' => User::getAllParent(15),
+            'parents' => $parents,
         ]);
     }
 
@@ -50,6 +64,7 @@ class ParentController extends Controller
                 'status'        => $request->status,
                 'user_type'     => 4,
                 'created_by'    => Auth::id(),
+                'school_id'     => (Auth::user()->user_type !== 0) ? Auth::user()->school_id : null,
             ]);
 
             if ($request->filled('password')) {
@@ -142,8 +157,31 @@ class ParentController extends Controller
     {
         $id = Auth::id();
         return Inertia::render('Parent/Students/Index', [
-            'myStudents' => User::getMyStudent(15, $id),
+            'myStudents' => User::getMyStudent(50, $id),
         ]);
+    }
+
+    /**
+     * Retourne les enfants d'un parent (JSON, pour le modal admin).
+     */
+    public function parentChildren(int $id): \Illuminate\Http\JsonResponse
+    {
+        $children = User::where('parent_id', $id)
+            ->where('is_delete', 0)
+            ->get(['id', 'name', 'last_name', 'profile_picture', 'admission_number', 'class_id'])
+            ->map(function ($s) {
+                $class = $s->class_id ? \App\Models\ClassModel::getSingle($s->class_id) : null;
+                return [
+                    'id'               => $s->id,
+                    'name'             => $s->name,
+                    'last_name'        => $s->last_name,
+                    'profile_picture'  => $s->profile_picture,
+                    'admission_number' => $s->admission_number,
+                    'class_name'       => $class?->name ?? null,
+                ];
+            });
+
+        return response()->json(['children' => $children]);
     }
 
     public function exportParent()

@@ -16,8 +16,22 @@ class TeacherController extends Controller
 {
     public function list()
     {
+        $perPage  = min((int) request('per_page', 15), 100);
+        $teachers = User::getAllTeacher($perPage);
+
+        // Enrichir avec school_name (évite le N+1)
+        $schoolIds = $teachers->getCollection()->pluck('school_id')->filter()->unique()->values();
+        $schools   = \App\Models\School::whereIn('id', $schoolIds)->get()->keyBy('id');
+
+        $teachers->getCollection()->transform(function ($t) use ($schools) {
+            $t->is_online   = \Illuminate\Support\Facades\Cache::has('OnlineUser.' . $t->id);
+            $school         = $t->school_id ? ($schools[$t->school_id] ?? null) : null;
+            $t->school_name = $school?->school_name ?? null;
+            return $t;
+        });
+
         return Inertia::render('Admin/Teachers/Index', [
-            'teachers' => User::getAllTeacher(15),
+            'teachers' => $teachers,
         ]);
     }
 
@@ -55,6 +69,7 @@ class TeacherController extends Controller
                 'status'            => $request->status,
                 'user_type'         => 2,
                 'created_by'        => Auth::id(),
+                'school_id'         => (Auth::user()->user_type !== 0) ? Auth::user()->school_id : null,
             ]);
 
             if ($request->filled('password')) {

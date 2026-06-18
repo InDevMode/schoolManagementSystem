@@ -25,13 +25,15 @@
             </div>
         </div>
 
-        <!-- Table -->
+        <!-- Table — lecture seule, pas de sélection ni de suppression -->
         <div class="card overflow-hidden">
             <DataTable
                 :columns="columns"
                 :rows="attendance.data"
                 row-key="id"
                 export-filename="mes-presences"
+                :selectable="false"
+                :pagination="attendance"
             >
                 <template #cell-attendance_type="{ row }">
                     <AppBadge :variant="typeVariant(row.attendance_type as string)">

@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Request;
 
 class ClassModel extends Model
@@ -16,6 +17,7 @@ class ClassModel extends Model
     protected $fillable = [
         'name',
         'status',
+        'school_id',
     ];
 
     protected $hidden = [
@@ -38,8 +40,16 @@ class ClassModel extends Model
      */
     public static function getAllClass(int $perPage): LengthAwarePaginator
     {
+        $user = Auth::user();
+        $isSuperAdmin = $user && (int) $user->user_type === 0;
+
         $results = ClassModel::select('class.*', 'users.name as created_by_name')
             ->join('users', 'users.id', '=', 'class.created_by');
+
+        // Scoping multi-tenant : un admin ne voit que les classes de son école
+        if (! $isSuperAdmin && $user) {
+            $results->where('class.school_id', $user->school_id);
+        }
 
         $filters = [
             'class.name' => strtolower(Request::get('name')),
@@ -65,14 +75,28 @@ class ClassModel extends Model
             ->paginate($perPage);
     }
 
-    public static function getClass()
+    public static function getClass(?int $schoolId = null)
     {
-        return ClassModel::select('class.*')
+        $user = Auth::user();
+
+        // Si aucun schoolId fourni, on le détermine depuis l'utilisateur connecté
+        if ($schoolId === null && $user) {
+            $isSuperAdmin = (int) $user->user_type === 0;
+            if (! $isSuperAdmin) {
+                $schoolId = $user->school_id;
+            }
+        }
+
+        $query = ClassModel::select('class.*')
             ->join('users', 'users.id', '=', 'class.created_by')
             ->where('class.is_delete', 0)
-            ->where('class.status', 1)
-            ->orderBy('class.name', 'asc')
-            ->get();
+            ->where('class.status', 1);
+
+        if ($schoolId !== null) {
+            $query->where('class.school_id', $schoolId);
+        }
+
+        return $query->orderBy('class.name', 'asc')->get();
     }
 
     /**
@@ -96,9 +120,13 @@ class ClassModel extends Model
             ->first();
     }
 
-    public static function getTotalClass()
+    public static function getTotalClass(?int $schoolId = null)
     {
-        return ClassModel::where('is_delete', 0)->count();
+        $q = ClassModel::where('is_delete', 0);
+        if ($schoolId !== null) {
+            $q->where('school_id', $schoolId);
+        }
+        return $q->count();
     }
 
 }

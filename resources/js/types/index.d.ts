@@ -7,6 +7,7 @@ export interface User {
     profile_picture: string | null;
     status: number;
     roles: string[];
+    role_label: string;
     permissions: string[];
 }
 

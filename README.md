@@ -43,6 +43,9 @@ php artisan serve
 npm run dev
 ```
 
+php artisan superadmin:sync-permissions
+
+
 ## Structure frontend
 
 ```
@@ -136,3 +139,67 @@ resources/js/
 - [ ] Migration de toutes les pages CRUD en Vue + modals
 - [ ] Architecture Repository + Service (Phase 3)
 - [ ] Multi-tenant / multi-école (Phase 4)
+
+
+Option A — Manuel : un admin ferme manuellement l'évaluation quand la saisie est terminée, avant de valider.
+
+Option B — Automatique : un job qui tourne chaque nuit et passe en closed toutes les évals open dont la eval_date est dépassée d'un certain délai (ex : 7 jours après la date de l'évaluation).
+
+Ma recommandation pour ton contexte béninois : supprimer closed ou le garder uniquement comme étape manuelle facultative avant validation. Le flux simplifié qui suffit vraiment est :
+
+draft → open (saisie active) → validated (verrouillé, entre dans les bulletins)
+Le closed ajoute de la complexité sans vraie valeur si personne ne l'utilise.
+
+Qu'est-ce que tu préfères ?
+
+Garder closed avec un passage automatique basé sur la date
+Garder closed en passage manuel uniquement (bouton dans l'UI)
+Supprimer closed et simplifier à draft → open → validated
+
+# Aperçu sans modification
+php artisan evaluations:reset-incomplete --dry-run
+
+# Appliquer la correction
+php artisan evaluations:reset-incomplete
+
+
+
+🏫 Création de l'école : Lycée Moderne de Cotonou
+  ✅ Admin : admin@lmc.bj / Admin@LMC2025
+  ✅ 2 classe(s) créée(s)
+  ✅ 6 matière(s) créée(s)
+  ✅ 2 professeur(s) créé(s) — mot de passe : Prof@1234
+  ✅ 4 apprenant(s) créé(s) — mot de passe : Eleve@1234
+  ✅ 2 parent(s) créé(s) — mot de passe : Parent@1234
+  ✅ Matières assignées aux classes
+
+🏫 Création de l'école : Collège Saint-Michel
+  ✅ Admin : admin@csm.bj / Admin@CSM2025
+  ✅ 2 classe(s) créée(s)
+  ✅ 6 matière(s) créée(s)
+  ✅ 2 professeur(s) créé(s) — mot de passe : Prof@1234
+  ✅ 4 apprenant(s) créé(s) — mot de passe : Eleve@1234
+  ✅ 2 parent(s) créé(s) — mot de passe : Parent@1234
+  ✅ Matières assignées aux classes
+
+🏫 Création de l'école : École Primaire Les Étoiles
+  ✅ Admin : admin@epe.bj / Admin@EPE2025
+  ✅ 2 classe(s) créée(s)
+  ✅ 6 matière(s) créée(s)
+  ✅ 2 professeur(s) créé(s) — mot de passe : Prof@1234
+  ✅ 4 apprenant(s) créé(s) — mot de passe : Eleve@1234
+  ✅ 2 parent(s) créé(s) — mot de passe : Parent@1234
+  ✅ Matières assignées aux classes
+
+══════════════════════════════════════════════
+✅ Multi-école seed terminé !
+
++----------------------------+--------------+---------------+
+| École                      | Admin email  | Mot de passe  |
++----------------------------+--------------+---------------+
+| Lycée Moderne de Cotonou   | admin@lmc.bj | Admin@LMC2025 |
+| Collège Saint-Michel       | admin@csm.bj | Admin@CSM2025 |
+| École Primaire Les Étoiles | admin@epe.bj | Admin@EPE2025 |
++----------------------------+--------------+---------------+
+
+Professeurs : Prof@1234  |  Apprenants : Eleve@1234  |  Parents : Parent@1234

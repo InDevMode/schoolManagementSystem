@@ -19,13 +19,6 @@
             <!-- Topbar -->
             <AppTopbar @open-mobile="mobileSidebarOpen = true" />
 
-            <!-- Flash messages -->
-            <div v-if="flash.success || flash.error || flash.warning" class="px-6 pt-4 space-y-2">
-                <AppAlert v-if="flash.success" variant="success" :message="flash.success" dismissible />
-                <AppAlert v-if="flash.error"   variant="danger"  :message="flash.error"   dismissible />
-                <AppAlert v-if="flash.warning" variant="warning" :message="flash.warning" dismissible />
-            </div>
-
             <!-- Contenu de la page -->
             <main class="flex-1 px-6 py-6 overflow-auto">
                 <slot />
@@ -34,31 +27,61 @@
 
         <!-- Toast notifications globales -->
         <ToastContainer />
+
+        <!-- Auto-refresh flottant -->
+        <AutoRefresh />
     </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
-import { usePage } from '@inertiajs/vue3';
+import { ref, watch } from 'vue';
+import { usePage, router } from '@inertiajs/vue3';
 import { useDark } from '@vueuse/core';
 import AppSidebar from '@/Components/Layout/AppSidebar.vue';
 import AppTopbar from '@/Components/Layout/AppTopbar.vue';
-import AppAlert from '@/Components/UI/AppAlert.vue';
 import ToastContainer from '@/Components/UI/ToastContainer.vue';
+import AutoRefresh from '@/Components/UI/AutoRefresh.vue';
+import { useToast } from '@/Composables/useToast';
 
 const isDark = useDark();
 const page   = usePage();
-const flash  = computed(() => page.props.flash as { success?: string; error?: string; warning?: string });
+const toast  = useToast();
+
+// ── Bridge flash → toast ──────────────────────────────────────────────────────
+// On garde trace du dernier message affiché pour éviter les doublons.
+// Le problème vient du fait que sur une redirection Inertia, le layout est
+// monté (mount lit initialFlash) ET l'event "navigate" se déclenche aussi.
+let lastShownFlash = '';
+
+const showFlash = (flash: { success?: string; error?: string; warning?: string } | undefined) => {
+    if (!flash) return;
+
+    const key = [flash.success, flash.error, flash.warning].filter(Boolean).join('|');
+    if (!key || key === lastShownFlash) return;
+    lastShownFlash = key;
+
+    if (flash.success) toast.success(flash.success, 5000);
+    if (flash.error)   toast.error(flash.error,     6000);
+    if (flash.warning) toast.warning(flash.warning, 5000);
+
+    // Réinitialiser après un délai pour permettre le même message sur une action future
+    setTimeout(() => { if (lastShownFlash === key) lastShownFlash = ''; }, 1000);
+};
+
+// Premier chargement (full page reload)
+showFlash(page.props.flash as any);
+
+// Navigations Inertia côté client
+router.on('navigate', () => {
+    showFlash(page.props.flash as any);
+});
 
 // ── État sidebar ─────────────────────────────────────────────────────────────
-// Persister l'état collapsed dans localStorage
 const STORAGE_KEY = 'sidebar_collapsed';
 const sidebarCollapsed = ref<boolean>(
     localStorage.getItem(STORAGE_KEY) === 'true'
 );
 
-// Sauvegarder à chaque changement
-import { watch } from 'vue';
 watch(sidebarCollapsed, (val) => {
     localStorage.setItem(STORAGE_KEY, String(val));
 });

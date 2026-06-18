@@ -6,28 +6,36 @@ export default {
         './resources/views/**/*.blade.php',
         './resources/js/**/*.{vue,ts,js}',
     ],
+    safelist: [
+        // Variantes AppBadge dynamiques (typeMap) — purple, cyan, amber
+        // Les classes sont construites dynamiquement donc non détectées par le scanner Tailwind
+        'bg-purple-100', 'text-purple-700', 'dark:bg-purple-900/30', 'dark:text-purple-300', 'bg-purple-500',
+        'bg-cyan-100',   'text-cyan-700',   'dark:bg-cyan-900/30',   'dark:text-cyan-300',   'bg-cyan-500',
+        'bg-amber-100',  'text-amber-700',  'dark:bg-amber-900/30',  'dark:text-amber-300',  'bg-amber-500',
+    ],
     darkMode: 'class',
     theme: {
         extend: {
             fontFamily: {
                 inter: ['Inter', ...defaultTheme.fontFamily.sans],
+                sans: ['Inter', ...defaultTheme.fontFamily.sans],
             },
             colors: {
-                // Couleur primaire : Violet
+                // Couleur primaire : Violet periwinkle (bouton "Goals" — #7B74F0)
                 primary: {
-                    50:  '#f5f3ff',
-                    100: '#ede9fe',
-                    200: '#ddd6fe',
-                    300: '#c4b5fd',
-                    400: '#a78bfa',
-                    500: '#8b5cf6',
-                    600: '#7c3aed', // principale
-                    700: '#6d28d9',
-                    800: '#5b21b6',
-                    900: '#4c1d95',
-                    950: '#2e1065',
+                    50:  '#f0efff',
+                    100: '#e3e1fe',
+                    200: '#cbc8fc',
+                    300: '#aca4fa',
+                    400: '#9189f5',
+                    500: '#8880f2',
+                    600: '#7B74F0', // principale — periwinkle doux
+                    700: '#6660d4',
+                    800: '#534fb2',
+                    900: '#403d8c',
+                    950: '#252360',
                 },
-                // Couleur secondaire : Indigo
+                // Couleur secondaire : Indigo doux
                 secondary: {
                     50:  '#eef2ff',
                     100: '#e0e7ff',
@@ -44,33 +52,41 @@ export default {
                 success: {
                     50:  '#f0fdf4',
                     100: '#dcfce7',
+                    300: '#86efac',
                     500: '#22c55e',
                     600: '#16a34a',
                     700: '#15803d',
+                    900: '#14532d',
                 },
                 // Danger
                 danger: {
                     50:  '#fff1f2',
                     100: '#ffe4e6',
+                    300: '#fca5a5',
                     500: '#ef4444',
                     600: '#dc2626',
                     700: '#b91c1c',
+                    900: '#7f1d1d',
                 },
                 // Warning
                 warning: {
                     50:  '#fffbeb',
                     100: '#fef3c7',
+                    300: '#fcd34d',
                     500: '#f59e0b',
                     600: '#d97706',
                     700: '#b45309',
+                    900: '#78350f',
                 },
                 // Info
                 info: {
                     50:  '#eff6ff',
                     100: '#dbeafe',
+                    300: '#93c5fd',
                     500: '#3b82f6',
                     600: '#2563eb',
                     700: '#1d4ed8',
+                    900: '#1e3a8a',
                 },
             },
             boxShadow: {

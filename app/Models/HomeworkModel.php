@@ -115,6 +115,11 @@ class HomeworkModel extends Model
         return $this->belongsTo(User::class, 'student_id');
     }
 
+    public function student()
+    {
+        return $this->belongsTo(User::class, 'student_id');
+    }
+
     public static function getAllHomeworks(int $perpage)
     {
         $results = HomeworkModel::select(

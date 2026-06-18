@@ -16,8 +16,36 @@ class AdminController extends Controller
 {
     public function list()
     {
+        $perPage = min((int) request('per_page', 15), 100);
+
+        // Multi-tenant : le super admin voit tous les admins, un admin ne voit que ceux de son école
+        $currentUser = \Illuminate\Support\Facades\Auth::user();
+        if ($currentUser->user_type === 0) {
+            $admins = User::getAllAdmin($perPage);
+        } else {
+            $admins = User::getAllAdmin($perPage, $currentUser->school_id);
+        }
+
+        // Enrichir avec school_name (évite le N+1)
+        $schoolIds = $admins->getCollection()->pluck('school_id')->filter()->unique()->values();
+        $schools   = \App\Models\School::whereIn('id', $schoolIds)->get()->keyBy('id');
+
+        $admins->getCollection()->transform(function ($admin) use ($schools) {
+            $admin->is_online   = \Illuminate\Support\Facades\Cache::has('OnlineUser.' . $admin->id);
+            $school             = $admin->school_id ? ($schools[$admin->school_id] ?? null) : null;
+            $admin->school_name = $school?->school_name ?? null;
+            return $admin;
+        });
+
+        // Passer les écoles disponibles pour le formulaire de création (super admin uniquement)
+        $schools = $currentUser->user_type === 0
+            ? \App\Models\School::where('is_delete', 0)->where('status', 1)->orderBy('school_name')->get(['id', 'school_name', 'school_code'])
+            : collect();
+
         return Inertia::render('Admin/Admins/Index', [
-            'admins' => User::getAllAdmin(15),
+            'admins'  => $admins,
+            'schools' => $schools,
+            'currentSchoolId' => $currentUser->school_id,
         ]);
     }
 
@@ -29,6 +57,7 @@ class AdminController extends Controller
             'email'     => 'required|email|unique:users,email',
             'password'  => 'required|string|min:6',
             'status'    => 'required|in:0,1',
+            'school_id' => 'nullable|integer|exists:schools,id',
         ]);
 
         try {
@@ -46,7 +75,15 @@ class AdminController extends Controller
                 'password'   => Hash::make($request->password),
                 'user_type'  => 1,
                 'created_by' => Auth::id(),
-            ])->save();
+                // Multi-tenant : associer l'admin à l'école sélectionnée (super admin) ou à l'école du créateur
+                'school_id'  => $request->filled('school_id') ? (int) $request->school_id : Auth::user()->school_id,
+            ]);
+
+            if ($request->filled('mobile_number')) {
+                $admin->mobile_number = trim($request->mobile_number);
+            }
+
+            $admin->save();
 
             return back()->with('success', 'Administrateur créé avec succès.');
         } catch (\Exception $e) {
@@ -75,6 +112,12 @@ class AdminController extends Controller
                 'email'     => trim($request->email),
                 'status'    => $request->status,
             ]);
+
+            if ($request->filled('mobile_number')) {
+                $admin->mobile_number = trim($request->mobile_number);
+            } elseif ($request->has('mobile_number')) {
+                $admin->mobile_number = null;
+            }
 
             if ($request->filled('password')) {
                 $admin->password = Hash::make($request->password);

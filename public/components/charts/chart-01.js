@@ -11,7 +11,7 @@ const chart01 = () => {
     ],
     colors: ["#465fff"],
     chart: {
-      fontFamily: "Outfit, sans-serif",
+      fontFamily: "Inter, sans-serif",
       type: "bar",
       height: 180,
       toolbar: {
@@ -60,7 +60,7 @@ const chart01 = () => {
       show: true,
       position: "top",
       horizontalAlign: "left",
-      fontFamily: "Outfit",
+      fontFamily: "Inter",
 
       markers: {
         radius: 99,
