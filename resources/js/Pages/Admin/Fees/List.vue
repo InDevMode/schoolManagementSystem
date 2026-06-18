@@ -1,24 +1,27 @@
 <template>
     <div class="space-y-6">
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div>
-                <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Rapports des contributions</h1>
-                <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">{{ feesCollections.total }} contribution(s)</p>
-            </div>
-            <a
-                v-if="can('view.fees.reports')"
-                href="/admin/feescollections/feescollects/export"
-                class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold
-                       transition-all duration-150 text-white
-                       bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800
-                       shadow-sm shadow-emerald-200 dark:shadow-emerald-900/40"
-            >
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+        <PageHeader title="Rapports des contributions" :subtitle="`${feesCollections.total} contribution(s)`" color="emerald">
+            <template #icon>
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                 </svg>
-                Exporter Excel
-            </a>
-        </div>
+            </template>
+            <template #actions>
+                <a
+                    v-if="can('view.fees.reports')"
+                    href="/admin/feescollections/feescollects/export"
+                    class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold
+                           transition-all duration-150 text-white
+                           bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800
+                           shadow-sm shadow-emerald-200 dark:shadow-emerald-900/40"
+                >
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                    </svg>
+                    Exporter Excel
+                </a>
+            </template>
+        </PageHeader>
 
         <!-- Résumé -->
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">

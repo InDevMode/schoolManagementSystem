@@ -61,15 +61,38 @@ class HandleInertiaRequests extends Middleware
         }
 
         // Partager les settings de l'école (pour le header Vue)
+        // Pour un admin/prof/élève/parent : on lit l'école à laquelle il appartient.
+        // Pour le super admin (user_type = 0) : on lit les settings globaux (SettingModel id=1).
         try {
-            $setting = \App\Models\SettingModel::getSingle(1);
-            $settings = $setting ? [
-                'school_name'       => $setting->school_name,
-                'logo_url'          => $setting->getLogo(),
-                'kkiapay_public_key'=> $setting->kkiapay_public_key ?? '',
-                'stripe_public_key' => $setting->stripe_public_key  ?? '',
-                'fedapay_public_key'=> $setting->fedapay_public_key ?? '',
-            ] : null;
+            $settings = null;
+
+            if ($user) {
+                if ((int) $user->user_type === 0) {
+                    // Super admin → settings globaux
+                    $setting = \App\Models\SettingModel::getSingle(1);
+                    if ($setting) {
+                        $settings = [
+                            'school_name'        => $setting->school_name,
+                            'logo_url'           => $setting->getLogo(),
+                            'kkiapay_public_key' => $setting->kkiapay_public_key ?? '',
+                            'stripe_public_key'  => $setting->stripe_public_key  ?? '',
+                            'fedapay_public_key' => $setting->fedapay_public_key ?? '',
+                        ];
+                    }
+                } else {
+                    // Admin / autres → école de l'utilisateur
+                    $school = \App\Models\School::find($user->school_id);
+                    if ($school) {
+                        $settings = [
+                            'school_name'        => $school->school_name,
+                            'logo_url'           => $school->getLogoUrl(),
+                            'kkiapay_public_key' => $school->kkiapay_public_key ?? '',
+                            'stripe_public_key'  => $school->stripe_public_key  ?? '',
+                            'fedapay_public_key' => $school->fedapay_public_key ?? '',
+                        ];
+                    }
+                }
+            }
         } catch (\Exception $e) {
             $settings = null;
         }

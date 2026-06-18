@@ -1,18 +1,21 @@
 <template>
     <div class="space-y-6">
         <!-- Header -->
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div>
-                <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Matières</h1>
-                <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">{{ subjects.total }} matière(s) enregistrée(s)</p>
-            </div>
-            <AppButton v-if="canCreate" @click="openCreate">
-                <template #icon>
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
-                </template>
-                Nouvelle matière
-            </AppButton>
-        </div>
+        <PageHeader title="Matières" :subtitle="`${subjects.total} matière(s) enregistrée(s)`" color="violet">
+            <template #icon>
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                </svg>
+            </template>
+            <template #actions>
+                <AppButton v-if="canCreate" @click="openCreate">
+                    <template #icon>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
+                    </template>
+                    Nouvelle matière
+                </AppButton>
+            </template>
+        </PageHeader>
 
         <!-- Table -->
         <DataTable
@@ -215,7 +218,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import { useForm, router } from '@inertiajs/vue3';
-import { AppButton, AppInput, AppSelect, AppModal, DataTable, AppBadge } from '@/Components/UI';
+import { PageHeader, AppButton, AppInput, AppSelect, AppModal, DataTable, AppBadge } from '@/Components/UI';
 import { useCan } from '@/Composables/useCan';
 import { useToast } from '@/Composables/useToast';
 

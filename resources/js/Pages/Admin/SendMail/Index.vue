@@ -1,9 +1,12 @@
 <template>
     <div class="space-y-6 max-w-2xl mx-auto">
-        <div>
-            <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Envoyer un mail</h1>
-            <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">Envoyez un email à un ou plusieurs utilisateurs</p>
-        </div>
+        <PageHeader title="Envoyer un mail" subtitle="Envoyez un email à un ou plusieurs utilisateurs" color="indigo">
+            <template #icon>
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                </svg>
+            </template>
+        </PageHeader>
 
         <div class="card p-6">
             <form @submit.prevent="submitForm" class="space-y-4">
@@ -84,7 +87,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { useForm } from '@inertiajs/vue3';
-import { AppButton, AppInput, AppRichEditor } from '@/Components/UI';
+import { PageHeader, AppButton, AppInput, AppRichEditor } from '@/Components/UI';
 import { useCan } from '@/Composables/useCan';
 import { useToast } from '@/Composables/useToast';
 import AppMultiSelect from '@/Components/UI/AppMultiSelect.vue';

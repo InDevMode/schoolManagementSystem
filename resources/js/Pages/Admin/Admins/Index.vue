@@ -1,20 +1,23 @@
 ﻿<template>
     <div class="space-y-6">
         <!-- Header -->
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div>
-                <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Administrateurs</h1>
-                <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">{{ admins.total }} administrateur(s)</p>
-            </div>
-            <AppButton v-if="canCreate" @click="openCreate">
-                <template #icon>
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-                    </svg>
-                </template>
-                Nouvel administrateur
-            </AppButton>
-        </div>
+        <PageHeader title="Administrateurs" :subtitle="`${admins.total} administrateur(s)`" color="primary">
+            <template #icon>
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                </svg>
+            </template>
+            <template #actions>
+                <AppButton v-if="canCreate" @click="openCreate">
+                    <template #icon>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                        </svg>
+                    </template>
+                    Nouvel administrateur
+                </AppButton>
+            </template>
+        </PageHeader>
 
         <!-- Bannière mode super admin -->
         <div v-if="isSuperAdmin"
@@ -118,10 +121,23 @@
                     {{ row.is_online ? 'En ligne' : 'Hors ligne' }}
                 </span>
             </template>
-
-            <!-- Date -->
             <template #cell-created_at="{ row }">
                 <span class="text-xs text-gray-500">{{ formatDate(row.created_at as string) }}</span>
+            </template>
+
+            <!-- École (super admin uniquement) -->
+            <template #cell-school_name="{ row }">
+                <span v-if="row.school_name"
+                      class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium
+                             bg-indigo-50 text-indigo-700 border border-indigo-200
+                             dark:bg-indigo-900/20 dark:text-indigo-400 dark:border-indigo-700 whitespace-nowrap">
+                    <svg class="w-3 h-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                    </svg>
+                    {{ row.school_name }}
+                </span>
+                <span v-else class="text-gray-400 dark:text-gray-600">—</span>
             </template>
 
             <!-- Actions row -->
@@ -276,6 +292,7 @@
                             <InfoCard label="Email" :value="viewTarget.email" />
                             <InfoCard label="Inscrit le" :value="formatDate(viewTarget.created_at)" />
                             <InfoCard label="Statut" :badge="viewTarget.status == 1 ? 'success' : 'danger'" :value="viewTarget.status == 1 ? 'Actif' : 'Inactif'" />
+                            <InfoCard v-if="isSuperAdmin && viewTarget.school_name" label="École" :value="viewTarget.school_name" highlight />
                         </div>
                     </div>
                 </div>
@@ -339,7 +356,7 @@
 <script setup lang="ts">
 import { ref, computed, h, defineComponent } from 'vue';
 import { router, useForm, Link } from '@inertiajs/vue3';
-import { AppButton, AppInput, AppSelect, AppModal, AppBadge, DataTable, DetailModal } from '@/Components/UI';
+import { PageHeader, AppButton, AppInput, AppSelect, AppModal, AppBadge, DataTable, DetailModal } from '@/Components/UI';
 import UserAvatar from '@/Components/Shared/UserAvatar.vue';
 import { useToast } from '@/Composables/useToast';
 
@@ -377,6 +394,7 @@ interface Admin {
     status: number; profile_picture: string | null; created_at: string;
     is_online?: boolean; mobile_number?: string;
     id_encoded?: string;
+    school_name?: string;
 }
 
 const props = defineProps<{
@@ -433,6 +451,7 @@ const columns = computed(() => [
     { key: 'name',       label: '',               searchable: true,  visible: false },
     { key: 'email',      label: 'Email',          editable: isSuperAdmin.value, dataType: 'email' as const, sortable: true, searchable: true },
     { key: 'mobile_number', label: 'Téléphone',   editable: isSuperAdmin.value, dataType: 'tel' as const, searchable: true },
+    ...(isSuperAdmin.value ? [{ key: 'school_name', label: 'École', sortable: false, searchable: false }] : []),
     { key: 'status',     label: 'Statut',         sortable: true,    searchable: false },
     { key: 'online',     label: 'En ligne',       sortable: false,   searchable: false },
     { key: 'created_at', label: 'Créé le',        sortable: true,    searchable: false },

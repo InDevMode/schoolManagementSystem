@@ -516,10 +516,7 @@ class UserController extends Controller
         $isSuperAdmin = $currentUser->user_type === 0;
         $perPage = min((int) request('per_page', 5), 100);
 
-        $query = User::select(
-                'users.*',
-                DB::raw('(SELECT COUNT(*) FROM model_has_permissions WHERE model_has_permissions.model_id = users.id AND model_has_permissions.model_type = \'App\\\\Models\\\\User\') as direct_permissions_count')
-            )
+        $query = User::select('users.*')
             ->where('users.is_delete', 0);
 
         // ── Scoping multi-tenant ──────────────────────────────────────────

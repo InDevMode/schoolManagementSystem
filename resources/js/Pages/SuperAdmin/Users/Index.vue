@@ -1,30 +1,30 @@
-<template>
+﻿<template>
     <div class="space-y-6" @click="closeContextMenu">
 
         <!-- â”€â”€ Header â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div>
-                <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Tous les utilisateurs</h1>
-                <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
-                    {{ users.total }} utilisateur(s) au total
-                </p>
-            </div>
-            <!-- Bouton Export -->
-            <form v-if="canExport" method="POST" action="/superadmin/users/export">
-                <input type="hidden" name="_token" :value="csrf()"/>
-                <input type="hidden" name="user_type" :value="filters.user_type"/>
-                <input type="hidden" name="status" :value="filters.status"/>
-                <button type="submit"
-                        class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium
-                               bg-emerald-600 hover:bg-emerald-700 text-white transition-colors shadow-sm">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                              d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
-                    </svg>
-                    Exporter Excel
-                </button>
-            </form>
-        </div>
+        <PageHeader title="Tous les utilisateurs" :subtitle="`${users.total} utilisateur(s) au total`" color="violet">
+            <template #icon>
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+                </svg>
+            </template>
+            <template #actions>
+                <form v-if="canExport" method="POST" action="/superadmin/users/export">
+                    <input type="hidden" name="_token" :value="csrf()"/>
+                    <input type="hidden" name="user_type" :value="filters.user_type"/>
+                    <input type="hidden" name="status" :value="filters.status"/>
+                    <button type="submit"
+                            class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium
+                                   bg-emerald-600 hover:bg-emerald-700 text-white transition-colors shadow-sm">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                        </svg>
+                        Exporter Excel
+                    </button>
+                </form>
+            </template>
+        </PageHeader>
 
         <!-- â”€â”€ Bannià¨re â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
         <div v-if="isSuperAdmin" class="flex items-center gap-2.5 px-4 py-2.5 rounded-lg
@@ -340,7 +340,7 @@
             <div class="flex flex-col sm:flex-row items-center justify-between gap-3 px-5 py-4
                         border-t border-gray-100 dark:border-gray-700">
                 <p class="text-sm text-gray-500 dark:text-gray-400">
-                    <span v-if="users.total > 0">{{ users.from }}â€“{{ users.to }} sur {{ users.total }} résultat(s)</span>
+                    <span v-if="users.total > 0">{{ users.from }} &ndash; {{ users.to }} sur {{ users.total }} résultat(s)</span>
                     <span v-else>Aucun résultat</span>
                 </p>
                 <div class="flex items-center gap-1">
@@ -1005,3 +1005,4 @@ const permBadgeClass = (n: number) =>
     @apply w-6 h-6 rounded-lg flex items-center justify-center flex-shrink-0;
 }
 </style>
+

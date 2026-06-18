@@ -156,14 +156,21 @@ const handleAction = (key: string, row: Record<string, unknown>) => {
 
     <!-- En-tête -->
     <div class="flex items-center justify-between flex-wrap gap-3">
-        <div>
-            <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Rôles</h1>
-            <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
-                <span class="font-semibold text-gray-700 dark:text-gray-200">{{ activeRoles.length }}</span> actifs
-                <span v-if="deletedRoles.length" class="ml-2 text-red-500">·
-                    <span class="font-semibold">{{ deletedRoles.length }}</span> supprimé{{ deletedRoles.length > 1 ? 's' : '' }}
-                </span>
-            </p>
+        <div class="flex items-center gap-4">
+            <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-violet-500 to-purple-700 flex items-center justify-center shadow-lg shadow-violet-500/30 flex-shrink-0">
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                </svg>
+            </div>
+            <div>
+                <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Rôles</h1>
+                <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
+                    <span class="font-semibold text-gray-700 dark:text-gray-200">{{ activeRoles.length }}</span> actifs
+                    <span v-if="deletedRoles.length" class="ml-2 text-red-500">·
+                        <span class="font-semibold">{{ deletedRoles.length }}</span> supprimé{{ deletedRoles.length > 1 ? 's' : '' }}
+                    </span>
+                </p>
+            </div>
         </div>
         <div class="flex items-center gap-2 flex-wrap">
             <!-- Toggle actifs/supprimés -->

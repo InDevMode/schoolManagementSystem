@@ -26,8 +26,14 @@ class AdminController extends Controller
             $admins = User::getAllAdmin($perPage, $currentUser->school_id);
         }
 
-        $admins->getCollection()->transform(function ($admin) {
-            $admin->is_online = \Illuminate\Support\Facades\Cache::has('OnlineUser.' . $admin->id);
+        // Enrichir avec school_name (évite le N+1)
+        $schoolIds = $admins->getCollection()->pluck('school_id')->filter()->unique()->values();
+        $schools   = \App\Models\School::whereIn('id', $schoolIds)->get()->keyBy('id');
+
+        $admins->getCollection()->transform(function ($admin) use ($schools) {
+            $admin->is_online   = \Illuminate\Support\Facades\Cache::has('OnlineUser.' . $admin->id);
+            $school             = $admin->school_id ? ($schools[$admin->school_id] ?? null) : null;
+            $admin->school_name = $school?->school_name ?? null;
             return $admin;
         });
 

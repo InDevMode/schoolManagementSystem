@@ -2,34 +2,13 @@
     <div class="space-y-6">
 
         <!-- Header -->
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div>
-                <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Matières &amp; Classes</h1>
-                <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
-                    <span class="font-semibold text-gray-700 dark:text-gray-300">{{ classSubjects.length }}</span>
-                    classe{{ classSubjects.length > 1 ? 's' : '' }} assignée{{ classSubjects.length > 1 ? 's' : '' }}
-                    &middot;
-                    <span class="font-semibold text-gray-700 dark:text-gray-300">{{ totalSubjects }}</span>
-                    matière{{ totalSubjects > 1 ? 's' : '' }} au total
-                </p>
-            </div>
-
-            <!-- Légende types -->
-            <div class="flex items-center gap-3 flex-wrap text-xs text-gray-500 dark:text-gray-400">
-                <span class="flex items-center gap-1.5">
-                    <span class="w-2.5 h-2.5 rounded-full bg-violet-500 flex-shrink-0"></span>
-                    Obligatoire
-                </span>
-                <span class="flex items-center gap-1.5">
-                    <span class="w-2.5 h-2.5 rounded-full bg-violet-400 flex-shrink-0"></span>
-                    Optionnel
-                </span>
-                <span class="flex items-center gap-1.5">
-                    <span class="w-2.5 h-2.5 rounded-full bg-amber-400 flex-shrink-0"></span>
-                    Autre
-                </span>
-            </div>
-        </div>
+        <PageHeader title="Matières &amp; Classes" :subtitle="`${classSubjects.length} classe${classSubjects.length > 1 ? 's' : ''} assignée${classSubjects.length > 1 ? 's' : ''} · ${totalSubjects} matière${totalSubjects > 1 ? 's' : ''}`" color="violet">
+            <template #icon>
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                </svg>
+            </template>
+        </PageHeader>
 
         <!-- Cartes classes -->
         <div v-if="classSubjects.length" class="grid grid-cols-1 lg:grid-cols-2 gap-5">

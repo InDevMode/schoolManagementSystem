@@ -124,14 +124,21 @@ const handleAction = (key: string, row: Record<string, unknown>) => {
 
     <!-- En-tête -->
     <div class="flex items-center justify-between flex-wrap gap-3">
-        <div>
-            <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Permissions</h1>
-            <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
-                <span class="font-semibold text-gray-700 dark:text-gray-200">{{ activePerms.length }}</span> actives
-                <span v-if="deletedPerms.length" class="ml-2 text-red-500">·
-                    <span class="font-semibold">{{ deletedPerms.length }}</span> supprimée{{ deletedPerms.length > 1 ? 's' : '' }}
-                </span>
-            </p>
+        <div class="flex items-center gap-4">
+            <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-violet-500 to-purple-700 flex items-center justify-center shadow-lg shadow-violet-500/30 flex-shrink-0">
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/>
+                </svg>
+            </div>
+            <div>
+                <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Permissions</h1>
+                <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
+                    <span class="font-semibold text-gray-700 dark:text-gray-200">{{ activePerms.length }}</span> actives
+                    <span v-if="deletedPerms.length" class="ml-2 text-red-500">·
+                        <span class="font-semibold">{{ deletedPerms.length }}</span> supprimée{{ deletedPerms.length > 1 ? 's' : '' }}
+                    </span>
+                </p>
+            </div>
         </div>
         <div class="flex items-center gap-2 flex-wrap">
             <!-- Toggle actives/supprimées -->

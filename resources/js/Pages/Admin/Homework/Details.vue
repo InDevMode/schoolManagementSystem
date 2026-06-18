@@ -1,13 +1,18 @@
 <template>
     <div class="space-y-6">
-        <div class="flex items-center gap-3">
-            <Link href="/admin/practicalworks/homework/list" class="p-2 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
-            </Link>
-            <div>
-                <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Détails du travail</h1>
-            </div>
-        </div>
+        <PageHeader title="Détails du travail" subtitle="Informations complètes sur le travail de maison" color="indigo">
+            <template #icon>
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
+                </svg>
+            </template>
+            <template #actions>
+                <Link href="/admin/practicalworks/homework/list" class="inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-700 text-sm font-medium text-gray-500 hover:text-primary-600 hover:border-primary-400 dark:text-gray-400 dark:hover:text-primary-400 transition-colors">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
+                    Retour
+                </Link>
+            </template>
+        </PageHeader>
 
         <div v-if="work" class="card p-6 space-y-4">
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">

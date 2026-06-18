@@ -1,34 +1,49 @@
 <template>
     <div class="space-y-6">
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div>
-                <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Bulletins scolaires</h1>
-                <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">Génération et publication des bulletins</p>
-            </div>
-        </div>
+        <PageHeader title="Bulletins scolaires" subtitle="Génération et publication des bulletins" color="emerald">
+            <template #icon>
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
+            </template>
+        </PageHeader>
 
         <!-- Génération en masse -->
         <div class="card p-5">
             <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-4">Générer les bulletins d'une classe</h3>
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 items-end">
+
+            <!-- Filtres -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                 <AppSelect v-model="genForm.class_id"  label="Classe"   :options="classOptions"  :block="true" />
                 <AppSelect v-model="genForm.period_id" label="Période"  :options="periodOptions" :block="true" />
-                <div class="flex gap-2 flex-wrap">
-                    <AppButton variant="secondary" :loading="previewing" @click="previewAverages">
-                        Aperçu moyennes
-                    </AppButton>
-                    <AppButton v-if="can('action.bulletins.generate')" :loading="generating" @click="generateAll">
-                        <template #icon>
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 11h.01M12 11h.01M15 11h.01M4 7h16a1 1 0 011 1v10a1 1 0 01-1 1H4a1 1 0 01-1-1V8a1 1 0 011-1z"/>
-                            </svg>
-                        </template>
-                        Générer tous les bulletins
-                    </AppButton>
-                    <AppButton v-if="hasUnpublished && can('action.bulletins.publish')" variant="success" :loading="publishing" @click="publishAll">
-                        Publier tous
-                    </AppButton>
-                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="flex flex-wrap items-center gap-2">
+                <AppButton variant="secondary" :loading="previewing" @click="previewAverages">
+                    <template #icon>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0zM2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                        </svg>
+                    </template>
+                    Aperçu moyennes
+                </AppButton>
+                <AppButton v-if="can('action.bulletins.generate')" :loading="generating" @click="generateAll">
+                    <template #icon>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 11h.01M12 11h.01M15 11h.01M4 7h16a1 1 0 011 1v10a1 1 0 01-1 1H4a1 1 0 01-1-1V8a1 1 0 011-1z"/>
+                        </svg>
+                    </template>
+                    Générer tous les bulletins
+                </AppButton>
+                <AppButton v-if="hasUnpublished && can('action.bulletins.publish')" variant="success" :loading="publishing" @click="publishAll">
+                    <template #icon>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                        </svg>
+                    </template>
+                    Publier tous
+                </AppButton>
             </div>
 
             <!-- Message informatif : rappel de régénérer après validation de notes -->

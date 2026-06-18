@@ -1,13 +1,12 @@
 <template>
     <div class="space-y-6">
-        <div class="flex items-center justify-between">
-            <div>
-                <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Notes à valider</h1>
-                <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
-                    {{ grades.total }} note(s) en attente de validation
-                </p>
-            </div>
-        </div>
+        <PageHeader title="Notes à valider" :subtitle="`${grades.total} note(s) en attente de validation`" color="amber">
+            <template #icon>
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+            </template>
+        </PageHeader>
 
         <!-- Groupes par évaluation -->
         <div v-if="groupedGrades.length" class="space-y-4">
@@ -193,7 +192,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import { router } from '@inertiajs/vue3';
-import { AppButton, AppModal } from '@/Components/UI';
+import { PageHeader, AppButton, AppModal } from '@/Components/UI';
 import { useCan } from '@/Composables/useCan';
 import { useToast } from '@/Composables/useToast';
 import axios from 'axios';

@@ -1,8 +1,13 @@
 <template>
     <div class="space-y-6">
         <!-- En-tête -->
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div class="flex items-center gap-3">
+        <PageHeader title="Corbeille — Travaux de maison" :subtitle="`${works.total} travail(aux) supprimé(s)`" color="red">
+            <template #icon>
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                </svg>
+            </template>
+            <template #actions>
                 <AppButton variant="ghost" size="sm" href="/admin/practicalworks/homework/list">
                     <template #icon>
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -11,12 +16,8 @@
                     </template>
                     Retour
                 </AppButton>
-                <div>
-                    <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Corbeille — Travaux de maison</h1>
-                    <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">{{ works.total }} travail(aux) supprimé(s)</p>
-                </div>
-            </div>
-        </div>
+            </template>
+        </PageHeader>
 
         <!-- Alerte info -->
         <div class="flex items-start gap-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg p-4">
@@ -71,7 +72,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { router } from '@inertiajs/vue3';
-import { AppButton, DataTable } from '@/Components/UI';
+import { PageHeader, AppButton, DataTable } from '@/Components/UI';
 import { stripHtml } from '@/Utils/html';
 import { useToast } from '@/Composables/useToast';
 

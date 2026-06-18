@@ -1,21 +1,22 @@
 <template>
     <div class="space-y-6">
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div>
-                <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Périodes académiques</h1>
-                <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
-                    {{ periods.total }} période(s) — Semestres (publiques) ou Trimestres (privées)
-                </p>
-            </div>
-            <AppButton v-if="can('action.exams.create')" @click="openCreate">
-                <template #icon>
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-                    </svg>
-                </template>
-                Nouvelle période
-            </AppButton>
-        </div>
+        <PageHeader title="Périodes académiques" :subtitle="`${periods.total} période(s) — Semestres ou Trimestres`" color="violet">
+            <template #icon>
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                </svg>
+            </template>
+            <template #actions>
+                <AppButton v-if="can('action.exams.create')" @click="openCreate">
+                    <template #icon>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                        </svg>
+                    </template>
+                    Nouvelle période
+                </AppButton>
+            </template>
+        </PageHeader>
 
         <!-- Infos types -->
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -162,7 +163,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import { useForm, router } from '@inertiajs/vue3';
-import { AppButton, AppInput, AppSelect, AppModal, DataTable, AppBadge } from '@/Components/UI';
+import { PageHeader, AppButton, AppInput, AppSelect, AppModal, DataTable, AppBadge } from '@/Components/UI';
 import { useCan } from '@/Composables/useCan';
 import { useToast } from '@/Composables/useToast';
 

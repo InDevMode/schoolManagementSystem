@@ -2,27 +2,23 @@
     <div class="space-y-6">
 
         <!-- En-tête -->
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div>
-                <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Congés du personnel</h1>
-                <div class="flex items-center gap-2 mt-1">
-                    <p class="text-sm text-gray-500 dark:text-gray-400">{{ leaves.total }} demande(s)</p>
-                    <span v-if="pendingCount > 0"
-                        class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-warning-100 dark:bg-warning-900/30 text-warning-700 dark:text-warning-300">
-                        <span class="w-1.5 h-1.5 rounded-full bg-warning-500 animate-pulse inline-block"/>
-                        {{ pendingCount }} en attente
-                    </span>
-                </div>
-            </div>
-            <AppButton @click="showCreate = true">
-                <template #icon>
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-                    </svg>
-                </template>
-                Nouvelle demande
-            </AppButton>
-        </div>
+        <PageHeader title="Congés du personnel" :subtitle="`${leaves.total} demande(s)${pendingCount > 0 ? ` · ${pendingCount} en attente` : ''}`" color="amber">
+            <template #icon>
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                </svg>
+            </template>
+            <template #actions>
+                <AppButton @click="showCreate = true">
+                    <template #icon>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                        </svg>
+                    </template>
+                    Nouvelle demande
+                </AppButton>
+            </template>
+        </PageHeader>
 
         <!-- Filtres -->
         <div class="card p-4">
@@ -415,7 +411,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import { useForm, router } from '@inertiajs/vue3';
-import { AppButton, AppInput, AppSelect, AppModal } from '@/Components/UI';
+import { PageHeader, AppButton, AppInput, AppSelect, AppModal } from '@/Components/UI';
 import { useToast } from '@/Composables/useToast';
 
 const toast = useToast();

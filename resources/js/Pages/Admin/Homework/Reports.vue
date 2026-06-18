@@ -1,20 +1,23 @@
 <template>
     <div class="space-y-6">
         <!-- En-tête -->
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div>
-                <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Rapports — Travaux de maison</h1>
-                <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">{{ homeworks.total }} soumission(s)</p>
-            </div>
-            <AppButton variant="ghost" size="sm" href="/admin/practicalworks/homework/list">
-                <template #icon>
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                    </svg>
-                </template>
-                Liste des travaux
-            </AppButton>
-        </div>
+        <PageHeader title="Rapports — Travaux de maison" :subtitle="`${homeworks.total} soumission(s)`" color="indigo">
+            <template #icon>
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                </svg>
+            </template>
+            <template #actions>
+                <AppButton variant="ghost" size="sm" href="/admin/practicalworks/homework/list">
+                    <template #icon>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                        </svg>
+                    </template>
+                    Liste des travaux
+                </AppButton>
+            </template>
+        </PageHeader>
 
         <!-- Info rôle -->
         <div v-if="!isSuperAdmin" class="flex items-start gap-3 bg-violet-50 dark:bg-violet-900/20 border border-violet-200 dark:border-violet-800 rounded-lg p-4">
@@ -81,7 +84,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue';
-import { AppBadge, AppButton, DataTable } from '@/Components/UI';
+import { PageHeader, AppBadge, AppButton, DataTable } from '@/Components/UI';
 import { stripHtml } from '@/Utils/html';
 
 interface HomeworkReport {

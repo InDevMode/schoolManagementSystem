@@ -1,18 +1,21 @@
 <template>
     <div class="space-y-6">
         <!-- Header -->
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div>
-                <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Assignation Matières-Classes</h1>
-                <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">{{ classSubjects.total }} assignation(s)</p>
-            </div>
-            <AppButton v-if="canCreate" @click="openCreate">
-                <template #icon>
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
-                </template>
-                Nouvelle assignation
-            </AppButton>
-        </div>
+        <PageHeader title="Assignation Matières-Classes" :subtitle="`${classSubjects.total} assignation(s)`" color="indigo">
+            <template #icon>
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/>
+                </svg>
+            </template>
+            <template #actions>
+                <AppButton v-if="canCreate" @click="openCreate">
+                    <template #icon>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
+                    </template>
+                    Nouvelle assignation
+                </AppButton>
+            </template>
+        </PageHeader>
 
         <!-- Table -->
         <DataTable

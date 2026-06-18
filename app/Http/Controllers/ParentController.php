@@ -18,8 +18,15 @@ class ParentController extends Controller
     {
         $perPage = min((int) request('per_page', 15), 100);
         $parents = User::getAllParent($perPage);
-        $parents->getCollection()->transform(function ($p) {
-            $p->is_online = \Illuminate\Support\Facades\Cache::has('OnlineUser.' . $p->id);
+
+        // Enrichir avec school_name (évite le N+1)
+        $schoolIds = $parents->getCollection()->pluck('school_id')->filter()->unique()->values();
+        $schools   = \App\Models\School::whereIn('id', $schoolIds)->get()->keyBy('id');
+
+        $parents->getCollection()->transform(function ($p) use ($schools) {
+            $p->is_online   = \Illuminate\Support\Facades\Cache::has('OnlineUser.' . $p->id);
+            $school         = $p->school_id ? ($schools[$p->school_id] ?? null) : null;
+            $p->school_name = $school?->school_name ?? null;
             return $p;
         });
 
@@ -57,6 +64,7 @@ class ParentController extends Controller
                 'status'        => $request->status,
                 'user_type'     => 4,
                 'created_by'    => Auth::id(),
+                'school_id'     => (Auth::user()->user_type !== 0) ? Auth::user()->school_id : null,
             ]);
 
             if ($request->filled('password')) {

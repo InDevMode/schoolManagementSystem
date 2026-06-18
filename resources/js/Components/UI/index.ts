@@ -17,3 +17,4 @@ export { default as DataTable }      from './DataTable.vue';
 export { default as ConfirmDialog }  from './ConfirmDialog.vue';
 export { default as ToastContainer } from './ToastContainer.vue';
 export { default as FileTypeIcon }    from './FileTypeIcon.vue';
+export { default as PageHeader }     from './PageHeader.vue';

@@ -144,11 +144,19 @@ class User extends Authenticatable
 
     public static function getAllStudent(int $perPage)
     {
+        $user         = \Illuminate\Support\Facades\Auth::user();
+        $isSuperAdmin = $user && (int) $user->user_type === 0;
+
         $results = User::select('users.*', 'class.name as class_name', 'parent.name as parent_name', 'parent.last_name as parent_last_name')
             ->join('users as parent', 'parent.id', '=', 'users.parent_id', 'left')
             ->join('class', 'class.id', '=', 'users.class_id')
             ->where('users.user_type', '=', 3)
             ->where('users.is_delete', '=', 0);
+
+        // Scoping multi-tenant
+        if (! $isSuperAdmin && $user) {
+            $results->where('users.school_id', $user->school_id);
+        }
 
         $filters = [
             'users.admission_number' => strtolower(Request::get('admission_number')),
@@ -189,10 +197,17 @@ class User extends Authenticatable
 
     public static function getAllParent(int $perPage)
     {
+        $user         = \Illuminate\Support\Facades\Auth::user();
+        $isSuperAdmin = $user && (int) $user->user_type === 0;
+
         $results = User::select('users.*')
             ->where('users.user_type', 4)
-            ->where('users.is_delete', '=', 0)
             ->where('users.is_delete', '=', 0);
+
+        // Scoping multi-tenant
+        if (! $isSuperAdmin && $user) {
+            $results->where('users.school_id', $user->school_id);
+        }
 
         $filters = [
             'users.name' => strtolower(Request::get('name')),
@@ -225,8 +240,16 @@ class User extends Authenticatable
 
     public static function getAllTeacher(int $perPage)
     {
+        $user         = \Illuminate\Support\Facades\Auth::user();
+        $isSuperAdmin = $user && (int) $user->user_type === 0;
+
         $results = User::select('users.*')
             ->where('users.user_type', 2);
+
+        // Scoping multi-tenant
+        if (! $isSuperAdmin && $user) {
+            $results->where('users.school_id', $user->school_id);
+        }
 
         $filters = [
             'users.name' => strtolower(Request::get('name')),
@@ -553,19 +576,29 @@ class User extends Authenticatable
             ->first();
     }
 
-    public static function getTotalUserWithUserType(int $user_type)
+    public static function getTotalUserWithUserType(int $user_type, ?int $schoolId = null)
     {
-        return User::select('users.id')
+        $q = User::select('users.id')
             ->where('user_type', $user_type)
-            ->where('is_delete', 0)
-            ->count();
+            ->where('is_delete', 0);
+
+        if ($schoolId !== null) {
+            $q->where('school_id', $schoolId);
+        }
+
+        return $q->count();
     }
 
-    public static function getTotalUser()
+    public static function getTotalUser(?int $schoolId = null)
     {
-        return User::select('users.id')
-            ->where('is_delete', 0)
-            ->count();
+        $q = User::select('users.id')->where('is_delete', 0);
+
+        if ($schoolId !== null) {
+            // Scoping école : on exclut le super admin (user_type=0) qui n'appartient à aucune école
+            $q->where('school_id', $schoolId)->where('user_type', '!=', 0);
+        }
+
+        return $q->count();
     }
 
     public static function getTotalTeacherStudent()
@@ -671,11 +704,18 @@ class User extends Authenticatable
 
     public static function getAllStudentList()
     {
+        $user         = \Illuminate\Support\Facades\Auth::user();
+        $isSuperAdmin = $user && (int) $user->user_type === 0;
+
         $results = User::select('users.*', 'class.name as class_name', 'parent.name as parent_name', 'parent.last_name as parent_last_name')
             ->join('users as parent', 'parent.id', '=', 'users.parent_id', 'left')
             ->join('class', 'class.id', '=', 'users.class_id')
             ->where('users.user_type', '=', 3)
             ->where('users.is_delete', '=', 0);
+
+        if (! $isSuperAdmin && $user) {
+            $results->where('users.school_id', $user->school_id);
+        }
 
         $filters = [
             'users.admission_number' => strtolower(Request::get('admission_number')),
@@ -716,8 +756,15 @@ class User extends Authenticatable
 
     public static function getAllTeacherList()
     {
+        $user         = \Illuminate\Support\Facades\Auth::user();
+        $isSuperAdmin = $user && (int) $user->user_type === 0;
+
         $results = User::select('users.*')
             ->where('users.user_type', '=', 2);
+
+        if (! $isSuperAdmin && $user) {
+            $results->where('users.school_id', $user->school_id);
+        }
 
         $filters = [
             'users.name' => strtolower(Request::get('name')),
@@ -758,10 +805,16 @@ class User extends Authenticatable
 
     public static function getAllParentList()
     {
+        $user         = \Illuminate\Support\Facades\Auth::user();
+        $isSuperAdmin = $user && (int) $user->user_type === 0;
+
         $results = User::select('users.*')
             ->where('users.user_type', '=', 4)
-            ->where('users.is_delete', '=', 0)
             ->where('users.is_delete', '=', 0);
+
+        if (! $isSuperAdmin && $user) {
+            $results->where('users.school_id', $user->school_id);
+        }
 
         $filters = [
             'users.name' => strtolower(Request::get('name')),

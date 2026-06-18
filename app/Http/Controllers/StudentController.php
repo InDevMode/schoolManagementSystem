@@ -22,8 +22,15 @@ class StudentController extends Controller
     {
         $perPage  = min((int) request('per_page', 15), 100);
         $students = User::getAllStudent($perPage);
-        $students->getCollection()->transform(function ($s) {
-            $s->is_online = \Illuminate\Support\Facades\Cache::has('OnlineUser.' . $s->id);
+
+        // Enrichir avec school_name (évite le N+1)
+        $schoolIds = $students->getCollection()->pluck('school_id')->filter()->unique()->values();
+        $schools   = \App\Models\School::whereIn('id', $schoolIds)->get()->keyBy('id');
+
+        $students->getCollection()->transform(function ($s) use ($schools) {
+            $s->is_online   = \Illuminate\Support\Facades\Cache::has('OnlineUser.' . $s->id);
+            $school         = $s->school_id ? ($schools[$s->school_id] ?? null) : null;
+            $s->school_name = $school?->school_name ?? null;
             return $s;
         });
 
@@ -79,6 +86,7 @@ class StudentController extends Controller
                 'status'           => $request->status,
                 'user_type'        => 3,
                 'created_by'       => Auth::id(),
+                'school_id'        => (Auth::user()->user_type !== 0) ? Auth::user()->school_id : null,
             ]);
 
             if ($request->filled('password')) {

@@ -1,19 +1,23 @@
 ﻿<template>
     <div class="space-y-6">
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div>
-                <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Apprenants</h1>
-                <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">{{ students.total }} apprenant(s)</p>
-            </div>
-            <AppButton v-if="canCreate" @click="openCreate">
-                <template #icon>
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-                    </svg>
-                </template>
-                Nouvel apprenant
-            </AppButton>
-        </div>
+        <!-- Header -->
+        <PageHeader title="Apprenants" :subtitle="`${students.total} apprenant(s)`" color="primary">
+            <template #icon>
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/>
+                </svg>
+            </template>
+            <template #actions>
+                <AppButton v-if="canCreate" @click="openCreate">
+                    <template #icon>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                        </svg>
+                    </template>
+                    Nouvel apprenant
+                </AppButton>
+            </template>
+        </PageHeader>
 
         <div v-if="isSuperAdmin"
              class="flex items-center gap-2.5 px-4 py-2.5 rounded-lg bg-primary-50 dark:bg-primary-900/20 border border-primary-200 dark:border-primary-700 text-sm">
@@ -91,6 +95,8 @@
                 </span>
             </template>
 
+
+
             <!-- Email -->
             <template #cell-email="{ row }">
                 <div class="group/email flex items-center gap-1 min-w-0">
@@ -113,6 +119,35 @@
                         </svg>
                     </button>
                 </div>
+            </template>
+
+            <!-- Genre -->
+            <template #cell-gender="{ row }">
+                <AppBadge :variant="row.gender === 'male' ? 'primary' : row.gender === 'female' ? 'warning' : 'gray'">
+                    {{ row.gender === 'male' ? 'Masculin' : row.gender === 'female' ? 'Féminin' : row.gender ? row.gender : '—' }}
+                </AppBadge>
+            </template>
+
+            <!-- École (super admin uniquement) -->
+            <template #cell-school_name="{ row }">
+                <span v-if="row.school_name"
+                      class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium
+                             bg-indigo-50 text-indigo-700 border border-indigo-200
+                             dark:bg-indigo-900/20 dark:text-indigo-400 dark:border-indigo-700 whitespace-nowrap">
+                    <svg class="w-3 h-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                    </svg>
+                    {{ row.school_name }}
+                </span>
+                <span v-else class="text-gray-400 dark:text-gray-600">—</span>
+            </template>
+
+            <!-- Date d'admission -->
+            <template #cell-admission_date="{ row }">
+                <span class="text-xs text-gray-600 dark:text-gray-400">
+                    {{ row.admission_date ? new Date(row.admission_date).toLocaleDateString('fr-FR') : '—' }}
+                </span>
             </template>
 
             <!-- Statut -->
@@ -321,6 +356,10 @@
                             <InfoCard label="Téléphone" :value="viewTarget.mobile_number" mono />
                             <InfoCard label="Genre" :value="viewTarget.gender === 'male' ? 'Masculin' : viewTarget.gender === 'female' ? 'Féminin' : viewTarget.gender" />
                             <InfoCard label="Statut" :badge="viewTarget.status == 1 ? 'success' : 'danger'" :value="viewTarget.status == 1 ? 'Actif' : 'Inactif'" />
+                            <InfoCard v-if="viewTarget.parent_name || viewTarget.parent_last_name"
+                                label="Parent"
+                                :value="`${viewTarget.parent_last_name ?? ''} ${viewTarget.parent_name ?? ''}`.trim()" />
+                            <InfoCard v-if="isSuperAdmin && viewTarget.school_name" label="École" :value="viewTarget.school_name" highlight />
                         </div>
                     </div>
 
@@ -343,6 +382,39 @@
                                 :value="viewTarget.height ? `${viewTarget.height} cm` : undefined" />
                             <InfoCard label="Poids"
                                 :value="viewTarget.weight ? `${viewTarget.weight} kg` : undefined" />
+                        </div>
+                    </div>
+
+                    <!-- ── ONGLET PARENT ── -->
+                    <div v-show="activeTab === 'parent'" class="space-y-4">
+                        <div v-if="viewTarget.parent_name || viewTarget.parent_last_name">
+                            <!-- Bannière parent -->
+                            <div class="flex items-center gap-4 p-4 rounded-xl bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700 mb-4">
+                                <div class="w-12 h-12 rounded-xl bg-amber-100 dark:bg-amber-900/40 flex items-center justify-center flex-shrink-0 shadow-sm">
+                                    <svg class="w-6 h-6 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-semibold text-amber-800 dark:text-amber-300">
+                                        {{ viewTarget.parent_last_name }} {{ viewTarget.parent_name }}
+                                    </p>
+                                    <p class="text-xs text-amber-600 dark:text-amber-400 mt-0.5">Parent / Tuteur légal</p>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                <InfoCard label="Prénoms" :value="viewTarget.parent_last_name" />
+                                <InfoCard label="Nom" :value="viewTarget.parent_name" />
+                            </div>
+                        </div>
+                        <div v-else class="flex flex-col items-center justify-center py-10 text-center">
+                            <div class="w-14 h-14 rounded-2xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center mb-3">
+                                <svg class="w-7 h-7 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                </svg>
+                            </div>
+                            <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Aucun parent associé</p>
+                            <p class="text-xs text-gray-400 dark:text-gray-500 mt-1">Cet apprenant n'a pas de parent lié à son compte.</p>
                         </div>
                     </div>
                 </div>
@@ -419,7 +491,7 @@
 <script setup lang="ts">
 import { ref, computed, h, defineComponent } from 'vue';
 import { router, Link } from '@inertiajs/vue3';
-import { AppButton, AppInput, AppSelect, AppModal, AppBadge, DataTable, DetailModal } from '@/Components/UI';
+import { PageHeader, AppButton, AppInput, AppSelect, AppModal, AppBadge, DataTable, DetailModal } from '@/Components/UI';
 import UserAvatar from '@/Components/Shared/UserAvatar.vue';
 import { useToast } from '@/Composables/useToast';
 import { useCan } from '@/Composables/useCan';
@@ -470,6 +542,8 @@ interface Student {
     mobile_number?: string; blood_group?: string;
     height?: string; weight?: string;
     id_encoded?: string;
+    parent_name?: string; parent_last_name?: string;
+    school_name?: string;
 }
 interface ClassItem { id: number; name: string; }
 
@@ -526,6 +600,12 @@ const studentTabs = [
         description: 'Santé et mensurations',
         icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>',
     },
+    {
+        id: 'parent',
+        label: 'Parent',
+        description: 'Informations du parent',
+        icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>',
+    },
 ];
 const classOptions      = computed(() => props.classes.map(c => ({ value: String(c.id), label: c.name })));
 
@@ -537,6 +617,9 @@ const columns = computed(() => [
     { key: 'class_name',    label: 'Classe',        sortable: true,    searchable: true },
     { key: 'email',         label: 'Email',         sortable: true,    searchable: true },
     { key: 'mobile_number', label: 'Téléphone',     editable: isSuperAdmin.value, dataType: 'tel' as const, searchable: true },
+    { key: 'gender',        label: 'Genre',         sortable: true,    searchable: false },
+    ...(isSuperAdmin.value ? [{ key: 'school_name', label: 'École', sortable: false, searchable: false }] : []),
+    { key: 'admission_date', label: 'Date d\'admission', sortable: true, searchable: false },
     { key: 'status',        label: 'Statut',        sortable: true,    searchable: false },
     { key: 'online',        label: 'En ligne',      sortable: false,   searchable: false },
 ]);

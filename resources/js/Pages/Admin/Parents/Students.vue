@@ -2,26 +2,24 @@
     <div class="space-y-6">
 
         <!-- En-tête -->
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div class="flex items-center gap-4">
-                <!-- Bouton retour -->
+        <PageHeader :title="`Enfants de ${parent?.last_name ?? ''} ${parent?.name ?? ''}`" :subtitle="`${myStudents.data.length} enfant(s) assigné(s)`" color="violet">
+            <template #icon>
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+                </svg>
+            </template>
+            <template #actions>
                 <Link href="/admin/parent/list"
-                   class="p-2 rounded-lg border border-gray-200 dark:border-gray-700 text-gray-500
-                          hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-700 transition-colors">
+                   class="inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-700
+                          text-sm font-medium text-gray-500 hover:text-primary-600 hover:border-primary-400
+                          dark:text-gray-400 dark:hover:text-primary-400 transition-colors">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
                     </svg>
+                    Retour
                 </Link>
-                <div>
-                    <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
-                        Enfants de {{ parent?.last_name }} {{ parent?.name }}
-                    </h1>
-                    <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
-                        {{ myStudents.data.length }} enfant(s) assigné(s)
-                    </p>
-                </div>
-            </div>
-        </div>
+            </template>
+        </PageHeader>
 
         <!-- Carte parent -->
         <div class="card p-4 flex items-center gap-4">
@@ -208,7 +206,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import { router, Link } from '@inertiajs/vue3';
-import { AppBadge, ConfirmDialog } from '@/Components/UI';
+import { PageHeader, AppBadge, ConfirmDialog } from '@/Components/UI';
 import { useToast } from '@/Composables/useToast';
 
 // ── Types ─────────────────────────────────────────────────────────────────────

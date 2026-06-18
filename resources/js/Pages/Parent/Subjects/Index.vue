@@ -2,26 +2,24 @@
     <div class="space-y-6">
 
         <!-- Header avec retour -->
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div class="flex items-center gap-4">
+        <PageHeader :title="`Matières de ${student?.last_name ?? ''} ${student?.name ?? ''}`" :subtitle="`${subjects.data?.length ?? 0} matière${(subjects.data?.length ?? 0) > 1 ? 's' : ''} assignée${(subjects.data?.length ?? 0) > 1 ? 's' : ''}`" color="violet">
+            <template #icon>
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                </svg>
+            </template>
+            <template #actions>
                 <Link href="/parent/my_student"
-                      class="p-2 rounded-lg border border-gray-200 dark:border-gray-700 text-gray-500
-                             hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-700 transition-colors flex-shrink-0">
+                      class="inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-700
+                             text-sm font-medium text-gray-500 hover:text-primary-600 hover:border-primary-400
+                             dark:text-gray-400 dark:hover:text-primary-400 transition-colors">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
                     </svg>
+                    Retour
                 </Link>
-                <div>
-                    <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
-                        Matières de {{ student?.last_name }} {{ student?.name }}
-                    </h1>
-                    <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
-                        <span class="font-semibold text-gray-700 dark:text-gray-300">{{ subjects.data?.length ?? 0 }}</span>
-                        matière{{ (subjects.data?.length ?? 0) > 1 ? 's' : '' }} assignée{{ (subjects.data?.length ?? 0) > 1 ? 's' : '' }}
-                    </p>
-                </div>
-            </div>
-        </div>
+            </template>
+        </PageHeader>
 
         <!-- Grille de matières -->
         <div v-if="subjects.data?.length" class="grid grid-cols-1 lg:grid-cols-2 gap-5">

@@ -1,9 +1,12 @@
 <template>
     <div class="space-y-6">
-        <div>
-            <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Mes bulletins</h1>
-            <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">Vos résultats par période</p>
-        </div>
+        <PageHeader title="Mes bulletins" subtitle="Vos résultats par période" color="emerald">
+            <template #icon>
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
+            </template>
+        </PageHeader>
 
         <div v-if="bulletins.length" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             <div v-for="b in bulletins" :key="b.id"

@@ -1,11 +1,18 @@
 <template>
     <div class="space-y-6">
-        <div class="flex items-center gap-3">
-            <Link href="/admin/practicalworks/homework/list" class="p-2 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
-            </Link>
-            <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Soumissions ({{ homeworks.data.length }})</h1>
-        </div>
+        <PageHeader :title="`Soumissions (${homeworks.data.length})`" subtitle="Liste des soumissions des apprenants" color="indigo">
+            <template #icon>
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
+            </template>
+            <template #actions>
+                <Link href="/admin/practicalworks/homework/list" class="inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-700 text-sm font-medium text-gray-500 hover:text-primary-600 hover:border-primary-400 dark:text-gray-400 dark:hover:text-primary-400 transition-colors">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
+                    Retour
+                </Link>
+            </template>
+        </PageHeader>
 
         <DataTable
             :columns="columns"

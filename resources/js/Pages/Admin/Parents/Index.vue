@@ -1,19 +1,22 @@
 ﻿<template>
     <div class="space-y-6">
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div>
-                <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Parents</h1>
-                <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">{{ parents.total }} parent(s)</p>
-            </div>
-            <AppButton v-if="canCreate" @click="openCreate">
-                <template #icon>
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-                    </svg>
-                </template>
-                Nouveau parent
-            </AppButton>
-        </div>
+        <PageHeader title="Parents" :subtitle="`${parents.total} parent(s)`" color="violet">
+            <template #icon>
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+                </svg>
+            </template>
+            <template #actions>
+                <AppButton v-if="canCreate" @click="openCreate">
+                    <template #icon>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                        </svg>
+                    </template>
+                    Nouveau parent
+                </AppButton>
+            </template>
+        </PageHeader>
 
         <div v-if="isSuperAdmin"
              class="flex items-center gap-2.5 px-4 py-2.5 rounded-lg bg-primary-50 dark:bg-primary-900/20 border border-primary-200 dark:border-primary-700 text-sm">
@@ -85,6 +88,21 @@
                 <AppBadge :variant="row.status == 1 ? 'success' : 'danger'" dot>
                     {{ row.status == 1 ? 'Actif' : 'Inactif' }}
                 </AppBadge>
+            </template>
+
+            <!-- École (super admin uniquement) -->
+            <template #cell-school_name="{ row }">
+                <span v-if="row.school_name"
+                      class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium
+                             bg-indigo-50 text-indigo-700 border border-indigo-200
+                             dark:bg-indigo-900/20 dark:text-indigo-400 dark:border-indigo-700 whitespace-nowrap">
+                    <svg class="w-3 h-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                    </svg>
+                    {{ row.school_name }}
+                </span>
+                <span v-else class="text-gray-400 dark:text-gray-600">—</span>
             </template>
 
             <template #cell-online="{ row }">
@@ -277,6 +295,7 @@
                             <InfoCard label="Profession" :value="viewTarget.occupation" />
                             <InfoCard label="Statut" :badge="viewTarget.status == 1 ? 'success' : 'danger'" :value="viewTarget.status == 1 ? 'Actif' : 'Inactif'" />
                             <InfoCard v-if="viewTarget.address" label="Adresse" :value="viewTarget.address" />
+                            <InfoCard v-if="isSuperAdmin && viewTarget.school_name" label="École" :value="viewTarget.school_name" highlight />
                         </div>
                     </div>
 
@@ -440,7 +459,7 @@
 <script setup lang="ts">
 import { ref, computed, h, defineComponent } from 'vue';
 import { router, Link } from '@inertiajs/vue3';
-import { AppButton, AppInput, AppSelect, AppModal, DataTable, AppBadge, DetailModal } from '@/Components/UI';
+import { PageHeader, AppButton, AppInput, AppSelect, AppModal, DataTable, AppBadge, DetailModal } from '@/Components/UI';
 import UserAvatar from '@/Components/Shared/UserAvatar.vue';
 import { useToast } from '@/Composables/useToast';
 import { useCan } from '@/Composables/useCan';
@@ -479,6 +498,7 @@ interface Parent {
     occupation: string; address: string;
     profile_picture: string | null; is_online?: boolean;
     id_encoded?: string;
+    school_name?: string;
 }
 
 const props = defineProps<{
@@ -560,6 +580,7 @@ const columns = computed(() => [
     { key: 'email',         label: '',           searchable: true,  visible: false },
     { key: 'mobile_number', label: 'Téléphone',  editable: isSuperAdmin.value, dataType: 'tel' as const, searchable: true },
     { key: 'occupation',    label: 'Profession', editable: isSuperAdmin.value, sortable: true, searchable: true },
+    ...(isSuperAdmin.value ? [{ key: 'school_name', label: 'École', sortable: false, searchable: false }] : []),
     { key: 'status',        label: 'Statut',     sortable: true,    searchable: false },
     { key: 'online',        label: 'En ligne',   sortable: false,   searchable: false },
 ]);

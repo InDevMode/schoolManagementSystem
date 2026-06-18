@@ -2,14 +2,13 @@
     <div class="space-y-6">
 
         <!-- Header -->
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div>
-                <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Mes apprenants</h1>
-                <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
-                    <span class="font-semibold text-gray-700 dark:text-gray-300">{{ students.total }}</span> apprenant(s) au total
-                </p>
-            </div>
-        </div>
+        <PageHeader title="Mes apprenants" :subtitle="`${students.total} apprenant(s) au total`" color="primary">
+            <template #icon>
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0112 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/>
+                </svg>
+            </template>
+        </PageHeader>
 
         <!-- Résumé par classe -->
         <div v-if="studentsByClass.length" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">

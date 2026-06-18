@@ -19,6 +19,8 @@ class ClassController extends Controller
     public function create(Request $request): \Illuminate\Foundation\Application|\Illuminate\Routing\Redirector|\Illuminate\Http\RedirectResponse|\Illuminate\Contracts\Foundation\Application
     {
         try {
+            $user = auth()->user();
+
             $existingClass = ClassModel::getNameSingle($request->name);
 
             if ($existingClass) {
@@ -26,10 +28,12 @@ class ClassController extends Controller
             }
 
             $class = new ClassModel;
-            $class->name = trim($request->name);
-            $class->status = trim($request->status);
-            $class->amount = intval($request->amount);
-            $class->created_by = auth()->user()->id;
+            $class->name       = trim($request->name);
+            $class->status     = trim($request->status);
+            $class->amount     = intval($request->amount);
+            $class->created_by = $user->id;
+            // Assigner l'école de l'utilisateur connecté (null pour super admin)
+            $class->school_id  = ($user->user_type !== 0) ? $user->school_id : null;
             $class->save();
 
             return redirect('admin/class/list')->with('success', 'Cette classe a été créé avec succès.');

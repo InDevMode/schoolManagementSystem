@@ -2,27 +2,27 @@
     <div class="space-y-6">
 
         <!-- ── Header ───────────────────────────────────────────────────────── -->
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div class="flex items-center gap-3">
+        <PageHeader title="Historique des suppressions" :subtitle="`${deleted.total} notification${deleted.total > 1 ? 's' : ''} supprimée${deleted.total > 1 ? 's' : ''}`" color="red">
+            <template #icon>
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                </svg>
+            </template>
+            <template #actions>
                 <Link
                     href="/admin/communicate/noticeboard/list"
-                    class="w-9 h-9 rounded-lg flex items-center justify-center border border-gray-200 dark:border-gray-700
-                           text-gray-500 hover:text-primary-600 hover:border-primary-400
+                    class="inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-700
+                           text-sm font-medium text-gray-500 hover:text-primary-600 hover:border-primary-400
                            dark:text-gray-400 dark:hover:text-primary-400 transition-colors"
                     title="Retour au tableau d'affichage"
                 >
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
                     </svg>
+                    Retour
                 </Link>
-                <div>
-                    <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Historique des suppressions</h1>
-                    <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
-                        {{ deleted.total }} notification{{ deleted.total > 1 ? 's' : '' }} supprimée{{ deleted.total > 1 ? 's' : '' }}
-                    </p>
-                </div>
-            </div>
-        </div>
+            </template>
+        </PageHeader>
 
         <!-- ── Empty state ──────────────────────────────────────────────────── -->
         <div v-if="!deleted.data.length" class="flex flex-col items-center justify-center py-20 text-center">
@@ -123,7 +123,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { router, Link } from '@inertiajs/vue3';
-import { AppPagination } from '@/Components/UI';
+import { PageHeader, AppPagination } from '@/Components/UI';
 import { stripHtml } from '@/Utils/html';
 
 interface DeletedNotice {

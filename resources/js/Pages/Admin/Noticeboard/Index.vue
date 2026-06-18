@@ -2,38 +2,42 @@
     <div class="space-y-6">
 
         <!-- ── Header ────────────────────────────────────────────────────────── -->
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div>
-                <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Tableau d'affichage</h1>
-                <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
-                    {{ notices.total }} notification{{ notices.total > 1 ? 's' : '' }}
-                </p>
-            </div>
-            <div class="flex items-center gap-2">
-                <Link
-                    v-if="can('action.noticeboard.manage')"
-                    href="/admin/communicate/noticeboard/history"
-                    class="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium
-                           border border-gray-200 dark:border-gray-700
-                           text-gray-600 dark:text-gray-400
-                           hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
-                >
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-                    </svg>
-                    Historique
-                </Link>
-                <AppButton v-if="can('action.noticeboard.manage')" @click="openCreate">
-                    <template #icon>
+        <PageHeader
+            :title="`Tableau d'affichage`"
+            :subtitle="`${notices.total} notification${notices.total > 1 ? 's' : ''}`"
+            color="cyan"
+        >
+            <template #icon>
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+                </svg>
+            </template>
+            <template #actions>
+                <div class="flex items-center gap-2">
+                    <Link
+                        v-if="can('action.noticeboard.manage')"
+                        href="/admin/communicate/noticeboard/history"
+                        class="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium
+                               border border-gray-200 dark:border-gray-700
+                               text-gray-600 dark:text-gray-400
+                               hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                    >
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
                         </svg>
-                    </template>
-                    Nouvelle notification
-                </AppButton>
-            </div>
-        </div>
+                        Historique
+                    </Link>
+                    <AppButton v-if="can('action.noticeboard.manage')" @click="openCreate">
+                        <template #icon>
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                            </svg>
+                        </template>
+                        Nouvelle notification
+                    </AppButton>
+                </div>
+            </template>
+        </PageHeader>
 
         <!-- ── Empty state ───────────────────────────────────────────────────── -->
         <div v-if="!notices.data.length" class="flex flex-col items-center justify-center py-20 text-center">
@@ -361,7 +365,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import { useForm, router, Link } from '@inertiajs/vue3';
-import { AppButton, AppInput, AppModal, AppRichEditor, AppPagination } from '@/Components/UI';
+import { PageHeader, AppButton, AppInput, AppModal, AppRichEditor, AppPagination } from '@/Components/UI';
 import { useCan } from '@/Composables/useCan';
 import { useToast } from '@/Composables/useToast';
 import { stripHtml } from '@/Utils/html';
