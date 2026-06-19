@@ -83,10 +83,7 @@
                         </div>
                     </div>
 
-                    <!-- Événements + congés -->
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-3">
-
-                    <!-- Ligne 2 : Charts -->
+                    <!-- Charts : sexe + répartition -->
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-3">
                         <div class="card p-4">
                             <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-0.5">Apprenants par sexe</h3>
