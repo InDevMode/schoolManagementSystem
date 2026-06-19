@@ -10,7 +10,7 @@
                 <a
                     v-if="can('view.fees.reports')"
                     href="/admin/feescollections/feescollects/export"
-                    class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold
+                    class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold
                            transition-all duration-150 text-white
                            bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800
                            shadow-sm shadow-emerald-200 dark:shadow-emerald-900/40"
@@ -87,7 +87,7 @@
                 <template #actions="{ row }">
                     <button
                         v-if="can('action.fees.delete')"
-                        class="p-1.5 rounded-lg transition-all duration-150 text-white
+                        class="p-1.5 rounded-xl transition-all duration-150 text-white
                                bg-red-500 hover:bg-red-600 active:bg-red-700
                                shadow-sm shadow-red-200 dark:shadow-red-900/40"
                         title="Supprimer"
@@ -102,7 +102,7 @@
         </div>
 
         <!-- Totaux -->
-        <div v-if="feesCollections.data.length > 0" class="flex flex-wrap items-center gap-6 px-4 py-3 bg-gray-50 dark:bg-gray-800/60 rounded-lg border border-gray-200 dark:border-gray-700 text-sm">
+        <div v-if="feesCollections.data.length > 0" class="flex flex-wrap items-center gap-6 px-4 py-3 bg-gray-50 dark:bg-gray-800/60 rounded-xl border border-gray-200 dark:border-gray-700 text-sm">
             <span class="text-gray-500 font-medium">Totaux :</span>
             <span class="text-success-600 dark:text-success-400">Payé : <strong>{{ formatAmount(totalPaid) }}</strong></span>
             <span class="text-danger-600 dark:text-danger-400">Reste : <strong>{{ formatAmount(totalRemaining) }}</strong></span>

@@ -4,7 +4,7 @@
         <div class="flex items-center gap-3">
             <Link
                 href="/student/my_homework"
-                class="p-2 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                class="p-2 rounded-xl text-gray-400 hover:text-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
             >
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
@@ -38,7 +38,7 @@
             <div v-if="work.description">
                 <p class="text-xs text-gray-500 uppercase font-medium mb-1">Description</p>
                 <div
-                    class="text-sm text-gray-700 dark:text-gray-300 prose prose-sm dark:prose-invert max-w-none bg-gray-50 dark:bg-gray-700/40 rounded-lg p-4"
+                    class="text-sm text-gray-700 dark:text-gray-300 prose prose-sm dark:prose-invert max-w-none bg-gray-50 dark:bg-gray-700/40 rounded-xl p-4"
                     v-html="work.description"
                 />
             </div>
@@ -52,7 +52,7 @@
                         :key="att.id"
                         :href="att.url"
                         target="_blank"
-                        class="flex items-center gap-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg px-3 py-2.5 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors group"
+                        class="flex items-center gap-3 bg-gray-50 dark:bg-gray-700/50 rounded-xl px-3 py-2.5 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors group"
                     >
                         <FileTypeIcon :filename="att.file_name" size="sm" />
                         <span class="text-sm text-gray-700 dark:text-gray-300 group-hover:text-primary-600 truncate flex-1">
@@ -92,7 +92,7 @@
                     <textarea
                         v-model="form.description"
                         rows="4"
-                        class="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+                        class="w-full rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
                         placeholder="Décrivez votre travail ou ajoutez un commentaire…"
                     />
                 </div>
@@ -101,7 +101,7 @@
                         Document <span class="text-gray-400 font-normal">(optionnel)</span>
                     </label>
                     <div
-                        class="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-4 text-center cursor-pointer hover:border-primary-400 transition-colors"
+                        class="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-xl p-4 text-center cursor-pointer hover:border-primary-400 transition-colors"
                         @dragover.prevent
                         @drop.prevent="onDrop"
                         @click="fileInput?.click()"
@@ -117,7 +117,7 @@
                         <input ref="fileInput" type="file" class="hidden" @change="onFileChange" />
                     </div>
                     <!-- Fichier sélectionné -->
-                    <div v-if="docFile" class="mt-3 flex items-center justify-between bg-gray-50 dark:bg-gray-700/50 rounded-lg px-3 py-2">
+                    <div v-if="docFile" class="mt-3 flex items-center justify-between bg-gray-50 dark:bg-gray-700/50 rounded-xl px-3 py-2">
                         <div class="flex items-center gap-2 min-w-0">
                             <FileTypeIcon :filename="docFile.name" size="sm" />
                             <span class="text-sm text-gray-700 dark:text-gray-300 truncate">{{ docFile.name }}</span>

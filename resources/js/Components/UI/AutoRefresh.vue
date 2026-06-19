@@ -144,7 +144,7 @@
                                 v-for="opt in options"
                                 :key="opt.value"
                                 :class="[
-                                    'px-2 py-1.5 rounded-lg text-xs font-medium transition-all duration-150 border',
+                                    'px-2 py-1.5 rounded-xl text-xs font-medium transition-all duration-150 border',
                                     selectedValue === opt.value
                                         ? 'bg-primary-600 text-white border-primary-600 shadow-sm'
                                         : 'bg-gray-50 dark:bg-gray-700 text-gray-600 dark:text-gray-300 border-gray-200 dark:border-gray-600 hover:border-primary-400 hover:text-primary-600',
@@ -158,7 +158,7 @@
 
                     <!-- Bouton Rafraîchir maintenant -->
                     <button
-                        class="w-full py-2 rounded-lg text-xs font-semibold
+                        class="w-full py-2 rounded-xl text-xs font-semibold
                                bg-gray-100 dark:bg-gray-700
                                text-gray-600 dark:text-gray-300
                                hover:bg-primary-50 dark:hover:bg-primary-900/20

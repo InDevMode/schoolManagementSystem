@@ -67,7 +67,7 @@
             </div>
             <div class="flex items-center gap-2 mt-4 pt-4 border-t border-gray-100 dark:border-gray-700">
                 <button @click="applyFilters"
-                        class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium
+                        class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium
                                bg-violet-600 hover:bg-violet-700 text-white transition-colors shadow-sm">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -76,7 +76,7 @@
                     Filtrer
                 </button>
                 <button @click="resetFilters"
-                        class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium
+                        class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium
                                border border-gray-200 dark:border-gray-600
                                text-gray-600 dark:text-gray-300
                                hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
@@ -128,7 +128,7 @@
 
                                 <!-- Code -->
                                 <td class="px-5 py-3">
-                                    <span class="font-mono text-xs bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded-lg text-gray-700 dark:text-gray-300">
+                                    <span class="font-mono text-xs bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded-xl text-gray-700 dark:text-gray-300">
                                         {{ school.school_code }}
                                     </span>
                                 </td>
@@ -176,14 +176,14 @@
                                 <td class="px-5 py-3 pr-5">
                                     <div class="flex items-center justify-end gap-1.5">
                                         <button @click="openEdit(school)" title="Modifier"
-                                                class="p-1.5 rounded-lg text-white bg-emerald-500 hover:bg-emerald-600 shadow-sm transition-all">
+                                                class="p-1.5 rounded-xl text-white bg-emerald-500 hover:bg-emerald-600 shadow-sm transition-all">
                                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                       d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                                             </svg>
                                         </button>
                                         <button @click="confirmDelete(school)" title="Supprimer"
-                                                class="p-1.5 rounded-lg text-white bg-red-500 hover:bg-red-600 shadow-sm transition-all">
+                                                class="p-1.5 rounded-xl text-white bg-red-500 hover:bg-red-600 shadow-sm transition-all">
                                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                       d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
@@ -220,7 +220,7 @@
                 <div class="flex items-center gap-1">
                     <button :disabled="!schools.prev_page_url"
                             @click="schools.prev_page_url && goToPage(schools.prev_page_url)"
-                            class="w-8 h-8 flex items-center justify-center rounded-lg text-sm transition-colors
+                            class="w-8 h-8 flex items-center justify-center rounded-xl text-sm transition-colors
                                    disabled:opacity-30 disabled:cursor-not-allowed
                                    text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -229,14 +229,14 @@
                     </button>
                     <template v-for="link in schools.links.slice(1, -1)" :key="link.label">
                         <button v-if="link.url" @click="goToPage(link.url)"
-                                :class="['w-8 h-8 flex items-center justify-center rounded-lg text-sm font-medium transition-colors',
+                                :class="['w-8 h-8 flex items-center justify-center rounded-xl text-sm font-medium transition-colors',
                                     link.active ? 'bg-violet-600 text-white' : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700']">
                             {{ link.label }}
                         </button>
                     </template>
                     <button :disabled="!schools.next_page_url"
                             @click="schools.next_page_url && goToPage(schools.next_page_url)"
-                            class="w-8 h-8 flex items-center justify-center rounded-lg text-sm transition-colors
+                            class="w-8 h-8 flex items-center justify-center rounded-xl text-sm transition-colors
                                    disabled:opacity-30 disabled:cursor-not-allowed
                                    text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -280,14 +280,14 @@
                         <div>
                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Logo</label>
                             <input type="file" accept="image/*" @change="onLogoChange"
-                                   class="text-sm text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg
+                                   class="text-sm text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl
                                           file:border-0 file:text-xs file:font-medium file:bg-violet-50 file:text-violet-700
                                           hover:file:bg-violet-100" />
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Favicon</label>
                             <input type="file" accept="image/*,.ico" @change="onFaviconChange"
-                                   class="text-sm text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg
+                                   class="text-sm text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl
                                           file:border-0 file:text-xs file:font-medium file:bg-violet-50 file:text-violet-700
                                           hover:file:bg-violet-100" />
                         </div>

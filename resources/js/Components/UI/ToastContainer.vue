@@ -12,7 +12,7 @@
                 <div
                     v-for="toast in toasts"
                     :key="toast.id"
-                    :class="['pointer-events-auto flex items-start gap-3 px-4 py-3 rounded-lg shadow-lg border text-sm font-medium', variantClass(toast.type)]"
+                    :class="['pointer-events-auto flex items-start gap-3 px-4 py-3 rounded-xl shadow-lg border text-sm font-medium', variantClass(toast.type)]"
                 >
                     <!-- Icône -->
                     <div class="flex-shrink-0 mt-0.5">

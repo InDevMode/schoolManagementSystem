@@ -47,7 +47,7 @@
                 <div class="flex items-center justify-end gap-1">
                     <!-- Voir détails -->
                     <button
-                        class="p-1.5 rounded-lg transition-all duration-150
+                        class="p-1.5 rounded-xl transition-all duration-150
                                text-white bg-violet-500 hover:bg-violet-600 active:bg-violet-700
                                shadow-sm shadow-violet-200 dark:shadow-violet-900/40"
                         title="Voir les détails"
@@ -60,7 +60,7 @@
                     <!-- Voir soumissions -->
                     <a
                         :href="`/teacher/practicalworks/homework/submission/${row.id}`"
-                        class="p-1.5 rounded-lg transition-all duration-150
+                        class="p-1.5 rounded-xl transition-all duration-150
                                text-white bg-primary-500 hover:bg-primary-600 active:bg-primary-700
                                shadow-sm shadow-primary-200 dark:shadow-primary-900/40 inline-flex"
                         title="Voir les soumissions"
@@ -71,7 +71,7 @@
                     </a>
                     <!-- Modifier -->
                     <button
-                        class="p-1.5 rounded-lg transition-all duration-150
+                        class="p-1.5 rounded-xl transition-all duration-150
                                text-white bg-amber-500 hover:bg-amber-600 active:bg-amber-700
                                shadow-sm shadow-amber-200 dark:shadow-amber-900/40"
                         title="Modifier"
@@ -83,7 +83,7 @@
                     </button>
                     <!-- Supprimer -->
                     <button
-                        class="p-1.5 rounded-lg transition-all duration-150
+                        class="p-1.5 rounded-xl transition-all duration-150
                                text-white bg-red-500 hover:bg-red-600 active:bg-red-700
                                shadow-sm shadow-red-200 dark:shadow-red-900/40"
                         title="Mettre à la corbeille"
@@ -115,7 +115,7 @@
                     <textarea
                         v-model="createForm.description"
                         rows="3"
-                        class="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+                        class="w-full rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
                     />
                 </div>
                 <!-- Pièces jointes multiples -->
@@ -124,7 +124,7 @@
                         Pièces jointes <span class="text-gray-400 font-normal">(optionnel)</span>
                     </label>
                     <div
-                        class="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-4 text-center cursor-pointer hover:border-primary-400 transition-colors"
+                        class="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-xl p-4 text-center cursor-pointer hover:border-primary-400 transition-colors"
                         @dragover.prevent
                         @drop.prevent="onDropCreate"
                         @click="createFileInput?.click()"
@@ -140,7 +140,7 @@
                         <div
                             v-for="(f, idx) in createFiles"
                             :key="idx"
-                            class="flex items-center justify-between bg-gray-50 dark:bg-gray-700/50 rounded-lg px-3 py-2"
+                            class="flex items-center justify-between bg-gray-50 dark:bg-gray-700/50 rounded-xl px-3 py-2"
                         >
                             <div class="flex items-center gap-2 min-w-0">
                                 <FileTypeIcon :filename="f.name" size="sm" />
@@ -186,7 +186,7 @@
                     <textarea
                         v-model="editForm.description"
                         rows="3"
-                        class="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+                        class="w-full rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
                     />
                 </div>
                 <!-- Pièces jointes existantes -->
@@ -196,7 +196,7 @@
                         <div
                             v-for="att in editWork.attachments"
                             :key="att.id"
-                            class="flex items-center justify-between bg-gray-50 dark:bg-gray-700/50 rounded-lg px-3 py-2"
+                            class="flex items-center justify-between bg-gray-50 dark:bg-gray-700/50 rounded-xl px-3 py-2"
                             :class="{ 'opacity-40 line-through': attachmentsToRemove.includes(att.id) }"
                         >
                             <div class="flex items-center gap-2 min-w-0">
@@ -227,7 +227,7 @@
                 <div>
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Ajouter des fichiers</label>
                     <div
-                        class="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-4 text-center cursor-pointer hover:border-primary-400 transition-colors"
+                        class="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-xl p-4 text-center cursor-pointer hover:border-primary-400 transition-colors"
                         @dragover.prevent
                         @drop.prevent="onDropEdit"
                         @click="editFileInput?.click()"
@@ -239,7 +239,7 @@
                         <div
                             v-for="(f, idx) in editFiles"
                             :key="idx"
-                            class="flex items-center justify-between bg-gray-50 dark:bg-gray-700/50 rounded-lg px-3 py-2"
+                            class="flex items-center justify-between bg-gray-50 dark:bg-gray-700/50 rounded-xl px-3 py-2"
                         >
                             <div class="flex items-center gap-2 min-w-0">
                                 <FileTypeIcon :filename="f.name" size="sm" />
@@ -288,7 +288,7 @@
                 <!-- Dates -->
                 <div class="grid grid-cols-2 gap-3">
                     <div class="flex items-center gap-3 p-3 rounded-xl bg-violet-50 dark:bg-violet-900/20 border border-violet-100 dark:border-violet-800">
-                        <div class="w-9 h-9 rounded-lg bg-violet-100 dark:bg-violet-800 flex items-center justify-center shrink-0">
+                        <div class="w-9 h-9 rounded-xl bg-violet-100 dark:bg-violet-800 flex items-center justify-center shrink-0">
                             <svg class="w-4 h-4 text-violet-600 dark:text-violet-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                             </svg>
@@ -299,7 +299,7 @@
                         </div>
                     </div>
                     <div class="flex items-center gap-3 p-3 rounded-xl bg-orange-50 dark:bg-orange-900/20 border border-orange-100 dark:border-orange-800">
-                        <div class="w-9 h-9 rounded-lg bg-orange-100 dark:bg-orange-800 flex items-center justify-center shrink-0">
+                        <div class="w-9 h-9 rounded-xl bg-orange-100 dark:bg-orange-800 flex items-center justify-center shrink-0">
                             <svg class="w-4 h-4 text-orange-600 dark:text-orange-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
@@ -453,7 +453,7 @@
                 <div class="flex justify-end pt-1">
                     <a
                         :href="detailWork ? `/teacher/practicalworks/homework/submission/${detailWork.id}` : '#'"
-                        class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium
+                        class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium
                                bg-primary-600 hover:bg-primary-700 text-white transition-colors shadow-sm"
                     >
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

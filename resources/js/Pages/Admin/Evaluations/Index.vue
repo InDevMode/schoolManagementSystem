@@ -22,7 +22,7 @@
 
         <!-- Bandeau : aucune période courante -->
         <div v-if="!currentPeriod"
-            class="flex items-center gap-3 px-4 py-3 rounded-lg bg-warning-50 dark:bg-warning-900/20 border border-warning-200 dark:border-warning-700">
+            class="flex items-center gap-3 px-4 py-3 rounded-xl bg-warning-50 dark:bg-warning-900/20 border border-warning-200 dark:border-warning-700">
             <svg class="w-5 h-5 text-warning-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
             </svg>
@@ -36,7 +36,7 @@
 
         <!-- Bandeau : période courante active -->
         <div v-else
-            class="flex items-center gap-3 px-4 py-3 rounded-lg bg-success-50 dark:bg-success-900/20 border border-success-200 dark:border-success-700">
+            class="flex items-center gap-3 px-4 py-3 rounded-xl bg-success-50 dark:bg-success-900/20 border border-success-200 dark:border-success-700">
             <svg class="w-5 h-5 text-success-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
             </svg>
@@ -50,7 +50,7 @@
             <button v-for="(label, key) in typeLabels" :key="key"
                 type="button"
                 :class="[
-                    'flex items-center gap-3 px-4 py-3 rounded-lg border-2 transition-all text-left',
+                    'flex items-center gap-3 px-4 py-3 rounded-xl border-2 transition-all text-left',
                     filters.type === key
                         ? 'border-transparent shadow-sm'
                         : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:border-gray-300 dark:hover:border-gray-600',
@@ -78,7 +78,7 @@
             <button v-if="filters.class_id || filters.period_id || filters.type || filters.status"
                 type="button"
                 @click="filters = { class_id: '', period_id: '', type: '', status: '' }; applyFilters()"
-                class="flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-sm font-medium
+                class="flex items-center justify-center gap-2 px-3 py-2 rounded-xl text-sm font-medium
                        text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200
                        bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600
                        border border-gray-200 dark:border-gray-600 transition-colors">
@@ -107,7 +107,7 @@
             </template>
 
             <template #cell-coefficient="{ row }">
-                <span class="inline-flex items-center justify-center w-7 h-7 rounded-lg text-xs font-bold bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-400">
+                <span class="inline-flex items-center justify-center w-7 h-7 rounded-xl text-xs font-bold bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-400">
                     ×{{ row.coefficient }}
                 </span>
             </template>
@@ -125,7 +125,7 @@
                     <!-- Saisie des notes — uniquement si l'éval n'est pas validée ni annulée -->
                     <Link v-if="row.status !== 'validated' && row.status !== 'cancelled'"
                         :href="`/admin/evaluations/grade-entry?evaluation_id=${row.id}`"
-                        class="p-1.5 rounded-lg transition-all duration-150
+                        class="p-1.5 rounded-xl transition-all duration-150
                                text-white bg-violet-500 hover:bg-violet-600 active:bg-violet-700
                                shadow-sm shadow-violet-200 dark:shadow-violet-900/40"
                         title="Saisir les notes">
@@ -140,7 +140,7 @@
                     <Link v-else
                         :href="`/admin/evaluations/grade-entry?evaluation_id=${row.id}`"
                         :class="[
-                            'p-1.5 rounded-lg transition-all duration-150 shadow-sm',
+                            'p-1.5 rounded-xl transition-all duration-150 shadow-sm',
                             row.status === 'cancelled'
                                 ? 'text-white bg-amber-500 hover:bg-amber-600 active:bg-amber-700 shadow-amber-200 dark:shadow-amber-900/40'
                                 : 'text-white bg-indigo-500 hover:bg-indigo-600 active:bg-indigo-700 shadow-indigo-200 dark:shadow-indigo-900/40'
@@ -156,7 +156,7 @@
                     </Link>
                     <!-- Éditer — masqué si l'éval est validée ou annulée -->
                     <button v-if="can('action.exams.edit') && row.status !== 'validated' && row.status !== 'cancelled'"
-                        class="p-1.5 rounded-lg transition-all duration-150
+                        class="p-1.5 rounded-xl transition-all duration-150
                                text-white bg-emerald-500 hover:bg-emerald-600 active:bg-emerald-700
                                shadow-sm shadow-emerald-200 dark:shadow-emerald-900/40"
                         title="Modifier l'évaluation"
@@ -168,7 +168,7 @@
                     <!-- Supprimer -->
                     <button
                         v-if="canDeleteEval(row)"
-                        class="p-1.5 rounded-lg transition-all duration-150
+                        class="p-1.5 rounded-xl transition-all duration-150
                                text-white bg-red-500 hover:bg-red-600 active:bg-red-700
                                shadow-sm shadow-red-200 dark:shadow-red-900/40"
                         :title="deleteTitle(row)"
@@ -179,7 +179,7 @@
                     </button>
                     <!-- Cadenas si validée et non supprimable -->
                     <span v-else-if="row.status === 'validated'"
-                        class="p-1.5 rounded-lg text-white bg-success-500 dark:bg-success-600 cursor-not-allowed shadow-sm shadow-success-200 dark:shadow-success-900/40"
+                        class="p-1.5 rounded-xl text-white bg-success-500 dark:bg-success-600 cursor-not-allowed shadow-sm shadow-success-200 dark:shadow-success-900/40"
                         title="Évaluation validée — suppression impossible">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
@@ -224,7 +224,7 @@
                     <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
                         <button v-for="(label, key) in typeLabels" :key="key" type="button"
                             :class="[
-                                'flex flex-col items-center gap-1.5 p-3 rounded-lg border-2 transition-all text-center',
+                                'flex flex-col items-center gap-1.5 p-3 rounded-xl border-2 transition-all text-center',
                                 form.type === key
                                     ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20'
                                     : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600',
@@ -243,7 +243,7 @@
                             Coefficient
                             <span class="text-[10px] text-gray-400 font-normal ml-1">(matière assignée)</span>
                         </label>
-                        <div class="flex items-center gap-2 px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700/50">
+                        <div class="flex items-center gap-2 px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700/50">
                             <span class="text-lg font-bold text-primary-600 dark:text-primary-400">
                                 {{ form.coefficient || '—' }}
                             </span>
@@ -259,7 +259,7 @@
             </form>
 
             <!-- Note d'info -->
-            <div class="mt-4 p-3 rounded-lg bg-violet-50 dark:bg-violet-900/20 border border-violet-100 dark:border-violet-800">
+            <div class="mt-4 p-3 rounded-xl bg-violet-50 dark:bg-violet-900/20 border border-violet-100 dark:border-violet-800">
                 <p class="text-xs text-violet-700 dark:text-violet-300 font-medium">
                     💡 Le coefficient est celui défini lors de l'assignation de la matière à la classe — il ne peut pas être modifié ici.
                 </p>

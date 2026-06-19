@@ -96,7 +96,7 @@
                         Par <strong class="text-gray-600 dark:text-gray-300 font-medium">{{ notice.created_by_name }}</strong>
                     </span>
                     <button
-                        class="p-1.5 rounded-lg text-gray-400 hover:text-violet-600 hover:bg-violet-50 dark:hover:bg-violet-900/20 transition-colors"
+                        class="p-1.5 rounded-xl text-gray-400 hover:text-violet-600 hover:bg-violet-50 dark:hover:bg-violet-900/20 transition-colors"
                         title="Voir les détails"
                         @click="openDetail(notice)"
                     >
@@ -144,11 +144,11 @@
 
                 <!-- Dates -->
                 <div class="grid grid-cols-2 gap-3">
-                    <div class="bg-primary-50 dark:bg-primary-900/20 rounded-lg px-3 py-2.5">
+                    <div class="bg-primary-50 dark:bg-primary-900/20 rounded-xl px-3 py-2.5">
                         <p class="text-xs text-primary-600 dark:text-primary-400 font-medium uppercase tracking-wide">Publication</p>
                         <p class="text-sm font-semibold text-gray-800 dark:text-white mt-0.5">{{ formatDate(detailTarget.publish_date) }}</p>
                     </div>
-                    <div class="bg-secondary-50 dark:bg-secondary-900/20 rounded-lg px-3 py-2.5">
+                    <div class="bg-secondary-50 dark:bg-secondary-900/20 rounded-xl px-3 py-2.5">
                         <p class="text-xs text-secondary-600 dark:text-secondary-400 font-medium uppercase tracking-wide">Envoi notification</p>
                         <p class="text-sm font-semibold text-gray-800 dark:text-white mt-0.5">{{ formatDate(detailTarget.notice_date) }}</p>
                     </div>
@@ -159,7 +159,7 @@
                     <p class="text-xs text-gray-500 dark:text-gray-400 font-medium uppercase tracking-wide mb-2">Message</p>
                     <div
                         class="prose prose-sm dark:prose-invert max-w-none text-gray-700 dark:text-gray-300
-                               bg-gray-50 dark:bg-gray-700/40 rounded-lg p-4 max-h-64 overflow-y-auto"
+                               bg-gray-50 dark:bg-gray-700/40 rounded-xl p-4 max-h-64 overflow-y-auto"
                         v-html="detailTarget.message"
                     />
                 </div>

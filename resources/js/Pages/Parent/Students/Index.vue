@@ -183,7 +183,7 @@
                                     class="px-2 py-2 text-center"
                                 >
                                     <div v-if="day.start_time"
-                                         class="rounded-lg px-2 py-1.5 bg-primary-50 dark:bg-primary-900/30
+                                         class="rounded-xl px-2 py-1.5 bg-primary-50 dark:bg-primary-900/30
                                                 border border-primary-100 dark:border-primary-700/50">
                                         <p class="font-bold text-primary-700 dark:text-primary-300 text-[11px] leading-tight">{{ day.start_time }}</p>
                                         <p class="text-gray-500 dark:text-gray-400 text-[10px] leading-tight">{{ day.end_time }}</p>

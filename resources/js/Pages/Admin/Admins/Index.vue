@@ -21,7 +21,7 @@
 
         <!-- Bannière mode super admin -->
         <div v-if="isSuperAdmin"
-             class="flex items-center gap-2.5 px-4 py-2.5 rounded-lg
+             class="flex items-center gap-2.5 px-4 py-2.5 rounded-xl
                     bg-primary-50 dark:bg-primary-900/20
                     border border-primary-200 dark:border-primary-700 text-sm">
             <svg class="w-4 h-4 text-primary-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -145,7 +145,7 @@
                 <div class="flex items-center justify-end gap-1.5">
                     <!-- Voir les détails -->
                     <button v-if="canView" title="Voir les détails" @click="openView(row as any)"
-                            class="p-1.5 rounded-lg transition-all duration-150
+                            class="p-1.5 rounded-xl transition-all duration-150
                                    text-white bg-violet-500 hover:bg-violet-600 active:bg-violet-700
                                    shadow-sm shadow-violet-200 dark:shadow-violet-900/40">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -154,7 +154,7 @@
                     </button>
                     <!-- Modifier -->
                     <button v-if="canEdit" title="Modifier" @click="openEdit(row as any)"
-                            class="p-1.5 rounded-lg transition-all duration-150
+                            class="p-1.5 rounded-xl transition-all duration-150
                                    text-white bg-emerald-500 hover:bg-emerald-600 active:bg-emerald-700
                                    shadow-sm shadow-emerald-200 dark:shadow-emerald-900/40">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -163,7 +163,7 @@
                     </button>
                     <!-- Réinitialiser MDP -->
                     <button v-if="canResetPassword" title="Réinit. MDP" @click="tableRef?.confirmResetPassword(row.id as number, `${row.last_name} ${row.name}`)"
-                            class="p-1.5 rounded-lg transition-all duration-150
+                            class="p-1.5 rounded-xl transition-all duration-150
                                    text-white bg-amber-500 hover:bg-amber-600 active:bg-amber-700
                                    shadow-sm shadow-amber-200 dark:shadow-amber-900/40">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -172,7 +172,7 @@
                     </button>
                     <!-- Supprimer -->
                     <button v-if="canDelete" title="Supprimer" @click="tableRef?.confirmDelete(row.id as number, `${row.last_name} ${row.name}`)"
-                            class="p-1.5 rounded-lg transition-all duration-150
+                            class="p-1.5 rounded-xl transition-all duration-150
                                    text-white bg-red-500 hover:bg-red-600 active:bg-red-700
                                    shadow-sm shadow-red-200 dark:shadow-red-900/40">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -319,7 +319,7 @@
                     <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Photo de profil</label>
                         <input type="file" accept="image/*"
-                               class="text-sm text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-medium file:bg-primary-50 file:text-primary-700 hover:file:bg-primary-100"
+                               class="text-sm text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-medium file:bg-primary-50 file:text-primary-700 hover:file:bg-primary-100"
                                @change="onFileChange"/>
                     </div>
                 </div>

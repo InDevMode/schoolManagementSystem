@@ -1,7 +1,7 @@
 <template>
     <div>
         <div
-            class="rounded-lg border overflow-hidden"
+            class="rounded-xl border overflow-hidden"
             :class="[
                 error
                     ? 'border-danger-500 focus-within:ring-2 focus-within:ring-danger-500'
@@ -73,7 +73,7 @@
                 <div class="w-px h-5 bg-gray-300 dark:bg-gray-500 mx-1" />
 
                 <!-- Text color -->
-                <label class="relative cursor-pointer flex items-center justify-center w-7 h-7 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors" title="Couleur du texte">
+                <label class="relative cursor-pointer flex items-center justify-center w-7 h-7 rounded-xl hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors" title="Couleur du texte">
                     <span
                         class="w-4 h-4 rounded border border-gray-400 dark:border-gray-500 block"
                         :style="{ backgroundColor: currentColor }"
@@ -113,7 +113,7 @@
             <!-- Editor content -->
             <EditorContent
                 :editor="editor"
-                class="min-h-[160px] px-3.5 py-2.5 text-sm text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-800 [&_.tiptap]:outline-none [&_.tiptap]:min-h-[140px] [&_.tiptap_h1]:text-2xl [&_.tiptap_h1]:font-bold [&_.tiptap_h2]:text-xl [&_.tiptap_h2]:font-bold [&_.tiptap_h3]:text-lg [&_.tiptap_h3]:font-semibold [&_.tiptap_ul]:list-disc [&_.tiptap_ul]:pl-5 [&_.tiptap_ol]:list-decimal [&_.tiptap_ol]:pl-5 [&_.tiptap_code]:bg-gray-100 [&_.tiptap_code]:dark:bg-gray-700 [&_.tiptap_code]:px-1 [&_.tiptap_code]:rounded [&_.tiptap_pre]:bg-gray-100 [&_.tiptap_pre]:dark:bg-gray-700 [&_.tiptap_pre]:p-3 [&_.tiptap_pre]:rounded-lg [&_.tiptap_a]:text-primary-600 [&_.tiptap_a]:underline"
+                class="min-h-[160px] px-3.5 py-2.5 text-sm text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-800 [&_.tiptap]:outline-none [&_.tiptap]:min-h-[140px] [&_.tiptap_h1]:text-2xl [&_.tiptap_h1]:font-bold [&_.tiptap_h2]:text-xl [&_.tiptap_h2]:font-bold [&_.tiptap_h3]:text-lg [&_.tiptap_h3]:font-semibold [&_.tiptap_ul]:list-disc [&_.tiptap_ul]:pl-5 [&_.tiptap_ol]:list-decimal [&_.tiptap_ol]:pl-5 [&_.tiptap_code]:bg-gray-100 [&_.tiptap_code]:dark:bg-gray-700 [&_.tiptap_code]:px-1 [&_.tiptap_code]:rounded [&_.tiptap_pre]:bg-gray-100 [&_.tiptap_pre]:dark:bg-gray-700 [&_.tiptap_pre]:p-3 [&_.tiptap_pre]:rounded-xl [&_.tiptap_a]:text-primary-600 [&_.tiptap_a]:underline"
             />
         </div>
         <p v-if="error" class="mt-1 text-xs text-danger-600">{{ error }}</p>
@@ -144,7 +144,7 @@ const emit = defineEmits<{
 // ── Toolbar button class helper ─────────────────────────────────────────────
 function btnClass(active?: boolean) {
     return [
-        'flex items-center justify-center w-7 h-7 rounded-lg transition-colors text-gray-700 dark:text-gray-300 flex-shrink-0',
+        'flex items-center justify-center w-7 h-7 rounded-xl transition-colors text-gray-700 dark:text-gray-300 flex-shrink-0',
         active
             ? 'bg-primary-100 dark:bg-primary-900/40 text-primary-700 dark:text-primary-300'
             : 'hover:bg-gray-200 dark:hover:bg-gray-600',

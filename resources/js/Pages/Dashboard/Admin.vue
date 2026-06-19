@@ -2,24 +2,26 @@
     <div class="space-y-5">
 
         <!-- ══ HEADER ═══════════════════════════════════════════════════════ -->
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
             <div>
-                <h1 class="text-2xl font-black text-gray-900 dark:text-white tracking-tight">Tableau de bord</h1>
-                <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
-                    {{ today.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }) }}
-                    <span v-if="currentPeriod" class="ml-2 inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-violet-50 dark:bg-violet-900/20 text-violet-600 dark:text-violet-400 text-xs font-semibold">
+                <h1 class="text-2xl font-black text-gray-900 dark:text-white tracking-tight">Vue d'ensemble système</h1>
+                <p class="text-sm text-gray-500 dark:text-gray-400 mt-1 flex items-center gap-2 flex-wrap">
+                    <span>{{ today.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }) }}</span>
+                    <span v-if="currentPeriod" class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-violet-50 dark:bg-violet-900/20 text-violet-600 dark:text-violet-400 text-xs font-semibold border border-violet-100 dark:border-violet-800">
                         <svg class="w-3 h-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                         {{ currentPeriod.name }}
                     </span>
                 </p>
             </div>
-            <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-violet-600 text-white text-xs font-semibold shadow w-fit">
-                <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse inline-block"/>Administrateur
+            <span class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold shadow-lg shadow-violet-500/20 w-fit self-start"
+                  style="background: linear-gradient(135deg, #7B74F0, #9189f5);">
+                <span class="w-2 h-2 rounded-full bg-green-300 animate-pulse inline-block flex-shrink-0"/>
+                <span class="text-white">Super Administrateur</span>
             </span>
         </div>
 
-        <!-- ══ KPI ROW ════════════════════════════════════════════════════════ -->
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <!-- ══ KPI ROW — 4 grandes cards ═════════════════════════════════════ -->
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
             <KpiCard label="Apprenants"     :value="totalStudent"  color="violet" href="/admin/student/list" trend="+12%" :trendPositive="true"
                 icon="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
             <KpiCard label="Professeurs"    :value="totalTeacher" color="info"   href="/admin/teacher/list" trend="+3%" :trendPositive="true"
@@ -36,24 +38,32 @@
             <template #default="{ active }">
 
                 <!-- ── VUE GÉNÉRALE ───────────────────────────────────────── -->
-                <div v-show="active === 'overview'" class="space-y-4">
-                    <!-- Ligne stats académiques -->
-                    <div class="grid grid-cols-3 sm:grid-cols-5 gap-2.5">
-                        <MiniCard label="Administrateurs" :value="totalAdmin"    icon="shield"                  color="slate"   href="/admin/admin/list"/>
-                        <MiniCard label="Classes"          :value="totalClass"   icon="building-library"        color="sky"     href="/admin/class/list"/>
-                        <MiniCard label="Matières"         :value="totalSubject" icon="book-open"               color="teal"    href="/admin/subject/list"/>
-                        <MiniCard label="Sessions examen"  :value="totalExam"    icon="clipboard-document-list" color="orange"  href="/admin/examinations/period/list"/>
-                        <MiniCard label="Devoirs"          :value="totalHomework" icon="pencil"                 color="rose"    href="/admin/practicalworks/homework/list"/>
-                    </div>
-                    <!-- Alertes -->
-                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
-                        <AlertCard label="Personnel actif"     :value="totalStaff ?? 0"          icon="user-group"    variant="default" href="/admin/staff/list"/>
-                        <AlertCard label="Congés en attente"   :value="totalPendingLeaves ?? 0"  icon="calendar-days" variant="warning" href="/admin/staff/leaves/list"/>
-                        <AlertCard label="Évals à valider"     :value="totalOpenEvals ?? 0"      icon="pencil-square" variant="danger"  href="/admin/evaluations/grades/pending"/>
-                        <AlertCard label="Bulletins brouillon" :value="totalDraftBulletins ?? 0" icon="document-text" variant="info"    href="/admin/bulletins/list"/>
+                <div v-show="active === 'overview'" class="space-y-5">
+
+                    <!-- Ligne 1 : stats académiques — 5 mini cards bien alignées -->
+                    <div>
+                        <h3 class="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2.5 px-0.5">Académique</h3>
+                        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+                            <MiniCard label="Administrateurs" :value="totalAdmin"    icon="shield"                  color="slate"   href="/admin/admin/list"/>
+                            <MiniCard label="Classes"          :value="totalClass"   icon="building-library"        color="sky"     href="/admin/class/list"/>
+                            <MiniCard label="Matières"         :value="totalSubject" icon="book-open"               color="teal"    href="/admin/subject/list"/>
+                            <MiniCard label="Sessions examen"  :value="totalExam"    icon="clipboard-document-list" color="orange"  href="/admin/examinations/period/list"/>
+                            <MiniCard label="Devoirs"          :value="totalHomework" icon="pencil"                 color="rose"    href="/admin/practicalworks/homework/list"/>
+                        </div>
                     </div>
 
-                    <!-- Charts ligne 1 -->
+                    <!-- Ligne 2 : alertes — 4 cards avec indicateurs -->
+                    <div>
+                        <h3 class="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2.5 px-0.5">Alertes & actions</h3>
+                        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
+                            <AlertCard label="Personnel actif"     :value="totalStaff ?? 0"          icon="user-group"    variant="default" href="/admin/staff/list"/>
+                            <AlertCard label="Congés en attente"   :value="totalPendingLeaves ?? 0"  icon="calendar-days" variant="warning" href="/admin/staff/leaves/list"/>
+                            <AlertCard label="Évals à valider"     :value="totalOpenEvals ?? 0"      icon="pencil-square" variant="danger"  href="/admin/evaluations/grades/pending"/>
+                            <AlertCard label="Bulletins brouillon" :value="totalDraftBulletins ?? 0" icon="document-text" variant="info"    href="/admin/bulletins/list"/>
+                        </div>
+                    </div>
+
+                    <!-- Ligne 3 : Charts -->
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
                         <div class="card p-5">
                             <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-1">Apprenants par sexe</h3>
@@ -81,26 +91,30 @@
                         </div>
                     </div>
 
-                    <!-- Présences + événements + congés -->
-                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                        <AttendanceBadge label="Présents"     :value="totalAttendanceStudentPresent"  color="success" icon="user-check"/>
-                        <AttendanceBadge label="En retard"    :value="totalAttendanceStudentLate"     color="warning" icon="clock"/>
-                        <AttendanceBadge label="Absents"      :value="totalAttendanceStudentAbsent"   color="danger"  icon="user-minus"/>
-                        <AttendanceBadge label="Demi-journée" :value="totalAttendanceStudentHalfDay"  color="info"    icon="calendar-days"/>
+                    <!-- Ligne 4 : Présences badges -->
+                    <div>
+                        <h3 class="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2.5 px-0.5">Présences du jour</h3>
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                            <AttendanceBadge label="Présents"     :value="totalAttendanceStudentPresent"  color="success" icon="user-check"/>
+                            <AttendanceBadge label="En retard"    :value="totalAttendanceStudentLate"     color="warning" icon="clock"/>
+                            <AttendanceBadge label="Absents"      :value="totalAttendanceStudentAbsent"   color="danger"  icon="user-minus"/>
+                            <AttendanceBadge label="Demi-journée" :value="totalAttendanceStudentHalfDay"  color="info"    icon="calendar-days"/>
+                        </div>
                     </div>
 
+                    <!-- Ligne 5 : Événements + congés -->
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
                         <div class="card p-0 overflow-hidden">
                             <div class="flex items-center justify-between px-4 py-3 border-b border-gray-100 dark:border-gray-700">
                                 <h3 class="text-sm font-semibold text-gray-900 dark:text-white">Prochains événements</h3>
-                                <a href="/admin/staff/events/list" class="text-xs text-primary-600 dark:text-primary-400 hover:underline">Voir tout</a>
+                                <a href="/admin/staff/events/list" class="text-xs text-primary-600 dark:text-primary-400 hover:underline font-medium">Voir tout →</a>
                             </div>
-                            <div v-if="!upcomingEvents?.length" class="px-4 py-8 text-center text-xs text-gray-400">Aucun événement</div>
+                            <div v-if="!upcomingEvents?.length" class="px-4 py-8 text-center text-xs text-gray-400">Aucun événement à venir</div>
                             <div v-else class="divide-y divide-gray-50 dark:divide-gray-700/50">
                                 <div v-for="ev in (upcomingEvents ?? []).slice(0,5)" :key="ev.id"
-                                    class="flex items-center gap-3 px-4 py-2.5 hover:bg-gray-50 dark:hover:bg-gray-700/30">
-                                    <div class="flex-shrink-0 w-10 h-10 rounded-xl flex flex-col items-center justify-center text-white font-bold text-xs"
-                                        :style="{ background: typeColors[ev.event_type ?? ev.extendedProps?.type] ?? '#6366f1' }">
+                                    class="flex items-center gap-3 px-4 py-2.5 hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors">
+                                    <div class="flex-shrink-0 w-10 h-10 rounded-xl flex flex-col items-center justify-center text-white font-bold text-xs shadow-sm"
+                                        :style="{ background: typeColors[ev.event_type ?? ev.extendedProps?.type] ?? '#7B74F0' }">
                                         <span class="text-base leading-none">{{ fmtDay(ev.event_date ?? ev.start) }}</span>
                                         <span class="text-[9px] uppercase">{{ fmtMonth(ev.event_date ?? ev.start) }}</span>
                                     </div>
@@ -115,21 +129,21 @@
                         <div class="card p-0 overflow-hidden">
                             <div class="flex items-center justify-between px-4 py-3 border-b border-gray-100 dark:border-gray-700">
                                 <h3 class="text-sm font-semibold text-gray-900 dark:text-white">Personnel en congé</h3>
-                                <a href="/admin/staff/leaves/list" class="text-xs text-primary-600 dark:text-primary-400 hover:underline">Gérer</a>
+                                <a href="/admin/staff/leaves/list" class="text-xs text-primary-600 dark:text-primary-400 hover:underline font-medium">Gérer →</a>
                             </div>
                             <div v-if="!currentLeaves?.length" class="px-4 py-8 text-center text-xs text-gray-400">Aucun congé en cours</div>
                             <div v-else class="divide-y divide-gray-50 dark:divide-gray-700/50">
                                 <div v-for="leave in (currentLeaves ?? []).slice(0,5)" :key="leave.id"
-                                    class="flex items-center gap-3 px-4 py-2.5 hover:bg-gray-50 dark:hover:bg-gray-700/30">
-                                    <div class="w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center text-white text-xs font-bold"
-                                        :style="{ background: leave.color ?? '#6366f1' }">
+                                    class="flex items-center gap-3 px-4 py-2.5 hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors">
+                                    <div class="w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center text-white text-xs font-bold shadow-sm"
+                                        :style="{ background: leave.color ?? '#7B74F0' }">
                                         {{ ((leave.last_name ?? leave.name ?? '?')[0]).toUpperCase() }}
                                     </div>
                                     <div class="flex-1 min-w-0">
                                         <p class="text-xs font-semibold text-gray-900 dark:text-white truncate">{{ leave.last_name }} {{ leave.name }}</p>
                                         <p class="text-[10px] text-gray-400">{{ leave.leave_type_name ?? 'Congé' }}</p>
                                     </div>
-                                    <span class="text-[10px] px-2 py-0.5 rounded-full bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400 font-semibold">En cours</span>
+                                    <span class="text-[10px] px-2 py-0.5 rounded-full bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400 font-semibold border border-amber-100 dark:border-amber-800">En cours</span>
                                 </div>
                             </div>
                         </div>
@@ -235,7 +249,7 @@
                             <div v-if="!currentLeaves?.length" class="flex items-center justify-center h-32 text-xs text-gray-400">Aucun congé en cours</div>
                             <div v-else class="space-y-2">
                                 <div v-for="leave in currentLeaves.slice(0,8)" :key="leave.id"
-                                    class="flex items-center gap-3 p-2.5 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700/30">
+                                    class="flex items-center gap-3 p-2.5 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700/30">
                                     <div class="w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center text-white text-xs font-bold"
                                         :style="{ background: leave.color ?? '#6366f1' }">
                                         {{ ((leave.last_name ?? leave.name ?? '?')[0]).toUpperCase() }}

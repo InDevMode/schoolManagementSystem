@@ -70,7 +70,7 @@ const props = withDefaults(defineProps<{
 }>(), {
   loading: false, selectable: true, exportable: true,
   exportFilename: 'export', showTotals: true, density: 'normal',
-  defaultPerPage: 5, perPageOptions: () => [5,10,15,20,25,30,35,40,45,50],
+  defaultPerPage: 5, perPageOptions: () => [5,10,15,20,25,30,35,40,45,50,100,500,1000],
   emptyText: 'Aucune donnée disponible', showCount: true,
   striped: false, bordered: false, showResetPassword: false,
   inlineEdit: false, inlineEditEndpoint: '', contextMenu: false,
@@ -594,7 +594,7 @@ defineExpose({ clearSelection, selected, filteredRows, confirmDelete, confirmRes
         <input v-model="search" type="text"
                placeholder="Rechercher… "
                title="Séparez plusieurs termes par des virgules pour une recherche combinée"
-               class="w-full h-9 pl-9 pr-8 text-sm rounded-lg
+               class="w-full h-9 pl-9 pr-8 text-sm rounded-xl
                       border border-gray-200 dark:border-gray-600/60
                       bg-gray-50 dark:bg-gray-700/60
                       text-gray-900 dark:text-gray-100
@@ -615,7 +615,7 @@ defineExpose({ clearSelection, selected, filteredRows, confirmDelete, confirmRes
 
       <!-- Filtre colonne -->
       <select v-if="columns.length > 1" v-model="filterCol"
-              class="h-9 pl-3 pr-8 text-sm rounded-lg
+              class="h-9 pl-3 pr-8 text-sm rounded-xl
                      border border-gray-200 dark:border-gray-600/60
                      bg-gray-50 dark:bg-gray-700/60
                      text-gray-700 dark:text-gray-300
@@ -646,13 +646,13 @@ defineExpose({ clearSelection, selected, filteredRows, confirmDelete, confirmRes
             {{ selected.length }} sélectionné{{ selected.length > 1 ? 's' : '' }}
           </span>
           <button v-for="action in bulkActions" :key="action.key"
-                  :class="['inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors', getBulkActionClass(action.variant)]"
+                  :class="['inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium transition-colors', getBulkActionClass(action.variant)]"
                   @click="handleBulkAction(action)">
             <span v-if="action.icon" v-html="action.icon"/>
             {{ action.label }}
           </button>
           <button v-if="showResetPassword"
-                  class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium
+                  class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium
                          bg-amber-500 hover:bg-amber-600 text-white transition-colors"
                   @click="handleResetPasswordBulk">
             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -661,7 +661,7 @@ defineExpose({ clearSelection, selected, filteredRows, confirmDelete, confirmRes
             </svg>
             Réinit. MDP
           </button>
-          <button class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium
+          <button class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium
                          bg-red-600 hover:bg-red-700 text-white transition-colors"
                   @click="handleBulkDelete">
             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -671,7 +671,7 @@ defineExpose({ clearSelection, selected, filteredRows, confirmDelete, confirmRes
             Supprimer
           </button>
           <button @click="clearSelection"
-                  class="p-1.5 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100
+                  class="p-1.5 rounded-xl text-gray-400 hover:text-gray-600 hover:bg-gray-100
                          dark:hover:text-gray-200 dark:hover:bg-gray-700 transition-colors">
             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
@@ -684,7 +684,7 @@ defineExpose({ clearSelection, selected, filteredRows, confirmDelete, confirmRes
 
       <!-- Lignes/page -->
       <select v-model="perPage"
-              class="h-9 pl-3 pr-7 text-sm rounded-lg
+              class="h-9 pl-3 pr-7 text-sm rounded-xl
                      border border-gray-200 dark:border-gray-600/60
                      bg-gray-50 dark:bg-gray-700/60
                      text-gray-700 dark:text-gray-300
@@ -694,7 +694,7 @@ defineExpose({ clearSelection, selected, filteredRows, confirmDelete, confirmRes
       </select>
 
       <!-- Densité -->
-      <div class="flex items-center rounded-lg border border-gray-200 dark:border-gray-600 overflow-hidden">
+      <div class="flex items-center rounded-xl border border-gray-200 dark:border-gray-600 overflow-hidden">
         <button v-for="d in (['compact','normal','comfortable'] as const)" :key="d" :title="d"
                 :class="['px-2 py-1.5 transition-colors',
                          densityMode === d
@@ -716,7 +716,7 @@ defineExpose({ clearSelection, selected, filteredRows, confirmDelete, confirmRes
       <!-- Colonnes visibles -->
       <div class="relative dt-col-picker">
         <button @click.stop="showColPicker = !showColPicker"
-                class="h-9 px-3 flex items-center gap-1.5 text-sm rounded-lg
+                class="h-9 px-3 flex items-center gap-1.5 text-sm rounded-xl
                        border border-gray-200 dark:border-gray-600/60
                        bg-gray-50 dark:bg-gray-700/60 text-gray-600 dark:text-gray-300
                        hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
@@ -731,7 +731,7 @@ defineExpose({ clearSelection, selected, filteredRows, confirmDelete, confirmRes
           <div v-if="showColPicker"
                class="absolute right-0 top-full mt-1.5 w-52 z-50
                       bg-white dark:bg-gray-800
-                      rounded-lg border border-gray-200 dark:border-gray-600/60
+                      rounded-xl border border-gray-200 dark:border-gray-600/60
                       shadow-lg shadow-gray-200/60 dark:shadow-black/40 py-2">
             <div class="px-3 pb-2 mb-1 border-b border-gray-100 dark:border-gray-700 flex items-center justify-between">
               <span class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Colonnes</span>
@@ -756,7 +756,7 @@ defineExpose({ clearSelection, selected, filteredRows, confirmDelete, confirmRes
       <!-- Export -->
       <div v-if="exportable" class="relative dt-export-menu">
         <button @click.stop="showExport = !showExport"
-                class="h-9 px-3 flex items-center gap-1.5 text-sm rounded-lg
+                class="h-9 px-3 flex items-center gap-1.5 text-sm rounded-xl
                        border border-gray-200 dark:border-gray-600/60
                        bg-gray-50 dark:bg-gray-700/60 text-gray-600 dark:text-gray-300
                        hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
@@ -774,7 +774,7 @@ defineExpose({ clearSelection, selected, filteredRows, confirmDelete, confirmRes
           <div v-if="showExport"
                class="absolute right-0 top-full mt-1.5 w-44 z-50
                       bg-white dark:bg-gray-800
-                      rounded-lg border border-gray-200 dark:border-gray-600/60
+                      rounded-xl border border-gray-200 dark:border-gray-600/60
                       shadow-lg shadow-gray-200/60 dark:shadow-black/40 py-1.5">
             <div class="px-3 py-1.5 mb-1 border-b border-gray-100 dark:border-gray-700">
               <span class="text-xs text-gray-400 dark:text-gray-500">
@@ -838,7 +838,7 @@ defineExpose({ clearSelection, selected, filteredRows, confirmDelete, confirmRes
                   headerDensityClass,
                   'bg-gray-50 dark:bg-gray-900/80',
                   'text-[12px] font-bold uppercase tracking-wider whitespace-nowrap select-none',
-                  'text-gray-600 dark:text-gray-300',
+                  'text-gray-800 dark:text-gray-100',
                   col.align === 'center' ? 'text-center' : col.align === 'right' ? 'text-right' : 'text-left',
                   col.sortable !== false ? 'cursor-pointer hover:text-gray-900 dark:hover:text-white transition-colors' : '',
                 ]"
@@ -871,7 +871,7 @@ defineExpose({ clearSelection, selected, filteredRows, confirmDelete, confirmRes
             </th>
 
             <th v-if="actions?.length || $slots['actions']"
-                :class="[headerDensityClass, 'bg-gray-50 dark:bg-gray-900/80 text-[12px] font-bold uppercase tracking-wider text-gray-600 dark:text-gray-300 text-right']">
+                :class="[headerDensityClass, 'bg-gray-50 dark:bg-gray-900/80 text-[12px] font-bold uppercase tracking-wider text-gray-800 dark:text-gray-100 text-right']">
               Actions
             </th>
           </tr>
@@ -965,7 +965,7 @@ defineExpose({ clearSelection, selected, filteredRows, confirmDelete, confirmRes
                      class="flex flex-col gap-1 min-w-[120px]">
                   <input v-model="editValue"
                          :type="col.dataType === 'number' ? 'number' : col.dataType === 'email' ? 'email' : col.dataType === 'date' ? 'date' : 'text'"
-                         class="dt-edit-input w-full px-2.5 py-1.5 text-sm rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none shadow-sm"
+                         class="dt-edit-input w-full px-2.5 py-1.5 text-sm rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none shadow-sm"
                          :class="editError ? 'border-2 border-red-500' : 'border-2 border-violet-500 focus:ring-2 focus:ring-violet-300/30'"
                          @keydown="onEditKey" @blur="saveEdit"/>
                   <span v-if="editError" class="text-xs text-red-500 font-medium">{{ editError }}</span>
@@ -1014,7 +1014,7 @@ defineExpose({ clearSelection, selected, filteredRows, confirmDelete, confirmRes
                     <!-- Bouton copier la ligne -->
                     <button
                         :title="dtCopiedRowKey === rowId(row) ? 'Ligne copiée !' : 'Copier la ligne'"
-                        class="w-8 h-8 inline-flex items-center justify-center rounded-lg transition-all duration-150 flex-shrink-0"
+                        class="w-8 h-8 inline-flex items-center justify-center rounded-xl transition-all duration-150 flex-shrink-0"
                         :class="dtCopiedRowKey === rowId(row)
                           ? 'bg-emerald-100 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400'
                           : 'bg-gray-100 text-gray-400 hover:bg-violet-100 hover:text-violet-600 dark:bg-gray-700/50 dark:text-gray-500 dark:hover:bg-violet-900/30 dark:hover:text-violet-400'"
@@ -1029,7 +1029,7 @@ defineExpose({ clearSelection, selected, filteredRows, confirmDelete, confirmRes
                     <template v-for="action in actions" :key="action.key">
                       <button v-if="!action.condition || action.condition(row)"
                               :title="action.label"
-                              class="w-8 h-8 inline-flex items-center justify-center rounded-lg transition-all duration-150 flex-shrink-0"
+                              class="w-8 h-8 inline-flex items-center justify-center rounded-xl transition-all duration-150 flex-shrink-0"
                               :class="{
                                 'bg-violet-100 text-violet-600 hover:bg-violet-600 hover:text-white dark:bg-violet-900/30 dark:text-violet-400 dark:hover:bg-violet-600 dark:hover:text-white': !action.variant || action.variant === 'primary',
                                 'bg-amber-100 text-amber-600 hover:bg-amber-500 hover:text-white dark:bg-amber-900/30 dark:text-amber-400 dark:hover:bg-amber-500 dark:hover:text-white': action.variant === 'warning',
@@ -1090,7 +1090,7 @@ defineExpose({ clearSelection, selected, filteredRows, confirmDelete, confirmRes
                   enter-to-class="opacity-100 scale-100" leave-active-class="transition duration-100 ease-in" leave-to-class="opacity-0">
         <div v-if="ctxMenu.show" class="dt-ctx-menu fixed z-[9999] w-52
                     bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700
-                    rounded-lg shadow-2xl shadow-gray-300/60 dark:shadow-black/50 py-1.5 overflow-hidden"
+                    rounded-xl shadow-2xl shadow-gray-300/60 dark:shadow-black/50 py-1.5 overflow-hidden"
              :style="`left:${ctxMenu.x}px; top:${ctxMenu.y}px;`">
           <div class="px-3 py-1.5 mb-1 border-b border-gray-100 dark:border-gray-700">
             <span class="text-[10px] font-semibold uppercase tracking-wider text-gray-400">Actions rapides</span>
@@ -1129,7 +1129,7 @@ defineExpose({ clearSelection, selected, filteredRows, confirmDelete, confirmRes
         <div class="flex items-center gap-1">
           <!-- Précédent -->
           <button :disabled="!pagination.prev_page_url"
-                  class="w-8 h-8 flex items-center justify-center rounded-lg text-sm transition-colors
+                  class="w-8 h-8 flex items-center justify-center rounded-xl text-sm transition-colors
                          disabled:opacity-30 disabled:cursor-not-allowed text-gray-500 dark:text-gray-400
                          hover:bg-gray-100 dark:hover:bg-gray-700"
                   @click="pagination.prev_page_url && goServerPage(pagination.prev_page_url)">
@@ -1141,7 +1141,7 @@ defineExpose({ clearSelection, selected, filteredRows, confirmDelete, confirmRes
           <template v-for="link in pagination.links.slice(1, -1)" :key="link.label">
             <button
               @click="link.url && goServerPage(link.url)"
-              :class="['w-8 h-8 flex items-center justify-center rounded-lg text-sm font-medium transition-colors',
+              :class="['w-8 h-8 flex items-center justify-center rounded-xl text-sm font-medium transition-colors',
                        link.active
                          ? 'bg-violet-600 text-white shadow-sm'
                          : link.url
@@ -1152,7 +1152,7 @@ defineExpose({ clearSelection, selected, filteredRows, confirmDelete, confirmRes
           </template>
           <!-- Suivant -->
           <button :disabled="!pagination.next_page_url"
-                  class="w-8 h-8 flex items-center justify-center rounded-lg text-sm transition-colors
+                  class="w-8 h-8 flex items-center justify-center rounded-xl text-sm transition-colors
                          disabled:opacity-30 disabled:cursor-not-allowed text-gray-500 dark:text-gray-400
                          hover:bg-gray-100 dark:hover:bg-gray-700"
                   @click="pagination.next_page_url && goServerPage(pagination.next_page_url)">
@@ -1177,7 +1177,7 @@ defineExpose({ clearSelection, selected, filteredRows, confirmDelete, confirmRes
         </p>
         <div class="flex items-center gap-1">
           <button :disabled="currentPage <= 1"
-                  class="w-8 h-8 flex items-center justify-center rounded-lg text-sm transition-colors
+                  class="w-8 h-8 flex items-center justify-center rounded-xl text-sm transition-colors
                          disabled:opacity-30 disabled:cursor-not-allowed text-gray-500 dark:text-gray-400
                          hover:bg-gray-100 dark:hover:bg-gray-700"
                   @click="currentPage = 1" title="Premiere page">
@@ -1186,7 +1186,7 @@ defineExpose({ clearSelection, selected, filteredRows, confirmDelete, confirmRes
             </svg>
           </button>
           <button :disabled="currentPage <= 1"
-                  class="w-8 h-8 flex items-center justify-center rounded-lg text-sm transition-colors
+                  class="w-8 h-8 flex items-center justify-center rounded-xl text-sm transition-colors
                          disabled:opacity-30 disabled:cursor-not-allowed text-gray-500 dark:text-gray-400
                          hover:bg-gray-100 dark:hover:bg-gray-700"
                   @click="currentPage--">
@@ -1197,12 +1197,12 @@ defineExpose({ clearSelection, selected, filteredRows, confirmDelete, confirmRes
           <template v-for="p in visiblePages" :key="p">
             <span v-if="p === '...'" class="w-8 h-8 flex items-center justify-center text-sm text-gray-400">...</span>
             <button v-else
-                    :class="['w-8 h-8 flex items-center justify-center rounded-lg text-sm font-medium transition-colors',
+                    :class="['w-8 h-8 flex items-center justify-center rounded-xl text-sm font-medium transition-colors',
                              p === currentPage ? 'bg-violet-600 text-white shadow-sm' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700']"
                     @click="currentPage = p as number">{{ p }}</button>
           </template>
           <button :disabled="currentPage >= totalPages"
-                  class="w-8 h-8 flex items-center justify-center rounded-lg text-sm transition-colors
+                  class="w-8 h-8 flex items-center justify-center rounded-xl text-sm transition-colors
                          disabled:opacity-30 disabled:cursor-not-allowed text-gray-500 dark:text-gray-400
                          hover:bg-gray-100 dark:hover:bg-gray-700"
                   @click="currentPage++">
@@ -1211,7 +1211,7 @@ defineExpose({ clearSelection, selected, filteredRows, confirmDelete, confirmRes
             </svg>
           </button>
           <button :disabled="currentPage >= totalPages"
-                  class="w-8 h-8 flex items-center justify-center rounded-lg text-sm transition-colors
+                  class="w-8 h-8 flex items-center justify-center rounded-xl text-sm transition-colors
                          disabled:opacity-30 disabled:cursor-not-allowed text-gray-500 dark:text-gray-400
                          hover:bg-gray-100 dark:hover:bg-gray-700"
                   @click="currentPage = totalPages">
@@ -1242,7 +1242,7 @@ defineExpose({ clearSelection, selected, filteredRows, confirmDelete, confirmRes
                             confirmDialog.variant === 'warning' ? 'bg-amber-400' : 'bg-violet-500']"/>
               <div class="p-6">
                 <div class="flex items-start gap-4">
-                  <div :class="['w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0',
+                  <div :class="['w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0',
                                 confirmDialog.variant === 'danger'  ? 'bg-red-100 dark:bg-red-900/30' :
                                 confirmDialog.variant === 'warning' ? 'bg-amber-100 dark:bg-amber-900/30' :
                                                                        'bg-violet-100 dark:bg-violet-900/30']">
@@ -1268,13 +1268,13 @@ defineExpose({ clearSelection, selected, filteredRows, confirmDelete, confirmRes
                 </div>
                 <div class="flex justify-end gap-2.5 mt-6">
                   <button @click="confirmDialog.show = false"
-                          class="px-4 py-2 text-sm font-medium rounded-lg border border-gray-200 dark:border-gray-600
+                          class="px-4 py-2 text-sm font-medium rounded-xl border border-gray-200 dark:border-gray-600
                                  text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800
                                  hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                     Annuler
                   </button>
                   <button @click="confirmDialog.onConfirm(); confirmDialog.show = false"
-                          :class="['px-4 py-2 text-sm font-semibold rounded-lg text-white transition-colors',
+                          :class="['px-4 py-2 text-sm font-semibold rounded-xl text-white transition-colors',
                                    confirmDialog.variant === 'danger'  ? 'bg-red-600 hover:bg-red-700' :
                                    confirmDialog.variant === 'warning' ? 'bg-amber-500 hover:bg-amber-600' :
                                                                           'bg-violet-600 hover:bg-violet-700']">

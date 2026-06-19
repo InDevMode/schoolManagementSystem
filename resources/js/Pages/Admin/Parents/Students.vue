@@ -10,7 +10,7 @@
             </template>
             <template #actions>
                 <Link href="/admin/parent/list"
-                   class="inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-700
+                   class="inline-flex items-center gap-2 px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-700
                           text-sm font-medium text-gray-500 hover:text-primary-600 hover:border-primary-400
                           dark:text-gray-400 dark:hover:text-primary-400 transition-colors">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -49,7 +49,7 @@
             <div class="card overflow-hidden">
                 <div class="px-5 py-4 border-b border-gray-100 dark:border-gray-700 flex items-center justify-between">
                     <h2 class="text-base font-semibold text-gray-900 dark:text-white flex items-center gap-2">
-                        <span class="w-7 h-7 rounded-lg bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center">
+                        <span class="w-7 h-7 rounded-xl bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center">
                             <svg class="w-4 h-4 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                       d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
@@ -99,7 +99,7 @@
                         <button
                             title="Retirer cet enfant"
                             @click="confirmDeassign(student)"
-                            class="p-1.5 rounded-lg transition-all duration-150 flex-shrink-0
+                            class="p-1.5 rounded-xl transition-all duration-150 flex-shrink-0
                                    text-white bg-red-500 hover:bg-red-600 active:bg-red-700
                                    shadow-sm shadow-red-200 dark:shadow-red-900/40">
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -115,7 +115,7 @@
             <div class="card overflow-hidden">
                 <div class="px-5 py-4 border-b border-gray-100 dark:border-gray-700">
                     <h2 class="text-base font-semibold text-gray-900 dark:text-white flex items-center gap-2">
-                        <span class="w-7 h-7 rounded-lg bg-violet-100 dark:bg-violet-900/30 flex items-center justify-center">
+                        <span class="w-7 h-7 rounded-xl bg-violet-100 dark:bg-violet-900/30 flex items-center justify-center">
                             <svg class="w-4 h-4 text-violet-600 dark:text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                       d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
@@ -135,7 +135,7 @@
                                   d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                         </svg>
                         <input v-model="search" type="text" placeholder="Rechercher un apprenant..."
-                               class="w-full pl-9 pr-3 py-2 text-sm rounded-lg border border-gray-200 dark:border-gray-600
+                               class="w-full pl-9 pr-3 py-2 text-sm rounded-xl border border-gray-200 dark:border-gray-600
                                       bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300
                                       placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500/40 transition-all"/>
                     </div>
@@ -178,7 +178,7 @@
                         <button
                             title="Assigner à ce parent"
                             @click="assignStudent(student.id)"
-                            class="p-1.5 rounded-lg transition-all duration-150 flex-shrink-0
+                            class="p-1.5 rounded-xl transition-all duration-150 flex-shrink-0
                                    text-white bg-emerald-500 hover:bg-emerald-600 active:bg-emerald-700
                                    shadow-sm shadow-emerald-200 dark:shadow-emerald-900/40">
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

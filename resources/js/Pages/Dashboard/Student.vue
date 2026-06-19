@@ -13,7 +13,7 @@
                     </span>
                 </p>
             </div>
-            <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-indigo-600 text-white text-xs font-semibold shadow w-fit">
+            <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-indigo-600 text-white text-xs font-semibold shadow w-fit">
                 <span class="w-2 h-2 rounded-full bg-green-300 animate-pulse inline-block"/>Apprenant
             </span>
         </div>
@@ -117,8 +117,8 @@
                         <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">Prochains événements</h3>
                         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
                             <div v-for="ev in (upcomingEvents ?? []).slice(0,6)" :key="ev.id"
-                                class="flex items-center gap-2 p-2.5 rounded-lg border border-gray-100 dark:border-gray-700 hover:border-primary-200 dark:hover:border-primary-800 transition-colors">
-                                <div class="w-8 h-8 rounded-lg flex-shrink-0 flex items-center justify-center text-white text-[10px] font-bold"
+                                class="flex items-center gap-2 p-2.5 rounded-xl border border-gray-100 dark:border-gray-700 hover:border-primary-200 dark:hover:border-primary-800 transition-colors">
+                                <div class="w-8 h-8 rounded-xl flex-shrink-0 flex items-center justify-center text-white text-[10px] font-bold"
                                     :style="{ background: typeColors[ev.event_type] ?? '#6366f1' }">
                                     {{ fmtDay(ev.event_date ?? ev.start) }}
                                 </div>

@@ -70,7 +70,7 @@
             </DataTable>
 
             <!-- Totaux -->
-            <div v-if="feesCollections.data.length" class="flex flex-wrap items-center gap-6 px-4 py-3 mt-2 bg-gray-50 dark:bg-gray-800/60 rounded-lg border border-gray-200 dark:border-gray-700 text-sm">
+            <div v-if="feesCollections.data.length" class="flex flex-wrap items-center gap-6 px-4 py-3 mt-2 bg-gray-50 dark:bg-gray-800/60 rounded-xl border border-gray-200 dark:border-gray-700 text-sm">
                 <span class="text-gray-500 font-medium">Totaux :</span>
                 <span class="text-success-600 dark:text-success-400 font-semibold">
                     Total payé : <strong>{{ formatAmount(sumPaid) }}</strong>

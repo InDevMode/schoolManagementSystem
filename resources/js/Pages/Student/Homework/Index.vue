@@ -31,7 +31,7 @@
                     <!-- Bouton Voir (modal détail) — visible si déjà soumis -->
                     <button
                         v-if="row.homework_status === 'submitted' || row.homework_status === 'graded' || row.homework_status === 'late'"
-                        class="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all duration-150
+                        class="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-medium transition-all duration-150
                                text-white bg-emerald-500 hover:bg-emerald-600 shadow-sm shadow-emerald-200 dark:shadow-emerald-900/40"
                         title="Voir les détails et ma soumission"
                         @click="openDetail(row as Work)"
@@ -46,7 +46,7 @@
                     <a
                         v-if="row.homework_status !== 'submitted' && row.homework_status !== 'graded'"
                         :href="`/student/my_homework/submission/${row.id}`"
-                        class="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all duration-150
+                        class="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-medium transition-all duration-150
                                text-white bg-primary-500 hover:bg-primary-600 shadow-sm shadow-primary-200 dark:shadow-primary-900/40"
                         title="Soumettre le travail"
                     >
@@ -58,7 +58,7 @@
                     <!-- Indicateur désactivé si soumis -->
                     <span
                         v-else-if="row.homework_status === 'submitted'"
-                        class="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium
+                        class="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-medium
                                text-gray-400 bg-gray-100 dark:bg-gray-700/50 dark:text-gray-500 cursor-not-allowed"
                         title="Vous avez déjà soumis ce travail"
                     >
@@ -121,7 +121,7 @@
                         <div v-if="detailWork.description">
                             <p class="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wide mb-2">Description</p>
                             <div
-                                class="text-sm text-gray-700 dark:text-gray-300 prose prose-sm dark:prose-invert max-w-none bg-gray-50 dark:bg-gray-700/40 rounded-lg p-4"
+                                class="text-sm text-gray-700 dark:text-gray-300 prose prose-sm dark:prose-invert max-w-none bg-gray-50 dark:bg-gray-700/40 rounded-xl p-4"
                                 v-html="detailWork.description"
                             />
                         </div>
@@ -140,7 +140,7 @@
                         <!-- Commentaire de l'apprenant -->
                         <div v-if="detailWork.homework_description">
                             <p class="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wide mb-2">Mon commentaire</p>
-                            <p class="text-sm text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-gray-700/40 rounded-lg p-3">
+                            <p class="text-sm text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-gray-700/40 rounded-xl p-3">
                                 {{ detailWork.homework_description }}
                             </p>
                         </div>
@@ -152,7 +152,7 @@
                             <a
                                 :href="`/upload/homeworks/${detailWork.homework_document_file}`"
                                 target="_blank"
-                                class="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-100 text-sm font-medium transition-colors"
+                                class="inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-100 text-sm font-medium transition-colors"
                             >
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />

@@ -21,13 +21,13 @@ defineOptions({ layout: null }); // Pas de layout (pas de sidebar)
                 Vous n'avez pas la permission d'accéder à cette page.
             </p>
             <p v-if="message" class="text-xs font-mono text-red-500 dark:text-red-400 bg-red-50 dark:bg-red-900/20
-                                      px-3 py-2 rounded-lg mb-6">
+                                      px-3 py-2 rounded-xl mb-6">
                 {{ message }}
             </p>
 
             <div class="flex items-center justify-center gap-3 mt-6">
                 <a href="javascript:history.back()"
-                   class="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-600
+                   class="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-600
                           text-sm font-medium text-gray-700 dark:text-gray-300
                           hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -36,7 +36,7 @@ defineOptions({ layout: null }); // Pas de layout (pas de sidebar)
                     Retour
                 </a>
                 <a href="/logout"
-                   class="inline-flex items-center gap-2 px-4 py-2 rounded-lg
+                   class="inline-flex items-center gap-2 px-4 py-2 rounded-xl
                           bg-primary-600 hover:bg-primary-700 text-white text-sm font-medium transition-colors">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"

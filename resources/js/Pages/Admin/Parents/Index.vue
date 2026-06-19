@@ -19,7 +19,7 @@
         </PageHeader>
 
         <div v-if="isSuperAdmin"
-             class="flex items-center gap-2.5 px-4 py-2.5 rounded-lg bg-primary-50 dark:bg-primary-900/20 border border-primary-200 dark:border-primary-700 text-sm">
+             class="flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-primary-50 dark:bg-primary-900/20 border border-primary-200 dark:border-primary-700 text-sm">
             <svg class="w-4 h-4 text-primary-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                       d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
@@ -121,7 +121,7 @@
             <template #actions="{ row }">
                 <div class="flex items-center justify-end gap-1.5">
                     <button v-if="canView" title="Voir les détails" @click="openView(row as any)"
-                            class="p-1.5 rounded-lg transition-all duration-150
+                            class="p-1.5 rounded-xl transition-all duration-150
                                    text-white bg-violet-500 hover:bg-violet-600 active:bg-violet-700
                                    shadow-sm shadow-violet-200 dark:shadow-violet-900/40">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -130,7 +130,7 @@
                         </svg>
                     </button>
                     <button v-if="canEdit" title="Modifier" @click="openEdit(row as any)"
-                            class="p-1.5 rounded-lg transition-all duration-150
+                            class="p-1.5 rounded-xl transition-all duration-150
                                    text-white bg-emerald-500 hover:bg-emerald-600 active:bg-emerald-700
                                    shadow-sm shadow-emerald-200 dark:shadow-emerald-900/40">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -139,7 +139,7 @@
                         </svg>
                     </button>
                     <Link v-if="canManageChildren" :href="`/admin/parent/student/${row.id}`" title="Gérer les enfants"
-                       class="p-1.5 rounded-lg transition-all duration-150
+                       class="p-1.5 rounded-xl transition-all duration-150
                               text-white bg-indigo-500 hover:bg-indigo-600 active:bg-indigo-700
                               shadow-sm shadow-indigo-200 dark:shadow-indigo-900/40">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -149,7 +149,7 @@
                     </Link>
                     <!-- Réinitialiser MDP -->
                     <button v-if="canResetPassword" title="Réinit. MDP" @click="tableRef?.confirmResetPassword(row.id as number, `${row.last_name} ${row.name}`)"
-                            class="p-1.5 rounded-lg transition-all duration-150
+                            class="p-1.5 rounded-xl transition-all duration-150
                                    text-white bg-amber-500 hover:bg-amber-600 active:bg-amber-700
                                    shadow-sm shadow-amber-200 dark:shadow-amber-900/40">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -158,7 +158,7 @@
                     </button>
                     <button v-if="canDelete" title="Supprimer"
                             @click="tableRef?.confirmDelete(row.id as number, `${row.last_name} ${row.name}`)"
-                            class="p-1.5 rounded-lg transition-all duration-150
+                            class="p-1.5 rounded-xl transition-all duration-150
                                    text-white bg-red-500 hover:bg-red-600 active:bg-red-700
                                    shadow-sm shadow-red-200 dark:shadow-red-900/40">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -335,7 +335,7 @@
                                            transition-colors duration-150"
                                 >
                                     <!-- Avatar -->
-                                    <div class="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0 bg-primary-100 dark:bg-primary-900/40 flex items-center justify-center">
+                                    <div class="w-10 h-10 rounded-xl overflow-hidden flex-shrink-0 bg-primary-100 dark:bg-primary-900/40 flex items-center justify-center">
                                         <img v-if="child.profile_picture"
                                              :src="`/upload/profile/${child.profile_picture}`"
                                              class="w-full h-full object-cover"/>
@@ -359,7 +359,7 @@
                                     <Link
                                         v-if="canManageChildren"
                                         :href="`/admin/parent/student/${viewTarget?.id}`"
-                                        class="p-1.5 rounded-lg text-indigo-500 hover:bg-indigo-50 dark:hover:bg-indigo-900/20
+                                        class="p-1.5 rounded-xl text-indigo-500 hover:bg-indigo-50 dark:hover:bg-indigo-900/20
                                                hover:text-indigo-700 transition-colors flex-shrink-0"
                                         title="Gérer les enfants"
                                         @click="showView = false"
@@ -416,7 +416,7 @@
                     <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Photo de profil</label>
                         <input type="file" accept="image/*"
-                               class="text-sm text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-medium file:bg-primary-50 file:text-primary-700 hover:file:bg-primary-100"
+                               class="text-sm text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-medium file:bg-primary-50 file:text-primary-700 hover:file:bg-primary-100"
                                @change="onFileChange"/>
                     </div>
                 </div>

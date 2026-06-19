@@ -25,7 +25,7 @@
                 </div>
                 <button v-if="filters.table_name || filters.date_from || filters.date_to || filters.search"
                     @click="filters = { table_name: '', date_from: '', date_to: '', search: '' }; applyFilters()"
-                    class="flex-shrink-0 px-3 py-2 rounded-lg text-xs font-medium
+                    class="flex-shrink-0 px-3 py-2 rounded-xl text-xs font-medium
                            text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200
                            bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600
                            transition-colors whitespace-nowrap">
@@ -37,7 +37,7 @@
         <!-- Table -->
         <DataTable :columns="columns" :rows="logs.data" row-key="id" :pagination="logs">
             <template #cell-table_name="{ row }">
-                <span class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-mono font-semibold bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
+                <span class="inline-flex items-center px-2.5 py-1 rounded-xl text-xs font-mono font-semibold bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
                     {{ row.table_name }}
                 </span>
             </template>
@@ -55,7 +55,7 @@
                 <span class="text-sm text-gray-500 dark:text-gray-400 italic">{{ row.reason || '—' }}</span>
             </template>
             <template #actions="{ row }">
-                <button class="p-1.5 rounded-lg text-gray-400 hover:text-primary-600 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors"
+                <button class="p-1.5 rounded-xl text-gray-400 hover:text-primary-600 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors"
                     title="Voir les données supprimées"
                     @click="viewRecord(row)">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -69,7 +69,7 @@
         <!-- Modal détail -->
         <AppModal v-model="showDetail" title="Données supprimées" size="xl">
             <div v-if="selectedLog">
-                <div class="flex items-center gap-3 mb-4 p-3 rounded-lg bg-danger-50 dark:bg-danger-900/20 border border-danger-100 dark:border-danger-800">
+                <div class="flex items-center gap-3 mb-4 p-3 rounded-xl bg-danger-50 dark:bg-danger-900/20 border border-danger-100 dark:border-danger-800">
                     <svg class="w-5 h-5 text-danger-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
                     </svg>
@@ -84,7 +84,7 @@
                     </div>
                 </div>
 
-                <div class="rounded-lg border border-gray-100 dark:border-gray-700 overflow-hidden">
+                <div class="rounded-xl border border-gray-100 dark:border-gray-700 overflow-hidden">
                     <div class="px-4 py-2 bg-gray-50 dark:bg-gray-800/60 border-b border-gray-100 dark:border-gray-700">
                         <p class="text-xs font-semibold text-gray-500 uppercase">Snapshot des données au moment de la suppression</p>
                     </div>

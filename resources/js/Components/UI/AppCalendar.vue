@@ -7,12 +7,12 @@
                 <h1 class="text-2xl font-bold text-gray-900 dark:text-white">{{ title }}</h1>
                 <p v-if="subtitle" class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">{{ subtitle }}</p>
             </div>
-            <div class="flex items-center bg-gray-100 dark:bg-gray-800 rounded-lg p-1 gap-1 self-start sm:self-auto">
+            <div class="flex items-center bg-gray-100 dark:bg-gray-800 rounded-xl p-1 gap-1 self-start sm:self-auto">
                 <button
                     v-for="v in views"
                     :key="v.key"
                     @click="currentView = v.key"
-                    class="px-3.5 py-1.5 rounded-lg text-sm font-medium transition-all duration-150"
+                    class="px-3.5 py-1.5 rounded-xl text-sm font-medium transition-all duration-150"
                     :class="currentView === v.key
                         ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm'
                         : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'"
@@ -23,7 +23,7 @@
         <!-- ── Barre navigation ─────────────────────────────────────────── -->
         <div class="card p-3 flex items-center justify-between gap-4">
             <button @click="prev"
-                class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700/60 transition-colors text-gray-500 dark:text-gray-400">
+                class="p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-700/60 transition-colors text-gray-500 dark:text-gray-400">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
                 </svg>
@@ -36,11 +36,11 @@
             </div>
             <div class="flex items-center gap-2">
                 <button @click="goToday"
-                    class="px-3 py-1.5 rounded-lg text-xs font-medium bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 hover:bg-primary-200 dark:hover:bg-primary-900/50 transition-colors">
+                    class="px-3 py-1.5 rounded-xl text-xs font-medium bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 hover:bg-primary-200 dark:hover:bg-primary-900/50 transition-colors">
                     Aujourd'hui
                 </button>
                 <button @click="next"
-                    class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700/60 transition-colors text-gray-500 dark:text-gray-400">
+                    class="p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-700/60 transition-colors text-gray-500 dark:text-gray-400">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                     </svg>
@@ -77,7 +77,7 @@
                         <div
                             v-for="ev in cell.events.slice(0, 3)" :key="ev.id"
                             @click="openEvent(ev)"
-                            class="text-xs px-1.5 py-0.5 rounded-lg cursor-pointer truncate font-medium leading-5 transition-all hover:opacity-80"
+                            class="text-xs px-1.5 py-0.5 rounded-xl cursor-pointer truncate font-medium leading-5 transition-all hover:opacity-80"
                             :style="{ backgroundColor: ev.color+'20', color: ev.color, borderLeft: `2px solid ${ev.color}` }"
                         >
                             <span v-if="ev.start_time" class="opacity-60 mr-0.5 font-normal">{{ ev.start_time }}</span>
@@ -121,7 +121,7 @@
                     >
                         <template v-for="ev in getWeekEvents(wd.date, slot)" :key="ev.id">
                             <div @click="openEvent(ev)"
-                                class="rounded-lg px-1.5 py-1 text-xs font-medium cursor-pointer hover:opacity-90 hover:shadow-md transition-all mb-0.5 overflow-hidden"
+                                class="rounded-xl px-1.5 py-1 text-xs font-medium cursor-pointer hover:opacity-90 hover:shadow-md transition-all mb-0.5 overflow-hidden"
                                 :style="{
                                     backgroundColor: ev.color+'20',
                                     color: ev.color,
@@ -162,7 +162,7 @@
                     <div v-for="ev in upcomingEvents" :key="ev.id"
                         @click="openEvent(ev)"
                         class="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800/40 cursor-pointer transition-colors">
-                        <div class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
+                        <div class="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0"
                             :style="{ backgroundColor: ev.color+'20' }">
                             <span class="w-2 h-2 rounded-full" :style="{ backgroundColor: ev.color }"/>
                         </div>
@@ -205,7 +205,7 @@
                                     <h3 class="text-base font-bold text-gray-900 dark:text-white">{{ selectedEvent.title }}</h3>
                                 </div>
                                 <button @click="selectedEvent = null"
-                                    class="p-1.5 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors flex-shrink-0">
+                                    class="p-1.5 rounded-xl text-gray-400 hover:text-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors flex-shrink-0">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                                     </svg>

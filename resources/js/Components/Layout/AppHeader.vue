@@ -68,7 +68,7 @@
                     <div class="flex items-center gap-1 flex-shrink-0">
 
                         <!-- Dark mode -->
-                        <button class="p-2.5 rounded-lg text-gray-500 hover:text-gray-700 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-gray-200 dark:hover:bg-gray-700 transition-colors" @click="toggleDark">
+                        <button class="p-2.5 rounded-xl text-gray-500 hover:text-gray-700 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-gray-200 dark:hover:bg-gray-700 transition-colors" @click="toggleDark">
                             <svg v-if="isDark" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
                             </svg>
@@ -80,7 +80,7 @@
                         <!-- Notifications -->
                         <div ref="notifRef" class="relative">
                             <button
-                                class="relative p-2.5 rounded-lg text-gray-500 hover:text-primary-600 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors"
+                                class="relative p-2.5 rounded-xl text-gray-500 hover:text-primary-600 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors"
                                 @click="notifOpen = !notifOpen"
                             >
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -92,7 +92,7 @@
 
                             <!-- Dropdown notifications -->
                             <Transition enter-active-class="transition duration-150 ease-out" enter-from-class="opacity-0 translate-y-1" enter-to-class="opacity-100 translate-y-0" leave-active-class="transition duration-100 ease-in" leave-from-class="opacity-100 translate-y-0" leave-to-class="opacity-0 translate-y-1">
-                                <div v-if="notifOpen" class="absolute right-0 top-full mt-1 w-80 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 shadow-xl overflow-hidden z-50">
+                                <div v-if="notifOpen" class="absolute right-0 top-full mt-1 w-80 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-xl overflow-hidden z-50">
                                     <div class="px-4 py-3 border-b border-gray-100 dark:border-gray-700 flex items-center justify-between">
                                         <p class="text-sm font-semibold text-gray-900 dark:text-white">Notifications</p>
                                         <span class="text-xs text-gray-400">{{ notifications.length }}</span>
@@ -129,7 +129,7 @@
 
                         <!-- Chat / Messages -->
                         <div class="relative">
-                            <a href="/chat" class="relative p-2.5 rounded-lg text-gray-500 hover:text-primary-600 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors block">
+                            <a href="/chat" class="relative p-2.5 rounded-xl text-gray-500 hover:text-primary-600 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors block">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                                 </svg>
@@ -145,7 +145,7 @@
                         <!-- Profil -->
                         <div ref="profileRef" class="relative">
                             <button
-                                class="flex items-center gap-2.5 px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                                class="flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
                                 @click="profileOpen = !profileOpen"
                             >
                                 <img :src="avatarUrl" :alt="user?.name" class="w-8 h-8 rounded-full object-cover ring-2 ring-primary-200 dark:ring-primary-700" />
@@ -167,7 +167,7 @@
                                 leave-from-class="opacity-100 translate-y-0"
                                 leave-to-class="opacity-0 translate-y-1"
                             >
-                                <div v-if="profileOpen" class="absolute right-0 top-full mt-1 w-72 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 shadow-xl overflow-hidden z-50">
+                                <div v-if="profileOpen" class="absolute right-0 top-full mt-1 w-72 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-xl overflow-hidden z-50">
                                     <div class="px-5 py-4 bg-gradient-to-br from-primary-50 to-secondary-50 dark:from-primary-900/20 dark:to-secondary-900/20 border-b border-gray-100 dark:border-gray-700">
                                         <div class="flex items-center gap-3">
                                             <img :src="avatarUrl" :alt="user?.name" class="w-12 h-12 rounded-full object-cover ring-2 ring-primary-300" />
@@ -182,7 +182,7 @@
                                         <a v-for="link in profileLinks" :key="link.href" :href="link.href"
                                             class="flex items-center gap-3 px-5 py-3 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
                                         >
-                                            <span class="w-8 h-8 rounded-lg bg-gray-100 dark:bg-gray-700 flex items-center justify-center flex-shrink-0">
+                                            <span class="w-8 h-8 rounded-xl bg-gray-100 dark:bg-gray-700 flex items-center justify-center flex-shrink-0">
                                                 <NavIcon :name="link.icon" class="w-4 h-4 text-gray-500" />
                                             </span>
                                             {{ link.label }}
@@ -190,7 +190,7 @@
                                     </div>
                                     <div class="border-t border-gray-100 dark:border-gray-700 py-2">
                                         <a href="/logout" class="flex items-center gap-3 px-5 py-3 text-sm text-danger-600 dark:text-danger-400 hover:bg-danger-50 dark:hover:bg-danger-900/20 transition-colors">
-                                            <span class="w-8 h-8 rounded-lg bg-danger-50 dark:bg-danger-900/20 flex items-center justify-center flex-shrink-0">
+                                            <span class="w-8 h-8 rounded-xl bg-danger-50 dark:bg-danger-900/20 flex items-center justify-center flex-shrink-0">
                                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                                                 </svg>
@@ -223,13 +223,13 @@
                             :key="child.id"
                             :href="child.href"
                             :class="[
-                                'flex items-center gap-2 px-3.5 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-colors flex-shrink-0',
+                                'flex items-center gap-2 px-3.5 py-2 rounded-xl text-sm font-medium whitespace-nowrap transition-colors flex-shrink-0',
                                 isActiveChild(child)
                                     ? 'bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300'
                                     : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white'
                             ]"
                         >
-                            <span :class="['w-5 h-5 rounded-lg flex items-center justify-center flex-shrink-0', isActiveChild(child) ? 'bg-primary-100 dark:bg-primary-900/40' : 'bg-gray-100 dark:bg-gray-700']">
+                            <span :class="['w-5 h-5 rounded-xl flex items-center justify-center flex-shrink-0', isActiveChild(child) ? 'bg-primary-100 dark:bg-primary-900/40' : 'bg-gray-100 dark:bg-gray-700']">
                                 <NavIcon :name="child.icon" class="w-3 h-3" />
                             </span>
                             {{ child.label }}

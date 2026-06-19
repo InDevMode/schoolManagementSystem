@@ -55,7 +55,7 @@
                         <span>{{ formatDate(notice.notice_date) }}</span>
                     </div>
                     <button
-                        class="p-1.5 rounded-lg text-gray-400 hover:text-purple-600 hover:bg-purple-50
+                        class="p-1.5 rounded-xl text-gray-400 hover:text-purple-600 hover:bg-purple-50
                                dark:hover:bg-purple-900/20 transition-colors"
                         title="Lire"
                         @click.stop="openDetail(notice)"

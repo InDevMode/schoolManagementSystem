@@ -6,7 +6,7 @@
         </div>
 
         <!-- Table wrapper -->
-        <div class="overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700">
+        <div class="overflow-x-auto rounded-xl border border-gray-200 dark:border-gray-700">
             <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                 <thead class="bg-gray-50 dark:bg-gray-800/60">
                     <tr>
@@ -79,7 +79,7 @@
                         :href="link.url ?? undefined"
                         v-html="link.label"
                         :class="[
-                            'px-3 py-1.5 rounded-lg text-xs font-medium transition-colors',
+                            'px-3 py-1.5 rounded-xl text-xs font-medium transition-colors',
                             link.active
                                 ? 'bg-primary-600 text-white'
                                 : link.url

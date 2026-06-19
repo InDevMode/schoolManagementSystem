@@ -56,12 +56,12 @@
                         </div>
                         <div class="flex gap-2 justify-end pt-2">
                             <button @click="confirmDelete.show = false"
-                                    class="px-4 py-2 text-sm font-medium rounded-lg border border-gray-200 dark:border-gray-600
+                                    class="px-4 py-2 text-sm font-medium rounded-xl border border-gray-200 dark:border-gray-600
                                            text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                                 Annuler
                             </button>
                             <button @click="doDelete" :disabled="deleting"
-                                    class="px-4 py-2 text-sm font-medium rounded-lg bg-red-600 hover:bg-red-700 text-white
+                                    class="px-4 py-2 text-sm font-medium rounded-xl bg-red-600 hover:bg-red-700 text-white
                                            disabled:opacity-60 transition-colors flex items-center gap-2">
                                 <svg v-if="deleting" class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
                                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>

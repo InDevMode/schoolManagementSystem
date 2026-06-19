@@ -11,7 +11,7 @@
             <template #actions>
                 <Link
                     href="/admin/communicate/noticeboard/list"
-                    class="inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-700
+                    class="inline-flex items-center gap-2 px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-700
                            text-sm font-medium text-gray-500 hover:text-primary-600 hover:border-primary-400
                            dark:text-gray-400 dark:hover:text-primary-400 transition-colors"
                     title="Retour au tableau d'affichage"
@@ -96,7 +96,7 @@
                         Par <strong class="text-gray-500 dark:text-gray-400 font-medium">{{ notice.created_by_name }}</strong>
                     </span>
                     <button
-                        class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold
+                        class="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-semibold
                                bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400
                                border border-green-200 dark:border-green-800
                                hover:bg-green-100 dark:hover:bg-green-900/40 transition-colors"

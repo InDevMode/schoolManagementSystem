@@ -32,7 +32,7 @@
                 </div>
                 <button v-if="filters.role || filters.status || filters.search"
                     @click="filters = { role: '', status: '', search: '' }; applyFilters()"
-                    class="flex-shrink-0 px-3 py-2 rounded-lg text-xs font-medium
+                    class="flex-shrink-0 px-3 py-2 rounded-xl text-xs font-medium
                            text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200
                            bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600
                            transition-colors whitespace-nowrap">
@@ -87,7 +87,7 @@
                 <!-- Actions -->
                 <div class="flex items-center gap-1.5 pt-2 border-t border-gray-100 dark:border-gray-700">
                     <button v-if="can('action.staff.edit')"
-                        class="p-1.5 rounded-lg transition-all duration-150
+                        class="p-1.5 rounded-xl transition-all duration-150
                                text-white bg-emerald-500 hover:bg-emerald-600 active:bg-emerald-700
                                shadow-sm shadow-emerald-200 dark:shadow-emerald-900/40"
                         title="Modifier"
@@ -97,7 +97,7 @@
                         </svg>
                     </button>
                     <button v-if="can('action.staff.delete')"
-                        class="p-1.5 rounded-lg transition-all duration-150
+                        class="p-1.5 rounded-xl transition-all duration-150
                                text-white bg-red-500 hover:bg-red-600 active:bg-red-700
                                shadow-sm shadow-red-200 dark:shadow-red-900/40"
                         title="Supprimer"
@@ -123,7 +123,7 @@
         <!-- Modal Créer/Modifier -->
         <AppModal v-model="showForm" :title="editTarget ? 'Modifier le membre' : 'Ajouter un membre'" size="lg">
             <form :id="formId" @submit.prevent="submitForm" class="space-y-4">
-                <div class="p-3 rounded-lg bg-violet-50 dark:bg-violet-900/20 border border-violet-100 dark:border-violet-800 text-xs text-violet-700 dark:text-violet-300">
+                <div class="p-3 rounded-xl bg-violet-50 dark:bg-violet-900/20 border border-violet-100 dark:border-violet-800 text-xs text-violet-700 dark:text-violet-300">
                     💡 Le membre du personnel doit avoir un compte utilisateur. Sélectionnez-le depuis la liste.
                 </div>
                 <!-- Sélection user existant (prof, directeur, etc.) -->

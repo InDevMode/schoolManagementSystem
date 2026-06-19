@@ -103,6 +103,10 @@ export default {
                 'fade-in': 'fadeIn 0.2s ease-out',
                 'slide-down': 'slideDown 0.2s ease-out',
                 'slide-up': 'slideUp 0.2s ease-out',
+                'fade-slide': 'fadeSlide 0.45s cubic-bezier(0.16, 1, 0.3, 1)',
+            },
+            transitionDuration: {
+                '400': '400ms',
             },
             keyframes: {
                 fadeIn: {

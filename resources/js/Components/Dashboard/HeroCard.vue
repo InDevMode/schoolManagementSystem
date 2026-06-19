@@ -3,20 +3,20 @@
         :is="href ? 'a' : 'div'"
         :href="href"
         :class="[
-            'relative overflow-hidden rounded-lg p-4 flex flex-col justify-between min-h-[90px] transition-all duration-200 group',
+            'relative overflow-hidden rounded-xl p-4 flex flex-col justify-between min-h-[90px] transition-all duration-200 group',
             href ? 'cursor-pointer hover:shadow-lg hover:-translate-y-0.5' : '',
             bgClass,
         ]"
     >
         <!-- Fond décoratif -->
-        <div class="absolute inset-0 opacity-20 pointer-events-none overflow-hidden rounded-lg">
+        <div class="absolute inset-0 opacity-20 pointer-events-none overflow-hidden rounded-xl">
             <div class="absolute -right-6 -top-6 w-28 h-28 rounded-full" :class="circleClass"/>
             <div class="absolute -right-2 -bottom-8 w-20 h-20 rounded-full" :class="circleClass"/>
         </div>
 
         <!-- Ligne haut : icône + flèche -->
         <div class="relative flex items-start justify-between">
-            <div :class="['w-8 h-8 rounded-lg flex items-center justify-center', iconBgClass]">
+            <div :class="['w-8 h-8 rounded-xl flex items-center justify-center', iconBgClass]">
                 <NavIcon :name="icon" class="w-4 h-4 text-white"/>
             </div>
             <svg v-if="href" class="w-4 h-4 text-white/50 group-hover:text-white/90 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">

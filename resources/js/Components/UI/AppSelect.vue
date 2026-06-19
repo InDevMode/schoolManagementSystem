@@ -104,7 +104,7 @@ const effectivePlaceholder = computed((): string => {
 });
 
 const selectClasses = computed(() => [
-    'w-full rounded-lg border bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100',
+    'w-full rounded-xl border bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100',
     'pl-3.5 pr-10 py-2.5 text-sm appearance-none',
     'transition-all duration-200',
     'focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent',

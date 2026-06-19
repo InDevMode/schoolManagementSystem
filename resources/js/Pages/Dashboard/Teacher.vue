@@ -13,7 +13,7 @@
                     </span>
                 </p>
             </div>
-            <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-600 text-white text-xs font-semibold shadow w-fit">
+            <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-600 text-white text-xs font-semibold shadow w-fit">
                 <span class="w-2 h-2 rounded-full bg-green-300 animate-pulse inline-block"/>Professeur
             </span>
         </div>
@@ -54,7 +54,7 @@
                             <div v-if="!myRecentEvaluations?.length" class="text-center py-8 text-xs text-gray-400">Aucune évaluation récente</div>
                             <div v-else class="space-y-2">
                                 <div v-for="ev in myRecentEvaluations.slice(0, 6)" :key="ev.id"
-                                    class="flex items-center gap-3 p-2.5 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors">
+                                    class="flex items-center gap-3 p-2.5 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors">
                                     <span class="w-3 h-3 rounded-full flex-shrink-0" :style="{ background: typeColors[ev.type] ?? '#6366f1' }"/>
                                     <div class="flex-1 min-w-0">
                                         <p class="text-xs font-semibold text-gray-900 dark:text-white truncate">
@@ -79,7 +79,7 @@
                                 </div>
                                 <a href="/teacher/class_subject"
                                     class="flex items-center gap-3 p-3 rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-700 text-white hover:opacity-90 transition-opacity">
-                                    <div class="w-10 h-10 rounded-lg bg-white/20 flex items-center justify-center flex-shrink-0">
+                                    <div class="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center flex-shrink-0">
                                         <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                                         </svg>

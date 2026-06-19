@@ -21,7 +21,7 @@
 
         <!-- Bandeau évaluation validée (lecture seule) -->
         <div v-if="evaluation && evaluation.status === 'validated'"
-            class="flex items-center gap-3 px-4 py-3 rounded-lg
+            class="flex items-center gap-3 px-4 py-3 rounded-xl
                    bg-success-50 dark:bg-success-900/20 border border-success-200 dark:border-success-700">
             <svg class="w-5 h-5 text-success-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -40,7 +40,7 @@
 
         <!-- Bandeau évaluation annulée (lecture seule) -->
         <div v-if="evaluation && evaluation.status === 'cancelled'"
-            class="flex items-center gap-3 px-4 py-3 rounded-lg
+            class="flex items-center gap-3 px-4 py-3 rounded-xl
                    bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700">
             <svg class="w-5 h-5 text-amber-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -121,7 +121,7 @@
 
             <!-- Bandeau d'instructions (affiché si éval active, ni validée ni annulée) -->
             <div v-if="evaluation.status !== 'validated' && evaluation.status !== 'cancelled'"
-                class="flex items-start gap-3 mx-5 mt-4 px-4 py-3 rounded-lg
+                class="flex items-start gap-3 mx-5 mt-4 px-4 py-3 rounded-xl
                        bg-violet-50 dark:bg-violet-900/20 border border-violet-200 dark:border-violet-800">
                 <svg class="w-4 h-4 text-violet-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
@@ -135,7 +135,7 @@
 
             <!-- Bandeau alerte : notes rejetées à re-saisir -->
             <div v-if="rejectedCount > 0"
-                class="flex items-center gap-3 mx-5 mt-3 px-4 py-2.5 rounded-lg
+                class="flex items-center gap-3 mx-5 mt-3 px-4 py-2.5 rounded-xl
                        bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800">
                 <svg class="w-4 h-4 text-red-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
@@ -149,7 +149,7 @@
 
             <!-- Bandeau notes verrouillées -->
             <div v-if="validatedCount > 0"
-                class="flex items-center gap-3 mx-5 mt-3 px-4 py-2.5 rounded-lg
+                class="flex items-center gap-3 mx-5 mt-3 px-4 py-2.5 rounded-xl
                        bg-success-50 dark:bg-success-900/20 border border-success-200 dark:border-success-800">
                 <svg class="w-4 h-4 text-success-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
@@ -203,7 +203,7 @@
                             <td class="px-4 py-3">
                                 <!-- Note verrouillée (validée ou éval annulée) -->
                                 <div v-if="g.validated || evaluation.status === 'cancelled'"
-                                    :class="['w-20 mx-auto flex items-center justify-center gap-1.5 px-2 py-1.5 rounded-lg border',
+                                    :class="['w-20 mx-auto flex items-center justify-center gap-1.5 px-2 py-1.5 rounded-xl border',
                                              evaluation.status === 'cancelled'
                                                 ? 'bg-gray-100 dark:bg-gray-700/50 border-gray-300 dark:border-gray-600 text-gray-500 dark:text-gray-400'
                                                 : lockedBadgeClass(g)]">
@@ -221,7 +221,7 @@
                                     :min="0"
                                     :max="20"
                                     step="0.5"
-                                    :class="['w-20 mx-auto block text-center text-sm rounded-lg border px-2 py-1.5 transition-colors', scoreClass(g)]"
+                                    :class="['w-20 mx-auto block text-center text-sm rounded-xl border px-2 py-1.5 transition-colors', scoreClass(g)]"
                                     @input="onScoreInput(g)"
                                 />
                             </td>
@@ -234,7 +234,7 @@
                                     type="text"
                                     placeholder="Absent, Dispensé,Médicore, Passable, Assez-Bien,Bien, Très-Bien..."
                                     :disabled="g.validated || evaluation.status === 'cancelled'"
-                                    class="w-full text-xs rounded-lg border border-gray-200 dark:border-gray-600 bg-transparent px-2 py-1 dark:text-gray-300 placeholder-gray-300 dark:placeholder-gray-600 disabled:opacity-40 disabled:cursor-not-allowed"
+                                    class="w-full text-xs rounded-xl border border-gray-200 dark:border-gray-600 bg-transparent px-2 py-1 dark:text-gray-300 placeholder-gray-300 dark:placeholder-gray-600 disabled:opacity-40 disabled:cursor-not-allowed"
                                     @input="g.dirty = true"
                                 />
                             </td>

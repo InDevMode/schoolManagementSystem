@@ -40,7 +40,7 @@
             <template #actions="{ row }">
                 <div class="flex items-center justify-end gap-1.5">
                     <button title="Voir les détails" @click="openDetails(row as any)"
-                            class="p-1.5 rounded-lg transition-all duration-150
+                            class="p-1.5 rounded-xl transition-all duration-150
                                    text-white bg-violet-500 hover:bg-violet-600 active:bg-violet-700
                                    shadow-sm shadow-violet-200 dark:shadow-violet-900/40">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -48,7 +48,7 @@
                         </svg>
                     </button>
                     <button v-if="canEdit" title="Modifier" @click="openEdit(row as any)"
-                            class="p-1.5 rounded-lg transition-all duration-150
+                            class="p-1.5 rounded-xl transition-all duration-150
                                    text-white bg-emerald-500 hover:bg-emerald-600 active:bg-emerald-700
                                    shadow-sm shadow-emerald-200 dark:shadow-emerald-900/40">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -56,7 +56,7 @@
                         </svg>
                     </button>
                     <button v-if="canDelete" title="Supprimer" @click="tableRef?.confirmDelete(row.id as number, row.name as string)"
-                            class="p-1.5 rounded-lg transition-all duration-150
+                            class="p-1.5 rounded-xl transition-all duration-150
                                    text-white bg-red-500 hover:bg-red-600 active:bg-red-700
                                    shadow-sm shadow-red-200 dark:shadow-red-900/40">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -145,7 +145,7 @@
                             <!-- Header -->
                             <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-gray-700">
                                 <div class="flex items-center gap-3">
-                                    <div class="w-9 h-9 rounded-lg bg-violet-100 dark:bg-violet-900/30 flex items-center justify-center flex-shrink-0">
+                                    <div class="w-9 h-9 rounded-xl bg-violet-100 dark:bg-violet-900/30 flex items-center justify-center flex-shrink-0">
                                         <svg class="w-5 h-5 text-violet-600 dark:text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                                         </svg>
@@ -155,7 +155,7 @@
                                         <p class="text-xs text-gray-500 dark:text-gray-400">Informations complètes</p>
                                     </div>
                                 </div>
-                                <button @click="showDetails = false" class="p-1.5 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                                <button @click="showDetails = false" class="p-1.5 rounded-xl text-gray-400 hover:text-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
                                 </button>
                             </div>
@@ -285,9 +285,12 @@ const typeLabel   = (type: string) => typeMap[type]?.label   ?? type;
 const typeVariant = (type: string) => typeMap[type]?.variant ?? 'info';
 
 const columns = [
-    { key: 'name',   label: 'Nom' },
-    { key: 'type',   label: 'Type' },
-    { key: 'status', label: 'Statut' },
+    { key: 'name',            label: 'Nom de la matière', sortable: true  },
+    { key: 'type',            label: 'Type',              sortable: true  },
+    { key: 'status',          label: 'Statut',            sortable: true  },
+    { key: 'created_by_name', label: 'Créé par',          sortable: false },
+    { key: 'created_at',      label: 'Date création',     sortable: true,
+      format: (v: unknown) => v ? new Date(v as string).toLocaleDateString('fr-FR') : '—' },
 ];
 
 const form = useForm({ name: '', type: 'theoretical', status: '1' });

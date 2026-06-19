@@ -20,7 +20,7 @@
 
         <!-- Bandeau période courante -->
         <div v-if="!currentPeriod"
-            class="flex items-center gap-3 px-4 py-3 rounded-lg bg-warning-50 dark:bg-warning-900/20 border border-warning-200 dark:border-warning-700">
+            class="flex items-center gap-3 px-4 py-3 rounded-xl bg-warning-50 dark:bg-warning-900/20 border border-warning-200 dark:border-warning-700">
             <svg class="w-5 h-5 text-warning-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
             </svg>
@@ -30,7 +30,7 @@
             </p>
         </div>
         <div v-else
-            class="flex items-center gap-3 px-4 py-3 rounded-lg bg-success-50 dark:bg-success-900/20 border border-success-200 dark:border-success-700">
+            class="flex items-center gap-3 px-4 py-3 rounded-xl bg-success-50 dark:bg-success-900/20 border border-success-200 dark:border-success-700">
             <svg class="w-5 h-5 text-success-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
             </svg>
@@ -56,7 +56,7 @@
                 </div>
                 <button v-if="filters.class_id || filters.period_id || filters.type || filters.status"
                     @click="filters = { class_id: '', period_id: '', type: '', status: '' }; applyFilters()"
-                    class="flex-shrink-0 px-3 py-2 rounded-lg text-xs font-medium
+                    class="flex-shrink-0 px-3 py-2 rounded-xl text-xs font-medium
                            text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200
                            bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600
                            transition-colors whitespace-nowrap">
@@ -75,7 +75,7 @@
             </template>
 
             <template #cell-coefficient="{ row }">
-                <span class="inline-flex items-center justify-center w-7 h-7 rounded-lg text-xs font-bold bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-400">
+                <span class="inline-flex items-center justify-center w-7 h-7 rounded-xl text-xs font-bold bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-400">
                     ×{{ row.coefficient }}
                 </span>
             </template>
@@ -101,14 +101,14 @@
                     <!-- Bouton contextuel selon statut -->
                     <Link v-if="row.status === 'open'"
                         :href="`/teacher/evaluations/grade-entry?evaluation_id=${row.id}`"
-                        class="px-2.5 py-1 rounded-lg text-xs font-semibold
+                        class="px-2.5 py-1 rounded-xl text-xs font-semibold
                                bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-400
                                hover:bg-primary-100 transition-colors whitespace-nowrap">
                         Saisir les notes
                     </Link>
                     <Link v-else
                         :href="`/teacher/evaluations/grade-entry?evaluation_id=${row.id}`"
-                        class="px-2.5 py-1 rounded-lg text-xs font-semibold
+                        class="px-2.5 py-1 rounded-xl text-xs font-semibold
                                bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300
                                hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors whitespace-nowrap">
                         Voir les notes
@@ -118,7 +118,7 @@
                     <button v-if="row.status !== 'validated' && row.status !== 'cancelled'"
                         @click="confirmCancel(row)"
                         title="Annuler cette évaluation"
-                        class="p-1.5 rounded-lg text-xs font-semibold
+                        class="p-1.5 rounded-xl text-xs font-semibold
                                bg-danger-50 dark:bg-danger-900/20 text-danger-600 dark:text-danger-400
                                hover:bg-danger-100 transition-colors">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -156,7 +156,7 @@
                     <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
                         <button v-for="(label, key) in typeLabels" :key="key" type="button"
                             :class="[
-                                'flex flex-col items-center gap-1.5 p-3 rounded-lg border-2 transition-all',
+                                'flex flex-col items-center gap-1.5 p-3 rounded-xl border-2 transition-all',
                                 form.type === key
                                     ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20'
                                     : 'border-gray-200 dark:border-gray-700 hover:border-gray-300',
@@ -174,7 +174,7 @@
                             Coefficient
                             <span class="text-[10px] text-gray-400 font-normal ml-1">(matière assignée)</span>
                         </label>
-                        <div class="flex items-center gap-2 px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700/50">
+                        <div class="flex items-center gap-2 px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700/50">
                             <span class="text-lg font-bold text-primary-600 dark:text-primary-400">
                                 {{ form.coefficient || '—' }}
                             </span>
@@ -197,7 +197,7 @@
         <!-- Modal confirmation annulation -->
         <AppModal v-model="showCancelModal" title="Annuler l'évaluation" size="sm">
             <div class="space-y-3">
-                <div class="flex items-start gap-3 p-3 rounded-lg bg-danger-50 dark:bg-danger-900/20 border border-danger-200 dark:border-danger-700">
+                <div class="flex items-start gap-3 p-3 rounded-xl bg-danger-50 dark:bg-danger-900/20 border border-danger-200 dark:border-danger-700">
                     <svg class="w-5 h-5 text-danger-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
                     </svg>

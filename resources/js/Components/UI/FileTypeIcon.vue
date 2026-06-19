@@ -1,5 +1,5 @@
 <template>
-    <div :class="['flex items-center justify-center rounded-lg flex-shrink-0', sizeClass, bgClass]">
+    <div :class="['flex items-center justify-center rounded-xl flex-shrink-0', sizeClass, bgClass]">
         <svg :class="['flex-shrink-0', iconSizeClass, colorClass]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" :d="iconPath" />
         </svg>

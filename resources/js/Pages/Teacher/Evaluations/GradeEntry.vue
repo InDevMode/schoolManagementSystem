@@ -41,7 +41,7 @@
 
         <!-- Ouverte → saisie autorisée -->
         <div v-if="evaluation && evaluation.status === 'open'"
-            class="flex items-center gap-3 px-4 py-3 rounded-lg
+            class="flex items-center gap-3 px-4 py-3 rounded-xl
                    bg-primary-50 dark:bg-primary-900/20 border border-primary-200 dark:border-primary-700">
             <svg class="w-5 h-5 text-primary-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
@@ -53,7 +53,7 @@
 
         <!-- Validée -->
         <div v-if="evaluation && evaluation.status === 'validated'"
-            class="flex items-center gap-3 px-4 py-3 rounded-lg
+            class="flex items-center gap-3 px-4 py-3 rounded-xl
                    bg-success-50 dark:bg-success-900/20 border border-success-200 dark:border-success-700">
             <svg class="w-5 h-5 text-success-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -71,7 +71,7 @@
 
         <!-- Fermée -->
         <div v-if="evaluation && evaluation.status === 'closed'"
-            class="flex items-center gap-3 px-4 py-3 rounded-lg
+            class="flex items-center gap-3 px-4 py-3 rounded-xl
                    bg-warning-50 dark:bg-warning-900/20 border border-warning-200 dark:border-warning-700">
             <svg class="w-5 h-5 text-warning-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -89,7 +89,7 @@
 
         <!-- Annulée -->
         <div v-if="evaluation && evaluation.status === 'cancelled'"
-            class="flex items-center gap-3 px-4 py-3 rounded-lg
+            class="flex items-center gap-3 px-4 py-3 rounded-xl
                    bg-danger-50 dark:bg-danger-900/20 border border-danger-200 dark:border-danger-700">
             <svg class="w-5 h-5 text-danger-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
@@ -233,7 +233,7 @@
                                     step="0.5"
                                     :disabled="!canEdit || g.validated"
                                     :class="[
-                                        'w-20 mx-auto block text-center text-sm rounded-lg border px-2 py-1.5 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-400',
+                                        'w-20 mx-auto block text-center text-sm rounded-xl border px-2 py-1.5 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-400',
                                         (!canEdit || g.validated)
                                             ? 'bg-gray-100 dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-400 cursor-not-allowed'
                                             : g.rejected
@@ -254,7 +254,7 @@
                                     type="text"
                                     placeholder="Absent…"
                                     :disabled="!canEdit || g.validated"
-                                    class="w-28 text-xs rounded-lg border border-gray-200 dark:border-gray-600 bg-transparent px-2 py-1 dark:text-gray-300 placeholder-gray-300 disabled:opacity-40"
+                                    class="w-28 text-xs rounded-xl border border-gray-200 dark:border-gray-600 bg-transparent px-2 py-1 dark:text-gray-300 placeholder-gray-300 disabled:opacity-40"
                                     @input="g.dirty = true"
                                 />
                             </td>

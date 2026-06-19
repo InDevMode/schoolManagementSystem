@@ -172,9 +172,9 @@ const avatarUrl = (u: UserItem) => u.profile_picture ? `/upload/profile/${u.prof
     </div>
 
     <!-- Onglets -->
-    <div class="flex items-center gap-1 p-1 bg-gray-100 dark:bg-gray-800 rounded-lg w-fit">
+    <div class="flex items-center gap-1 p-1 bg-gray-100 dark:bg-gray-800 rounded-xl w-fit">
         <button @click="switchTab('role')"
-                :class="['px-5 py-2 text-sm font-medium rounded-lg transition-all',
+                :class="['px-5 py-2 text-sm font-medium rounded-xl transition-all',
                          tab === 'role' ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm' :
                                           'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300']">
             <svg class="w-4 h-4 inline mr-1.5 -mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -185,7 +185,7 @@ const avatarUrl = (u: UserItem) => u.profile_picture ? `/upload/profile/${u.prof
             <span class="ml-1.5 px-1.5 py-0.5 rounded-full text-xs bg-gray-200 dark:bg-gray-600 text-gray-600 dark:text-gray-300">{{ roles.length }}</span>
         </button>
         <button @click="switchTab('user')"
-                :class="['px-5 py-2 text-sm font-medium rounded-lg transition-all',
+                :class="['px-5 py-2 text-sm font-medium rounded-xl transition-all',
                          tab === 'user' ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm' :
                                           'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300']">
             <svg class="w-4 h-4 inline mr-1.5 -mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -255,7 +255,7 @@ const avatarUrl = (u: UserItem) => u.profile_picture ? `/upload/profile/${u.prof
                         </span>
                     </Transition>
                     <button @click="saveRole" :disabled="roleSaving || selectedRole?.name === 'super_admin'"
-                            class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
+                            class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-colors disabled:opacity-50"
                             :class="selectedRole?.name === 'super_admin'
                                 ? 'bg-gray-100 text-gray-400 dark:bg-gray-800 dark:text-gray-500 cursor-not-allowed'
                                 : 'bg-primary-600 hover:bg-primary-700 text-white'">
@@ -270,7 +270,7 @@ const avatarUrl = (u: UserItem) => u.profile_picture ? `/upload/profile/${u.prof
 
             <!-- Warning super_admin -->
             <div v-if="selectedRole?.name === 'super_admin'"
-                 class="flex items-center gap-3 p-3 rounded-lg bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-700/40">
+                 class="flex items-center gap-3 p-3 rounded-xl bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-700/40">
                 <svg class="w-4 h-4 text-red-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                           d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/>
@@ -288,7 +288,7 @@ const avatarUrl = (u: UserItem) => u.profile_picture ? `/upload/profile/${u.prof
                           d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                 </svg>
                 <input v-model="permSearch" type="text" placeholder="Rechercher une permission..."
-                       class="w-full pl-9 pr-4 py-2 text-sm rounded-lg border border-gray-200 dark:border-gray-600
+                       class="w-full pl-9 pr-4 py-2 text-sm rounded-xl border border-gray-200 dark:border-gray-600
                               bg-white dark:bg-gray-800 text-gray-900 dark:text-white
                               focus:outline-none focus:ring-2 focus:ring-primary-500/40 transition-colors
                               placeholder-gray-400 dark:placeholder-gray-500"/>
@@ -325,7 +325,7 @@ const avatarUrl = (u: UserItem) => u.profile_picture ? `/upload/profile/${u.prof
                 </label>
                 <div class="p-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
                     <label v-for="perm in perms" :key="perm.id"
-                           class="inline-flex items-center gap-2.5 px-3 py-2 rounded-lg cursor-pointer border transition-colors"
+                           class="inline-flex items-center gap-2.5 px-3 py-2 rounded-xl cursor-pointer border transition-colors"
                            :class="rolePerms.has(perm.name)
                                ? 'border-primary-300 dark:border-primary-600 bg-primary-50/60 dark:bg-primary-900/15'
                                : 'border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500'">
@@ -354,7 +354,7 @@ const avatarUrl = (u: UserItem) => u.profile_picture ? `/upload/profile/${u.prof
             <div class="px-4 py-3 border-b border-gray-100 dark:border-gray-700">
                 <h2 class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Utilisateurs</h2>
                 <input v-model="userSearch" type="text" placeholder="Rechercher..."
-                       class="w-full px-3 py-1.5 text-sm rounded-lg border border-gray-200 dark:border-gray-600
+                       class="w-full px-3 py-1.5 text-sm rounded-xl border border-gray-200 dark:border-gray-600
                               bg-white dark:bg-gray-800 text-gray-900 dark:text-white
                               focus:outline-none focus:ring-2 focus:ring-primary-500/40 transition-colors
                               placeholder-gray-400 dark:placeholder-gray-500"/>
@@ -448,7 +448,7 @@ const avatarUrl = (u: UserItem) => u.profile_picture ? `/upload/profile/${u.prof
                             </span>
                         </Transition>
                         <button @click="saveUser" :disabled="userSaving"
-                                class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium
+                                class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium
                                        bg-primary-600 hover:bg-primary-700 text-white disabled:opacity-50 transition-colors">
                             <svg v-if="userSaving" class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
                                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
@@ -467,7 +467,7 @@ const avatarUrl = (u: UserItem) => u.profile_picture ? `/upload/profile/${u.prof
                               d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                     </svg>
                     <input v-model="permSearch" type="text" placeholder="Rechercher une permission..."
-                           class="w-full pl-9 pr-4 py-2 text-sm rounded-lg border border-gray-200 dark:border-gray-600
+                           class="w-full pl-9 pr-4 py-2 text-sm rounded-xl border border-gray-200 dark:border-gray-600
                                   bg-white dark:bg-gray-800 text-gray-900 dark:text-white
                                   focus:outline-none focus:ring-2 focus:ring-primary-500/40 transition-colors
                                   placeholder-gray-400 dark:placeholder-gray-500"/>
@@ -503,7 +503,7 @@ const avatarUrl = (u: UserItem) => u.profile_picture ? `/upload/profile/${u.prof
                     </label>
                     <div class="p-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
                         <label v-for="perm in perms" :key="perm.id"
-                               class="inline-flex items-center gap-2.5 px-3 py-2 rounded-lg border transition-colors"
+                               class="inline-flex items-center gap-2.5 px-3 py-2 rounded-xl border transition-colors"
                                :class="[
                                    isFromRole(perm.name)
                                        ? 'border-emerald-300 dark:border-emerald-700 bg-emerald-50/60 dark:bg-emerald-900/15 cursor-default'

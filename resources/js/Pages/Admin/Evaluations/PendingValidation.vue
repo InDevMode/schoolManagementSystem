@@ -105,7 +105,7 @@
                                         <!-- ✓ Valider la note -->
                                         <button
                                             v-if="can('action.marks.manage')"
-                                            class="p-1.5 rounded-lg transition-all duration-150
+                                            class="p-1.5 rounded-xl transition-all duration-150
                                                    text-white bg-emerald-500 hover:bg-emerald-600 active:bg-emerald-700
                                                    shadow-sm shadow-emerald-200 dark:shadow-emerald-900/40
                                                    disabled:opacity-50 disabled:cursor-not-allowed"
@@ -119,7 +119,7 @@
                                         <!-- ✕ Rejeter la note (devra être re-saisie) -->
                                         <button
                                             v-if="can('action.marks.manage')"
-                                            class="p-1.5 rounded-lg transition-all duration-150
+                                            class="p-1.5 rounded-xl transition-all duration-150
                                                    text-white bg-red-500 hover:bg-red-600 active:bg-red-700
                                                    shadow-sm shadow-red-200 dark:shadow-red-900/40
                                                    disabled:opacity-50 disabled:cursor-not-allowed"
@@ -168,7 +168,7 @@
                     Vous êtes sur le point d'annuler l'évaluation
                     <strong class="text-gray-900 dark:text-white">{{ cancelEvalTarget?.label }}</strong>.
                 </p>
-                <div class="flex items-start gap-2 p-3 rounded-lg bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800">
+                <div class="flex items-start gap-2 p-3 rounded-xl bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800">
                     <svg class="w-4 h-4 text-amber-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
                     </svg>

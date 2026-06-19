@@ -175,7 +175,7 @@ const handleAction = (key: string, row: Record<string, unknown>) => {
         </div>
         <div class="flex items-center gap-2 flex-wrap">
             <!-- Toggle actifs/supprimés -->
-            <div class="flex items-center rounded-lg border border-gray-200 dark:border-gray-600 overflow-hidden">
+            <div class="flex items-center rounded-xl border border-gray-200 dark:border-gray-600 overflow-hidden">
                 <button @click="showDeleted = false"
                         :class="['px-3 py-1.5 text-xs font-medium transition-colors',
                                  !showDeleted ? 'bg-primary-600 text-white' : 'text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700']">
@@ -188,7 +188,7 @@ const handleAction = (key: string, row: Record<string, unknown>) => {
                 </button>
             </div>
             <button v-if="!showDeleted" @click="openCreate"
-                    class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary-600 hover:bg-primary-700
+                    class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-primary-600 hover:bg-primary-700
                            text-white text-sm font-medium transition-colors shadow-sm">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
@@ -207,7 +207,7 @@ const handleAction = (key: string, row: Record<string, unknown>) => {
         </svg>
         <input v-model="search" type="text"
                :placeholder="showDeleted ? 'Rechercher dans les supprimés...' : 'Rechercher un rôle, une description...'"
-               class="w-full pl-9 pr-8 py-2 text-sm rounded-lg border border-gray-200 dark:border-gray-600
+               class="w-full pl-9 pr-8 py-2 text-sm rounded-xl border border-gray-200 dark:border-gray-600
                       bg-white dark:bg-gray-800 text-gray-900 dark:text-white
                       focus:outline-none focus:ring-2 focus:ring-primary-500/40 transition-colors
                       placeholder-gray-400 dark:placeholder-gray-500"/>
@@ -225,7 +225,7 @@ const handleAction = (key: string, row: Record<string, unknown>) => {
 
     <!-- Info rôles système -->
     <div v-if="!showDeleted"
-         class="flex items-start gap-3 p-4 rounded-lg bg-amber-50 dark:bg-amber-900/10 border border-amber-200 dark:border-amber-700/40">
+         class="flex items-start gap-3 p-4 rounded-xl bg-amber-50 dark:bg-amber-900/10 border border-amber-200 dark:border-amber-700/40">
         <svg class="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
@@ -266,7 +266,7 @@ const handleAction = (key: string, row: Record<string, unknown>) => {
                         <span class="text-xs text-red-400 dark:text-red-500">Supprimé le {{ r.deleted_at }}</span>
                     </div>
                     <button @click="restore(r)"
-                            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium
+                            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium
                                    bg-emerald-50 text-emerald-700 hover:bg-emerald-100
                                    dark:bg-emerald-900/20 dark:text-emerald-400 dark:hover:bg-emerald-900/30 transition-colors">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -307,7 +307,7 @@ const handleAction = (key: string, row: Record<string, unknown>) => {
         <template #cell-user_type="{ row }">
             <template v-if="row.user_type !== null && row.user_type !== undefined">
                 <span :class="[
-                    'inline-flex items-center justify-center w-8 h-8 rounded-lg text-sm font-bold tabular-nums',
+                    'inline-flex items-center justify-center w-8 h-8 rounded-xl text-sm font-bold tabular-nums',
                     (row.user_type as number) === 0
                         ? 'bg-primary-100 text-primary-700 dark:bg-primary-900/30 dark:text-primary-300'
                         : (row.user_type as number) <= 4
@@ -350,7 +350,7 @@ const handleAction = (key: string, row: Record<string, unknown>) => {
                             </label>
                             <input v-model="form.name" type="text"
                                    placeholder="ex: comptable, délégué, coordinateur..."
-                                   class="w-full px-3 py-2.5 text-sm rounded-lg border bg-white dark:bg-gray-800
+                                   class="w-full px-3 py-2.5 text-sm rounded-xl border bg-white dark:bg-gray-800
                                           text-gray-900 dark:text-white focus:outline-none focus:ring-2
                                           focus:ring-primary-500/40 focus:border-primary-400 transition-colors"
                                    :class="errors.name ? 'border-red-400' : 'border-gray-200 dark:border-gray-600'"
@@ -367,14 +367,14 @@ const handleAction = (key: string, row: Record<string, unknown>) => {
                             <div class="flex gap-2">
                                 <input v-model="form.user_type" type="number" min="5"
                                        :placeholder="`ex: ${nextAvailableUserType}`"
-                                       class="flex-1 px-3 py-2.5 text-sm rounded-lg border font-mono
+                                       class="flex-1 px-3 py-2.5 text-sm rounded-xl border font-mono
                                               bg-white dark:bg-gray-800 text-gray-900 dark:text-white
                                               focus:outline-none focus:ring-2 focus:ring-primary-500/40
                                               focus:border-primary-400 transition-colors"
                                        :class="errors.user_type ? 'border-red-400' : 'border-gray-200 dark:border-gray-600'"/>
                                 <button type="button"
                                         @click="form.user_type = String(nextAvailableUserType)"
-                                        class="px-3 py-2 text-xs rounded-lg border border-gray-200 dark:border-gray-600
+                                        class="px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-600
                                                bg-gray-50 dark:bg-gray-800 text-gray-600 dark:text-gray-400
                                                hover:bg-primary-50 dark:hover:bg-primary-900/20
                                                hover:border-primary-300 hover:text-primary-700 transition-colors whitespace-nowrap">
@@ -400,7 +400,7 @@ const handleAction = (key: string, row: Record<string, unknown>) => {
                             </label>
                             <input v-model="form.description" type="text"
                                    placeholder="ex: Gestion de la comptabilité, accès limité aux frais..."
-                                   class="w-full px-3 py-2.5 text-sm rounded-lg border border-gray-200 dark:border-gray-600
+                                   class="w-full px-3 py-2.5 text-sm rounded-xl border border-gray-200 dark:border-gray-600
                                           bg-white dark:bg-gray-800 text-gray-900 dark:text-white
                                           focus:outline-none focus:ring-2 focus:ring-primary-500/40
                                           focus:border-primary-400 transition-colors"/>
@@ -408,7 +408,7 @@ const handleAction = (key: string, row: Record<string, unknown>) => {
 
                         <!-- Aperçu -->
                         <div v-if="form.name && form.user_type"
-                             class="flex items-start gap-3 p-3 rounded-lg bg-primary-50 dark:bg-primary-900/10
+                             class="flex items-start gap-3 p-3 rounded-xl bg-primary-50 dark:bg-primary-900/10
                                     border border-primary-200 dark:border-primary-700/40">
                             <svg class="w-4 h-4 text-primary-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -425,12 +425,12 @@ const handleAction = (key: string, row: Record<string, unknown>) => {
                         <!-- Boutons -->
                         <div class="flex justify-end gap-2.5 pt-2 border-t border-gray-100 dark:border-gray-700">
                             <button @click="closeModal"
-                                    class="px-4 py-2 text-sm font-medium rounded-lg border border-gray-200 dark:border-gray-600
+                                    class="px-4 py-2 text-sm font-medium rounded-xl border border-gray-200 dark:border-gray-600
                                            text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                                 Annuler
                             </button>
                             <button @click="submit" :disabled="submitting"
-                                    class="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-lg
+                                    class="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl
                                            bg-primary-600 hover:bg-primary-700 disabled:opacity-50 text-white transition-colors">
                                 <svg v-if="submitting" class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
                                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
@@ -457,7 +457,7 @@ const handleAction = (key: string, row: Record<string, unknown>) => {
                     <div class="h-1 bg-red-500"/>
                     <div class="p-6">
                         <div class="flex items-start gap-3 mb-5">
-                            <div class="w-10 h-10 rounded-lg bg-red-100 dark:bg-red-900/30
+                            <div class="w-10 h-10 rounded-xl bg-red-100 dark:bg-red-900/30
                                         flex items-center justify-center flex-shrink-0">
                                 <svg class="w-5 h-5 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -471,12 +471,12 @@ const handleAction = (key: string, row: Record<string, unknown>) => {
                         </div>
                         <div class="flex justify-end gap-2">
                             <button @click="confirm.show = false"
-                                    class="px-4 py-2 text-sm font-medium rounded-lg border border-gray-200 dark:border-gray-600
+                                    class="px-4 py-2 text-sm font-medium rounded-xl border border-gray-200 dark:border-gray-600
                                            text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                                 Annuler
                             </button>
                             <button @click="doConfirm"
-                                    class="px-4 py-2 text-sm font-semibold rounded-lg bg-red-600 hover:bg-red-700
+                                    class="px-4 py-2 text-sm font-semibold rounded-xl bg-red-600 hover:bg-red-700
                                            text-white transition-colors">
                                 Supprimer
                             </button>

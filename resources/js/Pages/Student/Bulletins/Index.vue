@@ -24,7 +24,7 @@
 
                 <!-- Moyenne + rang -->
                 <div class="flex items-center gap-4">
-                    <div class="flex-1 text-center p-4 rounded-lg"
+                    <div class="flex-1 text-center p-4 rounded-xl"
                         :class="Number(b.average) >= 10 ? 'bg-success-50 dark:bg-success-900/20' : 'bg-danger-50 dark:bg-danger-900/20'">
                         <p class="text-xs text-gray-400 mb-1">Moyenne générale</p>
                         <p class="text-3xl font-black"
@@ -50,11 +50,11 @@
                 <!-- Actions -->
                 <div class="flex gap-2 pt-2 border-t border-gray-100 dark:border-gray-700">
                     <Link :href="`/student/my_bulletins/${b.id}`"
-                        class="flex-1 text-center text-xs font-medium py-2 rounded-lg bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-400 hover:bg-primary-100 transition-colors">
+                        class="flex-1 text-center text-xs font-medium py-2 rounded-xl bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-400 hover:bg-primary-100 transition-colors">
                         Voir le détail
                     </Link>
                     <a :href="`/student/my_bulletins/${b.id}/print`" target="_blank"
-                        class="p-2 rounded-lg text-gray-400 hover:text-primary-600 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors"
+                        class="p-2 rounded-xl text-gray-400 hover:text-primary-600 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors"
                         title="Télécharger / Imprimer">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>

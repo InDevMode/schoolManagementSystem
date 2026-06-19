@@ -15,7 +15,7 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
         </svg>
         <span class="flex-1 text-sm truncate">Rechercher...</span>
-        <kbd class="hidden xl:inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-lg text-[10px] font-medium
+        <kbd class="hidden xl:inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-xl text-[10px] font-medium
                     bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600
                     text-gray-400 dark:text-gray-400 shadow-sm">
             Ctrl K
@@ -100,14 +100,14 @@
                                     @mouseenter="activeIndex = idx"
                                     @click="close"
                                     :class="[
-                                        'group flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer transition-colors',
+                                        'group flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer transition-colors',
                                         activeIndex === idx
                                             ? 'bg-primary-50 dark:bg-primary-900/20'
                                             : 'hover:bg-gray-50 dark:hover:bg-gray-800',
                                     ]"
                                 >
                                     <span :class="[
-                                        'w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 transition-colors',
+                                        'w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0 transition-colors',
                                         activeIndex === idx
                                             ? 'bg-primary-100 dark:bg-primary-900/40 text-primary-600 dark:text-primary-400'
                                             : 'bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400'
@@ -134,7 +134,7 @@
                                 <template v-for="group in groupedResults" :key="group.parentId">
                                     <!-- Titre du groupe -->
                                     <div class="flex items-center gap-2 px-3 pt-3 pb-1.5">
-                                        <span class="w-5 h-5 rounded-lg flex items-center justify-center bg-gray-100 dark:bg-gray-800 flex-shrink-0">
+                                        <span class="w-5 h-5 rounded-xl flex items-center justify-center bg-gray-100 dark:bg-gray-800 flex-shrink-0">
                                             <NavIcon :name="group.parentIcon" class="w-3 h-3 text-gray-500 dark:text-gray-400" />
                                         </span>
                                         <p class="text-[11px] font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500">
@@ -150,14 +150,14 @@
                                         @mouseenter="activeIndex = item.flatIndex"
                                         @click="close"
                                         :class="[
-                                            'group flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer transition-colors',
+                                            'group flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer transition-colors',
                                             activeIndex === item.flatIndex
                                                 ? 'bg-primary-50 dark:bg-primary-900/20'
                                                 : 'hover:bg-gray-50 dark:hover:bg-gray-800',
                                         ]"
                                     >
                                         <span :class="[
-                                            'w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 transition-colors',
+                                            'w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0 transition-colors',
                                             activeIndex === item.flatIndex
                                                 ? 'bg-primary-100 dark:bg-primary-900/40 text-primary-600 dark:text-primary-400'
                                                 : 'bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400'
@@ -393,7 +393,7 @@ onUnmounted(() => document.removeEventListener('keydown', onKeydown));
 <style scoped>
 .kbd-hint {
     @apply inline-flex items-center justify-center min-w-[22px] h-[22px] px-1
-           rounded-lg text-[10px] font-medium
+           rounded-xl text-[10px] font-medium
            bg-white dark:bg-gray-700
            border border-gray-200 dark:border-gray-600
            text-gray-500 dark:text-gray-400

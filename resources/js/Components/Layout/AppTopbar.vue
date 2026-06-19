@@ -6,7 +6,7 @@
 
         <!-- ── Hamburger mobile ── -->
         <button
-            class="lg:hidden w-8 h-8 flex items-center justify-center rounded-lg
+            class="lg:hidden w-8 h-8 flex items-center justify-center rounded-xl
                    text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors flex-shrink-0"
             @click="$emit('openMobile')"
             aria-label="Menu"
@@ -43,7 +43,7 @@
                             :key="child.id"
                             :href="child.href!"
                             :class="[
-                                'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap transition-colors flex-shrink-0',
+                                'flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-sm font-medium whitespace-nowrap transition-colors flex-shrink-0',
                                 isActiveSubLink(child)
                                     ? 'bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300'
                                     : 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-800 dark:hover:text-gray-200',
@@ -131,7 +131,7 @@
             <!-- Avatar + nom + rôle -->
             <div ref="profileRef" class="relative">
                 <button
-                    class="flex items-center gap-2 px-2 py-1 rounded-lg
+                    class="flex items-center gap-2 px-2 py-1 rounded-xl
                            hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
                     @click="profileOpen = !profileOpen"
                 >
@@ -184,7 +184,7 @@
                                       hover:text-primary-600 dark:hover:text-primary-400
                                       transition-colors">
                                 <span :class="[
-                                    'w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0',
+                                    'w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0',
                                     link.icon === 'user'        ? 'bg-primary-100 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400' :
                                     link.icon === 'lock'        ? 'bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400' :
                                     link.icon === 'cog-6-tooth' ? 'bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400' :
@@ -203,7 +203,7 @@
                                class="w-full flex items-center gap-3 px-5 py-3 text-sm
                                       text-danger-600 dark:text-danger-400
                                       hover:bg-danger-50 dark:hover:bg-danger-900/20 transition-colors">
-                                <span class="w-8 h-8 rounded-lg bg-danger-50 dark:bg-danger-900/20 flex items-center justify-center flex-shrink-0">
+                                <span class="w-8 h-8 rounded-xl bg-danger-50 dark:bg-danger-900/20 flex items-center justify-center flex-shrink-0">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                               d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
@@ -255,7 +255,7 @@
                         <div class="px-6 pb-6 flex gap-3 mt-2">
                             <button
                                 @click="showLogoutConfirm = false"
-                                class="flex-1 px-4 py-2.5 rounded-lg text-sm font-medium
+                                class="flex-1 px-4 py-2.5 rounded-xl text-sm font-medium
                                        border border-gray-200 dark:border-gray-600
                                        text-gray-700 dark:text-gray-300
                                        hover:bg-gray-50 dark:hover:bg-gray-700
@@ -265,7 +265,7 @@
                             </button>
                             <a
                                 href="/logout"
-                                class="flex-1 px-4 py-2.5 rounded-lg text-sm font-medium text-center
+                                class="flex-1 px-4 py-2.5 rounded-xl text-sm font-medium text-center
                                        bg-danger-600 hover:bg-danger-700 text-white
                                        transition-colors"
                             >

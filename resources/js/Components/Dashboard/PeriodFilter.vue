@@ -1,5 +1,5 @@
 <template>
-    <div class="flex items-center gap-1.5 p-1 rounded-lg bg-gray-100 dark:bg-gray-800 w-fit">
+    <div class="flex items-center gap-1.5 p-1 rounded-xl bg-gray-100 dark:bg-gray-800 w-fit">
         <button
             v-for="opt in options"
             :key="opt.value"

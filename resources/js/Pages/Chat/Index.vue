@@ -473,12 +473,12 @@
                                         <!-- Actions hover -->
                                         <div v-if="!chat.is_delete" class="flex items-center gap-1.5 mb-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
                                             <button v-if="!chat.file"
-                                                class="text-[11px] px-2.5 py-1 rounded-lg text-gray-500 hover:text-primary-600 hover:bg-primary-50 dark:hover:bg-primary-900/20 font-medium transition-colors"
+                                                class="text-[11px] px-2.5 py-1 rounded-xl text-gray-500 hover:text-primary-600 hover:bg-primary-50 dark:hover:bg-primary-900/20 font-medium transition-colors"
                                                 @click="startEdit(chat)">
                                                 Modifier
                                             </button>
                                             <button
-                                                class="text-[11px] px-2.5 py-1 rounded-lg text-gray-500 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 font-medium transition-colors"
+                                                class="text-[11px] px-2.5 py-1 rounded-xl text-gray-500 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 font-medium transition-colors"
                                                 @click="deleteMsg(chat.id)">
                                                 Supprimer
                                             </button>
@@ -494,7 +494,7 @@
                                                     <img :src="chat.file_url" @click="openLightbox(chat.file_url, chat.file)"
                                                         class="max-w-[260px] max-h-[200px] w-full object-cover cursor-zoom-in block" />
                                                     <a :href="chat.file_url" :download="fileBaseName(chat.file)" target="_blank"
-                                                        class="absolute top-2 right-2 p-1.5 rounded-lg bg-black/50 text-white opacity-0 group-hover/img:opacity-100 transition-opacity"
+                                                        class="absolute top-2 right-2 p-1.5 rounded-xl bg-black/50 text-white opacity-0 group-hover/img:opacity-100 transition-opacity"
                                                         title="Télécharger" @click.stop>
                                                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
@@ -506,7 +506,7 @@
                                             <template v-else-if="!chat.is_delete && chat.file">
                                                 <a :href="chat.file_url" :download="fileBaseName(chat.file)" target="_blank"
                                                     class="flex items-center gap-3 px-4 py-3 text-white hover:bg-white/10 transition-colors no-underline" @click.stop>
-                                                    <div class="w-9 h-9 rounded-lg bg-white/20 flex items-center justify-center flex-shrink-0">
+                                                    <div class="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center flex-shrink-0">
                                                         <component :is="fileIcon(chat.file)" class="w-5 h-5 text-white" />
                                                     </div>
                                                     <div class="min-w-0">
@@ -557,7 +557,7 @@
                                                     <img :src="chat.file_url" @click="openLightbox(chat.file_url, chat.file)"
                                                         class="max-w-[260px] max-h-[200px] w-full object-cover cursor-zoom-in block" />
                                                     <a :href="chat.file_url" :download="fileBaseName(chat.file)" target="_blank"
-                                                        class="absolute top-2 right-2 p-1.5 rounded-lg bg-black/50 text-white opacity-0 group-hover/img:opacity-100 transition-opacity"
+                                                        class="absolute top-2 right-2 p-1.5 rounded-xl bg-black/50 text-white opacity-0 group-hover/img:opacity-100 transition-opacity"
                                                         title="Télécharger" @click.stop>
                                                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
@@ -569,7 +569,7 @@
                                             <template v-else-if="!chat.is_delete && chat.file">
                                                 <a :href="chat.file_url" :download="fileBaseName(chat.file)" target="_blank"
                                                     class="flex items-center gap-3 px-4 py-3 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors no-underline" @click.stop>
-                                                    <div class="w-9 h-9 rounded-lg bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center flex-shrink-0">
+                                                    <div class="w-9 h-9 rounded-xl bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center flex-shrink-0">
                                                         <component :is="fileIcon(chat.file)" class="w-5 h-5 text-primary-600 dark:text-primary-400" />
                                                     </div>
                                                     <div class="min-w-0">
@@ -626,15 +626,15 @@
                             <div v-if="pendingFile && !editing"
                                 class="flex items-center gap-3 mb-2.5 px-3 py-2.5 bg-gray-50 dark:bg-gray-700/50 rounded-xl border border-gray-200 dark:border-gray-600">
                                 <img v-if="pendingFileIsImage" :src="pendingFilePreview ?? ''"
-                                    class="w-10 h-10 rounded-lg object-cover flex-shrink-0" />
-                                <div v-else class="w-10 h-10 rounded-lg bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center flex-shrink-0">
+                                    class="w-10 h-10 rounded-xl object-cover flex-shrink-0" />
+                                <div v-else class="w-10 h-10 rounded-xl bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center flex-shrink-0">
                                     <component :is="fileIcon(pendingFile.name)" class="w-5 h-5 text-primary-600 dark:text-primary-400" />
                                 </div>
                                 <div class="flex-1 min-w-0">
                                     <p class="text-sm font-semibold text-gray-800 dark:text-gray-200 truncate">{{ pendingFile.name }}</p>
                                     <p class="text-xs text-gray-400 mt-0.5">{{ formatFileSize(pendingFile.size) }}</p>
                                 </div>
-                                <button class="p-1.5 rounded-lg text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors" @click="clearFile">
+                                <button class="p-1.5 rounded-xl text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors" @click="clearFile">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                                     </svg>
@@ -799,7 +799,7 @@
                                 <a v-for="(file, i) in sharedFiles.slice(0, 4)" :key="i"
                                     :href="file.file_url" :download="fileBaseName(file.file)" target="_blank"
                                     class="flex items-center gap-2.5 p-2.5 rounded-xl bg-gray-50 dark:bg-gray-700/50 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors no-underline group">
-                                    <div class="w-8 h-8 rounded-lg bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center flex-shrink-0">
+                                    <div class="w-8 h-8 rounded-xl bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center flex-shrink-0">
                                         <component :is="fileIcon(file.file)" class="w-4 h-4 text-primary-600 dark:text-primary-400" />
                                     </div>
                                     <div class="flex-1 min-w-0">

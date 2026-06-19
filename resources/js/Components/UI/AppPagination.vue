@@ -13,7 +13,7 @@
             <!-- Précédent -->
             <button :disabled="!pagination.prev_page_url"
                     @click="pagination.prev_page_url && navigate(pagination.prev_page_url)"
-                    class="w-8 h-8 flex items-center justify-center rounded-lg text-sm transition-colors
+                    class="w-8 h-8 flex items-center justify-center rounded-xl text-sm transition-colors
                            disabled:opacity-30 disabled:cursor-not-allowed
                            text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -24,7 +24,7 @@
             <!-- Numéros (on skip le premier = "Previous" et le dernier = "Next") -->
             <template v-for="link in pagination.links.slice(1, -1)" :key="link.label">
                 <button @click="link.url && navigate(link.url)"
-                        :class="['w-8 h-8 flex items-center justify-center rounded-lg text-sm font-medium transition-colors',
+                        :class="['w-8 h-8 flex items-center justify-center rounded-xl text-sm font-medium transition-colors',
                             link.active
                                 ? 'bg-primary-600 text-white shadow-sm'
                                 : link.url
@@ -37,7 +37,7 @@
             <!-- Suivant -->
             <button :disabled="!pagination.next_page_url"
                     @click="pagination.next_page_url && navigate(pagination.next_page_url)"
-                    class="w-8 h-8 flex items-center justify-center rounded-lg text-sm transition-colors
+                    class="w-8 h-8 flex items-center justify-center rounded-xl text-sm transition-colors
                            disabled:opacity-30 disabled:cursor-not-allowed
                            text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

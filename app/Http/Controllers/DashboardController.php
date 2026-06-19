@@ -58,6 +58,7 @@ class DashboardController extends Controller
                 $data['totalParent']  = User::getTotalUserWithUserType(4);
                 $data['totalClass']   = ClassModel::getTotalClass();
                 $data['totalSubject'] = SubjectModel::getTotalSubject();
+                $data['totalExam']    = $this->safeStat(fn() => PeriodModel::where('is_delete', 0)->count());
                 $data['totalFeesCollections']      = FeesCollectionModel::getTotalFeesCollections();
                 $data['totalFeesCollectionsToday'] = FeesCollectionModel::getTotalFeesCollectionsToday();
                 $data['totalCommunicate']          = CommunicateModel::getTotalCommunicate();
@@ -76,6 +77,17 @@ class DashboardController extends Controller
                 // ── Sexe apprenants ──
                 $data['totalStudentMale']   = $this->safeStat(fn() => DB::table('users')->where('user_type', 3)->where('is_delete', 0)->where('gender', 'male')->count());
                 $data['totalStudentFemale'] = $this->safeStat(fn() => DB::table('users')->where('user_type', 3)->where('is_delete', 0)->where('gender', 'female')->count());
+                // ── Sexe professeurs ──
+                $data['totalTeacherMale']   = $this->safeStat(fn() => DB::table('users')->where('user_type', 2)->where('is_delete', 0)->where('gender', 'male')->count());
+                $data['totalTeacherFemale'] = $this->safeStat(fn() => DB::table('users')->where('user_type', 2)->where('is_delete', 0)->where('gender', 'female')->count());
+                // ── Sexe parents ──
+                $data['totalParentMale']    = $this->safeStat(fn() => DB::table('users')->where('user_type', 4)->where('is_delete', 0)->where('gender', 'male')->count());
+                $data['totalParentFemale']  = $this->safeStat(fn() => DB::table('users')->where('user_type', 4)->where('is_delete', 0)->where('gender', 'female')->count());
+                // ── Sexe admins ──
+                $data['totalAdminMale']     = $this->safeStat(fn() => DB::table('users')->where('user_type', 1)->where('is_delete', 0)->where('gender', 'male')->count());
+                $data['totalAdminFemale']   = $this->safeStat(fn() => DB::table('users')->where('user_type', 1)->where('is_delete', 0)->where('gender', 'female')->count());
+                // ── Présences par mois ──
+                $data['attendanceByMonth']  = $this->safeStat(fn() => $this->getAttendanceByMonth(), []);
                 // ── Bulletins ──
                 $data['totalPublishedBulletins'] = $this->safeStat(fn() => BulletinModel::where('status', 'published')->where('is_delete', 0)->count());
                 $data['totalDraftBulletins']     = $this->safeStat(fn() => BulletinModel::where('status', 'draft')->where('is_delete', 0)->count());
@@ -107,6 +119,7 @@ class DashboardController extends Controller
                 $data['totalParent']  = User::getTotalUserWithUserType(4, $schoolId);
                 $data['totalClass']   = ClassModel::getTotalClass($schoolId);
                 $data['totalSubject'] = SubjectModel::getTotalSubject();
+                $data['totalExam']    = $this->safeStat(fn() => PeriodModel::where('is_delete', 0)->count());
                 $data['totalFeesCollections']      = FeesCollectionModel::getTotalFeesCollections();
                 $data['totalFeesCollectionsToday'] = FeesCollectionModel::getTotalFeesCollectionsToday();
                 $data['totalCommunicate']          = CommunicateModel::getTotalCommunicate();
@@ -122,9 +135,20 @@ class DashboardController extends Controller
                 $data['totalAttendanceStudentLate']     = StudentAttendanceModel::getTotalAttendanceTypeStudent(2);
                 $data['totalAttendanceStudentAbsent']   = StudentAttendanceModel::getTotalAttendanceTypeStudent(3);
                 $data['totalAttendanceStudentHalfDay']  = StudentAttendanceModel::getTotalAttendanceTypeStudent(4);
-                // ── Sexe ──
+                // ── Sexe apprenants ──
                 $data['totalStudentMale']   = $this->safeStat(fn() => DB::table('users')->where('user_type', 3)->where('is_delete', 0)->where('school_id', $schoolId)->where('gender', 'male')->count());
                 $data['totalStudentFemale'] = $this->safeStat(fn() => DB::table('users')->where('user_type', 3)->where('is_delete', 0)->where('school_id', $schoolId)->where('gender', 'female')->count());
+                // ── Sexe professeurs ──
+                $data['totalTeacherMale']   = $this->safeStat(fn() => DB::table('users')->where('user_type', 2)->where('is_delete', 0)->where('school_id', $schoolId)->where('gender', 'male')->count());
+                $data['totalTeacherFemale'] = $this->safeStat(fn() => DB::table('users')->where('user_type', 2)->where('is_delete', 0)->where('school_id', $schoolId)->where('gender', 'female')->count());
+                // ── Sexe parents ──
+                $data['totalParentMale']    = $this->safeStat(fn() => DB::table('users')->where('user_type', 4)->where('is_delete', 0)->where('school_id', $schoolId)->where('gender', 'male')->count());
+                $data['totalParentFemale']  = $this->safeStat(fn() => DB::table('users')->where('user_type', 4)->where('is_delete', 0)->where('school_id', $schoolId)->where('gender', 'female')->count());
+                // ── Sexe admins ──
+                $data['totalAdminMale']     = $this->safeStat(fn() => DB::table('users')->where('user_type', 1)->where('is_delete', 0)->where('school_id', $schoolId)->where('gender', 'male')->count());
+                $data['totalAdminFemale']   = $this->safeStat(fn() => DB::table('users')->where('user_type', 1)->where('is_delete', 0)->where('school_id', $schoolId)->where('gender', 'female')->count());
+                // ── Présences par mois ──
+                $data['attendanceByMonth']  = $this->safeStat(fn() => $this->getAttendanceByMonth($schoolId), []);
                 // ── Bulletins ──
                 $data['totalPublishedBulletins'] = $this->safeStat(fn() => BulletinModel::where('status', 'published')->where('is_delete', 0)->where('school_id', $schoolId)->count());
                 $data['totalDraftBulletins']     = $this->safeStat(fn() => BulletinModel::where('status', 'draft')->where('is_delete', 0)->where('school_id', $schoolId)->count());
@@ -344,6 +368,52 @@ class DashboardController extends Controller
         }
 
         return $result;
+    }
+
+    /**
+     * Retourne les présences par mois pour les 12 derniers mois.
+     * Retourne un tableau indexé [type => [jan..dec]].
+     */
+    private function getAttendanceByMonth(?int $schoolId = null): array
+    {
+        $year = date('Y');
+        $q = DB::table('student_attendance')
+            ->where('student_attendance.is_delete', 0)
+            ->whereYear('student_attendance.date', $year);
+
+        if ($schoolId !== null) {
+            $q->join('users', 'users.id', '=', 'student_attendance.student_id')
+              ->where('users.school_id', $schoolId)
+              ->where('users.is_delete', 0);
+        }
+
+        $rows = $q->selectRaw('type, MONTH(date) as month, COUNT(*) as total')
+                  ->groupBy('type', DB::raw('MONTH(date)'))
+                  ->get();
+
+        $result = [
+            'present'  => array_fill(1, 12, 0),
+            'late'     => array_fill(1, 12, 0),
+            'absent'   => array_fill(1, 12, 0),
+            'halfday'  => array_fill(1, 12, 0),
+        ];
+
+        $typeMap = [1 => 'present', 2 => 'late', 3 => 'absent', 4 => 'halfday'];
+
+        foreach ($rows as $row) {
+            $key = $typeMap[$row->type] ?? null;
+            if ($key && isset($result[$key][$row->month])) {
+                $result[$key][$row->month] = (int) $row->total;
+            }
+        }
+
+        // Convertir en tableaux indexés 0–11 (Jan=0)
+        return [
+            'present' => array_values($result['present']),
+            'late'    => array_values($result['late']),
+            'absent'  => array_values($result['absent']),
+            'halfday' => array_values($result['halfday']),
+        ];
     }
 
     /**

@@ -7,7 +7,7 @@
                 </svg>
             </template>
             <template #actions>
-                <Link href="/admin/practicalworks/homework/list" class="inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-700 text-sm font-medium text-gray-500 hover:text-primary-600 hover:border-primary-400 dark:text-gray-400 dark:hover:text-primary-400 transition-colors">
+                <Link href="/admin/practicalworks/homework/list" class="inline-flex items-center gap-2 px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-700 text-sm font-medium text-gray-500 hover:text-primary-600 hover:border-primary-400 dark:text-gray-400 dark:hover:text-primary-400 transition-colors">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
                     Retour
                 </Link>

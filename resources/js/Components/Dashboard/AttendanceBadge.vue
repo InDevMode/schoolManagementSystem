@@ -7,7 +7,7 @@
         <div :class="['absolute left-0 top-0 bottom-0 w-1 rounded-l-2xl', barColor]"/>
 
         <!-- Icône -->
-        <div :class="['w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0', iconBg]">
+        <div :class="['w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0', iconBg]">
             <NavIcon :name="icon" :class="['w-5 h-5', iconColor]"/>
         </div>
 

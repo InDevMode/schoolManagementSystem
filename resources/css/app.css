@@ -13,19 +13,46 @@
     }
 
     body {
-        @apply font-inter text-gray-800 dark:text-gray-100 bg-gray-50 dark:bg-gray-900;
+        @apply font-inter text-gray-900 dark:text-gray-50 bg-gray-50 dark:bg-gray-900;
         font-feature-settings: "cv02", "cv03", "cv04", "cv11";
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
     }
 
-    /* Forcer Inter sur TOUS les éléments — override Flowbite/AdminLTE */
+    /* Forcer Inter sur TOUS les éléments */
     *, *::before, *::after {
         font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif !important;
     }
 
     * {
         @apply border-gray-200 dark:border-gray-700;
+    }
+
+    /* ── Typographie de base renforcée ── */
+    h1, h2, h3, h4, h5, h6 {
+        @apply font-bold text-gray-900 dark:text-white;
+        letter-spacing: -0.01em;
+    }
+
+    p {
+        @apply text-gray-700 dark:text-gray-200;
+    }
+
+    label {
+        @apply font-semibold text-gray-800 dark:text-gray-100;
+    }
+
+    th {
+        @apply font-bold text-gray-800 dark:text-gray-100 tracking-wide;
+    }
+
+    td {
+        @apply text-gray-800 dark:text-gray-100 font-medium;
+    }
+
+    /* Liens */
+    a:not([class]) {
+        @apply text-primary-700 dark:text-primary-300 font-medium;
     }
 
     /* Scrollbar personnalisée */
@@ -44,14 +71,14 @@
 }
 
 @layer base {
-    /* ── Checkbox dark mode : fond sombre quand non cochée ──────────────────── */
+    /* ── Checkbox dark mode ── */
     .dark input[type="checkbox"] {
         color-scheme: dark;
-        background-color: rgb(31 41 55); /* gray-800 */
-        border-color: rgb(75 85 99);     /* gray-600 */
+        background-color: rgb(31 41 55);
+        border-color: rgb(75 85 99);
     }
     .dark input[type="checkbox"]:checked {
-        background-color: rgb(123 116 240); /* primary */
+        background-color: rgb(123 116 240);
         border-color: rgb(123 116 240);
     }
     .dark input[type="checkbox"]:indeterminate {
@@ -73,24 +100,90 @@
 
     /* Card de base */
     .card {
-        @apply bg-white dark:bg-gray-800 rounded-2xl shadow-card border border-gray-100 dark:border-gray-700;
+        @apply bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700/60;
     }
 
     /* Badge */
     .badge {
-        @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+        @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold;
+    }
+
+    /* Gradient primaire */
+    .bg-gradient-primary {
+        background: linear-gradient(135deg, #7B74F0, #9189f5);
+    }
+
+    /* ── Textes utilitaires renforcés ── */
+    .text-body {
+        @apply text-gray-800 dark:text-gray-100 font-medium;
+    }
+
+    .text-muted {
+        @apply text-gray-500 dark:text-gray-400 font-medium;
+    }
+
+    .text-heading {
+        @apply text-gray-900 dark:text-white font-bold;
+    }
+
+    /* DataTable — renforcement header & cellules */
+    .dt-root th,
+    .dt-root thead td {
+        @apply font-bold text-gray-800 dark:text-gray-100 text-xs tracking-wide uppercase;
+    }
+
+    .dt-root td {
+        @apply text-gray-800 dark:text-gray-100 font-medium;
+    }
+
+    /* Inputs & selects */
+    input:not([type="checkbox"]):not([type="radio"]),
+    select,
+    textarea {
+        @apply text-gray-900 dark:text-gray-50 font-medium;
+    }
+
+    input::placeholder,
+    textarea::placeholder {
+        @apply text-gray-400 dark:text-gray-500 font-normal;
     }
 }
 
 @layer utilities {
-    /* Cacher la scrollbar tout en gardant le scroll fonctionnel */
+    /* Cacher la scrollbar */
     .no-scrollbar {
-        -ms-overflow-style: none;  /* IE/Edge */
-        scrollbar-width: none;     /* Firefox */
+        -ms-overflow-style: none;
+        scrollbar-width: none;
     }
     .no-scrollbar::-webkit-scrollbar {
         display: none !important;
         width: 0 !important;
         height: 0 !important;
     }
+}
+
+/* ── Animations de page ─────────────────────────────────────────────────────── */
+@keyframes fadeSlideIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scaleIn {
+    from { opacity: 0; transform: scale(0.96); }
+    to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes loaderSpin {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+}
+
+/* Page content entrée douce */
+.page-enter-active {
+    animation: fadeSlideIn 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Loader spinner */
+.animate-spin {
+    animation: loaderSpin 0.9s linear infinite;
 }

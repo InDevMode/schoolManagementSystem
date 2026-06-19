@@ -47,7 +47,7 @@
             </div>
 
             <!-- Message informatif : rappel de régénérer après validation de notes -->
-            <div class="flex items-start gap-3 mt-4 px-4 py-3 rounded-lg bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700">
+            <div class="flex items-start gap-3 mt-4 px-4 py-3 rounded-xl bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700">
                 <svg class="w-4 h-4 text-amber-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
                 </svg>
@@ -129,7 +129,7 @@
                 <div class="flex items-center justify-end gap-1.5">
                     <!-- Voir le bulletin -->
                     <Link :href="`/admin/bulletins/show/${row.id}`"
-                        class="p-1.5 rounded-lg transition-all duration-150
+                        class="p-1.5 rounded-xl transition-all duration-150
                                text-white bg-violet-500 hover:bg-violet-600 active:bg-violet-700
                                shadow-sm shadow-violet-200 dark:shadow-violet-900/40"
                         title="Voir le bulletin">
@@ -140,7 +140,7 @@
                     </Link>
                     <!-- Imprimer -->
                     <a :href="`/admin/bulletins/print/${row.id}`" target="_blank"
-                        class="p-1.5 rounded-lg transition-all duration-150
+                        class="p-1.5 rounded-xl transition-all duration-150
                                text-white bg-violet-500 hover:bg-violet-600 active:bg-violet-700
                                shadow-sm shadow-violet-200 dark:shadow-violet-900/40"
                         title="Imprimer">
@@ -150,7 +150,7 @@
                     </a>
                     <!-- Publier (brouillon uniquement) -->
                     <button v-if="row.status === 'draft' && can('action.bulletins.publish')"
-                        class="p-1.5 rounded-lg transition-all duration-150
+                        class="p-1.5 rounded-xl transition-all duration-150
                                text-white bg-emerald-500 hover:bg-emerald-600 active:bg-emerald-700
                                shadow-sm shadow-emerald-200 dark:shadow-emerald-900/40"
                         title="Publier le bulletin"
@@ -161,7 +161,7 @@
                     </button>
                     <!-- Déjà publié — indicateur -->
                     <span v-else
-                        class="p-1.5 rounded-lg
+                        class="p-1.5 rounded-xl
                                text-white bg-emerald-400/60 dark:bg-emerald-700/40 cursor-default"
                         title="Déjà publié">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

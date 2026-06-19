@@ -17,7 +17,7 @@
                     <Link
                         v-if="can('action.noticeboard.manage')"
                         href="/admin/communicate/noticeboard/history"
-                        class="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium
+                        class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-medium
                                border border-gray-200 dark:border-gray-700
                                text-gray-600 dark:text-gray-400
                                hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
@@ -149,7 +149,7 @@
                     <div class="flex items-center gap-0.5 flex-shrink-0">
                         <!-- Détails -->
                         <button
-                            class="p-1.5 rounded-lg text-gray-400 hover:text-violet-600 hover:bg-violet-50 dark:hover:bg-violet-900/20 transition-colors"
+                            class="p-1.5 rounded-xl text-gray-400 hover:text-violet-600 hover:bg-violet-50 dark:hover:bg-violet-900/20 transition-colors"
                             title="Voir les détails"
                             @click="openDetail(notice)"
                         >
@@ -163,7 +163,7 @@
                         <!-- Modifier -->
                         <button
                             v-if="can('action.noticeboard.manage')"
-                            class="p-1.5 rounded-lg text-gray-400 hover:text-primary-600 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors"
+                            class="p-1.5 rounded-xl text-gray-400 hover:text-primary-600 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors"
                             title="Modifier"
                             @click="openEdit(notice)"
                         >
@@ -175,7 +175,7 @@
                         <!-- Supprimer -->
                         <button
                             v-if="can('action.noticeboard.manage')"
-                            class="p-1.5 rounded-lg text-gray-400 hover:text-danger-600 hover:bg-danger-50 dark:hover:bg-danger-900/20 transition-colors"
+                            class="p-1.5 rounded-xl text-gray-400 hover:text-danger-600 hover:bg-danger-50 dark:hover:bg-danger-900/20 transition-colors"
                             title="Supprimer"
                             @click="openDelete(notice)"
                         >
@@ -285,18 +285,18 @@
 
                 <!-- Dates -->
                 <div class="grid grid-cols-2 gap-3">
-                    <div class="bg-primary-50 dark:bg-primary-900/20 rounded-lg px-3 py-2.5">
+                    <div class="bg-primary-50 dark:bg-primary-900/20 rounded-xl px-3 py-2.5">
                         <p class="text-xs text-primary-600 dark:text-primary-400 font-medium uppercase tracking-wide">Publication</p>
                         <p class="text-sm font-semibold text-gray-800 dark:text-white mt-0.5">{{ formatDate(detailTarget.publish_date) }}</p>
                     </div>
-                    <div class="bg-secondary-50 dark:bg-secondary-900/20 rounded-lg px-3 py-2.5">
+                    <div class="bg-secondary-50 dark:bg-secondary-900/20 rounded-xl px-3 py-2.5">
                         <p class="text-xs text-secondary-600 dark:text-secondary-400 font-medium uppercase tracking-wide">Envoi notification</p>
                         <p class="text-sm font-semibold text-gray-800 dark:text-white mt-0.5">{{ formatDate(detailTarget.notice_date) }}</p>
                     </div>
                 </div>
 
                 <!-- Destinataires détaillés -->
-                <div class="bg-gray-50 dark:bg-gray-700/40 rounded-lg px-3 py-2.5">
+                <div class="bg-gray-50 dark:bg-gray-700/40 rounded-xl px-3 py-2.5">
                     <p class="text-xs text-gray-500 dark:text-gray-400 font-medium uppercase tracking-wide mb-2">Destinataires</p>
                     <div class="flex items-center gap-2 flex-wrap">
                         <span
@@ -316,7 +316,7 @@
                     <p class="text-xs text-gray-500 dark:text-gray-400 font-medium uppercase tracking-wide mb-2">Message</p>
                     <div
                         class="prose prose-sm dark:prose-invert max-w-none text-gray-700 dark:text-gray-300
-                               bg-gray-50 dark:bg-gray-700/40 rounded-lg p-4 max-h-64 overflow-y-auto"
+                               bg-gray-50 dark:bg-gray-700/40 rounded-xl p-4 max-h-64 overflow-y-auto"
                         v-html="detailTarget.message"
                     />
                 </div>
@@ -338,7 +338,7 @@
         ═════════════════════════════════════════════════════════════════════ -->
         <AppModal v-model="showDelete" title="Supprimer la notification" size="sm" persistent>
             <div class="flex items-start gap-3">
-                <div class="w-10 h-10 rounded-lg bg-danger-50 dark:bg-danger-900/20 flex items-center justify-center flex-shrink-0">
+                <div class="w-10 h-10 rounded-xl bg-danger-50 dark:bg-danger-900/20 flex items-center justify-center flex-shrink-0">
                     <svg class="w-5 h-5 text-danger-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                               d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>

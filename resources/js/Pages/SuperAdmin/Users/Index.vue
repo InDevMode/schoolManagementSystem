@@ -14,7 +14,7 @@
                     <input type="hidden" name="user_type" :value="filters.user_type"/>
                     <input type="hidden" name="status" :value="filters.status"/>
                     <button type="submit"
-                            class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium
+                            class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium
                                    bg-emerald-600 hover:bg-emerald-700 text-white transition-colors shadow-sm">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -27,7 +27,7 @@
         </PageHeader>
 
         <!-- â”€â”€ Bannià¨re â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
-        <div v-if="isSuperAdmin" class="flex items-center gap-2.5 px-4 py-2.5 rounded-lg
+        <div v-if="isSuperAdmin" class="flex items-center gap-2.5 px-4 py-2.5 rounded-xl
                     bg-violet-50 dark:bg-violet-900/20 border border-violet-200 dark:border-violet-700 text-sm">
             <svg class="w-4 h-4 text-violet-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -60,7 +60,7 @@
             </div>
             <div class="flex items-center gap-2 mt-3">
                 <button @click="applyFilters"
-                        class="px-4 py-2 rounded-lg text-sm font-medium bg-violet-600 hover:bg-violet-700
+                        class="px-4 py-2 rounded-xl text-sm font-medium bg-violet-600 hover:bg-violet-700
                                text-white transition-colors flex items-center gap-2">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
@@ -68,7 +68,7 @@
                     Filtrer
                 </button>
                 <button @click="resetFilters"
-                        class="px-4 py-2 rounded-lg text-sm font-medium border border-gray-200 dark:border-gray-600
+                        class="px-4 py-2 rounded-xl text-sm font-medium border border-gray-200 dark:border-gray-600
                                text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                     Réinitialiser
                 </button>
@@ -97,7 +97,7 @@
                     {{ selectedIds.length }} sélectionné(s)
                 </span>
                 <button @click="openBulkReset"
-                        class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium
+                        class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium
                                bg-amber-500 hover:bg-amber-600 text-white transition-colors">
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -282,35 +282,35 @@
                                     <div class="flex items-center justify-end gap-1.5">
                                         <!-- Voir -->
                                         <button @click="openView(u)" title="Voir les détails"
-                                                class="p-1.5 rounded-lg text-white bg-violet-500 hover:bg-violet-600 shadow-sm transition-all">
+                                                class="p-1.5 rounded-xl text-white bg-violet-500 hover:bg-violet-600 shadow-sm transition-all">
                                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0zM2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
                                             </svg>
                                         </button>
                                         <!-- Modifier -->
                                         <button v-if="canEdit" @click="openEdit(u)" title="Modifier"
-                                                class="p-1.5 rounded-lg text-white bg-emerald-500 hover:bg-emerald-600 shadow-sm transition-all">
+                                                class="p-1.5 rounded-xl text-white bg-emerald-500 hover:bg-emerald-600 shadow-sm transition-all">
                                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                                             </svg>
                                         </button>
                                         <!-- Message -->
                                         <Link :href="`/chat?receiver_id=${encodedId(u.id)}`" title="Envoyer un message"
-                                           class="p-1.5 rounded-lg text-white bg-violet-500 hover:bg-violet-600 shadow-sm transition-all">
+                                           class="p-1.5 rounded-xl text-white bg-violet-500 hover:bg-violet-600 shadow-sm transition-all">
                                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
                                             </svg>
                                         </Link>
                                         <!-- Réinitialiser MDP -->
                                         <button v-if="canReset" @click="openResetConfirm(u)" title="Réinitialiser le mot de passe"
-                                                class="p-1.5 rounded-lg text-white bg-amber-500 hover:bg-amber-600 shadow-sm transition-all">
+                                                class="p-1.5 rounded-xl text-white bg-amber-500 hover:bg-amber-600 shadow-sm transition-all">
                                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/>
                                             </svg>
                                         </button>
                                         <!-- Supprimer -->
                                         <button v-if="canDelete && u.user_type !== 0" @click="openDeleteConfirm(u)" title="Supprimer"
-                                                class="p-1.5 rounded-lg text-white bg-red-500 hover:bg-red-600 shadow-sm transition-all">
+                                                class="p-1.5 rounded-xl text-white bg-red-500 hover:bg-red-600 shadow-sm transition-all">
                                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
                                             </svg>
@@ -347,7 +347,7 @@
                     <!-- Précédent -->
                     <button :disabled="!users.prev_page_url"
                             @click="users.prev_page_url && goToPage(users.prev_page_url)"
-                            class="w-8 h-8 flex items-center justify-center rounded-lg text-sm transition-colors
+                            class="w-8 h-8 flex items-center justify-center rounded-xl text-sm transition-colors
                                    disabled:opacity-30 disabled:cursor-not-allowed
                                    text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -357,7 +357,7 @@
                     <!-- Numéros de page -->
                     <template v-for="link in users.links.slice(1, -1)" :key="link.label">
                         <button v-if="link.url" @click="goToPage(link.url)"
-                                :class="['w-8 h-8 flex items-center justify-center rounded-lg text-sm font-medium transition-colors',
+                                :class="['w-8 h-8 flex items-center justify-center rounded-xl text-sm font-medium transition-colors',
                                     link.active ? 'bg-violet-600 text-white shadow-sm'
                                                : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700']">
                             {{ link.label }}
@@ -369,7 +369,7 @@
                     <!-- Suivant -->
                     <button :disabled="!users.next_page_url"
                             @click="users.next_page_url && goToPage(users.next_page_url)"
-                            class="w-8 h-8 flex items-center justify-center rounded-lg text-sm transition-colors
+                            class="w-8 h-8 flex items-center justify-center rounded-xl text-sm transition-colors
                                    disabled:opacity-30 disabled:cursor-not-allowed
                                    text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -389,7 +389,7 @@
                         leave-from-class="opacity-100 scale-100" leave-to-class="opacity-0 scale-95">
                 <div v-if="ctxMenu.visible"
                      :style="{ top: ctxMenu.y + 'px', left: ctxMenu.x + 'px' }"
-                     class="fixed z-[9999] w-52 bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-100
+                     class="fixed z-[9999] w-52 bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-gray-100
                             dark:border-gray-700 overflow-hidden py-1"
                      @click.stop>
                     <button @click="openView(ctxMenu.user!); closeContextMenu()"
@@ -499,16 +499,16 @@
                         <!-- Footer -->
                         <div class="flex gap-2 px-5 pb-5">
                             <button @click="viewTarget = null"
-                                    class="flex-1 px-3 py-2 rounded-lg text-sm font-medium border border-gray-200 dark:border-gray-600
+                                    class="flex-1 px-3 py-2 rounded-xl text-sm font-medium border border-gray-200 dark:border-gray-600
                                            text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                                 Fermer
                             </button>
                             <button v-if="canEdit" @click="openEdit(viewTarget!); viewTarget = null"
-                                    class="flex-1 px-3 py-2 rounded-lg text-sm font-medium bg-emerald-500 hover:bg-emerald-600 text-white transition-colors">
+                                    class="flex-1 px-3 py-2 rounded-xl text-sm font-medium bg-emerald-500 hover:bg-emerald-600 text-white transition-colors">
                                 Modifier
                             </button>
                             <button v-if="canReset" @click="openResetConfirm(viewTarget!); viewTarget = null"
-                                    class="flex-1 px-3 py-2 rounded-lg text-sm font-medium bg-amber-500 hover:bg-amber-600 text-white transition-colors">
+                                    class="flex-1 px-3 py-2 rounded-xl text-sm font-medium bg-amber-500 hover:bg-amber-600 text-white transition-colors">
                                 Réinit. MDP
                             </button>
                         </div>
@@ -529,7 +529,7 @@
                         <!-- Titre -->
                         <div class="flex items-center justify-between px-6 pt-5 pb-4 border-b border-gray-100 dark:border-gray-700">
                             <div class="flex items-center gap-3">
-                                <div class="w-9 h-9 rounded-lg bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center">
+                                <div class="w-9 h-9 rounded-xl bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center">
                                     <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                                     </svg>
@@ -540,7 +540,7 @@
                                 </div>
                             </div>
                             <button @click="editTarget = null"
-                                    class="w-8 h-8 rounded-lg flex items-center justify-center text-gray-400 hover:text-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                                    class="w-8 h-8 rounded-xl flex items-center justify-center text-gray-400 hover:text-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                                 </svg>
@@ -588,19 +588,19 @@
                                 </div>
                             </div>
                             <!-- Erreur -->
-                            <p v-if="editError" class="text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 px-3 py-2 rounded-lg">
+                            <p v-if="editError" class="text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 px-3 py-2 rounded-xl">
                                 {{ editError }}
                             </p>
                         </form>
                         <!-- Footer -->
                         <div class="flex gap-3 px-6 pb-6">
                             <button @click="editTarget = null"
-                                    class="flex-1 px-4 py-2.5 rounded-lg text-sm font-medium border border-gray-200 dark:border-gray-600
+                                    class="flex-1 px-4 py-2.5 rounded-xl text-sm font-medium border border-gray-200 dark:border-gray-600
                                            text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                                 Annuler
                             </button>
                             <button @click="submitEdit" :disabled="saving"
-                                    class="flex-1 px-4 py-2.5 rounded-lg text-sm font-medium bg-emerald-600 hover:bg-emerald-700
+                                    class="flex-1 px-4 py-2.5 rounded-xl text-sm font-medium bg-emerald-600 hover:bg-emerald-700
                                            text-white transition-colors disabled:opacity-50 flex items-center justify-center gap-2">
                                 <svg v-if="saving" class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
                                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
@@ -638,12 +638,12 @@
                         </div>
                         <div class="px-6 pb-6 flex gap-3 mt-2">
                             <button @click="resetTarget = null"
-                                    class="flex-1 px-4 py-2.5 rounded-lg text-sm font-medium border border-gray-200 dark:border-gray-600
+                                    class="flex-1 px-4 py-2.5 rounded-xl text-sm font-medium border border-gray-200 dark:border-gray-600
                                            text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                                 Annuler
                             </button>
                             <button @click="executeReset" :disabled="resetting"
-                                    class="flex-1 px-4 py-2.5 rounded-lg text-sm font-medium bg-amber-500 hover:bg-amber-600
+                                    class="flex-1 px-4 py-2.5 rounded-xl text-sm font-medium bg-amber-500 hover:bg-amber-600
                                            text-white transition-colors disabled:opacity-50 flex items-center justify-center gap-2">
                                 <svg v-if="resetting" class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
                                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
@@ -681,12 +681,12 @@
                         </div>
                         <div class="px-6 pb-6 flex gap-3 mt-2">
                             <button @click="deleteTarget = null"
-                                    class="flex-1 px-4 py-2.5 rounded-lg text-sm font-medium border border-gray-200 dark:border-gray-600
+                                    class="flex-1 px-4 py-2.5 rounded-xl text-sm font-medium border border-gray-200 dark:border-gray-600
                                            text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                                 Annuler
                             </button>
                             <button @click="executeDelete" :disabled="deleting"
-                                    class="flex-1 px-4 py-2.5 rounded-lg text-sm font-medium bg-red-600 hover:bg-red-700
+                                    class="flex-1 px-4 py-2.5 rounded-xl text-sm font-medium bg-red-600 hover:bg-red-700
                                            text-white transition-colors disabled:opacity-50 flex items-center justify-center gap-2">
                                 <svg v-if="deleting" class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
                                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
@@ -979,7 +979,7 @@ const permBadgeClass = (n: number) =>
 
 <style scoped>
 .input-field {
-    @apply w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600
+    @apply w-full px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-600
            bg-white dark:bg-gray-700 text-sm text-gray-700 dark:text-gray-200
            placeholder-gray-400 dark:placeholder-gray-500
            focus:outline-none focus:ring-2 focus:ring-violet-500/30 focus:border-violet-400
@@ -993,7 +993,7 @@ const permBadgeClass = (n: number) =>
     @apply block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1;
 }
 .info-card {
-    @apply bg-gray-50 dark:bg-gray-700/50 rounded-lg p-3 border border-gray-100 dark:border-gray-600;
+    @apply bg-gray-50 dark:bg-gray-700/50 rounded-xl p-3 border border-gray-100 dark:border-gray-600;
 }
 .info-label {
     @apply text-xs font-semibold uppercase tracking-wide text-gray-400 dark:text-gray-500 mb-1;
@@ -1003,7 +1003,7 @@ const permBadgeClass = (n: number) =>
     @apply flex w-full items-center gap-2.5 px-3 py-2.5 text-sm font-medium transition-colors;
 }
 .ctx-icon {
-    @apply w-6 h-6 rounded-lg flex items-center justify-center flex-shrink-0;
+    @apply w-6 h-6 rounded-xl flex items-center justify-center flex-shrink-0;
 }
 </style>
 

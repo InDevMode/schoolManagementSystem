@@ -23,7 +23,7 @@
         <!-- Aperçu des types (cards couleurs) -->
         <div v-if="leaveTypes.data.length" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
             <div v-for="lt in leaveTypes.data" :key="lt.id"
-                class="flex items-center gap-3 p-3 rounded-lg border border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-800">
+                class="flex items-center gap-3 p-3 rounded-xl border border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-800">
                 <span class="w-4 h-4 rounded-full flex-shrink-0" :style="{ background: lt.color ?? '#6366f1' }"/>
                 <div class="min-w-0">
                     <p class="text-xs font-semibold text-gray-900 dark:text-white truncate">{{ lt.name }}</p>
@@ -42,7 +42,7 @@
         >
             <template #cell-color="{ row }">
                 <div class="flex items-center gap-2">
-                    <span class="w-5 h-5 rounded-lg border border-gray-200 dark:border-gray-600 flex-shrink-0"
+                    <span class="w-5 h-5 rounded-xl border border-gray-200 dark:border-gray-600 flex-shrink-0"
                         :style="{ background: row.color ?? '#6366f1' }"/>
                     <span class="text-xs font-mono text-gray-500 dark:text-gray-400">{{ row.color ?? '#6366f1' }}</span>
                 </div>
@@ -51,7 +51,7 @@
             <template #actions="{ row }">
                 <div class="flex items-center justify-end gap-1.5">
                     <!-- Modifier -->
-                    <button class="p-1.5 rounded-lg transition-all duration-150
+                    <button class="p-1.5 rounded-xl transition-all duration-150
                                    text-white bg-emerald-500 hover:bg-emerald-600 active:bg-emerald-700
                                    shadow-sm shadow-emerald-200 dark:shadow-emerald-900/40"
                             title="Modifier"
@@ -61,7 +61,7 @@
                         </svg>
                     </button>
                     <!-- Supprimer -->
-                    <button class="p-1.5 rounded-lg transition-all duration-150
+                    <button class="p-1.5 rounded-xl transition-all duration-150
                                    text-white bg-red-500 hover:bg-red-600 active:bg-red-700
                                    shadow-sm shadow-red-200 dark:shadow-red-900/40"
                             title="Supprimer"
@@ -87,7 +87,7 @@
                         <input
                             v-model="form.color"
                             type="color"
-                            class="w-10 h-10 rounded-lg border border-gray-200 dark:border-gray-600 cursor-pointer"
+                            class="w-10 h-10 rounded-xl border border-gray-200 dark:border-gray-600 cursor-pointer"
                         />
                         <span class="text-sm font-mono text-gray-500 dark:text-gray-400">{{ form.color }}</span>
                         <!-- Palette rapide -->

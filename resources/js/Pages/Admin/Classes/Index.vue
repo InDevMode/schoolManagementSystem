@@ -40,7 +40,7 @@
             <template #actions="{ row }">
                 <div class="flex items-center justify-end gap-1.5">
                     <button title="Voir les détails" @click="openDetails(row as any)"
-                            class="p-1.5 rounded-lg transition-all duration-150
+                            class="p-1.5 rounded-xl transition-all duration-150
                                    text-white bg-violet-500 hover:bg-violet-600 active:bg-violet-700
                                    shadow-sm shadow-violet-200 dark:shadow-violet-900/40">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -48,7 +48,7 @@
                         </svg>
                     </button>
                     <button v-if="canEdit" title="Modifier" @click="openEdit(row as any)"
-                            class="p-1.5 rounded-lg transition-all duration-150
+                            class="p-1.5 rounded-xl transition-all duration-150
                                    text-white bg-emerald-500 hover:bg-emerald-600 active:bg-emerald-700
                                    shadow-sm shadow-emerald-200 dark:shadow-emerald-900/40">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -56,7 +56,7 @@
                         </svg>
                     </button>
                     <button v-if="canDelete" title="Supprimer" @click="tableRef?.confirmDelete(row.id as number, row.name as string)"
-                            class="p-1.5 rounded-lg transition-all duration-150
+                            class="p-1.5 rounded-xl transition-all duration-150
                                    text-white bg-red-500 hover:bg-red-600 active:bg-red-700
                                    shadow-sm shadow-red-200 dark:shadow-red-900/40">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -147,7 +147,7 @@
                             <!-- Header drawer -->
                             <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-gray-700">
                                 <div class="flex items-center gap-3">
-                                    <div class="w-9 h-9 rounded-lg bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center flex-shrink-0">
+                                    <div class="w-9 h-9 rounded-xl bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center flex-shrink-0">
                                         <svg class="w-5 h-5 text-primary-600 dark:text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                                         </svg>
@@ -157,7 +157,7 @@
                                         <p class="text-xs text-gray-500 dark:text-gray-400">Informations complètes</p>
                                     </div>
                                 </div>
-                                <button @click="showDetails = false" class="p-1.5 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                                <button @click="showDetails = false" class="p-1.5 rounded-xl text-gray-400 hover:text-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
                                 </button>
                             </div>
@@ -179,7 +179,7 @@
                                 </div>
 
                                 <!-- Frais de scolarité -->
-                                <div class="rounded-lg bg-gray-50 dark:bg-gray-800 p-4">
+                                <div class="rounded-xl bg-gray-50 dark:bg-gray-800 p-4">
                                     <p class="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wide mb-1">Frais de scolarité</p>
                                     <p class="text-2xl font-bold text-primary-600 dark:text-primary-400">
                                         {{ Number(detailsTarget.amount).toLocaleString('fr-FR') }}
@@ -271,9 +271,12 @@ const statusOptions = [
 ];
 
 const columns = [
-    { key: 'name',   label: 'Nom' },
-    { key: 'amount', label: 'Montant (FCFA)' },
-    { key: 'status', label: 'Statut' },
+    { key: 'name',            label: 'Nom de la classe', sortable: true  },
+    { key: 'amount',          label: 'Frais (FCFA)',      sortable: true  },
+    { key: 'status',          label: 'Statut',            sortable: true  },
+    { key: 'created_by_name', label: 'Créé par',          sortable: false },
+    { key: 'created_at',      label: 'Date création',     sortable: true,
+      format: (v: unknown) => v ? new Date(v as string).toLocaleDateString('fr-FR') : '—' },
 ];
 
 const form = useForm({ name: '', amount: '', status: '1' });

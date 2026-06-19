@@ -35,7 +35,7 @@
                                     class="px-4 py-3 text-center text-xs font-bold text-gray-700 dark:text-gray-200 uppercase tracking-wider border-b border-r border-gray-200 dark:border-gray-700 min-w-[130px]"
                                 >
                                     <div class="flex flex-col items-center gap-1">
-                                        <div class="w-6 h-6 rounded-lg flex items-center justify-center"
+                                        <div class="w-6 h-6 rounded-xl flex items-center justify-center"
                                              :style="{ backgroundColor: subjectColors[subject.name] + '20', border: '1.5px solid ' + subjectColors[subject.name] + '60' }">
                                             <span class="w-2 h-2 rounded-full" :style="{ backgroundColor: subjectColors[subject.name] }"/>
                                         </div>
@@ -55,7 +55,7 @@
                                 <td class="px-4 py-3 border-r border-gray-200 dark:border-gray-700">
                                     <div class="flex items-center gap-2.5">
                                         <div
-                                            class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 text-xs font-bold transition-all"
+                                            class="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0 text-xs font-bold transition-all"
                                             :class="day.isToday
                                                 ? 'bg-primary-500 text-white shadow-md shadow-primary-500/30'
                                                 : 'bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400'"
@@ -77,7 +77,7 @@
                                     class="px-3 py-2 border-r border-gray-100 dark:border-gray-700 text-center"
                                 >
                                     <div v-if="getSlot(subject, day.week_id)"
-                                         class="rounded-lg p-2 border transition-all hover:opacity-90"
+                                         class="rounded-xl p-2 border transition-all hover:opacity-90"
                                          :style="{
                                              backgroundColor: subjectColors[subject.name] + '15',
                                              borderColor: subjectColors[subject.name] + '40',
@@ -134,7 +134,7 @@
                         <div class="p-3 space-y-1.5">
                             <template v-for="day in subject.week" :key="day.week_id">
                                 <div v-if="day.start_time"
-                                     class="flex items-center justify-between py-1.5 px-2.5 rounded-lg bg-gray-50 dark:bg-gray-800/40 hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors">
+                                     class="flex items-center justify-between py-1.5 px-2.5 rounded-xl bg-gray-50 dark:bg-gray-800/40 hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors">
                                     <div class="flex items-center gap-2">
                                         <div class="w-1.5 h-1.5 rounded-full flex-shrink-0"
                                              :style="{ backgroundColor: subjectColors[subject.name] }"/>

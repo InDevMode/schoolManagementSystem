@@ -55,7 +55,7 @@
                         <div class="px-6 pb-6 flex gap-3 mt-2">
                             <button
                                 @click="showLogoutConfirm = false"
-                                class="flex-1 px-4 py-2.5 rounded-lg text-sm font-medium
+                                class="flex-1 px-4 py-2.5 rounded-xl text-sm font-medium
                                        border border-gray-200 dark:border-gray-600
                                        text-gray-700 dark:text-gray-300
                                        hover:bg-gray-50 dark:hover:bg-gray-700
@@ -65,7 +65,7 @@
                             </button>
                             <a
                                 href="/logout"
-                                class="flex-1 px-4 py-2.5 rounded-lg text-sm font-medium text-center
+                                class="flex-1 px-4 py-2.5 rounded-xl text-sm font-medium text-center
                                        bg-danger-600 hover:bg-danger-700 text-white
                                        transition-colors"
                             >
@@ -91,10 +91,10 @@
         ]"
     >
         <!-- ── En-tête sidebar ── -->
-        <div class="flex items-center h-16 px-4 flex-shrink-0 border-b border-gray-100 dark:border-gray-800">
+        <div class="flex items-center h-16 px-3 gap-2 flex-shrink-0 border-b border-gray-100 dark:border-gray-800">
             <!-- Logo + nom -->
-            <Link :href="homeLink" class="flex items-center gap-3 flex-1 min-w-0">
-                <div class="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 shadow-md"
+            <Link :href="homeLink" class="flex items-center gap-2.5 flex-1 min-w-0">
+                <div class="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 shadow-md"
                      style="background: linear-gradient(135deg, #9189f5, #7B74F0);">
                     <img v-if="logoUrl" :src="logoUrl" alt="Logo" class="w-6 h-6 object-contain rounded" />
                     <svg v-else class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -116,14 +116,15 @@
                 </Transition>
             </Link>
 
-            <!-- Bouton collapse (desktop) -->
+            <!-- ── Bouton collapse (desktop) — tout à droite dans le header ── -->
             <button
                 class="hidden lg:flex w-7 h-7 rounded-full items-center justify-center flex-shrink-0
-                       bg-primary-600 text-white shadow-md hover:bg-primary-700 transition-colors"
+                       shadow-md transition-all duration-200 hover:scale-110 hover:shadow-lg ml-auto"
+                style="background: linear-gradient(135deg, #9189f5, #7B74F0);"
                 @click="$emit('toggle')"
                 :aria-label="collapsed ? 'Développer le menu' : 'Réduire le menu'"
             >
-                <svg :class="['w-3.5 h-3.5 transition-transform duration-300', collapsed ? 'rotate-180' : '']"
+                <svg :class="['w-3.5 h-3.5 text-white transition-transform duration-300', collapsed ? 'rotate-180' : '']"
                      fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/>
                 </svg>
@@ -142,7 +143,7 @@
                     v-model="searchQuery"
                     type="text"
                     placeholder="Rechercher..."
-                    class="w-full pl-9 pr-3 py-2 text-sm rounded-lg border-0
+                    class="w-full pl-9 pr-3 py-2 text-sm rounded-xl border-0
                            bg-gray-100 dark:bg-gray-800
                            text-gray-700 dark:text-gray-300
                            placeholder-gray-400 dark:placeholder-gray-500
@@ -153,7 +154,7 @@
         </div>
         <div v-else class="px-3 pt-4 pb-2 flex-shrink-0 flex justify-center">
             <button
-                class="w-9 h-9 rounded-lg flex items-center justify-center
+                class="w-9 h-9 rounded-xl flex items-center justify-center
                        bg-gray-100 dark:bg-gray-800 text-gray-400
                        hover:bg-primary-50 dark:hover:bg-primary-900/20 hover:text-primary-600
                        transition-colors"
@@ -189,25 +190,27 @@
                     v-else-if="!item.children"
                     :href="item.href!"
                     :class="[
-                        'group flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150',
+                        'group relative flex items-center gap-3 px-3 py-2 rounded-full text-sm font-medium transition-all duration-200',
                         collapsed ? 'justify-center' : '',
                         isActive(item)
-                            ? 'bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300'
-                            : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white',
+                            ? 'text-white shadow-lg shadow-primary-500/30'
+                            : 'text-gray-600 dark:text-gray-400 hover:text-white',
                     ]"
-                    :title="collapsed ? item.label : undefined"
+                    :style="isActive(item) ? 'background: linear-gradient(135deg, #7B74F0, #9189f5)' : ''"
+                    @mouseenter="(e) => { if (!isActive(item)) (e.currentTarget as HTMLElement).style.background = 'linear-gradient(135deg, #7B74F0cc, #9189f5cc)'; if (collapsed) { hoveredId = item.id; hoveredEl = e.currentTarget as HTMLElement; } }"
+                    @mouseleave="(e) => { if (!isActive(item)) (e.currentTarget as HTMLElement).style.background = ''; if (collapsed) { hoveredId = null; hoveredEl = null; } }"
                 >
-                    <!-- Icône avec fond coloré style action-button -->
+                    <!-- Icône -->
                     <span :class="[
-                        'flex-shrink-0 w-7 h-7 rounded-lg flex items-center justify-center transition-all duration-150',
+                        'flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center transition-all duration-200',
                         isActive(item)
-                            ? 'bg-primary-600 text-white shadow-md shadow-primary-500/40'
-                            : 'bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 group-hover:bg-primary-600 group-hover:text-white group-hover:shadow-md group-hover:shadow-primary-500/40',
+                            ? 'bg-white/20 text-white'
+                            : 'bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 group-hover:bg-white/20 group-hover:text-white',
                     ]">
                         <NavIcon :name="item.icon" class="w-4 h-4" />
                     </span>
 
-                    <!-- Label -->
+                    <!-- Label (sidebar ouverte) -->
                     <Transition
                         enter-active-class="transition-all duration-200"
                         enter-from-class="opacity-0"
@@ -218,35 +221,46 @@
                     >
                         <span v-if="!collapsed" class="flex-1 truncate">{{ item.label }}</span>
                     </Transition>
-
-                    <!-- Tooltip collapsed -->
-                    <div v-if="collapsed"
-                         class="absolute left-full ml-3 px-2.5 py-1.5 bg-gray-900 dark:bg-gray-700 text-white text-xs rounded-lg
-                                opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap z-50
-                                transition-opacity duration-150 shadow-lg">
-                        {{ item.label }}
-                    </div>
                 </Link>
 
                 <!-- Item avec enfants (accordéon) -->
                 <div v-else class="relative group/parent">
                     <button
                         :class="[
-                            'w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150',
+                            'w-full flex items-center gap-3 px-3 py-2 rounded-full text-sm font-medium transition-all duration-200',
                             collapsed ? 'justify-center' : '',
                             isParentActive(item)
-                                ? 'bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300'
-                                : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white',
+                                ? 'text-white shadow-lg shadow-primary-500/30'
+                                : 'text-gray-600 dark:text-gray-400 hover:text-white',
                         ]"
-                        @click="toggleMenu(item.id)"
-                        :title="collapsed ? item.label : undefined"
+                        :style="isParentActive(item) ? 'background: linear-gradient(135deg, #7B74F0, #9189f5)' : ''"
+                        @mouseenter="(e) => {
+                            if (!isParentActive(item)) (e.currentTarget as HTMLElement).style.background = 'linear-gradient(135deg, #7B74F0cc, #9189f5cc)';
+                            if (collapsed) {
+                                hoveredId = item.id; hoveredEl = e.currentTarget as HTMLElement;
+                                // Ouvrir le flyout
+                                const r = (e.currentTarget as HTMLElement).getBoundingClientRect();
+                                flyoutId = item.id; flyoutEl = e.currentTarget as HTMLElement;
+                                flyoutX = r.right + 8;
+                                flyoutY = r.top;
+                            }
+                        }"
+                        @mouseleave="(e) => {
+                            if (!isParentActive(item)) (e.currentTarget as HTMLElement).style.background = '';
+                            if (collapsed) {
+                                hoveredId = null; hoveredEl = null;
+                                // Délai pour permettre de bouger vers le flyout
+                                setTimeout(() => { if (flyoutId === item.id) flyoutId = null; }, 80);
+                            }
+                        }"
+                        @click="collapsed ? undefined : toggleMenu(item.id)"
                     >
-                        <!-- Icône avec fond coloré style action-button -->
+                        <!-- Icône -->
                         <span :class="[
-                            'flex-shrink-0 w-7 h-7 rounded-lg flex items-center justify-center transition-all duration-150',
+                            'flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center transition-all duration-200',
                             isParentActive(item)
-                                ? 'bg-primary-600 text-white shadow-md shadow-primary-500/40'
-                                : 'bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 group-hover/parent:bg-primary-600 group-hover/parent:text-white group-hover/parent:shadow-md group-hover/parent:shadow-primary-500/40',
+                                ? 'bg-white/20 text-white'
+                                : 'bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 group-hover/parent:bg-white/20 group-hover/parent:text-white',
                         ]">
                             <NavIcon :name="item.icon" class="w-4 h-4" />
                         </span>
@@ -265,20 +279,13 @@
                         <!-- Chevron -->
                         <svg
                             v-if="!collapsed"
-                            :class="['w-3.5 h-3.5 flex-shrink-0 transition-transform duration-200 text-gray-400',
+                            :class="['w-3.5 h-3.5 flex-shrink-0 transition-transform duration-200',
+                                     isParentActive(item) ? 'text-white/80' : 'text-gray-400',
                                      openMenus.has(item.id) ? 'rotate-180' : '']"
                             fill="none" stroke="currentColor" viewBox="0 0 24 24"
                         >
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/>
                         </svg>
-
-                        <!-- Tooltip collapsed -->
-                        <div v-if="collapsed"
-                             class="absolute left-full ml-3 px-2.5 py-1.5 bg-gray-900 dark:bg-gray-700 text-white text-xs rounded-lg
-                                    opacity-0 group-hover/parent:opacity-100 pointer-events-none whitespace-nowrap z-50
-                                    transition-opacity duration-150 shadow-lg">
-                            {{ item.label }}
-                        </div>
                     </button>
 
                     <!-- Sous-menu (accordéon) — mode expanded -->
@@ -296,11 +303,14 @@
                                 :key="child.id"
                                 :href="child.href!"
                                 :class="[
-                                    'group/child relative flex items-center gap-2.5 pl-6 pr-3 py-2 rounded-lg text-sm transition-all duration-150',
+                                    'group/child relative flex items-center gap-2.5 pl-6 pr-3 py-2 rounded-full text-sm transition-all duration-200',
                                     isActiveChild(child)
-                                        ? 'bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300 font-medium'
-                                        : 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-800 dark:hover:text-gray-200 font-normal',
+                                        ? 'text-white font-medium shadow-md shadow-primary-500/25'
+                                        : 'text-gray-500 dark:text-gray-400 hover:text-white font-normal',
                                 ]"
+                                :style="isActiveChild(child) ? 'background: linear-gradient(135deg, #7B74F0, #9189f5)' : ''"
+                                @mouseenter="e => !isActiveChild(child) && ((e.currentTarget as HTMLElement).style.background = 'linear-gradient(135deg, #7B74F0bb, #9189f5bb)')"
+                                @mouseleave="e => !isActiveChild(child) && ((e.currentTarget as HTMLElement).style.background = '')"
                             >
                                 <!-- Connecteur en L arrondi -->
                                 <span class="pointer-events-none absolute left-0 top-0 flex h-full w-6 flex-col items-center" aria-hidden="true">
@@ -308,27 +318,27 @@
                                         :class="[
                                             'w-px flex-1',
                                             idx === item.children.length - 1 ? 'h-1/2 flex-none' : 'flex-1',
-                                            isActiveChild(child) ? 'bg-primary-400/60' : 'bg-gray-300 dark:bg-gray-600',
+                                            isActiveChild(child) ? 'bg-white/40' : 'bg-gray-300 dark:bg-gray-600',
                                         ]"
                                         style="margin-top: 0;"
                                     />
                                     <svg viewBox="0 0 12 12" class="w-3 h-3 flex-shrink-0 -mt-px" fill="none" stroke="currentColor"
-                                        :class="isActiveChild(child) ? 'text-primary-400/60' : 'text-gray-300 dark:text-gray-600'"
+                                        :class="isActiveChild(child) ? 'text-white/40' : 'text-gray-300 dark:text-gray-600'"
                                         stroke-width="1.5" stroke-linecap="round">
                                         <path d="M1 0 V7 Q1 11 5 11 H12" />
                                     </svg>
                                     <span
                                         v-if="idx < item.children.length - 1"
-                                        :class="['w-px flex-1', isActiveChild(child) ? 'bg-primary-400/60' : 'bg-gray-300 dark:bg-gray-600']"
+                                        :class="['w-px flex-1', isActiveChild(child) ? 'bg-white/40' : 'bg-gray-300 dark:bg-gray-600']"
                                     />
                                 </span>
 
-                                <!-- Icône avec fond coloré style action-button -->
+                                <!-- Icône -->
                                 <span :class="[
-                                    'flex-shrink-0 w-6 h-6 rounded-lg flex items-center justify-center transition-all duration-150',
+                                    'flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center transition-all duration-200',
                                     isActiveChild(child)
-                                        ? 'bg-primary-600 text-white shadow-sm shadow-primary-500/40'
-                                        : 'bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-500 group-hover/child:bg-primary-600 group-hover/child:text-white group-hover/child:shadow-sm group-hover/child:shadow-primary-500/40',
+                                        ? 'bg-white/20 text-white'
+                                        : 'bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-500 group-hover/child:bg-white/20 group-hover/child:text-white',
                                 ]">
                                     <NavIcon :name="child.icon" class="w-3.5 h-3.5" />
                                 </span>
@@ -337,31 +347,64 @@
                         </div>
                     </Transition>
 
-                    <!-- Flyout collapsed — popup au survol -->
-                    <div v-if="collapsed"
-                         class="absolute left-full top-0 ml-2 w-52 bg-white dark:bg-gray-800 rounded-lg border border-gray-100 dark:border-gray-700
-                                shadow-card-lg opacity-0 group-hover/parent:opacity-100 pointer-events-none group-hover/parent:pointer-events-auto
-                                transition-all duration-150 z-50 overflow-hidden">
-                        <div class="px-3 py-2.5 border-b border-gray-100 dark:border-gray-700">
-                            <p class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">{{ item.label }}</p>
-                        </div>
-                        <div class="py-1.5 px-2">
-                            <Link
-                                v-for="child in item.children"
-                                :key="child.id"
-                                :href="child.href!"
-                                :class="[
-                                    'flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-sm transition-colors',
-                                    isActiveChild(child)
-                                        ? 'bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300 font-medium'
-                                        : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700',
-                                ]"
+                    <!-- Flyout collapsed — rendu via Teleport pour échapper à overflow-hidden -->
+                    <Teleport v-if="collapsed" to="body">
+                        <Transition
+                            enter-active-class="transition-all duration-150 ease-out"
+                            enter-from-class="opacity-0 translate-x-1"
+                            enter-to-class="opacity-100 translate-x-0"
+                            leave-active-class="transition-all duration-100 ease-in"
+                            leave-from-class="opacity-100 translate-x-0"
+                            leave-to-class="opacity-0 translate-x-1"
+                        >
+                            <div
+                                v-if="flyoutId === item.id && flyoutEl"
+                                class="fixed w-52 bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700
+                                       shadow-xl overflow-hidden"
+                                :style="{
+                                    top:    flyoutY + 'px',
+                                    left:   flyoutX + 'px',
+                                    zIndex: 99998,
+                                }"
+                                @mouseenter="flyoutId = item.id"
+                                @mouseleave="flyoutId = null; flyoutEl = null"
                             >
-                                <NavIcon :name="child.icon" class="w-4 h-4 flex-shrink-0" />
-                                {{ child.label }}
-                            </Link>
-                        </div>
-                    </div>
+                                <!-- Header dégradé -->
+                                <div class="px-3 py-2.5 border-b border-gray-100 dark:border-gray-700"
+                                     style="background: linear-gradient(135deg, #7B74F0, #9189f5);">
+                                    <p class="text-xs font-bold text-white uppercase tracking-wider">{{ item.label }}</p>
+                                </div>
+                                <!-- Liens -->
+                                <div class="py-1.5 px-1.5">
+                                    <Link
+                                        v-for="child in item.children"
+                                        :key="child.id"
+                                        :href="child.href!"
+                                        :class="[
+                                            'flex items-center gap-2.5 px-2.5 py-2 rounded-xl text-sm font-medium transition-all duration-150',
+                                            isActiveChild(child)
+                                                ? 'text-white shadow-sm'
+                                                : 'text-gray-700 dark:text-gray-200 hover:text-white',
+                                        ]"
+                                        :style="isActiveChild(child)
+                                            ? 'background: linear-gradient(135deg, #7B74F0, #9189f5)'
+                                            : ''"
+                                        @mouseenter="e => !isActiveChild(child) && ((e.currentTarget as HTMLElement).style.background = 'linear-gradient(135deg, #7B74F0cc, #9189f5cc)')"
+                                        @mouseleave="e => !isActiveChild(child) && ((e.currentTarget as HTMLElement).style.background = '')"
+                                        @click="flyoutId = null; flyoutEl = null"
+                                    >
+                                        <span :class="[
+                                            'w-5 h-5 rounded-md flex items-center justify-center flex-shrink-0',
+                                            isActiveChild(child) ? 'bg-white/20' : 'bg-gray-100 dark:bg-gray-700',
+                                        ]">
+                                            <NavIcon :name="child.icon" class="w-3 h-3" />
+                                        </span>
+                                        {{ child.label }}
+                                    </Link>
+                                </div>
+                            </div>
+                        </Transition>
+                    </Teleport>
                 </div>
 
             </template>
@@ -373,13 +416,13 @@
         <!-- ── Toggle Dark/Light ── -->
         <div class="px-3 py-3 flex-shrink-0">
             <div :class="[
-                'flex rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-800 p-1',
+                'flex rounded-xl overflow-hidden bg-gray-100 dark:bg-gray-800 p-1',
                 collapsed ? 'justify-center' : '',
             ]">
                 <template v-if="!collapsed">
                     <button
                         :class="[
-                            'flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-lg text-xs font-medium transition-all duration-200',
+                            'flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-xl text-xs font-medium transition-all duration-200',
                             !isDark ? 'bg-white dark:bg-gray-700 text-gray-800 shadow-sm' : 'text-gray-500 hover:text-gray-700 dark:hover:text-gray-300',
                         ]"
                         @click="setLight"
@@ -392,7 +435,7 @@
                     </button>
                     <button
                         :class="[
-                            'flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-lg text-xs font-medium transition-all duration-200',
+                            'flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-xl text-xs font-medium transition-all duration-200',
                             isDark ? 'bg-gray-700 text-white shadow-sm' : 'text-gray-500 hover:text-gray-700',
                         ]"
                         @click="setDark"
@@ -406,7 +449,7 @@
                 </template>
                 <template v-else>
                     <button
-                        class="w-9 h-9 flex items-center justify-center rounded-lg text-gray-500 hover:text-primary-600 transition-colors"
+                        class="w-9 h-9 flex items-center justify-center rounded-xl text-gray-500 hover:text-primary-600 transition-colors"
                         @click="toggleDark()"
                         :title="isDark ? 'Mode clair' : 'Mode sombre'"
                     >
@@ -465,7 +508,7 @@
                                   hover:text-primary-600 dark:hover:text-primary-400
                                   transition-colors">
                             <span :class="[
-                                'w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0',
+                                'w-7 h-7 rounded-xl flex items-center justify-center flex-shrink-0',
                                 link.icon === 'user'        ? 'bg-primary-100 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400' :
                                 link.icon === 'lock'        ? 'bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400' :
                                 link.icon === 'cog-6-tooth' ? 'bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400' :
@@ -485,7 +528,7 @@
                            class="w-full flex items-center gap-3 px-4 py-2.5 text-sm
                                   text-danger-600 dark:text-danger-400
                                   hover:bg-danger-50 dark:hover:bg-danger-900/20 transition-colors">
-                            <span class="w-7 h-7 rounded-lg bg-danger-50 dark:bg-danger-900/20 flex items-center justify-center flex-shrink-0">
+                            <span class="w-7 h-7 rounded-xl bg-danger-50 dark:bg-danger-900/20 flex items-center justify-center flex-shrink-0">
                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                           d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
@@ -499,7 +542,7 @@
 
         <!-- Bouton profil -->
         <button :class="[
-                'w-full flex items-center gap-3 p-2.5 rounded-lg transition-colors',
+                'w-full flex items-center gap-3 p-2.5 rounded-xl transition-colors',
                 'hover:bg-gray-100 dark:hover:bg-gray-800',
                 collapsed ? 'justify-center' : '',
                 profileOpen ? 'bg-gray-100 dark:bg-gray-800' : '',
@@ -542,6 +585,42 @@
                 </Transition>
             </button>
         </div>
+
+        <!-- ── Tooltip global collapsed — rendu hors sidebar via Teleport ── -->
+        <Teleport to="body">
+            <Transition
+                enter-active-class="transition-all duration-150 ease-out"
+                enter-from-class="opacity-0 translate-x-1"
+                enter-to-class="opacity-100 translate-x-0"
+                leave-active-class="transition-all duration-100 ease-in"
+                leave-from-class="opacity-100 translate-x-0"
+                leave-to-class="opacity-0 translate-x-1"
+            >
+                <div
+                    v-if="collapsed && hoveredId && hoveredLabel"
+                    class="fixed pointer-events-none flex items-center"
+                    :style="{
+                        top:    tooltipY + 'px',
+                        left:   tooltipX + 'px',
+                        zIndex: 99999,
+                        transform: 'translateY(-50%)',
+                    }"
+                >
+                    <!-- Flèche pointant à gauche -->
+                    <span class="flex-shrink-0 w-0 h-0
+                                 border-t-[5px] border-t-transparent
+                                 border-b-[5px] border-b-transparent
+                                 border-r-[6px]"
+                          style="border-right-color: #7B74F0;" />
+                    <!-- Bulle -->
+                    <span class="px-3 py-1.5 rounded-xl text-xs font-semibold text-white
+                                 shadow-xl shadow-primary-500/40 whitespace-nowrap select-none"
+                          style="background: linear-gradient(135deg, #7B74F0, #9189f5);">
+                        {{ hoveredLabel }}
+                    </span>
+                </div>
+            </Transition>
+        </Teleport>
     </aside>
 </template>
 
@@ -696,6 +775,43 @@ const isActive = (item: NavItem) => {
 const isParentActive = (item: NavItem) => currentMenu.value?.id === item.id;
 
 const isActiveChild = (item: NavItem) => currentSubItem.value?.id === item.id;
+
+// ── Tooltip collapsed — position fixed via getBoundingClientRect ─────────────
+const hoveredId  = ref<string | null>(null);
+const hoveredEl  = ref<HTMLElement | null>(null);
+const tooltipX   = ref(0);
+const tooltipY   = ref(0);
+
+// ── Flyout collapsed — panneau sous-menus en position fixed ──────────────────
+const flyoutId = ref<string | null>(null);
+const flyoutEl = ref<HTMLElement | null>(null);
+const flyoutX  = ref(0);
+const flyoutY  = ref(0);
+
+// Calcule la position chaque frame quand un item est survolé
+let tooltipRaf = 0;
+const updateTooltipPos = () => {
+    if (hoveredEl.value) {
+        const r   = hoveredEl.value.getBoundingClientRect();
+        tooltipX.value = r.right + 10;
+        tooltipY.value = r.top + r.height / 2;
+    }
+    if (hoveredId.value) tooltipRaf = requestAnimationFrame(updateTooltipPos);
+};
+watch(hoveredId, (id) => {
+    cancelAnimationFrame(tooltipRaf);
+    if (id && hoveredEl.value) {
+        updateTooltipPos();
+    }
+});
+onUnmounted(() => cancelAnimationFrame(tooltipRaf));
+
+// Label de l'item actuellement survolé
+const hoveredLabel = computed<string>(() => {
+    if (!hoveredId.value) return '';
+    const flat = navItems.value.flatMap(i => i.children ? [i, ...i.children] : [i]);
+    return flat.find(i => i.id === hoveredId.value)?.label ?? '';
+});
 </script>
 
 <style scoped>

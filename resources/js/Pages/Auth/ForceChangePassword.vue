@@ -1,7 +1,7 @@
 <template>
     <GuestLayout>
         <!-- Alerte forcé -->
-        <div class="mb-6 flex items-start gap-3 px-4 py-3.5 rounded-lg border"
+        <div class="mb-6 flex items-start gap-3 px-4 py-3.5 rounded-xl border"
              :style="alertStyle">
             <svg class="w-5 h-5 flex-shrink-0 mt-0.5" style="color:#f59e0b" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -18,7 +18,7 @@
         </div>
 
         <!-- Identité -->
-        <div class="mb-6 flex items-center gap-3 px-4 py-3 rounded-lg"
+        <div class="mb-6 flex items-center gap-3 px-4 py-3 rounded-xl"
              :style="{ background: isDark ? 'rgba(255,255,255,0.04)' : 'rgba(0,0,0,0.03)', border: isDark ? '1px solid rgba(255,255,255,0.07)' : '1px solid rgba(0,0,0,0.07)' }">
             <div class="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold text-white flex-shrink-0"
                  style="background: linear-gradient(135deg,#9189f5,#6660d4)">
@@ -73,7 +73,7 @@
                            :type="showPwd ? 'text' : 'password'"
                            placeholder="••••••••••"
                            required
-                           class="w-full pl-10 pr-12 py-3 rounded-lg text-sm outline-none transition-all focus:ring-2 focus:ring-primary-500"
+                           class="w-full pl-10 pr-12 py-3 rounded-xl text-sm outline-none transition-all focus:ring-2 focus:ring-primary-500"
                            :class="form.errors.password ? 'ring-2 ring-red-500' : ''"
                            :style="inputStyle"/>
                     <button type="button" @click="showPwd = !showPwd"
@@ -117,7 +117,7 @@
                            :type="showConf ? 'text' : 'password'"
                            placeholder="••••••••••"
                            required
-                           class="w-full pl-10 pr-12 py-3 rounded-lg text-sm outline-none transition-all focus:ring-2 focus:ring-primary-500"
+                           class="w-full pl-10 pr-12 py-3 rounded-xl text-sm outline-none transition-all focus:ring-2 focus:ring-primary-500"
                            :class="confirmRing"
                            :style="inputStyle"/>
                     <button type="button" @click="showConf = !showConf"
@@ -153,7 +153,7 @@
             <!-- Submit -->
             <button type="submit"
                     :disabled="form.processing || !canSubmit"
-                    class="w-full py-3.5 px-4 rounded-lg font-semibold text-sm text-white transition-all flex items-center justify-center gap-2
+                    class="w-full py-3.5 px-4 rounded-xl font-semibold text-sm text-white transition-all flex items-center justify-center gap-2
                            hover:opacity-90 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed"
                     style="background:linear-gradient(135deg,#9189f5,#6660d4);box-shadow:0 4px 18px rgba(123,116,240,0.35)">
                 <svg v-if="form.processing" class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">

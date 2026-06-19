@@ -19,7 +19,7 @@
                        bg-white dark:bg-gray-800/60 px-4 py-3 flex items-center gap-3
                        hover:border-primary-400 dark:hover:border-primary-500 hover:shadow-md transition-all duration-200"
             >
-                <div class="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 text-white text-sm font-bold"
+                <div class="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 text-white text-sm font-bold"
                      :style="{ backgroundColor: avatarColor(cls.class_name) }">
                     {{ cls.class_name?.[0]?.toUpperCase() }}
                 </div>
@@ -92,7 +92,7 @@
             <template #actions="{ row }">
                 <div class="flex items-center justify-end gap-1.5">
                     <button title="Voir les détails" @click="openDetails(row as any)"
-                            class="p-1.5 rounded-lg transition-all duration-150
+                            class="p-1.5 rounded-xl transition-all duration-150
                                    text-white bg-violet-500 hover:bg-violet-600
                                    shadow-sm shadow-violet-200 dark:shadow-violet-900/40">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -102,7 +102,7 @@
                     </button>
                     <Link :href="`/chat?receiver_id=${(row as any).id_encoded}`"
                        title="Envoyer un message"
-                       class="p-1.5 rounded-lg transition-all duration-150
+                       class="p-1.5 rounded-xl transition-all duration-150
                               text-white bg-violet-500 hover:bg-violet-600
                               shadow-sm shadow-violet-200 dark:shadow-violet-900/40">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

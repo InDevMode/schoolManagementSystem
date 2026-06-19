@@ -55,7 +55,7 @@
 
                 <!-- Logo + Nom de l'école -->
                 <div class="flex items-center gap-3 mb-10">
-                    <div class="w-11 h-11 rounded-lg flex items-center justify-center shadow-lg"
+                    <div class="w-11 h-11 rounded-xl flex items-center justify-center shadow-lg"
                          style="background: rgba(255,255,255,0.2); backdrop-filter: blur(8px);">
                         <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -214,7 +214,7 @@
             <div class="absolute top-4 right-4 z-20">
                 <button
                     @click="toggleDark()"
-                    class="w-10 h-10 rounded-lg flex items-center justify-center transition-all duration-200 hover:scale-110"
+                    class="w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-200 hover:scale-110"
                     :style="toggleBtnStyle"
                     :aria-label="isDark ? 'Passer en mode clair' : 'Passer en mode sombre'"
                 >
@@ -235,7 +235,7 @@
 
             <!-- Logo mobile -->
             <div class="lg:hidden flex items-center gap-2 mb-8">
-                <div class="w-10 h-10 rounded-lg flex items-center justify-center"
+                <div class="w-10 h-10 rounded-xl flex items-center justify-center"
                      style="background: linear-gradient(135deg, #9189f5, #7B74F0);">
                     <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z"/>

@@ -34,7 +34,7 @@
                     <!-- Logo école -->
                     <div class="flex flex-col items-center gap-2">
                         <img v-if="settings?.logo_url" :src="settings.logo_url" alt="Logo" class="w-16 h-16 object-contain"/>
-                        <div v-else class="w-16 h-16 rounded-lg bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center">
+                        <div v-else class="w-16 h-16 rounded-xl bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center">
                             <svg class="w-8 h-8 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 14l9-5-9-5-9 5 9 5z M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/>
                             </svg>
@@ -56,7 +56,7 @@
 
                     <!-- Photo élève -->
                     <div class="flex flex-col items-center gap-1">
-                        <div class="w-20 h-24 rounded-lg border-2 border-gray-200 dark:border-gray-600 overflow-hidden bg-gray-50 dark:bg-gray-700">
+                        <div class="w-20 h-24 rounded-xl border-2 border-gray-200 dark:border-gray-600 overflow-hidden bg-gray-50 dark:bg-gray-700">
                             <img v-if="studentPhotoUrl" :src="studentPhotoUrl" alt="Photo" class="w-full h-full object-cover"/>
                             <div v-else class="w-full h-full flex items-center justify-center">
                                 <svg class="w-10 h-10 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -165,7 +165,7 @@
             </div>
 
             <!-- Résumé général -->
-            <div class="mx-8 mb-4 p-4 rounded-lg bg-primary-600 text-white">
+            <div class="mx-8 mb-4 p-4 rounded-xl bg-primary-600 text-white">
                 <div class="flex items-center justify-between flex-wrap gap-3">
                     <div>
                         <p class="text-xs opacity-80 uppercase tracking-wider">Moyenne Générale</p>
@@ -207,7 +207,7 @@
                     </div>
                     <div v-else class="flex gap-2">
                         <textarea v-model="comment" rows="2"
-                            class="flex-1 text-sm rounded-lg border border-gray-200 dark:border-gray-600 bg-transparent px-3 py-2 dark:text-gray-300"/>
+                            class="flex-1 text-sm rounded-xl border border-gray-200 dark:border-gray-600 bg-transparent px-3 py-2 dark:text-gray-300"/>
                         <div class="flex flex-col gap-1">
                             <AppButton size="sm" :loading="savingComment" @click="saveComment">OK</AppButton>
                             <AppButton size="sm" variant="ghost" @click="editingComment = false">Annuler</AppButton>

@@ -13,7 +13,7 @@
                     </span>
                 </p>
             </div>
-            <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-700 text-white text-xs font-semibold shadow w-fit">
+            <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-700 text-white text-xs font-semibold shadow w-fit">
                 <span class="w-2 h-2 rounded-full bg-green-300 animate-pulse inline-block"/>
                 {{ userRoleName }}
             </span>

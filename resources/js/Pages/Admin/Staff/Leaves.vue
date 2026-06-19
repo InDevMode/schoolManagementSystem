@@ -31,7 +31,7 @@
                 </div>
                 <button v-if="filters.status || filters.staff_id"
                     @click="filters = { status: '', staff_id: '' }; applyFilters()"
-                    class="flex-shrink-0 px-3 py-2 rounded-lg text-xs font-medium
+                    class="flex-shrink-0 px-3 py-2 rounded-xl text-xs font-medium
                            text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200
                            bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600
                            transition-colors whitespace-nowrap">
@@ -126,7 +126,7 @@
                             <!-- Durée -->
                             <td class="px-5 py-4 text-center">
                                 <span v-if="row.end_date"
-                                    class="inline-flex items-center justify-center px-2.5 py-1 rounded-lg text-xs font-bold
+                                    class="inline-flex items-center justify-center px-2.5 py-1 rounded-xl text-xs font-bold
                                            bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
                                     {{ computeDays(row.start_date, row.end_date) }} j.
                                 </span>
@@ -147,7 +147,7 @@
                                     <!-- Approuver + Rejeter uniquement si en attente -->
                                     <template v-if="row.status === 'pending'">
                                         <button
-                                            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold
+                                            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold
                                                    transition-all duration-150 text-white
                                                    bg-emerald-500 hover:bg-emerald-600 active:bg-emerald-700
                                                    shadow-sm shadow-emerald-200 dark:shadow-emerald-900/40"
@@ -159,7 +159,7 @@
                                             Approuver
                                         </button>
                                         <button
-                                            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold
+                                            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold
                                                    transition-all duration-150 text-white
                                                    bg-orange-500 hover:bg-orange-600 active:bg-orange-700
                                                    shadow-sm shadow-orange-200 dark:shadow-orange-900/40"
@@ -174,7 +174,7 @@
 
                                     <!-- Note admin si déjà traité -->
                                     <button v-if="row.admin_note"
-                                        class="p-1.5 rounded-lg transition-all duration-150 text-white
+                                        class="p-1.5 rounded-xl transition-all duration-150 text-white
                                                bg-violet-500 hover:bg-violet-600 active:bg-violet-700
                                                shadow-sm shadow-violet-200 dark:shadow-violet-900/40"
                                         title="Voir la note"
@@ -186,7 +186,7 @@
 
                                     <!-- Supprimer -->
                                     <button
-                                        class="p-1.5 rounded-lg transition-all duration-150 text-white
+                                        class="p-1.5 rounded-xl transition-all duration-150 text-white
                                                bg-red-500 hover:bg-red-600 active:bg-red-700
                                                shadow-sm shadow-red-200 dark:shadow-red-900/40"
                                         title="Supprimer"
@@ -214,7 +214,7 @@
                         :disabled="!leaves.prev_page_url"
                         @click="leaves.prev_page_url && router.visit(leaves.prev_page_url, { preserveState: true })"
                         :class="[
-                            'w-8 h-8 rounded-lg flex items-center justify-center text-xs transition-colors',
+                            'w-8 h-8 rounded-xl flex items-center justify-center text-xs transition-colors',
                             leaves.prev_page_url
                                 ? 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'
                                 : 'text-gray-300 dark:text-gray-600 cursor-not-allowed',
@@ -229,7 +229,7 @@
                         <button
                             @click="link.url && router.visit(link.url, { preserveState: true })"
                             :class="[
-                                'w-8 h-8 rounded-lg flex items-center justify-center text-xs font-medium transition-colors',
+                                'w-8 h-8 rounded-xl flex items-center justify-center text-xs font-medium transition-colors',
                                 link.active
                                     ? 'bg-primary-600 text-white'
                                     : link.url
@@ -245,7 +245,7 @@
                         :disabled="!leaves.next_page_url"
                         @click="leaves.next_page_url && router.visit(leaves.next_page_url, { preserveState: true })"
                         :class="[
-                            'w-8 h-8 rounded-lg flex items-center justify-center text-xs transition-colors',
+                            'w-8 h-8 rounded-xl flex items-center justify-center text-xs transition-colors',
                             leaves.next_page_url
                                 ? 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'
                                 : 'text-gray-300 dark:text-gray-600 cursor-not-allowed',
@@ -297,7 +297,7 @@
             persistent>
             <div class="space-y-4">
                 <!-- Résumé de la demande -->
-                <div class="flex items-start gap-3 p-3 rounded-lg bg-gray-50 dark:bg-gray-700/40 border border-gray-200 dark:border-gray-600">
+                <div class="flex items-start gap-3 p-3 rounded-xl bg-gray-50 dark:bg-gray-700/40 border border-gray-200 dark:border-gray-600">
                     <div class="w-9 h-9 rounded-full flex-shrink-0 flex items-center justify-center text-xs font-bold text-white"
                         :style="{ background: avatarColor(approveTarget?.last_name ?? '') }">
                         {{ (approveTarget?.last_name?.[0] ?? '?').toUpperCase() }}
@@ -315,7 +315,7 @@
                 </div>
 
                 <!-- Message contextuel -->
-                <div :class="['flex items-start gap-2.5 p-3 rounded-lg text-xs', approveAction === 'approved'
+                <div :class="['flex items-start gap-2.5 p-3 rounded-xl text-xs', approveAction === 'approved'
                     ? 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-700/50'
                     : 'bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300 border border-red-200 dark:border-red-700/50']">
                     <svg class="w-4 h-4 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -357,7 +357,7 @@
         <!-- ── Modal : Supprimer ─────────────────────────────────────────── -->
         <AppModal v-model="showDelete" title="Supprimer la demande" size="sm" persistent>
             <div class="space-y-3">
-                <div class="flex items-center gap-3 p-3 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-700/50">
+                <div class="flex items-center gap-3 p-3 rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-700/50">
                     <div class="w-9 h-9 rounded-full bg-red-100 dark:bg-red-900/40 flex items-center justify-center flex-shrink-0">
                         <svg class="w-5 h-5 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
@@ -392,7 +392,7 @@
 
         <!-- ── Modal : Voir note admin ────────────────────────────────────── -->
         <AppModal v-model="showNote" title="Note administrative" size="sm">
-            <div class="p-3 rounded-lg bg-gray-50 dark:bg-gray-700/40 border border-gray-200 dark:border-gray-600">
+            <div class="p-3 rounded-xl bg-gray-50 dark:bg-gray-700/40 border border-gray-200 dark:border-gray-600">
                 <p class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
                     {{ noteTarget?.admin_note ?? '—' }}
                 </p>
