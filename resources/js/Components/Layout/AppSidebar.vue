@@ -95,7 +95,7 @@
             <!-- Logo + nom -->
             <Link :href="homeLink" class="flex items-center gap-2.5 flex-1 min-w-0">
                 <div class="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 shadow-md"
-                     style="background: linear-gradient(135deg, #9189f5, #7B74F0);">
+                     >
                     <img v-if="logoUrl" :src="logoUrl" alt="Logo" class="w-6 h-6 object-contain rounded" />
                     <svg v-else class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"

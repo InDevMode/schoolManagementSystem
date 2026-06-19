@@ -731,6 +731,11 @@ class UserController extends Controller
                 $setting->uai_number = trim($request->uai_number);
                 $setting->status = trim($request->status);
 
+                $uploadDir = public_path('upload/setting/');
+                if (!is_dir($uploadDir)) {
+                    mkdir($uploadDir, 0755, true);
+                }
+
                 if ($request->hasFile('favicon')) {
                     $file = $request->file('favicon');
                     $ext = $file->getClientOriginalExtension();
@@ -739,14 +744,14 @@ class UserController extends Controller
 
                     // Supprimer l'ancienne photo si elle existe
                     if (!empty($setting->favicon)) {
-                        $oldPath = base_path('upload/setting/' . $setting->favicon);
+                        $oldPath = public_path('upload/setting/' . $setting->favicon);
                         if (file_exists($oldPath)) {
                             unlink($oldPath);
                         }
                     }
 
                     // Déplacer la nouvelle photo
-                    $file->move(base_path('upload/setting/'), $fileName);
+                    $file->move($uploadDir, $fileName);
                     $setting->favicon = $fileName;
                 }
 
@@ -758,14 +763,14 @@ class UserController extends Controller
 
                     // Supprimer l'ancienne photo si elle existe
                     if (!empty($setting->logo)) {
-                        $oldPath = base_path('upload/setting/' . $setting->logo);
+                        $oldPath = public_path('upload/setting/' . $setting->logo);
                         if (file_exists($oldPath)) {
                             unlink($oldPath);
                         }
                     }
 
                     // Déplacer la nouvelle photo
-                    $file->move(base_path('upload/setting/'), $fileName);
+                    $file->move($uploadDir, $fileName);
                     $setting->logo = $fileName;
                 }
 

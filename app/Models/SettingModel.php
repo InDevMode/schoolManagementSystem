@@ -41,7 +41,7 @@ class SettingModel extends Model
 
     public function getFavicon(): string
     {
-        $path = base_path('upload/setting/' . $this->favicon);
+        $path = public_path('upload/setting/' . $this->favicon);
         if (!empty($this->favicon) && file_exists($path)) {
             return url('upload/setting/' . $this->favicon);
         }
@@ -51,7 +51,7 @@ class SettingModel extends Model
 
     public function getLogo(): string
     {
-        $path = base_path('upload/setting/' . $this->logo);
+        $path = public_path('upload/setting/' . $this->logo);
         if (!empty($this->logo) && file_exists($path)) {
             return url('upload/setting/' . $this->logo);
         }

@@ -240,7 +240,8 @@ const submitForm = () => {
     errorMsg.value   = '';
     submitting.value = true;
 
-    router.post('/admin/settings/setting_data', data, {
+    const url = props.isSchool ? '/admin/settings/setting_data' : '/superadmin/config/settings/save';
+    router.post(url, data, {
         preserveScroll: true,
         preserveState:  true,
         onSuccess: () => {

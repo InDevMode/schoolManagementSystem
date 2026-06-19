@@ -910,9 +910,9 @@ defineExpose({ clearSelection, selected, filteredRows, confirmDelete, confirmRes
                   </div>
                   <div>
                     <p class="text-sm font-medium text-gray-600 dark:text-gray-400">
-                      {{ search ? `Aucun r�sultat pour  ${search} ` : emptyText }}
+                      {{ search ? `Aucun résultat pour  ${search} ` : emptyText }}
                     </p>
-                    <p v-if="search && search.includes(',')" class="text-xs text-gray-400 mt-0.5">Tous les termes doivent correspondre simultan�ment</p>
+                    <p v-if="search && search.includes(',')" class="text-xs text-gray-400 mt-0.5">Tous les termes doivent correspondre simultanément</p>
                     <button v-if="search" @click="search = ''" class="mt-2 text-xs font-medium text-violet-600 dark:text-violet-400 hover:underline">
                       Effacer la recherche
                     </button>
@@ -921,7 +921,7 @@ defineExpose({ clearSelection, selected, filteredRows, confirmDelete, confirmRes
               </td>
             </tr>
           </template>
-          <!-- Lignes de donn�es -->
+          <!-- Lignes de données -->
           <template v-else>
             <tr v-for="(row, idx) in paginatedRows"
                 :key="rowKey ? String(row[rowKey]) : idx"
@@ -940,7 +940,7 @@ defineExpose({ clearSelection, selected, filteredRows, confirmDelete, confirmRes
                        class="w-4 h-4 rounded border-gray-300 dark:border-gray-600 cursor-pointer"
                        style="accent-color:#7c3aed"
                        @change="toggleRow(row, idx, $event as MouseEvent)"
-                       :aria-label="`S�lectionner la ligne ${idx + 1}`"/>
+                       :aria-label="`Sélectionner la ligne ${idx + 1}`"/>
               </td>
 
               <!-- Cellules -->
@@ -960,7 +960,7 @@ defineExpose({ clearSelection, selected, filteredRows, confirmDelete, confirmRes
                   <span class="text-xs">Enregistrement</span>
                 </div>
 
-                <!-- Input �dition inline -->
+                <!-- Input édition inline -->
                 <div v-else-if="editingCell && editingCell.rowIdx === idx && editingCell.key === col.key"
                      class="flex flex-col gap-1 min-w-[120px]">
                   <input v-model="editValue"
@@ -969,7 +969,7 @@ defineExpose({ clearSelection, selected, filteredRows, confirmDelete, confirmRes
                          :class="editError ? 'border-2 border-red-500' : 'border-2 border-violet-500 focus:ring-2 focus:ring-violet-300/30'"
                          @keydown="onEditKey" @blur="saveEdit"/>
                   <span v-if="editError" class="text-xs text-red-500 font-medium">{{ editError }}</span>
-                  <span class="text-[10px] text-gray-400"> valider  �chap annuler</span>
+                  <span class="text-[10px] text-gray-400"> valider  échap annuler</span>
                 </div>
 
                 <!-- Affichage normal -->

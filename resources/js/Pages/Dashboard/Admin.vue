@@ -20,42 +20,51 @@
             </span>
         </div>
 
-        <!-- ══ KPI ROW — 4 grandes cards ═════════════════════════════════════ -->
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            <KpiCard label="Apprenants"     :value="totalStudent"  color="violet" href="/admin/student/list" trend="+12%" :trendPositive="true"
-                icon="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
-            <KpiCard label="Professeurs"    :value="totalTeacher" color="info"   href="/admin/teacher/list" trend="+3%" :trendPositive="true"
-                icon="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/>
-            <KpiCard label="Parents"        :value="totalParent"  color="amber"  href="/admin/parent/list" trend="+8%" :trendPositive="true"
-                icon="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
-            <KpiCard label="Contributions"  :value="totalFeesCollections" color="success" href="/admin/feescollections/collections/list"
-                sub="Dossiers enregistrés"
-                icon="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-        </div>
-
         <!-- ══ TABS ══════════════════════════════════════════════════════════ -->
         <DashTabs :tabs="tabs">
             <template #default="{ active }">
 
                 <!-- ── VUE GÉNÉRALE ───────────────────────────────────────── -->
-                <div v-show="active === 'overview'" class="space-y-5">
+                <div v-show="active === 'overview'" class="space-y-4">
 
-                    <!-- Ligne 1 : stats académiques — 5 mini cards bien alignées -->
+                    <!-- KPI utilisateurs avec breakdown H/F -->
+                    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+                        <KpiCard label="Apprenants"      :value="totalStudent"         color="violet" href="/admin/student/list"
+                            trend="+12%" :trendPositive="true"
+                            :genderMale="totalStudentMale" :genderFemale="totalStudentFemale"
+                            icon="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+                        <KpiCard label="Professeurs"     :value="totalTeacher"         color="info"   href="/admin/teacher/list"
+                            trend="+3%" :trendPositive="true"
+                            :genderMale="totalTeacherMale" :genderFemale="totalTeacherFemale"
+                            icon="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/>
+                        <KpiCard label="Parents"         :value="totalParent"          color="amber"  href="/admin/parent/list"
+                            trend="+8%" :trendPositive="true"
+                            :genderMale="totalParentMale" :genderFemale="totalParentFemale"
+                            icon="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                        <KpiCard label="Administrateurs" :value="totalAdmin"           color="danger" href="/admin/admin/list"
+                            :genderMale="totalAdminMale" :genderFemale="totalAdminFemale"
+                            icon="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                        <KpiCard label="Contributions"   :value="totalFeesCollections" color="success" href="/admin/feescollections/collections/list"
+                            sub="Dossiers enregistrés"
+                            icon="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </div>
+
+                    <!-- Ligne stats académiques -->
                     <div>
-                        <h3 class="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2.5 px-0.5">Académique</h3>
-                        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
-                            <MiniCard label="Administrateurs" :value="totalAdmin"    icon="shield"                  color="slate"   href="/admin/admin/list"/>
-                            <MiniCard label="Classes"          :value="totalClass"   icon="building-library"        color="sky"     href="/admin/class/list"/>
-                            <MiniCard label="Matières"         :value="totalSubject" icon="book-open"               color="teal"    href="/admin/subject/list"/>
-                            <MiniCard label="Sessions examen"  :value="totalExam"    icon="clipboard-document-list" color="orange"  href="/admin/examinations/period/list"/>
-                            <MiniCard label="Devoirs"          :value="totalHomework" icon="pencil"                 color="rose"    href="/admin/practicalworks/homework/list"/>
+                        <h3 class="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2 px-0.5">Académique</h3>
+                        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5">
+                            <MiniCard label="Classes"         :value="totalClass"    icon="building-library"        color="sky"    href="/admin/class/list"/>
+                            <MiniCard label="Matières"        :value="totalSubject"  icon="book-open"               color="teal"   href="/admin/subject/list"/>
+                            <MiniCard label="Sessions examen" :value="totalExam"     icon="clipboard-document-list" color="orange" href="/admin/examinations/period/list"/>
+                            <MiniCard label="Devoirs"         :value="totalHomework" icon="pencil"                  color="rose"   href="/admin/practicalworks/homework/list"/>
+                            <MiniCard label="Travaux"         :value="totalWork ?? 0" icon="document-text"          color="violet" href="/admin/practicalworks/list"/>
                         </div>
                     </div>
 
-                    <!-- Ligne 2 : alertes — 4 cards avec indicateurs -->
+                    <!-- Alertes & actions -->
                     <div>
-                        <h3 class="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2.5 px-0.5">Alertes & actions</h3>
-                        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
+                        <h3 class="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2 px-0.5">Alertes & actions</h3>
+                        <div class="grid grid-cols-2 lg:grid-cols-4 gap-2.5">
                             <AlertCard label="Personnel actif"     :value="totalStaff ?? 0"          icon="user-group"    variant="default" href="/admin/staff/list"/>
                             <AlertCard label="Congés en attente"   :value="totalPendingLeaves ?? 0"  icon="calendar-days" variant="warning" href="/admin/staff/leaves/list"/>
                             <AlertCard label="Évals à valider"     :value="totalOpenEvals ?? 0"      icon="pencil-square" variant="danger"  href="/admin/evaluations/grades/pending"/>
@@ -63,38 +72,10 @@
                         </div>
                     </div>
 
-                    <!-- Ligne 3 : Charts -->
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                        <div class="card p-5">
-                            <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-1">Apprenants par sexe</h3>
-                            <p class="text-xs text-gray-400 mb-3">Répartition garçons / filles</p>
-                            <ApexDonut
-                                :series="[totalStudentMale ?? Math.round(totalStudent * 0.55), totalStudentFemale ?? Math.round(totalStudent * 0.45)]"
-                                :labels="['Garçons', 'Filles']"
-                                :colors="['#7C3AED', '#F472B6']"
-                                center-label="Total"
-                                :center-value="totalStudent"
-                                :height="200"
-                            />
-                        </div>
-                        <div class="lg:col-span-2 card p-5">
-                            <div class="flex items-center justify-between mb-4">
-                                <h3 class="text-sm font-semibold text-gray-900 dark:text-white">Répartition utilisateurs</h3>
-                            </div>
-                            <ApexBar
-                                :series="userDistSeries"
-                                :categories="['Apprenants','Professeurs','Parents','Admins']"
-                                :colors="['#7C3AED','#3B82F6','#F59E0B','#EF4444']"
-                                :height="200"
-                                horizontal
-                            />
-                        </div>
-                    </div>
-
-                    <!-- Ligne 4 : Présences badges -->
+                    <!-- Présences du jour -->
                     <div>
-                        <h3 class="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2.5 px-0.5">Présences du jour</h3>
-                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        <h3 class="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2 px-0.5">Présences du jour</h3>
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
                             <AttendanceBadge label="Présents"     :value="totalAttendanceStudentPresent"  color="success" icon="user-check"/>
                             <AttendanceBadge label="En retard"    :value="totalAttendanceStudentLate"     color="warning" icon="clock"/>
                             <AttendanceBadge label="Absents"      :value="totalAttendanceStudentAbsent"   color="danger"  icon="user-minus"/>
@@ -102,8 +83,37 @@
                         </div>
                     </div>
 
-                    <!-- Ligne 5 : Événements + congés -->
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                    <!-- Événements + congés -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-3">
+
+                    <!-- Ligne 2 : Charts -->
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-3">
+                        <div class="card p-4">
+                            <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-0.5">Apprenants par sexe</h3>
+                            <p class="text-xs text-gray-400 mb-2">Répartition garçons / filles</p>
+                            <ApexDonut
+                                :series="[totalStudentMale ?? 0, totalStudentFemale ?? 0]"
+                                :labels="['Garçons', 'Filles']"
+                                :colors="['#7C3AED', '#F472B6']"
+                                center-label="Total"
+                                :center-value="totalStudent"
+                                :height="160"
+                            />
+                        </div>
+                        <div class="lg:col-span-2 card p-4">
+                            <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">Répartition utilisateurs</h3>
+                            <ApexBar
+                                :series="userDistSeries"
+                                :categories="['Apprenants','Professeurs','Parents','Admins']"
+                                :colors="['#7C3AED','#3B82F6','#F59E0B','#EF4444']"
+                                :height="160"
+                                horizontal
+                            />
+                        </div>
+                    </div>
+
+                    <!-- Événements + congés -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-3">
                         <div class="card p-0 overflow-hidden">
                             <div class="flex items-center justify-between px-4 py-3 border-b border-gray-100 dark:border-gray-700">
                                 <h3 class="text-sm font-semibold text-gray-900 dark:text-white">Prochains événements</h3>
@@ -164,22 +174,23 @@
                         <AttendanceBadge label="Demi-journée" :value="totalAttendanceStudentHalfDay"  color="info"    icon="calendar-days"/>
                     </div>
 
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                        <div class="card p-5">
-                            <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-4">Évolution mensuelle</h3>
-                            <ApexArea :series="attendanceSeries" :categories="months" :colors="['#10B981','#F59E0B','#EF4444','#3B82F6']" :height="220"/>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-3">
+                        <div class="card p-4">
+                            <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">Évolution mensuelle</h3>
+                            <ApexArea :series="attendanceSeries" :categories="months" :colors="['#10B981','#F59E0B','#EF4444','#3B82F6']" :height="160"/>
                         </div>
-                        <div class="card p-5">
-                            <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-4">Taux de présence</h3>
-                            <ApexRadial :series="attendanceRadial" :labels="['Présents','Retards','Absents','Demi-j.']" :colors="['#10B981','#F59E0B','#EF4444','#3B82F6']" :height="220"/>
+                        <div class="card p-4">
+                            <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">Taux de présence</h3>
+                            <ApexRadial :series="attendanceRadial" :labels="['Présents','Retards','Absents','Demi-j.']" :colors="['#10B981','#F59E0B','#EF4444','#3B82F6']" :height="160"/>
                         </div>
                     </div>
 
-                    <div class="card p-5">
-                        <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-4">Progression par mois</h3>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div class="card p-4">
+                        <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">Rapport mensuel (présents)</h3>
+                        <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
                             <ProgressBar v-for="(m, i) in months" :key="m" :label="m"
-                                :value="attendanceMonthData[i] ?? 0" :max="totalStudent || 1"
+                                :value="(attendanceByMonth as any)?.present?.[i] ?? 0"
+                                :max="totalStudent || 1"
                                 :color="['success','info','violet','warning','primary','amber','success','info','violet','warning','primary','amber'][i] as any"
                             />
                         </div>
@@ -199,34 +210,34 @@
                         <KpiCard label="Bulletins brouillon":value="totalDraftBulletins ?? 0" color="danger" href="/admin/bulletins/list" icon="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
                     </div>
 
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                        <div class="card p-5">
-                            <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-4">Statuts évaluations</h3>
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-3">
+                        <div class="card p-4">
+                            <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">Statuts évaluations</h3>
                             <ApexDonut
                                 :series="[totalOpenEvals ?? 2, totalPendingGrades ?? 3, totalDraftBulletins ?? 1, 5]"
                                 :labels="['Ouvertes','À valider','Brouillon','Validées']"
                                 :colors="['#3B82F6','#F59E0B','#7C3AED','#10B981']"
-                                :height="200"
+                                :height="160"
                             />
                         </div>
-                        <div class="lg:col-span-2 card p-5">
-                            <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-4">Évaluations par mois</h3>
+                        <div class="lg:col-span-2 card p-4">
+                            <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">Évaluations par mois</h3>
                             <ApexBar
                                 :series="evalMonthSeries"
                                 :categories="months"
                                 :colors="['#7C3AED','#3B82F6']"
-                                :height="200"
+                                :height="160"
                                 stacked
                             />
                         </div>
                     </div>
 
-                    <div class="card p-5">
-                        <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-4">Progression bulletins</h3>
-                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                            <ProgressBar label="Bulletins générés"    :value="totalDraftBulletins ?? 0" :max="totalStudent || 1" color="violet" />
+                    <div class="card p-4">
+                        <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">Progression bulletins</h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <ProgressBar label="Bulletins générés"    :value="totalDraftBulletins ?? 0"     :max="totalStudent || 1" color="violet" />
                             <ProgressBar label="Bulletins publiés"    :value="totalPublishedBulletins ?? 0" :max="totalStudent || 1" color="success" />
-                            <ProgressBar label="Devoirs assignés"     :value="totalHomework ?? 0" :max="totalStudent || 1" color="warning" />
+                            <ProgressBar label="Devoirs assignés"     :value="totalHomework ?? 0"           :max="totalStudent || 1" color="warning" />
                         </div>
                     </div>
                 </div>
@@ -243,13 +254,13 @@
                         <KpiCard label="Événements prévus" :value="totalUpcomingEvents ?? 0" color="info" href="/admin/staff/events/list" icon="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
                         <KpiCard label="Total professeurs" :value="totalTeacher" color="success" href="/admin/teacher/list" icon="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/>
                     </div>
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                        <div class="card p-5">
-                            <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-4">Congés en cours</h3>
-                            <div v-if="!currentLeaves?.length" class="flex items-center justify-center h-32 text-xs text-gray-400">Aucun congé en cours</div>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-3">
+                        <div class="card p-4">
+                            <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">Congés en cours</h3>
+                            <div v-if="!currentLeaves?.length" class="flex items-center justify-center h-24 text-xs text-gray-400">Aucun congé en cours</div>
                             <div v-else class="space-y-2">
-                                <div v-for="leave in currentLeaves.slice(0,8)" :key="leave.id"
-                                    class="flex items-center gap-3 p-2.5 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700/30">
+                                <div v-for="leave in currentLeaves.slice(0,6)" :key="leave.id"
+                                    class="flex items-center gap-3 p-2 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700/30">
                                     <div class="w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center text-white text-xs font-bold"
                                         :style="{ background: leave.color ?? '#6366f1' }">
                                         {{ ((leave.last_name ?? leave.name ?? '?')[0]).toUpperCase() }}
@@ -262,13 +273,13 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="card p-5">
-                            <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-4">Personnel vs Apprenants</h3>
+                        <div class="card p-4">
+                            <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">Personnel vs Apprenants</h3>
                             <ApexDonut
                                 :series="[totalTeacher, totalStaff ?? 0, totalAdmin]"
                                 :labels="['Professeurs','Personnel','Admins']"
                                 :colors="['#3B82F6','#10B981','#EF4444']"
-                                :height="200"
+                                :height="160"
                             />
                         </div>
                     </div>
@@ -286,12 +297,12 @@
                         <KpiCard label="Devoirs assignés"  :value="totalHomework ?? 0"      color="info"   icon="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
                         <KpiCard label="Taux collecte"     :value="feesRate + '%'"           color="amber"  icon="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2z"/>
                     </div>
-                    <div class="card p-5">
-                        <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-4">Évolution des contributions (12 mois)</h3>
-                        <ApexArea :series="feesAreaSeries" :categories="months" :colors="['#7C3AED','#10B981']" :height="240"/>
+                    <div class="card p-4">
+                        <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">Évolution des contributions (12 mois)</h3>
+                        <ApexArea :series="feesAreaSeries" :categories="months" :colors="['#7C3AED','#10B981']" :height="160"/>
                     </div>
-                    <div class="card p-5">
-                        <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-4">Progression de collecte</h3>
+                    <div class="card p-4">
+                        <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">Progression de collecte</h3>
                         <div class="space-y-3">
                             <ProgressBar label="Dossiers actifs / Total apprenants" :value="totalFeesCollections" :max="totalStudent || 1" color="violet" />
                             <ProgressBar label="Règlements aujourd'hui" :value="totalFeesCollectionsToday ?? 0" :max="(totalFeesCollections || 1)" color="success" />
@@ -337,9 +348,14 @@ const props = defineProps<{
     totalFeesCollectionsToday?: number; totalHomework?: number; totalWork?: number; totalAttendance?: number;
     totalAttendanceStudentPresent: number; totalAttendanceStudentLate: number;
     totalAttendanceStudentAbsent: number; totalAttendanceStudentHalfDay: number;
-    totalStaff?: number; totalPendingLeaves?: number; totalOpenEvals?: number; totalDraftBulletins?: number;
-    totalPublishedBulletins?: number; totalUpcomingEvents?: number;
+    totalStaff?: number; totalPendingLeaves?: number; totalPendingGrades?: number;
+    totalOpenEvals?: number; totalDraftBulletins?: number; totalPublishedBulletins?: number;
+    totalUpcomingEvents?: number;
     totalStudentMale?: number; totalStudentFemale?: number;
+    totalTeacherMale?: number; totalTeacherFemale?: number;
+    totalParentMale?: number; totalParentFemale?: number;
+    totalAdminMale?: number; totalAdminFemale?: number;
+    attendanceByMonth?: { present: number[]; late: number[]; absent: number[]; halfday: number[] };
     currentLeaves?: any[]; upcomingEvents?: any[]; calendarEvents?: any[]; currentPeriod?: any;
     [key: string]: unknown;
 }>();
@@ -352,20 +368,36 @@ const financePeriod    = ref('month');
 
 const tabs = [
     { key: 'overview',   label: 'Vue générale',  icon: 'chart-bar' },
-    { key: 'attendance', label: 'Présences',      icon: 'user-check',  badge: props.totalAttendanceStudentAbsent },
+    { key: 'attendance', label: 'Présences',      icon: 'user-check',   badge: props.totalAttendanceStudentAbsent },
     { key: 'academic',   label: 'Académique',     icon: 'academic-cap', badge: (props.totalPendingGrades as number ?? 0) + (props.totalDraftBulletins ?? 0) || undefined },
-    { key: 'hr',         label: 'RH',             icon: 'user-group',  badge: props.totalPendingLeaves },
+    { key: 'hr',         label: 'RH',             icon: 'user-group',   badge: props.totalPendingLeaves },
     { key: 'finance',    label: 'Contributions',  icon: 'banknotes' },
 ];
 
 const userDistSeries = [{ name: 'Utilisateurs', data: [props.totalStudent, props.totalTeacher, props.totalParent, props.totalAdmin] }];
-const totalAtt = computed(() => props.totalAttendanceStudentPresent + props.totalAttendanceStudentLate + props.totalAttendanceStudentAbsent + props.totalAttendanceStudentHalfDay || 1);
-const attendanceMonthData = Array(12).fill(0).map((_, i) => Math.max(0, props.totalAttendanceStudentPresent - i * 2));
-const attendanceSeries = [
-    { name: 'Présents',     data: Array(12).fill(0).map((_, i) => Math.max(0, props.totalAttendanceStudentPresent - i * 2)) },
-    { name: 'Retards',      data: Array(12).fill(0).map((_, i) => Math.max(0, props.totalAttendanceStudentLate + i)) },
-    { name: 'Absents',      data: Array(12).fill(0).map((_, i) => Math.max(0, props.totalAttendanceStudentAbsent + i)) },
-];
+
+// ── Attendance — données réelles par mois ─────────────────────────────────────
+const attendanceSeries = computed(() => {
+    const att = props.attendanceByMonth;
+    if (att && att.present?.length === 12) {
+        return [
+            { name: 'Présents',     data: att.present },
+            { name: 'Retards',      data: att.late },
+            { name: 'Absents',      data: att.absent },
+            { name: 'Demi-journée', data: att.halfday },
+        ];
+    }
+    return [
+        { name: 'Présents',     data: Array(12).fill(props.totalAttendanceStudentPresent) },
+        { name: 'Retards',      data: Array(12).fill(props.totalAttendanceStudentLate) },
+        { name: 'Absents',      data: Array(12).fill(props.totalAttendanceStudentAbsent) },
+        { name: 'Demi-journée', data: Array(12).fill(props.totalAttendanceStudentHalfDay) },
+    ];
+});
+const totalAtt = computed(() =>
+    props.totalAttendanceStudentPresent + props.totalAttendanceStudentLate +
+    props.totalAttendanceStudentAbsent + props.totalAttendanceStudentHalfDay || 1
+);
 const attendanceRadial = computed(() => [
     Math.round(props.totalAttendanceStudentPresent / totalAtt.value * 100),
     Math.round(props.totalAttendanceStudentLate    / totalAtt.value * 100),
