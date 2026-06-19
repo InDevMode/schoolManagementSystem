@@ -381,8 +381,8 @@
                                 </a>
                             </div>
                         </div>
-                        <div class="card p-5">
-                            <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-4">Accès rapides</h3>
+                        <div class="card p-4">
+                            <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">Accès rapides</h3>
                             <div class="grid grid-cols-1 gap-2">
                                 <a v-for="link in quickLinks" :key="link.href" :href="link.href"
                                     class="flex items-center gap-3 p-3 rounded-xl border border-gray-100 dark:border-gray-700 hover:border-primary-300 dark:hover:border-primary-700 hover:shadow-sm transition-all">
@@ -446,6 +446,10 @@ const props = defineProps<{
     totalUpcomingEvents?: number; totalApprovedLeaves?: number;
     totalOpenEvals?: number; totalDraftBulletins?: number; totalPublishedBulletins?: number;
     totalStudentMale?: number; totalStudentFemale?: number;
+    totalTeacherMale?: number; totalTeacherFemale?: number;
+    totalParentMale?: number; totalParentFemale?: number;
+    totalAdminMale?: number; totalAdminFemale?: number;
+    attendanceByMonth?: { present: number[]; late: number[]; absent: number[]; halfday: number[] };
     topAverage?: number | null; lowAverage?: number | null; successRate?: number | null;
     staffRoleData?: Record<string, number>;
     currentLeaves?: any[]; upcomingEvents?: any[]; calendarEvents?: any[]; currentPeriod?: any;
@@ -469,18 +473,25 @@ const tabs = [
     { key: 'config',     label: 'Configuration',   icon: 'cog-6-tooth' },
 ];
 
-// ── Attendance ────────────────────────────────────────────────────────────────
-const attendanceMonthData = [
-    props.totalAttendanceStudentPresent, Math.round(props.totalAttendanceStudentPresent * 0.95),
-    Math.round(props.totalAttendanceStudentPresent * 0.88), Math.round(props.totalAttendanceStudentPresent * 0.92),
-    Math.round(props.totalAttendanceStudentPresent * 0.97), Math.round(props.totalAttendanceStudentPresent * 0.9),
-];
-const attendanceSeries = [
-    { name: 'Présents',     data: [props.totalAttendanceStudentPresent, ...Array(11).fill(0).map((_,i) => Math.max(0, props.totalAttendanceStudentPresent - i * 3))] },
-    { name: 'Retards',      data: [props.totalAttendanceStudentLate,    ...Array(11).fill(0).map((_,i) => Math.max(0, props.totalAttendanceStudentLate + i * 1))] },
-    { name: 'Absents',      data: [props.totalAttendanceStudentAbsent,  ...Array(11).fill(0).map((_,i) => Math.max(0, props.totalAttendanceStudentAbsent + i * 2))] },
-    { name: 'Demi-journée', data: [props.totalAttendanceStudentHalfDay, ...Array(11).fill(0).map((_,i) => Math.max(0, props.totalAttendanceStudentHalfDay - i * 1))] },
-];
+// ── Attendance — données réelles par mois depuis le serveur ───────────────────
+const attendanceSeries = computed(() => {
+    const att = props.attendanceByMonth;
+    if (att && att.present?.length === 12) {
+        return [
+            { name: 'Présents',     data: att.present },
+            { name: 'Retards',      data: att.late },
+            { name: 'Absents',      data: att.absent },
+            { name: 'Demi-journée', data: att.halfday },
+        ];
+    }
+    // Fallback si pas encore de données
+    return [
+        { name: 'Présents',     data: Array(12).fill(props.totalAttendanceStudentPresent) },
+        { name: 'Retards',      data: Array(12).fill(props.totalAttendanceStudentLate) },
+        { name: 'Absents',      data: Array(12).fill(props.totalAttendanceStudentAbsent) },
+        { name: 'Demi-journée', data: Array(12).fill(props.totalAttendanceStudentHalfDay) },
+    ];
+});
 const totalAtt = computed(() =>
     props.totalAttendanceStudentPresent + props.totalAttendanceStudentLate +
     props.totalAttendanceStudentAbsent + props.totalAttendanceStudentHalfDay || 1

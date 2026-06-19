@@ -321,11 +321,11 @@ const teacherOptions = computed(() =>
 );
 
 const columns = [
-    { key: 'class_name',   label: 'Classe',      sortable: true },
-    { key: 'teacher_name', label: 'Professeur',   sortable: true },
-    { key: 'status',       label: 'Statut',       sortable: true },
-    { key: 'created_by_name', label: 'Créé par',  sortable: false, visible: false },
-    { key: 'created_at',   label: 'Date création', sortable: true, visible: false,
+    { key: 'class_name',      label: 'Classe',        sortable: true  },
+    { key: 'teacher_name',    label: 'Professeur',     sortable: true  },
+    { key: 'status',          label: 'Statut',         sortable: true  },
+    { key: 'created_by_name', label: 'Créé par',       sortable: false },
+    { key: 'created_at',      label: 'Date création',  sortable: true,
       format: (v: unknown) => v ? new Date(v as string).toLocaleDateString('fr-FR') : '—' },
 ];
 

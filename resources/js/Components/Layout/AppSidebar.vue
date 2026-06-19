@@ -119,7 +119,7 @@
             <!-- ── Bouton collapse (desktop) — tout à droite dans le header ── -->
             <button
                 class="hidden lg:flex w-7 h-7 rounded-full items-center justify-center flex-shrink-0
-                       shadow-md transition-all duration-200 hover:scale-110 hover:shadow-lg ml-auto"
+                       shadow-md transition-all duration-200 hover:scale-110 hover:shadow-lg ml-10"
                 style="background: linear-gradient(135deg, #9189f5, #7B74F0);"
                 @click="$emit('toggle')"
                 :aria-label="collapsed ? 'Développer le menu' : 'Réduire le menu'"
@@ -238,22 +238,15 @@
                             if (!isParentActive(item)) (e.currentTarget as HTMLElement).style.background = 'linear-gradient(135deg, #7B74F0cc, #9189f5cc)';
                             if (collapsed) {
                                 hoveredId = item.id; hoveredEl = e.currentTarget as HTMLElement;
-                                // Ouvrir le flyout
-                                const r = (e.currentTarget as HTMLElement).getBoundingClientRect();
-                                flyoutId = item.id; flyoutEl = e.currentTarget as HTMLElement;
-                                flyoutX = r.right + 8;
-                                flyoutY = r.top;
                             }
                         }"
                         @mouseleave="(e) => {
                             if (!isParentActive(item)) (e.currentTarget as HTMLElement).style.background = '';
                             if (collapsed) {
                                 hoveredId = null; hoveredEl = null;
-                                // Délai pour permettre de bouger vers le flyout
-                                setTimeout(() => { if (flyoutId === item.id) flyoutId = null; }, 80);
                             }
                         }"
-                        @click="collapsed ? undefined : toggleMenu(item.id)"
+                        @click="collapsed ? toggleFlyout(item.id, $event) : toggleMenu(item.id)"
                     >
                         <!-- Icône -->
                         <span :class="[
@@ -347,7 +340,7 @@
                         </div>
                     </Transition>
 
-                    <!-- Flyout collapsed — rendu via Teleport pour échapper à overflow-hidden -->
+                    <!-- Flyout collapsed — rendu via Teleport, ouvert au CLIC uniquement -->
                     <Teleport v-if="collapsed" to="body">
                         <Transition
                             enter-active-class="transition-all duration-150 ease-out"
@@ -358,16 +351,14 @@
                             leave-to-class="opacity-0 translate-x-1"
                         >
                             <div
-                                v-if="flyoutId === item.id && flyoutEl"
-                                class="fixed w-52 bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700
+                                v-if="flyoutId === item.id"
+                                class="fixed w-56 bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700
                                        shadow-xl overflow-hidden"
                                 :style="{
                                     top:    flyoutY + 'px',
                                     left:   flyoutX + 'px',
                                     zIndex: 99998,
                                 }"
-                                @mouseenter="flyoutId = item.id"
-                                @mouseleave="flyoutId = null; flyoutEl = null"
                             >
                                 <!-- Header dégradé -->
                                 <div class="px-3 py-2.5 border-b border-gray-100 dark:border-gray-700"
@@ -391,7 +382,7 @@
                                             : ''"
                                         @mouseenter="e => !isActiveChild(child) && ((e.currentTarget as HTMLElement).style.background = 'linear-gradient(135deg, #7B74F0cc, #9189f5cc)')"
                                         @mouseleave="e => !isActiveChild(child) && ((e.currentTarget as HTMLElement).style.background = '')"
-                                        @click="flyoutId = null; flyoutEl = null"
+                                        @click="flyoutId = null"
                                     >
                                         <span :class="[
                                             'w-5 h-5 rounded-md flex items-center justify-center flex-shrink-0',
@@ -453,7 +444,7 @@
                         @click="toggleDark()"
                         :title="isDark ? 'Mode clair' : 'Mode sombre'"
                     >
-                        <svg v-if="isDark" class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg v-if="isDark" class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                   d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
                         </svg>
@@ -469,7 +460,7 @@
         <!-- ── Profil utilisateur ── -->
         <div ref="sidebarProfileRef" class="px-3 pb-4 flex-shrink-0 relative">
 
-            <!-- Dropdown profil — s'ouvre vers le haut -->
+            <!-- Dropdown profil sidebar ouverte — s'ouvre vers le haut, dans le flux normal -->
             <Transition
                 enter-active-class="transition duration-150 ease-out"
                 enter-from-class="opacity-0 translate-y-2"
@@ -547,12 +538,12 @@
                 collapsed ? 'justify-center' : '',
                 profileOpen ? 'bg-gray-100 dark:bg-gray-800' : '',
             ]"
-                    @click="profileOpen = !profileOpen"
+                    @click="toggleProfile($event)"
             >
                 <img
                     :src="avatarUrl"
                     :alt="user?.name"
-                    class="w-9 h-9 rounded-full object-cover ring-2 ring-primary-200 dark:ring-primary-700 flex-shrink-0"
+                    class="w-7 h-7 rounded-full object-cover ring-2 ring-primary-200 dark:ring-primary-700 flex-shrink-0"
                 />
                 <Transition
                     enter-active-class="transition-all duration-200"
@@ -585,6 +576,85 @@
                 </Transition>
             </button>
         </div>
+
+        <!-- ── Dropdown profil collapsed — Teleport vers body pour échapper au clipping ── -->
+        <Teleport to="body">
+            <Transition
+                enter-active-class="transition-all duration-150 ease-out"
+                enter-from-class="opacity-0 translate-x-1"
+                enter-to-class="opacity-100 translate-x-0"
+                leave-active-class="transition-all duration-100 ease-in"
+                leave-from-class="opacity-100 translate-x-0"
+                leave-to-class="opacity-0 translate-x-1"
+            >
+                <div
+                    v-if="profileOpen && collapsed"
+                    class="fixed w-64 bg-white dark:bg-gray-800 rounded-2xl
+                           border border-gray-100 dark:border-gray-700
+                           shadow-xl overflow-hidden"
+                    :style="{
+                        bottom:  profilePanelY + 'px',
+                        left:    profilePanelX + 'px',
+                        zIndex:  99997,
+                    }"
+                >
+                    <!-- En-tête dégradé -->
+                    <div class="px-4 py-3.5"
+                         style="background: linear-gradient(135deg, #7B74F0, #9189f5);">
+                        <div class="flex items-center gap-3">
+                            <img :src="avatarUrl" :alt="user?.name"
+                                 class="w-10 h-10 rounded-full object-cover ring-2 ring-white/40 flex-shrink-0"/>
+                            <div class="min-w-0">
+                                <p class="font-bold text-sm text-white truncate">
+                                    {{ user?.last_name }} {{ user?.name }}
+                                </p>
+                                <p class="text-xs text-white/80 font-medium mt-0.5">{{ roleLabel }}</p>
+                                <p class="text-xs text-white/60 truncate">{{ user?.email }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Liens profil -->
+                    <div class="py-1.5">
+                        <Link v-for="link in profileLinks" :key="link.href" :href="link.href"
+                           class="flex items-center gap-3 px-4 py-2.5 text-sm
+                                  text-gray-700 dark:text-gray-300
+                                  hover:bg-gray-50 dark:hover:bg-gray-700/60
+                                  hover:text-primary-600 dark:hover:text-primary-400
+                                  transition-colors"
+                           @click="profileOpen = false">
+                            <span :class="[
+                                'w-7 h-7 rounded-xl flex items-center justify-center flex-shrink-0',
+                                link.icon === 'user'        ? 'bg-primary-100 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400' :
+                                link.icon === 'lock'        ? 'bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400' :
+                                link.icon === 'cog-6-tooth' ? 'bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400' :
+                                link.icon === 'shield-check'? 'bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400' :
+                                link.icon === 'key'         ? 'bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400' :
+                                                              'bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400'
+                            ]">
+                                <NavIcon :name="link.icon" class="w-3.5 h-3.5"/>
+                            </span>
+                            {{ link.label }}
+                        </Link>
+                    </div>
+                    <!-- Déconnexion -->
+                    <div class="border-t border-gray-100 dark:border-gray-700 py-1.5">
+                        <button
+                           @click="profileOpen = false; showLogoutConfirm = true"
+                           class="w-full flex items-center gap-3 px-4 py-2.5 text-sm
+                                  text-danger-600 dark:text-danger-400
+                                  hover:bg-danger-50 dark:hover:bg-danger-900/20 transition-colors">
+                            <span class="w-7 h-7 rounded-xl bg-danger-50 dark:bg-danger-900/20 flex items-center justify-center flex-shrink-0">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                          d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                                </svg>
+                            </span>
+                            Déconnexion
+                        </button>
+                    </div>
+                </div>
+            </Transition>
+        </Teleport>
 
         <!-- ── Tooltip global collapsed — rendu hors sidebar via Teleport ── -->
         <Teleport to="body">
@@ -742,6 +812,13 @@ const handleOutsideClick = (e: MouseEvent) => {
     if (sidebarProfileRef.value && !sidebarProfileRef.value.contains(e.target as Node)) {
         profileOpen.value = false;
     }
+    // Fermer le flyout si clic en dehors
+    if (flyoutId.value) {
+        const target = e.target as HTMLElement;
+        if (!target.closest('[data-flyout]') && !target.closest('aside')) {
+            flyoutId.value = null;
+        }
+    }
 };
 onMounted(()  => document.addEventListener('mousedown', handleOutsideClick));
 onUnmounted(() => document.removeEventListener('mousedown', handleOutsideClick));
@@ -756,6 +833,11 @@ watch(currentMenu, (menu) => {
 // Fermer les sous-menus quand on collapse
 watch(() => props.collapsed, (val) => {
     if (val) openMenus.value.clear();
+    // Fermer flyout et profil collapsed si on déplie
+    if (!val) {
+        flyoutId.value  = null;
+        profileOpen.value = false;
+    }
 });
 
 const toggleMenu = (id: string) => {
@@ -787,6 +869,35 @@ const flyoutId = ref<string | null>(null);
 const flyoutEl = ref<HTMLElement | null>(null);
 const flyoutX  = ref(0);
 const flyoutY  = ref(0);
+
+// Ouvrir/fermer le flyout au clic (position calculée depuis le bouton)
+const toggleFlyout = (itemId: string, e: MouseEvent) => {
+    if (flyoutId.value === itemId) {
+        flyoutId.value = null;
+        return;
+    }
+    const btn = e.currentTarget as HTMLElement;
+    const r   = btn.getBoundingClientRect();
+    flyoutX.value = r.right + 8;
+    flyoutY.value = r.top;
+    flyoutId.value = itemId;
+    flyoutEl.value = btn;
+};
+
+// ── Profil collapsed — position fixed ────────────────────────────────────────
+const profilePanelX = ref(0);
+const profilePanelY = ref(0);
+
+const toggleProfile = (e: MouseEvent) => {
+    profileOpen.value = !profileOpen.value;
+    if (profileOpen.value && props.collapsed) {
+        const btn = e.currentTarget as HTMLElement;
+        const r   = btn.getBoundingClientRect();
+        profilePanelX.value = r.right + 8;
+        // On calcule depuis le bas de la fenêtre pour "bottom"
+        profilePanelY.value = window.innerHeight - r.bottom;
+    }
+};
 
 // Calcule la position chaque frame quand un item est survolé
 let tooltipRaf = 0;
