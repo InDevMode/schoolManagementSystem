@@ -141,23 +141,27 @@
                         <AttendanceBadge label="Demi-journée" :value="totalByAttendanceTypeStudentHalfDay  ?? 0" color="info"    icon="calendar-days"/>
                     </div>
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                        <div class="card p-5">
-                            <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-4">Taux de présence</h3>
+                        <div class="card p-4">
+                            <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">Taux de présence</h3>
                             <ApexRadial
                                 :series="attendanceRadial"
-                                :labels="['Présent','Retard','Absent','Demi-j.']"
+                                :labels="['Présent','En retard','Absent','Demi-j.']"
                                 :colors="['#10B981','#F59E0B','#EF4444','#3B82F6']"
-                                :height="240"
+                                :height="150"
                             />
                         </div>
-                        <div class="card p-5">
-                            <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-4">Présences par mois</h3>
-                            <ApexBar
-                                :series="attSeries"
-                                :categories="months"
-                                :colors="['#10B981','#F59E0B','#EF4444']"
-                                :height="240"
-                            />
+                        <div class="card p-4">
+                            <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">Présences par mois</h3>
+                            <div class="overflow-x-auto">
+                                <div style="min-width: 280px;">
+                                    <ApexBar
+                                        :series="attSeries"
+                                        :categories="months"
+                                        :colors="['#10B981','#F59E0B','#EF4444','#3B82F6']"
+                                        :height="150"
+                                    />
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -176,7 +180,7 @@
                                 :series="[{ name: 'Moyenne', data: myBulletins.map(b => Number(b.average ?? 0)) }]"
                                 :categories="myBulletins.map(b => b.period_name ?? '—')"
                                 :colors="['#7C3AED']"
-                                :height="200"
+                                :height="150"
                             />
                         </div>
                         <!-- Liste -->
@@ -223,7 +227,7 @@
                                     :colors="['#10B981','#F3F4F6']"
                                     :center-label="'Payé'"
                                     :center-value="paymentProgress + '%'"
-                                    :height="200"
+                                    :height="150"
                                 />
                             </div>
                         </div>
@@ -281,7 +285,7 @@ const feesPeriod = ref('month');
 const tabs = [
     { key: 'overview',   label: 'Vue générale',    icon: 'chart-bar' },
     { key: 'attendance', label: 'Présences',        icon: 'user-check' },
-    { key: 'bulletins',  label: 'Bulletins',        icon: 'document-text', badge: props.myBulletins?.length },
+    { key: 'bulletins',  label: 'Académique',       icon: 'academic-cap', badge: props.myBulletins?.length },
     { key: 'fees',       label: 'Contributions',    icon: 'banknotes' },
 ];
 
@@ -302,11 +306,12 @@ const attendanceRadial = computed(() => [
     Math.round((props.totalByAttendanceTypeStudentAbsent   ?? 0) / totalAtt.value * 100),
     Math.round((props.totalByAttendanceTypeStudentHalfDay  ?? 0) / totalAtt.value * 100),
 ]);
-const attSeries = [
-    { name: 'Présent',   data: Array(12).fill(0).map((_, i) => Math.max(0, (props.totalByAttendanceTypeStudentPresent ?? 0) - i)) },
-    { name: 'Retard',    data: Array(12).fill(0).map(() => props.totalByAttendanceTypeStudentLate ?? 0) },
-    { name: 'Absent',    data: Array(12).fill(0).map(() => props.totalByAttendanceTypeStudentAbsent ?? 0) },
-];
+const attSeries = computed(() => [
+    { name: 'Présent',      data: Array(12).fill(props.totalByAttendanceTypeStudentPresent ?? 0) },
+    { name: 'En retard',    data: Array(12).fill(props.totalByAttendanceTypeStudentLate ?? 0) },
+    { name: 'Absent',       data: Array(12).fill(props.totalByAttendanceTypeStudentAbsent ?? 0) },
+    { name: 'Demi-journée', data: Array(12).fill(props.totalByAttendanceTypeStudentHalfDay ?? 0) },
+]);
 
 const typeColors: Record<string, string> = { academic: '#3b82f6', cultural: '#8b5cf6', administrative: '#f59e0b', exam: '#ef4444', ceremony: '#10b981', trip: '#06b6d4' };
 const fmtDay = (d: string) => d ? new Date(d).getDate() : '';

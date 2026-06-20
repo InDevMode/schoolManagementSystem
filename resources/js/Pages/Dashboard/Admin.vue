@@ -4,7 +4,7 @@
         <!-- ══ HEADER ═══════════════════════════════════════════════════════ -->
         <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
             <div>
-                <h1 class="text-2xl font-black text-gray-900 dark:text-white tracking-tight">Vue d'ensemble système</h1>
+                <h1 class="text-2xl font-black text-gray-900 dark:text-white tracking-tight">Tableau de bord administrateur</h1>
                 <p class="text-sm text-gray-500 dark:text-gray-400 mt-1 flex items-center gap-2 flex-wrap">
                     <span>{{ today.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }) }}</span>
                     <span v-if="currentPeriod" class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-violet-50 dark:bg-violet-900/20 text-violet-600 dark:text-violet-400 text-xs font-semibold border border-violet-100 dark:border-violet-800">
@@ -13,10 +13,10 @@
                     </span>
                 </p>
             </div>
-            <span class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold shadow-lg shadow-violet-500/20 w-fit self-start"
-                  style="background: linear-gradient(135deg, #7B74F0, #9189f5);">
+            <span class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold shadow-lg shadow-blue-500/20 w-fit self-start"
+                  style="background: linear-gradient(135deg, #3B82F6, #60A5FA);">
                 <span class="w-2 h-2 rounded-full bg-green-300 animate-pulse inline-block flex-shrink-0"/>
-                <span class="text-white">Super Administrateur</span>
+                <span class="text-white">Administrateur</span>
             </span>
         </div>
 
@@ -94,7 +94,7 @@
                                 :colors="['#7C3AED', '#F472B6']"
                                 center-label="Total"
                                 :center-value="totalStudent"
-                                :height="160"
+                                :height="150"
                             />
                         </div>
                         <div class="lg:col-span-2 card p-4">
@@ -103,7 +103,7 @@
                                 :series="userDistSeries"
                                 :categories="['Apprenants','Professeurs','Parents','Admins']"
                                 :colors="['#7C3AED','#3B82F6','#F59E0B','#EF4444']"
-                                :height="160"
+                                :height="150"
                                 horizontal
                             />
                         </div>
@@ -176,13 +176,13 @@
                             <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">Évolution mensuelle</h3>
                             <div class="overflow-x-auto">
                                 <div style="min-width: 300px;">
-                                    <ApexArea :series="attendanceSeries" :categories="months" :colors="['#10B981','#F59E0B','#EF4444','#3B82F6']" :height="160"/>
+                                    <ApexArea :series="attendanceSeries" :categories="months" :colors="['#10B981','#F59E0B','#EF4444','#3B82F6']" :height="150"/>
                                 </div>
                             </div>
                         </div>
                         <div class="card p-4">
                             <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">Taux de présence</h3>
-                            <ApexRadial :series="attendanceRadial" :labels="['Présents','En retard','Absents','Demi-j.']" :colors="['#10B981','#F59E0B','#EF4444','#3B82F6']" :height="160"/>
+                            <ApexRadial :series="attendanceRadial" :labels="['Présents','En retard','Absents','Demi-j.']" :colors="['#10B981','#F59E0B','#EF4444','#3B82F6']" :height="150"/>
                         </div>
                     </div>
 
@@ -218,7 +218,7 @@
                                 :series="[totalOpenEvals ?? 2, totalPendingGrades ?? 3, totalDraftBulletins ?? 1, 5]"
                                 :labels="['Ouvertes','À valider','Brouillon','Validées']"
                                 :colors="['#3B82F6','#F59E0B','#7C3AED','#10B981']"
-                                :height="160"
+                                :height="150"
                             />
                         </div>
                         <div class="lg:col-span-2 card p-4">
@@ -227,7 +227,7 @@
                                 :series="evalMonthSeries"
                                 :categories="months"
                                 :colors="['#7C3AED','#3B82F6']"
-                                :height="160"
+                                :height="150"
                                 stacked
                             />
                         </div>
@@ -280,7 +280,7 @@
                                 :series="[totalTeacher, totalStaff ?? 0, totalAdmin]"
                                 :labels="['Professeurs','Personnel','Admins']"
                                 :colors="['#3B82F6','#10B981','#EF4444']"
-                                :height="160"
+                                :height="150"
                             />
                         </div>
                     </div>
@@ -300,7 +300,7 @@
                     </div>
                     <div class="card p-4">
                         <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">Évolution des contributions (12 mois)</h3>
-                        <ApexArea :series="feesAreaSeries" :categories="months" :colors="['#7C3AED','#10B981']" :height="160"/>
+                        <ApexArea :series="feesAreaSeries" :categories="months" :colors="['#7C3AED','#10B981']" :height="150"/>
                     </div>
                     <div class="card p-4">
                         <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">Progression de collecte</h3>
@@ -341,7 +341,7 @@
                         </div>
                         <div class="card p-4">
                             <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">Activité communication</h3>
-                            <ApexBar :series="commSeries" :categories="months.slice(0, 6)" :colors="['#7C3AED','#3B82F6','#10B981']" :height="160"/>
+                            <ApexBar :series="commSeries" :categories="months.slice(0, 6)" :colors="['#7C3AED','#3B82F6','#10B981']" :height="150"/>
                         </div>
                     </div>
                 </div>

@@ -91,7 +91,7 @@
                                 :colors="['#7C3AED', '#3B82F6', '#F59E0B', '#EF4444', '#10B981']"
                                 center-label="Utilisateurs"
                                 :center-value="totalUser"
-                                :height="160"
+                                :height="150"
                             />
                         </div>
 
@@ -105,7 +105,7 @@
                                 :colors="['#7C3AED', '#F472B6']"
                                 center-label="Total"
                                 :center-value="totalStudent"
-                                :height="160"
+                                :height="150"
                             />
                         </div>
 
@@ -183,13 +183,13 @@
                             <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">Évolution mensuelle</h3>
                             <div class="overflow-x-auto">
                                 <div style="min-width: 320px;">
-                                    <ApexArea :series="attendanceSeries" :categories="months" :colors="['#10B981','#F59E0B','#EF4444','#3B82F6']" :height="160"/>
+                                    <ApexArea :series="attendanceSeries" :categories="months" :colors="['#10B981','#F59E0B','#EF4444','#3B82F6']" :height="150"/>
                                 </div>
                             </div>
                         </div>
                         <div class="card p-4">
                             <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">Taux de présence</h3>
-                            <ApexRadial :series="attendanceRadial" :labels="['Présents','En retard','Absents','Demi-j.']" :colors="['#10B981','#F59E0B','#EF4444','#3B82F6']" :height="160"/>
+                            <ApexRadial :series="attendanceRadial" :labels="['Présents','En retard','Absents','Demi-j.']" :colors="['#10B981','#F59E0B','#EF4444','#3B82F6']" :height="150"/>
                         </div>
                     </div>
 
@@ -232,7 +232,7 @@
                             :series="evalTypeSeries"
                             :categories="['Interro', 'Devoir', 'Travail maison', 'Examen blanc']"
                             :colors="['#7C3AED','#3B82F6','#10B981','#F59E0B']"
-                            :height="160"
+                            :height="150"
                         />
                     </div>
 
@@ -295,7 +295,7 @@
                                 :series="staffRoleSeries"
                                 :labels="staffRoleLabels"
                                 :colors="['#7C3AED','#3B82F6','#10B981','#F59E0B','#EF4444','#06B6D4']"
-                                :height="160"
+                                :height="150"
                             />
                         </div>
                         <div class="card p-4">
@@ -341,7 +341,7 @@
                             :series="feesAreaSeries"
                             :categories="months"
                             :colors="['#7C3AED','#10B981']"
-                            :height="170"
+                            :height="150"
                         />
                     </div>
                 </div>
@@ -380,7 +380,7 @@
                                 :series="commSeries"
                                 :categories="months.slice(0, 6)"
                                 :colors="['#7C3AED','#3B82F6','#10B981']"
-                                :height="160"
+                                :height="150"
                             />
                         </div>
                     </div>

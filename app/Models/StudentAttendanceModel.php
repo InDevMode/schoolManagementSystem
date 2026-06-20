@@ -180,10 +180,20 @@ class StudentAttendanceModel extends Model
         return $q->count();
     }
 
+    /** Map int → string pour attendance_type */
+    private static function attTypeStr(int $type): string
+    {
+        return [1 => 'present', 2 => 'late', 3 => 'absent', 4 => 'half_day'][$type] ?? 'present';
+    }
+
     public static function getTotalAttendanceTypeStudentBySchool(int $attendanceType, ?int $schoolId = null)
     {
+        $typeStr = self::attTypeStr($attendanceType);
         $q = StudentAttendanceModel::join('users', 'users.id', '=', 'attendances.student_id')
-            ->where('attendances.attendance_type', $attendanceType)
+            ->where(function($q2) use ($attendanceType, $typeStr) {
+                $q2->where('attendances.attendance_type', $typeStr)
+                   ->orWhere('attendances.attendance_type', $attendanceType);
+            })
             ->where('attendances.is_delete', 0)
             ->where('users.is_delete', 0)
             ->where('users.user_type', 3);
@@ -203,14 +213,22 @@ class StudentAttendanceModel extends Model
 
     public static function getTotalAttendanceTypeStudent(int $attendanceType)
     {
-        return StudentAttendanceModel::where('attendances.attendance_type', '=', $attendanceType)
+        $typeStr = self::attTypeStr($attendanceType);
+        return StudentAttendanceModel::where(function($q) use ($attendanceType, $typeStr) {
+                $q->where('attendances.attendance_type', $typeStr)
+                  ->orWhere('attendances.attendance_type', $attendanceType);
+            })
             ->where('attendances.is_delete', '=', 0)
             ->count();
     }
 
     public static function getTotalByAttendanceTypeStudent(int $attendanceType, $student_ids)
     {
-        return StudentAttendanceModel::where('attendances.attendance_type', '=', $attendanceType)
+        $typeStr = self::attTypeStr($attendanceType);
+        return StudentAttendanceModel::where(function($q) use ($attendanceType, $typeStr) {
+                $q->where('attendances.attendance_type', $typeStr)
+                  ->orWhere('attendances.attendance_type', $attendanceType);
+            })
             ->whereIn('attendances.student_id', $student_ids)
             ->where('attendances.is_delete', '=', 0)
             ->count();
@@ -218,7 +236,11 @@ class StudentAttendanceModel extends Model
 
     public static function getTotalAttendanceTypeByStudent(int $attendanceType, int $student_id)
     {
-        return StudentAttendanceModel::where('attendances.attendance_type', '=', $attendanceType)
+        $typeStr = self::attTypeStr($attendanceType);
+        return StudentAttendanceModel::where(function($q) use ($attendanceType, $typeStr) {
+                $q->where('attendances.attendance_type', $typeStr)
+                  ->orWhere('attendances.attendance_type', $attendanceType);
+            })
             ->where('attendances.student_id', '=', $student_id)
             ->where('attendances.is_delete', '=', 0)
             ->count();

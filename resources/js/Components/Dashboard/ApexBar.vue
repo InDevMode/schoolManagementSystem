@@ -19,7 +19,7 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-    height: 240,
+    height: 150,
     stacked: false,
     horizontal: false,
     colors: () => ['#7C3AED', '#3B82F6', '#10B981', '#F59E0B', '#EF4444'],
@@ -32,6 +32,7 @@ let chart: ApexCharts | null = null;
 const buildOptions = () => ({
     chart: {
         type: 'bar',
+        height: props.height,
         stacked: props.stacked,
         background: 'transparent',
         toolbar: { show: false },

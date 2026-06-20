@@ -309,6 +309,7 @@ class DashboardController extends Controller
     /**
      * Retourne les présences totales par école (pour le Super Admin).
      * Retourne un tableau [{school_name, present, late, absent, halfday}].
+     * Note: attendance_type est stocké en string ('present','late','absent','half_day').
      */
     private function getAttendanceBySchool(): array
     {
@@ -337,10 +338,39 @@ class DashboardController extends Controller
                     'halfday'     => 0,
                 ];
             }
-            $typeMap = [1 => 'present', 2 => 'late', 3 => 'absent', 4 => 'halfday'];
+            // attendance_type peut être string ('present','late','absent','half_day')
+            // ou entier (1,2,3,4) selon la version des données
+            $typeMap = [
+                'present'  => 'present',  1 => 'present',
+                'late'     => 'late',     2 => 'late',
+                'absent'   => 'absent',   3 => 'absent',
+                'half_day' => 'halfday',  4 => 'halfday',
+                'halfday'  => 'halfday',
+            ];
             $key = $typeMap[$row->type] ?? null;
             if ($key) {
                 $schools[$id][$key] = (int) $row->total;
+            }
+        }
+
+        // Inclure aussi les écoles sans présences (pour afficher 0)
+        $allSchools = DB::table('schools')
+            ->where('is_delete', 0)
+            ->where('status', 1)
+            ->select('id', 'school_name')
+            ->orderBy('school_name')
+            ->get();
+
+        foreach ($allSchools as $s) {
+            if (!isset($schools[$s->id])) {
+                $schools[$s->id] = [
+                    'school_id'   => $s->id,
+                    'school_name' => $s->school_name,
+                    'present'     => 0,
+                    'late'        => 0,
+                    'absent'      => 0,
+                    'halfday'     => 0,
+                ];
             }
         }
 
@@ -413,8 +443,7 @@ class DashboardController extends Controller
 
     /**
      * Retourne les présences par mois pour les 12 derniers mois.
-     * Retourne un tableau indexé [type => [jan..dec]].
-     * La table réelle est `attendances` avec colonnes `attendance_type` et `attendance_date`.
+     * La table `attendances` stocke attendance_type en string ('present','late','absent','half_day').
      */
     private function getAttendanceByMonth(?int $schoolId = null): array
     {
@@ -440,7 +469,14 @@ class DashboardController extends Controller
             'halfday'  => array_fill(1, 12, 0),
         ];
 
-        $typeMap = [1 => 'present', 2 => 'late', 3 => 'absent', 4 => 'halfday'];
+        // Support string ET entier
+        $typeMap = [
+            'present'  => 'present',  1 => 'present',
+            'late'     => 'late',     2 => 'late',
+            'absent'   => 'absent',   3 => 'absent',
+            'half_day' => 'halfday',  4 => 'halfday',
+            'halfday'  => 'halfday',
+        ];
 
         foreach ($rows as $row) {
             $key = $typeMap[$row->type] ?? null;
@@ -449,7 +485,6 @@ class DashboardController extends Controller
             }
         }
 
-        // Convertir en tableaux indexés 0–11 (Jan=0)
         return [
             'present' => array_values($result['present']),
             'late'    => array_values($result['late']),

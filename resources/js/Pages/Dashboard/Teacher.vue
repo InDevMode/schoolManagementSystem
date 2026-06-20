@@ -112,7 +112,7 @@
                             :series="evalStatusSeries"
                             :categories="['Interrogation','Devoir surveillé','Travail maison','Examen blanc']"
                             :colors="['#3B82F6','#F59E0B','#10B981','#EF4444']"
-                            :height="200"
+                            :height="150"
                             stacked
                         />
                     </div>
@@ -139,7 +139,7 @@
                                 :series="[8, 5, 10, 3]"
                                 :labels="['Interrogation','Devoir','Travail maison','Examen blanc']"
                                 :colors="['#3B82F6','#F59E0B','#10B981','#EF4444']"
-                                :height="200"
+                                :height="150"
                             />
                         </div>
                         <div class="card p-5">
@@ -148,7 +148,7 @@
                                 :series="[{ name: 'Évaluations', data: [2, 3, 5, 4, 6, 3, 7, 5, 4, 6, 5, 8] }]"
                                 :categories="months"
                                 :colors="['#7C3AED']"
-                                :height="200"
+                                :height="150"
                             />
                         </div>
                     </div>
@@ -172,7 +172,7 @@
                             :series="teacherAttSeries"
                             :categories="months"
                             :colors="['#10B981','#F59E0B','#EF4444']"
-                            :height="220"
+                            :height="150"
                         />
                     </div>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -182,7 +182,7 @@
                                 :series="teacherAttRadial"
                                 :labels="['Présents','Retards','Absents']"
                                 :colors="['#10B981','#F59E0B','#EF4444']"
-                                :height="220"
+                                :height="150"
                             />
                         </div>
                         <div class="card p-5">
@@ -214,7 +214,7 @@
                             :series="hwAreaSeries"
                             :categories="['S1','S2','S3','S4','S5','S6','S7','S8']"
                             :colors="['#7C3AED','#3B82F6']"
-                            :height="200"
+                            :height="150"
                         />
                     </div>
                     <div class="card p-5">

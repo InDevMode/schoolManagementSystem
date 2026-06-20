@@ -15,7 +15,7 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-    height: 240,
+    height: 150,
     colors: () => ['#7C3AED', '#3B82F6', '#10B981', '#F59E0B'],
 });
 
@@ -26,6 +26,7 @@ let chart: ApexCharts | null = null;
 const buildOptions = () => ({
     chart: {
         type: 'radialBar',
+        height: props.height,
         background: 'transparent',
         toolbar: { show: false },
         animations: { enabled: true, easing: 'easeinout', speed: 700 },

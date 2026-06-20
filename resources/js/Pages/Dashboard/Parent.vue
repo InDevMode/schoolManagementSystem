@@ -120,23 +120,27 @@
                         <AttendanceBadge label="Demi-journée" :value="totalByAttendanceTypeStudentHalfDay  ?? 0" color="info"    icon="calendar-days"/>
                     </div>
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                        <div class="card p-5">
-                            <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-4">Taux de présence</h3>
+                        <div class="card p-4">
+                            <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">Taux de présence</h3>
                             <ApexRadial
                                 :series="attendanceRadial"
-                                :labels="['Présent','Retard','Absent','Demi-j.']"
+                                :labels="['Présent','En retard','Absent','Demi-j.']"
                                 :colors="['#10B981','#F59E0B','#EF4444','#3B82F6']"
-                                :height="240"
+                                :height="150"
                             />
                         </div>
-                        <div class="card p-5">
-                            <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-4">Évolution mensuelle</h3>
-                            <ApexBar
-                                :series="attSeries"
-                                :categories="months"
-                                :colors="['#10B981','#F59E0B','#EF4444']"
-                                :height="240"
-                            />
+                        <div class="card p-4">
+                            <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">Évolution mensuelle</h3>
+                            <div class="overflow-x-auto">
+                                <div style="min-width: 280px;">
+                                    <ApexBar
+                                        :series="attSeries"
+                                        :categories="months"
+                                        :colors="['#10B981','#F59E0B','#EF4444','#3B82F6']"
+                                        :height="150"
+                                    />
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -163,6 +167,63 @@
                             <a :href="`/parent/my_student/feescollections/${child.student.id}`" class="ml-auto text-xs text-primary-600 hover:underline">Payer →</a>
                         </div>
                         <ProgressBar label="Paiement" :percent="feesProgress(child.student.id)" :value="0" color="success" />
+                    </div>
+                </div>
+
+                <!-- ── ACADÉMIQUE ───────────────────────────────────────────── -->
+                <div v-show="active === 'academic'" class="space-y-4">
+                    <h2 class="text-base font-semibold text-gray-900 dark:text-white">Bulletins scolaires de mes enfants</h2>
+
+                    <div v-if="!childrenBulletins?.length" class="card p-10 text-center border border-dashed border-gray-200 dark:border-gray-700">
+                        <p class="text-sm text-gray-400">Aucun enfant ou bulletin disponible.</p>
+                    </div>
+
+                    <div v-else class="space-y-4">
+                        <div v-for="child in childrenBulletins" :key="child.student.id" class="card p-5">
+                            <!-- En-tête enfant -->
+                            <div class="flex items-center gap-3 mb-4">
+                                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center font-bold text-white text-sm flex-shrink-0">
+                                    {{ (child.student.last_name?.[0] ?? child.student.name?.[0] ?? '?').toUpperCase() }}
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-sm font-semibold text-gray-900 dark:text-white">{{ child.student.last_name }} {{ child.student.name }}</p>
+                                    <p class="text-xs text-gray-400">{{ child.student.class_name }}</p>
+                                </div>
+                                <a :href="`/parent/my_student/${child.student.id}/bulletins`"
+                                    class="text-xs font-medium text-primary-600 dark:text-primary-400 hover:underline flex-shrink-0">
+                                    Tout voir →
+                                </a>
+                            </div>
+
+                            <!-- Bulletins -->
+                            <div v-if="child.bulletins?.length" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                                <a v-for="b in child.bulletins" :key="b.id"
+                                    :href="`/parent/my_student/${child.student.id}/bulletins/${b.id}`"
+                                    class="flex items-center gap-3 p-3 rounded-xl border border-gray-100 dark:border-gray-700 hover:border-primary-300 dark:hover:border-primary-700 hover:shadow-sm transition-all">
+                                    <div class="w-14 h-14 rounded-xl flex flex-col items-center justify-center flex-shrink-0"
+                                        :class="Number(b.average) >= 10
+                                            ? 'bg-gradient-to-br from-emerald-400 to-emerald-600'
+                                            : 'bg-gradient-to-br from-red-400 to-red-600'">
+                                        <span class="text-base font-black text-white">{{ b.average ? Number(b.average).toFixed(1) : '—' }}</span>
+                                        <span class="text-[9px] text-white/80">/20</span>
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <p class="text-xs font-semibold text-gray-700 dark:text-gray-200">{{ b.period_name }}</p>
+                                        <p class="text-xs text-gray-400 mt-0.5">{{ b.appreciation ?? '—' }}</p>
+                                        <p class="text-[10px] text-gray-400">
+                                            Rang {{ b.rank ? `${b.rank}/${b.total_students}` : '—' }}
+                                        </p>
+                                        <span :class="[
+                                            'inline-flex mt-1 text-[9px] font-bold px-1.5 py-0.5 rounded-full',
+                                            Number(b.average) >= 10
+                                                ? 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400'
+                                                : 'bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400'
+                                        ]">{{ Number(b.average) >= 10 ? 'Admis' : 'Non admis' }}</span>
+                                    </div>
+                                </a>
+                            </div>
+                            <p v-else class="text-xs text-gray-400 italic text-center py-4">Aucun bulletin publié pour le moment.</p>
+                        </div>
                     </div>
                 </div>
 
@@ -208,6 +269,7 @@ const feesPeriod = ref('month');
 const tabs = [
     { key: 'overview',   label: 'Vue générale',    icon: 'chart-bar' },
     { key: 'attendance', label: 'Présences',        icon: 'user-check' },
+    { key: 'academic',   label: 'Académique',       icon: 'academic-cap' },
     { key: 'fees',       label: 'Contributions',    icon: 'banknotes' },
 ];
 
@@ -221,11 +283,12 @@ const attendanceRadial = computed(() => [
     Math.round((props.totalByAttendanceTypeStudentAbsent   ?? 0) / totalAtt.value * 100),
     Math.round((props.totalByAttendanceTypeStudentHalfDay  ?? 0) / totalAtt.value * 100),
 ]);
-const attSeries = [
-    { name: 'Présent', data: Array(12).fill(props.totalByAttendanceTypeStudentPresent ?? 0) },
-    { name: 'Retard',  data: Array(12).fill(props.totalByAttendanceTypeStudentLate ?? 0) },
-    { name: 'Absent',  data: Array(12).fill(props.totalByAttendanceTypeStudentAbsent ?? 0) },
-];
+const attSeries = computed(() => [
+    { name: 'Présent',      data: Array(12).fill(props.totalByAttendanceTypeStudentPresent ?? 0) },
+    { name: 'En retard',    data: Array(12).fill(props.totalByAttendanceTypeStudentLate ?? 0) },
+    { name: 'Absent',       data: Array(12).fill(props.totalByAttendanceTypeStudentAbsent ?? 0) },
+    { name: 'Demi-journée', data: Array(12).fill(props.totalByAttendanceTypeStudentHalfDay ?? 0) },
+]);
 
 const feesProgress = (_studentId: number) => {
     const total = props.totalFeesCollectionsAmountStudents ?? 0;

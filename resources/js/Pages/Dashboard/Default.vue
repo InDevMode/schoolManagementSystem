@@ -75,7 +75,7 @@
                                 :series="overviewSeries"
                                 :labels="overviewLabels"
                                 :colors="['#7C3AED','#3B82F6','#10B981','#F59E0B','#EF4444']"
-                                :height="200"
+                                :height="150"
                             />
                         </div>
                         <div class="card p-5">
@@ -84,7 +84,7 @@
                                 :series="activitySeries"
                                 :categories="months"
                                 :colors="['#7C3AED','#10B981']"
-                                :height="200"
+                                :height="150"
                             />
                         </div>
                     </div>
@@ -108,7 +108,7 @@
                             :series="attendanceRadial"
                             :labels="['Présents','Retards','Absents','Demi-j.']"
                             :colors="['#10B981','#F59E0B','#EF4444','#3B82F6']"
-                            :height="220"
+                            :height="150"
                         />
                     </div>
                 </div>
