@@ -134,11 +134,11 @@
                 <!-- ── TAB : PRÉSENCES ───────────────────────────────────── -->
                 <div v-show="active === 'attendance'" class="space-y-4">
                     <div class="flex items-center justify-between">
-                        <h2 class="text-base font-semibold text-gray-900 dark:text-white">Statistiques de présence</h2>
+                        <h2 class="text-base font-semibold text-gray-900 dark:text-white">Statistiques de présence — Tous les apprenants</h2>
                         <PeriodFilter v-model="attendancePeriod" />
                     </div>
 
-                    <!-- Badges résumé -->
+                    <!-- Badges résumé global -->
                     <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
                         <AttendanceBadge label="Présents"     :value="totalAttendanceStudentPresent"  color="success" icon="user-check"/>
                         <AttendanceBadge label="En retard"    :value="totalAttendanceStudentLate"     color="warning" icon="clock"/>
@@ -146,38 +146,62 @@
                         <AttendanceBadge label="Demi-journée" :value="totalAttendanceStudentHalfDay"  color="info"    icon="calendar-days"/>
                     </div>
 
-                    <!-- Chart barres présences mensuel -->
-                    <div class="card p-4">
-                        <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">Évolution des présences</h3>
-                        <ApexBar
-                            :series="attendanceSeries"
-                            :categories="months"
-                            :colors="['#10B981','#F59E0B','#EF4444','#3B82F6']"
-                            :height="180"
-                        />
+                    <!-- Tableau par école -->
+                    <div v-if="attendanceBySchool?.length" class="card p-4">
+                        <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">Présences par école</h3>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm">
+                                <thead>
+                                    <tr class="border-b border-gray-100 dark:border-gray-700">
+                                        <th class="text-left py-2 pr-4 text-xs font-semibold text-gray-500 dark:text-gray-400">École</th>
+                                        <th class="text-right py-2 px-2 text-xs font-semibold text-emerald-600">Présents</th>
+                                        <th class="text-right py-2 px-2 text-xs font-semibold text-amber-600">Retards</th>
+                                        <th class="text-right py-2 px-2 text-xs font-semibold text-red-600">Absents</th>
+                                        <th class="text-right py-2 pl-2 text-xs font-semibold text-blue-600">Demi-j.</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-50 dark:divide-gray-700/50">
+                                    <tr v-for="school in attendanceBySchool" :key="school.school_id"
+                                        class="hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors">
+                                        <td class="py-2 pr-4 text-xs font-medium text-gray-700 dark:text-gray-300 truncate max-w-[200px]">{{ school.school_name }}</td>
+                                        <td class="py-2 px-2 text-right text-xs font-bold text-emerald-600">{{ school.present.toLocaleString('fr-FR') }}</td>
+                                        <td class="py-2 px-2 text-right text-xs font-bold text-amber-600">{{ school.late.toLocaleString('fr-FR') }}</td>
+                                        <td class="py-2 px-2 text-right text-xs font-bold text-red-600">{{ school.absent.toLocaleString('fr-FR') }}</td>
+                                        <td class="py-2 pl-2 text-right text-xs font-bold text-blue-600">{{ school.halfday.toLocaleString('fr-FR') }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div v-else class="card p-4 text-center text-xs text-gray-400 border border-dashed border-gray-200 dark:border-gray-700">
+                        Aucune donnée de présence par école disponible
                     </div>
 
-                    <!-- Radial chart taux + rapport réel -->
+                    <!-- Charts avec scroll horizontal sur mobile -->
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-3">
                         <div class="card p-4">
-                            <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">Taux par type</h3>
-                            <ApexRadial
-                                :series="attendanceRadial"
-                                :labels="['Présents','En retard','Absents','Demi-j.']"
-                                :colors="['#10B981','#F59E0B','#EF4444','#3B82F6']"
-                                :height="180"
-                            />
+                            <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">Évolution mensuelle</h3>
+                            <div class="overflow-x-auto">
+                                <div style="min-width: 320px;">
+                                    <ApexArea :series="attendanceSeries" :categories="months" :colors="['#10B981','#F59E0B','#EF4444','#3B82F6']" :height="160"/>
+                                </div>
+                            </div>
                         </div>
                         <div class="card p-4">
-                            <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">Rapport mensuel (présents)</h3>
-                            <div class="space-y-2 mt-1">
-                                <ProgressBar v-for="(m, i) in months" :key="m"
-                                    :label="m"
-                                    :value="(attendanceByMonth as any)?.present?.[i] ?? 0"
-                                    :max="totalStudent || 1"
-                                    :color="['success','info','violet','warning','primary','amber','success','info','violet','warning','primary','amber'][i] as any"
-                                />
-                            </div>
+                            <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">Taux de présence</h3>
+                            <ApexRadial :series="attendanceRadial" :labels="['Présents','En retard','Absents','Demi-j.']" :colors="['#10B981','#F59E0B','#EF4444','#3B82F6']" :height="160"/>
+                        </div>
+                    </div>
+
+                    <!-- Rapport mensuel présents avec scroll -->
+                    <div class="card p-4">
+                        <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">Rapport mensuel (présents)</h3>
+                        <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                            <ProgressBar v-for="(m, i) in months" :key="m" :label="m"
+                                :value="(attendanceByMonth as any)?.present?.[i] ?? 0"
+                                :max="totalAttendanceStudentPresent || 1"
+                                :color="['success','info','violet','warning','primary','amber','success','info','violet','warning','primary','amber'][i] as any"
+                            />
                         </div>
                     </div>
                 </div>
@@ -450,6 +474,7 @@ const props = defineProps<{
     totalParentMale?: number; totalParentFemale?: number;
     totalAdminMale?: number; totalAdminFemale?: number;
     attendanceByMonth?: { present: number[]; late: number[]; absent: number[]; halfday: number[] };
+    attendanceBySchool?: { school_id: number; school_name: string; present: number; late: number; absent: number; halfday: number }[];
     topAverage?: number | null; lowAverage?: number | null; successRate?: number | null;
     staffRoleData?: Record<string, number>;
     currentLeaves?: any[]; upcomingEvents?: any[]; calendarEvents?: any[]; currentPeriod?: any;
@@ -464,13 +489,13 @@ const hrPeriod         = ref('month');
 const financePeriod    = ref('month');
 
 const tabs = [
-    { key: 'overview',   label: 'Vue générale',   icon: 'chart-bar' },
-    { key: 'attendance', label: 'Présences',       icon: 'user-check',  badge: props.totalAttendanceStudentAbsent },
-    { key: 'academic',   label: 'Académique',      icon: 'academic-cap', badge: (props.totalPendingGrades ?? 0) + (props.totalDraftBulletins ?? 0) },
-    { key: 'hr',         label: 'RH',              icon: 'user-group',  badge: props.totalPendingLeaves },
-    { key: 'finance',    label: 'Contributions',   icon: 'banknotes' },
-    { key: 'comms',      label: 'Communication',   icon: 'megaphone' },
-    { key: 'config',     label: 'Configuration',   icon: 'cog-6-tooth' },
+    { key: 'overview',   label: 'Vue générale',       icon: 'chart-bar' },
+    { key: 'attendance', label: 'Présences',           icon: 'user-check',   badge: props.totalAttendanceStudentAbsent },
+    { key: 'academic',   label: 'Académique',          icon: 'academic-cap', badge: (props.totalPendingGrades ?? 0) + (props.totalDraftBulletins ?? 0) || undefined },
+    { key: 'hr',         label: 'Ressources humaines', icon: 'user-group',   badge: props.totalPendingLeaves },
+    { key: 'finance',    label: 'Contributions',       icon: 'banknotes' },
+    { key: 'comms',      label: 'Communication',       icon: 'megaphone' },
+    { key: 'config',     label: 'Configuration',       icon: 'cog-6-tooth' },
 ];
 
 // ── Attendance — données réelles par mois depuis le serveur ───────────────────

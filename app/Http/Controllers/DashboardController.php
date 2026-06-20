@@ -66,10 +66,11 @@ class DashboardController extends Controller
                 $data['totalHomework']             = HomeworkModel::getTotalHomework();
                 $data['totalWork']                 = WorkModel::getTotalWork();
                 $data['totalAttendance']           = StudentAttendanceModel::getTotalAttendance();
-                $data['totalAttendanceStudentPresent']  = StudentAttendanceModel::getTotalAttendanceTypeStudent(1);
-                $data['totalAttendanceStudentLate']     = StudentAttendanceModel::getTotalAttendanceTypeStudent(2);
-                $data['totalAttendanceStudentAbsent']   = StudentAttendanceModel::getTotalAttendanceTypeStudent(3);
-                $data['totalAttendanceStudentHalfDay']  = StudentAttendanceModel::getTotalAttendanceTypeStudent(4);
+                $data['totalAttendanceStudentPresent']  = StudentAttendanceModel::getTotalAttendanceTypeStudentBySchool(1);
+                $data['totalAttendanceStudentLate']     = StudentAttendanceModel::getTotalAttendanceTypeStudentBySchool(2);
+                $data['totalAttendanceStudentAbsent']   = StudentAttendanceModel::getTotalAttendanceTypeStudentBySchool(3);
+                $data['totalAttendanceStudentHalfDay']  = StudentAttendanceModel::getTotalAttendanceTypeStudentBySchool(4);
+                $data['attendanceBySchool']             = $this->safeStat(fn() => $this->getAttendanceBySchool(), []);
                 $data['totalWeek']             = WeekModel::getTotalWeek();
                 $data['totalClassTimetable']   = ClassTimetableModel::getTotalClassTimetable();
                 $data['totalRoles']            = \Spatie\Permission\Models\Role::count();
@@ -130,11 +131,11 @@ class DashboardController extends Controller
                 $data['totalClassTimetableStudent']= ClassTimetableModel::getTotalClassTimetableStudent();
                 $data['totalHomework']             = HomeworkModel::getTotalHomework();
                 $data['totalWork']                 = WorkModel::getTotalWork();
-                $data['totalAttendance']           = StudentAttendanceModel::getTotalAttendance();
-                $data['totalAttendanceStudentPresent']  = StudentAttendanceModel::getTotalAttendanceTypeStudent(1);
-                $data['totalAttendanceStudentLate']     = StudentAttendanceModel::getTotalAttendanceTypeStudent(2);
-                $data['totalAttendanceStudentAbsent']   = StudentAttendanceModel::getTotalAttendanceTypeStudent(3);
-                $data['totalAttendanceStudentHalfDay']  = StudentAttendanceModel::getTotalAttendanceTypeStudent(4);
+                $data['totalAttendance']           = StudentAttendanceModel::getTotalAttendanceBySchool($schoolId);
+                $data['totalAttendanceStudentPresent']  = StudentAttendanceModel::getTotalAttendanceTypeStudentBySchool(1, $schoolId);
+                $data['totalAttendanceStudentLate']     = StudentAttendanceModel::getTotalAttendanceTypeStudentBySchool(2, $schoolId);
+                $data['totalAttendanceStudentAbsent']   = StudentAttendanceModel::getTotalAttendanceTypeStudentBySchool(3, $schoolId);
+                $data['totalAttendanceStudentHalfDay']  = StudentAttendanceModel::getTotalAttendanceTypeStudentBySchool(4, $schoolId);
                 // ── Sexe apprenants ──
                 $data['totalStudentMale']   = $this->safeStat(fn() => DB::table('users')->where('user_type', 3)->where('is_delete', 0)->where('school_id', $schoolId)->where('gender', 'male')->count());
                 $data['totalStudentFemale'] = $this->safeStat(fn() => DB::table('users')->where('user_type', 3)->where('is_delete', 0)->where('school_id', $schoolId)->where('gender', 'female')->count());
@@ -306,7 +307,47 @@ class DashboardController extends Controller
     // ── Helpers ─────────────────────────────────────────────────────────────
 
     /**
-     * Compte les notes en attente de validation — même logique que GradeModel::getPendingValidation().
+     * Retourne les présences totales par école (pour le Super Admin).
+     * Retourne un tableau [{school_name, present, late, absent, halfday}].
+     */
+    private function getAttendanceBySchool(): array
+    {
+        $rows = DB::table('attendances')
+            ->join('users', 'users.id', '=', 'attendances.student_id')
+            ->join('schools', 'schools.id', '=', 'users.school_id')
+            ->where('attendances.is_delete', 0)
+            ->where('users.is_delete', 0)
+            ->where('users.user_type', 3)
+            ->where('schools.is_delete', 0)
+            ->selectRaw('schools.id as school_id, schools.school_name, attendances.attendance_type as type, COUNT(*) as total')
+            ->groupBy('schools.id', 'schools.school_name', 'attendances.attendance_type')
+            ->get();
+
+        // Regrouper par école
+        $schools = [];
+        foreach ($rows as $row) {
+            $id = $row->school_id;
+            if (!isset($schools[$id])) {
+                $schools[$id] = [
+                    'school_id'   => $id,
+                    'school_name' => $row->school_name,
+                    'present'     => 0,
+                    'late'        => 0,
+                    'absent'      => 0,
+                    'halfday'     => 0,
+                ];
+            }
+            $typeMap = [1 => 'present', 2 => 'late', 3 => 'absent', 4 => 'halfday'];
+            $key = $typeMap[$row->type] ?? null;
+            if ($key) {
+                $schools[$id][$key] = (int) $row->total;
+            }
+        }
+
+        return array_values($schools);
+    }
+
+    /**
      * Notes avec score saisi, non validées, évaluations non annulées.
      *
      * @param int|null $teacherId  Si fourni, filtre sur les évaluations de ce prof uniquement.
@@ -373,22 +414,23 @@ class DashboardController extends Controller
     /**
      * Retourne les présences par mois pour les 12 derniers mois.
      * Retourne un tableau indexé [type => [jan..dec]].
+     * La table réelle est `attendances` avec colonnes `attendance_type` et `attendance_date`.
      */
     private function getAttendanceByMonth(?int $schoolId = null): array
     {
         $year = date('Y');
-        $q = DB::table('student_attendance')
-            ->where('student_attendance.is_delete', 0)
-            ->whereYear('student_attendance.date', $year);
+        $q = DB::table('attendances')
+            ->where('attendances.is_delete', 0)
+            ->whereYear('attendances.attendance_date', $year);
 
         if ($schoolId !== null) {
-            $q->join('users', 'users.id', '=', 'student_attendance.student_id')
+            $q->join('users', 'users.id', '=', 'attendances.student_id')
               ->where('users.school_id', $schoolId)
               ->where('users.is_delete', 0);
         }
 
-        $rows = $q->selectRaw('type, MONTH(date) as month, COUNT(*) as total')
-                  ->groupBy('type', DB::raw('MONTH(date)'))
+        $rows = $q->selectRaw('attendances.attendance_type as type, MONTH(attendances.attendance_date) as month, COUNT(*) as total')
+                  ->groupBy('attendances.attendance_type', DB::raw('MONTH(attendances.attendance_date)'))
                   ->get();
 
         $result = [

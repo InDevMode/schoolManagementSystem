@@ -160,7 +160,7 @@
                 <!-- ── PRÉSENCES ───────────────────────────────────────────── -->
                 <div v-show="active === 'attendance'" class="space-y-4">
                     <div class="flex items-center justify-between">
-                        <h2 class="text-base font-semibold text-gray-900 dark:text-white">Statistiques de présence</h2>
+                        <h2 class="text-base font-semibold text-gray-900 dark:text-white">Statistiques de présence — Mon école</h2>
                         <PeriodFilter v-model="attendancePeriod" />
                     </div>
 
@@ -174,11 +174,15 @@
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-3">
                         <div class="card p-4">
                             <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">Évolution mensuelle</h3>
-                            <ApexArea :series="attendanceSeries" :categories="months" :colors="['#10B981','#F59E0B','#EF4444','#3B82F6']" :height="160"/>
+                            <div class="overflow-x-auto">
+                                <div style="min-width: 300px;">
+                                    <ApexArea :series="attendanceSeries" :categories="months" :colors="['#10B981','#F59E0B','#EF4444','#3B82F6']" :height="160"/>
+                                </div>
+                            </div>
                         </div>
                         <div class="card p-4">
                             <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">Taux de présence</h3>
-                            <ApexRadial :series="attendanceRadial" :labels="['Présents','Retards','Absents','Demi-j.']" :colors="['#10B981','#F59E0B','#EF4444','#3B82F6']" :height="160"/>
+                            <ApexRadial :series="attendanceRadial" :labels="['Présents','En retard','Absents','Demi-j.']" :colors="['#10B981','#F59E0B','#EF4444','#3B82F6']" :height="160"/>
                         </div>
                     </div>
 
@@ -187,7 +191,7 @@
                         <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
                             <ProgressBar v-for="(m, i) in months" :key="m" :label="m"
                                 :value="(attendanceByMonth as any)?.present?.[i] ?? 0"
-                                :max="totalStudent || 1"
+                                :max="totalAttendanceStudentPresent || 1"
                                 :color="['success','info','violet','warning','primary','amber','success','info','violet','warning','primary','amber'][i] as any"
                             />
                         </div>
@@ -307,6 +311,61 @@
                     </div>
                 </div>
 
+                <!-- ── COMMUNICATION ───────────────────────────────────────── -->
+                <div v-show="active === 'comms'" class="space-y-4">
+                    <h2 class="text-base font-semibold text-gray-900 dark:text-white">Communication & Tableaux d'affichage</h2>
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        <KpiCard label="Notices totales"   :value="totalNoticeBoard ?? 0"  color="violet" icon="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/>
+                        <KpiCard label="Devoirs assignés"  :value="totalHomework ?? 0"     color="info"   icon="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/>
+                        <KpiCard label="Travaux pratiques" :value="totalWork ?? 0"          color="success" icon="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                        <KpiCard label="Total présences"   :value="totalAttendance ?? 0"   color="warning" icon="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                    </div>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-3">
+                        <div class="card p-4">
+                            <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">Prochains événements</h3>
+                            <div v-if="!upcomingEvents?.length" class="text-center py-8 text-xs text-gray-400">Aucun événement</div>
+                            <div v-else class="space-y-2">
+                                <div v-for="ev in (upcomingEvents ?? []).slice(0, 6)" :key="ev.id"
+                                    class="flex items-center gap-3 p-2.5 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700/30">
+                                    <div class="flex-shrink-0 w-10 h-10 rounded-xl flex flex-col items-center justify-center text-white font-bold text-xs"
+                                        :style="{ background: typeColors[ev.event_type ?? ev.extendedProps?.type] ?? '#7B74F0' }">
+                                        <span class="text-base leading-none">{{ fmtDay(ev.event_date ?? ev.start) }}</span>
+                                        <span class="text-[9px] leading-none mt-0.5 uppercase">{{ fmtMonth(ev.event_date ?? ev.start) }}</span>
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <p class="text-xs font-semibold text-gray-900 dark:text-white truncate">{{ ev.title }}</p>
+                                        <p class="text-[10px] text-gray-400">{{ typeLabels[ev.event_type ?? ev.extendedProps?.type] ?? 'Événement' }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card p-4">
+                            <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">Activité communication</h3>
+                            <ApexBar :series="commSeries" :categories="months.slice(0, 6)" :colors="['#7C3AED','#3B82F6','#10B981']" :height="160"/>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ── CONFIGURATION ───────────────────────────────────────── -->
+                <div v-show="active === 'config'" class="space-y-4">
+                    <h2 class="text-base font-semibold text-gray-900 dark:text-white">Configuration — Mon école</h2>
+                    <div class="card p-4">
+                        <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">Accès rapides</h3>
+                        <div class="grid grid-cols-1 gap-2">
+                            <a v-for="link in adminQuickLinks" :key="link.href" :href="link.href"
+                                class="flex items-center gap-3 p-3 rounded-xl border border-gray-100 dark:border-gray-700 hover:border-primary-300 dark:hover:border-primary-700 hover:shadow-sm transition-all">
+                                <div class="w-8 h-8 rounded-xl bg-primary-50 dark:bg-primary-900/30 flex items-center justify-center flex-shrink-0">
+                                    <NavIcon :name="link.icon" class="w-4 h-4 text-primary-600 dark:text-primary-400" />
+                                </div>
+                                <span class="text-sm text-gray-700 dark:text-gray-300">{{ link.label }}</span>
+                                <svg class="ml-auto w-4 h-4 text-gray-300 dark:text-gray-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
             </template>
         </DashTabs>
 
@@ -335,6 +394,7 @@ import ApexDonut       from '@/Components/Dashboard/ApexDonut.vue';
 import ApexBar         from '@/Components/Dashboard/ApexBar.vue';
 import ApexArea        from '@/Components/Dashboard/ApexArea.vue';
 import ApexRadial      from '@/Components/Dashboard/ApexRadial.vue';
+import NavIcon         from '@/Components/Layout/NavIcon.vue';
 import { AppCalendar } from '@/Components/UI';
 import type { CalEvent } from '@/Components/UI';
 
@@ -342,7 +402,7 @@ const isDark = useDark();
 const props = defineProps<{
     totalUser: number; totalAdmin: number; totalTeacher: number; totalStudent: number; totalParent: number;
     totalClass: number; totalSubject: number; totalExam: number; totalFeesCollections: number;
-    totalFeesCollectionsToday?: number; totalHomework?: number; totalWork?: number; totalAttendance?: number;
+    totalFeesCollectionsToday?: number; totalHomework?: number; totalWork?: number; totalAttendance?: number; totalNoticeBoard?: number;
     totalAttendanceStudentPresent: number; totalAttendanceStudentLate: number;
     totalAttendanceStudentAbsent: number; totalAttendanceStudentHalfDay: number;
     totalStaff?: number; totalPendingLeaves?: number; totalPendingGrades?: number;
@@ -364,11 +424,13 @@ const hrPeriod         = ref('month');
 const financePeriod    = ref('month');
 
 const tabs = [
-    { key: 'overview',   label: 'Vue générale',  icon: 'chart-bar' },
-    { key: 'attendance', label: 'Présences',      icon: 'user-check',   badge: props.totalAttendanceStudentAbsent },
-    { key: 'academic',   label: 'Académique',     icon: 'academic-cap', badge: (props.totalPendingGrades as number ?? 0) + (props.totalDraftBulletins ?? 0) || undefined },
-    { key: 'hr',         label: 'RH',             icon: 'user-group',   badge: props.totalPendingLeaves },
-    { key: 'finance',    label: 'Contributions',  icon: 'banknotes' },
+    { key: 'overview',   label: 'Vue générale',       icon: 'chart-bar' },
+    { key: 'attendance', label: 'Présences',           icon: 'user-check',   badge: props.totalAttendanceStudentAbsent },
+    { key: 'academic',   label: 'Académique',          icon: 'academic-cap', badge: (props.totalPendingGrades as number ?? 0) + (props.totalDraftBulletins ?? 0) || undefined },
+    { key: 'hr',         label: 'Ressources humaines', icon: 'user-group',   badge: props.totalPendingLeaves },
+    { key: 'finance',    label: 'Contributions',       icon: 'banknotes' },
+    { key: 'comms',      label: 'Communication',       icon: 'megaphone' },
+    { key: 'config',     label: 'Configuration',       icon: 'cog-6-tooth' },
 ];
 
 const userDistSeries = [{ name: 'Utilisateurs', data: [props.totalStudent, props.totalTeacher, props.totalParent, props.totalAdmin] }];
@@ -415,6 +477,25 @@ const typeColors: Record<string, string> = { academic: '#3b82f6', cultural: '#8b
 const typeLabels: Record<string, string> = { academic: 'Académique', cultural: 'Culturel', administrative: 'Admin', exam: 'Examen', ceremony: 'Cérémonie', trip: 'Sortie' };
 const fmtDay   = (d: string) => d ? new Date(d).getDate() : '';
 const fmtMonth = (d: string) => d ? months[new Date(d).getMonth()] : '';
+const eventTypeColor = (type: string) => typeColors[type] ?? '#6366f1';
+const eventTypeLabel = (type: string) => typeLabels[type] ?? type ?? '—';
+
+// ── Communication ──────────────────────────────────────────────────────────────
+const commSeries = [
+    { name: 'Notices',  data: [5, 7, 3, 9, 6, 8] },
+    { name: 'Devoirs',  data: [8, 12, 10, 14, 9, 11] },
+    { name: 'Travaux',  data: [3, 5, 4, 6, 5, 7] },
+];
+
+// ── Quick links admin ──────────────────────────────────────────────────────────
+const adminQuickLinks = [
+    { href: '/admin/class/list',                     label: 'Gestion des classes',          icon: 'building-library' },
+    { href: '/admin/subject/list',                   label: 'Gestion des matières',         icon: 'book-open' },
+    { href: '/admin/examinations/period/list',       label: 'Sessions d\'examen',           icon: 'clipboard-document-list' },
+    { href: '/admin/feescollections/collections/list', label: 'Contributions scolaires',    icon: 'banknotes' },
+    { href: '/admin/staff/leaves/list',              label: 'Congés du personnel',          icon: 'calendar-days' },
+    { href: '/admin/bulletins/list',                 label: 'Bulletins scolaires',          icon: 'document-text' },
+];
 const calendarEventsFormatted = computed<CalEvent[]>(() => {
     if (props.calendarEvents?.length) {
         return (props.calendarEvents as any[]).map(ev => ({

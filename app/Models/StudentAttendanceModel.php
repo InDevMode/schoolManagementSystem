@@ -168,6 +168,31 @@ class StudentAttendanceModel extends Model
         return StudentAttendanceModel::where('attendances.is_delete', '=', 0)->count();
     }
 
+    public static function getTotalAttendanceBySchool(?int $schoolId = null)
+    {
+        $q = StudentAttendanceModel::join('users', 'users.id', '=', 'attendances.student_id')
+            ->where('attendances.is_delete', 0)
+            ->where('users.is_delete', 0)
+            ->where('users.user_type', 3);
+        if ($schoolId !== null) {
+            $q->where('users.school_id', $schoolId);
+        }
+        return $q->count();
+    }
+
+    public static function getTotalAttendanceTypeStudentBySchool(int $attendanceType, ?int $schoolId = null)
+    {
+        $q = StudentAttendanceModel::join('users', 'users.id', '=', 'attendances.student_id')
+            ->where('attendances.attendance_type', $attendanceType)
+            ->where('attendances.is_delete', 0)
+            ->where('users.is_delete', 0)
+            ->where('users.user_type', 3);
+        if ($schoolId !== null) {
+            $q->where('users.school_id', $schoolId);
+        }
+        return $q->count();
+    }
+
     public static function getTotalAttendanceStudent()
     {
         return StudentAttendanceModel::join('class', 'class.id', '=', 'attendances.class_id')
