@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
@@ -328,11 +329,29 @@ class RbacController extends Controller
             $role->syncPermissions($request->permissions);
             app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
-            // Notifier tous les utilisateurs qui ont ce rôle
+            // Invalider le cache et notifier tous les utilisateurs du rôle (sauf le super_admin connecté)
             try {
-                $usersWithRole = User::role($role->name)->get();
+                $currentUserId = Auth::id();
+                $usersWithRole  = User::role($role->name)->get();
+
                 foreach ($usersWithRole as $u) {
-                    $u->notify(new PermissionsChangedNotification());
+                    // Forcer le rechargement des permissions au prochain hit
+                    Cache::put("perm_refreshed_{$u->id}", true, now()->addHours(2));
+
+                    // Ne pas notifier le super_admin qui effectue le changement
+                    if ($u->id === $currentUserId) {
+                        continue;
+                    }
+
+                    // Anti-doublon : une seule notification non lue de ce type par fenêtre de 5 min
+                    $alreadyNotified = $u->unreadNotifications()
+                        ->where('type', PermissionsChangedNotification::class)
+                        ->where('created_at', '>=', now()->subMinutes(5))
+                        ->exists();
+
+                    if (!$alreadyNotified) {
+                        $u->notify(new PermissionsChangedNotification());
+                    }
                 }
             } catch (\Exception $notifEx) {
                 Log::warning('RBAC assignSync notification: ' . $notifEx->getMessage());
@@ -365,9 +384,19 @@ class RbacController extends Controller
             $user->syncPermissions($request->permissions);
             app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
-            // Notifier l'utilisateur concerné
+            // Forcer le rechargement des permissions au prochain hit
+            Cache::put("perm_refreshed_{$user->id}", true, now()->addHours(2));
+
+            // Notifier l'utilisateur ciblé (anti-doublon : une seule notif non lue par fenêtre de 5 min)
             try {
-                $user->notify(new PermissionsChangedNotification());
+                $alreadyNotified = $user->unreadNotifications()
+                    ->where('type', PermissionsChangedNotification::class)
+                    ->where('created_at', '>=', now()->subMinutes(5))
+                    ->exists();
+
+                if (!$alreadyNotified) {
+                    $user->notify(new PermissionsChangedNotification());
+                }
             } catch (\Exception $notifEx) {
                 Log::warning('RBAC assignUserSync notification: ' . $notifEx->getMessage());
             }

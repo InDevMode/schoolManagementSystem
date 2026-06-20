@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Inertia\Middleware;
 use Tighten\Ziggy\Ziggy;
 
@@ -20,8 +21,19 @@ class HandleInertiaRequests extends Middleware
         $user = $request->user();
 
         $userData = null;
+        $permissionsRefreshed = false;
         if ($user) {
             try {
+                // Si les permissions de cet utilisateur ont été modifiées par le super admin,
+                // on force Spatie à oublier son cache en mémoire pour ce cycle de requête
+                if (Cache::pull("perm_refreshed_{$user->id}")) {
+                    app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
+                    // Recharger les relations de permissions depuis la DB
+                    $user->unsetRelation('permissions');
+                    $user->unsetRelation('roles');
+                    $permissionsRefreshed = true;
+                }
+
                 $roles       = $user->getRoleNames()->toArray();
                 // getAllPermissions retourne rôle + directes, on filtre is_delete=0
                 $permissions = $user->getAllPermissions()
@@ -57,6 +69,7 @@ class HandleInertiaRequests extends Middleware
                 'roles'           => $roles,
                 'role_label'      => $roleLabel,
                 'permissions'     => $permissions,
+                'perm_refreshed'  => $permissionsRefreshed,
             ];
         }
 
@@ -83,9 +96,17 @@ class HandleInertiaRequests extends Middleware
                     // Admin / autres → école de l'utilisateur
                     $school = \App\Models\School::find($user->school_id);
                     if ($school) {
+                        // Si l'école n'a pas de logo propre, on utilise le logo global (settings id=1)
+                        $logoUrl = $school->getLogoUrl();
+                        $defaultUrl = url('upload/logo.png');
+                        if ($logoUrl === $defaultUrl) {
+                            $globalSetting = \App\Models\SettingModel::getSingle(1);
+                            $logoUrl = $globalSetting ? $globalSetting->getLogo() : $defaultUrl;
+                        }
+
                         $settings = [
                             'school_name'        => $school->school_name,
-                            'logo_url'           => $school->getLogoUrl(),
+                            'logo_url'           => $logoUrl,
                             'kkiapay_public_key' => $school->kkiapay_public_key ?? '',
                             'stripe_public_key'  => $school->stripe_public_key  ?? '',
                             'fedapay_public_key' => $school->fedapay_public_key ?? '',

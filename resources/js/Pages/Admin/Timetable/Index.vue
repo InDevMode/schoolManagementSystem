@@ -97,7 +97,7 @@
                             <p class="text-xs text-gray-400">/ semaine</p>
                         </div>
                         <!-- Actions en haut -->
-                        <div v-if="can('view.academics.timetable')" class="flex items-center gap-2 border-l border-gray-200 dark:border-gray-700 pl-3">
+                        <div v-if="can('action.timetable.manage')" class="flex items-center gap-2 border-l border-gray-200 dark:border-gray-700 pl-3">
                             <button
                                 v-if="activeCount > 0"
                                 type="button"
@@ -265,7 +265,7 @@
                 <!-- ── Actions bas ─────────────────────────────────────────── -->
                 <div class="flex items-center justify-between pt-4 border-t border-gray-100 dark:border-gray-700">
                     <button
-                        v-if="can('view.academics.timetable') && activeCount > 0"
+                        v-if="can('action.timetable.manage') && activeCount > 0"
                         type="button"
                         @click="clearAll"
                         class="flex items-center gap-1.5 px-4 py-2 text-sm font-semibold text-white bg-red-500 hover:bg-red-600 active:bg-red-700 rounded-xl transition-colors shadow-sm shadow-red-500/30"
@@ -276,7 +276,7 @@
                         Tout effacer
                     </button>
                     <div v-else/>
-                    <AppButton v-if="can('view.academics.timetable')" @click="saveTimetable" :loading="saving">
+                    <AppButton v-if="can('action.timetable.manage')" @click="saveTimetable" :loading="saving">
                         <template #icon>
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>

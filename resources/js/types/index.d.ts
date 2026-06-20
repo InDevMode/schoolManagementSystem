@@ -9,6 +9,7 @@ export interface User {
     roles: string[];
     role_label: string;
     permissions: string[];
+    perm_refreshed?: boolean;
 }
 
 export interface PageProps {

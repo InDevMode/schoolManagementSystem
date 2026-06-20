@@ -262,9 +262,9 @@ import { useCan } from '@/Composables/useCan';
 import { useToast } from '@/Composables/useToast';
 
 const { can } = useCan();
-const canCreate = computed(() => can('view.academics.assign_classes'));
-const canEdit   = computed(() => can('view.academics.assign_classes'));
-const canDelete = computed(() => can('view.academics.assign_classes'));
+const canCreate = computed(() => can('action.assign_classes.create'));
+const canEdit   = computed(() => can('action.assign_classes.edit'));
+const canDelete = computed(() => can('action.assign_classes.delete'));
 
 interface ClassTeacher {
     id: number;

@@ -111,6 +111,7 @@ router.on('finish', () => {
 // Le problème vient du fait que sur une redirection Inertia, le layout est
 // monté (mount lit initialFlash) ET l'event "navigate" se déclenche aussi.
 let lastShownFlash = '';
+let lastShownFlashTimer: ReturnType<typeof setTimeout> | null = null;
 
 const showFlash = (flash: { success?: string; error?: string; warning?: string } | undefined) => {
     if (!flash) return;
@@ -124,18 +125,36 @@ const showFlash = (flash: { success?: string; error?: string; warning?: string }
     if (flash.warning) toast.warning(flash.warning, 5000);
 
     // Réinitialiser après un délai pour permettre le même message sur une action future
-    setTimeout(() => { if (lastShownFlash === key) lastShownFlash = ''; }, 1000);
+    if (lastShownFlashTimer) clearTimeout(lastShownFlashTimer);
+    lastShownFlashTimer = setTimeout(() => { lastShownFlash = ''; }, 2000);
 };
 
 // Premier chargement (full page reload)
 showFlash(page.props.flash as any);
 
-// Navigations Inertia côté client
+// Navigations Inertia côté client (full visit) ET partial reloads (back() avec preserveScroll)
 router.on('navigate', () => {
     showFlash(page.props.flash as any);
 });
 
-// ── État sidebar ─────────────────────────────────────────────────────────────
+router.on('success', (event) => {
+    // Sur un back() avec preserveScroll, lire le flash depuis l'event
+    // car page.props peut ne pas encore être synchronisé
+    const flash = (event as any).detail?.page?.props?.flash ?? page.props.flash;
+    showFlash(flash as any);
+});
+
+// ── Rechargement automatique si les permissions ont été modifiées ────────────
+// Quand perm_refreshed=true arrive dans les props, on force un reload partiel
+// pour que le menu se mette à jour avec les nouvelles permissions.
+watch(
+    () => (page.props.auth as any)?.user?.perm_refreshed,
+    (refreshed) => {
+        if (refreshed) {
+            router.reload({ only: ['auth'] });
+        }
+    }
+);
 const STORAGE_KEY = 'sidebar_collapsed';
 const sidebarCollapsed = ref<boolean>(
     localStorage.getItem(STORAGE_KEY) === 'true'

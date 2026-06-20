@@ -35,7 +35,7 @@ class RolesAndPermissionsSeeder extends Seeder
         'view.staff.list', 'view.staff.leaves', 'view.staff.events',
 
         // Actions utilisateurs
-        'action.users.create', 'action.users.edit', 'action.users.delete', 'action.users.reset_password',
+        'action.users.create', 'action.users.edit', 'action.users.delete', 'action.users.reset_password', 'action.users.export',
         'action.admins.view', 'action.admins.create', 'action.admins.edit',
         'action.admins.delete', 'action.admins.reset_password', 'action.admins.export',
         'action.teachers.view', 'action.teachers.create', 'action.teachers.edit',
@@ -49,6 +49,9 @@ class RolesAndPermissionsSeeder extends Seeder
         // Actions académiques
         'action.classes.create', 'action.classes.edit', 'action.classes.delete',
         'action.subjects.create', 'action.subjects.edit', 'action.subjects.delete',
+        'action.assign_classes.create', 'action.assign_classes.edit', 'action.assign_classes.delete',
+        'action.assign_subjects.create', 'action.assign_subjects.edit', 'action.assign_subjects.delete',
+        'action.timetable.manage',
 
         // Actions examens & notes
         'action.exams.create', 'action.exams.edit', 'action.exams.delete',

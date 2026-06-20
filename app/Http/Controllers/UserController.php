@@ -604,7 +604,7 @@ class UserController extends Controller
             'canEdit'     => $isSuperAdmin || $currentUser->can('action.users.edit'),
             'canReset'    => $isSuperAdmin || $currentUser->can('action.users.reset_password'),
             'canDelete'   => $isSuperAdmin || $currentUser->can('action.users.delete'),
-            'canExport'   => $isSuperAdmin || $currentUser->can('view.users.all'),
+            'canExport'   => $isSuperAdmin || $currentUser->can('action.users.export'),
             'roles' => \Spatie\Permission\Models\Role::where('is_delete', 0)
                 ->orderBy('user_type')
                 ->get()

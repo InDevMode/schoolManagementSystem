@@ -297,9 +297,9 @@ import { useCan } from '@/Composables/useCan';
 import { useToast } from '@/Composables/useToast';
 
 const { can } = useCan();
-const canCreate = computed(() => can('view.academics.assign_subjects'));
-const canEdit   = computed(() => can('view.academics.assign_subjects'));
-const canDelete = computed(() => can('view.academics.assign_subjects'));
+const canCreate = computed(() => can('action.assign_subjects.create'));
+const canEdit   = computed(() => can('action.assign_subjects.edit'));
+const canDelete = computed(() => can('action.assign_subjects.delete'));
 
 interface ClassSubject {
     id: number;
