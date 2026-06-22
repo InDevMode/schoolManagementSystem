@@ -88,6 +88,21 @@
 }
 
 @layer components {
+    /* ── Checkboxes DataTable — taille, border épaisse, coins arrondis ── */
+    .dt-root input[type="checkbox"] {
+        width: 18px;
+        height: 18px;
+        min-width: 18px;
+        border-width: 2px;
+        border-radius: 8px; /* rounded-lg */
+        cursor: pointer;
+        flex-shrink: 0;
+        transition: box-shadow 0.15s ease, border-color 0.15s ease;
+    }
+    .dt-root input[type="checkbox"]:focus {
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(123, 116, 240, 0.25);
+    }
     /* Focus ring cohérent */
     .focus-ring {
         @apply focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900;
@@ -129,7 +144,8 @@
     /* DataTable — renforcement header & cellules */
     .dt-root th,
     .dt-root thead td {
-        @apply font-bold text-gray-800 dark:text-gray-100 text-xs tracking-wide uppercase;
+        @apply font-bold text-xs tracking-wide uppercase;
+        /* La couleur est gérée directement dans le template (text-white sur thead) */
     }
 
     .dt-root td {

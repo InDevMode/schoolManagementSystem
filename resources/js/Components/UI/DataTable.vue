@@ -481,7 +481,7 @@ onMounted(()=>{
 onUnmounted(()=>{
   document.removeEventListener('click', onDocClick);
   document.removeEventListener('keydown', onKeyDown);
-  cancelAnimationFrame(dtTipRaf);
+  hideDtTip();
 });
 
 // ── Navigation pagination serveur ─────────────────────────────────────────────
@@ -570,43 +570,19 @@ const dtCopyRow = (row: Record<string, unknown>) => {
     dtCopiedRowTimeout = setTimeout(() => { dtCopiedRowKey.value = null; }, 1500);
   }).catch(() => {});
 };
-// ── Tooltip sidebar-style (actions + title) ───────────────────────────────────
-const dtTipLabel = ref<string | null>(null);
-const dtTipX     = ref(0);
-const dtTipY     = ref(0);
-let dtTipEl: HTMLElement | null = null;
-let dtTipRaf = 0;
-let dtTipUseCursor = false;
+// ── Tooltip sidebar-style — délègue au singleton global (tip.ts) ─────────────
+// On importe les fonctions directement depuis le plugin
+import { showTip as _showTip, hideTip as _hideTip } from '@/directives/tip';
 
-const updateDtTipPos = () => {
-  if (dtTipEl && !dtTipUseCursor) {
-    const r = dtTipEl.getBoundingClientRect();
-    dtTipX.value = r.right + 10;
-    dtTipY.value = r.top + r.height / 2;
-  }
-  if (dtTipLabel.value) dtTipRaf = requestAnimationFrame(updateDtTipPos);
-};
+let dtTipEl: HTMLElement | null = null;
 
 const showDtTip = (e: MouseEvent, label: string) => {
   dtTipEl = e.currentTarget as HTMLElement;
-  dtTipLabel.value = label;
-  // Pour les éléments larges (td), on positionne près du curseur
-  const rect = dtTipEl.getBoundingClientRect();
-  if (rect.width > 120) {
-    dtTipUseCursor = true;
-    dtTipX.value = e.clientX + 14;
-    dtTipY.value = e.clientY;
-  } else {
-    dtTipUseCursor = false;
-  }
-  cancelAnimationFrame(dtTipRaf);
-  updateDtTipPos();
+  _showTip(dtTipEl, label, e.clientX, e.clientY);
 };
 const hideDtTip = () => {
-  dtTipLabel.value = null;
+  _hideTip();
   dtTipEl = null;
-  dtTipUseCursor = false;
-  cancelAnimationFrame(dtTipRaf);
 };
 
 defineExpose({ clearSelection, selected, filteredRows, confirmDelete, confirmResetPassword });
@@ -873,7 +849,7 @@ defineExpose({ clearSelection, selected, filteredRows, confirmDelete, confirmRes
             <th v-if="selectable" :class="[headerDensityClass, 'w-10']"
                 style="background: transparent;">
               <input type="checkbox" :checked="allSelected" :indeterminate="someSelected"
-                     class="w-4 h-4 rounded cursor-pointer"
+                     class="w-4 h-4 rounded-lg cursor-pointer"
                      style="accent-color:#fff;"
                      @change="toggleAll" aria-label="Sélectionner tout"/>
             </th>
@@ -881,34 +857,31 @@ defineExpose({ clearSelection, selected, filteredRows, confirmDelete, confirmRes
             <th v-for="col in visibleColumns" :key="col.key"
                 :class="[
                   headerDensityClass,
-                  'text-[12px] font-bold uppercase tracking-wider whitespace-nowrap select-none',
-                  'text-white',
+                  'text-[12px] font-bold uppercase tracking-wider whitespace-nowrap select-none text-white',
                   col.align === 'center' ? 'text-center' : col.align === 'right' ? 'text-right' : 'text-left',
-                  col.sortable !== false ? 'cursor-pointer hover:text-white/80 transition-colors' : '',
+                  col.sortable !== false ? 'cursor-pointer hover:brightness-110 transition-all' : '',
                 ]"
                 style="background: transparent;"
                 :style="col.width ? `width:${col.width};` : col.minWidth ? `min-width:${col.minWidth};` : ''"
-                @click="col.sortable !== false && toggleSort(col.key)"
+                @click="col.sortable !== false ? toggleSort(col.key) : undefined"
                 :aria-sort="sortKey === col.key ? (sortDir === 'asc' ? 'ascending' : 'descending') : 'none'">
-              <div class="flex items-center gap-1.5 group/hdr"
+              <div class="flex items-center gap-1 group/hdr"
                    :class="col.align === 'center' ? 'justify-center' : col.align === 'right' ? 'justify-end' : ''">
-                <span :class="sortKey === col.key ? 'text-white drop-shadow' : ''">
-                  {{ col.label }}
-                </span>
-                <!-- Flèches de tri — chevrons simples nets -->
+                <span class="text-white">{{ col.label }}</span>
+                <!-- Icônes de tri — deux chevrons compacts, bien visibles -->
                 <span v-if="col.sortable !== false"
-                      class="flex flex-col gap-[1px] ml-0.5 transition-opacity duration-150"
-                      :class="sortKey === col.key ? 'opacity-100' : 'opacity-50 group-hover/hdr:opacity-80'">
+                      class="inline-flex flex-col items-center justify-center w-3.5 shrink-0 transition-opacity duration-150"
+                      :class="sortKey === col.key ? 'opacity-100' : 'opacity-40 group-hover/hdr:opacity-75'">
                   <!-- Chevron haut -->
-                  <svg class="w-3 h-3"
-                       :class="sortKey === col.key && sortDir === 'asc' ? 'text-white' : 'text-white/70'"
-                       fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                  <svg class="w-3 h-2.5 block"
+                       :class="sortKey === col.key && sortDir === 'asc' ? 'text-white' : 'text-white/60'"
+                       fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7"/>
                   </svg>
                   <!-- Chevron bas -->
-                  <svg class="w-3 h-3"
-                       :class="sortKey === col.key && sortDir === 'desc' ? 'text-white' : 'text-white/70'"
-                       fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                  <svg class="w-3 h-2.5 block"
+                       :class="sortKey === col.key && sortDir === 'desc' ? 'text-white' : 'text-white/60'"
+                       fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
                   </svg>
                 </span>
@@ -1274,34 +1247,7 @@ defineExpose({ clearSelection, selected, filteredRows, confirmDelete, confirmRes
         </div>
       </template>
     </div>
-    <!-- Tooltip sidebar-style (bulle violette sur actions + titre) -->
-    <Teleport to="body">
-      <Transition
-        enter-active-class="transition-all duration-150 ease-out"
-        enter-from-class="opacity-0 scale-95 translate-x-1"
-        enter-to-class="opacity-100 scale-100 translate-x-0"
-        leave-active-class="transition-all duration-100 ease-in"
-        leave-from-class="opacity-100 scale-100 translate-x-0"
-        leave-to-class="opacity-0 scale-95 translate-x-1"
-      >
-        <div v-if="dtTipLabel"
-             class="fixed pointer-events-none flex items-center"
-             :style="{ top: dtTipY + 'px', left: dtTipX + 'px', zIndex: 99999, transform: 'translateY(-50%)' }">
-          <!-- Flèche pointant à gauche -->
-          <span class="flex-shrink-0 w-0 h-0
-                       border-t-[7px] border-t-transparent
-                       border-b-[7px] border-b-transparent
-                       border-r-[8px]"
-                style="border-right-color: #7B74F0;" />
-          <!-- Bulle -->
-          <span class="px-3.5 py-2 rounded-full text-sm font-semibold text-white whitespace-nowrap select-none"
-                style="background: linear-gradient(135deg, #7B74F0 0%, #9189f5 100%);
-                       box-shadow: 0 8px 24px rgba(123,116,240,0.45), 0 2px 8px rgba(0,0,0,0.15);">
-            {{ dtTipLabel }}
-          </span>
-        </div>
-      </Transition>
-    </Teleport>
+    <!-- Le tooltip est géré globalement par le plugin TipPlugin (directives/tip.ts) -->
 
     <!-- Dialog de confirmation -->
     <Teleport to="body">

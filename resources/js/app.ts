@@ -4,6 +4,7 @@ import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy';
 import { createPinia } from 'pinia';
 import AppLayout from '@/Layouts/AppLayout.vue';
+import { TipPlugin } from '@/directives/tip';
 import '../css/app.css';
 
 createInertiaApp({
@@ -26,6 +27,7 @@ createInertiaApp({
             .use(plugin)
             .use(ZiggyVue)
             .use(createPinia())
+            .use(TipPlugin)
             .mount(el);
     },
 

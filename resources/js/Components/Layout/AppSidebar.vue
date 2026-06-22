@@ -372,7 +372,7 @@
                                         :key="child.id"
                                         :href="child.href!"
                                         :class="[
-                                            'flex items-center gap-2.5 px-2.5 py-2 rounded-full text-sm font-medium transition-all duration-150',
+                                            'group flex items-center gap-2.5 px-2.5 py-2 rounded-full text-sm font-medium transition-all duration-150',
                                             isActiveChild(child)
                                                 ? 'text-white shadow-sm'
                                                 : 'text-gray-700 dark:text-gray-200 hover:text-white',
@@ -380,13 +380,13 @@
                                         :style="isActiveChild(child)
                                             ? 'background: linear-gradient(135deg, #7B74F0, #9189f5)'
                                             : ''"
-                                        @mouseenter="e => !isActiveChild(child) && ((e.currentTarget as HTMLElement).style.background = 'linear-gradient(135deg, #7B74F0cc, #9189f5cc)')"
-                                        @mouseleave="e => !isActiveChild(child) && ((e.currentTarget as HTMLElement).style.background = '')"
+                                        @mouseenter="e => { if (!isActiveChild(child)) { (e.currentTarget as HTMLElement).style.background = 'linear-gradient(135deg, #7B74F0cc, #9189f5cc)'; const ico = (e.currentTarget as HTMLElement).querySelector('.flyout-ico') as HTMLElement|null; if (ico) { ico.style.background = 'rgba(255,255,255,0.2)'; ico.style.color = 'white'; } } }"
+                                        @mouseleave="e => { if (!isActiveChild(child)) { (e.currentTarget as HTMLElement).style.background = ''; const ico = (e.currentTarget as HTMLElement).querySelector('.flyout-ico') as HTMLElement|null; if (ico) { ico.style.background = ''; ico.style.color = ''; } } }"
                                         @click="flyoutId = null"
                                     >
                                         <span :class="[
-                                            'w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0',
-                                            isActiveChild(child) ? 'bg-white/20' : 'bg-gray-100 dark:bg-gray-700',
+                                            'flyout-ico w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 transition-all duration-150',
+                                            isActiveChild(child) ? 'bg-white/20 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400',
                                         ]">
                                             <NavIcon :name="child.icon" class="w-3 h-3" />
                                         </span>
