@@ -324,7 +324,7 @@ const teacherOptions = computed(() =>
 const columns = [
     { key: 'class_name',      label: 'Classe',        sortable: true  },
     { key: 'teacher_name',    label: 'Professeur',     sortable: true  },
-    { key: 'status',          label: 'Statut',         sortable: true  },
+    { key: 'status',          label: 'Statut',         sortable: true, exportFormat: (v: unknown) => (v == 1 ? 'Actif' : 'Inactif')  },
     { key: 'created_by_name', label: 'Créé par',       sortable: false },
     { key: 'created_at',      label: 'Date création',  sortable: true,
       format: (v: unknown) => fmtDate(v as string) },

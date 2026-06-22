@@ -102,7 +102,7 @@ const tableRows = computed(() => props.homeworks.data.map(h => ({
 
 const columns = [
     { key: 'student',       label: 'Apprenant' },
-    { key: 'status',        label: 'Statut' },
+    { key: 'status',        label: 'Statut', exportFormat: (v: unknown) => ({ hold: 'En attente', submitted: 'Soumis', done: 'Fait', processed: 'Traité', resolved: 'Résolu' }[v as string] ?? String(v ?? '—')) },
     { key: 'description',   label: 'Description' },
     { key: 'document_file', label: 'Document' },
     { key: 'created_at',    label: 'Date' },

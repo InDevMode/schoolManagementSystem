@@ -102,7 +102,7 @@ defineProps<{
 
 const columns = [
     { key: 'student', label: 'Apprenant' },
-    { key: 'status', label: 'Statut' },
+    { key: 'status', label: 'Statut', exportFormat: (v: unknown) => ({ submitted: 'Soumis', pending: 'En attente', graded: 'Noté', late: 'En retard' }[v as string] ?? String(v ?? '—')) },
     { key: 'description', label: 'Description' },
     { key: 'document_file', label: 'Document' },
     { key: 'created_at', label: 'Date' },

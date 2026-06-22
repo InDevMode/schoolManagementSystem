@@ -31,6 +31,6 @@ const columns = [
     { key: 'subject_name',    label: 'Matière' },
     { key: 'title',           label: 'Titre' },
     { key: 'due_date',        label: 'Date limite' },
-    { key: 'homework_status', label: 'Statut' },
+    { key: 'homework_status', label: 'Statut', exportFormat: (v: unknown) => (v === 'submitted' ? 'Soumis' : 'En attente') },
 ];
 </script>

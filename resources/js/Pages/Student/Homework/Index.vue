@@ -220,6 +220,6 @@ const columns = [
     { key: 'work_date',       label: 'Date' },
     { key: 'submission_date', label: 'Remise' },
     { key: 'description',     label: 'Description' },
-    { key: 'homework_status', label: 'Statut' },
+    { key: 'homework_status', label: 'Statut', exportFormat: (v: unknown) => ({ submitted: 'Soumis', graded: 'Noté', late: 'En retard', pending: 'En attente' }[v as string] ?? 'Non soumis') },
 ];
 </script>

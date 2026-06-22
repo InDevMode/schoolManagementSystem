@@ -77,7 +77,7 @@
             </template>
 
             <!-- En ligne -->
-            <template #cell-online="{ row }">
+            <template #cell-is_online="{ row }">
                 <span class="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full"
                       :class="row.is_online
                         ? 'bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-900/20 dark:text-emerald-400'
@@ -323,14 +323,15 @@ const columns = [
     { key: 'user',       label: 'Apprenant'    },
     { key: 'class_name', label: 'Classe'        },
     { key: 'email',      label: 'Email'         },
-    { key: 'status',     label: 'Statut'        },
-    { key: 'online',     label: 'Présence'      },
+    { key: 'status',     label: 'Statut',        exportFormat: (v: unknown) => (v == 1 ? 'Actif' : 'Inactif') },
+    { key: 'is_online',  label: 'Présence',      exportFormat: (v: unknown) => (v ? 'En ligne' : 'Hors ligne') },
 ];
 
 const tableRows = computed(() =>
     props.students.data.map(s => ({
         ...s,
         profile_url: s.profile_picture ? `/upload/profile/${s.profile_picture}` : null,
+        id_encoded:  btoa(String(s.id)),
     }))
 );
 

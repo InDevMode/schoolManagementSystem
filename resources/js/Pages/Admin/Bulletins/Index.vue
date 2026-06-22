@@ -217,7 +217,7 @@ const columns = [
     { key: 'average',           label: 'Moyenne' },
     { key: 'rank',              label: 'Rang' },
     { key: 'appreciation',      label: 'Appréciation' },
-    { key: 'status',            label: 'Statut' },
+    { key: 'status',            label: 'Statut', exportFormat: (v: unknown) => (v === 'published' ? 'Publié' : 'Brouillon') },
 ];
 
 const previewAverages = async () => {

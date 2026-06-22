@@ -113,7 +113,11 @@ defineProps<{
 const columns = [
     { key: 'student_name',    label: 'Apprenant' },
     { key: 'class_name',      label: 'Classe' },
-    { key: 'attendance_type', label: 'Statut' },
+    { key: 'attendance_type', label: 'Statut', exportFormat: (v: unknown) => {
+        const legacyMap: Record<string, string> = { '1': 'present', '2': 'late', '3': 'absent', '4': 'half_day', '0': 'present' };
+        const normalized = legacyMap[String(v ?? '').trim()] ?? String(v ?? '').trim();
+        return { present: 'Présent', late: 'En retard', absent: 'Absent', half_day: 'Demi-journée' }[normalized] ?? String(v ?? '—');
+    } },
     { key: 'attendance_date', label: 'Date de présence' },
     { key: 'created_at',      label: 'Créé le' },
 ];

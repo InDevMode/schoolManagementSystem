@@ -508,7 +508,7 @@ const columns = [
     { key: 'max_score',    label: 'Sur'     },
     { key: 'eval_date',    label: 'Date'    },
     { key: 'period_name',  label: 'Période' },
-    { key: 'status',       label: 'Statut'  },
+    { key: 'status',       label: 'Statut', exportFormat: (v: unknown) => ({ draft: 'Brouillon', open: 'Ouverte', closed: 'Fermée', validated: 'Validée', cancelled: 'Annulée' }[v as string] ?? String(v ?? '—'))  },
 ];
 </script>
 

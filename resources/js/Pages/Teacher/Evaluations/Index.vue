@@ -301,7 +301,7 @@ const columns = [
     { key: 'type',         label: 'Type'    },
     { key: 'coefficient',  label: 'Coeff.'  },
     { key: 'eval_date',    label: 'Date'    },
-    { key: 'status',       label: 'Statut'  },
+    { key: 'status',       label: 'Statut', exportFormat: (v: unknown) => ({ draft: 'Brouillon', open: 'Ouverte', closed: 'Fermée', validated: 'Validée', cancelled: 'Annulée' }[v as string] ?? String(v ?? '—'))  },
 ];
 
 const openCreate = () => {

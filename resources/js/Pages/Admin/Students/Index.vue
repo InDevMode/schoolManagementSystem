@@ -157,7 +157,7 @@
                 </AppBadge>
             </template>
             <!-- En ligne -->
-            <template #cell-online="{ row }">
+            <template #cell-is_online="{ row }">
                 <span class="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full"
                       :class="row.is_online
                         ? 'bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-900/20 dark:text-emerald-400'
@@ -618,11 +618,11 @@ const columns = computed(() => [
     { key: 'class_name',    label: 'Classe',        sortable: true,    searchable: true },
     { key: 'email',         label: 'Email',         sortable: true,    searchable: true },
     { key: 'mobile_number', label: 'Téléphone',     editable: isSuperAdmin.value, dataType: 'tel' as const, searchable: true },
-    { key: 'gender',        label: 'Genre',         sortable: true,    searchable: false },
+    { key: 'gender',        label: 'Genre',         sortable: true,    searchable: false, exportFormat: (v: unknown) => ({ male: 'Masculin', female: 'Féminin', other: 'Autre' }[v as string] ?? String(v ?? '—')) },
     ...(isSuperAdmin.value ? [{ key: 'school_name', label: 'École', sortable: false, searchable: false }] : []),
     { key: 'admission_date', label: 'Date d\'admission', sortable: true, searchable: false },
-    { key: 'status',        label: 'Statut',        sortable: true,    searchable: false },
-    { key: 'online',        label: 'En ligne',      sortable: false,   searchable: false },
+    { key: 'status',        label: 'Statut',        sortable: true,    searchable: false, exportFormat: (v: unknown) => (v == 1 ? 'Actif' : 'Inactif') },
+    { key: 'is_online',     label: 'En ligne',      sortable: false,   searchable: false, exportFormat: (v: unknown) => (v ? 'En ligne' : 'Hors ligne') },
 ]);
 
 const tableRows = computed(() =>

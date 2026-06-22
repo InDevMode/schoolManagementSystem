@@ -123,7 +123,7 @@
             </template>
 
             <!-- En ligne -->
-            <template #cell-online="{ row }">
+            <template #cell-is_online="{ row }">
                 <span class="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full whitespace-nowrap"
                       :class="row.is_online
                         ? 'bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-900/20 dark:text-emerald-400'
@@ -621,11 +621,11 @@ const columns = computed(() => [
     { key: 'name',          label: '',                  searchable: true,  visible: false },
     { key: 'email',         label: '',                  searchable: true,  visible: false },
     { key: 'mobile_number', label: 'Téléphone',         editable: isSuperAdmin.value, dataType: 'tel' as const, searchable: true, minWidth: '120px' },
-    { key: 'gender',        label: 'Genre',             sortable: true,    searchable: false, minWidth: '80px' },
+    { key: 'gender',        label: 'Genre',             sortable: true,    searchable: false, minWidth: '80px',  exportFormat: (v: unknown) => ({ male: 'Masculin', female: 'Féminin', other: 'Autre' }[v as string] ?? String(v ?? '—')) },
     { key: 'admission_date', label: 'Date d\'embauche', sortable: true,    searchable: false, minWidth: '120px' },
     ...(isSuperAdmin.value ? [{ key: 'school_name', label: 'École', sortable: false, searchable: false, minWidth: '150px' }] : []),
-    { key: 'status',        label: 'Statut',            sortable: true,    searchable: false, minWidth: '80px' },
-    { key: 'online',        label: 'En ligne',          sortable: false,   searchable: false, minWidth: '100px' },
+    { key: 'status',        label: 'Statut',            sortable: true,    searchable: false, minWidth: '80px',  exportFormat: (v: unknown) => (v == 1 ? 'Actif' : 'Inactif') },
+    { key: 'is_online',     label: 'En ligne',          sortable: false,   searchable: false, minWidth: '100px', exportFormat: (v: unknown) => (v ? 'En ligne' : 'Hors ligne') },
 ]);
 
 const tableRows = computed(() =>

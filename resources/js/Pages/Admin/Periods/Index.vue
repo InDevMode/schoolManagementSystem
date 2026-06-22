@@ -207,8 +207,8 @@ const columns = [
     { key: 'school_year',  label: 'Année scolaire' },
     { key: 'start_date',   label: 'Début' },
     { key: 'end_date',     label: 'Fin' },
-    { key: 'is_current',   label: 'Période en cours' },
-    { key: 'status',       label: 'Statut' },
+    { key: 'is_current',   label: 'Période en cours', exportFormat: (v: unknown) => (v ? 'En cours' : '—') },
+    { key: 'status',       label: 'Statut', exportFormat: (v: unknown) => (v == 1 ? 'Active' : 'Inactive') },
 ];
 
 const form = useForm({

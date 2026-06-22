@@ -148,8 +148,8 @@ const columns = [
     { key: 'class_name',       label: 'Classe' },
     { key: 'paid_amount',      label: 'Montant payé' },
     { key: 'remaning_amount',  label: 'Reste' },
-    { key: 'payment_type',     label: 'Mode' },
-    { key: 'payment_status',   label: 'Statut' },
+    { key: 'payment_type',     label: 'Mode', exportFormat: (v: unknown) => ({ cash: 'Espèces', check: 'Chèque', transfer: 'Virement', kkiapay: 'Kkiapay', fedapay: 'FedaPay', stripe: 'Stripe', paypal: 'PayPal' }[v as string] ?? String(v ?? '—')) },
+    { key: 'payment_status',   label: 'Statut', exportFormat: (v: unknown) => (v === 'Paid' ? 'Payé' : 'En attente') },
     { key: 'created_at',       label: 'Date' },
 ];
 

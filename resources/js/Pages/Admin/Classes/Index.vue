@@ -274,7 +274,7 @@ const statusOptions = [
 const columns = [
     { key: 'name',            label: 'Nom de la classe', sortable: true  },
     { key: 'amount',          label: 'Frais (FCFA)',      sortable: true  },
-    { key: 'status',          label: 'Statut',            sortable: true  },
+    { key: 'status',          label: 'Statut',            sortable: true, exportFormat: (v: unknown) => (v == 1 ? 'Actif' : 'Inactif')  },
     { key: 'created_by_name', label: 'Créé par',          sortable: false },
     { key: 'created_at',      label: 'Date création',     sortable: true,
       format: (v: unknown) => fmtDate(v as string) },

@@ -849,7 +849,7 @@ defineExpose({ clearSelection, selected, filteredRows, confirmDelete, confirmRes
             <th v-if="selectable" :class="[headerDensityClass, 'w-10']"
                 style="background: transparent;">
               <input type="checkbox" :checked="allSelected" :indeterminate="someSelected"
-                     class="w-4 h-4 rounded-lg cursor-pointer"
+                     class="cursor-pointer"
                      style="accent-color:#fff;"
                      @change="toggleAll" aria-label="Sélectionner tout"/>
             </th>
@@ -956,7 +956,7 @@ defineExpose({ clearSelection, selected, filteredRows, confirmDelete, confirmRes
               <td v-if="selectable" :class="[densityClass, 'w-10 border-b border-gray-100 dark:border-gray-700/60']">
                 <input type="checkbox"
                        :checked="selected.includes(rowId(row))"
-                       class="w-4 h-4 rounded border-gray-300 dark:border-gray-600 cursor-pointer"
+                       class="cursor-pointer"
                        style="accent-color:#7c3aed"
                        @change="toggleRow(row, idx, $event as MouseEvent)"
                        :aria-label="`Sélectionner la ligne ${idx + 1}`"/>
@@ -1339,11 +1339,11 @@ defineExpose({ clearSelection, selected, filteredRows, confirmDelete, confirmRes
   transition: background-color 0.12s ease, box-shadow 0.15s ease, transform 0.12s ease;
 }
 
-/* Hover : surbrillance indigo subtile + micro-élévation */
+/* Hover : surbrillance indigo subtile + élévation marquée */
 .dt-data-row:hover {
   background-color: #eef2ff !important;   /* indigo-50 */
-  box-shadow: 0 2px 8px rgba(99,102,241,0.10), 0 1px 2px rgba(0,0,0,0.04);
-  transform: translateY(-0.5px);
+  box-shadow: 0 6px 20px rgba(99,102,241,0.18), 0 2px 6px rgba(0,0,0,0.08);
+  transform: translateY(-1px);
   z-index: 2;
 }
 
@@ -1370,7 +1370,7 @@ defineExpose({ clearSelection, selected, filteredRows, confirmDelete, confirmRes
 }
 .dark .dt-data-row:hover {
   background-color: #1e3a5f !important;
-  box-shadow: 0 2px 8px rgba(99,102,241,0.20), 0 1px 2px rgba(0,0,0,0.2) !important;
+  box-shadow: 0 6px 20px rgba(99,102,241,0.35), 0 2px 6px rgba(0,0,0,0.3) !important;
 }
 .dark .dt-table-wrap::-webkit-scrollbar-thumb {
   background: #374151;

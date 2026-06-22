@@ -288,7 +288,7 @@ const typeVariant = (type: string) => typeMap[type]?.variant ?? 'info';
 const columns = [
     { key: 'name',            label: 'Nom de la matière', sortable: true  },
     { key: 'type',            label: 'Type',              sortable: true  },
-    { key: 'status',          label: 'Statut',            sortable: true  },
+    { key: 'status',          label: 'Statut',            sortable: true, exportFormat: (v: unknown) => (v == 1 ? 'Actif' : 'Inactif')  },
     { key: 'created_by_name', label: 'Créé par',          sortable: false },
     { key: 'created_at',      label: 'Date création',     sortable: true,
       format: (v: unknown) => fmtDate(v as string) },
