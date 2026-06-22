@@ -853,6 +853,7 @@
     </Transition>
 </template>
 
+import { fmtDate } from '@/utils/dateFormat';
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted, nextTick, watch, h, defineComponent } from 'vue';
 import { usePage } from '@inertiajs/vue3';
@@ -1172,13 +1173,7 @@ const showDateSeparator = (i: number) => {
     return new Date(localChats.value[i - 1].created_date).toDateString()
         !== new Date(localChats.value[i].created_date).toDateString();
 };
-const formatDate = (date: string) => {
-    const d = new Date(date), today = new Date(), yesterday = new Date(today);
-    yesterday.setDate(today.getDate() - 1);
-    if (d.toDateString() === today.toDateString())     return "Aujourd'hui";
-    if (d.toDateString() === yesterday.toDateString()) return 'Hier';
-    return d.toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' });
-};
+const formatDate = fmtDate;
 const timeAgo = (date: string) => {
     const diff = (Date.now() - new Date(date).getTime()) / 1000;
     if (diff < 60)    return "À l'instant";

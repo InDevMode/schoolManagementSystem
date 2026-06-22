@@ -253,6 +253,7 @@
     </div>
 </template>
 
+import { fmtDate } from '@/utils/dateFormat';
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import { useForm, router } from '@inertiajs/vue3';
@@ -326,7 +327,7 @@ const columns = [
     { key: 'status',          label: 'Statut',         sortable: true  },
     { key: 'created_by_name', label: 'Créé par',       sortable: false },
     { key: 'created_at',      label: 'Date création',  sortable: true,
-      format: (v: unknown) => v ? new Date(v as string).toLocaleDateString('fr-FR') : '—' },
+      format: (v: unknown) => fmtDate(v as string) },
 ];
 
 const createForm = useForm({
@@ -341,13 +342,7 @@ const editForm = useForm({
     status:     '1',
 });
 
-const formatDate = (dateStr: string) => {
-    if (!dateStr) return '—';
-    return new Date(dateStr).toLocaleDateString('fr-FR', {
-        day: '2-digit', month: 'long', year: 'numeric',
-        hour: '2-digit', minute: '2-digit',
-    });
-};
+const formatDate = fmtDate;
 
 // ── Ouvrir créer ─────────────────────────────────────────────────────────────
 const openCreate = () => {

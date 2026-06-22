@@ -84,6 +84,7 @@
 </template>
 
 <script setup lang="ts">
+import { fmtDate } from '@/utils/dateFormat';
 import { computed } from 'vue';
 import { PageHeader, DataTable, AppBadge } from '@/Components/UI';
 
@@ -124,11 +125,7 @@ const columns = [
 const formatAmount = (n: number) =>
     new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'XOF', maximumFractionDigits: 0 }).format(n ?? 0);
 
-const formatDate = (d: string) => {
-    if (!d) return '—';
-    try { return new Date(d).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' }); }
-    catch { return d; }
-};
+const formatDate = fmtDate;
 
 const paymentLabel = (type: string) => ({
     cash: 'Espèces', check: 'Chèque', transfer: 'Virement',

@@ -165,6 +165,7 @@
 </template>
 
 <script setup lang="ts">
+import { fmtDate } from '@/utils/dateFormat';
 import { ref, computed } from 'vue';
 import { useForm, router } from '@inertiajs/vue3';
 import { PageHeader, AppButton, AppInput, AppSelect, AppModal } from '@/Components/UI';
@@ -277,5 +278,5 @@ const roleBadgeClass = (role: string) => ({
     secretary:  'bg-info-50 dark:bg-info-900/20 text-info-700 dark:text-info-400',
 }[role] ?? 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400');
 
-const formatDate = (d: string) => d ? new Date(d).toLocaleDateString('fr-FR') : '—';
+const formatDate = fmtDate;
 </script>

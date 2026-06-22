@@ -192,7 +192,7 @@ class WorkController extends Controller
 
                 $className      = $class?->name ?? 'votre classe';
                 $subjectName    = $subject?->name ?? 'une matière';
-                $submissionDate = \Carbon\Carbon::parse($work->submission_date)->format('d/m/Y');
+                $submissionDate = \Carbon\Carbon::parse($work->submission_date)->format('d-m-Y');
 
                 $students = User::where('class_id', $work->class_id)
                     ->where('user_type', 3)
@@ -469,7 +469,7 @@ class WorkController extends Controller
 
                 $className      = $class?->name ?? 'votre classe';
                 $subjectName    = $subject?->name ?? 'une matière';
-                $submissionDate = \Carbon\Carbon::parse($work->submission_date)->format('d/m/Y');
+                $submissionDate = \Carbon\Carbon::parse($work->submission_date)->format('d-m-Y');
 
                 $students = User::where('class_id', $work->class_id)
                     ->where('user_type', 3)

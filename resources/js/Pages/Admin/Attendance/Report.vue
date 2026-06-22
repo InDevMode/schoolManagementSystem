@@ -28,6 +28,9 @@
                 <template #cell-attendance_date="{ row }">
                     <span class="text-xs text-gray-500">{{ formatDate(row.attendance_date as string) }}</span>
                 </template>
+                <template #cell-created_at="{ row }">
+                    <span class="text-xs text-gray-400">{{ formatDate(row.created_at as string) }}</span>
+                </template>
             </DataTable>
         </div>
 
@@ -78,6 +81,7 @@
 </template>
 
 <script setup lang="ts">
+import { fmtDate } from '@/utils/dateFormat';
 import { ref, computed, reactive } from 'vue';
 import { router } from '@inertiajs/vue3';
 import { PageHeader, AppBadge, DataTable } from '@/Components/UI';
@@ -92,6 +96,7 @@ interface AttendanceRecord {
     class_name: string;
     attendance_type: string;
     attendance_date: string;
+    created_at: string;
 }
 
 defineProps<{
@@ -109,7 +114,8 @@ const columns = [
     { key: 'student_name',    label: 'Apprenant' },
     { key: 'class_name',      label: 'Classe' },
     { key: 'attendance_type', label: 'Statut' },
-    { key: 'attendance_date', label: 'Date' },
+    { key: 'attendance_date', label: 'Date de présence' },
+    { key: 'created_at',      label: 'Créé le' },
 ];
 
 const tableActions = computed(() => can('action.attendance.save') ? [
@@ -184,6 +190,5 @@ const typeVariant = (type: string | number): 'success' | 'warning' | 'danger' | 
     half_day: 'info',
 }[normalizeType(type)] as any ?? 'gray');
 
-const formatDate = (d: string) =>
-    new Date(d).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' });
+const formatDate = fmtDate;
 </script>

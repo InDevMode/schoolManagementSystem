@@ -1,4 +1,4 @@
-﻿<template>
+<template>
     <div class="space-y-6">
         <!-- Header -->
         <PageHeader title="Apprenants" :subtitle="`${students.total} apprenant(s)`" color="primary">
@@ -146,7 +146,7 @@
             <!-- Date d'admission -->
             <template #cell-admission_date="{ row }">
                 <span class="text-xs text-gray-600 dark:text-gray-400">
-                    {{ row.admission_date ? new Date(row.admission_date).toLocaleDateString('fr-FR') : '—' }}
+                    {{ row.admission_date ? fmtDate(row.admission_date as string) : '—' }}
                 </span>
             </template>
 
@@ -269,9 +269,9 @@
             </template>
         </DataTable>
 
-        <!-- ══════════════════════════════════════════════════════
+        <!-- ------------------------------------------------------
              Modal Détails Apprenant — style settings panel
-        ═══════════════════════════════════════════════════════ -->
+        ------------------------------------------------------- -->
         <DetailModal
             v-model="showView"
             :title="viewTarget ? `${viewTarget.last_name} ${viewTarget.name}` : ''"
@@ -312,7 +312,7 @@
             <template #default="{ activeTab }">
                 <div v-if="viewTarget">
 
-                    <!-- ── ONGLET PROFIL ── -->
+                    <!-- -- ONGLET PROFIL -- -->
                     <div v-show="activeTab === 'profile'" class="space-y-6">
                         <!-- Bannière profil -->
                         <div class="relative rounded-2xl overflow-hidden bg-gradient-to-br from-primary-600 to-violet-700 p-5">
@@ -337,7 +337,7 @@
                                             N° {{ viewTarget.admission_number }}
                                         </span>
                                         <span :class="['px-2 py-0.5 rounded-full text-xs font-semibold', viewTarget.status == 1 ? 'bg-emerald-400/30 text-emerald-100' : 'bg-red-400/30 text-red-100']">
-                                            {{ viewTarget.status == 1 ? '✓ Actif' : '✗ Inactif' }}
+                                            {{ viewTarget.status == 1 ? '? Actif' : '? Inactif' }}
                                         </span>
                                         <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-white/10 text-white/80">
                                             <span class="w-1.5 h-1.5 rounded-full" :class="viewTarget.is_online ? 'bg-emerald-400' : 'bg-gray-400'"/>
@@ -363,7 +363,7 @@
                         </div>
                     </div>
 
-                    <!-- ── ONGLET ACADÉMIQUE ── -->
+                    <!-- -- ONGLET ACADÉMIQUE -- -->
                     <div v-show="activeTab === 'academic'" class="space-y-4">
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             <InfoCard label="N° d'admission" :value="viewTarget.admission_number" mono />
@@ -373,7 +373,7 @@
                         </div>
                     </div>
 
-                    <!-- ── ONGLET MÉDICAL ── -->
+                    <!-- -- ONGLET MÉDICAL -- -->
                     <div v-show="activeTab === 'medical'" class="space-y-4">
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             <InfoCard label="Date de naissance" :value="formatDate(viewTarget.date_of_birth)" />
@@ -385,7 +385,7 @@
                         </div>
                     </div>
 
-                    <!-- ── ONGLET PARENT ── -->
+                    <!-- -- ONGLET PARENT -- -->
                     <div v-show="activeTab === 'parent'" class="space-y-4">
                         <div v-if="viewTarget.parent_name || viewTarget.parent_last_name">
                             <!-- Bannière parent -->
@@ -489,6 +489,7 @@
 </template>
 
 <script setup lang="ts">
+import { fmtDate } from '@/utils/dateFormat';
 import { ref, computed, h, defineComponent } from 'vue';
 import { router, Link } from '@inertiajs/vue3';
 import { PageHeader, AppButton, AppInput, AppSelect, AppModal, AppBadge, DataTable, DetailModal } from '@/Components/UI';
@@ -496,7 +497,7 @@ import UserAvatar from '@/Components/Shared/UserAvatar.vue';
 import { useToast } from '@/Composables/useToast';
 import { useCan } from '@/Composables/useCan';
 
-// ── Composant InfoCard réutilisable ──────────────────────────────────────────
+// -- Composant InfoCard réutilisable ------------------------------------------
 const InfoCard = defineComponent({
     props: {
         label:     { type: String, required: true },
@@ -580,7 +581,7 @@ const statusOptions     = [{ value: '1', label: 'Actif' }, { value: '0', label: 
 const genderOptions     = [{ value: 'male', label: 'Masculin' }, { value: 'female', label: 'Féminin' }, { value: 'other', label: 'Autre' }];
 const bloodGroupOptions = ['A+','A-','B+','B-','AB+','AB-','O+','O-'].map(v => ({ value: v.toLowerCase(), label: v }));
 
-// ── Onglets du modal de détails ───────────────────────────────────────────────
+// -- Onglets du modal de détails -----------------------------------------------
 const studentTabs = [
     {
         id: 'profile',
@@ -687,7 +688,7 @@ const confirmDelete = () => {
     });
 };
 
-// ── Copie presse-papier ───────────────────────────────────────────────────────
+// -- Copie presse-papier -------------------------------------------------------
 const copiedField = ref<string | null>(null);
 let copiedTimeout: ReturnType<typeof setTimeout> | null = null;
 const copyToClipboard = (text: string, fieldKey: string) => {
@@ -716,9 +717,5 @@ const handleResetPassword = async (ids: (string | number)[]) => {
         data.success ? toast.success(data.message) : toast.error(data.message);
     } catch { toast.error('Erreur lors de la réinitialisation.'); }
 };
-const formatDate = (d?: string) => {
-    if (!d) return '—';
-    try { return new Date(d).toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' }); }
-    catch { return d; }
-};
+const formatDate = fmtDate;
 </script>

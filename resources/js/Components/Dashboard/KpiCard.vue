@@ -1,7 +1,7 @@
 <template>
     <div
         :class="[
-            'relative overflow-hidden rounded-2xl p-4',
+            'relative overflow-hidden rounded-2xl p-5',
             'bg-white dark:bg-gray-800',
             'border border-gray-100 dark:border-gray-700/60',
             'shadow-sm',
@@ -10,56 +10,64 @@
         @click="href ? (window.location.href = href) : null"
     >
         <!-- Decoration blob en fond -->
-        <div class="absolute -right-5 -top-5 w-20 h-20 rounded-full blur-2xl opacity-20 pointer-events-none"
+        <div class="absolute -right-6 -top-6 w-24 h-24 rounded-full blur-2xl opacity-20 pointer-events-none"
              :class="bubbleBg"/>
-        <div class="absolute -left-3 -bottom-3 w-12 h-12 rounded-full blur-xl opacity-10 pointer-events-none"
+        <div class="absolute -left-3 -bottom-3 w-14 h-14 rounded-full blur-xl opacity-10 pointer-events-none"
              :class="bubbleBg"/>
 
-        <div class="relative flex items-start justify-between gap-2">
-            <!-- Icon avec dégradé -->
-            <div :class="['w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 shadow-sm', iconBg]">
+        <!-- Trend badge — ancré en haut à droite de la card -->
+        <span v-if="trend"
+            :class="[
+                'absolute top-3 right-3 z-10',
+                'text-[11px] font-bold px-2.5 py-1 rounded-full flex items-center gap-1',
+                trendPositive
+                    ? 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 ring-1 ring-emerald-200 dark:ring-emerald-700/50'
+                    : 'bg-red-50 dark:bg-red-900/30 text-red-500 dark:text-red-400 ring-1 ring-red-200 dark:ring-red-700/50',
+            ]"
+        >
+            <svg class="w-2.5 h-2.5 flex-shrink-0" :class="trendPositive ? 'rotate-0' : 'rotate-180'"
+                 fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 10l7-7m0 0l7 7m-7-7v18"/>
+            </svg>
+            {{ trend }}
+        </span>
+
+        <!-- Ligne icône + label -->
+        <div class="relative flex items-center gap-3">
+            <div :class="['w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 shadow-sm', iconBg]">
                 <svg class="w-5 h-5" :class="iconColor" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" :d="iconPath"/>
                 </svg>
             </div>
-            <!-- Trend badge -->
-            <span v-if="trend"
-                :class="[
-                    'text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-0.5',
-                    trendPositive
-                        ? 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400'
-                        : 'bg-red-50 dark:bg-red-900/20 text-red-500 dark:text-red-400',
-                ]"
-            >
-                <span>{{ trendPositive ? '↑' : '↓' }}</span>{{ trend }}
-            </span>
+            <p class="text-xs text-gray-500 dark:text-gray-400 font-medium tracking-wide leading-tight pr-12">{{ label }}</p>
         </div>
 
-        <div class="mt-3">
-            <p class="text-xs text-gray-500 dark:text-gray-400 font-medium tracking-wide">{{ label }}</p>
-            <p class="text-2xl font-black text-gray-900 dark:text-white mt-0.5 leading-none tabular-nums">
-                <span v-if="prefix" class="text-sm font-semibold text-gray-400 mr-1">{{ prefix }}</span>
+        <!-- Valeur principale -->
+        <div class="relative mt-3">
+            <p class="text-3xl font-black text-gray-900 dark:text-white leading-none tabular-nums">
+                <span v-if="prefix" class="text-base font-semibold text-gray-400 mr-1">{{ prefix }}</span>
                 {{ typeof value === 'number' ? value.toLocaleString('fr-FR') : value }}
-                <span v-if="suffix" class="text-sm font-semibold text-gray-400 ml-1">{{ suffix }}</span>
+                <span v-if="suffix" class="text-base font-semibold text-gray-400 ml-1">{{ suffix }}</span>
             </p>
+
             <!-- Gender breakdown -->
             <div v-if="genderMale !== undefined && genderFemale !== undefined"
-                 class="flex items-center gap-2 mt-1.5">
-                <span class="inline-flex items-center gap-1 text-[10px] font-semibold text-blue-600 dark:text-blue-400">
+                 class="flex items-center gap-2 mt-2">
+                <span class="inline-flex items-center gap-1 text-[11px] font-semibold text-blue-600 dark:text-blue-400">
                     <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2a4 4 0 100 8 4 4 0 000-8zm-2 10a5 5 0 00-5 5v1h14v-1a5 5 0 00-5-5h-4z"/></svg>
                     {{ genderMale }}H
                 </span>
                 <span class="text-[10px] text-gray-300 dark:text-gray-600">·</span>
-                <span class="inline-flex items-center gap-1 text-[10px] font-semibold text-pink-500 dark:text-pink-400">
+                <span class="inline-flex items-center gap-1 text-[11px] font-semibold text-pink-500 dark:text-pink-400">
                     <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2a4 4 0 100 8 4 4 0 000-8zm-2 10a5 5 0 00-5 5v1h14v-1a5 5 0 00-5-5h-4z"/></svg>
                     {{ genderFemale }}F
                 </span>
             </div>
-            <p v-else-if="sub" class="text-[10px] text-gray-400 mt-1 leading-tight">{{ sub }}</p>
+            <p v-else-if="sub" class="text-[11px] text-gray-400 mt-1.5 leading-tight">{{ sub }}</p>
         </div>
 
         <!-- Mini sparkline -->
-        <div v-if="sparkline && sparkline.length > 1" class="mt-3 h-8 relative">
+        <div v-if="sparkline && sparkline.length > 1" class="mt-3 h-9 relative">
             <svg viewBox="0 0 100 32" preserveAspectRatio="none" class="w-full h-full">
                 <polyline
                     :points="sparkPoints"

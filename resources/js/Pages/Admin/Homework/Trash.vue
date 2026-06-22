@@ -70,6 +70,7 @@
 </template>
 
 <script setup lang="ts">
+import { fmtDate } from '@/utils/dateFormat';
 import { computed } from 'vue';
 import { router } from '@inertiajs/vue3';
 import { PageHeader, AppButton, DataTable } from '@/Components/UI';
@@ -107,11 +108,7 @@ const columns = [
     { key: 'deleted_at',      label: 'Supprimé le' },
 ];
 
-const formatDate = (d: string) => {
-    if (!d) return '—';
-    try { return new Date(d).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' }); }
-    catch { return d; }
-};
+const formatDate = fmtDate;
 
 const restore = (id: number) => {
     router.get(`/admin/practicalworks/homework/restore/${id}`, {}, {

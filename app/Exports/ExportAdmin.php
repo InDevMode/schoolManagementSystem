@@ -82,7 +82,7 @@ class ExportAdmin implements FromCollection, WithMapping, WithHeadings, WithColu
     {
         if (!$date) return '—';
         try {
-            return Carbon::parse($date)->format('d/m/Y H:i:s');
+            return Carbon::parse($date)->format('d-m-Y H:i:s');
         } catch (\Exception $e) {
             return '—';
         }

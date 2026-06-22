@@ -214,13 +214,10 @@
 /* ── Hover smooth ── */
 .adv-table tbody tr[data-row]:hover {
     background-color: #f0ebff !important;
-    box-shadow: inset 3px 0 0 #7c3aed;
-    transform: translateX(1px);
 }
 
 .dark .adv-table tbody tr[data-row]:hover {
     background-color: #283547 !important;
-    box-shadow: inset 3px 0 0 #7c3aed;
 }
 
 /* ── Sélectionnée ── */

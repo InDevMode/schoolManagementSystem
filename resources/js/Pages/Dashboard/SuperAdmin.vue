@@ -14,9 +14,10 @@
                 </p>
             </div>
             <div class="flex items-center gap-2">
-                <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-violet-600 text-white text-xs font-semibold shadow">
-                    <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse inline-block"/>
-                    Super Admin
+                <span class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold shadow-lg shadow-primary-500/30"
+                      style="background: linear-gradient(135deg, #7B74F0, #9189f5);">
+                    <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse inline-block flex-shrink-0"/>
+                    <span class="text-white">Super Admin</span>
                 </span>
             </div>
         </div>
@@ -29,7 +30,7 @@
                 <div v-show="active === 'overview'" class="space-y-4">
 
                     <!-- ── KPI Cards utilisateurs (avec breakdown H/F) ──── -->
-                    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+                    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
                         <KpiCard label="Apprenants"    :value="totalStudent"  color="violet" href="/admin/student/list"
                             trend="+12%" :trendPositive="true"
                             :genderMale="totalStudentMale" :genderFemale="totalStudentFemale"

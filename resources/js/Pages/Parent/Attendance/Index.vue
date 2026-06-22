@@ -69,6 +69,7 @@
 </template>
 
 <script setup lang="ts">
+import { fmtDate } from '@/utils/dateFormat';
 import { PageHeader, DataTable, AppBadge } from '@/Components/UI';
 import { Link } from '@inertiajs/vue3';
 
@@ -96,5 +97,5 @@ const columns = [
 
 const typeLabel = (type: string) => ({ present: 'Présent', late: 'En retard', absent: 'Absent', half_day: 'Demi-journée' }[type] ?? type);
 const typeVariant = (type: string) => ({ present: 'success', late: 'warning', absent: 'danger', half_day: 'info' }[type] as any ?? 'gray');
-const formatDate = (d: string) => new Date(d).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' });
+const formatDate = fmtDate;
 </script>

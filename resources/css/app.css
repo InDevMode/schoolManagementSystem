@@ -133,7 +133,14 @@
     }
 
     .dt-root td {
-        @apply text-gray-800 dark:text-gray-100 font-medium;
+        @apply text-gray-800 dark:text-gray-100 font-medium align-middle;
+    }
+
+    /* Alignement vertical strict des cellules */
+    .dt-root tbody td,
+    .dt-root tbody th {
+        vertical-align: middle;
+        line-height: 1.4;
     }
 
     /* Inputs & selects */
@@ -146,6 +153,22 @@
     input::placeholder,
     textarea::placeholder {
         @apply text-gray-400 dark:text-gray-500 font-normal;
+    }
+
+    /* ── Date / time inputs — color-scheme pour que le popup natif soit lisible ── */
+    /* Mode clair : picker en thème clair */
+    input[type="date"],
+    input[type="datetime-local"],
+    input[type="time"],
+    .dt-date-input {
+        color-scheme: light;
+    }
+    /* Mode sombre : picker en thème sombre pour que les jours soient lisibles */
+    .dark input[type="date"],
+    .dark input[type="datetime-local"],
+    .dark input[type="time"],
+    .dark .dt-date-input {
+        color-scheme: dark;
     }
 }
 

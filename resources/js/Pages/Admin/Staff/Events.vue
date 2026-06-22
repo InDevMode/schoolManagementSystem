@@ -173,6 +173,7 @@
 </template>
 
 <script setup lang="ts">
+import { fmtDate } from '@/utils/dateFormat';
 import { ref, computed } from 'vue';
 import { useForm, router } from '@inertiajs/vue3';
 import { PageHeader, AppButton, AppInput, AppSelect, AppModal, DataTable } from '@/Components/UI';
@@ -268,5 +269,5 @@ const applyFilters = () => {
     }, { preserveState: true });
 };
 
-const formatDate = (d: string) => d ? new Date(d).toLocaleDateString('fr-FR') : '—';
+const formatDate = fmtDate;
 </script>

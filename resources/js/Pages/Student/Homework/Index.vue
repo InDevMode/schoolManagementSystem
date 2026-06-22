@@ -172,6 +172,7 @@
 </template>
 
 <script setup lang="ts">
+import { fmtDate } from '@/utils/dateFormat';
 import { ref, computed } from 'vue';
 import { PageHeader, DataTable, AppBadge, AppModal, AppButton } from '@/Components/UI';
 import { stripHtml } from '@/Utils/html';
@@ -202,12 +203,7 @@ const openDetail = (row: Work) => {
     showDetail.value = true;
 };
 
-const formatDate = (d: string) => {
-    if (!d) return '—';
-    try {
-        return new Date(d).toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' });
-    } catch { return d; }
-};
+const formatDate = fmtDate;
 
 const isPastDue = (d: string) => {
     if (!d) return false;

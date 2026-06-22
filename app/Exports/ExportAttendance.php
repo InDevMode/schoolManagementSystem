@@ -88,7 +88,7 @@ class ExportAttendance implements FromCollection, WithMapping, WithHeadings, Wit
 
     private function formatDate($date): ?string
     {
-        return $date ? Carbon::parse($date)->format('d/m/Y H:i') : null;
+        return $date ? Carbon::parse($date)->format('d-m-Y H:i') : null;
     }
 
 }

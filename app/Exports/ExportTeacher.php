@@ -81,12 +81,12 @@ class ExportTeacher implements FromCollection, WithMapping, WithHeadings, WithCo
     private function formatDate(?string $date): string
     {
         if (!$date) return '—';
-        try { return Carbon::parse($date)->format('d/m/Y'); } catch (\Exception $e) { return '—'; }
+        try { return Carbon::parse($date)->format('d-m-Y'); } catch (\Exception $e) { return '—'; }
     }
 
     private function formatDatetime($date): string
     {
         if (!$date) return '—';
-        try { return Carbon::parse($date)->format('d/m/Y H:i:s'); } catch (\Exception $e) { return '—'; }
+        try { return Carbon::parse($date)->format('d-m-Y H:i:s'); } catch (\Exception $e) { return '—'; }
     }
 }

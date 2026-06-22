@@ -1,4 +1,4 @@
-﻿<template>
+<template>
     <div class="space-y-6">
         <!-- Header -->
         <PageHeader title="Professeurs" :subtitle="`${teachers.total} professeur(s)`" color="emerald">
@@ -96,7 +96,7 @@
             <!-- Date d'embauche -->
             <template #cell-admission_date="{ row }">
                 <span class="text-xs text-gray-600 dark:text-gray-400">
-                    {{ row.admission_date ? new Date(row.admission_date).toLocaleDateString('fr-FR') : '—' }}
+                    {{ row.admission_date ? fmtDate(row.admission_date as string) : '—' }}
                 </span>
             </template>
 
@@ -124,7 +124,7 @@
 
             <!-- En ligne -->
             <template #cell-online="{ row }">
-                <span class="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full"
+                <span class="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full whitespace-nowrap"
                       :class="row.is_online
                         ? 'bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-900/20 dark:text-emerald-400'
                         : 'bg-gray-100 text-gray-500 border border-gray-200 dark:bg-gray-800 dark:text-gray-400'">
@@ -292,7 +292,7 @@
                                     <p class="text-emerald-100 text-sm mt-0.5">{{ viewTarget.email }}</p>
                                     <div class="flex items-center gap-2 mt-2 flex-wrap">
                                         <span :class="['px-2 py-0.5 rounded-full text-xs font-semibold', viewTarget.status == 1 ? 'bg-emerald-400/30 text-emerald-100' : 'bg-red-400/30 text-red-100']">
-                                            {{ viewTarget.status == 1 ? '✓ Actif' : '✗ Inactif' }}
+                                            {{ viewTarget.status == 1 ? '? Actif' : '? Inactif' }}
                                         </span>
                                         <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-white/10 text-white/80">
                                             <span class="w-1.5 h-1.5 rounded-full" :class="viewTarget.is_online ? 'bg-emerald-400' : 'bg-gray-400'"/>
@@ -488,6 +488,7 @@
 </template>
 
 <script setup lang="ts">
+import { fmtDate } from '@/utils/dateFormat';
 import { ref, computed, h, defineComponent } from 'vue';
 import { router, Link } from '@inertiajs/vue3';
 import { PageHeader, AppButton, AppInput, AppSelect, AppModal, DataTable, AppBadge, DetailModal } from '@/Components/UI';
@@ -495,7 +496,7 @@ import UserAvatar from '@/Components/Shared/UserAvatar.vue';
 import { useToast } from '@/Composables/useToast';
 import { useCan } from '@/Composables/useCan';
 
-// ── Composant InfoCard réutilisable ──────────────────────────────────────────
+// -- Composant InfoCard réutilisable ------------------------------------------
 const InfoCard = defineComponent({
     props: {
         label:     { type: String, required: true },
@@ -563,7 +564,7 @@ const picFile    = ref<File | null>(null);
 const toast      = useToast();
 const tableRef   = ref<InstanceType<typeof DataTable> | null>(null);
 
-// ── Classes assignées au professeur ──────────────────────────────────────────
+// -- Classes assignées au professeur ------------------------------------------
 interface TeacherClass {
     id: number;
     name: string;
@@ -615,16 +616,16 @@ const teacherTabs = [
 ];
 
 const columns = computed(() => [
-    { key: 'user',          label: 'Professeur',   searchable: false },
-    { key: 'last_name',     label: '',             searchable: true,  visible: false },
-    { key: 'name',          label: '',             searchable: true,  visible: false },
-    { key: 'email',         label: '',             searchable: true,  visible: false },
-    { key: 'mobile_number', label: 'Téléphone',    editable: isSuperAdmin.value, dataType: 'tel' as const, searchable: true },
-    { key: 'gender',        label: 'Genre',        sortable: true,    searchable: false },
-    { key: 'admission_date', label: 'Date d\'embauche', sortable: true, searchable: false },
-    ...(isSuperAdmin.value ? [{ key: 'school_name', label: 'École', sortable: false, searchable: false }] : []),
-    { key: 'status',        label: 'Statut',       sortable: true,    searchable: false },
-    { key: 'online',        label: 'En ligne',     sortable: false,   searchable: false },
+    { key: 'user',          label: 'Professeur',        searchable: false, minWidth: '200px' },
+    { key: 'last_name',     label: '',                  searchable: true,  visible: false },
+    { key: 'name',          label: '',                  searchable: true,  visible: false },
+    { key: 'email',         label: '',                  searchable: true,  visible: false },
+    { key: 'mobile_number', label: 'Téléphone',         editable: isSuperAdmin.value, dataType: 'tel' as const, searchable: true, minWidth: '120px' },
+    { key: 'gender',        label: 'Genre',             sortable: true,    searchable: false, minWidth: '80px' },
+    { key: 'admission_date', label: 'Date d\'embauche', sortable: true,    searchable: false, minWidth: '120px' },
+    ...(isSuperAdmin.value ? [{ key: 'school_name', label: 'École', sortable: false, searchable: false, minWidth: '150px' }] : []),
+    { key: 'status',        label: 'Statut',            sortable: true,    searchable: false, minWidth: '80px' },
+    { key: 'online',        label: 'En ligne',          sortable: false,   searchable: false, minWidth: '100px' },
 ]);
 
 const tableRows = computed(() =>
@@ -689,13 +690,9 @@ const confirmDelete = () => {
 };
 const genderLabel = (g: string) => ({ male: 'Masculin', female: 'Féminin', other: 'Autre' }[g] ?? '—');
 
-const formatDate = (d?: string) => {
-    if (!d) return '—';
-    try { return new Date(d).toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' }); }
-    catch { return d; }
-};
+const formatDate = fmtDate;
 
-// ── Copie presse-papier ───────────────────────────────────────────────────────
+// -- Copie presse-papier -------------------------------------------------------
 const copiedField = ref<string | null>(null);
 let copiedTimeout: ReturnType<typeof setTimeout> | null = null;
 const copyToClipboard = (text: string, fieldKey: string) => {

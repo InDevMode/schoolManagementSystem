@@ -70,6 +70,6 @@ class ExportParent implements FromCollection, WithMapping, WithHeadings, WithCol
     private function formatDatetime($date): string
     {
         if (!$date) return '—';
-        try { return \Carbon\Carbon::parse($date)->format('d/m/Y H:i:s'); } catch (\Exception $e) { return '—'; }
+        try { return \Carbon\Carbon::parse($date)->format('d-m-Y H:i:s'); } catch (\Exception $e) { return '—'; }
     }
 }

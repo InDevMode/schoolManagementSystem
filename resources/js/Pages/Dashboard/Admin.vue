@@ -28,7 +28,7 @@
                 <div v-show="active === 'overview'" class="space-y-4">
 
                     <!-- KPI utilisateurs avec breakdown H/F -->
-                    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+                    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
                         <KpiCard label="Apprenants"      :value="totalStudent"         color="violet" href="/admin/student/list"
                             trend="+12%" :trendPositive="true"
                             :genderMale="totalStudentMale" :genderFemale="totalStudentFemale"

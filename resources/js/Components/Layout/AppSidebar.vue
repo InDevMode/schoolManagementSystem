@@ -372,7 +372,7 @@
                                         :key="child.id"
                                         :href="child.href!"
                                         :class="[
-                                            'flex items-center gap-2.5 px-2.5 py-2 rounded-xl text-sm font-medium transition-all duration-150',
+                                            'flex items-center gap-2.5 px-2.5 py-2 rounded-full text-sm font-medium transition-all duration-150',
                                             isActiveChild(child)
                                                 ? 'text-white shadow-sm'
                                                 : 'text-gray-700 dark:text-gray-200 hover:text-white',
@@ -385,7 +385,7 @@
                                         @click="flyoutId = null"
                                     >
                                         <span :class="[
-                                            'w-5 h-5 rounded-md flex items-center justify-center flex-shrink-0',
+                                            'w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0',
                                             isActiveChild(child) ? 'bg-white/20' : 'bg-gray-100 dark:bg-gray-700',
                                         ]">
                                             <NavIcon :name="child.icon" class="w-3 h-3" />
@@ -660,11 +660,11 @@
         <Teleport to="body">
             <Transition
                 enter-active-class="transition-all duration-150 ease-out"
-                enter-from-class="opacity-0 translate-x-1"
-                enter-to-class="opacity-100 translate-x-0"
+                enter-from-class="opacity-0 scale-95 translate-x-1"
+                enter-to-class="opacity-100 scale-100 translate-x-0"
                 leave-active-class="transition-all duration-100 ease-in"
-                leave-from-class="opacity-100 translate-x-0"
-                leave-to-class="opacity-0 translate-x-1"
+                leave-from-class="opacity-100 scale-100 translate-x-0"
+                leave-to-class="opacity-0 scale-95 translate-x-1"
             >
                 <div
                     v-if="collapsed && hoveredId && hoveredLabel"
@@ -678,14 +678,21 @@
                 >
                     <!-- Flèche pointant à gauche -->
                     <span class="flex-shrink-0 w-0 h-0
-                                 border-t-[5px] border-t-transparent
-                                 border-b-[5px] border-b-transparent
-                                 border-r-[6px]"
+                                 border-t-[7px] border-t-transparent
+                                 border-b-[7px] border-b-transparent
+                                 border-r-[8px]"
                           style="border-right-color: #7B74F0;" />
-                    <!-- Bulle -->
-                    <span class="px-3 py-1.5 rounded-xl text-xs font-semibold text-white
-                                 shadow-xl shadow-primary-500/40 whitespace-nowrap select-none"
-                          style="background: linear-gradient(135deg, #7B74F0, #9189f5);">
+                    <!-- Bulle tooltip -->
+                    <span class="flex items-center gap-2.5 px-4 py-2.5 rounded-full text-sm font-semibold text-white
+                                 whitespace-nowrap select-none"
+                          style="
+                            background: linear-gradient(135deg, #7B74F0 0%, #9189f5 100%);
+                            box-shadow: 0 8px 24px rgba(123,116,240,0.45), 0 2px 8px rgba(0,0,0,0.15);
+                          ">
+                        <!-- Icône de l'item survolé -->
+                        <span class="w-4 h-4 flex-shrink-0 flex items-center justify-center opacity-90">
+                            <NavIcon :name="hoveredIcon" class="w-4 h-4 text-white" />
+                        </span>
                         {{ hoveredLabel }}
                     </span>
                 </div>
@@ -922,6 +929,13 @@ const hoveredLabel = computed<string>(() => {
     if (!hoveredId.value) return '';
     const flat = navItems.value.flatMap(i => i.children ? [i, ...i.children] : [i]);
     return flat.find(i => i.id === hoveredId.value)?.label ?? '';
+});
+
+// Icône de l'item actuellement survolé
+const hoveredIcon = computed<string>(() => {
+    if (!hoveredId.value) return 'home';
+    const flat = navItems.value.flatMap(i => i.children ? [i, ...i.children] : [i]);
+    return flat.find(i => i.id === hoveredId.value)?.icon ?? 'home';
 });
 </script>
 

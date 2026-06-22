@@ -69,7 +69,7 @@ class StaffController extends Controller
                     if ($user) {
                         $roleLabel = StaffModel::$roles[$staff->role] ?? $staff->role;
                         $hireDate  = $staff->hire_date
-                            ? \Carbon\Carbon::parse($staff->hire_date)->format('d/m/Y')
+                            ? \Carbon\Carbon::parse($staff->hire_date)->format('d-m-Y')
                             : '';
                         $user->notify(new StaffAddedNotification($roleLabel, $hireDate));
                     }
@@ -278,7 +278,7 @@ class StaffController extends Controller
                     if ($user) {
                         $leaveType = LeaveTypeModel::find($leave->leave_type_id);
                         $leaveTypeName = $leaveType?->name ?? 'Congé';
-                        $startDate = \Carbon\Carbon::parse($leave->start_date)->format('d/m/Y');
+                        $startDate = \Carbon\Carbon::parse($leave->start_date)->format('d-m-Y');
 
                         $user->notify(new LeaveStatusChangedNotification(
                             $request->status,
@@ -349,7 +349,7 @@ class StaffController extends Controller
 
             // Notifier tous les utilisateurs actifs (admins, profs, élèves, parents)
             try {
-                $eventDate = \Carbon\Carbon::parse($event->event_date)->format('d/m/Y');
+                $eventDate = \Carbon\Carbon::parse($event->event_date)->format('d-m-Y');
                 $users = User::where('is_delete', 0)->where('status', 1)->get();
                 foreach ($users as $u) {
                     $u->notify(new NewEventNotification($event->title, $eventDate, $event->event_type));

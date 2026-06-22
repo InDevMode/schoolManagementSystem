@@ -122,6 +122,7 @@
 </template>
 
 <script setup lang="ts">
+import { fmtDate } from '@/utils/dateFormat';
 import { computed, ref } from 'vue';
 import { router } from '@inertiajs/vue3';
 import { PageHeader, AppSelect, AppBadge } from '@/Components/UI';
@@ -206,6 +207,5 @@ const scoreClass = (score: number | null, maxScore: number) => {
     return 'text-danger-600 dark:text-danger-400';
 };
 
-const formatDate = (d: string) =>
-    d ? new Date(d).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' }) : '—';
+const formatDate = fmtDate;
 </script>

@@ -223,6 +223,7 @@
     </div>
 </template>
 
+import { fmtDate } from '@/utils/dateFormat';
 <script setup lang="ts">
 import { ref, computed, h, defineComponent } from 'vue';
 import { Link } from '@inertiajs/vue3';
@@ -351,10 +352,7 @@ const genderLabel = (g?: string) => {
     return g ?? '—';
 };
 
-const formatDate = (d?: string) => {
-    if (!d) return '—';
-    return new Date(d).toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' });
-};
+const formatDate = fmtDate;
 
 // ── Actions ────────────────────────────────────────────────────────────────
 

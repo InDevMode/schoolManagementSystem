@@ -100,6 +100,6 @@ class ExportAllUsers implements FromCollection, WithMapping, WithHeadings, WithC
     private function formatDatetime($date): string
     {
         if (!$date) return '—';
-        try { return Carbon::parse($date)->format('d/m/Y H:i:s'); } catch (\Exception $e) { return '—'; }
+        try { return Carbon::parse($date)->format('d-m-Y H:i:s'); } catch (\Exception $e) { return '—'; }
     }
 }

@@ -409,6 +409,7 @@
 </template>
 
 <script setup lang="ts">
+import { fmtDate } from '@/utils/dateFormat';
 import { ref, computed } from 'vue';
 import { useForm, router } from '@inertiajs/vue3';
 import { PageHeader, AppButton, AppInput, AppSelect, AppModal } from '@/Components/UI';
@@ -553,8 +554,7 @@ const statusLabel = (s: string) => ({
     pending: 'En attente', approved: 'Approuvé', rejected: 'Rejeté',
 }[s] ?? s);
 
-const formatDate = (d: string) =>
-    d ? new Date(d).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' }) : '—';
+const formatDate = fmtDate;
 
 const computeDays = (start: string, end: string) => {
     if (!start || !end) return '—';

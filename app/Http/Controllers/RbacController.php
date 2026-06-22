@@ -35,10 +35,10 @@ class RbacController extends Controller
                 'description'       => $r->description,
                 'is_delete'         => (int) ($r->is_delete ?? 0),
                 'deleted_at'        => $r->deleted_at
-                    ? \Carbon\Carbon::parse($r->deleted_at)->format('d/m/Y H:i')
+                    ? \Carbon\Carbon::parse($r->deleted_at)->format('d-m-Y H:i')
                     : null,
                 'permissions_count' => $r->permissions_count,
-                'created_at'        => $r->created_at?->format('d/m/Y'),
+                'created_at'        => $r->created_at?->format('d-m-Y'),
             ]);
 
         $usedUserTypes = Role::whereNotNull('user_type')->pluck('user_type')->values();
@@ -162,9 +162,9 @@ class RbacController extends Controller
                 'module'     => explode('.', $p->name)[0],
                 'is_delete'  => (int) ($p->is_delete ?? 0),
                 'deleted_at' => $p->deleted_at
-                    ? \Carbon\Carbon::parse($p->deleted_at)->format('d/m/Y H:i')
+                    ? \Carbon\Carbon::parse($p->deleted_at)->format('d-m-Y H:i')
                     : null,
-                'created_at' => $p->created_at?->format('d/m/Y'),
+                'created_at' => $p->created_at?->format('d-m-Y'),
             ]);
 
         $grouped = $permissions

@@ -83,6 +83,7 @@
 </template>
 
 <script setup lang="ts">
+import { fmtDate } from '@/utils/dateFormat';
 import { computed } from 'vue';
 import { PageHeader, AppBadge, AppButton, DataTable } from '@/Components/UI';
 import { stripHtml } from '@/Utils/html';
@@ -153,9 +154,5 @@ const statusLabel = (s: string) => {
     return map[s] ?? s;
 };
 
-const formatDate = (d: string) => {
-    if (!d) return '—';
-    try { return new Date(d).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' }); }
-    catch { return d; }
-};
+const formatDate = fmtDate;
 </script>

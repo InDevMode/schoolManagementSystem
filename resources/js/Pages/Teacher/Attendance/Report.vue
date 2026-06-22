@@ -32,6 +32,7 @@
 </template>
 
 <script setup lang="ts">
+import { fmtDate } from '@/utils/dateFormat';
 import { PageHeader, AppBadge, DataTable } from '@/Components/UI';
 
 interface AttendanceRecord {
@@ -88,6 +89,5 @@ const typeVariant = (type: string | number): 'success' | 'warning' | 'danger' | 
     half_day: 'info',
 }[normalizeType(type)] as any ?? 'gray');
 
-const formatDate = (d: string) =>
-    new Date(d).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' });
+const formatDate = fmtDate;
 </script>

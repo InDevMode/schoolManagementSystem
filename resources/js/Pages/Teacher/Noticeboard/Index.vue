@@ -178,6 +178,7 @@
 </template>
 
 <script setup lang="ts">
+import { fmtDate } from '@/utils/dateFormat';
 import { ref } from 'vue';
 import { PageHeader, AppButton, AppModal, AppPagination } from '@/Components/UI';
 import { stripHtml } from '@/Utils/html';
@@ -214,8 +215,7 @@ const badgeStyles: Record<string, { class: string; label: string }> = {
 const recipientBadge = (r: string) =>
     badgeStyles[r] ?? { class: 'bg-gray-100 dark:bg-gray-700 text-gray-500', label: `Groupe ${r}` };
 
-const formatDate = (d: string) =>
-    d ? new Date(d).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' }) : '—';
+const formatDate = fmtDate;
 
 const stripped = (html: string) => stripHtml(html, 160);
 

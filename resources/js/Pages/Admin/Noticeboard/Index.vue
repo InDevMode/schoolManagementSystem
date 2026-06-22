@@ -363,6 +363,7 @@
 </template>
 
 <script setup lang="ts">
+import { fmtDate } from '@/utils/dateFormat';
 import { ref, computed } from 'vue';
 import { useForm, router, Link } from '@inertiajs/vue3';
 import { PageHeader, AppButton, AppInput, AppModal, AppRichEditor, AppPagination } from '@/Components/UI';
@@ -433,8 +434,7 @@ const form = useForm({
 });
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
-const formatDate = (d: string) =>
-    d ? new Date(d).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' }) : '—';
+const formatDate = fmtDate;
 
 const stripped = (html: string) => stripHtml(html, 160);
 

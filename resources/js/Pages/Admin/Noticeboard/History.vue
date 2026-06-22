@@ -121,6 +121,7 @@
 </template>
 
 <script setup lang="ts">
+import { fmtDate } from '@/utils/dateFormat';
 import { ref } from 'vue';
 import { router, Link } from '@inertiajs/vue3';
 import { PageHeader, AppPagination } from '@/Components/UI';
@@ -151,8 +152,7 @@ defineProps<{
 
 const restoring = ref<number | null>(null);
 
-const formatDate = (d?: string) =>
-    d ? new Date(d).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' }) : '—';
+const formatDate = fmtDate;
 
 const stripped = (html: string) => stripHtml(html, 140);
 

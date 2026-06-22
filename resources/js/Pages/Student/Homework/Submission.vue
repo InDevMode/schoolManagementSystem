@@ -150,6 +150,7 @@
 </template>
 
 <script setup lang="ts">
+import { fmtDate } from '@/utils/dateFormat';
 import { ref, computed } from 'vue';
 import { router, Link } from '@inertiajs/vue3';
 import { AppButton, FileTypeIcon } from '@/Components/UI';
@@ -186,11 +187,7 @@ const isPastDue = computed(() => {
     return new Date(props.work.submission_date) < new Date();
 });
 
-const formatDate = (d: string) => {
-    if (!d) return '—';
-    try { return new Date(d).toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' }); }
-    catch { return d; }
-};
+const formatDate = fmtDate;
 
 const formatFileSize = (bytes: number) => {
     if (bytes < 1024) return bytes + ' o';

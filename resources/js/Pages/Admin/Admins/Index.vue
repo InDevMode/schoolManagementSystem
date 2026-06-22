@@ -1,4 +1,4 @@
-﻿<template>
+<template>
     <div class="space-y-6">
         <!-- Header -->
         <PageHeader title="Administrateurs" :subtitle="`${admins.total} administrateur(s)`" color="primary">
@@ -276,7 +276,7 @@
                                     <p class="text-primary-200 text-xs mt-0.5">{{ viewTarget.email }}</p>
                                     <div class="flex items-center gap-2 mt-2 flex-wrap">
                                         <span :class="['px-2 py-0.5 rounded-full text-xs font-semibold', viewTarget.status == 1 ? 'bg-emerald-400/30 text-emerald-100' : 'bg-red-400/30 text-red-100']">
-                                            {{ viewTarget.status == 1 ? '✓ Actif' : '✗ Inactif' }}
+                                            {{ viewTarget.status == 1 ? '? Actif' : '? Inactif' }}
                                         </span>
                                         <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-white/10 text-white/80">
                                             <span class="w-1.5 h-1.5 rounded-full" :class="viewTarget.is_online ? 'bg-emerald-400' : 'bg-gray-400'"/>
@@ -354,13 +354,14 @@
 </template>
 
 <script setup lang="ts">
+import { fmtDate } from '@/utils/dateFormat';
 import { ref, computed, h, defineComponent } from 'vue';
 import { router, useForm, Link } from '@inertiajs/vue3';
 import { PageHeader, AppButton, AppInput, AppSelect, AppModal, AppBadge, DataTable, DetailModal } from '@/Components/UI';
 import UserAvatar from '@/Components/Shared/UserAvatar.vue';
 import { useToast } from '@/Composables/useToast';
 
-// ── Composant InfoCard réutilisable ──────────────────────────────────────────
+// -- Composant InfoCard réutilisable ------------------------------------------
 const InfoCard = defineComponent({
     props: {
         label:     { type: String, required: true },
@@ -403,7 +404,7 @@ const props = defineProps<{
 
 const { can, isSuperAdmin } = useCan();
 
-// ── Helpers de permission ────────────────────────────────────────────────────
+// -- Helpers de permission ----------------------------------------------------
 const canView           = computed(() => can('action.admins.view'));
 const canCreate         = computed(() => can('action.admins.create'));
 const canEdit           = computed(() => can('action.admins.edit'));
@@ -468,7 +469,7 @@ const tableRows = computed(() =>
 
 const form = useForm({ name: '', last_name: '', email: '', password: '', status: '1', mobile_number: '' });
 
-// ── Copie dans le presse-papier ───────────────────────────────────────────────
+// -- Copie dans le presse-papier -----------------------------------------------
 const copiedField = ref<string | null>(null);
 let copiedTimeout: ReturnType<typeof setTimeout> | null = null;
 
@@ -543,9 +544,5 @@ const handleResetPassword = async (ids: (string | number)[]) => {
         data.success ? toast.success(data.message) : toast.error(data.message);
     } catch { toast.error('Erreur lors de la réinitialisation.'); }
 };
-const formatDate = (d: string) => {
-    if (!d) return '—';
-    try { return new Date(d).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' }); }
-    catch { return d; }
-};
+const formatDate = fmtDate;
 </script>

@@ -69,6 +69,7 @@ const inputClasses = computed(() => [
     slots.prefix ? 'pl-10' : 'pl-3.5',
     slots.suffix ? 'pr-10' : 'pr-3.5',
     'py-2.5 text-sm',
+    props.type === 'date' || props.type === 'datetime-local' || props.type === 'time' ? 'dt-date-input' : '',
     props.error
         ? 'border-danger-500 focus:ring-danger-500'
         : 'border-gray-300 dark:border-gray-600',

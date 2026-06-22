@@ -423,7 +423,7 @@
         </div>
         <div class="info-row">
             <span class="info-label">Date de naissance :</span>
-            <span class="info-value">{{ !empty($bulletin->date_of_birth) ? \Carbon\Carbon::parse($bulletin->date_of_birth)->format('d/m/Y') : 'N/A' }}</span>
+            <span class="info-value">{{ !empty($bulletin->date_of_birth) ? \Carbon\Carbon::parse($bulletin->date_of_birth)->format('d-m-Y') : 'N/A' }}</span>
         </div>
         <div class="info-row">
             <span class="info-label">Année scolaire :</span>
@@ -535,7 +535,7 @@
 
     <!-- Pied de page -->
     <div class="footer">
-        Bulletin généré le {{ now()->format('d/m/Y à H:i') }} — {{ $schoolName }} — Tous droits réservés
+        Bulletin généré le {{ now()->format('d-m-Y à H:i') }} — {{ $schoolName }} — Tous droits réservés
     </div>
 
     <!-- Bandeau drapeau bas -->

@@ -481,6 +481,7 @@
 </template>
 
 <script setup lang="ts">
+import { fmtDate } from '@/utils/dateFormat';
 import { ref, computed } from 'vue';
 import { router } from '@inertiajs/vue3';
 import { PageHeader, AppButton, AppInput, AppSelect, AppModal, DataTable, ConfirmDialog, FileTypeIcon } from '@/Components/UI';
@@ -582,11 +583,7 @@ const columns = [
 ];
 
 // ─── Utilitaires ──────────────────────────────────────────────────────────────
-const formatDate = (d: string) => {
-    if (!d) return '—';
-    try { return new Date(d).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' }); }
-    catch { return d; }
-};
+const formatDate = fmtDate;
 
 const formatFileSize = (bytes: number) => {
     if (bytes < 1024) return bytes + ' o';

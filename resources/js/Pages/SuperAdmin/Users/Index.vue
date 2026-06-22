@@ -1,7 +1,7 @@
-﻿<template>
+<template>
     <div class="space-y-6" @click="closeContextMenu">
 
-        <!-- â”€â”€ Header â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
+        <!-- ââ Header âââââââââââââââââââââââââââââââââââââââââââââââââââââââ -->
         <PageHeader title="Tous les utilisateurs" :subtitle="`${users.total} utilisateur(s) au total`" color="violet">
             <template #icon>
                 <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -26,7 +26,7 @@
             </template>
         </PageHeader>
 
-        <!-- â”€â”€ Bannià¨re â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
+        <!-- ââ Bannià¨re ââââââââââââââââââââââââââââââââââââââââââââââââââââââ -->
         <div v-if="isSuperAdmin" class="flex items-center gap-2.5 px-4 py-2.5 rounded-xl
                     bg-violet-50 dark:bg-violet-900/20 border border-violet-200 dark:border-violet-700 text-sm">
             <svg class="w-4 h-4 text-violet-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -34,10 +34,10 @@
                       d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
             </svg>
             <span class="text-violet-700 dark:text-violet-300 font-medium">Vue Super Admin</span>
-            <span class="text-violet-600 dark:text-violet-400">— Double-clic sur une cellule pour éditer . Clic droit pour le menu rapide</span>
+            <span class="text-violet-600 dark:text-violet-400"> Double-clic sur une cellule pour éditer . Clic droit pour le menu rapide</span>
         </div>
 
-        <!-- â”€â”€ Filtres â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
+        <!-- ââ Filtres âââââââââââââââââââââââââââââââââââââââââââââââââââââââ -->
         <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm p-4">
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3">
                 <input v-model="filters.name"          type="text" placeholder="Nom..."       class="input-field" @keyup.enter="applyFilters"/>
@@ -86,7 +86,7 @@
             </div>
         </div>
 
-        <!-- â”€â”€ Tableau â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
+        <!-- ââ Tableau âââââââââââââââââââââââââââââââââââââââââââââââââââââââ -->
         <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm overflow-hidden">
 
             <!-- Barre sélection en masse -->
@@ -216,7 +216,7 @@
                                 <td class="px-4 py-3 whitespace-nowrap" @dblclick="canEdit && openEdit(u)">
                                     <div class="group/tel flex items-center gap-1">
                                         <span class="text-sm font-mono text-gray-600 dark:text-gray-400">
-                                            {{ u.mobile_number ?? '—' }}
+                                            {{ u.mobile_number ?? '' }}
                                         </span>
                                         <button v-if="u.mobile_number"
                                             type="button"
@@ -256,7 +256,7 @@
                                 <!-- École -->
                                 <td class="px-4 py-3 max-w-[150px]">
                                     <span class="text-xs text-gray-600 dark:text-gray-400 truncate block" :title="u.school_name ?? ''">
-                                        {{ u.school_name ?? '—' }}
+                                        {{ u.school_name ?? '' }}
                                     </span>
                                 </td>
 
@@ -380,9 +380,9 @@
             </div>
         </div>
 
-        <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+        <!-- ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
              MENU CONTEXTUEL (clic droit)
-        â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+        ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ -->
         <Teleport to="body">
             <Transition enter-active-class="transition duration-100 ease-out" enter-from-class="opacity-0 scale-95"
                         enter-to-class="opacity-100 scale-100" leave-active-class="transition duration-75 ease-in"
@@ -444,9 +444,9 @@
             </Transition>
         </Teleport>
 
-        <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+        <!-- ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
              MODAL VOIR DÉTAILS
-        â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+        ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ -->
         <Teleport to="body">
             <Transition enter-active-class="transition duration-200 ease-out" enter-from-class="opacity-0" enter-to-class="opacity-100"
                         leave-active-class="transition duration-150 ease-in" leave-from-class="opacity-100" leave-to-class="opacity-0">
@@ -478,7 +478,7 @@
                                     <div class="flex items-center gap-2 mt-2 flex-wrap">
                                         <span class="px-2 py-0.5 rounded-full text-xs font-semibold"
                                               :class="viewTarget.status == 1 ? 'bg-emerald-400/30 text-emerald-100' : 'bg-red-400/30 text-red-100'">
-                                            {{ viewTarget.status == 1 ? 'âœ“ Actif' : 'âœ— Inactif' }}
+                                            {{ viewTarget.status == 1 ? 'â Actif' : 'â Inactif' }}
                                         </span>
                                         <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-white/10 text-white/80">
                                             <span class="w-1.5 h-1.5 rounded-full" :class="viewTarget.is_online ? 'bg-emerald-400' : 'bg-gray-400'"/>
@@ -492,9 +492,9 @@
                         <div class="p-5 grid grid-cols-2 gap-3">
                             <div class="info-card"><p class="info-label">Rôle</p><p class="text-sm font-semibold text-violet-700 dark:text-violet-400">{{ viewTarget.role_label }}</p></div>
                             <div class="info-card"><p class="info-label">Permissions</p><p class="text-sm font-bold text-gray-800 dark:text-gray-200">{{ viewTarget.permissions_count }}</p></div>
-                            <div class="info-card"><p class="info-label">Téléphone</p><p class="text-sm font-mono text-gray-700 dark:text-gray-300">{{ viewTarget.mobile_number ?? '—' }}</p></div>
+                            <div class="info-card"><p class="info-label">Téléphone</p><p class="text-sm font-mono text-gray-700 dark:text-gray-300">{{ viewTarget.mobile_number ?? '' }}</p></div>
                             <div class="info-card"><p class="info-label">Créé le</p><p class="text-sm text-gray-700 dark:text-gray-300">{{ formatDate(viewTarget.created_at) }}</p></div>
-                            <div class="info-card col-span-2"><p class="info-label">École</p><p class="text-sm text-gray-700 dark:text-gray-300">{{ viewTarget.school_name ?? '—' }}</p></div>
+                            <div class="info-card col-span-2"><p class="info-label">École</p><p class="text-sm text-gray-700 dark:text-gray-300">{{ viewTarget.school_name ?? '' }}</p></div>
                         </div>
                         <!-- Footer -->
                         <div class="flex gap-2 px-5 pb-5">
@@ -517,9 +517,9 @@
             </Transition>
         </Teleport>
 
-        <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+        <!-- ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
              MODAL MODIFICATION
-        â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+        ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ -->
         <Teleport to="body">
             <Transition enter-active-class="transition duration-200 ease-out" enter-from-class="opacity-0" enter-to-class="opacity-100"
                         leave-active-class="transition duration-150 ease-in" leave-from-class="opacity-100" leave-to-class="opacity-0">
@@ -614,9 +614,9 @@
             </Transition>
         </Teleport>
 
-        <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+        <!-- ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
              MODAL CONFIRMATION RÉINITIALISATION MDP
-        â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+        ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ -->
         <Teleport to="body">
             <Transition enter-active-class="transition duration-200 ease-out" enter-from-class="opacity-0" enter-to-class="opacity-100"
                         leave-active-class="transition duration-150 ease-in" leave-from-class="opacity-100" leave-to-class="opacity-0">
@@ -657,9 +657,9 @@
             </Transition>
         </Teleport>
 
-        <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+        <!-- ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
              MODAL CONFIRMATION SUPPRESSION
-        â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+        ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ -->
         <Teleport to="body">
             <Transition enter-active-class="transition duration-200 ease-out" enter-from-class="opacity-0" enter-to-class="opacity-100"
                         leave-active-class="transition duration-150 ease-in" leave-from-class="opacity-100" leave-to-class="opacity-0">
@@ -674,7 +674,7 @@
                             </div>
                             <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-1">Supprimer l'utilisateur</h3>
                             <p class="text-sm text-gray-500 dark:text-gray-400">
-                                àŠtes-vous sà»r de vouloir supprimer
+                                àtes-vous sà»r de vouloir supprimer
                                 <strong class="text-gray-800 dark:text-gray-200">{{ deleteTarget.last_name }} {{ deleteTarget.name }}</strong> ?
                                 Cette action est réversible depuis les journaux.
                             </p>
@@ -704,6 +704,7 @@
 </template>
 
 <script setup lang="ts">
+import { fmtDate } from '@/utils/dateFormat';
 import { ref, reactive, computed, onMounted, onUnmounted } from 'vue';
 import { router, Link } from '@inertiajs/vue3';
 import { useToast } from '@/Composables/useToast';
@@ -712,7 +713,7 @@ import AppLayout from '@/Layouts/AppLayout.vue';
 
 defineOptions({ layout: AppLayout });
 
-// â”€â”€ Types â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ââ Types âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 interface UserRow {
     id: number;
     name: string;
@@ -751,11 +752,11 @@ const props = defineProps<{
 }>();
 const toast = useToast();
 
-// â”€â”€ CSRF helper â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ââ CSRF helper âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 const csrf = () =>
     (document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement)?.content ?? '';
 
-// â”€â”€ Filtres â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ââ Filtres âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 const filters    = reactive({ name: '', last_name: '', email: '', mobile_number: '', user_type: '', status: '' });
 const perPage    = ref(5);
 
@@ -776,7 +777,7 @@ const resetFilters = () => {
 };
 const goToPage = (url: string) => router.get(url, {}, { preserveState: true });
 
-// â”€â”€ Sélection â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ââ Sélection âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 const selectedIds = ref<number[]>([]);
 const allSelected = computed(() =>
     props.users.data.length > 0 && props.users.data.every(u => selectedIds.value.includes(u.id))
@@ -789,7 +790,7 @@ const toggleSelect = (id: number) => {
     i === -1 ? selectedIds.value.push(id) : selectedIds.value.splice(i, 1);
 };
 
-// â”€â”€ Copie presse-papier â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ââ Copie presse-papier âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 const copied = ref<string | null>(null);
 let copyTimer: ReturnType<typeof setTimeout> | null = null;
 const copy = (text: string, key: string) => {
@@ -800,7 +801,7 @@ const copy = (text: string, key: string) => {
     }).catch(() => toast.error('Impossible de copier.'));
 };
 
-// â”€â”€ Contexte menu (clic droit) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ââ Contexte menu (clic droit) ââââââââââââââââââââââââââââââââââââââââââââââââ
 const ctxMenu = reactive<{ visible: boolean; x: number; y: number; user: UserRow | null }>({
     visible: false, x: 0, y: 0, user: null,
 });
@@ -826,11 +827,11 @@ onUnmounted(() => {
 });
 const onEsc = (e: KeyboardEvent) => { if (e.key === 'Escape') closeContextMenu(); };
 
-// â”€â”€ Modal Voir â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ââ Modal Voir ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 const viewTarget = ref<UserRow | null>(null);
 const openView   = (u: UserRow) => { viewTarget.value = u; };
 
-// â”€â”€ Modal Modifier â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ââ Modal Modifier ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 const editTarget = ref<UserRow | null>(null);
 const editForm   = reactive({ name: '', last_name: '', email: '', mobile_number: '', status: '1', user_type: 1 });
 const saving     = ref(false);
@@ -879,7 +880,7 @@ const submitEdit = async () => {
     }
 };
 
-// â”€â”€ Réinitialisation MDP (individuelle + masse) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ââ Réinitialisation MDP (individuelle + masse) ââââââââââââââââââââââââââââââââ
 const resetTarget = ref<UserRow | null>(null);
 const resetting   = ref(false);
 
@@ -921,7 +922,7 @@ const executeReset = async () => {
     }
 };
 
-// â”€â”€ Suppression â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ââ Suppression âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 const deleteTarget = ref<UserRow | null>(null);
 const deleting     = ref(false);
 
@@ -949,8 +950,8 @@ const executeDelete = async () => {
     }
 };
 
-// â”€â”€ Helpers visuels â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-const formatDate = (d: string) => d ? new Date(d).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' }) : '—';
+// ââ Helpers visuels âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+const formatDate = fmtDate;
 const initials   = (u: UserRow) => ((u.last_name?.[0] ?? '') + (u.name?.[0] ?? '')).toUpperCase() || '?';
 const encodedId  = (id: number) => btoa(String(id));
 

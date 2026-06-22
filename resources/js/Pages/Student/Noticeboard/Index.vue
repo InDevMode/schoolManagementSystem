@@ -101,6 +101,7 @@
 </template>
 
 <script setup lang="ts">
+import { fmtDate } from '@/utils/dateFormat';
 import { ref, computed } from 'vue';
 import { PageHeader, AppButton, AppModal, AppPagination } from '@/Components/UI';
 import { stripHtml } from '@/Utils/html';
@@ -134,8 +135,7 @@ const activeNotices = computed(() =>
 const showDetail   = ref(false);
 const detailTarget = ref<Notice | null>(null);
 
-const formatDate = (d: string) =>
-    d ? new Date(d).toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' }) : '—';
+const formatDate = fmtDate;
 
 const stripped = (html: string) => stripHtml(html, 160);
 

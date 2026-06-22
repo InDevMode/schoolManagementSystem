@@ -111,6 +111,7 @@
 </template>
 
 <script setup lang="ts">
+import { fmtDate } from '@/utils/dateFormat';
 import { computed, ref } from 'vue';
 import { router } from '@inertiajs/vue3';
 import { PageHeader, DataTable, AppBadge } from '@/Components/UI';
@@ -164,11 +165,7 @@ const tableRef = ref<InstanceType<typeof DataTable> | null>(null);
 const formatAmount = (n: number) =>
     new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'XOF', maximumFractionDigits: 0 }).format(n ?? 0);
 
-const formatDate = (d: string) => {
-    if (!d) return '—';
-    try { return new Date(d).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }); }
-    catch { return d; }
-};
+const formatDate = fmtDate;
 
 const paymentLabel = (type: string) => ({
     cash: 'Espèces', check: 'Chèque', transfer: 'Virement',

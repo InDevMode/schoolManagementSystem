@@ -337,6 +337,7 @@
 </template>
 
 <script setup lang="ts">
+import { fmtDate } from '@/utils/dateFormat';
 import { ref, reactive } from 'vue';
 import { router, usePage } from '@inertiajs/vue3';
 import { PageHeader, AppInput, AppSelect, AppModal, AppAlert } from '@/Components/UI';
@@ -397,8 +398,7 @@ const formErrors = reactive<Record<string, string>>({});
 
 // ── Helpers ─────────────────────────────────────────────────────────────────
 
-const formatDate = (d: string) =>
-    d ? new Date(d).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' }) : '—';
+const formatDate = fmtDate;
 
 const applyFilters = () => {
     router.get('/superadmin/schools', { ...filters }, { preserveState: true, replace: true });
