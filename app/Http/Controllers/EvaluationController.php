@@ -51,6 +51,7 @@ class EvaluationController extends Controller
             $coefficient  = $classSubject?->coefficient ?? 1;
 
             $eval              = new EvaluationModel;
+            $eval->school_id   = Auth::user()?->school_id ?? null;
             $eval->class_id    = $request->class_id;
             $eval->subject_id  = $request->subject_id;
             $eval->period_id   = $request->period_id;
@@ -688,6 +689,7 @@ class EvaluationController extends Controller
             $coefficient  = $classSubject?->coefficient ?? 1;
 
             $eval              = new EvaluationModel;
+            $eval->school_id   = Auth::user()?->school_id ?? null;
             $eval->class_id    = $request->class_id;
             $eval->subject_id  = $request->subject_id;
             $eval->period_id   = $request->period_id;

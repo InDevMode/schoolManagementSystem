@@ -56,6 +56,9 @@ class StaffModel extends Model
      */
     public static function getAll(int $perPage)
     {
+        $currentUser  = Auth::user();
+        $isSuperAdmin = $currentUser && (int) $currentUser->user_type === 0;
+
         $q = self::select(
             'staff.*',
             'users.name',
@@ -68,6 +71,11 @@ class StaffModel extends Model
         )
             ->join('users', 'users.id', '=', 'staff.user_id')
             ->where('staff.is_delete', 0);
+
+        // Scoping multi-tenant : un admin ne voit que le personnel de son école
+        if (! $isSuperAdmin && $currentUser) {
+            $q->where('staff.school_id', $currentUser->school_id);
+        }
 
         if ($v = Request::get('role'))   $q->where('staff.role', $v);
         if ($v = Request::get('status')) $q->where('staff.status', $v);

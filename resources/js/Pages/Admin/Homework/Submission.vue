@@ -7,8 +7,13 @@
                 </svg>
             </template>
             <template #actions>
-                <Link href="/admin/practicalworks/homework/list" class="inline-flex items-center gap-2 px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-700 text-sm font-medium text-gray-500 hover:text-primary-600 hover:border-primary-400 dark:text-gray-400 dark:hover:text-primary-400 transition-colors">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
+                <Link href="/admin/practicalworks/reports"
+                    class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-medium transition-all duration-150
+                           text-white bg-gray-500 hover:bg-gray-600 active:bg-gray-700
+                           shadow-sm shadow-gray-200 dark:shadow-gray-900/40">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                    </svg>
                     Retour
                 </Link>
             </template>
@@ -25,7 +30,7 @@
                 <span class="font-medium text-gray-900 dark:text-white">{{ row.student_last_name }} {{ row.student_name }}</span>
             </template>
             <template #cell-status="{ row }">
-                <AppBadge variant="success" dot>{{ row.status }}</AppBadge>
+                <AppBadge :variant="statusVariant(row.status as string)" dot>{{ statusLabel(row.status as string) }}</AppBadge>
             </template>
             <template #cell-document_file="{ row }">
                     <div v-if="row.document_file" class="flex items-center gap-1.5">
@@ -109,4 +114,7 @@ const columns = [
 ];
 
 const formatDate = fmtDate;
+
+const statusVariant = (s: string) => ({ hold: 'warning', submitted: 'success', done: 'primary', processed: 'secondary', resolved: 'success' }[s] ?? 'warning') as any;
+const statusLabel   = (s: string) => ({ hold: 'En attente', submitted: 'Soumis', done: 'Fait', processed: 'Traité', resolved: 'Résolu' }[s] ?? s);
 </script>

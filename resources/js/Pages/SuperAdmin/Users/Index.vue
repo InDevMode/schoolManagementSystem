@@ -115,18 +115,18 @@
                 <table class="w-full text-sm">
                     <thead>
                         <tr class="border-b border-gray-100 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/50">
-                            <th class="px-4 py-3 text-left w-10">
+                            <th class="px-4 py-1.5 text-left w-10">
                                 <input type="checkbox" class="checkbox-field" :checked="allSelected" @change="toggleSelectAll"/>
                             </th>
-                            <th class="px-4 py-3 text-left font-semibold text-gray-600 dark:text-gray-300 whitespace-nowrap">Utilisateur</th>
-                            <th class="px-4 py-3 text-left font-semibold text-gray-600 dark:text-gray-300 whitespace-nowrap">Email</th>
-                            <th class="px-4 py-3 text-left font-semibold text-gray-600 dark:text-gray-300 whitespace-nowrap">Téléphone</th>
-                            <th class="px-4 py-3 text-left font-semibold text-gray-600 dark:text-gray-300 whitespace-nowrap">Rôle</th>
-                            <th class="px-4 py-3 text-center font-semibold text-gray-600 dark:text-gray-300 whitespace-nowrap">Permissions</th>
-                            <th class="px-4 py-3 text-left font-semibold text-gray-600 dark:text-gray-300 whitespace-nowrap">École</th>
-                            <th class="px-4 py-3 text-center font-semibold text-gray-600 dark:text-gray-300 whitespace-nowrap">Statut</th>
-                            <th class="px-4 py-3 text-left font-semibold text-gray-600 dark:text-gray-300 whitespace-nowrap">Créé le</th>
-                            <th class="px-4 py-3 text-right font-semibold text-gray-600 dark:text-gray-300 whitespace-nowrap pr-5">Actions</th>
+                            <th class="px-4 py-1.5 text-left font-semibold text-gray-600 dark:text-gray-300 whitespace-nowrap">Utilisateur</th>
+                            <th class="px-4 py-1.5 text-left font-semibold text-gray-600 dark:text-gray-300 whitespace-nowrap">Email</th>
+                            <th class="px-4 py-1.5 text-left font-semibold text-gray-600 dark:text-gray-300 whitespace-nowrap">Téléphone</th>
+                            <th class="px-4 py-1.5 text-left font-semibold text-gray-600 dark:text-gray-300 whitespace-nowrap">Rôle</th>
+                            <th class="px-4 py-1.5 text-center font-semibold text-gray-600 dark:text-gray-300 whitespace-nowrap">Permissions</th>
+                            <th class="px-4 py-1.5 text-left font-semibold text-gray-600 dark:text-gray-300 whitespace-nowrap">École</th>
+                            <th class="px-4 py-1.5 text-center font-semibold text-gray-600 dark:text-gray-300 whitespace-nowrap">Statut</th>
+                            <th class="px-4 py-1.5 text-left font-semibold text-gray-600 dark:text-gray-300 whitespace-nowrap">Créé le</th>
+                            <th class="px-4 py-1.5 text-right font-semibold text-gray-600 dark:text-gray-300 whitespace-nowrap pr-5">Actions</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-50 dark:divide-gray-700/50">
@@ -139,14 +139,14 @@
                                 @contextmenu.prevent="openContextMenu($event, u)">
 
                                 <!-- Checkbox -->
-                                <td class="px-4 py-3">
+                                <td class="px-4 py-1.5">
                                     <input type="checkbox" class="checkbox-field"
                                            :checked="selectedIds.includes(u.id)"
                                            @change="toggleSelect(u.id)"/>
                                 </td>
 
                                 <!-- Utilisateur -->
-                                <td class="px-4 py-3" @dblclick="canEdit && openEdit(u)">
+                                <td class="px-4 py-1.5" @dblclick="canEdit && openEdit(u)">
                                     <div class="flex items-center gap-3 min-w-[180px]">
                                         <div class="relative flex-shrink-0">
                                             <img v-if="u.profile_picture"
@@ -189,7 +189,7 @@
                                 </td>
 
                                 <!-- Email -->
-                                <td class="px-4 py-3 max-w-[200px]" @dblclick="canEdit && openEdit(u)">
+                                <td class="px-4 py-1.5 max-w-[200px]" @dblclick="canEdit && openEdit(u)">
                                     <div class="group/email flex items-center gap-1">
                                         <span class="text-sm text-gray-700 dark:text-gray-300 truncate" :title="u.email">
                                             {{ u.email }}
@@ -213,7 +213,7 @@
                                 </td>
 
                                 <!-- Téléphone -->
-                                <td class="px-4 py-3 whitespace-nowrap" @dblclick="canEdit && openEdit(u)">
+                                <td class="px-4 py-1.5 whitespace-nowrap" @dblclick="canEdit && openEdit(u)">
                                     <div class="group/tel flex items-center gap-1">
                                         <span class="text-sm font-mono text-gray-600 dark:text-gray-400">
                                             {{ u.mobile_number ?? '' }}
@@ -237,7 +237,7 @@
                                 </td>
 
                                 <!-- Rôle -->
-                                <td class="px-4 py-3 whitespace-nowrap" @dblclick="canEdit && openEdit(u)">
+                                <td class="px-4 py-1.5 whitespace-nowrap" @dblclick="canEdit && openEdit(u)">
                                     <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold"
                                           :class="roleStyle(u.user_type).badge">
                                         <span class="w-1.5 h-1.5 rounded-full flex-shrink-0" :class="roleStyle(u.user_type).dot"/>
@@ -246,7 +246,7 @@
                                 </td>
 
                                 <!-- Permissions -->
-                                <td class="px-4 py-3 text-center">
+                                <td class="px-4 py-1.5 text-center">
                                     <span class="inline-flex items-center justify-center min-w-[2rem] px-2 py-0.5 rounded-full text-xs font-bold"
                                           :class="permBadgeClass(u.permissions_count)">
                                         {{ u.permissions_count }}
@@ -254,14 +254,14 @@
                                 </td>
 
                                 <!-- École -->
-                                <td class="px-4 py-3 max-w-[150px]">
+                                <td class="px-4 py-1.5 max-w-[150px]">
                                     <span class="text-xs text-gray-600 dark:text-gray-400 truncate block" :title="u.school_name ?? ''">
                                         {{ u.school_name ?? '' }}
                                     </span>
                                 </td>
 
                                 <!-- Statut -->
-                                <td class="px-4 py-3 text-center">
+                                <td class="px-4 py-1.5 text-center">
                                     <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold"
                                           :class="u.status == 1
                                             ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-400'
@@ -273,12 +273,12 @@
                                 </td>
 
                                 <!-- Date -->
-                                <td class="px-4 py-3 whitespace-nowrap">
+                                <td class="px-4 py-1.5 whitespace-nowrap">
                                     <span class="text-xs text-gray-500 dark:text-gray-400">{{ formatDate(u.created_at) }}</span>
                                 </td>
 
                                 <!-- Actions -->
-                                <td class="px-4 py-3 pr-5">
+                                <td class="px-4 py-1.5 pr-5">
                                     <div class="flex items-center justify-end gap-1.5">
                                         <!-- Voir -->
                                         <button @click="openView(u)" title="Voir les détails"

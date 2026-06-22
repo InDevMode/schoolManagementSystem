@@ -44,14 +44,15 @@
         <div class="card overflow-hidden">
             <div class="overflow-x-auto">
                 <table class="w-full text-sm">
-                    <thead>
-                        <tr class="border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/80">
-                            <th class="text-left px-5 py-3.5 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Membre</th>
-                            <th class="text-left px-5 py-3.5 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Type de congé</th>
-                            <th class="text-left px-5 py-3.5 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Période</th>
-                            <th class="text-center px-5 py-3.5 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Durée</th>
-                            <th class="text-center px-5 py-3.5 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Statut</th>
-                            <th class="text-right px-5 py-3.5 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Actions</th>
+                    <thead class="sticky top-0 z-10">
+                        <tr class="border-b-2 border-primary-700/40"
+                            style="background: linear-gradient(135deg, #7B74F0, #9189f5);">
+                            <th class="px-4 py-2.5 text-left text-[12px] font-bold uppercase tracking-wider whitespace-nowrap text-white">Membre</th>
+                            <th class="px-4 py-2.5 text-left text-[12px] font-bold uppercase tracking-wider whitespace-nowrap text-white">Type de congé</th>
+                            <th class="px-4 py-2.5 text-left text-[12px] font-bold uppercase tracking-wider whitespace-nowrap text-white">Période</th>
+                            <th class="px-4 py-2.5 text-center text-[12px] font-bold uppercase tracking-wider whitespace-nowrap text-white">Durée</th>
+                            <th class="px-4 py-2.5 text-center text-[12px] font-bold uppercase tracking-wider whitespace-nowrap text-white">Statut</th>
+                            <th class="px-4 py-2.5 text-right text-[12px] font-bold uppercase tracking-wider whitespace-nowrap text-white pr-5">Actions</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-100 dark:divide-gray-700/60">
@@ -73,17 +74,17 @@
                             class="group hover:bg-primary-50/40 dark:hover:bg-primary-900/10 transition-colors">
 
                             <!-- Membre -->
-                            <td class="px-5 py-4">
-                                <div class="flex items-center gap-3 min-w-[160px]">
-                                    <div class="w-9 h-9 rounded-full flex-shrink-0 flex items-center justify-center text-sm font-bold text-white shadow-sm"
+                            <td class="px-4 py-1.5">
+                                <div class="flex items-center gap-2 min-w-[160px]">
+                                    <div class="w-7 h-7 rounded-full flex-shrink-0 flex items-center justify-center text-xs font-bold text-white shadow-sm"
                                         :style="{ background: avatarColor(row.last_name) }">
                                         {{ (row.last_name?.[0] ?? '?').toUpperCase() }}
                                     </div>
                                     <div>
-                                        <p class="text-sm font-semibold text-gray-900 dark:text-white leading-snug">
+                                        <p class="text-xs font-semibold text-gray-900 dark:text-white leading-snug">
                                             {{ row.last_name }} {{ row.first_name }}
                                         </p>
-                                        <p class="text-xs text-gray-400 dark:text-gray-500 leading-snug">
+                                        <p class="text-[10px] text-gray-400 dark:text-gray-500 leading-snug">
                                             {{ roleLabels[row.staff_role] ?? row.staff_role }}
                                         </p>
                                     </div>
@@ -91,7 +92,7 @@
                             </td>
 
                             <!-- Type -->
-                            <td class="px-5 py-4">
+                            <td class="px-4 py-1.5">
                                 <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border"
                                     :style="{
                                         background: (row.leave_type_color ?? '#6366f1') + '18',
@@ -105,7 +106,7 @@
                             </td>
 
                             <!-- Période -->
-                            <td class="px-5 py-4 min-w-[200px]">
+                            <td class="px-5 py-2 min-w-[200px]">
                                 <div class="flex items-center gap-1.5 text-sm text-gray-700 dark:text-gray-300">
                                     <svg class="w-3.5 h-3.5 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
@@ -124,7 +125,7 @@
                             </td>
 
                             <!-- Durée -->
-                            <td class="px-5 py-4 text-center">
+                            <td class="px-5 py-2 text-center">
                                 <span v-if="row.end_date"
                                     class="inline-flex items-center justify-center px-2.5 py-1 rounded-xl text-xs font-bold
                                            bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
@@ -134,7 +135,7 @@
                             </td>
 
                             <!-- Statut -->
-                            <td class="px-5 py-4 text-center">
+                            <td class="px-5 py-2 text-center">
                                 <span :class="['inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border', statusClass(row.status)]">
                                     <span class="w-1.5 h-1.5 rounded-full flex-shrink-0" :class="statusDotClass(row.status)"/>
                                     {{ statusLabel(row.status) }}
@@ -142,7 +143,7 @@
                             </td>
 
                             <!-- Actions -->
-                            <td class="px-5 py-4">
+                            <td class="px-4 py-1.5">
                                 <div class="flex items-center justify-end gap-1.5">
                                     <!-- Approuver + Rejeter uniquement si en attente -->
                                     <template v-if="row.status === 'pending'">

@@ -19,11 +19,11 @@
         </PageHeader>
 
         <!-- Mini calendrier des prochains événements -->
-        <div v-if="calendarEvents.length" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+        <div v-if="calendarEvents.length" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
             <div v-for="ev in calendarEvents.slice(0, 6)" :key="ev.id"
-                class="flex items-center gap-3 p-4 rounded-xl border border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-800 hover:shadow-sm transition-shadow">
+                class="flex items-center gap-2.5 p-2.5 rounded-xl border border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-800 hover:shadow-sm transition-shadow">
                 <!-- Couleur + date -->
-                <div class="flex-shrink-0 flex flex-col items-center justify-center w-12 h-12 rounded-xl text-white font-bold"
+                <div class="flex-shrink-0 flex flex-col items-center justify-center w-9 h-9 rounded-xl text-white font-bold"
                     :style="{ background: ev.color }">
                     <span class="text-xs leading-none">{{ new Date(ev.start).toLocaleDateString('fr-FR', { day: '2-digit' }) }}</span>
                     <span class="text-[9px] leading-none mt-0.5 uppercase">
@@ -31,8 +31,8 @@
                     </span>
                 </div>
                 <div class="flex-1 min-w-0">
-                    <p class="text-sm font-semibold text-gray-900 dark:text-white truncate">{{ ev.title }}</p>
-                    <p class="text-xs text-gray-400 truncate">{{ typeLabels[ev.extendedProps.type] ?? ev.extendedProps.type }}</p>
+                    <p class="text-xs font-semibold text-gray-900 dark:text-white truncate">{{ ev.title }}</p>
+                    <p class="text-[10px] text-gray-400 truncate">{{ typeLabels[ev.extendedProps.type] ?? ev.extendedProps.type }}</p>
                 </div>
             </div>
         </div>

@@ -13,7 +13,7 @@ class EvaluationModel extends Model
     protected $table = 'evaluations';
 
     protected $fillable = [
-        'exam_id', 'class_id', 'subject_id', 'teacher_id', 'period_id',
+        'school_id', 'exam_id', 'class_id', 'subject_id', 'teacher_id', 'period_id',
         'type', 'coefficient', 'max_score', 'eval_date', 'title',
         'status', 'created_by',
     ];
@@ -50,6 +50,9 @@ class EvaluationModel extends Model
      */
     public static function getAll(int $perPage)
     {
+        $user         = \Illuminate\Support\Facades\Auth::user();
+        $isSuperAdmin = $user && (int) $user->user_type === 0;
+
         $q = self::select(
             'evaluations.*',
             'class.name as class_name',
@@ -63,6 +66,11 @@ class EvaluationModel extends Model
             ->leftJoin('periods', 'periods.id', '=', 'evaluations.period_id')
             ->leftJoin('users as teacher', 'teacher.id', '=', 'evaluations.teacher_id')
             ->where('evaluations.is_delete', 0);
+
+        // Multi-tenant : un admin ne voit que les évaluations de son école
+        if (! $isSuperAdmin && $user && $user->school_id) {
+            $q->where('evaluations.school_id', $user->school_id);
+        }
 
         if ($v = Request::get('class_id'))   $q->where('evaluations.class_id', $v);
         if ($v = Request::get('subject_id')) $q->where('evaluations.subject_id', $v);

@@ -763,7 +763,7 @@ defineExpose({ clearSelection, selected, filteredRows, confirmDelete, confirmRes
             <label v-for="col in columns" :key="col.key"
                    class="flex items-center gap-2.5 px-3 py-1.5 hover:bg-gray-50 dark:hover:bg-gray-700/50 cursor-pointer transition-colors">
               <input type="checkbox" :checked="visibleKeys.includes(col.key)"
-                     class="w-4 h-4 rounded border-gray-300 dark:border-gray-600 cursor-pointer"
+                     class="w-4 h-4 rounded border-2 border-gray-400 dark:border-gray-500 cursor-pointer"
                      style="accent-color:#7B74F0"
                      @change="visibleKeys.includes(col.key) ? visibleKeys = visibleKeys.filter(k => k !== col.key) : visibleKeys.push(col.key)"/>
               <span class="text-sm text-gray-700 dark:text-gray-300 truncate">{{ col.label }}</span>
@@ -849,7 +849,7 @@ defineExpose({ clearSelection, selected, filteredRows, confirmDelete, confirmRes
             <th v-if="selectable" :class="[headerDensityClass, 'w-10']"
                 style="background: transparent;">
               <input type="checkbox" :checked="allSelected" :indeterminate="someSelected"
-                     class="cursor-pointer"
+                     class="cursor-pointer w-4 h-4 rounded border-2 border-white/70"
                      style="accent-color:#fff;"
                      @change="toggleAll" aria-label="Sélectionner tout"/>
             </th>
@@ -956,7 +956,7 @@ defineExpose({ clearSelection, selected, filteredRows, confirmDelete, confirmRes
               <td v-if="selectable" :class="[densityClass, 'w-10 border-b border-gray-100 dark:border-gray-700/60']">
                 <input type="checkbox"
                        :checked="selected.includes(rowId(row))"
-                       class="cursor-pointer"
+                       class="cursor-pointer w-4 h-4 rounded border-4 border-gray-200 dark:border-gray-500"
                        style="accent-color:#7c3aed"
                        @change="toggleRow(row, idx, $event as MouseEvent)"
                        :aria-label="`Sélectionner la ligne ${idx + 1}`"/>

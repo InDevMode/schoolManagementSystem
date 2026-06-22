@@ -285,6 +285,7 @@ import { useForm, router, Link } from '@inertiajs/vue3';
 import { PageHeader, AppButton, AppInput, AppSelect, AppModal, DataTable, AppBadge } from '@/Components/UI';
 import { useCan } from '@/Composables/useCan';
 import { useToast } from '@/Composables/useToast';
+import { fmtDate } from '@/Utils/dateFormat';
 import axios from 'axios';
 
 const { can, isSuperAdmin } = useCan();
@@ -506,7 +507,7 @@ const columns = [
     { key: 'type',         label: 'Type'    },
     { key: 'coefficient',  label: 'Coeff.'  },
     { key: 'max_score',    label: 'Sur'     },
-    { key: 'eval_date',    label: 'Date'    },
+    { key: 'eval_date',    label: 'Date',    format: (v: unknown) => fmtDate(v as string) },
     { key: 'period_name',  label: 'Période' },
     { key: 'status',       label: 'Statut', exportFormat: (v: unknown) => ({ draft: 'Brouillon', open: 'Ouverte', closed: 'Fermée', validated: 'Validée', cancelled: 'Annulée' }[v as string] ?? String(v ?? '—'))  },
 ];

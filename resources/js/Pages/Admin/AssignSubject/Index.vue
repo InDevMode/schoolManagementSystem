@@ -288,7 +288,6 @@
     </div>
 </template>
 
-import { fmtDate } from '@/utils/dateFormat';
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue';
 import { useForm, router } from '@inertiajs/vue3';
@@ -296,6 +295,7 @@ import { PageHeader, AppButton, AppInput, AppSelect, AppModal, DataTable, AppBad
 import AppMultiSelect from '@/Components/UI/AppMultiSelect.vue';
 import { useCan } from '@/Composables/useCan';
 import { useToast } from '@/Composables/useToast';
+import { fmtDate } from '@/Utils/dateFormat';
 
 const { can } = useCan();
 const canCreate = computed(() => can('action.assign_subjects.create'));

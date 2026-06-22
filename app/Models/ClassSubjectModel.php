@@ -33,6 +33,9 @@ class ClassSubjectModel extends Model
 
     public static function getAllClassSubject(int $perPage): LengthAwarePaginator
     {
+        $user         = Auth::user();
+        $isSuperAdmin = $user && (int) $user->user_type === 0;
+
         $results = ClassSubjectModel::select(
             'class_subject.*',
             'class.name as class_name',
@@ -43,6 +46,11 @@ class ClassSubjectModel extends Model
             ->join('class', 'class.id', '=', 'class_subject.class_id')
             ->join('users', 'users.id', '=', 'class_subject.created_by')
             ->where('class_subject.is_delete', 0);
+
+        // Multi-tenant : un admin ne voit que les assignations de son école
+        if (! $isSuperAdmin && $user && $user->school_id) {
+            $results->where('class.school_id', $user->school_id);
+        }
 
         $filters = [
             'class.name' => strtolower(Request::get('class_name')),

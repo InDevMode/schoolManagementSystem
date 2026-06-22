@@ -24,42 +24,57 @@ class StaffController extends Controller
 
     public function list()
     {
-        $perPage = min((int) request('per_page', 15), 100);
+        $perPage      = min((int) request('per_page', 15), 100);
+        $currentUser  = Auth::user();
+        $isSuperAdmin = $currentUser && (int) $currentUser->user_type === 0;
+
+        // Requête utilisateurs disponibles pour le select du modal
+        $usersQuery = User::select('id', 'name', 'last_name', 'user_type', 'school_id')
+            ->whereIn('user_type', [1, 2])   // admin + teacher uniquement
+            ->where('is_delete', 0)
+            ->where('status', 1)
+            ->orderBy('last_name');
+
+        // Un admin ne voit que les utilisateurs de son école
+        if (! $isSuperAdmin && $currentUser) {
+            $usersQuery->where('school_id', $currentUser->school_id);
+        }
+
         return Inertia::render('Admin/Staff/Index', [
-            'staff'      => StaffModel::getAll($perPage),
-            'roleLabels' => StaffModel::$roles,
-            'users'      => User::select('id', 'name', 'last_name', 'user_type')
-                ->whereIn('user_type', [1, 2])   // admin + teacher uniquement
-                ->where('is_delete', 0)
-                ->where('status', 1)
-                ->orderBy('last_name')
-                ->get(),
+            'staff'        => StaffModel::getAll($perPage),
+            'roleLabels'   => StaffModel::$roles,
+            'users'        => $usersQuery->get(),
+            'isSuperAdmin' => $isSuperAdmin,
+            'schools'      => $isSuperAdmin
+                ? \App\Models\School::where('is_delete', 0)->select('id', 'school_name')->orderBy('school_name')->get()
+                : [],
         ]);
     }
 
     public function create(Request $request)
     {
         $request->validate([
-            'first_name' => 'required|string|max:100',
-            'last_name'  => 'required|string|max:100',
-            'role'       => 'required|string',
-            'status'     => 'required|in:active,inactive,suspended',
+            'user_id' => 'required|integer|exists:users,id',
+            'role'    => 'required|string',
+            'status'  => 'required|in:active,inactive,suspended',
         ]);
 
         try {
+            // Récupérer les infos depuis le user lié
+            $linkedUser = User::findOrFail((int) $request->user_id);
+
             $staff             = new StaffModel;
-            $staff->first_name = trim($request->first_name);
-            $staff->last_name  = trim($request->last_name);
-            $staff->email      = trim($request->email ?? '');
-            $staff->phone      = trim($request->phone ?? '');
-            $staff->role       = $request->role;
-            $staff->status     = $request->status;
-            $staff->hire_date  = $request->hire_date ?? null;
-            $staff->end_date   = $request->end_date ?? null;
-            $staff->address    = $request->address ?? null;
-            $staff->gender     = $request->gender ?? null;
-            $staff->user_id    = $request->user_id ?? null;
-            $staff->created_by = Auth::id();
+            $staff->role            = $request->role;
+            $staff->status          = $request->status;
+            $staff->hire_date       = $request->hire_date ?? null;
+            $staff->end_date        = $request->end_date ?? null;
+            $staff->employee_number = $request->employee_number ?? null;
+            $staff->department      = $request->department ?? null;
+            $staff->bio             = $request->bio ?? null;
+            $staff->user_id         = $linkedUser->id;
+            // school_id : toujours déduit de l'utilisateur lié (jamais envoyé manuellement)
+            $staff->school_id       = $linkedUser->school_id ?? Auth::user()?->school_id;
+            $staff->created_by      = Auth::id();
             $staff->save();
 
             // Notification in-app à l'utilisateur lié s'il existe
@@ -95,27 +110,27 @@ class StaffController extends Controller
     public function update(Request $request, int $id)
     {
         $request->validate([
-            'first_name' => 'required|string|max:100',
-            'last_name'  => 'required|string|max:100',
-            'role'       => 'required|string',
-            'status'     => 'required|in:active,inactive,suspended',
+            'user_id' => 'required|integer|exists:users,id',
+            'role'    => 'required|string',
+            'status'  => 'required|in:active,inactive,suspended',
         ]);
 
         try {
-            $staff             = StaffModel::getSingle($id);
+            $staff = StaffModel::getSingle($id);
             if (!$staff) abort(404);
 
-            $staff->first_name = trim($request->first_name);
-            $staff->last_name  = trim($request->last_name);
-            $staff->email      = trim($request->email ?? '');
-            $staff->phone      = trim($request->phone ?? '');
-            $staff->role       = $request->role;
-            $staff->status     = $request->status;
-            $staff->hire_date  = $request->hire_date ?? $staff->hire_date;
-            $staff->end_date   = $request->end_date ?? null;
-            $staff->address    = $request->address ?? $staff->address;
-            $staff->gender     = $request->gender ?? $staff->gender;
-            $staff->user_id    = $request->user_id ?? $staff->user_id;
+            // Resynchroniser depuis le user lié si le user_id change
+            $linkedUser = User::findOrFail((int) $request->user_id);
+
+            $staff->role            = $request->role;
+            $staff->status          = $request->status;
+            $staff->hire_date       = $request->hire_date ?? $staff->hire_date;
+            $staff->end_date        = $request->end_date ?? null;
+            $staff->employee_number = $request->employee_number ?? $staff->employee_number;
+            $staff->department      = $request->department ?? $staff->department;
+            $staff->bio             = $request->bio ?? $staff->bio;
+            $staff->user_id         = $linkedUser->id;
+            $staff->school_id       = $linkedUser->school_id ?? $staff->school_id;
             $staff->save();
 
             return redirect()->back()->with('success', 'Personnel mis à jour avec succès.');

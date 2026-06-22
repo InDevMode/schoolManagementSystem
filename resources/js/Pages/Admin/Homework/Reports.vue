@@ -8,14 +8,15 @@
                 </svg>
             </template>
             <template #actions>
-                <AppButton variant="ghost" size="sm" href="/admin/practicalworks/homework/list">
-                    <template #icon>
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-                        </svg>
-                    </template>
+                <Link href="/admin/practicalworks/homework/list"
+                    class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-medium transition-all duration-150
+                           text-white bg-gray-500 hover:bg-gray-600 active:bg-gray-700
+                           shadow-sm shadow-gray-200 dark:shadow-gray-900/40">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                    </svg>
                     Liste des travaux
-                </AppButton>
+                </Link>
             </template>
         </PageHeader>
 
@@ -69,13 +70,14 @@
             <template #cell-actions="{ row }">
                 <a
                     :href="`/admin/practicalworks/homework/submission/${row.work_id}`"
-                    class="inline-flex items-center gap-1 text-xs text-gray-500 hover:text-primary-600 transition-colors"
                     title="Voir toutes les soumissions de ce travail"
+                    class="inline-flex items-center justify-center w-7 h-7 rounded-xl transition-all duration-150
+                           text-white bg-indigo-500 hover:bg-indigo-600 active:bg-indigo-700
+                           shadow-sm shadow-indigo-200 dark:shadow-indigo-900/40"
                 >
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0zM2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                     </svg>
-                    Voir
                 </a>
             </template>
         </DataTable>
@@ -85,6 +87,7 @@
 <script setup lang="ts">
 import { fmtDate } from '@/utils/dateFormat';
 import { computed } from 'vue';
+import { Link } from '@inertiajs/vue3';
 import { PageHeader, AppBadge, AppButton, DataTable } from '@/Components/UI';
 import { stripHtml } from '@/Utils/html';
 

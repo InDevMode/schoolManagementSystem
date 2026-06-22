@@ -223,11 +223,11 @@
     </div>
 </template>
 
-import { fmtDate } from '@/utils/dateFormat';
 <script setup lang="ts">
 import { ref, computed, h, defineComponent } from 'vue';
 import { Link } from '@inertiajs/vue3';
 import { PageHeader, DataTable, AppBadge, AppButton, DetailModal } from '@/Components/UI';
+import { fmtDate } from '@/Utils/dateFormat';
 
 // ── Composant InfoCard réutilisable ──────────────────────────────────────────
 const InfoCard = defineComponent({

@@ -253,7 +253,6 @@
     </div>
 </template>
 
-import { fmtDate } from '@/utils/dateFormat';
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import { useForm, router } from '@inertiajs/vue3';
@@ -261,6 +260,7 @@ import { PageHeader, AppButton, AppSelect, AppModal, DataTable, AppBadge } from 
 import AppMultiSelect from '@/Components/UI/AppMultiSelect.vue';
 import { useCan } from '@/Composables/useCan';
 import { useToast } from '@/Composables/useToast';
+import { fmtDate } from '@/Utils/dateFormat';
 
 const { can } = useCan();
 const canCreate = computed(() => can('action.assign_classes.create'));

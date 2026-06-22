@@ -42,70 +42,116 @@
         </div>
 
         <!-- Grille de cartes -->
-        <div v-if="staff.data.length" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        <div v-if="staff.data.length" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
             <div v-for="member in staff.data" :key="member.id"
-                class="card p-5 flex flex-col gap-4 hover:shadow-md transition-shadow">
-                <!-- Avatar + infos -->
-                <div class="flex items-center gap-3">
-                    <div class="relative">
-                        <img v-if="member.profile_picture"
-                            :src="`/upload/profile/${member.profile_picture}`"
-                            :alt="`${member.last_name} ${member.name}`"
-                            class="w-12 h-12 rounded-full object-cover ring-2 ring-white dark:ring-gray-700"/>
-                        <div v-else
-                            class="w-12 h-12 rounded-full bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center text-primary-600 dark:text-primary-400 font-bold text-lg">
-                            {{ (member.last_name?.[0] ?? member.name?.[0] ?? '?').toUpperCase() }}
-                        </div>
-                        <!-- Badge statut -->
-                        <span :class="[
-                            'absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full border-2 border-white dark:border-gray-800',
-                            member.status === 'active' ? 'bg-success-500' : member.status === 'suspended' ? 'bg-warning-500' : 'bg-gray-400',
-                        ]"/>
+                class="card overflow-hidden flex flex-col hover:shadow-lg transition-all duration-200 group">
+
+                <!-- Bannière colorée + avatar -->
+                <div class="relative h-20 flex-shrink-0"
+                     :style="roleBannerStyle(member.role)">
+                    <!-- Motif décoratif -->
+                    <div class="absolute inset-0 opacity-10">
+                        <div class="absolute -top-4 -right-4 w-24 h-24 rounded-full bg-white"/>
+                        <div class="absolute -bottom-6 -left-4 w-16 h-16 rounded-full bg-white"/>
                     </div>
-                    <div class="flex-1 min-w-0">
-                        <p class="text-sm font-semibold text-gray-900 dark:text-white truncate">
+                    <!-- Badge statut en haut à droite -->
+                    <div class="absolute top-3 right-3">
+                        <span :class="[
+                            'inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold',
+                            member.status === 'active'
+                                ? 'bg-white/90 text-emerald-700'
+                                : member.status === 'suspended'
+                                ? 'bg-white/90 text-amber-700'
+                                : 'bg-white/90 text-gray-600',
+                        ]">
+                            <span :class="[
+                                'w-1.5 h-1.5 rounded-full',
+                                member.status === 'active' ? 'bg-emerald-500' : member.status === 'suspended' ? 'bg-amber-500' : 'bg-gray-400',
+                            ]"/>
+                            {{ member.status === 'active' ? 'Actif' : member.status === 'suspended' ? 'Suspendu' : 'Inactif' }}
+                        </span>
+                    </div>
+                    <!-- Avatar chevauchant la bannière -->
+                    <div class="absolute -bottom-7 left-4">
+                        <div class="relative">
+                            <img v-if="member.profile_picture"
+                                :src="`/upload/profile/${member.profile_picture}`"
+                                :alt="`${member.last_name} ${member.name}`"
+                                class="w-14 h-14 rounded-xl object-cover ring-3 ring-white dark:ring-gray-800 shadow-md"/>
+                            <div v-else
+                                class="w-14 h-14 rounded-xl flex items-center justify-center ring-3 ring-white dark:ring-gray-800 shadow-md text-white font-bold text-xl"
+                                :style="roleBannerStyle(member.role)">
+                                {{ (member.last_name?.[0] ?? member.name?.[0] ?? '?').toUpperCase() }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Corps de la carte -->
+                <div class="flex-1 flex flex-col pt-9 px-4 pb-4 gap-3">
+                    <!-- Nom + profil -->
+                    <div>
+                        <p class="text-sm font-bold text-gray-900 dark:text-white leading-tight">
                             {{ member.last_name }} {{ member.name }}
                         </p>
-                        <p class="text-xs text-gray-400 truncate">{{ member.email }}</p>
+                        <p class="text-xs text-gray-400 truncate mt-0.5">{{ member.email }}</p>
+                        <span class="inline-flex mt-1.5 items-center px-2 py-0.5 rounded-full text-[11px] font-semibold"
+                            :class="roleBadgeClass(member.role)">
+                            {{ roleLabels[member.role] ?? member.role }}
+                        </span>
                     </div>
-                </div>
 
-                <!-- Rôle + dates -->
-                <div class="flex flex-col gap-1.5">
-                    <span class="inline-flex w-fit items-center px-2.5 py-1 rounded-full text-xs font-semibold"
-                        :class="roleBadgeClass(member.role)">
-                        {{ roleLabels[member.role] ?? member.role }}
-                    </span>
-                    <p v-if="member.hire_date" class="text-xs text-gray-400">
-                        Depuis : {{ formatDate(member.hire_date) }}
-                    </p>
-                    <p v-if="member.employee_number" class="text-xs text-gray-400 font-mono">
-                        Matricule : {{ member.employee_number }}
-                    </p>
-                </div>
+                    <!-- Infos détaillées -->
+                    <div class="space-y-1.5 border-t border-gray-100 dark:border-gray-700 pt-3">
+                        <div v-if="member.employee_number" class="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
+                            <svg class="w-3.5 h-3.5 flex-shrink-0 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"/>
+                            </svg>
+                            <span class="font-mono font-medium">{{ member.employee_number }}</span>
+                        </div>
+                        <div v-if="member.department" class="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
+                            <svg class="w-3.5 h-3.5 flex-shrink-0 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-2 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                            </svg>
+                            <span class="truncate">{{ member.department }}</span>
+                        </div>
+                        <div v-if="member.hire_date" class="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
+                            <svg class="w-3.5 h-3.5 flex-shrink-0 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                            </svg>
+                            <span>Depuis le {{ formatDate(member.hire_date) }}</span>
+                        </div>
+                        <div v-if="member.bio" class="flex items-start gap-2 text-xs text-gray-500 dark:text-gray-400">
+                            <svg class="w-3.5 h-3.5 flex-shrink-0 text-gray-400 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            <span class="line-clamp-2">{{ member.bio }}</span>
+                        </div>
+                    </div>
 
-                <!-- Actions -->
-                <div class="flex items-center gap-1.5 pt-2 border-t border-gray-100 dark:border-gray-700">
-                    <button v-if="can('action.staff.edit')"
-                        class="p-1.5 rounded-xl transition-all duration-150
-                               text-white bg-emerald-500 hover:bg-emerald-600 active:bg-emerald-700
-                               shadow-sm shadow-emerald-200 dark:shadow-emerald-900/40"
-                        title="Modifier"
-                        @click="openEdit(member)">
-                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-                        </svg>
-                    </button>
-                    <button v-if="can('action.staff.delete')"
-                        class="p-1.5 rounded-xl transition-all duration-150
-                               text-white bg-red-500 hover:bg-red-600 active:bg-red-700
-                               shadow-sm shadow-red-200 dark:shadow-red-900/40"
-                        title="Supprimer"
-                        @click="openDelete(member)">
-                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-                        </svg>
-                    </button>
+                    <!-- Actions -->
+                    <div class="flex items-center gap-2 pt-2 border-t border-gray-100 dark:border-gray-700 mt-auto">
+                        <button v-if="can('action.staff.edit')"
+                            class="flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-lg text-xs font-medium
+                                   bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400
+                                   hover:bg-emerald-100 dark:hover:bg-emerald-900/40 transition-colors"
+                            @click="openEdit(member)">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                            </svg>
+                            Modifier
+                        </button>
+                        <button v-if="can('action.staff.delete')"
+                            class="flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-lg text-xs font-medium
+                                   bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400
+                                   hover:bg-red-100 dark:hover:bg-red-900/40 transition-colors"
+                            @click="openDelete(member)">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                            </svg>
+                            Supprimer
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -123,13 +169,17 @@
         <!-- Modal Créer/Modifier -->
         <AppModal v-model="showForm" :title="editTarget ? 'Modifier le membre' : 'Ajouter un membre'" size="lg">
             <form :id="formId" @submit.prevent="submitForm" class="space-y-4">
-                <div class="p-3 rounded-xl bg-violet-50 dark:bg-violet-900/20 border border-violet-100 dark:border-violet-800 text-xs text-violet-700 dark:text-violet-300">
-                    💡 Le membre du personnel doit avoir un compte utilisateur. Sélectionnez-le depuis la liste.
+                <div class="p-3 rounded-xl bg-violet-50 dark:bg-violet-900/20 border border-violet-100 dark:border-violet-800 text-xs text-violet-700 dark:text-violet-300 flex items-start gap-2">
+                    <svg class="w-4 h-4 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    <span>Le membre du personnel doit avoir un compte utilisateur. Sélectionnez-le depuis la liste.</span>
                 </div>
                 <!-- Sélection user existant (prof, directeur, etc.) -->
                 <AppSelect v-model="form.user_id" label="Utilisateur (compte existant)" :options="userOptions" required :error="form.errors.user_id"/>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <AppSelect v-model="form.role"   label="Rôle RH"  :options="roleOpts"   required :error="form.errors.role"/>
+                    <AppSelect v-model="form.role"   label="Profil"  :options="roleOpts"   required :error="form.errors.role"/>
                     <AppSelect v-model="form.status" label="Statut"   :options="statusOpts" required :error="form.errors.status"/>
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -176,9 +226,11 @@ const { can } = useCan();
 const toast   = useToast();
 
 const props = defineProps<{
-    staff:      { data: any[]; total: number; from: number; to: number; links: any[] };
-    roleLabels: Record<string, string>;
-    users?:     { id: number; name: string; last_name: string; user_type: number }[];
+    staff:        { data: any[]; total: number; from: number; to: number; links: any[] };
+    roleLabels:   Record<string, string>;
+    users?:       { id: number; name: string; last_name: string; user_type: number; school_id: number | null }[];
+    isSuperAdmin: boolean;
+    schools?:     { id: number; school_name: string }[];
 }>();
 
 const formId     = 'staff-form';
@@ -198,14 +250,12 @@ const statusOpts = [
 ];
 const statusOptions = [{ value: '', label: 'Tous les statuts' }, ...statusOpts];
 
-const userOptions = computed(() =>
-    (props.users ?? []).map(u => ({
-        value: String(u.id),
-        label: `${u.last_name} ${u.name} (${userTypeLabel(u.user_type)})`,
-    }))
-);
-
 const userTypeLabel = (t: number) => ({ 1: 'Admin', 2: 'Prof', 3: 'Élève', 4: 'Parent' }[t] ?? 'Autre');
+
+// Tous les users disponibles — le scoping par école est fait côté backend
+const userOptions = computed(() =>
+    (props.users ?? []).map(u => ({ value: String(u.id), label: `${u.last_name} ${u.name} (${userTypeLabel(u.user_type)})` }))
+);
 
 const form = useForm({
     user_id:         '',
@@ -277,6 +327,16 @@ const roleBadgeClass = (role: string) => ({
     supervisor: 'bg-warning-50 dark:bg-warning-900/20 text-warning-700 dark:text-warning-400',
     secretary:  'bg-info-50 dark:bg-info-900/20 text-info-700 dark:text-info-400',
 }[role] ?? 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400');
+
+const roleBannerStyle = (role: string): Record<string, string> => ({
+    teacher:    { background: 'linear-gradient(135deg, #7B74F0, #9189f5)' },
+    director:   { background: 'linear-gradient(135deg, #7c3aed, #a855f7)' },
+    accountant: { background: 'linear-gradient(135deg, #059669, #10b981)' },
+    supervisor: { background: 'linear-gradient(135deg, #d97706, #f59e0b)' },
+    secretary:  { background: 'linear-gradient(135deg, #0284c7, #38bdf8)' },
+    librarian:  { background: 'linear-gradient(135deg, #db2777, #f472b6)' },
+    other:      { background: 'linear-gradient(135deg, #475569, #94a3b8)' },
+}[role] ?? { background: 'linear-gradient(135deg, #475569, #94a3b8)' }) as Record<string, string>;
 
 const formatDate = fmtDate;
 </script>
