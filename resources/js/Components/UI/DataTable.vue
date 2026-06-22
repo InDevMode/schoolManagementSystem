@@ -69,7 +69,7 @@ const props = withDefaults(defineProps<{
   contextMenu?: boolean;
 }>(), {
   loading: false, selectable: true, exportable: true,
-  exportFilename: 'export', showTotals: true, density: 'normal',
+  exportFilename: 'export', showTotals: true, density: 'compact',
   defaultPerPage: 5, perPageOptions: () => [5,10,15,20,25,30,35,40,45,50,100,500,1000],
   emptyText: 'Aucune donnée disponible', showCount: true,
   striped: false, bordered: false, showResetPassword: false,
@@ -481,10 +481,10 @@ onMounted(()=>{
 onUnmounted(()=>{
   document.removeEventListener('click', onDocClick);
   document.removeEventListener('keydown', onKeyDown);
+  cancelAnimationFrame(dtTipRaf);
 });
 
 // ── Navigation pagination serveur ─────────────────────────────────────────────
-// Injecte toujours per_page dans l'URL pour que le backend respecte la valeur choisie
 const goServerPage = (url: string) => {
   const u = new URL(url, window.location.origin);
   u.searchParams.set('per_page', String(perPage.value));
@@ -570,6 +570,45 @@ const dtCopyRow = (row: Record<string, unknown>) => {
     dtCopiedRowTimeout = setTimeout(() => { dtCopiedRowKey.value = null; }, 1500);
   }).catch(() => {});
 };
+// ── Tooltip sidebar-style (actions + title) ───────────────────────────────────
+const dtTipLabel = ref<string | null>(null);
+const dtTipX     = ref(0);
+const dtTipY     = ref(0);
+let dtTipEl: HTMLElement | null = null;
+let dtTipRaf = 0;
+let dtTipUseCursor = false;
+
+const updateDtTipPos = () => {
+  if (dtTipEl && !dtTipUseCursor) {
+    const r = dtTipEl.getBoundingClientRect();
+    dtTipX.value = r.right + 10;
+    dtTipY.value = r.top + r.height / 2;
+  }
+  if (dtTipLabel.value) dtTipRaf = requestAnimationFrame(updateDtTipPos);
+};
+
+const showDtTip = (e: MouseEvent, label: string) => {
+  dtTipEl = e.currentTarget as HTMLElement;
+  dtTipLabel.value = label;
+  // Pour les éléments larges (td), on positionne près du curseur
+  const rect = dtTipEl.getBoundingClientRect();
+  if (rect.width > 120) {
+    dtTipUseCursor = true;
+    dtTipX.value = e.clientX + 14;
+    dtTipY.value = e.clientY;
+  } else {
+    dtTipUseCursor = false;
+  }
+  cancelAnimationFrame(dtTipRaf);
+  updateDtTipPos();
+};
+const hideDtTip = () => {
+  dtTipLabel.value = null;
+  dtTipEl = null;
+  dtTipUseCursor = false;
+  cancelAnimationFrame(dtTipRaf);
+};
+
 defineExpose({ clearSelection, selected, filteredRows, confirmDelete, confirmResetPassword });
 </script>
 
@@ -593,7 +632,8 @@ defineExpose({ clearSelection, selected, filteredRows, confirmDelete, confirmRes
         </svg>
         <input v-model="search" type="text"
                placeholder="Rechercher… "
-               title="Séparez plusieurs termes par des virgules pour une recherche combinée"
+               @mouseenter="showDtTip($event, 'Séparez plusieurs termes par des virgules')"
+               @mouseleave="hideDtTip"
                class="w-full h-9 pl-9 pr-8 text-sm rounded-xl
                       border border-gray-200 dark:border-gray-600/60
                       bg-gray-50 dark:bg-gray-700/60
@@ -603,7 +643,8 @@ defineExpose({ clearSelection, selected, filteredRows, confirmDelete, confirmRes
                       transition-colors"/>
         <button v-if="search" @click="search = ''"
                 class="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
-                title="Effacer">
+                @mouseenter="showDtTip($event, 'Effacer')"
+                @mouseleave="hideDtTip">
           <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
           </svg>
@@ -695,12 +736,14 @@ defineExpose({ clearSelection, selected, filteredRows, confirmDelete, confirmRes
 
       <!-- Densité -->
       <div class="flex items-center rounded-xl border border-gray-200 dark:border-gray-600 overflow-hidden">
-        <button v-for="d in (['compact','normal','comfortable'] as const)" :key="d" :title="d"
+        <button v-for="d in (['compact','normal','comfortable'] as const)" :key="d"
                 :class="['px-2 py-1.5 transition-colors',
                          densityMode === d
                            ? 'bg-primary-600 text-white'
                            : 'text-gray-400 dark:text-gray-500 hover:bg-gray-50 dark:hover:bg-gray-700']"
-                @click="densityMode = d">
+                @click="densityMode = d"
+                @mouseenter="showDtTip($event, d === 'compact' ? 'Compact' : d === 'normal' ? 'Normal' : 'Confortable')"
+                @mouseleave="hideDtTip">
           <svg v-if="d === 'compact'" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/>
           </svg>
@@ -822,47 +865,49 @@ defineExpose({ clearSelection, selected, filteredRows, confirmDelete, confirmRes
              style="border-collapse:separate; border-spacing:0;">
 
 
-        <!-- THEAD — sobre, gris clair, sans couleur de fond violette -->
+        <!-- THEAD — dégradé couleur principale comme le hover/actif de la sidebar -->
         <thead class="sticky top-0 z-10">
-          <tr class="dt-thead-row bg-gray-50 dark:bg-gray-900/80 border-b-2 border-gray-300 dark:border-gray-600">
+          <tr class="dt-thead-row border-b-2 border-primary-700/40"
+              style="background: linear-gradient(135deg, #7B74F0, #9189f5);">
 
-            <th v-if="selectable" :class="[headerDensityClass, 'w-10 bg-gray-50 dark:bg-gray-900/80']">
+            <th v-if="selectable" :class="[headerDensityClass, 'w-10']"
+                style="background: transparent;">
               <input type="checkbox" :checked="allSelected" :indeterminate="someSelected"
                      class="w-4 h-4 rounded cursor-pointer"
-                     style="accent-color:#7c3aed;"
+                     style="accent-color:#fff;"
                      @change="toggleAll" aria-label="Sélectionner tout"/>
             </th>
 
             <th v-for="col in visibleColumns" :key="col.key"
                 :class="[
                   headerDensityClass,
-                  'bg-gray-50 dark:bg-gray-900/80',
                   'text-[12px] font-bold uppercase tracking-wider whitespace-nowrap select-none',
-                  'text-gray-800 dark:text-gray-100',
+                  'text-white',
                   col.align === 'center' ? 'text-center' : col.align === 'right' ? 'text-right' : 'text-left',
-                  col.sortable !== false ? 'cursor-pointer hover:text-gray-900 dark:hover:text-white transition-colors' : '',
+                  col.sortable !== false ? 'cursor-pointer hover:text-white/80 transition-colors' : '',
                 ]"
+                style="background: transparent;"
                 :style="col.width ? `width:${col.width};` : col.minWidth ? `min-width:${col.minWidth};` : ''"
                 @click="col.sortable !== false && toggleSort(col.key)"
                 :aria-sort="sortKey === col.key ? (sortDir === 'asc' ? 'ascending' : 'descending') : 'none'">
               <div class="flex items-center gap-1.5 group/hdr"
                    :class="col.align === 'center' ? 'justify-center' : col.align === 'right' ? 'justify-end' : ''">
-                <span :class="sortKey === col.key ? 'text-violet-600 dark:text-violet-400' : ''">
+                <span :class="sortKey === col.key ? 'text-white drop-shadow' : ''">
                   {{ col.label }}
                 </span>
                 <!-- Flèches de tri — chevrons simples nets -->
                 <span v-if="col.sortable !== false"
                       class="flex flex-col gap-[1px] ml-0.5 transition-opacity duration-150"
-                      :class="sortKey === col.key ? 'opacity-100' : 'opacity-30 group-hover/hdr:opacity-60'">
+                      :class="sortKey === col.key ? 'opacity-100' : 'opacity-50 group-hover/hdr:opacity-80'">
                   <!-- Chevron haut -->
                   <svg class="w-3 h-3"
-                       :class="sortKey === col.key && sortDir === 'asc' ? 'text-violet-600 dark:text-violet-400' : 'text-gray-400'"
+                       :class="sortKey === col.key && sortDir === 'asc' ? 'text-white' : 'text-white/70'"
                        fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7"/>
                   </svg>
                   <!-- Chevron bas -->
                   <svg class="w-3 h-3"
-                       :class="sortKey === col.key && sortDir === 'desc' ? 'text-violet-600 dark:text-violet-400' : 'text-gray-400'"
+                       :class="sortKey === col.key && sortDir === 'desc' ? 'text-white' : 'text-white/70'"
                        fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
                   </svg>
@@ -871,7 +916,8 @@ defineExpose({ clearSelection, selected, filteredRows, confirmDelete, confirmRes
             </th>
 
             <th v-if="actions?.length || $slots['actions']"
-                :class="[headerDensityClass, 'bg-gray-50 dark:bg-gray-900/80 text-[12px] font-bold uppercase tracking-wider text-gray-800 dark:text-gray-100 text-right']">
+                :class="[headerDensityClass, 'text-[12px] font-bold uppercase tracking-wider text-white text-right']"
+                style="background: transparent;">
               Actions
             </th>
           </tr>
@@ -948,7 +994,8 @@ defineExpose({ clearSelection, selected, filteredRows, confirmDelete, confirmRes
                   :class="[getCellClass(row, col), 'border-b border-gray-100 dark:border-gray-700/60']"
                   :style="col.editable && inlineEdit ? 'cursor:text;' : ''"
                   @dblclick="inlineEdit && col.editable && startEdit(idx, col, row)"
-                  :title="col.editable && inlineEdit ? 'Double-clic pour modifier' : ''">
+                  @mouseenter="col.editable && inlineEdit ? showDtTip($event, 'Double-clic pour modifier') : undefined"
+                  @mouseleave="col.editable && inlineEdit ? hideDtTip() : undefined">
 
                 <!-- Spinner sauvegarde -->
                 <div v-if="editSaving && editingCell?.rowIdx === idx && editingCell?.key === col.key"
@@ -993,7 +1040,8 @@ defineExpose({ clearSelection, selected, filteredRows, confirmDelete, confirmRes
                               :class="dtCopiedKey === rowId(row) + '-' + col.key
                                 ? 'opacity-100 text-emerald-500 dark:text-emerald-400'
                                 : 'opacity-40 group-hover/cell:opacity-100'"
-                              :title="dtCopiedKey === rowId(row) + '-' + col.key ? 'Copié !' : 'Copier cette cellule'"
+                              @mouseenter="showDtTip($event, dtCopiedKey === rowId(row) + '-' + col.key ? 'Copié !' : 'Copier cette cellule')"
+                              @mouseleave="hideDtTip"
                               @click.stop="dtCopy(String(row[col.key]), rowId(row) + '-' + col.key)">
                         <svg v-if="dtCopiedKey !== rowId(row) + '-' + col.key" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
@@ -1013,12 +1061,13 @@ defineExpose({ clearSelection, selected, filteredRows, confirmDelete, confirmRes
                   <div class="flex items-center justify-end gap-1.5">
                     <!-- Bouton copier la ligne -->
                     <button
-                        :title="dtCopiedRowKey === rowId(row) ? 'Ligne copiée !' : 'Copier la ligne'"
                         class="w-8 h-8 inline-flex items-center justify-center rounded-xl transition-all duration-150 flex-shrink-0"
                         :class="dtCopiedRowKey === rowId(row)
                           ? 'bg-emerald-100 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400'
                           : 'bg-gray-100 text-gray-400 hover:bg-violet-100 hover:text-violet-600 dark:bg-gray-700/50 dark:text-gray-500 dark:hover:bg-violet-900/30 dark:hover:text-violet-400'"
-                        @click.stop="dtCopyRow(row)">
+                        @click.stop="dtCopyRow(row)"
+                        @mouseenter="showDtTip($event, dtCopiedRowKey === rowId(row) ? 'Ligne copiée !' : 'Copier la ligne')"
+                        @mouseleave="hideDtTip">
                       <svg v-if="dtCopiedRowKey !== rowId(row)" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
                       </svg>
@@ -1028,7 +1077,6 @@ defineExpose({ clearSelection, selected, filteredRows, confirmDelete, confirmRes
                     </button>
                     <template v-for="action in actions" :key="action.key">
                       <button v-if="!action.condition || action.condition(row)"
-                              :title="action.label"
                               class="w-8 h-8 inline-flex items-center justify-center rounded-xl transition-all duration-150 flex-shrink-0"
                               :class="{
                                 'bg-violet-100 text-violet-600 hover:bg-violet-600 hover:text-white dark:bg-violet-900/30 dark:text-violet-400 dark:hover:bg-violet-600 dark:hover:text-white': !action.variant || action.variant === 'primary',
@@ -1037,7 +1085,9 @@ defineExpose({ clearSelection, selected, filteredRows, confirmDelete, confirmRes
                                 'bg-emerald-100 text-emerald-600 hover:bg-emerald-500 hover:text-white dark:bg-emerald-900/30 dark:text-emerald-400 dark:hover:bg-emerald-500 dark:hover:text-white': action.variant === 'success',
                                 'bg-violet-100 text-violet-600 hover:bg-violet-500 hover:text-white dark:bg-violet-900/30 dark:text-violet-400 dark:hover:bg-violet-500 dark:hover:text-white': action.variant === 'info',
                               }"
-                              @click="handleAction(action, row)">
+                              @click="handleAction(action, row)"
+                              @mouseenter="showDtTip($event, action.label)"
+                              @mouseleave="hideDtTip">
                         <!-- Icône selon le key -->
                         <svg v-if="action.key === 'view' || action.key === 'show'" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
@@ -1180,7 +1230,9 @@ defineExpose({ clearSelection, selected, filteredRows, confirmDelete, confirmRes
                   class="w-8 h-8 flex items-center justify-center rounded-xl text-sm transition-colors
                          disabled:opacity-30 disabled:cursor-not-allowed text-gray-500 dark:text-gray-400
                          hover:bg-gray-100 dark:hover:bg-gray-700"
-                  @click="currentPage = 1" title="Premiere page">
+                  @click="currentPage = 1"
+                  @mouseenter="showDtTip($event, 'Première page')"
+                  @mouseleave="hideDtTip">
             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7"/>
             </svg>
@@ -1222,6 +1274,35 @@ defineExpose({ clearSelection, selected, filteredRows, confirmDelete, confirmRes
         </div>
       </template>
     </div>
+    <!-- Tooltip sidebar-style (bulle violette sur actions + titre) -->
+    <Teleport to="body">
+      <Transition
+        enter-active-class="transition-all duration-150 ease-out"
+        enter-from-class="opacity-0 scale-95 translate-x-1"
+        enter-to-class="opacity-100 scale-100 translate-x-0"
+        leave-active-class="transition-all duration-100 ease-in"
+        leave-from-class="opacity-100 scale-100 translate-x-0"
+        leave-to-class="opacity-0 scale-95 translate-x-1"
+      >
+        <div v-if="dtTipLabel"
+             class="fixed pointer-events-none flex items-center"
+             :style="{ top: dtTipY + 'px', left: dtTipX + 'px', zIndex: 99999, transform: 'translateY(-50%)' }">
+          <!-- Flèche pointant à gauche -->
+          <span class="flex-shrink-0 w-0 h-0
+                       border-t-[7px] border-t-transparent
+                       border-b-[7px] border-b-transparent
+                       border-r-[8px]"
+                style="border-right-color: #7B74F0;" />
+          <!-- Bulle -->
+          <span class="px-3.5 py-2 rounded-full text-sm font-semibold text-white whitespace-nowrap select-none"
+                style="background: linear-gradient(135deg, #7B74F0 0%, #9189f5 100%);
+                       box-shadow: 0 8px 24px rgba(123,116,240,0.45), 0 2px 8px rgba(0,0,0,0.15);">
+            {{ dtTipLabel }}
+          </span>
+        </div>
+      </Transition>
+    </Teleport>
+
     <!-- Dialog de confirmation -->
     <Teleport to="body">
       <Transition enter-active-class="transition duration-200 ease-out" enter-from-class="opacity-0"
