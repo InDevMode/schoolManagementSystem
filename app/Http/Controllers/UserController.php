@@ -698,7 +698,7 @@ class UserController extends Controller
     public function settings()
     {
         // Seul le super admin accède à cette route (superadmin.settings)
-        // Les admins sont redirigés par la route vers SchoolController::settings()
+        // Les admins d'école utilisent SchoolController::settings() via /admin/settings
         $setting = SettingModel::getSingle(1);
         return Inertia::render('Admin/Settings/Index', [
             'setting'    => $setting,
@@ -715,21 +715,72 @@ class UserController extends Controller
 
             $setting = SettingModel::getSingle(1);
             if ($setting) {
-                $setting->paypal_email        = trim($request->paypal_email);
-                $setting->kkiapay_public_key  = trim($request->kkiapay_public_key);
-                $setting->kkiapay_private_key = trim($request->kkiapay_private_key);
-                $setting->kkiapay_secret_key  = trim($request->kkiapay_secret_key);
-                $setting->stripe_public_key   = trim($request->stripe_public_key);
-                $setting->stripe_secret_key   = trim($request->stripe_secret_key);
-                $setting->fedapay_public_key  = trim($request->fedapay_public_key);
-                $setting->fedapay_secret_key  = trim($request->fedapay_secret_key);
-                $setting->school_name         = trim($request->school_name);
-                $setting->school_type = trim($request->school_type);
-                $setting->address = trim($request->address);
-                $setting->phone = trim($request->phone);
-                $setting->email = trim($request->email);
-                $setting->uai_number = trim($request->uai_number);
-                $setting->status = trim($request->status);
+                $setting->paypal_email        = trim($request->paypal_email ?? '');
+                $setting->kkiapay_public_key  = trim($request->kkiapay_public_key ?? '');
+                $setting->kkiapay_private_key = trim($request->kkiapay_private_key ?? '');
+                $setting->kkiapay_secret_key  = trim($request->kkiapay_secret_key ?? '');
+                $setting->stripe_public_key   = trim($request->stripe_public_key ?? '');
+                $setting->stripe_secret_key   = trim($request->stripe_secret_key ?? '');
+                $setting->fedapay_public_key  = trim($request->fedapay_public_key ?? '');
+                $setting->fedapay_secret_key  = trim($request->fedapay_secret_key ?? '');
+                $setting->school_name         = trim($request->school_name ?? '');
+                $setting->school_type         = trim($request->school_type ?? '');
+                $setting->address             = trim($request->address ?? '');
+                $setting->phone               = trim($request->phone ?? '');
+                $setting->email               = trim($request->email ?? '');
+                $setting->uai_number          = trim($request->uai_number ?? '');
+                $setting->status              = trim($request->status ?? '1');
+
+                // ── Background de la page d'authentification ───────────────
+                if ($request->filled('auth_bg_type')) {
+                    $allowedTypes = ['gradient', 'image', 'video', 'particles'];
+                    $bgType = trim($request->auth_bg_type);
+                    if (in_array($bgType, $allowedTypes)) {
+                        $setting->auth_bg_type = $bgType;
+                    }
+                }
+
+                // Upload image de fond
+                if ($request->hasFile('auth_bg_image')) {
+                    $file     = $request->file('auth_bg_image');
+                    $ext      = $file->getClientOriginalExtension();
+                    $fileName = 'auth_bg_' . date('dmYHis') . Str::random(8) . '.' . $ext;
+                    $uploadDir = public_path('upload/setting/');
+                    if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
+                    // Supprimer l'ancien fichier si c'est un fichier local
+                    if (!empty($setting->auth_bg_value) && !str_starts_with($setting->auth_bg_value, 'http')) {
+                        $oldPath = public_path('upload/setting/' . $setting->auth_bg_value);
+                        if (file_exists($oldPath)) unlink($oldPath);
+                    }
+                    $file->move($uploadDir, $fileName);
+                    $setting->auth_bg_value = url('upload/setting/' . $fileName);
+                    $setting->auth_bg_type  = 'image';
+                }
+                // Upload vidéo de fond
+                elseif ($request->hasFile('auth_bg_video')) {
+                    $file     = $request->file('auth_bg_video');
+                    $ext      = $file->getClientOriginalExtension();
+                    $fileName = 'auth_bg_vid_' . date('dmYHis') . Str::random(8) . '.' . $ext;
+                    $uploadDir = public_path('upload/setting/');
+                    if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
+                    if (!empty($setting->auth_bg_value) && !str_starts_with($setting->auth_bg_value, 'http')) {
+                        $oldPath = public_path('upload/setting/' . basename($setting->auth_bg_value));
+                        if (file_exists($oldPath)) unlink($oldPath);
+                    }
+                    $file->move($uploadDir, $fileName);
+                    $setting->auth_bg_value = url('upload/setting/' . $fileName);
+                    $setting->auth_bg_type  = 'video';
+                }
+                elseif ($request->has('auth_bg_value') && $request->filled('auth_bg_value')) {
+                    $setting->auth_bg_value = trim($request->auth_bg_value);
+                }
+
+                if ($request->has('auth_bg_label')) {
+                    $setting->auth_bg_label = trim($request->auth_bg_label ?? '');
+                }
+                if ($request->has('auth_bg_overlay')) {
+                    $setting->auth_bg_overlay = trim($request->auth_bg_overlay ?? 'rgba(0,0,0,0.35)');
+                }
 
                 $uploadDir = public_path('upload/setting/');
                 if (!is_dir($uploadDir)) {

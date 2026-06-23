@@ -237,14 +237,14 @@ const canSubmit = computed(() =>
 );
 
 const inputStyle = computed(() => ({
-    background: isDark.value ? '#1f2937' : '#ffffff',
-    color:      isDark.value ? '#f3f4f6' : '#111827',
-    border:     isDark.value ? '1px solid #374151' : '1px solid #d1d5db',
+    background: isDark.value ? 'rgba(109,40,217,0.12)' : '#f5f3ff',
+    color:      isDark.value ? '#ede9fe'                : '#1e1b4b',
+    border:     isDark.value ? '1px solid rgba(139,92,246,0.25)' : '1px solid #ddd6fe',
 }));
 
 const iconBoxStyle = computed(() => ({
-    background: isDark.value ? 'rgba(139,92,246,0.12)' : 'rgba(139,92,246,0.08)',
-    border:     isDark.value ? '1px solid rgba(139,92,246,0.25)' : '1px solid rgba(139,92,246,0.2)',
+    background: isDark.value ? 'rgba(124,58,237,0.15)' : 'rgba(124,58,237,0.08)',
+    border:     isDark.value ? '1px solid rgba(124,58,237,0.3)' : '1px solid rgba(124,58,237,0.2)',
 }));
 
 const alertStyle = computed(() => ({

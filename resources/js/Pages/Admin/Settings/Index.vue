@@ -148,6 +148,198 @@
                 </div>
             </div>
 
+            <!-- ── Section Background Auth — Super Admin uniquement ── -->
+            <div v-if="!isSchool" class="card p-5 space-y-5">
+                <h2 class="text-base font-semibold text-gray-900 dark:text-white border-b border-gray-100 dark:border-gray-700 pb-3 flex items-center gap-2">
+                    <svg class="w-4 h-4 text-violet-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                    </svg>
+                    Fond de la page de connexion
+                    <span class="ml-auto inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-violet-100 dark:bg-violet-900/40 text-violet-700 dark:text-violet-300">
+                        Super Admin
+                    </span>
+                </h2>
+                <p class="text-sm text-gray-500 dark:text-gray-400">
+                    Personnalisez le panneau gauche de la page de connexion. Changez le fond pour les fêtes (Noël 🎄, Nouvel An 🎉, Pâques 🐣...) ou pour des événements spéciaux.
+                </p>
+
+                <!-- Présets thématiques -->
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">Thèmes prédéfinis</label>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+                        <button v-for="preset in bgPresets" :key="preset.id"
+                                type="button"
+                                @click="applyPreset(preset)"
+                                class="group relative flex flex-col items-center gap-2 p-3 rounded-2xl border-2 transition-all duration-200 hover:scale-105"
+                                :class="form.auth_bg_value === preset.value
+                                    ? 'border-violet-500 shadow-lg shadow-violet-200 dark:shadow-violet-900/30'
+                                    : 'border-gray-200 dark:border-gray-700 hover:border-violet-300'">
+                            <!-- Miniature du fond -->
+                            <div class="w-full h-16 rounded-xl overflow-hidden flex-shrink-0"
+                                 :style="{ background: preset.type === 'gradient' ? preset.value : undefined,
+                                           backgroundImage: preset.type === 'image' ? `url(${preset.value})` : undefined,
+                                           backgroundSize: 'cover', backgroundPosition: 'center' }">
+                                <div v-if="preset.type !== 'gradient'" class="w-full h-full"
+                                     :style="{ background: preset.overlay ?? 'rgba(0,0,0,0.3)' }"/>
+                            </div>
+                            <span class="text-xs font-medium text-gray-700 dark:text-gray-300 text-center leading-tight">{{ preset.label }}</span>
+                            <!-- Coche active -->
+                            <div v-if="form.auth_bg_value === preset.value"
+                                 class="absolute top-1.5 right-1.5 w-5 h-5 rounded-full bg-violet-500 flex items-center justify-center">
+                                <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
+                                </svg>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Type de fond + Upload ou URL selon le type -->
+                <div class="space-y-4">
+                    <AppSelect v-model="form.auth_bg_type" label="Type de fond"
+                               :options="[
+                                   { value: 'gradient', label: 'Dégradé CSS' },
+                                   { value: 'image',    label: 'Image (upload ou URL)' },
+                                   { value: 'video',    label: 'Vidéo (upload ou URL)' },
+                               ]"/>
+
+                    <!-- GRADIENT : champ texte CSS -->
+                    <div v-if="form.auth_bg_type === 'gradient'">
+                        <AppInput v-model="form.auth_bg_value" label="Valeur CSS du dégradé"
+                                  placeholder="linear-gradient(145deg, #4f46e5 0%, #7c3aed 50%, #6d28d9 100%)" />
+                    </div>
+
+                    <!-- IMAGE : upload fichier OU URL -->
+                    <div v-else-if="form.auth_bg_type === 'image'" class="space-y-3">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <!-- Upload fichier -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+                                    Uploader une image
+                                </label>
+                                <label class="flex items-center justify-center gap-2 w-full py-3 px-4 rounded-xl border-2 border-dashed border-gray-300 dark:border-gray-600 cursor-pointer hover:border-violet-400 transition-colors group">
+                                    <svg class="w-5 h-5 text-gray-400 group-hover:text-violet-500 transition-colors"
+                                         fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                              d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                    </svg>
+                                    <span class="text-sm text-gray-500 dark:text-gray-400 group-hover:text-violet-500 transition-colors">
+                                        {{ bgImageFile ? bgImageFile.name : 'Choisir une image...' }}
+                                    </span>
+                                    <input type="file" accept="image/jpeg,image/png,image/webp,image/gif" class="hidden"
+                                           @change="onBgImageChange"/>
+                                </label>
+                                <p class="mt-1 text-xs text-gray-400">JPG, PNG, WebP — max 5 Mo</p>
+                            </div>
+                            <!-- OU URL -->
+                            <div>
+                                <AppInput v-model="form.auth_bg_value" label="Ou coller une URL"
+                                          placeholder="https://exemple.com/fond.jpg"/>
+                                <p class="mt-1 text-xs text-gray-400">L'upload prend la priorité sur l'URL.</p>
+                            </div>
+                        </div>
+                        <!-- Aperçu miniature de l'image choisie -->
+                        <div v-if="bgImagePreview || form.auth_bg_value"
+                             class="relative w-full h-28 rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700">
+                            <img :src="bgImagePreview || form.auth_bg_value" alt="Aperçu"
+                                 class="w-full h-full object-cover"/>
+                            <button v-if="bgImageFile" type="button"
+                                    @click="bgImageFile = null; bgImagePreview = null"
+                                    class="absolute top-2 right-2 w-6 h-6 rounded-full bg-red-500 text-white flex items-center justify-center hover:bg-red-600">
+                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                </svg>
+                            </button>
+                        </div>
+                        <AppInput v-model="form.auth_bg_overlay" label="Overlay (transparence)"
+                                  placeholder="rgba(0,0,0,0.4)" />
+                    </div>
+
+                    <!-- VIDÉO : upload fichier OU URL -->
+                    <div v-else-if="form.auth_bg_type === 'video'" class="space-y-3">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <!-- Upload fichier vidéo -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+                                    Uploader une vidéo
+                                </label>
+                                <label class="flex items-center justify-center gap-2 w-full py-3 px-4 rounded-xl border-2 border-dashed border-gray-300 dark:border-gray-600 cursor-pointer hover:border-violet-400 transition-colors group">
+                                    <svg class="w-5 h-5 text-gray-400 group-hover:text-violet-500 transition-colors"
+                                         fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                              d="M15 10l4.553-2.276A1 1 0 0121 8.723v6.554a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                                    </svg>
+                                    <span class="text-sm text-gray-500 dark:text-gray-400 group-hover:text-violet-500 transition-colors">
+                                        {{ bgVideoFile ? bgVideoFile.name : 'Choisir une vidéo...' }}
+                                    </span>
+                                    <input type="file" accept="video/mp4,video/webm,video/ogg" class="hidden"
+                                           @change="onBgVideoChange"/>
+                                </label>
+                                <p class="mt-1 text-xs text-gray-400">MP4, WebM — max 50 Mo. Fond en boucle silencieux.</p>
+                            </div>
+                            <!-- OU URL -->
+                            <div>
+                                <AppInput v-model="form.auth_bg_value" label="Ou coller une URL vidéo"
+                                          placeholder="https://exemple.com/fond.mp4"/>
+                                <p class="mt-1 text-xs text-gray-400">L'upload prend la priorité sur l'URL.</p>
+                            </div>
+                        </div>
+                        <!-- Aperçu vidéo -->
+                        <div v-if="bgVideoPreview || form.auth_bg_value"
+                             class="relative w-full h-28 rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700 bg-black">
+                            <video :src="bgVideoPreview || form.auth_bg_value"
+                                   class="w-full h-full object-cover" muted loop autoplay playsinline/>
+                            <button v-if="bgVideoFile" type="button"
+                                    @click="bgVideoFile = null; bgVideoPreview = null"
+                                    class="absolute top-2 right-2 w-6 h-6 rounded-full bg-red-500 text-white flex items-center justify-center hover:bg-red-600">
+                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                </svg>
+                            </button>
+                        </div>
+                        <AppInput v-model="form.auth_bg_overlay" label="Overlay (transparence)"
+                                  placeholder="rgba(0,0,0,0.4)" />
+                    </div>
+                </div>
+
+                <!-- Étiquette saisonnière — commun à tous les types -->
+                <div>
+                    <AppInput v-model="form.auth_bg_label" label="Étiquette saisonnière (optionnel)"
+                              placeholder="🎄 Joyeux Noël à tous !" />
+                    <p class="mt-1 text-xs text-gray-400">Affiché en bandeau sur le panneau gauche de la page de connexion.</p>
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Aperçu live</label>
+                    <div class="relative w-full h-40 rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-700">
+                        <!-- Fond gradient -->
+                        <div v-if="form.auth_bg_type === 'gradient' || !form.auth_bg_value"
+                             class="absolute inset-0"
+                             :style="{ background: form.auth_bg_value || defaultGradient }"/>
+                        <!-- Fond image -->
+                        <div v-else-if="form.auth_bg_type === 'image'"
+                             class="absolute inset-0 bg-cover bg-center"
+                             :style="{ backgroundImage: `url(${form.auth_bg_value})` }">
+                            <div class="absolute inset-0" :style="{ background: form.auth_bg_overlay || 'rgba(0,0,0,0.35)' }"/>
+                        </div>
+                        <!-- Décors blancs -->
+                        <div class="absolute top-4 left-4 w-20 h-20 rounded-full opacity-15 blur-xl" style="background: white"/>
+                        <div class="absolute bottom-3 right-4 w-24 h-24 rounded-full opacity-10 blur-xl" style="background: white"/>
+                        <!-- Étiquette -->
+                        <div v-if="form.auth_bg_label"
+                             class="absolute top-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full text-xs font-semibold text-white"
+                             style="background: rgba(255,255,255,0.18); backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.35);">
+                            {{ form.auth_bg_label }}
+                        </div>
+                        <!-- Texte sample -->
+                        <div class="absolute bottom-4 left-1/2 -translate-x-1/2 text-white text-center">
+                            <div class="text-sm font-bold drop-shadow">Gérez votre école</div>
+                            <div class="text-xs opacity-75 drop-shadow">intelligemment</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="flex justify-end">
                 <AppButton v-if="can('action.settings.manage')" type="submit" :loading="submitting" size="lg">
                     Enregistrer les paramètres
@@ -181,6 +373,11 @@ interface Setting {
     stripe_secret_key?:  string;
     fedapay_public_key?: string;
     fedapay_secret_key?: string;
+    // Fond Auth
+    auth_bg_type?:       string;
+    auth_bg_value?:      string;
+    auth_bg_label?:      string;
+    auth_bg_overlay?:    string;
 }
 
 const props = defineProps<{
@@ -191,7 +388,6 @@ const props = defineProps<{
 }>();
 
 const submitting = ref(false);
-
 const successMsg = ref('');
 const errorMsg   = ref('');
 
@@ -199,6 +395,14 @@ const logoPreview    = ref<string | null>(null);
 const faviconPreview = ref<string | null>(null);
 const logoFile       = ref<File | null>(null);
 const faviconFile    = ref<File | null>(null);
+
+// Fichiers background auth
+const bgImageFile    = ref<File | null>(null);
+const bgImagePreview = ref<string | null>(null);
+const bgVideoFile    = ref<File | null>(null);
+const bgVideoPreview = ref<string | null>(null);
+
+const defaultGradient = 'linear-gradient(145deg, #0d3b3e 0%, #0e4d52 45%, #0a3336 100%)';
 
 const form = ref<Setting>({
     school_name:         props.setting?.school_name         ?? '',
@@ -216,7 +420,90 @@ const form = ref<Setting>({
     stripe_secret_key:   props.setting?.stripe_secret_key   ?? '',
     fedapay_public_key:  props.setting?.fedapay_public_key  ?? '',
     fedapay_secret_key:  props.setting?.fedapay_secret_key  ?? '',
+    // Fond Auth
+    auth_bg_type:        props.setting?.auth_bg_type    ?? 'gradient',
+    auth_bg_value:       props.setting?.auth_bg_value   ?? 'linear-gradient(145deg, #5b21b6 0%, #7c3aed 50%, #6d28d9 100%)',
+    auth_bg_label:       props.setting?.auth_bg_label   ?? '',
+    auth_bg_overlay:     props.setting?.auth_bg_overlay ?? 'rgba(0,0,0,0.35)',
 });
+
+// ── Presets thématiques ────────────────────────────────────────────────────
+interface BgPreset {
+    id:      string;
+    label:   string;
+    type:    'gradient' | 'image' | 'video';
+    value:   string;
+    overlay?: string;
+}
+
+const bgPresets: BgPreset[] = [
+    {
+        id: 'default',
+        label: '🎓 Par défaut',
+        type: 'gradient',
+        value: 'linear-gradient(145deg, #5b21b6 0%, #7c3aed 50%, #6d28d9 100%)',
+    },
+    {
+        id: 'noel',
+        label: '🎄 Noël',
+        type: 'gradient',
+        value: 'linear-gradient(145deg, #1a472a 0%, #2d6a4f 35%, #c0392b 100%)',
+    },
+    {
+        id: 'nouvel_an',
+        label: '🎉 Nouvel An',
+        type: 'gradient',
+        value: 'linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%)',
+    },
+    {
+        id: 'paques',
+        label: '🐣 Pâques',
+        type: 'gradient',
+        value: 'linear-gradient(145deg, #f9ca24 0%, #f0932b 40%, #6ab04c 100%)',
+    },
+    {
+        id: 'rentrée',
+        label: '📚 Rentrée',
+        type: 'gradient',
+        value: 'linear-gradient(145deg, #2980b9 0%, #6dd5fa 50%, #ffffff 100%)',
+    },
+    {
+        id: 'ramadan',
+        label: '🌙 Ramadan',
+        type: 'gradient',
+        value: 'linear-gradient(145deg, #1a1a2e 0%, #16213e 45%, #0f3460 100%)',
+    },
+    {
+        id: 'tabaski',
+        label: '🐏 Aïd',
+        type: 'gradient',
+        value: 'linear-gradient(135deg, #134e5e 0%, #71b280 100%)',
+    },
+    {
+        id: 'fete_nat',
+        label: '🇧🇯 Fête Nat.',
+        type: 'gradient',
+        value: 'linear-gradient(145deg, #007a3d 0%, #fcd116 50%, #ce1126 100%)',
+    },
+    {
+        id: 'ocean',
+        label: '🌊 Océan',
+        type: 'gradient',
+        value: 'linear-gradient(145deg, #0575e6 0%, #021b79 100%)',
+    },
+    {
+        id: 'sunset',
+        label: '🌅 Coucher de soleil',
+        type: 'gradient',
+        value: 'linear-gradient(145deg, #f83600 0%, #f9d423 100%)',
+    },
+];
+
+const applyPreset = (preset: BgPreset) => {
+    form.value.auth_bg_type    = preset.type;
+    form.value.auth_bg_value   = preset.value;
+    form.value.auth_bg_overlay = preset.overlay ?? 'rgba(0,0,0,0.35)';
+};
 
 const onLogoChange = (e: Event) => {
     const file = (e.target as HTMLInputElement).files?.[0];
@@ -228,6 +515,25 @@ const onFaviconChange = (e: Event) => {
     if (file) { faviconFile.value = file; faviconPreview.value = URL.createObjectURL(file); }
 };
 
+const onBgImageChange = (e: Event) => {
+    const file = (e.target as HTMLInputElement).files?.[0];
+    if (file) {
+        bgImageFile.value    = file;
+        bgImagePreview.value = URL.createObjectURL(file);
+        // Effacer l'URL manuelle pour que l'upload prenne la priorité visuellement
+        form.value.auth_bg_value = '';
+    }
+};
+
+const onBgVideoChange = (e: Event) => {
+    const file = (e.target as HTMLInputElement).files?.[0];
+    if (file) {
+        bgVideoFile.value    = file;
+        bgVideoPreview.value = URL.createObjectURL(file);
+        form.value.auth_bg_value = '';
+    }
+};
+
 const submitForm = () => {
     const data = new FormData();
     Object.entries(form.value).forEach(([k, v]) => {
@@ -235,6 +541,8 @@ const submitForm = () => {
     });
     if (logoFile.value)    data.append('logo',    logoFile.value);
     if (faviconFile.value) data.append('favicon', faviconFile.value);
+    if (bgImageFile.value) data.append('auth_bg_image', bgImageFile.value);
+    if (bgVideoFile.value) data.append('auth_bg_video', bgVideoFile.value);
 
     successMsg.value = '';
     errorMsg.value   = '';

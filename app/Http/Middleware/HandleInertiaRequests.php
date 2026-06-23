@@ -76,20 +76,33 @@ class HandleInertiaRequests extends Middleware
         // Partager les settings de l'école (pour le header Vue)
         // Pour un admin/prof/élève/parent : on lit l'école à laquelle il appartient.
         // Pour le super admin (user_type = 0) : on lit les settings globaux (SettingModel id=1).
+        // Le auth_background est toujours lu depuis les settings globaux (id=1),
+        // car il s'applique à la page de connexion accessible à tous.
         try {
             $settings = null;
+
+            // Auth background — toujours chargé depuis les settings globaux (même sans connexion)
+            $globalSetting = \App\Models\SettingModel::getSingle(1);
+            $authBackground = $globalSetting
+                ? $globalSetting->getAuthBackground()
+                : [
+                    'type'    => 'gradient',
+                    'value'   => 'linear-gradient(145deg, #5b21b6 0%, #7c3aed 50%, #6d28d9 100%)',
+                    'label'   => null,
+                    'overlay' => 'rgba(0,0,0,0.35)',
+                ];
 
             if ($user) {
                 if ((int) $user->user_type === 0) {
                     // Super admin → settings globaux
-                    $setting = \App\Models\SettingModel::getSingle(1);
-                    if ($setting) {
+                    if ($globalSetting) {
                         $settings = [
-                            'school_name'        => $setting->school_name,
-                            'logo_url'           => $setting->getLogo(),
-                            'kkiapay_public_key' => $setting->kkiapay_public_key ?? '',
-                            'stripe_public_key'  => $setting->stripe_public_key  ?? '',
-                            'fedapay_public_key' => $setting->fedapay_public_key ?? '',
+                            'school_name'        => $globalSetting->school_name,
+                            'logo_url'           => $globalSetting->getLogo(),
+                            'kkiapay_public_key' => $globalSetting->kkiapay_public_key ?? '',
+                            'stripe_public_key'  => $globalSetting->stripe_public_key  ?? '',
+                            'fedapay_public_key' => $globalSetting->fedapay_public_key ?? '',
+                            'auth_background'    => $authBackground,
                         ];
                     }
                 } else {
@@ -100,7 +113,6 @@ class HandleInertiaRequests extends Middleware
                         $logoUrl = $school->getLogoUrl();
                         $defaultUrl = url('upload/logo.png');
                         if ($logoUrl === $defaultUrl) {
-                            $globalSetting = \App\Models\SettingModel::getSingle(1);
                             $logoUrl = $globalSetting ? $globalSetting->getLogo() : $defaultUrl;
                         }
 
@@ -110,9 +122,17 @@ class HandleInertiaRequests extends Middleware
                             'kkiapay_public_key' => $school->kkiapay_public_key ?? '',
                             'stripe_public_key'  => $school->stripe_public_key  ?? '',
                             'fedapay_public_key' => $school->fedapay_public_key ?? '',
+                            'auth_background'    => $authBackground,
                         ];
                     }
                 }
+            } else {
+                // Utilisateur non connecté — partage uniquement les infos publiques
+                $settings = [
+                    'school_name'     => $globalSetting->school_name ?? 'School Management System',
+                    'logo_url'        => $globalSetting ? $globalSetting->getLogo() : url('upload/logo.png'),
+                    'auth_background' => $authBackground,
+                ];
             }
         } catch (\Exception $e) {
             $settings = null;

@@ -28,7 +28,26 @@ class SettingModel extends Model
         'stripe_secret_key',
         'fedapay_public_key',
         'fedapay_secret_key',
+        // Background de la page d'authentification (configurable par le super admin)
+        'auth_bg_type',
+        'auth_bg_value',
+        'auth_bg_label',
+        'auth_bg_overlay',
     ];
+
+    /**
+     * Retourne la configuration complète du background auth.
+     * Fournit des valeurs par défaut si rien n'est défini.
+     */
+    public function getAuthBackground(): array
+    {
+        return [
+            'type'    => $this->auth_bg_type    ?? 'gradient',
+            'value'   => $this->auth_bg_value   ?? 'linear-gradient(145deg, #5b21b6 0%, #7c3aed 50%, #6d28d9 100%)',
+            'label'   => $this->auth_bg_label   ?? null,
+            'overlay' => $this->auth_bg_overlay ?? 'rgba(0,0,0,0.35)',
+        ];
+    }
 
     protected $hidden = [
         'is_delete',

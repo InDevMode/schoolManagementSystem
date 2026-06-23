@@ -1,232 +1,453 @@
 <template>
-    <div :class="['min-h-screen flex overflow-hidden transition-colors duration-300', isDark ? 'dark' : '']">
+    <div :class="['min-h-screen flex overflow-hidden relative', isDark ? 'dark' : '']"
+         :style="{ background: isDark ? '#1e1b4b' : '#f5f3ff' }">
 
-        <!-- ===== PANNEAU GAUCHE : Illustration + Branding ===== -->
-        <div class="hidden lg:flex lg:w-1/2 xl:w-[55%] relative flex-col items-center justify-center overflow-hidden"
-             :style="leftPanelStyle">
+        <!--
+            ══════════════════════════════════════════════════
+            SVG clip-path : séparation ORGANIQUE / imprévisible
+            Le panneau gauche est clippé par une courbe
+            en S irrégulière plutôt qu'une ligne droite.
+            ══════════════════════════════════════════════════
+        -->
+        <svg width="0" height="0" style="position:absolute">
+            <defs>
+                <clipPath id="waveClip" clipPathUnits="objectBoundingBox">
+                    <!--
+                        Courbe imprévisible en S + bosses :
+                        démarre en haut à 100%, descend en ondulant
+                        avec plusieurs inflexions avant de finir en bas.
+                    -->
+                    <path d="
+                        M 0 0
+                        L 0.88 0
+                        C 0.92 0,   0.96 0.04, 0.95 0.10
+                        C 0.93 0.18, 0.82 0.20, 0.84 0.28
+                        C 0.86 0.36, 0.97 0.38, 0.96 0.46
+                        C 0.94 0.55, 0.80 0.56, 0.82 0.65
+                        C 0.84 0.73, 0.98 0.74, 0.97 0.82
+                        C 0.95 0.90, 0.85 0.92, 0.87 1.00
+                        L 0 1
+                        Z
+                    "/>
+                </clipPath>
+            </defs>
+        </svg>
 
-            <!-- Décorations : cercles en pointillés + points dispersés -->
-            <div class="absolute inset-0 pointer-events-none select-none" aria-hidden="true">
+        <!-- ── PANNEAU GAUCHE clippé avec la courbe organique ── -->
+        <div class="hidden lg:block absolute inset-y-0 left-0 z-0"
+             style="width: 58%; clip-path: url(#waveClip);">
 
-                <!-- Cercles en pointillés (comme sur la capture) -->
-                <svg class="absolute top-10 left-10 opacity-25" width="120" height="120" viewBox="0 0 120 120" fill="none">
-                    <circle cx="60" cy="60" r="55" stroke="white" stroke-width="1.5" stroke-dasharray="6 5"/>
-                </svg>
-                <svg class="absolute bottom-16 right-12 opacity-20" width="160" height="160" viewBox="0 0 160 160" fill="none">
-                    <circle cx="80" cy="80" r="74" stroke="white" stroke-width="1.5" stroke-dasharray="6 5"/>
-                </svg>
-                <svg class="absolute top-1/3 right-8 opacity-15" width="90" height="90" viewBox="0 0 90 90" fill="none">
-                    <circle cx="45" cy="45" r="40" stroke="white" stroke-width="1.5" stroke-dasharray="5 4"/>
-                </svg>
-                <svg class="absolute bottom-1/3 left-6 opacity-15" width="70" height="70" viewBox="0 0 70 70" fill="none">
-                    <circle cx="35" cy="35" r="30" stroke="white" stroke-width="1.5" stroke-dasharray="4 4"/>
-                </svg>
+            <!-- Fond : gradient / image / vidéo dynamique -->
+            <div v-if="bgType === 'image' && bgValue"
+                 class="absolute inset-0 bg-cover bg-center"
+                 :style="{ backgroundImage: `url(${bgValue})` }">
+                <div class="absolute inset-0" :style="{ background: bgOverlay }"/>
+            </div>
+            <div v-else-if="bgType === 'video' && bgValue"
+                 class="absolute inset-0 overflow-hidden">
+                <video autoplay loop muted playsinline class="absolute inset-0 w-full h-full object-cover">
+                    <source :src="bgValue"/>
+                </video>
+                <div class="absolute inset-0" :style="{ background: bgOverlay }"/>
+            </div>
+            <!-- Gradient violet — couleur principale du bouton de connexion -->
+            <div v-else class="absolute inset-0"
+                 :style="{ background: bgValue || defaultGradient }"/>
 
-                <!-- Points dispersés (comme sur la capture) -->
-                <svg class="absolute top-8 right-16 opacity-30" width="180" height="180" viewBox="0 0 180 180">
-                    <g fill="white">
-                        <template v-for="r in 6" :key="r">
-                            <template v-for="c in 6" :key="c">
-                                <circle :cx="(c-1)*30+15" :cy="(r-1)*30+15" r="2"/>
-                            </template>
-                        </template>
-                    </g>
-                </svg>
-                <svg class="absolute bottom-10 left-10 opacity-25" width="140" height="140" viewBox="0 0 140 140">
+            <!-- Blobs décoratifs animés -->
+            <div class="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
+                <div class="absolute -top-24 -left-24 w-80 h-80 rounded-full opacity-20 blur-3xl animate-blob"
+                     style="background: radial-gradient(circle, #a78bfa, #6d28d9)"/>
+                <div class="absolute bottom-0 left-10 w-96 h-96 rounded-full opacity-15 blur-3xl animate-blob animation-delay-2000"
+                     style="background: radial-gradient(circle, #818cf8, #4f46e5)"/>
+                <div class="absolute top-1/2 left-1/2 w-64 h-64 rounded-full opacity-10 blur-3xl animate-blob animation-delay-4000"
+                     style="background: radial-gradient(circle, #c4b5fd, #7c3aed)"/>
+                <!-- Points décoratifs -->
+                <svg class="absolute top-10 left-10 opacity-20" width="120" height="120" viewBox="0 0 120 120">
                     <g fill="white">
                         <template v-for="r in 5" :key="r">
                             <template v-for="c in 5" :key="c">
-                                <circle :cx="(c-1)*28+14" :cy="(r-1)*28+14" r="2"/>
+                                <circle :cx="(c-1)*24+12" :cy="(r-1)*24+12" r="2"/>
                             </template>
                         </template>
                     </g>
                 </svg>
+                <svg class="absolute bottom-14 left-14 opacity-15" width="100" height="100" viewBox="0 0 100 100">
+                    <g fill="white">
+                        <template v-for="r in 4" :key="r">
+                            <template v-for="c in 4" :key="c">
+                                <circle :cx="(c-1)*26+13" :cy="(r-1)*26+13" r="1.8"/>
+                            </template>
+                        </template>
+                    </g>
+                </svg>
+                <!-- Cercle pointillé haut droit -->
+                <svg class="absolute top-16 right-16 opacity-15" width="100" height="100" viewBox="0 0 100 100" fill="none">
+                    <circle cx="50" cy="50" r="44" stroke="white" stroke-width="1.5" stroke-dasharray="5 4"/>
+                </svg>
+                <!-- Losange flottant -->
+                <div class="absolute top-1/4 right-20 w-8 h-8 rotate-45 opacity-20 animate-float"
+                     style="background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.35)"/>
+                <div class="absolute bottom-1/3 left-1/3 w-5 h-5 rounded-full opacity-25 animate-float animation-delay-2000"
+                     style="background: rgba(196,181,253,0.5)"/>
+            </div>
+        </div>
 
-                <!-- Quelques points isolés -->
-                <circle cx="0" cy="0" r="4" fill="white" opacity="0.3" style="position:absolute" class="absolute top-1/4 left-1/3"/>
-                <svg class="absolute" style="top:22%;left:35%" width="8" height="8"><circle cx="4" cy="4" r="3" fill="white" opacity="0.4"/></svg>
-                <svg class="absolute" style="top:65%;right:25%" width="6" height="6"><circle cx="3" cy="3" r="2.5" fill="white" opacity="0.35"/></svg>
-                <svg class="absolute" style="top:15%;right:35%" width="7" height="7"><circle cx="3.5" cy="3.5" r="3" fill="white" opacity="0.3"/></svg>
-                <svg class="absolute" style="bottom:20%;left:40%" width="5" height="5"><circle cx="2.5" cy="2.5" r="2" fill="white" opacity="0.4"/></svg>
+        <!-- ── CONTENU du panneau gauche (au-dessus du clip) ── -->
+        <div class="hidden lg:flex relative z-10 flex-col items-center justify-center overflow-hidden"
+             style="width: 58%;">
+
+            <!-- Étiquette saisonnière -->
+            <div v-if="bgLabel"
+                 class="absolute top-6 left-1/2 -translate-x-1/2 px-4 py-1.5 rounded-full text-sm font-semibold text-white z-20 animate-pulse-slow"
+                 style="background: rgba(255,255,255,0.18); backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.3); white-space: nowrap;">
+                {{ bgLabel }}
             </div>
 
-            <!-- Contenu principal gauche -->
-            <div class="relative z-10 flex flex-col items-center px-12 text-center">
+            <div class="relative z-10 flex flex-col items-center px-10 text-center max-w-lg">
 
-                <!-- Logo + Nom de l'école -->
-                <div class="flex items-center gap-3 mb-10">
-                    <div class="w-11 h-11 rounded-xl flex items-center justify-center shadow-lg"
-                         style="background: rgba(255,255,255,0.2); backdrop-filter: blur(8px);">
-                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <!-- Logo + Nom -->
+                <div class="flex items-center gap-3 mb-7">
+                    <div class="w-11 h-11 rounded-2xl flex items-center justify-center shadow-xl overflow-hidden"
+                         style="background: rgba(255,255,255,0.18); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.3);">
+                        <img v-if="logoUrl" :src="logoUrl" alt="Logo" class="w-8 h-8 object-contain"/>
+                        <svg v-else class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                   d="M12 14l9-5-9-5-9 5 9 5z"/>
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                   d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0112 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/>
                         </svg>
                     </div>
-                    <span class="text-white text-xl font-bold tracking-wide">{{ appName }}</span>
+                    <span class="text-white text-xl font-bold tracking-wide drop-shadow-md">{{ appName }}</span>
                 </div>
 
-                <!-- Illustration 3D SVG -->
-                <div class="w-full max-w-xs mb-10 drop-shadow-2xl">
-                    <svg viewBox="0 0 400 320" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full h-auto">
-                        <!-- Ombre sol -->
-                        <ellipse cx="200" cy="300" rx="140" ry="16" fill="rgba(0,0,0,0.15)"/>
-
-                        <!-- Écran principal -->
-                        <rect x="55" y="60" width="230" height="185" rx="14" fill="#1e1b4b"/>
-                        <!-- Bord gauche 3D -->
-                        <path d="M55 60 L38 78 L38 262 L55 245 Z" fill="#312e81"/>
-                        <!-- Bord bas 3D -->
-                        <path d="M55 245 L38 262 L268 262 L285 245 Z" fill="#3730a3"/>
-                        <!-- Écran intérieur -->
-                        <rect x="66" y="72" width="208" height="162" rx="8" fill="#0d0d1f" opacity="0.92"/>
-
-                        <!-- Barre titre -->
-                        <rect x="74" y="80" width="192" height="16" rx="4" fill="#4f46e5" opacity="0.85"/>
-                        <circle cx="84" cy="88" r="3.5" fill="#ef4444"/>
-                        <circle cx="95" cy="88" r="3.5" fill="#f59e0b"/>
-                        <circle cx="106" cy="88" r="3.5" fill="#22c55e"/>
-                        <text x="168" y="92" font-size="6.5" fill="white" opacity="0.7" text-anchor="middle" font-family="sans-serif">School Dashboard</text>
-
-                        <!-- Cartes stats -->
-                        <rect x="76" y="104" width="52" height="32" rx="5" fill="#4f46e5" opacity="0.65"/>
-                        <text x="102" y="117" font-size="10" fill="white" font-weight="bold" text-anchor="middle" font-family="sans-serif">248</text>
-                        <text x="102" y="129" font-size="5.5" fill="#c4b5fd" text-anchor="middle" font-family="sans-serif">Élèves</text>
-
-                        <rect x="136" y="104" width="52" height="32" rx="5" fill="#7B74F0" opacity="0.65"/>
-                        <text x="162" y="117" font-size="10" fill="white" font-weight="bold" text-anchor="middle" font-family="sans-serif">32</text>
-                        <text x="162" y="129" font-size="5.5" fill="#c4b5fd" text-anchor="middle" font-family="sans-serif">Profs</text>
-
-                        <rect x="196" y="104" width="52" height="32" rx="5" fill="#6660d4" opacity="0.65"/>
-                        <text x="222" y="117" font-size="10" fill="white" font-weight="bold" text-anchor="middle" font-family="sans-serif">12</text>
-                        <text x="222" y="129" font-size="5.5" fill="#c4b5fd" text-anchor="middle" font-family="sans-serif">Classes</text>
-
-                        <!-- Graphique barres -->
-                        <rect x="76" y="144" width="172" height="54" rx="5" fill="rgba(79,70,229,0.18)"/>
-                        <text x="162" y="155" font-size="5.5" fill="#a78bfa" text-anchor="middle" font-family="sans-serif">Présences ce mois</text>
-                        <rect x="86" y="183" width="12" height="12" rx="2" fill="#7B74F0" opacity="0.9"/>
-                        <rect x="102" y="175" width="12" height="20" rx="2" fill="#6660d4" opacity="0.9"/>
-                        <rect x="118" y="169" width="12" height="26" rx="2" fill="#9189f5" opacity="0.9"/>
-                        <rect x="134" y="178" width="12" height="17" rx="2" fill="#7B74F0" opacity="0.9"/>
-                        <rect x="150" y="172" width="12" height="23" rx="2" fill="#4f46e5" opacity="0.9"/>
-                        <rect x="166" y="165" width="12" height="30" rx="2" fill="#6660d4" opacity="0.9"/>
-                        <rect x="182" y="176" width="12" height="19" rx="2" fill="#9189f5" opacity="0.9"/>
-                        <rect x="198" y="170" width="12" height="25" rx="2" fill="#7B74F0" opacity="0.9"/>
-                        <rect x="214" y="167" width="12" height="28" rx="2" fill="#4f46e5" opacity="0.9"/>
-
-                        <!-- Barre progression -->
-                        <rect x="76" y="206" width="172" height="6" rx="3" fill="rgba(255,255,255,0.1)"/>
-                        <rect x="76" y="206" width="122" height="6" rx="3" fill="url(#pg)"/>
-                        <text x="76" y="220" font-size="5.5" fill="#a78bfa" font-family="sans-serif">Taux de réussite : 71%</text>
-
-                        <!-- Pied écran -->
-                        <rect x="170" y="248" width="36" height="7" rx="3.5" fill="#312e81"/>
-                        <rect x="134" y="255" width="108" height="5" rx="2.5" fill="#3730a3"/>
-
-                        <!-- Personnage -->
-                        <ellipse cx="318" cy="258" rx="24" ry="7" fill="rgba(0,0,0,0.12)"/>
-                        <!-- Jambes -->
-                        <rect x="307" y="225" width="9" height="34" rx="4.5" fill="#1e40af"/>
-                        <rect x="320" y="225" width="9" height="34" rx="4.5" fill="#1d4ed8"/>
-                        <!-- Chaussures -->
-                        <ellipse cx="311.5" cy="259" rx="8" ry="4.5" fill="#1e293b"/>
-                        <ellipse cx="324.5" cy="259" rx="8" ry="4.5" fill="#0f172a"/>
-                        <!-- Corps -->
-                        <rect x="300" y="178" width="36" height="50" rx="9" fill="#3b82f6"/>
-                        <!-- Col -->
-                        <rect x="312" y="178" width="14" height="10" rx="4" fill="#60a5fa"/>
-                        <!-- Tête -->
-                        <circle cx="318" cy="163" r="20" fill="#fbbf24"/>
-                        <!-- Visage -->
-                        <circle cx="312" cy="160" r="2.5" fill="#92400e"/>
-                        <circle cx="324" cy="160" r="2.5" fill="#92400e"/>
-                        <path d="M312 170 Q318 175 324 170" stroke="#92400e" stroke-width="1.8" fill="none" stroke-linecap="round"/>
-                        <!-- Cheveux -->
-                        <path d="M298 157 Q300 143 318 146 Q336 143 338 157" fill="#1c1917"/>
-                        <!-- Bras gauche pointant -->
-                        <path d="M300 195 Q278 208 262 218" stroke="#3b82f6" stroke-width="11" stroke-linecap="round" fill="none"/>
-                        <circle cx="260" cy="219" r="6" fill="#fbbf24"/>
-                        <!-- Bras droit -->
-                        <path d="M336 195 Q350 208 346 224" stroke="#3b82f6" stroke-width="11" stroke-linecap="round" fill="none"/>
-                        <circle cx="345" cy="225" r="6" fill="#fbbf24"/>
-
-                        <!-- Clé flottante -->
-                        <g transform="translate(44, 238) rotate(-30)">
-                            <circle cx="0" cy="0" r="12" stroke="#fbbf24" stroke-width="3.5" fill="none"/>
-                            <circle cx="0" cy="0" r="5" fill="#fbbf24"/>
-                            <rect x="12" y="-2.5" width="24" height="5" rx="2.5" fill="#fbbf24"/>
-                            <rect x="30" y="2.5" width="5" height="7" rx="1.5" fill="#fbbf24"/>
-                            <rect x="23" y="2.5" width="4" height="5" rx="1.5" fill="#fbbf24"/>
-                        </g>
-
-                        <!-- Cadenas flottant -->
-                        <g transform="translate(340, 82)">
-                            <rect x="-12" y="0" width="24" height="19" rx="4" fill="rgba(255,255,255,0.25)"/>
-                            <path d="M-7 0 Q-7 -13 0 -13 Q7 -13 7 0" stroke="rgba(255,255,255,0.6)" stroke-width="3.5" fill="none" stroke-linecap="round"/>
-                            <circle cx="0" cy="9.5" r="3.5" fill="rgba(255,255,255,0.5)"/>
-                        </g>
-
-                        <!-- Dégradés -->
+                <!-- ══ ILLUSTRATION SCOLAIRE — Tableau + Salle de classe 3D ══ -->
+                <div class="w-full max-w-md mb-7 drop-shadow-2xl">
+                    <svg viewBox="0 0 440 320" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full h-auto">
                         <defs>
-                            <linearGradient id="pg" x1="0" y1="0" x2="1" y2="0">
-                                <stop offset="0%" stop-color="#7B74F0"/>
-                                <stop offset="100%" stop-color="#a78bfa"/>
+                            <!-- Fond salle -->
+                            <linearGradient id="roomBg" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0%"   stop-color="#3b0764"/>
+                                <stop offset="100%" stop-color="#4c1d95"/>
                             </linearGradient>
+                            <!-- Sol en perspective -->
+                            <linearGradient id="floorGrad" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0%"   stop-color="#5b21b6"/>
+                                <stop offset="100%" stop-color="#3b0764"/>
+                            </linearGradient>
+                            <!-- Tableau noir -->
+                            <linearGradient id="boardGrad" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0%"   stop-color="#134e4a"/>
+                                <stop offset="100%" stop-color="#1e3a5f"/>
+                            </linearGradient>
+                            <!-- Cadre tableau -->
+                            <linearGradient id="frameGrad" x1="0" y1="0" x2="1" y2="1">
+                                <stop offset="0%"   stop-color="#8b5cf6"/>
+                                <stop offset="100%" stop-color="#7c3aed"/>
+                            </linearGradient>
+                            <!-- Lumière halo tableau -->
+                            <radialGradient id="boardGlow" cx="50%" cy="45%" r="55%">
+                                <stop offset="0%"   stop-color="#c4b5fd" stop-opacity="0.20"/>
+                                <stop offset="100%" stop-color="#7c3aed" stop-opacity="0"/>
+                            </radialGradient>
+                            <!-- Bureau enseignant -->
+                            <linearGradient id="deskGrad" x1="0" y1="0" x2="1" y2="1">
+                                <stop offset="0%"   stop-color="#8b5cf6"/>
+                                <stop offset="100%" stop-color="#6d28d9"/>
+                            </linearGradient>
+                            <!-- Peau eleve -->
+                            <linearGradient id="skinA" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0%"   stop-color="#fbbf24"/>
+                                <stop offset="100%" stop-color="#d97706"/>
+                            </linearGradient>
+                            <!-- Peau prof -->
+                            <linearGradient id="skinB" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0%"   stop-color="#fed7aa"/>
+                                <stop offset="100%" stop-color="#fb923c"/>
+                            </linearGradient>
+                            <!-- Clip arrondi pour la scène entière -->
+                            <clipPath id="sceneClip">
+                                <rect x="0" y="0" width="440" height="320" rx="22"/>
+                            </clipPath>
                         </defs>
+
+                        <g clip-path="url(#sceneClip)">
+
+                        <!-- ══ Fond salle ══ -->
+                        <rect width="440" height="320" fill="url(#roomBg)"/>
+
+                        <!-- Mur du fond (perspective) -->
+                        <path d="M0 0 L440 0 L440 190 L0 190 Z" fill="rgba(255,255,255,0.03)"/>
+
+                        <!-- Plafond — bandes lumineuses -->
+                        <rect x="0" y="0" width="440" height="8" fill="rgba(255,255,255,0.06)"/>
+                        <rect x="80" y="4" width="120" height="3" rx="1.5" fill="rgba(196,181,253,0.5)"/>
+                        <rect x="240" y="4" width="120" height="3" rx="1.5" fill="rgba(196,181,253,0.5)"/>
+
+                        <!-- Sol en perspective (lignes fuyantes) -->
+                        <path d="M0 200 L440 200 L440 320 L0 320 Z" fill="url(#floorGrad)" opacity="0.9"/>
+                        <!-- Lignes carrelage -->
+                        <line x1="0" y1="230" x2="440" y2="230" stroke="rgba(255,255,255,0.07)" stroke-width="1"/>
+                        <line x1="0" y1="262" x2="440" y2="262" stroke="rgba(255,255,255,0.07)" stroke-width="1"/>
+                        <line x1="0" y1="295" x2="440" y2="295" stroke="rgba(255,255,255,0.07)" stroke-width="1"/>
+                        <!-- Colonnes verticales fuyantes -->
+                        <line x1="220" y1="190" x2="0"   y2="320" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+                        <line x1="220" y1="190" x2="110" y2="320" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+                        <line x1="220" y1="190" x2="220" y2="320" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+                        <line x1="220" y1="190" x2="330" y2="320" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+                        <line x1="220" y1="190" x2="440" y2="320" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+
+                        <!-- ══ TABLEAU NOIR en fond ══ -->
+                        <!-- Ombre portée -->
+                        <rect x="72" y="28" width="297" height="152" rx="6" fill="rgba(0,0,0,0.4)"/>
+                        <!-- Cadre extérieur -->
+                        <rect x="68" y="24" width="297" height="152" rx="6" fill="url(#frameGrad)"/>
+                        <!-- Surface tableau -->
+                        <rect x="76" y="31" width="281" height="138" rx="4" fill="url(#boardGrad)"/>
+                        <!-- Halo lumineux sur tableau -->
+                        <rect x="76" y="31" width="281" height="138" rx="4" fill="url(#boardGlow)"/>
+
+                        <!-- Contenu tableau — formules et schémas -->
+                        <!-- Titre -->
+                        <text x="217" y="55" font-size="9" fill="rgba(165,243,252,0.9)" text-anchor="middle"
+                              font-family="sans-serif" font-weight="bold" letter-spacing="1">MATHÉMATIQUES</text>
+                        <line x1="120" y1="59" x2="314" y2="59" stroke="rgba(165,243,252,0.35)" stroke-width="0.8"/>
+
+                        <!-- Équation principale -->
+                        <text x="155" y="80" font-size="13" fill="white" font-family="serif" opacity="0.85">f(x) = ax² + bx + c</text>
+                        <!-- Flèche annotation -->
+                        <path d="M270 88 Q285 92 290 100" stroke="rgba(253,224,71,0.7)" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+                        <text x="292" y="104" font-size="7" fill="rgba(253,224,71,0.8)" font-family="sans-serif">Δ = b²-4ac</text>
+
+                        <!-- Schéma parabole -->
+                        <path d="M100 148 Q130 90 160 148" stroke="rgba(167,243,208,0.7)" stroke-width="1.5" fill="none"/>
+                        <!-- Axes -->
+                        <line x1="95"  y1="148" x2="170" y2="148" stroke="rgba(255,255,255,0.4)" stroke-width="1"/>
+                        <line x1="130" y1="85"  x2="130" y2="152" stroke="rgba(255,255,255,0.4)" stroke-width="1"/>
+                        <!-- Points sur courbe -->
+                        <circle cx="130" cy="89"  r="2.5" fill="rgba(253,224,71,0.8)"/>
+                        <circle cx="108" cy="143" r="2"   fill="rgba(165,243,252,0.7)"/>
+                        <circle cx="152" cy="143" r="2"   fill="rgba(165,243,252,0.7)"/>
+
+                        <!-- Schéma géométrie droite -->
+                        <rect x="190" y="92" width="50" height="40" rx="2"
+                              stroke="rgba(196,181,253,0.6)" stroke-width="1.2" fill="none"/>
+                        <line x1="190" y1="92"  x2="240" y2="132" stroke="rgba(196,181,253,0.4)" stroke-width="0.8"/>
+                        <line x1="240" y1="92"  x2="190" y2="132" stroke="rgba(196,181,253,0.4)" stroke-width="0.8"/>
+                        <text x="215" y="148" font-size="6.5" fill="rgba(196,181,253,0.7)" text-anchor="middle" font-family="sans-serif">ABCD rectangle</text>
+
+                        <!-- Formule droite -->
+                        <text x="260" y="112" font-size="9" fill="rgba(167,243,208,0.75)" font-family="serif">S = ½ × b × h</text>
+                        <text x="260" y="130" font-size="8" fill="rgba(253,224,71,0.65)" font-family="serif">P = 2(l + L)</text>
+
+                        <!-- Traits craie décoratifs -->
+                        <path d="M85 68 Q92 64 100 67" stroke="rgba(255,255,255,0.2)" stroke-width="1" fill="none" stroke-linecap="round"/>
+                        <path d="M305 75 Q312 70 318 73" stroke="rgba(255,255,255,0.15)" stroke-width="1" fill="none" stroke-linecap="round"/>
+
+                        <!-- Barre craie bas tableau -->
+                        <rect x="76" y="165" width="281" height="4" rx="2" fill="rgba(255,255,255,0.06)"/>
+                        <!-- Morceaux de craie -->
+                        <rect x="120" y="166" width="18" height="3" rx="1.5" fill="rgba(255,255,255,0.7)"/>
+                        <rect x="145" y="166" width="10" height="3" rx="1.5" fill="rgba(253,224,71,0.6)"/>
+                        <rect x="162" y="166" width="14" height="3" rx="1.5" fill="rgba(167,243,208,0.6)"/>
+
+                        <!-- ══ ESTRADE + BUREAU PROFESSEUR ══ -->
+                        <!-- Estrade -->
+                        <path d="M60 198 L380 198 L370 210 L70 210 Z" fill="rgba(79,70,229,0.5)"/>
+                        <rect x="60" y="198" width="320" height="4" rx="2" fill="rgba(129,140,248,0.5)"/>
+                        <!-- Bureau -->
+                        <path d="M150 210 L290 210 L286 240 L154 240 Z" fill="url(#deskGrad)"/>
+                        <rect x="150" y="208" width="140" height="5" rx="2" fill="rgba(165,180,252,0.6)"/>
+                        <!-- Pied bureau gauche -->
+                        <rect x="158" y="240" width="8" height="20" rx="4" fill="#3730a3"/>
+                        <!-- Pied bureau droit -->
+                        <rect x="274" y="240" width="8" height="20" rx="4" fill="#3730a3"/>
+                        <!-- Livres sur bureau -->
+                        <rect x="162" y="199" width="14" height="10" rx="2" fill="#ef4444" opacity="0.8"/>
+                        <rect x="177" y="200" width="12" height="9"  rx="2" fill="#3b82f6" opacity="0.8"/>
+                        <rect x="190" y="201" width="10" height="8"  rx="2" fill="#10b981" opacity="0.8"/>
+                        <!-- Ordinateur -->
+                        <rect x="210" y="194" width="38" height="26" rx="3" fill="#1e1b4b"/>
+                        <rect x="212" y="196" width="34" height="21" rx="2" fill="#312e81"/>
+                        <rect x="214" y="198" width="30" height="17" rx="1" fill="#1e40af" opacity="0.85"/>
+                        <!-- Écran ordinateur — graphique -->
+                        <polyline points="218,213 222,208 228,211 234,205 240,209" stroke="#34d399" stroke-width="1.2" fill="none"/>
+                        <!-- Pied écran -->
+                        <rect x="225" y="220" width="8" height="3" rx="1" fill="#1e1b4b"/>
+
+                        <!-- ══ PROFESSEUR ══ -->
+                        <!-- Ombre -->
+                        <ellipse cx="220" cy="258" rx="18" ry="5" fill="rgba(0,0,0,0.3)"/>
+                        <!-- Jambes -->
+                        <rect x="212" y="232" width="8" height="26" rx="4" fill="#1e40af"/>
+                        <rect x="222" y="232" width="8" height="26" rx="4" fill="#1d4ed8"/>
+                        <!-- Chaussures -->
+                        <ellipse cx="216" cy="258" rx="7" ry="3.5" fill="#111827"/>
+                        <ellipse cx="226" cy="258" rx="7" ry="3.5" fill="#111827"/>
+                        <!-- Corps -->
+                        <rect x="207" y="200" width="28" height="34" rx="8" fill="#7c3aed"/>
+                        <!-- Cravate -->
+                        <path d="M220 206 L218 218 L220 222 L222 218 Z" fill="#fbbf24" opacity="0.8"/>
+                        <!-- Col -->
+                        <rect x="216" y="200" width="10" height="8" rx="4" fill="#a78bfa"/>
+                        <!-- Tête -->
+                        <circle cx="221" cy="192" r="14" fill="url(#skinB)"/>
+                        <!-- Yeux -->
+                        <circle cx="216" cy="190" r="2" fill="#1e1b4b"/>
+                        <circle cx="226" cy="190" r="2" fill="#1e1b4b"/>
+                        <!-- Reflet œil -->
+                        <circle cx="217" cy="189" r="0.8" fill="white"/>
+                        <circle cx="227" cy="189" r="0.8" fill="white"/>
+                        <!-- Sourire -->
+                        <path d="M215 196 Q221 200 227 196" stroke="#92400e" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+                        <!-- Cheveux -->
+                        <path d="M207 187 Q209 177 221 178 Q233 177 235 187" fill="#1c1917"/>
+                        <!-- Bras gauche — tient pointeur vers tableau -->
+                        <path d="M207 212 Q192 218 178 205" stroke="#7c3aed" stroke-width="9" stroke-linecap="round" fill="none"/>
+                        <circle cx="176" cy="204" r="5" fill="url(#skinB)"/>
+                        <!-- Pointeur (baguette) -->
+                        <line x1="176" y1="204" x2="142" y2="148" stroke="#d1d5db" stroke-width="1.5" stroke-linecap="round"/>
+                        <circle cx="140" cy="146" r="2.5" fill="#f59e0b"/>
+                        <!-- Bras droit -->
+                        <path d="M235 215 Q248 222 245 232" stroke="#7c3aed" stroke-width="9" stroke-linecap="round" fill="none"/>
+                        <circle cx="245" cy="233" r="5" fill="url(#skinB)"/>
+
+                        <!-- ══ RANGÉES D'ÉLÈVES ══ -->
+                        <!-- ─ Rang 1 : 3 élèves au fond ─ -->
+                        <!-- Élève 1G fond -->
+                        <rect x="30"  y="235" width="35" height="22" rx="4" fill="rgba(109,40,217,0.7)"/>
+                        <rect x="30"  y="233" width="35" height="4"  rx="2" fill="rgba(139,92,246,0.6)"/>
+                        <ellipse cx="47" cy="230" rx="10" ry="5" fill="rgba(0,0,0,0.2)"/>
+                        <rect x="38"  y="218" width="18" height="18" rx="6" fill="url(#skinA)"/>
+                        <circle cx="42" cy="223" r="1.5" fill="#92400e"/>
+                        <circle cx="52" cy="223" r="1.5" fill="#92400e"/>
+                        <path d="M40 229 Q47 233 54 229" stroke="#92400e" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+                        <rect x="36" y="204" width="22" height="15" rx="4" fill="#6d28d9"/>
+                        <!-- Cheveux élève 1 -->
+                        <path d="M36 212 Q38 204 47 204 Q56 204 58 212" fill="#1c1917"/>
+                        <!-- Livre élève 1 -->
+                        <rect x="32" y="236" width="14" height="10" rx="2" fill="#ef4444" opacity="0.85"/>
+                        <line x1="39" y1="237" x2="39" y2="245" stroke="rgba(255,255,255,0.4)" stroke-width="0.8"/>
+
+                        <!-- Élève 2 fond centre -->
+                        <rect x="195" y="232" width="36" height="22" rx="4" fill="rgba(109,40,217,0.7)"/>
+                        <rect x="195" y="230" width="36" height="4"  rx="2" fill="rgba(139,92,246,0.6)"/>
+                        <ellipse cx="213" cy="227" rx="10" ry="5" fill="rgba(0,0,0,0.2)"/>
+                        <rect x="203" y="215" width="18" height="17" rx="6" fill="#f59e0b"/>
+                        <circle cx="207" cy="220" r="1.5" fill="#92400e"/>
+                        <circle cx="217" cy="220" r="1.5" fill="#92400e"/>
+                        <path d="M205 226 Q212 230 219 226" stroke="#92400e" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+                        <rect x="201" y="200" width="22" height="16" rx="4" fill="#be185d"/>
+                        <path d="M200 209 Q202 200 213 200 Q224 200 226 209" fill="#374151"/>
+                        <!-- Main levée élève 2 -->
+                        <path d="M222 208 Q230 200 228 190" stroke="#f59e0b" stroke-width="7" stroke-linecap="round" fill="none"/>
+                        <circle cx="228" cy="188" r="4.5" fill="#f59e0b"/>
+
+                        <!-- Élève 3 fond droite -->
+                        <rect x="370" y="235" width="36" height="22" rx="4" fill="rgba(109,40,217,0.7)"/>
+                        <rect x="370" y="233" width="36" height="4"  rx="2" fill="rgba(139,92,246,0.6)"/>
+                        <ellipse cx="388" cy="230" rx="10" ry="5" fill="rgba(0,0,0,0.2)"/>
+                        <rect x="378" y="217" width="18" height="18" rx="6" fill="#d97706"/>
+                        <circle cx="382" cy="222" r="1.5" fill="#92400e"/>
+                        <circle cx="392" cy="222" r="1.5" fill="#92400e"/>
+                        <path d="M380 228 Q387 232 394 228" stroke="#92400e" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+                        <rect x="376" y="202" width="22" height="16" rx="4" fill="#0284c7"/>
+                        <path d="M375 211 Q377 202 388 202 Q399 202 401 211" fill="#1c1917"/>
+                        <!-- Ordinateur élève 3 -->
+                        <rect x="372" y="236" width="20" height="14" rx="2" fill="#1e1b4b"/>
+                        <rect x="373" y="237" width="18" height="11" rx="1" fill="#3b82f6" opacity="0.6"/>
+
+                        <!-- ─ Rang 2 : 2 élèves avant ─ -->
+                        <!-- Élève 4 avant gauche -->
+                        <rect x="80" y="268" width="46" height="28" rx="5" fill="rgba(88,28,135,0.75)"/>
+                        <rect x="80" y="265" width="46" height="6"  rx="3" fill="rgba(139,92,246,0.5)"/>
+                        <ellipse cx="103" cy="262" rx="14" ry="6" fill="rgba(0,0,0,0.25)"/>
+                        <rect x="90" y="245" width="24" height="22" rx="7" fill="#fbbf24"/>
+                        <circle cx="95"  cy="252" r="2" fill="#92400e"/>
+                        <circle cx="109" cy="252" r="2" fill="#92400e"/>
+                        <circle cx="97"  cy="248" r="0.8" fill="white"/>
+                        <circle cx="111" cy="248" r="0.8" fill="white"/>
+                        <path d="M93 260 Q102 265 111 260" stroke="#92400e" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+                        <rect x="88"  y="225" width="28" height="22" rx="6" fill="#059669"/>
+                        <path d="M86 236 Q88 224 103 224 Q118 224 120 236" fill="#111827"/>
+                        <!-- Livre -->
+                        <rect x="84"  y="270" width="20" height="16" rx="2" fill="#f59e0b" opacity="0.9"/>
+                        <line x1="94" y1="271" x2="94" y2="285" stroke="rgba(255,255,255,0.4)" stroke-width="0.8"/>
+                        <rect x="105" y="270" width="16" height="16" rx="2" fill="#a78bfa" opacity="0.9"/>
+
+                        <!-- Élève 5 avant droite -->
+                        <rect x="314" y="268" width="46" height="28" rx="5" fill="rgba(88,28,135,0.75)"/>
+                        <rect x="314" y="265" width="46" height="6"  rx="3" fill="rgba(139,92,246,0.5)"/>
+                        <ellipse cx="337" cy="262" rx="14" ry="6" fill="rgba(0,0,0,0.25)"/>
+                        <rect x="324" y="245" width="24" height="22" rx="7" fill="#fb923c"/>
+                        <circle cx="329" cy="252" r="2" fill="#92400e"/>
+                        <circle cx="343" cy="252" r="2" fill="#92400e"/>
+                        <path d="M327 260 Q336 265 345 260" stroke="#92400e" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+                        <rect x="322" y="225" width="28" height="22" rx="6" fill="#be185d"/>
+                        <!-- Tresses -->
+                        <path d="M320 237 Q322 224 337 224 Q352 224 354 237" fill="#1c1917"/>
+                        <path d="M322 238 Q318 242 316 250" stroke="#1c1917" stroke-width="4" stroke-linecap="round" fill="none"/>
+                        <path d="M352 238 Q356 242 358 250" stroke="#1c1917" stroke-width="4" stroke-linecap="round" fill="none"/>
+                        <!-- Stylo élève 5 -->
+                        <path d="M348 250 Q354 242 350 234" stroke="#fb923c" stroke-width="6" stroke-linecap="round" fill="none"/>
+                        <circle cx="350" cy="233" r="4" fill="#fb923c"/>
+
+                        <!-- ══ Halo lumière tableau projeté au sol ══ -->
+                        <ellipse cx="220" cy="198" rx="90" ry="8" fill="rgba(165,243,252,0.08)"/>
+
+                        <!-- ══ Cadre décoratif arrondi ══ -->
+                        <rect x="1" y="1" width="438" height="318" rx="22"
+                              stroke="rgba(255,255,255,0.12)" stroke-width="2" fill="none"/>
+
+                        </g>
                     </svg>
                 </div>
 
                 <!-- Texte -->
-                <h2 class="text-white text-3xl font-bold leading-tight mb-3">
+                <h2 class="text-white text-2xl font-bold leading-tight mb-2 drop-shadow-lg">
                     Gérez votre école<br/>
-                    <span style="color: rgba(255,255,255,0.85);">intelligemment</span>
+                    <span style="color: rgba(196,181,253,0.95);">intelligemment</span>
                 </h2>
-                <p class="text-sm leading-relaxed max-w-xs" style="color: rgba(255,255,255,0.7);">
+                <p class="text-sm leading-relaxed max-w-sm" style="color: rgba(255,255,255,0.65);">
                     Élèves, enseignants, notes, présences et bien plus — tout en un seul endroit.
                 </p>
 
                 <!-- Badges stats -->
-                <div class="flex gap-6 mt-8">
+                <div class="flex gap-5 mt-5 px-5 py-3 rounded-2xl"
+                     style="background: rgba(255,255,255,0.09); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.15);">
                     <div class="text-center">
-                        <div class="text-white text-xl font-bold">500+</div>
-                        <div class="text-xs" style="color: rgba(255,255,255,0.65);">Écoles</div>
+                        <div class="text-white text-lg font-bold">500+</div>
+                        <div class="text-xs" style="color: rgba(196,181,253,0.75);">Écoles</div>
                     </div>
-                    <div class="w-px" style="background: rgba(255,255,255,0.25);"></div>
+                    <div class="w-px" style="background: rgba(255,255,255,0.18);"></div>
                     <div class="text-center">
-                        <div class="text-white text-xl font-bold">50k+</div>
-                        <div class="text-xs" style="color: rgba(255,255,255,0.65);">Élèves</div>
+                        <div class="text-white text-lg font-bold">50k+</div>
+                        <div class="text-xs" style="color: rgba(196,181,253,0.75);">Élèves</div>
                     </div>
-                    <div class="w-px" style="background: rgba(255,255,255,0.25);"></div>
+                    <div class="w-px" style="background: rgba(255,255,255,0.18);"></div>
                     <div class="text-center">
-                        <div class="text-white text-xl font-bold">99%</div>
-                        <div class="text-xs" style="color: rgba(255,255,255,0.65);">Satisfaction</div>
+                        <div class="text-white text-lg font-bold">99%</div>
+                        <div class="text-xs" style="color: rgba(196,181,253,0.75);">Satisfaction</div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- ===== PANNEAU DROIT : Formulaire ===== -->
-        <div class="flex-1 flex flex-col items-center justify-center px-6 py-10 overflow-y-auto transition-colors duration-300"
+        <!-- ── PANNEAU DROIT : formulaire ── -->
+        <div class="flex-1 flex flex-col items-center justify-center px-6 py-10 overflow-y-auto relative z-10 transition-colors duration-300"
              :style="rightPanelStyle">
 
-            <!-- Toggle dark/light — coin supérieur droit -->
+            <!-- Toggle dark/light -->
             <div class="absolute top-4 right-4 z-20">
-                <button
-                    @click="toggleDark()"
+                <button @click="toggleDark()"
                     class="w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-200 hover:scale-110"
                     :style="toggleBtnStyle"
-                    :aria-label="isDark ? 'Passer en mode clair' : 'Passer en mode sombre'"
-                >
-                    <!-- Soleil (mode clair) -->
-                    <svg v-if="isDark" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                         :style="{ color: isDark ? '#fefefeff' : '#6660d4' }">
+                    :aria-label="isDark ? 'Passer en mode clair' : 'Passer en mode sombre'">
+                    <svg v-if="isDark" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color:#fbbf24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                               d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
                     </svg>
-                    <!-- Lune (mode sombre) -->
-                    <svg v-else class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                         style="color: #7B74F0;">
+                    <svg v-else class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color:#7B74F0">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                               d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
                     </svg>
@@ -235,9 +456,10 @@
 
             <!-- Logo mobile -->
             <div class="lg:hidden flex items-center gap-2 mb-8">
-                <div class="w-10 h-10 rounded-xl flex items-center justify-center"
+                <div class="w-10 h-10 rounded-xl flex items-center justify-center overflow-hidden"
                      style="background: linear-gradient(135deg, #9189f5, #7B74F0);">
-                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <img v-if="logoUrl" :src="logoUrl" alt="Logo" class="w-7 h-7 object-contain"/>
+                    <svg v-else class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z"/>
                     </svg>
                 </div>
@@ -245,12 +467,11 @@
             </div>
 
             <!-- Carte formulaire -->
-            <div class="w-full max-w-md">
+            <div class="w-full max-w-md rounded-3xl p-8 transition-all duration-300" :style="cardStyle">
                 <slot />
             </div>
 
-            <!-- Footer -->
-            <p class="text-center text-xs mt-8 transition-colors duration-300"
+            <p class="text-center text-xs mt-6 transition-colors duration-300"
                :style="{ color: isDark ? '#6b7280' : '#9ca3af' }">
                 © {{ new Date().getFullYear() }} {{ appName }}
             </p>
@@ -263,7 +484,7 @@ import { computed } from 'vue';
 import { usePage } from '@inertiajs/vue3';
 import { useDark, useToggle } from '@vueuse/core';
 
-const isDark    = useDark();
+const isDark     = useDark();
 const toggleDark = useToggle(isDark);
 
 const page    = usePage();
@@ -271,20 +492,55 @@ const appName = computed(() => {
     const s = (page.props as any).settings;
     return s?.school_name || 'School Management System';
 });
+const logoUrl = computed(() => (page.props as any).settings?.logo_url ?? null);
 
-// Panneau gauche : violet periwinkle doux comme le bouton "Goals"
-const leftPanelStyle = computed(() => ({
-    background: 'linear-gradient(145deg, #9189f5 0%, #7B74F0 45%, #6660d4 100%)',
-}));
+const authBg    = computed(() => (page.props as any).settings?.auth_background ?? null);
+const bgType    = computed(() => authBg.value?.type    ?? 'gradient');
+const bgValue   = computed(() => authBg.value?.value   ?? defaultGradient);
+const bgLabel   = computed(() => authBg.value?.label   ?? null);
+const bgOverlay = computed(() => authBg.value?.overlay ?? 'rgba(0,0,0,0.35)');
 
-// Panneau droit : adapté dark/light
+// Violet identique au bouton "Se connecter" — couleur principale de l'app
+const defaultGradient = 'linear-gradient(160deg, #6d28d9 0%, #7c3aed 40%, #8b5cf6 100%)';
+
 const rightPanelStyle = computed(() => ({
-    background: isDark.value ? '#111827' : '#f9fafb',
+    // Transparent — laisse voir le violet-50 (#f5f3ff) de la div racine
+    background: 'transparent',
 }));
 
-// Bouton toggle
+const cardStyle = computed(() => ({
+    background:          isDark.value ? 'rgba(30, 27, 75, 0.95)' : '#ffffff',
+    backdropFilter:      'blur(24px)',
+    WebkitBackdropFilter:'blur(24px)',
+    border:  isDark.value ? '1px solid rgba(139,92,246,0.2)' : '1px solid rgba(139,92,246,0.12)',
+    boxShadow: isDark.value
+        ? '0 28px 64px rgba(0,0,0,0.6)'
+        : '0 20px 60px rgba(109,40,217,0.12), 0 4px 16px rgba(109,40,217,0.08)',
+}));
+
 const toggleBtnStyle = computed(() => ({
-    background: isDark.value ? 'rgba(255,255,255,0.08)' : 'rgba(123,116,240,0.08)',
-    border: isDark.value ? '1px solid rgba(255,255,255,0.12)' : '1px solid rgba(123,116,240,0.15)',
+    background: isDark.value ? 'rgba(139,92,246,0.15)' : 'rgba(109,40,217,0.07)',
+    border:     isDark.value ? '1px solid rgba(139,92,246,0.3)' : '1px solid rgba(109,40,217,0.15)',
 }));
 </script>
+
+<style scoped>
+@keyframes blob {
+    0%, 100% { transform: translate(0,0) scale(1); }
+    33%       { transform: translate(18px,-18px) scale(1.04); }
+    66%       { transform: translate(-12px,14px) scale(0.97); }
+}
+@keyframes float {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50%       { transform: translateY(-10px) rotate(5deg); }
+}
+@keyframes pulse-slow {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.72; }
+}
+.animate-blob       { animation: blob 9s ease-in-out infinite; }
+.animate-float      { animation: float 5s ease-in-out infinite; }
+.animate-pulse-slow { animation: pulse-slow 3s ease-in-out infinite; }
+.animation-delay-2000 { animation-delay: 2s; }
+.animation-delay-4000 { animation-delay: 4s; }
+</style>
