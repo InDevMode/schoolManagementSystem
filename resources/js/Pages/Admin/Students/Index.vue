@@ -415,6 +415,15 @@
                             </div>
                             <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Aucun parent associé</p>
                             <p class="text-xs text-gray-400 dark:text-gray-500 mt-1">Cet apprenant n'a pas de parent lié à son compte.</p>
+                            <button
+                                v-if="canEdit"
+                                @click="openAssignParent(viewTarget)"
+                                class="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 active:bg-amber-700 text-white text-sm font-semibold transition-colors shadow-sm shadow-amber-200 dark:shadow-amber-900/40">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                                </svg>
+                                Assigner un parent
+                            </button>
                         </div>
                     </div>
                 </div>

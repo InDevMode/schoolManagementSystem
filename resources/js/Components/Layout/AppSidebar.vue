@@ -25,7 +25,7 @@
             leave-from-class="opacity-100"
             leave-to-class="opacity-0"
         >
-            <div v-if="showLogoutConfirm" class="fixed inset-0 z-[9998] flex items-center justify-center p-4">
+            <div v-if="showLogoutConfirm" class="fixed inset-0 z-[10000] flex items-center justify-center p-4">
                 <!-- Overlay -->
                 <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" @click="showLogoutConfirm = false" />
                 <!-- Boîte de dialogue -->
@@ -38,6 +38,8 @@
                     leave-to-class="opacity-0 scale-95"
                 >
                     <div v-if="showLogoutConfirm" class="relative w-full max-w-sm bg-white dark:bg-gray-800 rounded-2xl shadow-2xl overflow-hidden">
+                        <!-- Illustration background subtile -->
+                        <div class="pointer-events-none absolute inset-0 modal-bg-illustration" aria-hidden="true" />
                         <!-- Icône en haut -->
                         <div class="flex flex-col items-center px-6 pt-8 pb-4 text-center">
                             <div class="w-14 h-14 rounded-full bg-danger-50 dark:bg-danger-900/30 flex items-center justify-center mb-4">

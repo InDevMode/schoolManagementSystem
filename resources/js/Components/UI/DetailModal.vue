@@ -9,7 +9,7 @@
             leave-to-class="opacity-0"
         >
             <div v-if="modelValue"
-                class="fixed inset-0 z-50 flex items-center justify-center p-4"
+                class="fixed inset-0 z-[10000] flex items-center justify-center p-4"
                 @mousedown.self="close">
 
                 <!-- Backdrop -->
@@ -30,9 +30,12 @@
                         role="dialog"
                         :aria-label="title">
 
+                        <!-- Illustration background subtile -->
+                        <div class="pointer-events-none absolute inset-0 modal-bg-illustration" aria-hidden="true" />
+
                         <!-- ── Sidebar navigation (gauche) ── -->
                         <aside v-if="tabs && tabs.length > 0"
-                            class="w-52 flex-shrink-0 bg-gray-50 dark:bg-gray-800/60 border-r border-gray-200 dark:border-gray-700/60 flex flex-col">
+                            class="relative z-10 w-52 flex-shrink-0 bg-gray-50 dark:bg-gray-800/60 border-r border-gray-200 dark:border-gray-700/60 flex flex-col">
 
                             <!-- Profil mini dans la sidebar -->
                             <div class="px-4 pt-5 pb-4 border-b border-gray-200 dark:border-gray-700/60">
@@ -75,10 +78,10 @@
                         </aside>
 
                         <!-- ── Contenu principal (droite) ── -->
-                        <div class="flex flex-col flex-1 min-w-0 overflow-hidden">
+                        <div class="relative z-10 flex flex-col flex-1 min-w-0 overflow-hidden">
 
                             <!-- Header -->
-                            <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-gray-700/60 flex-shrink-0 bg-white dark:bg-gray-900">
+                            <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-gray-700/60 flex-shrink-0 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm">
                                 <div>
                                     <h3 class="text-base font-semibold text-gray-900 dark:text-white">
                                         {{ activeTabLabel || title }}
@@ -89,9 +92,9 @@
                                 </div>
                                 <button
                                     @click="close"
-                                    class="p-1.5 rounded-xl text-gray-400 hover:text-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                    class="p-1.5 rounded-xl bg-red-500 hover:bg-red-600 text-white transition-colors flex-shrink-0 shadow-sm">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/>
                                     </svg>
                                 </button>
                             </div>
@@ -103,7 +106,7 @@
 
                             <!-- Footer actions -->
                             <div v-if="$slots.footer"
-                                class="flex items-center justify-end gap-3 px-6 py-4 border-t border-gray-200 dark:border-gray-700/60 flex-shrink-0 bg-white dark:bg-gray-900">
+                                class="flex items-center justify-end gap-3 px-6 py-4 border-t border-gray-200 dark:border-gray-700/60 flex-shrink-0 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm">
                                 <slot name="footer" />
                             </div>
                         </div>

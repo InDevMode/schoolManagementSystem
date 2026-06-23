@@ -122,38 +122,33 @@
                 </div>
 
                 <!-- ══ ILLUSTRATION SCOLAIRE — Tableau + Salle de classe 3D ══ -->
-                <div class="w-full max-w-md mb-7 drop-shadow-2xl">
+                <div class="w-full max-w-md mb-7">
                     <svg viewBox="0 0 440 320" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full h-auto">
                         <defs>
-                            <!-- Fond salle -->
-                            <linearGradient id="roomBg" x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="0%"   stop-color="#3b0764"/>
-                                <stop offset="100%" stop-color="#4c1d95"/>
-                            </linearGradient>
-                            <!-- Sol en perspective -->
-                            <linearGradient id="floorGrad" x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="0%"   stop-color="#5b21b6"/>
-                                <stop offset="100%" stop-color="#3b0764"/>
-                            </linearGradient>
                             <!-- Tableau noir -->
                             <linearGradient id="boardGrad" x1="0" y1="0" x2="0" y2="1">
                                 <stop offset="0%"   stop-color="#134e4a"/>
                                 <stop offset="100%" stop-color="#1e3a5f"/>
                             </linearGradient>
-                            <!-- Cadre tableau -->
+                            <!-- Cadre tableau — violet bouton -->
                             <linearGradient id="frameGrad" x1="0" y1="0" x2="1" y2="1">
-                                <stop offset="0%"   stop-color="#8b5cf6"/>
+                                <stop offset="0%"   stop-color="#a78bfa"/>
                                 <stop offset="100%" stop-color="#7c3aed"/>
                             </linearGradient>
                             <!-- Lumière halo tableau -->
                             <radialGradient id="boardGlow" cx="50%" cy="45%" r="55%">
-                                <stop offset="0%"   stop-color="#c4b5fd" stop-opacity="0.20"/>
+                                <stop offset="0%"   stop-color="#c4b5fd" stop-opacity="0.22"/>
                                 <stop offset="100%" stop-color="#7c3aed" stop-opacity="0"/>
                             </radialGradient>
+                            <!-- Sol en perspective — violet clair -->
+                            <linearGradient id="floorGrad" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0%"   stop-color="rgba(167,139,250,0.18)"/>
+                                <stop offset="100%" stop-color="rgba(124,58,237,0.06)"/>
+                            </linearGradient>
                             <!-- Bureau enseignant -->
                             <linearGradient id="deskGrad" x1="0" y1="0" x2="1" y2="1">
-                                <stop offset="0%"   stop-color="#8b5cf6"/>
-                                <stop offset="100%" stop-color="#6d28d9"/>
+                                <stop offset="0%"   stop-color="#c4b5fd"/>
+                                <stop offset="100%" stop-color="#8b5cf6"/>
                             </linearGradient>
                             <!-- Peau eleve -->
                             <linearGradient id="skinA" x1="0" y1="0" x2="0" y2="1">
@@ -165,37 +160,25 @@
                                 <stop offset="0%"   stop-color="#fed7aa"/>
                                 <stop offset="100%" stop-color="#fb923c"/>
                             </linearGradient>
-                            <!-- Clip arrondi pour la scène entière -->
-                            <clipPath id="sceneClip">
-                                <rect x="0" y="0" width="440" height="320" rx="22"/>
-                            </clipPath>
                         </defs>
 
-                        <g clip-path="url(#sceneClip)">
+                        <!-- Pas de fond — illustration transparente sur le gradient violet du panneau -->
 
-                        <!-- ══ Fond salle ══ -->
-                        <rect width="440" height="320" fill="url(#roomBg)"/>
+                        <!-- Sol translucide -->
+                        <path d="M0 200 L440 200 L440 320 L0 320 Z" fill="url(#floorGrad)"/>
+                        <line x1="0"   y1="230" x2="440" y2="230" stroke="rgba(196,181,253,0.18)" stroke-width="1"/>
+                        <line x1="0"   y1="262" x2="440" y2="262" stroke="rgba(196,181,253,0.13)" stroke-width="1"/>
+                        <line x1="0"   y1="295" x2="440" y2="295" stroke="rgba(196,181,253,0.10)" stroke-width="1"/>
+                        <!-- Colonnes fuyantes -->
+                        <line x1="220" y1="190" x2="0"   y2="320" stroke="rgba(196,181,253,0.08)" stroke-width="1"/>
+                        <line x1="220" y1="190" x2="110" y2="320" stroke="rgba(196,181,253,0.08)" stroke-width="1"/>
+                        <line x1="220" y1="190" x2="220" y2="320" stroke="rgba(196,181,253,0.08)" stroke-width="1"/>
+                        <line x1="220" y1="190" x2="330" y2="320" stroke="rgba(196,181,253,0.08)" stroke-width="1"/>
+                        <line x1="220" y1="190" x2="440" y2="320" stroke="rgba(196,181,253,0.08)" stroke-width="1"/>
 
-                        <!-- Mur du fond (perspective) -->
-                        <path d="M0 0 L440 0 L440 190 L0 190 Z" fill="rgba(255,255,255,0.03)"/>
-
-                        <!-- Plafond — bandes lumineuses -->
-                        <rect x="0" y="0" width="440" height="8" fill="rgba(255,255,255,0.06)"/>
-                        <rect x="80" y="4" width="120" height="3" rx="1.5" fill="rgba(196,181,253,0.5)"/>
-                        <rect x="240" y="4" width="120" height="3" rx="1.5" fill="rgba(196,181,253,0.5)"/>
-
-                        <!-- Sol en perspective (lignes fuyantes) -->
-                        <path d="M0 200 L440 200 L440 320 L0 320 Z" fill="url(#floorGrad)" opacity="0.9"/>
-                        <!-- Lignes carrelage -->
-                        <line x1="0" y1="230" x2="440" y2="230" stroke="rgba(255,255,255,0.07)" stroke-width="1"/>
-                        <line x1="0" y1="262" x2="440" y2="262" stroke="rgba(255,255,255,0.07)" stroke-width="1"/>
-                        <line x1="0" y1="295" x2="440" y2="295" stroke="rgba(255,255,255,0.07)" stroke-width="1"/>
-                        <!-- Colonnes verticales fuyantes -->
-                        <line x1="220" y1="190" x2="0"   y2="320" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
-                        <line x1="220" y1="190" x2="110" y2="320" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
-                        <line x1="220" y1="190" x2="220" y2="320" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
-                        <line x1="220" y1="190" x2="330" y2="320" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
-                        <line x1="220" y1="190" x2="440" y2="320" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+                        <!-- Bandes lumineuses plafond -->
+                        <rect x="80"  y="4" width="120" height="3" rx="1.5" fill="rgba(196,181,253,0.45)"/>
+                        <rect x="240" y="4" width="120" height="3" rx="1.5" fill="rgba(196,181,253,0.45)"/>
 
                         <!-- ══ TABLEAU NOIR en fond ══ -->
                         <!-- Ombre portée -->
@@ -252,16 +235,12 @@
                         <rect x="162" y="166" width="14" height="3" rx="1.5" fill="rgba(167,243,208,0.6)"/>
 
                         <!-- ══ ESTRADE + BUREAU PROFESSEUR ══ -->
-                        <!-- Estrade -->
-                        <path d="M60 198 L380 198 L370 210 L70 210 Z" fill="rgba(79,70,229,0.5)"/>
-                        <rect x="60" y="198" width="320" height="4" rx="2" fill="rgba(129,140,248,0.5)"/>
-                        <!-- Bureau -->
+                        <path d="M60 198 L380 198 L370 210 L70 210 Z" fill="rgba(167,139,250,0.30)"/>
+                        <rect x="60" y="198" width="320" height="4" rx="2" fill="rgba(196,181,253,0.5)"/>
                         <path d="M150 210 L290 210 L286 240 L154 240 Z" fill="url(#deskGrad)"/>
-                        <rect x="150" y="208" width="140" height="5" rx="2" fill="rgba(165,180,252,0.6)"/>
-                        <!-- Pied bureau gauche -->
-                        <rect x="158" y="240" width="8" height="20" rx="4" fill="#3730a3"/>
-                        <!-- Pied bureau droit -->
-                        <rect x="274" y="240" width="8" height="20" rx="4" fill="#3730a3"/>
+                        <rect x="150" y="208" width="140" height="5" rx="2" fill="rgba(221,214,254,0.6)"/>
+                        <rect x="158" y="240" width="8" height="20" rx="4" fill="rgba(109,40,217,0.5)"/>
+                        <rect x="274" y="240" width="8" height="20" rx="4" fill="rgba(109,40,217,0.5)"/>
                         <!-- Livres sur bureau -->
                         <rect x="162" y="199" width="14" height="10" rx="2" fill="#ef4444" opacity="0.8"/>
                         <rect x="177" y="200" width="12" height="9"  rx="2" fill="#3b82f6" opacity="0.8"/>
@@ -276,20 +255,14 @@
                         <rect x="225" y="220" width="8" height="3" rx="1" fill="#1e1b4b"/>
 
                         <!-- ══ PROFESSEUR ══ -->
-                        <!-- Ombre -->
-                        <ellipse cx="220" cy="258" rx="18" ry="5" fill="rgba(0,0,0,0.3)"/>
-                        <!-- Jambes -->
-                        <rect x="212" y="232" width="8" height="26" rx="4" fill="#1e40af"/>
-                        <rect x="222" y="232" width="8" height="26" rx="4" fill="#1d4ed8"/>
-                        <!-- Chaussures -->
-                        <ellipse cx="216" cy="258" rx="7" ry="3.5" fill="#111827"/>
-                        <ellipse cx="226" cy="258" rx="7" ry="3.5" fill="#111827"/>
-                        <!-- Corps -->
+                        <ellipse cx="220" cy="258" rx="18" ry="5" fill="rgba(124,58,237,0.2)"/>
+                        <rect x="212" y="232" width="8" height="26" rx="4" fill="#4f46e5"/>
+                        <rect x="222" y="232" width="8" height="26" rx="4" fill="#6366f1"/>
+                        <ellipse cx="216" cy="258" rx="7" ry="3.5" fill="rgba(30,27,75,0.7)"/>
+                        <ellipse cx="226" cy="258" rx="7" ry="3.5" fill="rgba(30,27,75,0.7)"/>
                         <rect x="207" y="200" width="28" height="34" rx="8" fill="#7c3aed"/>
-                        <!-- Cravate -->
                         <path d="M220 206 L218 218 L220 222 L222 218 Z" fill="#fbbf24" opacity="0.8"/>
-                        <!-- Col -->
-                        <rect x="216" y="200" width="10" height="8" rx="4" fill="#a78bfa"/>
+                        <rect x="216" y="200" width="10" height="8" rx="4" fill="#c4b5fd"/>
                         <!-- Tête -->
                         <circle cx="221" cy="192" r="14" fill="url(#skinB)"/>
                         <!-- Yeux -->
@@ -305,19 +278,18 @@
                         <!-- Bras gauche — tient pointeur vers tableau -->
                         <path d="M207 212 Q192 218 178 205" stroke="#7c3aed" stroke-width="9" stroke-linecap="round" fill="none"/>
                         <circle cx="176" cy="204" r="5" fill="url(#skinB)"/>
-                        <!-- Pointeur (baguette) -->
-                        <line x1="176" y1="204" x2="142" y2="148" stroke="#d1d5db" stroke-width="1.5" stroke-linecap="round"/>
+                        <!-- Pointeur -->
+                        <line x1="176" y1="204" x2="142" y2="148" stroke="rgba(255,255,255,0.55)" stroke-width="1.5" stroke-linecap="round"/>
                         <circle cx="140" cy="146" r="2.5" fill="#f59e0b"/>
                         <!-- Bras droit -->
                         <path d="M235 215 Q248 222 245 232" stroke="#7c3aed" stroke-width="9" stroke-linecap="round" fill="none"/>
                         <circle cx="245" cy="233" r="5" fill="url(#skinB)"/>
 
                         <!-- ══ RANGÉES D'ÉLÈVES ══ -->
-                        <!-- ─ Rang 1 : 3 élèves au fond ─ -->
-                        <!-- Élève 1G fond -->
-                        <rect x="30"  y="235" width="35" height="22" rx="4" fill="rgba(109,40,217,0.7)"/>
-                        <rect x="30"  y="233" width="35" height="4"  rx="2" fill="rgba(139,92,246,0.6)"/>
-                        <ellipse cx="47" cy="230" rx="10" ry="5" fill="rgba(0,0,0,0.2)"/>
+                        <!-- ─ Rang 1 fond ─ -->
+                        <rect x="30"  y="235" width="35" height="22" rx="4" fill="rgba(139,92,246,0.45)"/>
+                        <rect x="30"  y="233" width="35" height="4"  rx="2" fill="rgba(196,181,253,0.45)"/>
+                        <ellipse cx="47" cy="230" rx="10" ry="5" fill="rgba(124,58,237,0.15)"/>
                         <rect x="38"  y="218" width="18" height="18" rx="6" fill="url(#skinA)"/>
                         <circle cx="42" cy="223" r="1.5" fill="#92400e"/>
                         <circle cx="52" cy="223" r="1.5" fill="#92400e"/>
@@ -330,9 +302,9 @@
                         <line x1="39" y1="237" x2="39" y2="245" stroke="rgba(255,255,255,0.4)" stroke-width="0.8"/>
 
                         <!-- Élève 2 fond centre -->
-                        <rect x="195" y="232" width="36" height="22" rx="4" fill="rgba(109,40,217,0.7)"/>
-                        <rect x="195" y="230" width="36" height="4"  rx="2" fill="rgba(139,92,246,0.6)"/>
-                        <ellipse cx="213" cy="227" rx="10" ry="5" fill="rgba(0,0,0,0.2)"/>
+                        <rect x="195" y="232" width="36" height="22" rx="4" fill="rgba(139,92,246,0.45)"/>
+                        <rect x="195" y="230" width="36" height="4"  rx="2" fill="rgba(196,181,253,0.45)"/>
+                        <ellipse cx="213" cy="227" rx="10" ry="5" fill="rgba(124,58,237,0.15)"/>
                         <rect x="203" y="215" width="18" height="17" rx="6" fill="#f59e0b"/>
                         <circle cx="207" cy="220" r="1.5" fill="#92400e"/>
                         <circle cx="217" cy="220" r="1.5" fill="#92400e"/>
@@ -344,9 +316,9 @@
                         <circle cx="228" cy="188" r="4.5" fill="#f59e0b"/>
 
                         <!-- Élève 3 fond droite -->
-                        <rect x="370" y="235" width="36" height="22" rx="4" fill="rgba(109,40,217,0.7)"/>
-                        <rect x="370" y="233" width="36" height="4"  rx="2" fill="rgba(139,92,246,0.6)"/>
-                        <ellipse cx="388" cy="230" rx="10" ry="5" fill="rgba(0,0,0,0.2)"/>
+                        <rect x="370" y="235" width="36" height="22" rx="4" fill="rgba(139,92,246,0.45)"/>
+                        <rect x="370" y="233" width="36" height="4"  rx="2" fill="rgba(196,181,253,0.45)"/>
+                        <ellipse cx="388" cy="230" rx="10" ry="5" fill="rgba(124,58,237,0.15)"/>
                         <rect x="378" y="217" width="18" height="18" rx="6" fill="#d97706"/>
                         <circle cx="382" cy="222" r="1.5" fill="#92400e"/>
                         <circle cx="392" cy="222" r="1.5" fill="#92400e"/>
@@ -357,11 +329,10 @@
                         <rect x="372" y="236" width="20" height="14" rx="2" fill="#1e1b4b"/>
                         <rect x="373" y="237" width="18" height="11" rx="1" fill="#3b82f6" opacity="0.6"/>
 
-                        <!-- ─ Rang 2 : 2 élèves avant ─ -->
-                        <!-- Élève 4 avant gauche -->
-                        <rect x="80" y="268" width="46" height="28" rx="5" fill="rgba(88,28,135,0.75)"/>
-                        <rect x="80" y="265" width="46" height="6"  rx="3" fill="rgba(139,92,246,0.5)"/>
-                        <ellipse cx="103" cy="262" rx="14" ry="6" fill="rgba(0,0,0,0.25)"/>
+                        <!-- ─ Rang 2 avant ─ -->
+                        <rect x="80" y="268" width="46" height="28" rx="5" fill="rgba(109,40,217,0.40)"/>
+                        <rect x="80" y="265" width="46" height="6"  rx="3" fill="rgba(167,139,250,0.45)"/>
+                        <ellipse cx="103" cy="262" rx="14" ry="6" fill="rgba(124,58,237,0.15)"/>
                         <rect x="90" y="245" width="24" height="22" rx="7" fill="#fbbf24"/>
                         <circle cx="95"  cy="252" r="2" fill="#92400e"/>
                         <circle cx="109" cy="252" r="2" fill="#92400e"/>
@@ -376,9 +347,9 @@
                         <rect x="105" y="270" width="16" height="16" rx="2" fill="#a78bfa" opacity="0.9"/>
 
                         <!-- Élève 5 avant droite -->
-                        <rect x="314" y="268" width="46" height="28" rx="5" fill="rgba(88,28,135,0.75)"/>
-                        <rect x="314" y="265" width="46" height="6"  rx="3" fill="rgba(139,92,246,0.5)"/>
-                        <ellipse cx="337" cy="262" rx="14" ry="6" fill="rgba(0,0,0,0.25)"/>
+                        <rect x="314" y="268" width="46" height="28" rx="5" fill="rgba(109,40,217,0.40)"/>
+                        <rect x="314" y="265" width="46" height="6"  rx="3" fill="rgba(167,139,250,0.45)"/>
+                        <ellipse cx="337" cy="262" rx="14" ry="6" fill="rgba(124,58,237,0.15)"/>
                         <rect x="324" y="245" width="24" height="22" rx="7" fill="#fb923c"/>
                         <circle cx="329" cy="252" r="2" fill="#92400e"/>
                         <circle cx="343" cy="252" r="2" fill="#92400e"/>
@@ -392,14 +363,9 @@
                         <path d="M348 250 Q354 242 350 234" stroke="#fb923c" stroke-width="6" stroke-linecap="round" fill="none"/>
                         <circle cx="350" cy="233" r="4" fill="#fb923c"/>
 
-                        <!-- ══ Halo lumière tableau projeté au sol ══ -->
-                        <ellipse cx="220" cy="198" rx="90" ry="8" fill="rgba(165,243,252,0.08)"/>
+                        <!-- Halo lumineux au sol -->
+                        <ellipse cx="220" cy="198" rx="90" ry="8" fill="rgba(196,181,253,0.12)"/>
 
-                        <!-- ══ Cadre décoratif arrondi ══ -->
-                        <rect x="1" y="1" width="438" height="318" rx="22"
-                              stroke="rgba(255,255,255,0.12)" stroke-width="2" fill="none"/>
-
-                        </g>
                     </svg>
                 </div>
 
@@ -467,8 +433,104 @@
             </div>
 
             <!-- Carte formulaire -->
-            <div class="w-full max-w-md rounded-3xl p-8 transition-all duration-300" :style="cardStyle">
-                <slot />
+            <div class="w-full max-w-md rounded-3xl p-8 transition-all duration-300 relative overflow-hidden" :style="cardStyle">
+
+                <!-- ── Illustration décorative dans le formulaire (coins) ── -->
+                <div class="pointer-events-none absolute inset-0 rounded-3xl overflow-hidden" aria-hidden="true">
+
+                    <!-- Coin haut-gauche : diamant + étoile -->
+                    <svg class="absolute top-0 left-0" width="130" height="130" viewBox="0 0 130 130" fill="none"
+                         :style="{ opacity: isDark ? '0.22' : '0.09' }">
+                        <g :stroke="isDark ? '#c4b5fd' : '#7c3aed'" stroke-width="1.2" fill="none">
+                            <!-- Diamant double -->
+                            <rect x="18" y="18" width="44" height="44" transform="rotate(45 40 40)"/>
+                            <rect x="27" y="27" width="26" height="26" transform="rotate(45 40 40)"/>
+                            <!-- Étoile 4 branches -->
+                            <path d="M 88 14 L 92 6 L 96 14 L 104 18 L 96 22 L 92 30 L 88 22 L 80 18 Z" stroke-width="1.1"/>
+                            <!-- Points grille -->
+                            <circle cx="26" cy="88" r="1.8" :fill="isDark ? '#c4b5fd' : '#7c3aed'"/>
+                            <circle cx="42" cy="88" r="1.8" :fill="isDark ? '#c4b5fd' : '#7c3aed'"/>
+                            <circle cx="58" cy="88" r="1.8" :fill="isDark ? '#c4b5fd' : '#7c3aed'"/>
+                            <circle cx="26" cy="102" r="1.8" :fill="isDark ? '#c4b5fd' : '#7c3aed'"/>
+                            <circle cx="42" cy="102" r="1.8" :fill="isDark ? '#c4b5fd' : '#7c3aed'"/>
+                            <circle cx="58" cy="102" r="1.8" :fill="isDark ? '#c4b5fd' : '#7c3aed'"/>
+                            <!-- Ligne verticale -->
+                            <line x1="10" y1="16" x2="10" y2="80" stroke-width="1"/>
+                            <!-- Petite étoile -->
+                            <path d="M 60 52 L 62 47 L 64 52 L 69 54 L 64 56 L 62 61 L 60 56 L 55 54 Z" stroke-width="0.9"/>
+                        </g>
+                    </svg>
+
+                    <!-- Coin haut-droit : cercle pointillé + étoile -->
+                    <svg class="absolute top-0 right-0" width="120" height="120" viewBox="0 0 120 120" fill="none"
+                         :style="{ opacity: isDark ? '0.22' : '0.09' }">
+                        <g :stroke="isDark ? '#c4b5fd' : '#7c3aed'" stroke-width="1.2" fill="none">
+                            <!-- Cercle pointillé -->
+                            <circle cx="80" cy="40" r="36" stroke-dasharray="5 4" stroke-width="1.1"/>
+                            <circle cx="80" cy="40" r="22" stroke-dasharray="3 5" stroke-width="0.8"/>
+                            <!-- Étoile 4 branches -->
+                            <path d="M 22 18 L 26 8 L 30 18 L 40 22 L 30 26 L 26 36 L 22 26 L 12 22 Z" stroke-width="1.1"/>
+                            <!-- Petite étoile -->
+                            <path d="M 44 52 L 46 46 L 48 52 L 54 54 L 48 56 L 46 62 L 44 56 L 38 54 Z" stroke-width="0.9"/>
+                            <!-- Ligne verticale droite -->
+                            <line x1="112" y1="10" x2="112" y2="80" stroke-width="1"/>
+                        </g>
+                    </svg>
+
+                    <!-- Coin bas-gauche : triangle + lune -->
+                    <svg class="absolute bottom-0 left-0" width="120" height="110" viewBox="0 0 120 110" fill="none"
+                         :style="{ opacity: isDark ? '0.22' : '0.09' }">
+                        <g :stroke="isDark ? '#c4b5fd' : '#7c3aed'" stroke-width="1.2" fill="none">
+                            <!-- Triangle -->
+                            <line x1="14" y1="95" x2="52" y2="42"/>
+                            <line x1="52" y1="42" x2="90" y2="95"/>
+                            <line x1="14" y1="95" x2="90" y2="95"/>
+                            <!-- Triangle intérieur -->
+                            <line x1="28" y1="95" x2="52" y2="60"/>
+                            <line x1="52" y1="60" x2="76" y2="95"/>
+                            <!-- Lune -->
+                            <path d="M 14 26 Q 32 14 32 30 Q 20 44 6 36 Q 10 30 14 26 Z"/>
+                            <!-- Points grille -->
+                            <circle cx="66" cy="28" r="1.8" :fill="isDark ? '#c4b5fd' : '#7c3aed'"/>
+                            <circle cx="82" cy="28" r="1.8" :fill="isDark ? '#c4b5fd' : '#7c3aed'"/>
+                            <circle cx="66" cy="44" r="1.8" :fill="isDark ? '#c4b5fd' : '#7c3aed'"/>
+                            <circle cx="82" cy="44" r="1.8" :fill="isDark ? '#c4b5fd' : '#7c3aed'"/>
+                        </g>
+                    </svg>
+
+                    <!-- Coin bas-droit : grande étoile + diamant -->
+                    <svg class="absolute bottom-0 right-0" width="130" height="130" viewBox="0 0 130 130" fill="none"
+                         :style="{ opacity: isDark ? '0.22' : '0.09' }">
+                        <g :stroke="isDark ? '#c4b5fd' : '#7c3aed'" stroke-width="1.2" fill="none">
+                            <!-- Grande étoile 4 branches -->
+                            <path d="M 78 58 L 88 30 L 98 58 L 126 68 L 98 78 L 88 106 L 78 78 L 50 68 Z" stroke-width="1.4"/>
+                            <circle cx="88" cy="68" r="5" fill="none"/>
+                            <!-- Petite étoile -->
+                            <path d="M 28 88 L 31 80 L 34 88 L 42 91 L 34 94 L 31 102 L 28 94 L 20 91 Z" stroke-width="0.9"/>
+                            <!-- Diamant petit -->
+                            <rect x="8" y="28" width="28" height="28" transform="rotate(45 22 42)"/>
+                            <!-- Ligne horizontale -->
+                            <line x1="10" y1="122" x2="120" y2="122" stroke-width="1"/>
+                        </g>
+                    </svg>
+
+                    <!-- Lignes diagonales traversantes discrètes -->
+                    <svg class="absolute inset-0 w-full h-full" viewBox="0 0 448 520" preserveAspectRatio="none" fill="none"
+                         :style="{ opacity: isDark ? '0.06' : '0.04' }">
+                        <g :stroke="isDark ? '#c4b5fd' : '#7c3aed'" stroke-width="1" stroke-dasharray="6 8">
+                            <line x1="0" y1="140" x2="180" y2="320"/>
+                            <line x1="268" y1="0" x2="448" y2="180"/>
+                            <line x1="0" y1="360" x2="160" y2="520"/>
+                            <line x1="290" y1="340" x2="448" y2="500"/>
+                        </g>
+                    </svg>
+
+                </div>
+
+                <!-- Contenu du slot au-dessus des décorations -->
+                <div class="relative z-10">
+                    <slot />
+                </div>
             </div>
 
             <p class="text-center text-xs mt-6 transition-colors duration-300"

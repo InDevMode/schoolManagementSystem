@@ -1255,7 +1255,7 @@ defineExpose({ clearSelection, selected, filteredRows, confirmDelete, confirmRes
                   enter-to-class="opacity-100" leave-active-class="transition duration-150 ease-in"
                   leave-from-class="opacity-100" leave-to-class="opacity-0">
         <div v-if="confirmDialog.show"
-             class="fixed inset-0 z-[9998] flex items-center justify-center p-4"
+             class="fixed inset-0 z-[10001] flex items-center justify-center p-4"
              @click.self="confirmDialog.show = false">
           <div class="absolute inset-0 bg-black/40 dark:bg-black/60 backdrop-blur-sm"/>
           <Transition enter-active-class="transition duration-200 ease-out"
@@ -1264,10 +1264,12 @@ defineExpose({ clearSelection, selected, filteredRows, confirmDelete, confirmRes
             <div class="relative w-full max-w-md bg-white dark:bg-gray-900
                         rounded-2xl shadow-2xl dark:shadow-black/50
                         border border-gray-200 dark:border-gray-700 overflow-hidden">
-              <div :class="['h-1 w-full',
+              <!-- Illustration background subtile -->
+              <div class="pointer-events-none absolute inset-0 modal-bg-illustration" aria-hidden="true" />
+              <div :class="['relative z-10 h-1 w-full',
                             confirmDialog.variant === 'danger'  ? 'bg-red-500' :
                             confirmDialog.variant === 'warning' ? 'bg-amber-400' : 'bg-violet-500']"/>
-              <div class="p-6">
+              <div class="relative z-10 p-6">
                 <div class="flex items-start gap-4">
                   <div :class="['w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0',
                                 confirmDialog.variant === 'danger'  ? 'bg-red-100 dark:bg-red-900/30' :

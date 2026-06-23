@@ -15,7 +15,7 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-    height: 150,
+    height: 220,
     colors: () => ['#7C3AED', '#3B82F6', '#10B981', '#F59E0B'],
 });
 
@@ -37,20 +37,33 @@ const buildOptions = () => ({
     theme:  { mode: isDark.value ? 'dark' : 'light' },
     plotOptions: {
         radialBar: {
-            offsetY: 0,
+            offsetY: -10,
             startAngle: -135,
             endAngle: 135,
-            hollow: { size: '32%', background: 'transparent' },
-            track: { background: isDark.value ? '#374151' : '#f3f4f6', strokeWidth: '80%' },
+            hollow: {
+                size: '40%',
+                background: 'transparent',
+                margin: 8,
+            },
+            track: { background: isDark.value ? '#374151' : '#f3f4f6', strokeWidth: '80%', margin: 4 },
             dataLabels: {
-                name: { fontSize: '11px', offsetY: -8, color: isDark.value ? '#9ca3af' : '#6b7280' },
-                value: { fontSize: '18px', fontWeight: 700, offsetY: 4,
-                         color: isDark.value ? '#f9fafb' : '#111827',
-                         formatter: (v: number) => v + '%' },
+                name: {
+                    fontSize: '11px',
+                    offsetY: -6,
+                    color: isDark.value ? '#9ca3af' : '#6b7280',
+                },
+                value: {
+                    fontSize: '22px',
+                    fontWeight: 800,
+                    offsetY: 8,
+                    color: isDark.value ? '#f9fafb' : '#111827',
+                    formatter: (v: number) => v + '%',
+                },
                 total: {
                     show: props.series.length > 1,
                     label: 'Moy.',
-                    fontSize: '10px',
+                    fontSize: '11px',
+                    fontWeight: 600,
                     color: isDark.value ? '#9ca3af' : '#6b7280',
                     formatter: () => Math.round(props.series.reduce((a, b) => a + b, 0) / props.series.length) + '%',
                 },
@@ -59,7 +72,10 @@ const buildOptions = () => ({
     },
     stroke: { lineCap: 'round' },
     legend: {
-        show: true, position: 'bottom', fontSize: '11px',
+        show: true,
+        position: 'bottom',
+        fontSize: '11px',
+        offsetY: 8,
         labels: { colors: isDark.value ? '#9ca3af' : '#6b7280' },
         markers: { width: 10, height: 10, radius: 5 },
         itemMargin: { horizontal: 8, vertical: 4 },

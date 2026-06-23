@@ -450,9 +450,11 @@
         <Teleport to="body">
             <Transition enter-active-class="transition duration-200 ease-out" enter-from-class="opacity-0" enter-to-class="opacity-100"
                         leave-active-class="transition duration-150 ease-in" leave-from-class="opacity-100" leave-to-class="opacity-0">
-                <div v-if="viewTarget" class="fixed inset-0 z-[9990] flex items-center justify-center p-4">
+                <div v-if="viewTarget" class="fixed inset-0 z-[10000] flex items-center justify-center p-4">
                     <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" @click="viewTarget = null"/>
                     <div class="relative w-full max-w-md bg-white dark:bg-gray-800 rounded-2xl shadow-2xl overflow-hidden">
+                        <!-- Illustration background subtile -->
+                        <div class="pointer-events-none absolute inset-0 modal-bg-illustration" aria-hidden="true" />
                         <!-- Header -->
                         <div class="relative p-6 bg-gradient-to-br from-violet-600 to-purple-700">
                             <div class="absolute inset-0 opacity-10" style="background-image:radial-gradient(circle at 80% 20%, white 0%, transparent 60%)"/>
@@ -523,9 +525,11 @@
         <Teleport to="body">
             <Transition enter-active-class="transition duration-200 ease-out" enter-from-class="opacity-0" enter-to-class="opacity-100"
                         leave-active-class="transition duration-150 ease-in" leave-from-class="opacity-100" leave-to-class="opacity-0">
-                <div v-if="editTarget" class="fixed inset-0 z-[9990] flex items-center justify-center p-4">
+                <div v-if="editTarget" class="fixed inset-0 z-[10000] flex items-center justify-center p-4">
                     <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" @click="editTarget = null"/>
                     <div class="relative w-full max-w-lg bg-white dark:bg-gray-800 rounded-2xl shadow-2xl overflow-hidden">
+                        <!-- Illustration background subtile -->
+                        <div class="pointer-events-none absolute inset-0 modal-bg-illustration" aria-hidden="true" />
                         <!-- Titre -->
                         <div class="flex items-center justify-between px-6 pt-5 pb-4 border-b border-gray-100 dark:border-gray-700">
                             <div class="flex items-center gap-3">
@@ -540,7 +544,7 @@
                                 </div>
                             </div>
                             <button @click="editTarget = null"
-                                    class="w-8 h-8 rounded-xl flex items-center justify-center text-gray-400 hover:text-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                                    class="w-8 h-8 rounded-xl flex items-center justify-center bg-red-500 hover:bg-red-600 text-white transition-colors shadow-sm">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                                 </svg>
@@ -620,9 +624,11 @@
         <Teleport to="body">
             <Transition enter-active-class="transition duration-200 ease-out" enter-from-class="opacity-0" enter-to-class="opacity-100"
                         leave-active-class="transition duration-150 ease-in" leave-from-class="opacity-100" leave-to-class="opacity-0">
-                <div v-if="resetTarget" class="fixed inset-0 z-[9995] flex items-center justify-center p-4">
+                <div v-if="resetTarget" class="fixed inset-0 z-[10000] flex items-center justify-center p-4">
                     <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" @click="resetTarget = null"/>
                     <div class="relative w-full max-w-sm bg-white dark:bg-gray-800 rounded-2xl shadow-2xl overflow-hidden">
+                        <!-- Illustration background subtile -->
+                        <div class="pointer-events-none absolute inset-0 modal-bg-illustration" aria-hidden="true" />
                         <div class="flex flex-col items-center px-6 pt-8 pb-4 text-center">
                             <div class="w-14 h-14 rounded-full bg-amber-50 dark:bg-amber-900/30 flex items-center justify-center mb-4">
                                 <svg class="w-7 h-7 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -663,9 +669,11 @@
         <Teleport to="body">
             <Transition enter-active-class="transition duration-200 ease-out" enter-from-class="opacity-0" enter-to-class="opacity-100"
                         leave-active-class="transition duration-150 ease-in" leave-from-class="opacity-100" leave-to-class="opacity-0">
-                <div v-if="deleteTarget" class="fixed inset-0 z-[9995] flex items-center justify-center p-4">
+                <div v-if="deleteTarget" class="fixed inset-0 z-[10000] flex items-center justify-center p-4">
                     <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" @click="deleteTarget = null"/>
                     <div class="relative w-full max-w-sm bg-white dark:bg-gray-800 rounded-2xl shadow-2xl overflow-hidden">
+                        <!-- Illustration background subtile -->
+                        <div class="pointer-events-none absolute inset-0 modal-bg-illustration" aria-hidden="true" />
                         <div class="flex flex-col items-center px-6 pt-8 pb-4 text-center">
                             <div class="w-14 h-14 rounded-full bg-red-50 dark:bg-red-900/30 flex items-center justify-center mb-4">
                                 <svg class="w-7 h-7 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">

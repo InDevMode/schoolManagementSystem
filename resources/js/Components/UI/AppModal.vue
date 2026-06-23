@@ -9,7 +9,7 @@
             leave-from-class="opacity-100"
             leave-to-class="opacity-0"
         >
-            <div v-if="modelValue" class="fixed inset-0 z-50 flex items-center justify-center p-4" @mousedown.self="closeOnBackdrop">
+            <div v-if="modelValue" class="fixed inset-0 z-[10000] flex items-center justify-center p-4" @mousedown.self="closeOnBackdrop">
                 <!-- Backdrop -->
                 <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" />
 
@@ -24,34 +24,37 @@
                 >
                     <div
                         v-if="modelValue"
-                        :class="['relative bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full flex flex-col max-h-[90vh] origin-center', sizeClass]"
+                        :class="['relative bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full flex flex-col max-h-[90vh] origin-center overflow-hidden', sizeClass]"
                         role="dialog"
                         :aria-label="title"
                     >
+                        <!-- Illustration background subtile -->
+                        <div class="pointer-events-none absolute inset-0 modal-bg-illustration" aria-hidden="true" />
+
                         <!-- Header -->
-                        <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100 dark:border-gray-700 flex-shrink-0">
+                        <div class="relative z-10 flex items-center justify-between px-6 py-4 border-b border-gray-100 dark:border-gray-700 flex-shrink-0">
                             <div>
                                 <h3 class="text-base font-semibold text-gray-900 dark:text-white">{{ title }}</h3>
                                 <p v-if="subtitle" class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{{ subtitle }}</p>
                             </div>
                             <button
                                 type="button"
-                                class="p-1.5 rounded-xl text-gray-400 hover:text-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                                class="p-1.5 rounded-xl bg-red-500 hover:bg-red-600 text-white transition-colors flex-shrink-0 shadow-sm"
                                 @click="$emit('update:modelValue', false)"
                             >
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
                                 </svg>
                             </button>
                         </div>
 
                         <!-- Body -->
-                        <div class="flex-1 overflow-y-auto px-6 py-5">
+                        <div class="relative z-10 flex-1 overflow-y-auto px-6 py-5">
                             <slot />
                         </div>
 
                         <!-- Footer -->
-                        <div v-if="$slots.footer" class="px-6 py-4 border-t border-gray-100 dark:border-gray-700 flex-shrink-0 flex items-center justify-end gap-3">
+                        <div v-if="$slots.footer" class="relative z-10 px-6 py-4 border-t border-gray-100 dark:border-gray-700 flex-shrink-0 flex items-center justify-end gap-3">
                             <slot name="footer" />
                         </div>
                     </div>

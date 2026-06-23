@@ -1,4 +1,4 @@
-<template>
+﻿<template>
     <div class="space-y-6">
         <!-- Header -->
         <PageHeader title="Assignation Classes-Professeurs" :subtitle="`${classTeachers.total} assignation(s)`" color="emerald">
@@ -180,8 +180,8 @@
                                         <p class="text-xs text-gray-500 dark:text-gray-400">Professeur — Classe</p>
                                     </div>
                                 </div>
-                                <button @click="showDetails = false" class="p-1.5 rounded-xl text-gray-400 hover:text-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                                <button @click="showDetails = false" class="p-1.5 rounded-xl bg-red-500 hover:bg-red-600 text-white transition-colors flex-shrink-0 shadow-sm">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" /></svg>
                                 </button>
                             </div>
 

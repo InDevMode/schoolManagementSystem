@@ -197,6 +197,8 @@ Route::group(['middleware' => 'admin'], function () {
     Route::post('admin/parent/export',       [ParentController::class, 'exportParent'])->middleware('check_perm:action.parents.export');
     // Enfants d'un parent (JSON — pour le modal de détail)
     Route::get('admin/parent/{id}/children', [ParentController::class, 'parentChildren'])->middleware('check_perm:view.users.parents');
+    // Liste JSON des parents (pour le modal d'assignation depuis la fiche apprenant)
+    Route::get('admin/parents/list-json',    [ParentController::class, 'listJson'])->middleware('check_perm:view.users.parents');
 
     // Admin account url
     Route::get('admin/account',  [UserController::class, 'myAccount']);

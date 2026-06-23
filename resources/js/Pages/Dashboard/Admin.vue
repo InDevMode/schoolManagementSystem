@@ -182,7 +182,7 @@
                         </div>
                         <div class="card p-4">
                             <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">Taux de présence</h3>
-                            <ApexRadial :series="attendanceRadial" :labels="['Présents','En retard','Absents','Demi-j.']" :colors="['#10B981','#F59E0B','#EF4444','#3B82F6']" :height="150"/>
+                            <ApexRadial :series="attendanceRadial" :labels="['Présents','En retard','Absents','Demi-j.']" :colors="['#10B981','#F59E0B','#EF4444','#3B82F6']"/>
                         </div>
                     </div>
 

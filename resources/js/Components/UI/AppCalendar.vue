@@ -1,4 +1,4 @@
-<template>
+﻿<template>
     <div class="space-y-5">
 
         <!-- ── Header ──────────────────────────────────────────────────── -->
@@ -48,11 +48,19 @@
             </div>
         </div>
 
+        <!-- ═══════════════════════════════════════════════════════════════
+             LAYOUT PRINCIPAL : calendrier (gauche) + sidebar (droite)
+        ════════════════════════════════════════════════════════════════ -->
+        <div class="flex flex-col lg:flex-row gap-4 items-start">
+
+            <!-- ── Calendrier (zone principale) ───────────────────────── -->
+            <div class="flex-1 min-w-0">
+
         <!-- ═══ VUE MENSUELLE ════════════════════════════════════════════ -->
         <div v-if="currentView === 'month'" class="card overflow-hidden">
             <div class="grid grid-cols-7 border-b border-gray-200 dark:border-gray-700 bg-gray-50/80 dark:bg-gray-800/60">
                 <div v-for="d in DAY_HEADERS" :key="d"
-                    class="py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                    class="py-3 text-center text-xs font-bold uppercase tracking-wider text-gray-600 dark:text-gray-300">
                     {{ d }}
                 </div>
             </div>
@@ -61,8 +69,8 @@
                     v-for="(cell, i) in monthCells" :key="i"
                     class="min-h-[110px] border-b border-r border-gray-100 dark:border-gray-800 p-1.5 transition-colors"
                     :class="[
-                        !cell.inMonth ? 'bg-gray-50/40 dark:bg-gray-900/40' : 'bg-white dark:bg-gray-900',
-                        cell.isToday  ? '!bg-primary-50/40 dark:!bg-primary-900/10' : '',
+                        !cell.inMonth ? 'bg-gray-50/60 dark:bg-gray-900/50' : 'bg-white dark:bg-gray-900',
+                        cell.isToday  ? '!bg-primary-50/60 dark:!bg-primary-900/15 ring-1 ring-inset ring-primary-300 dark:ring-primary-700' : '',
                         (i + 1) % 7 === 0 ? '!border-r-0' : '',
                     ]"
                 >
@@ -70,21 +78,25 @@
                         <span class="w-6 h-6 flex items-center justify-center text-xs font-bold rounded-full transition-colors"
                             :class="cell.isToday
                                 ? 'bg-primary-600 text-white shadow-sm shadow-primary-300 dark:shadow-primary-900'
-                                : cell.inMonth ? 'text-gray-700 dark:text-gray-200' : 'text-gray-400 dark:text-gray-600'"
+                                : cell.inMonth ? 'text-gray-700 dark:text-gray-200' : 'text-gray-300 dark:text-gray-600'"
                         >{{ cell.day }}</span>
                     </div>
                     <div class="space-y-0.5">
                         <div
                             v-for="ev in cell.events.slice(0, 3)" :key="ev.id"
                             @click="openEvent(ev)"
-                            class="text-xs px-1.5 py-0.5 rounded-xl cursor-pointer truncate font-medium leading-5 transition-all hover:opacity-80"
-                            :style="{ backgroundColor: ev.color+'20', color: ev.color, borderLeft: `2px solid ${ev.color}` }"
+                            class="text-[11px] px-1.5 py-0.5 rounded-lg cursor-pointer truncate font-semibold leading-5 transition-all hover:brightness-110 hover:shadow-sm"
+                            :style="{
+                                backgroundColor: ev.color,
+                                color: '#fff',
+                                textShadow: '0 1px 2px rgba(0,0,0,0.25)',
+                            }"
                         >
-                            <span v-if="ev.start_time" class="opacity-60 mr-0.5 font-normal">{{ ev.start_time }}</span>
+                            <span v-if="ev.start_time" class="opacity-80 mr-0.5 font-normal text-[9px]">{{ ev.start_time }}</span>
                             {{ ev.title }}
                         </div>
                         <button v-if="cell.events.length > 3" @click="expandDay(cell)"
-                            class="text-xs text-gray-400 dark:text-gray-500 hover:text-primary-500 dark:hover:text-primary-400 pl-1 transition-colors w-full text-left">
+                            class="text-[10px] text-primary-600 dark:text-primary-400 hover:text-primary-700 pl-1 transition-colors w-full text-left font-semibold">
                             +{{ cell.events.length - 3 }} de plus
                         </button>
                     </div>
@@ -121,17 +133,17 @@
                     >
                         <template v-for="ev in getWeekEvents(wd.date, slot)" :key="ev.id">
                             <div @click="openEvent(ev)"
-                                class="rounded-xl px-1.5 py-1 text-xs font-medium cursor-pointer hover:opacity-90 hover:shadow-md transition-all mb-0.5 overflow-hidden"
+                                class="rounded-xl px-1.5 py-1 text-xs font-semibold cursor-pointer hover:brightness-110 hover:shadow-md transition-all mb-0.5 overflow-hidden"
                                 :style="{
-                                    backgroundColor: ev.color+'20',
-                                    color: ev.color,
-                                    borderLeft: `3px solid ${ev.color}`,
+                                    backgroundColor: ev.color,
+                                    color: '#fff',
+                                    textShadow: '0 1px 2px rgba(0,0,0,0.2)',
                                     minHeight: Math.max(ev.durationSlots ?? 2, 2) * 28 + 'px',
                                 }"
                             >
                                 <p class="font-semibold truncate leading-tight">{{ ev.title }}</p>
-                                <p class="opacity-70 text-[10px] leading-tight mt-0.5">{{ ev.start_time }}–{{ ev.end_time }}</p>
-                                <p v-if="ev.room_number" class="opacity-60 text-[10px] leading-tight truncate">Salle {{ ev.room_number }}</p>
+                                <p class="opacity-80 text-[10px] leading-tight mt-0.5">{{ ev.start_time }}–{{ ev.end_time }}</p>
+                                <p v-if="ev.room_number" class="opacity-70 text-[10px] leading-tight truncate">Salle {{ ev.room_number }}</p>
                             </div>
                         </template>
                     </div>
@@ -139,50 +151,60 @@
             </div>
         </div>
 
-        <!-- ── Légende + Prochains événements ──────────────────────────── -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
-            <!-- Légende -->
-            <div class="card p-4 space-y-3">
-                <h3 class="text-sm font-semibold text-gray-900 dark:text-white">Légende</h3>
-                <div class="space-y-1.5">
-                    <div v-for="item in legend" :key="item.label" class="flex items-center gap-2.5">
-                        <span class="w-2.5 h-2.5 rounded-sm flex-shrink-0" :style="{ backgroundColor: item.color }"/>
-                        <span class="text-xs text-gray-600 dark:text-gray-400">{{ item.label }}</span>
-                    </div>
-                    <p v-if="!legend.length" class="text-xs text-gray-400 dark:text-gray-500">Aucune matière configurée.</p>
-                </div>
-            </div>
+            </div><!-- fin calendrier -->
 
-            <!-- Prochains événements -->
-            <div class="card overflow-hidden lg:col-span-2">
-                <div class="p-4 border-b border-gray-200 dark:border-gray-700">
-                    <h3 class="text-sm font-semibold text-gray-900 dark:text-white">Prochains événements</h3>
-                </div>
-                <div v-if="upcomingEvents.length" class="divide-y divide-gray-100 dark:divide-gray-700/60">
-                    <div v-for="ev in upcomingEvents" :key="ev.id"
-                        @click="openEvent(ev)"
-                        class="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800/40 cursor-pointer transition-colors">
-                        <div class="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0"
-                            :style="{ backgroundColor: ev.color+'20' }">
-                            <span class="w-2 h-2 rounded-full" :style="{ backgroundColor: ev.color }"/>
+            <!-- ── Sidebar droite : Légende + Prochains événements ─────── -->
+            <div class="w-full lg:w-64 xl:w-72 flex-shrink-0 flex flex-col gap-4">
+
+                <!-- Légende -->
+                <div class="card p-4 space-y-3">
+                    <h3 class="text-sm font-bold text-gray-900 dark:text-white">Légende</h3>
+                    <div class="space-y-2">
+                        <div v-for="item in legend" :key="item.label" class="flex items-center gap-2.5">
+                            <span class="w-3 h-3 rounded flex-shrink-0 shadow-sm" :style="{ backgroundColor: item.color }"/>
+                            <span class="text-xs font-medium text-gray-700 dark:text-gray-300">{{ item.label }}</span>
                         </div>
-                        <div class="flex-1 min-w-0">
-                            <p class="text-sm font-medium text-gray-900 dark:text-white truncate">{{ ev.title }}</p>
-                            <p class="text-xs text-gray-500 dark:text-gray-400">
-                                {{ formatEventDate(ev.start) }}<span v-if="ev.start_time"> · {{ ev.start_time }}</span>
-                            </p>
-                        </div>
-                        <span class="text-xs font-medium px-2.5 py-1 rounded-full flex-shrink-0"
-                            :style="{ backgroundColor: ev.color+'20', color: ev.color }">
-                            {{ ev.extendedProps?.type_label ?? ev.type_label ?? '—' }}
-                        </span>
+                        <p v-if="!legend.length" class="text-xs text-gray-400">Aucun type configuré.</p>
                     </div>
                 </div>
-                <div v-else class="p-8 text-center">
-                    <p class="text-sm text-gray-400 dark:text-gray-500">Aucun événement à venir.</p>
+
+                <!-- Prochains événements -->
+                <div class="card overflow-hidden">
+                    <div class="px-4 py-3 border-b border-gray-100 dark:border-gray-700">
+                        <h3 class="text-sm font-bold text-gray-900 dark:text-white">Prochains événements</h3>
+                    </div>
+                    <div v-if="upcomingEvents.length" class="divide-y divide-gray-50 dark:divide-gray-700/50">
+                        <div v-for="ev in upcomingEvents" :key="ev.id"
+                            @click="openEvent(ev)"
+                            class="flex items-start gap-3 px-3 py-3 hover:bg-gray-50 dark:hover:bg-gray-800/40 cursor-pointer transition-colors">
+                            <!-- Date badge coloré -->
+                            <div class="w-9 h-9 rounded-xl flex-shrink-0 flex flex-col items-center justify-center text-white shadow-sm"
+                                :style="{ backgroundColor: ev.color }">
+                                <span class="text-sm font-black leading-none">{{ new Date(ev.start).getDate() }}</span>
+                                <span class="text-[8px] uppercase leading-none mt-0.5 opacity-90">
+                                    {{ new Date(ev.start).toLocaleDateString('fr-FR', { month: 'short' }) }}
+                                </span>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-xs font-semibold text-gray-900 dark:text-white truncate">{{ ev.title }}</p>
+                                <p class="text-[10px] text-gray-500 dark:text-gray-400 mt-0.5">
+                                    <span v-if="ev.start_time">{{ ev.start_time }}</span>
+                                </p>
+                                <span class="inline-flex mt-1 text-[9px] font-bold px-1.5 py-0.5 rounded-full text-white"
+                                    :style="{ backgroundColor: ev.color }">
+                                    {{ ev.extendedProps?.type_label ?? ev.type_label ?? '—' }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div v-else class="px-4 py-6 text-center">
+                        <p class="text-xs text-gray-400">Aucun événement à venir.</p>
+                    </div>
                 </div>
-            </div>
-        </div>
+
+            </div><!-- fin sidebar -->
+
+        </div><!-- fin layout principal -->
 
         <!-- ── Drawer détail ────────────────────────────────────────────── -->
         <Teleport to="body">
@@ -205,7 +227,7 @@
                                     <h3 class="text-base font-bold text-gray-900 dark:text-white">{{ selectedEvent.title }}</h3>
                                 </div>
                                 <button @click="selectedEvent = null"
-                                    class="p-1.5 rounded-xl text-gray-400 hover:text-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors flex-shrink-0">
+                                    class="p-1.5 rounded-xl bg-red-500 hover:bg-red-600 text-white transition-colors flex-shrink-0 shadow-sm flex-shrink-0">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                                     </svg>

@@ -5,13 +5,13 @@
             <div class="inline-flex items-center gap-1 p-1 rounded-2xl
                         bg-gray-100 dark:bg-gray-800/90
                         border border-gray-200 dark:border-gray-700
-                        shadow-inner overflow-x-auto scrollbar-none max-w-full">
+                        shadow-md overflow-x-auto scrollbar-none max-w-full">
                 <button
                     v-for="tab in tabs"
                     :key="tab.key"
                     @click="active = tab.key"
                     :class="[
-                        'relative flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium',
+                        'relative flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold',
                         'transition-all duration-300 ease-in-out whitespace-nowrap select-none',
                         active === tab.key
                             ? 'text-white shadow-lg shadow-primary-500/30'

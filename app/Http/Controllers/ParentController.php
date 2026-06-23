@@ -162,6 +162,33 @@ class ParentController extends Controller
     }
 
     /**
+     * Liste JSON allégée des parents actifs (pour le modal d'assignation depuis la fiche apprenant).
+     */
+    public function listJson(): \Illuminate\Http\JsonResponse
+    {
+        $query = User::where('user_type', 4)
+            ->where('is_delete', 0)
+            ->where('status', 1);
+
+        // Isolation par école (sauf super admin)
+        if (\Illuminate\Support\Facades\Auth::user()->user_type !== 0) {
+            $query->where('school_id', \Illuminate\Support\Facades\Auth::user()->school_id);
+        }
+
+        $parents = $query->get(['id', 'name', 'last_name', 'profile_picture', 'mobile_number'])
+            ->map(fn ($p) => [
+                'id'              => $p->id,
+                'name'            => $p->name,
+                'last_name'       => $p->last_name,
+                'full_name'       => trim("{$p->last_name} {$p->name}"),
+                'profile_picture' => $p->profile_picture,
+                'mobile_number'   => $p->mobile_number,
+            ]);
+
+        return response()->json(['parents' => $parents]);
+    }
+
+    /**
      * Retourne les enfants d'un parent (JSON, pour le modal admin).
      */
     public function parentChildren(int $id): \Illuminate\Http\JsonResponse

@@ -4,13 +4,9 @@
         <!-- ══ HEADER ═══════════════════════════════════════════════════════ -->
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
-                <h1 class="text-2xl font-black text-gray-900 dark:text-white tracking-tight">Vue d'ensemble système</h1>
+                <h1 class="text-2xl font-black text-gray-900 dark:text-white tracking-tight">Tableau de bord de l'ensemble du système</h1>
                 <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
                     {{ today.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }) }}
-                    <span v-if="currentPeriod" class="ml-2 inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-violet-50 dark:bg-violet-900/20 text-violet-600 dark:text-violet-400 text-xs font-semibold">
-                        <svg class="w-3 h-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                        {{ currentPeriod.name }}
-                    </span>
                 </p>
             </div>
             <div class="flex items-center gap-2">
@@ -22,56 +18,194 @@
             </div>
         </div>
 
-        <!-- ══ TABS (avec KPI utilisateurs intégrés dans Vue générale) ══════ -->
+        <!-- ══ TABS ══════════════════════════════════════════════════════════ -->
         <DashTabs :tabs="tabs">
             <template #default="{ active }">
 
                 <!-- ── TAB : VUE GÉNÉRALE ──────────────────────────────────── -->
-                <div v-show="active === 'overview'" class="space-y-4">
+                <div v-show="active === 'overview'" class="space-y-5">
 
-                    <!-- ── KPI Cards utilisateurs (avec breakdown H/F) ──── -->
-                    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
-                        <KpiCard label="Apprenants"    :value="totalStudent"  color="violet" href="/admin/student/list"
-                            trend="+12%" :trendPositive="true"
-                            :genderMale="totalStudentMale" :genderFemale="totalStudentFemale"
-                            icon="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"
-                        />
-                        <KpiCard label="Professeurs"   :value="totalTeacher" color="info"   href="/admin/teacher/list"
-                            trend="+3%" :trendPositive="true"
-                            :genderMale="totalTeacherMale" :genderFemale="totalTeacherFemale"
-                            icon="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"
-                        />
-                        <KpiCard label="Parents"       :value="totalParent"  color="amber"  href="/admin/parent/list"
-                            trend="+8%" :trendPositive="true"
-                            :genderMale="totalParentMale" :genderFemale="totalParentFemale"
-                            icon="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                        />
-                        <KpiCard label="Administrateurs" :value="totalAdmin" color="danger" href="/admin/admin/list"
-                            :genderMale="totalAdminMale" :genderFemale="totalAdminFemale"
-                            icon="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
-                        />
-                        <KpiCard label="Personnel actif" :value="totalStaff ?? 0" color="success" href="/admin/staff/list"
-                            sub="Staff RH actif"
-                            icon="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                        />
+                    <!-- ── SECTION UTILISATEURS ────────────────────────── -->
+                    <div>
+                        <h3 class="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-3 px-0.5">Utilisateurs du système</h3>
+                        <!-- Ligne 1 : Super Admin | Admins | Professeurs | Apprenants | Parents | Personnel -->
+                        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+
+                            <!-- Super Admin -->
+                            <div class="relative overflow-hidden rounded-2xl p-4 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700/60 shadow-sm">
+                                <div class="absolute -top-4 -right-4 w-24 h-24 rounded-full opacity-10 dark:opacity-5 pointer-events-none bg-slate-400"/>
+                                <div class="w-10 h-10 rounded-xl flex items-center justify-center shadow-md bg-gradient-to-br from-slate-500 to-slate-700 mb-2">
+                                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                </div>
+                                <p class="text-xl font-black text-gray-900 dark:text-white leading-none tabular-nums">{{ totalSuperAdmin }}</p>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1 font-medium">Super Admins</p>
+                                <div class="mt-1.5 space-y-0.5">
+                                    <div class="flex items-center justify-between text-[10px]">
+                                        <span class="text-blue-600 font-semibold">{{ totalSuperAdminMale ?? 0 }}H · {{ safePercent(totalSuperAdminMale, totalSuperAdmin) }}%</span>
+                                    </div>
+                                    <div class="flex items-center justify-between text-[10px]">
+                                        <span class="text-pink-500 font-semibold">{{ totalSuperAdminFemale ?? 0 }}F · {{ safePercent(totalSuperAdminFemale, totalSuperAdmin) }}%</span>
+                                    </div>
+                                    <div class="text-[10px] text-gray-400 font-medium">{{ safePercent(totalSuperAdmin, totalUser) }}% du total</div>
+                                </div>
+                            </div>
+
+                            <!-- Admins -->
+                            <a href="/admin/admin/list" class="relative overflow-hidden rounded-2xl p-4 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700/60 shadow-sm cursor-pointer hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
+                                <div class="absolute -top-4 -right-4 w-24 h-24 rounded-full opacity-10 dark:opacity-5 pointer-events-none bg-red-400"/>
+                                <div class="w-10 h-10 rounded-xl flex items-center justify-center shadow-md bg-gradient-to-br from-red-400 to-red-600 mb-2">
+                                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                                </div>
+                                <p class="text-xl font-black text-gray-900 dark:text-white leading-none tabular-nums">{{ totalAdmin }}</p>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1 font-medium">Admins</p>
+                                <div class="mt-1.5 space-y-0.5">
+                                    <div class="text-[10px] text-blue-600 font-semibold">{{ totalAdminMale ?? 0 }}H · {{ safePercent(totalAdminMale, totalAdmin) }}%</div>
+                                    <div class="text-[10px] text-pink-500 font-semibold">{{ totalAdminFemale ?? 0 }}F · {{ safePercent(totalAdminFemale, totalAdmin) }}%</div>
+                                    <div class="text-[10px] text-gray-400 font-medium">{{ safePercent(totalAdmin, totalUser) }}% du total</div>
+                                </div>
+                            </a>
+
+                            <!-- Professeurs -->
+                            <a href="/admin/teacher/list" class="relative overflow-hidden rounded-2xl p-4 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700/60 shadow-sm cursor-pointer hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
+                                <div class="absolute -top-4 -right-4 w-24 h-24 rounded-full opacity-10 dark:opacity-5 pointer-events-none bg-blue-400"/>
+                                <div class="w-10 h-10 rounded-xl flex items-center justify-center shadow-md bg-gradient-to-br from-blue-400 to-blue-600 mb-2">
+                                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0112 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/></svg>
+                                </div>
+                                <p class="text-xl font-black text-gray-900 dark:text-white leading-none tabular-nums">{{ totalTeacher }}</p>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1 font-medium">Professeurs</p>
+                                <div class="mt-1.5 space-y-0.5">
+                                    <div class="text-[10px] text-blue-600 font-semibold">{{ totalTeacherMale ?? 0 }}H · {{ safePercent(totalTeacherMale, totalTeacher) }}%</div>
+                                    <div class="text-[10px] text-pink-500 font-semibold">{{ totalTeacherFemale ?? 0 }}F · {{ safePercent(totalTeacherFemale, totalTeacher) }}%</div>
+                                    <div class="text-[10px] text-gray-400 font-medium">{{ safePercent(totalTeacher, totalUser) }}% du total</div>
+                                </div>
+                            </a>
+
+                            <!-- Apprenants -->
+                            <a href="/admin/student/list" class="relative overflow-hidden rounded-2xl p-4 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700/60 shadow-sm cursor-pointer hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
+                                <div class="absolute -top-4 -right-4 w-24 h-24 rounded-full opacity-10 dark:opacity-5 pointer-events-none bg-violet-400"/>
+                                <div class="w-10 h-10 rounded-xl flex items-center justify-center shadow-md bg-gradient-to-br from-violet-400 to-violet-600 mb-2">
+                                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                                </div>
+                                <p class="text-xl font-black text-gray-900 dark:text-white leading-none tabular-nums">{{ totalStudent }}</p>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1 font-medium">Apprenants</p>
+                                <div class="mt-1.5 space-y-0.5">
+                                    <div class="text-[10px] text-blue-600 font-semibold">{{ totalStudentMale ?? 0 }}H · {{ safePercent(totalStudentMale, totalStudent) }}%</div>
+                                    <div class="text-[10px] text-pink-500 font-semibold">{{ totalStudentFemale ?? 0 }}F · {{ safePercent(totalStudentFemale, totalStudent) }}%</div>
+                                    <div class="text-[10px] text-gray-400 font-medium">{{ safePercent(totalStudent, totalUser) }}% du total</div>
+                                </div>
+                            </a>
+
+                            <!-- Parents -->
+                            <a href="/admin/parent/list" class="relative overflow-hidden rounded-2xl p-4 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700/60 shadow-sm cursor-pointer hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
+                                <div class="absolute -top-4 -right-4 w-24 h-24 rounded-full opacity-10 dark:opacity-5 pointer-events-none bg-amber-400"/>
+                                <div class="w-10 h-10 rounded-xl flex items-center justify-center shadow-md bg-gradient-to-br from-amber-400 to-orange-500 mb-2">
+                                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                                </div>
+                                <p class="text-xl font-black text-gray-900 dark:text-white leading-none tabular-nums">{{ totalParent }}</p>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1 font-medium">Parents</p>
+                                <div class="mt-1.5 space-y-0.5">
+                                    <div class="text-[10px] text-blue-600 font-semibold">{{ totalParentMale ?? 0 }}H · {{ safePercent(totalParentMale, totalParent) }}%</div>
+                                    <div class="text-[10px] text-pink-500 font-semibold">{{ totalParentFemale ?? 0 }}F · {{ safePercent(totalParentFemale, totalParent) }}%</div>
+                                    <div class="text-[10px] text-gray-400 font-medium">{{ safePercent(totalParent, totalUser) }}% du total</div>
+                                </div>
+                            </a>
+
+                            <!-- Personnel -->
+                            <a href="/admin/staff/list" class="relative overflow-hidden rounded-2xl p-4 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700/60 shadow-sm cursor-pointer hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
+                                <div class="absolute -top-4 -right-4 w-24 h-24 rounded-full opacity-10 dark:opacity-5 pointer-events-none bg-emerald-400"/>
+                                <div class="w-10 h-10 rounded-xl flex items-center justify-center shadow-md bg-gradient-to-br from-emerald-400 to-emerald-600 mb-2">
+                                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                                </div>
+                                <p class="text-xl font-black text-gray-900 dark:text-white leading-none tabular-nums">{{ totalStaff ?? 0 }}</p>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1 font-medium">Personnel</p>
+                                <div class="mt-1.5 space-y-0.5">
+                                    <div class="text-[10px] text-gray-400 font-medium">Staff RH actif</div>
+                                    <div class="text-[10px] text-gray-400 font-medium">{{ safePercent(totalStaff, totalUser) }}% du total</div>
+                                </div>
+                            </a>
+
+                        </div>
                     </div>
 
-                    <!-- Ligne 1 : stats académiques -->
-                    <div class="grid grid-cols-3 sm:grid-cols-5 gap-2.5">
-                        <MiniCard label="Administrateurs" :value="totalAdmin"   icon="shield"                  color="slate"   href="/admin/admin/list"/>
-                        <MiniCard label="Classes"         :value="totalClass"   icon="building-library"        color="sky"     href="/admin/class/list"/>
-                        <MiniCard label="Matières"        :value="totalSubject" icon="book-open"               color="teal"    href="/admin/subject/list"/>
-                        <MiniCard label="Périodes exam"   :value="totalExam"    icon="clipboard-document-list" color="orange"  href="/admin/examinations/period/list"/>
-                        <MiniCard label="Devoirs"         :value="totalHomework" icon="pencil"                 color="rose"    href="/admin/practicalworks/homework/list"/>
+                    <!-- ── SECTION ÉCOLES ────────────────────────────── -->
+                    <div v-if="schoolsStats?.length">
+                        <h3 class="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-3 px-0.5">Écoles</h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+                            <div v-for="school in schoolsStats" :key="school.school_id"
+                                class="relative overflow-hidden rounded-2xl p-4 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700/60 shadow-sm hover:shadow-md transition-all">
+                                <div class="absolute -top-3 -right-3 w-16 h-16 rounded-full opacity-10 bg-violet-400 pointer-events-none"/>
+                                <!-- Nom de l'école -->
+                                <div class="flex items-start gap-2 mb-3">
+                                    <div class="w-8 h-8 rounded-lg flex-shrink-0 flex items-center justify-center text-white text-xs font-bold shadow-sm"
+                                        :style="{ background: schoolColor(school.school_id) }">
+                                        {{ (school.school_name?.[0] ?? '?').toUpperCase() }}
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <p class="text-xs font-bold text-gray-900 dark:text-white truncate" :title="school.school_name">{{ school.school_name }}</p>
+                                        <p class="text-[10px] text-gray-400">{{ school.total_users }} utilisateurs</p>
+                                    </div>
+                                </div>
+                                <!-- Stats utilisateurs -->
+                                <div class="grid grid-cols-2 gap-x-3 gap-y-1 text-[10px]">
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-500">Apprenants</span>
+                                        <span class="font-bold text-violet-600">{{ school.total_students }}</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-500">Professeurs</span>
+                                        <span class="font-bold text-blue-600">{{ school.total_teachers }}</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-500">Parents</span>
+                                        <span class="font-bold text-amber-600">{{ school.total_parents }}</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-500">Admins</span>
+                                        <span class="font-bold text-red-600">{{ school.total_admins }}</span>
+                                    </div>
+                                    <div class="flex justify-between col-span-2">
+                                        <span class="text-gray-500">Personnel</span>
+                                        <span class="font-bold text-emerald-600">{{ school.total_staff }}</span>
+                                    </div>
+                                </div>
+                                <!-- Barre de répartition -->
+                                <div class="mt-2 flex h-1.5 rounded-full overflow-hidden gap-px">
+                                    <div class="bg-violet-500 rounded-l-full transition-all" :style="{ width: safePercent(school.total_students, school.total_users) + '%' }"/>
+                                    <div class="bg-blue-500 transition-all"                   :style="{ width: safePercent(school.total_teachers, school.total_users) + '%' }"/>
+                                    <div class="bg-amber-500 transition-all"                   :style="{ width: safePercent(school.total_parents,  school.total_users) + '%' }"/>
+                                    <div class="bg-red-500 transition-all"                     :style="{ width: safePercent(school.total_admins,   school.total_users) + '%' }"/>
+                                    <div class="bg-emerald-500 rounded-r-full transition-all"  :style="{ width: safePercent(school.total_staff,    school.total_users) + '%' }"/>
+                                </div>
+                                <div class="mt-1 text-[9px] text-gray-400 text-right">{{ safePercent(school.total_students, school.total_users) }}% apprenants</div>
+                            </div>
+                        </div>
                     </div>
 
-                    <!-- Ligne 2 : RBAC -->
-                    <div class="grid grid-cols-2 gap-2.5">
-                        <MiniCard label="Rôles système"       :value="totalRoles"       icon="shield-check" color="violet" href="/superadmin/config/roles"/>
-                        <MiniCard label="Permissions système" :value="totalPermissions" icon="key"          color="blue"   href="/superadmin/config/permissions"/>
+                    <!-- ── SECTION ACADÉMIQUE & EXAMENS ──────────────── -->
+                    <div>
+                        <h3 class="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-3 px-0.5">Académique & Examens</h3>
+                        <div class="grid grid-cols-3 sm:grid-cols-5 gap-2.5">
+                            <MiniCard label="Classes"          :value="totalClass"           icon="building-library"        color="sky"     href="/admin/class/list"/>
+                            <MiniCard label="Matières"         :value="totalSubject"         icon="book-open"               color="teal"    href="/admin/subject/list"/>
+                            <MiniCard label="Assign. matières" :value="totalClassSubject ?? 0" icon="link"                  color="blue"    href="/admin/subject/list"/>
+                            <MiniCard label="Périodes"         :value="totalExam"            icon="clipboard-document-list" color="orange"  href="/admin/examinations/period/list"/>
+                            <MiniCard label="Devoirs"          :value="totalHomework ?? 0"   icon="pencil"                  color="rose"    href="/admin/practicalworks/homework/list"/>
+                        </div>
                     </div>
 
-                    <!-- Ligne 3 : Alertes + Évals -->
+                    <!-- ── SECTION CONFIGURATION SYSTÈME ─────────────── -->
+                    <div>
+                        <h3 class="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-3 px-0.5">Configuration système</h3>
+                        <div class="grid grid-cols-3 sm:grid-cols-5 gap-2.5">
+                            <MiniCard label="Rôles système"      :value="totalRoles"                   icon="shield-check"   color="violet" href="/superadmin/config/roles"/>
+                            <MiniCard label="Permissions"        :value="totalPermissions"             icon="key"            color="blue"   href="/superadmin/config/permissions"/>
+                            <MiniCard label="Écoles"             :value="totalSchools ?? 0"            icon="building-office" color="slate" href="/superadmin/schools"/>
+                            <MiniCard label="Journaux suppr."    :value="totalDeletionLogs ?? 0"       icon="document-text"  color="orange" href="/superadmin/deletion-logs"/>
+                            <MiniCard label="Attr. permissions"  :value="totalPermissionAssignments ?? 0" icon="user-check"  color="teal"   href="/superadmin/config/assign"/>
+                        </div>
+                    </div>
+
+                    <!-- ── ALERTES ─────────────────────────────────────── -->
                     <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
                         <AlertCard label="Congés en attente"  :value="totalPendingLeaves ?? 0"  icon="calendar-days" variant="warning" href="/admin/staff/leaves/list"/>
                         <AlertCard label="Notes à valider"    :value="totalPendingGrades ?? 0"  icon="check-badge"   variant="danger"  href="/admin/evaluations/grades/pending"/>
@@ -79,10 +213,8 @@
                         <AlertCard label="Événements à venir" :value="totalUpcomingEvents ?? 0" icon="sparkles"      variant="default" href="/admin/staff/events/list"/>
                     </div>
 
-                    <!-- Ligne 4 : Charts — Répartition utilisateurs + contributions -->
+                    <!-- ── CHARTS ──────────────────────────────────────── -->
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-3">
-
-                        <!-- Donut utilisateurs -->
                         <div class="card p-4">
                             <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-0.5">Répartition utilisateurs</h3>
                             <p class="text-xs text-gray-400 mb-2">Par rôle</p>
@@ -95,8 +227,6 @@
                                 :height="150"
                             />
                         </div>
-
-                        <!-- Donut sexe -->
                         <div class="card p-4">
                             <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-0.5">Apprenants par sexe</h3>
                             <p class="text-xs text-gray-400 mb-2">Répartition garçons / filles</p>
@@ -109,8 +239,6 @@
                                 :height="150"
                             />
                         </div>
-
-                        <!-- Contributions -->
                         <div class="card p-4 flex flex-col">
                             <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-0.5">Contributions</h3>
                             <p class="text-xs text-gray-400 mb-3">Paiements collectés</p>
@@ -147,38 +275,92 @@
                         <AttendanceBadge label="Demi-journée" :value="totalAttendanceStudentHalfDay"  color="info"    icon="calendar-days"/>
                     </div>
 
-                    <!-- Tableau par école -->
-                    <div v-if="attendanceBySchool?.length" class="card p-4">
-                        <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">Présences par école</h3>
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-sm">
-                                <thead>
-                                    <tr class="border-b border-gray-100 dark:border-gray-700">
-                                        <th class="text-left py-2 pr-4 text-xs font-semibold text-gray-500 dark:text-gray-400">École</th>
-                                        <th class="text-right py-2 px-2 text-xs font-semibold text-emerald-600">Présents</th>
-                                        <th class="text-right py-2 px-2 text-xs font-semibold text-amber-600">Retards</th>
-                                        <th class="text-right py-2 px-2 text-xs font-semibold text-red-600">Absents</th>
-                                        <th class="text-right py-2 pl-2 text-xs font-semibold text-blue-600">Demi-j.</th>
+                    <!-- Tableau par école — amélioré avec totaux -->
+                    <div class="card overflow-hidden">
+                        <div class="px-4 py-3 border-b border-gray-100 dark:border-gray-700 flex items-center justify-between">
+                            <h3 class="text-sm font-semibold text-gray-900 dark:text-white">Présences par école</h3>
+                            <span class="text-xs text-gray-400">{{ attendanceBySchool?.length ?? 0 }} école(s)</span>
+                        </div>
+                        <div v-if="attendanceBySchool?.length" class="overflow-x-auto">
+                            <table class="w-full min-w-[540px]">
+                                <thead class="bg-gray-50 dark:bg-gray-700/40">
+                                    <tr>
+                                        <th class="text-left px-4 py-2.5 text-xs font-bold text-gray-600 dark:text-gray-300 border-b border-gray-100 dark:border-gray-700">École</th>
+                                        <th class="text-right px-3 py-2.5 text-xs font-bold text-emerald-600 border-b border-gray-100 dark:border-gray-700">
+                                            <div class="flex items-center justify-end gap-1">
+                                                <span class="w-2 h-2 rounded-full bg-emerald-500 inline-block"/>Présents
+                                            </div>
+                                        </th>
+                                        <th class="text-right px-3 py-2.5 text-xs font-bold text-amber-600 border-b border-gray-100 dark:border-gray-700">
+                                            <div class="flex items-center justify-end gap-1">
+                                                <span class="w-2 h-2 rounded-full bg-amber-500 inline-block"/>Retards
+                                            </div>
+                                        </th>
+                                        <th class="text-right px-3 py-2.5 text-xs font-bold text-red-600 border-b border-gray-100 dark:border-gray-700">
+                                            <div class="flex items-center justify-end gap-1">
+                                                <span class="w-2 h-2 rounded-full bg-red-500 inline-block"/>Absents
+                                            </div>
+                                        </th>
+                                        <th class="text-right px-4 py-2.5 text-xs font-bold text-blue-600 border-b border-gray-100 dark:border-gray-700">
+                                            <div class="flex items-center justify-end gap-1">
+                                                <span class="w-2 h-2 rounded-full bg-blue-500 inline-block"/>Demi-j.
+                                            </div>
+                                        </th>
+                                        <th class="text-right px-4 py-2.5 text-xs font-bold text-gray-500 border-b border-gray-100 dark:border-gray-700">Total</th>
                                     </tr>
                                 </thead>
-                                <tbody class="divide-y divide-gray-50 dark:divide-gray-700/50">
+                                <tbody class="divide-y divide-gray-50 dark:divide-gray-700/40">
                                     <tr v-for="school in attendanceBySchool" :key="school.school_id"
-                                        class="hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors">
-                                        <td class="py-2 pr-4 text-xs font-medium text-gray-700 dark:text-gray-300 truncate max-w-[200px]">{{ school.school_name }}</td>
-                                        <td class="py-2 px-2 text-right text-xs font-bold text-emerald-600">{{ school.present.toLocaleString('fr-FR') }}</td>
-                                        <td class="py-2 px-2 text-right text-xs font-bold text-amber-600">{{ school.late.toLocaleString('fr-FR') }}</td>
-                                        <td class="py-2 px-2 text-right text-xs font-bold text-red-600">{{ school.absent.toLocaleString('fr-FR') }}</td>
-                                        <td class="py-2 pl-2 text-right text-xs font-bold text-blue-600">{{ school.halfday.toLocaleString('fr-FR') }}</td>
+                                        class="hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors group">
+                                        <td class="px-4 py-3">
+                                            <div class="flex items-center gap-2">
+                                                <span class="w-6 h-6 rounded-md flex-shrink-0 flex items-center justify-center text-white text-[9px] font-bold shadow-sm"
+                                                    :style="{ background: schoolColor(school.school_id) }">
+                                                    {{ (school.school_name?.[0] ?? '?').toUpperCase() }}
+                                                </span>
+                                                <span class="text-xs font-semibold text-gray-700 dark:text-gray-300 truncate max-w-[160px]" :title="school.school_name">{{ school.school_name }}</span>
+                                            </div>
+                                        </td>
+                                        <td class="px-3 py-3 text-right">
+                                            <span class="text-sm font-bold text-emerald-600">{{ school.present.toLocaleString('fr-FR') }}</span>
+                                        </td>
+                                        <td class="px-3 py-3 text-right">
+                                            <span class="text-sm font-bold text-amber-600">{{ school.late.toLocaleString('fr-FR') }}</span>
+                                        </td>
+                                        <td class="px-3 py-3 text-right">
+                                            <span class="text-sm font-bold text-red-600">{{ school.absent.toLocaleString('fr-FR') }}</span>
+                                        </td>
+                                        <td class="px-4 py-3 text-right">
+                                            <span class="text-sm font-bold text-blue-600">{{ school.halfday.toLocaleString('fr-FR') }}</span>
+                                        </td>
+                                        <td class="px-4 py-3 text-right">
+                                            <span class="text-xs font-bold text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-700 px-2 py-0.5 rounded-full">
+                                                {{ (school.present + school.late + school.absent + school.halfday).toLocaleString('fr-FR') }}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    <!-- Ligne total -->
+                                    <tr class="bg-gray-50 dark:bg-gray-700/20 font-bold">
+                                        <td class="px-4 py-2.5 text-xs font-bold text-gray-700 dark:text-gray-200">TOTAL SYSTÈME</td>
+                                        <td class="px-3 py-2.5 text-right text-xs font-bold text-emerald-700">{{ totalAttendanceStudentPresent.toLocaleString('fr-FR') }}</td>
+                                        <td class="px-3 py-2.5 text-right text-xs font-bold text-amber-700">{{ totalAttendanceStudentLate.toLocaleString('fr-FR') }}</td>
+                                        <td class="px-3 py-2.5 text-right text-xs font-bold text-red-700">{{ totalAttendanceStudentAbsent.toLocaleString('fr-FR') }}</td>
+                                        <td class="px-4 py-2.5 text-right text-xs font-bold text-blue-700">{{ totalAttendanceStudentHalfDay.toLocaleString('fr-FR') }}</td>
+                                        <td class="px-4 py-2.5 text-right">
+                                            <span class="text-xs font-black text-gray-700 dark:text-gray-200 bg-gray-200 dark:bg-gray-600 px-2 py-0.5 rounded-full">
+                                                {{ (totalAttendanceStudentPresent + totalAttendanceStudentLate + totalAttendanceStudentAbsent + totalAttendanceStudentHalfDay).toLocaleString('fr-FR') }}
+                                            </span>
+                                        </td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
-                    </div>
-                    <div v-else class="card p-4 text-center text-xs text-gray-400 border border-dashed border-gray-200 dark:border-gray-700">
-                        Aucune donnée de présence par école disponible
+                        <div v-else class="px-4 py-8 text-center text-xs text-gray-400">
+                            Aucune donnée de présence par école disponible
+                        </div>
                     </div>
 
-                    <!-- Charts avec scroll horizontal sur mobile -->
+                    <!-- Charts -->
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-3">
                         <div class="card p-4">
                             <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">Évolution mensuelle</h3>
@@ -190,11 +372,11 @@
                         </div>
                         <div class="card p-4">
                             <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">Taux de présence</h3>
-                            <ApexRadial :series="attendanceRadial" :labels="['Présents','En retard','Absents','Demi-j.']" :colors="['#10B981','#F59E0B','#EF4444','#3B82F6']" :height="150"/>
+                            <ApexRadial :series="attendanceRadial" :labels="['Présents','En retard','Absents','Demi-j.']" :colors="['#10B981','#F59E0B','#EF4444','#3B82F6']"/>
                         </div>
                     </div>
 
-                    <!-- Rapport mensuel présents avec scroll -->
+                    <!-- Rapport mensuel présents -->
                     <div class="card p-4">
                         <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">Rapport mensuel (présents)</h3>
                         <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
@@ -212,32 +394,18 @@
                     <div class="flex items-center justify-between">
                         <h2 class="text-base font-semibold text-gray-900 dark:text-white">Sessions & Évaluations</h2>
                     </div>
-
-                    <!-- Sessions exam stats -->
                     <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
                         <KpiCard label="Sessions actives"    :value="totalExam"           color="violet" icon="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
                         <KpiCard label="Évals ouvertes"      :value="totalOpenEvals ?? 0" color="info"   icon="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
                         <KpiCard label="Notes à valider"     :value="totalPendingGrades ?? 0" color="warning" icon="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                         <KpiCard label="Bulletins brouillon" :value="totalDraftBulletins ?? 0" color="danger"  icon="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
                     </div>
-
-                    <!-- Barres évals par type -->
                     <div class="card p-4">
                         <div class="flex items-center justify-between mb-3">
-                            <div>
-                                <h3 class="text-sm font-semibold text-gray-900 dark:text-white">Évaluations par type</h3>
-                                <p class="text-xs text-gray-400 mt-0.5">Répartition des évaluations de l'année</p>
-                            </div>
+                            <h3 class="text-sm font-semibold text-gray-900 dark:text-white">Évaluations par type</h3>
                         </div>
-                        <ApexBar
-                            :series="evalTypeSeries"
-                            :categories="['Interro', 'Devoir', 'Travail maison', 'Examen blanc']"
-                            :colors="['#7C3AED','#3B82F6','#10B981','#F59E0B']"
-                            :height="150"
-                        />
+                        <ApexBar :series="evalTypeSeries" :categories="['Interro', 'Devoir', 'Travail maison', 'Examen blanc']" :colors="['#7C3AED','#3B82F6','#10B981','#F59E0B']" :height="150"/>
                     </div>
-
-                    <!-- Sessions académiques + moyennes -->
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-3">
                         <div class="card p-4">
                             <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">Sessions académiques</h3>
@@ -280,30 +448,20 @@
                         <h2 class="text-base font-semibold text-gray-900 dark:text-white">Ressources Humaines</h2>
                         <PeriodFilter v-model="hrPeriod" />
                     </div>
-
                     <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
                         <KpiCard label="Personnel total"  :value="totalStaff ?? 0"         color="violet" href="/admin/staff/list" icon="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
                         <KpiCard label="Congés en attente" :value="totalPendingLeaves ?? 0" color="warning" href="/admin/staff/leaves/list" icon="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                         <KpiCard label="Congés approuvés" :value="totalApprovedLeaves ?? 0" color="success" href="/admin/staff/leaves/list" icon="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                         <KpiCard label="Événements" :value="totalUpcomingEvents ?? 0" color="info" href="/admin/staff/events/list" icon="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                     </div>
-
-                    <!-- Personnel par rôle RH -->
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-3">
                         <div class="card p-4">
                             <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">Personnel par fonction</h3>
-                            <ApexDonut
-                                :series="staffRoleSeries"
-                                :labels="staffRoleLabels"
-                                :colors="['#7C3AED','#3B82F6','#10B981','#F59E0B','#EF4444','#06B6D4']"
-                                :height="150"
-                            />
+                            <ApexDonut :series="staffRoleSeries" :labels="staffRoleLabels" :colors="['#7C3AED','#3B82F6','#10B981','#F59E0B','#EF4444','#06B6D4']" :height="150"/>
                         </div>
                         <div class="card p-4">
                             <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">Personnel en congé actuellement</h3>
-                            <div v-if="!currentLeaves?.length" class="flex items-center justify-center h-32 text-xs text-gray-400">
-                                Aucun congé en cours
-                            </div>
+                            <div v-if="!currentLeaves?.length" class="flex items-center justify-center h-32 text-xs text-gray-400">Aucun congé en cours</div>
                             <div v-else class="space-y-2">
                                 <div v-for="leave in (currentLeaves ?? []).slice(0, 6)" :key="leave.id ?? leave.staff_id"
                                     class="flex items-center gap-3 p-2.5 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700/30">
@@ -328,22 +486,15 @@
                         <h2 class="text-base font-semibold text-gray-900 dark:text-white">Contributions & Paiements</h2>
                         <PeriodFilter v-model="financePeriod" />
                     </div>
-
                     <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
                         <KpiCard label="Total dossiers" :value="totalFeesCollections ?? 0" color="violet" icon="M9 8h6m-5 0a3 3 0 110 6H9l3 3m-3-6h6m6 1a9 9 0 11-18 0 9 9 0 0118 0z"/>
                         <KpiCard label="Dossiers aujourd'hui" :value="totalFeesCollectionsToday ?? 0" color="success" icon="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                         <KpiCard label="Devoirs / Travaux" :value="totalHomework ?? 0" color="info" icon="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
                         <KpiCard label="Taux collecte" :value="feesRate + '%'" color="amber" icon="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
                     </div>
-
                     <div class="card p-4">
                         <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">Évolution des contributions</h3>
-                        <ApexArea
-                            :series="feesAreaSeries"
-                            :categories="months"
-                            :colors="['#7C3AED','#10B981']"
-                            :height="150"
-                        />
+                        <ApexArea :series="feesAreaSeries" :categories="months" :colors="['#7C3AED','#10B981']" :height="150"/>
                     </div>
                 </div>
 
@@ -377,12 +528,7 @@
                         </div>
                         <div class="card p-4">
                             <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">Activité communication</h3>
-                            <ApexBar
-                                :series="commSeries"
-                                :categories="months.slice(0, 6)"
-                                :colors="['#7C3AED','#3B82F6','#10B981']"
-                                :height="150"
-                            />
+                            <ApexBar :series="commSeries" :categories="months.slice(0, 6)" :colors="['#7C3AED','#3B82F6','#10B981']" :height="150"/>
                         </div>
                     </div>
                 </div>
@@ -395,7 +541,7 @@
                             <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">Rôles & Permissions</h3>
                             <div class="space-y-3">
                                 <ProgressBar label="Rôles définis" :value="totalRoles" :max="20" color="violet" />
-                                <ProgressBar label="Permissions configurées" :value="totalPermissions" :max="100" color="info" />
+                                <ProgressBar label="Permissions configurées" :value="totalPermissions" :max="200" color="info" />
                             </div>
                             <div class="mt-4 grid grid-cols-2 gap-2">
                                 <a href="/superadmin/config/roles" class="block p-3 rounded-xl border border-gray-100 dark:border-gray-700 hover:border-violet-300 dark:hover:border-violet-700 text-center text-xs font-semibold text-violet-600 dark:text-violet-400 transition-colors">
@@ -440,7 +586,6 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue';
-import { useDark } from '@vueuse/core';
 import AttendanceBadge from '@/Components/Dashboard/AttendanceBadge.vue';
 import MiniCard        from '@/Components/Dashboard/MiniCard.vue';
 import AlertCard       from '@/Components/Dashboard/AlertCard.vue';
@@ -456,8 +601,6 @@ import NavIcon         from '@/Components/Layout/NavIcon.vue';
 import { AppCalendar } from '@/Components/UI';
 import type { CalEvent } from '@/Components/UI';
 
-const isDark = useDark();
-
 const props = defineProps<{
     totalUser: number; totalAdmin: number; totalTeacher: number; totalStudent: number; totalParent: number;
     totalClass: number; totalSubject: number; totalExam: number; totalFeesCollections: number;
@@ -470,12 +613,16 @@ const props = defineProps<{
     totalStaff?: number; totalPendingLeaves?: number; totalPendingGrades?: number;
     totalUpcomingEvents?: number; totalApprovedLeaves?: number;
     totalOpenEvals?: number; totalDraftBulletins?: number; totalPublishedBulletins?: number;
+    totalSuperAdmin?: number; totalSuperAdminMale?: number; totalSuperAdminFemale?: number;
     totalStudentMale?: number; totalStudentFemale?: number;
     totalTeacherMale?: number; totalTeacherFemale?: number;
     totalParentMale?: number; totalParentFemale?: number;
     totalAdminMale?: number; totalAdminFemale?: number;
+    totalSchools?: number; totalDeletionLogs?: number; totalPermissionAssignments?: number;
+    totalClassSubject?: number;
     attendanceByMonth?: { present: number[]; late: number[]; absent: number[]; halfday: number[] };
     attendanceBySchool?: { school_id: number; school_name: string; present: number; late: number; absent: number; halfday: number }[];
+    schoolsStats?: { school_id: number; school_name: string; total_users: number; total_students: number; total_teachers: number; total_parents: number; total_admins: number; total_staff: number }[];
     topAverage?: number | null; lowAverage?: number | null; successRate?: number | null;
     staffRoleData?: Record<string, number>;
     currentLeaves?: any[]; upcomingEvents?: any[]; calendarEvents?: any[]; currentPeriod?: any;
@@ -489,17 +636,30 @@ const attendancePeriod = ref('month');
 const hrPeriod         = ref('month');
 const financePeriod    = ref('month');
 
+// ── Helper calcul pourcentage ─────────────────────────────────────────────────
+const safePercent = (part: number | undefined | null, total: number | undefined | null): number => {
+    if (!part || !total) return 0;
+    return Math.round((part / total) * 100);
+};
+
+// ── Couleurs des écoles (palette cyclique) ───────────────────────────────────
+const schoolPalette = ['#7C3AED','#3B82F6','#10B981','#F59E0B','#EF4444','#06B6D4','#8B5CF6','#EC4899','#14B8A6','#F97316'];
+const schoolColor = (id: number) => schoolPalette[id % schoolPalette.length];
+
 const tabs = [
     { key: 'overview',   label: 'Vue générale',       icon: 'chart-bar' },
     { key: 'attendance', label: 'Présences',           icon: 'user-check',   badge: props.totalAttendanceStudentAbsent },
-    { key: 'academic',   label: 'Académique',          icon: 'academic-cap', badge: (props.totalPendingGrades ?? 0) + (props.totalDraftBulletins ?? 0) || undefined },
+    { key: 'academic',   label: 'Académique',          icon: 'academic-cap', badge: ((props.totalPendingGrades as number ?? 0) + (props.totalDraftBulletins ?? 0)) || undefined },
     { key: 'hr',         label: 'Ressources humaines', icon: 'user-group',   badge: props.totalPendingLeaves },
     { key: 'finance',    label: 'Contributions',       icon: 'banknotes' },
     { key: 'comms',      label: 'Communication',       icon: 'megaphone' },
     { key: 'config',     label: 'Configuration',       icon: 'cog-6-tooth' },
 ];
 
-// ── Attendance — données réelles par mois depuis le serveur ───────────────────
+// ── Super Admin count — toujours depuis le serveur (user_type=0) ──────────────
+const totalSuperAdmin = computed(() => props.totalSuperAdmin ?? 0);
+
+// ── Attendance ────────────────────────────────────────────────────────────────
 const attendanceSeries = computed(() => {
     const att = props.attendanceByMonth;
     if (att && att.present?.length === 12) {
@@ -510,7 +670,6 @@ const attendanceSeries = computed(() => {
             { name: 'Demi-journée', data: att.halfday },
         ];
     }
-    // Fallback si pas encore de données
     return [
         { name: 'Présents',     data: Array(12).fill(props.totalAttendanceStudentPresent) },
         { name: 'Retards',      data: Array(12).fill(props.totalAttendanceStudentLate) },
@@ -530,9 +689,7 @@ const attendanceRadial = computed(() => [
 ]);
 
 // ── Évals ─────────────────────────────────────────────────────────────────────
-const evalTypeSeries = [
-    { name: 'Évaluations', data: [12, 8, 15, 5] },
-];
+const evalTypeSeries = [{ name: 'Évaluations', data: [12, 8, 15, 5] }];
 
 // ── Finance ───────────────────────────────────────────────────────────────────
 const feesRate = computed(() => {
@@ -574,7 +731,6 @@ const typeLabels: Record<string, string> = {
     academic: 'Académique', cultural: 'Culturel', administrative: 'Administratif',
     exam: 'Examen', ceremony: 'Cérémonie', trip: 'Sortie',
 };
-
 const calendarEventsFormatted = computed<CalEvent[]>(() => {
     if (props.calendarEvents?.length) {
         return (props.calendarEvents as any[]).map(ev => ({

@@ -1,4 +1,4 @@
-<template>
+﻿<template>
     <div :class="['flex h-screen overflow-hidden transition-colors duration-300', isDark ? 'dark' : '', 'bg-gray-100 dark:bg-gray-900']">
 
         <!-- ── App Sidebar (navigation principale) ── -->
@@ -252,7 +252,7 @@
                                         <p class="text-xs text-gray-400 mt-0.5">{{ localChatContacts.length }} contact{{ localChatContacts.length > 1 ? 's' : '' }} disponible{{ localChatContacts.length > 1 ? 's' : '' }}</p>
                                     </div>
                                     <button @click="showNewMessageModal = false"
-                                        class="p-1.5 rounded-xl text-gray-400 hover:text-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                                        class="p-1.5 rounded-xl bg-red-500 hover:bg-red-600 text-white transition-colors flex-shrink-0 shadow-sm">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                                         </svg>
@@ -853,9 +853,9 @@
     </Transition>
 </template>
 
-import { fmtDate } from '@/utils/dateFormat';
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted, nextTick, watch, h, defineComponent } from 'vue';
+import { fmtDate } from '@/utils/dateFormat';
 import { usePage } from '@inertiajs/vue3';
 import { useDark } from '@vueuse/core';
 import type { PageProps } from '@/types';

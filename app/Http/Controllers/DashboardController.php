@@ -87,6 +87,17 @@ class DashboardController extends Controller
                 // ── Sexe admins ──
                 $data['totalAdminMale']     = $this->safeStat(fn() => DB::table('users')->where('user_type', 1)->where('is_delete', 0)->where('gender', 'male')->count());
                 $data['totalAdminFemale']   = $this->safeStat(fn() => DB::table('users')->where('user_type', 1)->where('is_delete', 0)->where('gender', 'female')->count());
+                // ── Super Admins ──
+                $data['totalSuperAdmin']       = $this->safeStat(fn() => DB::table('users')->where('user_type', 0)->where('is_delete', 0)->count());
+                $data['totalSuperAdminMale']   = $this->safeStat(fn() => DB::table('users')->where('user_type', 0)->where('is_delete', 0)->where('gender', 'male')->count());
+                $data['totalSuperAdminFemale'] = $this->safeStat(fn() => DB::table('users')->where('user_type', 0)->where('is_delete', 0)->where('gender', 'female')->count());
+                // ── Infos supplémentaires système ──
+                $data['totalSchools']               = $this->safeStat(fn() => DB::table('schools')->where('is_delete', 0)->count());
+                $data['totalDeletionLogs']          = $this->safeStat(fn() => DB::table('deletion_logs')->count());
+                $data['totalPermissionAssignments'] = $this->safeStat(fn() => DB::table('model_has_permissions')->count());
+                $data['totalClassSubject']          = $this->safeStat(fn() => DB::table('class_subjects')->where('is_delete', 0)->count());
+                // ── Stats par école ──
+                $data['schoolsStats']          = $this->safeStat(fn() => $this->getSchoolsStats(), []);
                 // ── Présences par mois ──
                 $data['attendanceByMonth']  = $this->safeStat(fn() => $this->getAttendanceByMonth(), []);
                 // ── Bulletins ──
@@ -305,6 +316,39 @@ class DashboardController extends Controller
     }
 
     // ── Helpers ─────────────────────────────────────────────────────────────
+
+    /**
+     * Retourne les statistiques d'utilisateurs pour chaque école (Super Admin).
+     */
+    private function getSchoolsStats(): array
+    {
+        $schools = DB::table('schools')
+            ->where('is_delete', 0)
+            ->where('status', 1)
+            ->select('id', 'school_name')
+            ->orderBy('school_name')
+            ->get();
+
+        $result = [];
+        foreach ($schools as $school) {
+            $base = DB::table('users')
+                ->where('is_delete', 0)
+                ->where('school_id', $school->id);
+
+            $result[] = [
+                'school_id'      => $school->id,
+                'school_name'    => $school->school_name,
+                'total_users'    => (clone $base)->whereIn('user_type', [1,2,3,4])->count(),
+                'total_students' => (clone $base)->where('user_type', 3)->count(),
+                'total_teachers' => (clone $base)->where('user_type', 2)->count(),
+                'total_parents'  => (clone $base)->where('user_type', 4)->count(),
+                'total_admins'   => (clone $base)->where('user_type', 1)->count(),
+                'total_staff'    => $this->safeStat(fn() => DB::table('staff')->where('is_delete', 0)->where('status', 'active')->where('school_id', $school->id)->count()),
+            ];
+        }
+
+        return $result;
+    }
 
     /**
      * Retourne les présences totales par école (pour le Super Admin).

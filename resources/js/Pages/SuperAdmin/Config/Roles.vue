@@ -332,13 +332,15 @@ const handleAction = (key: string, row: Record<string, unknown>) => {
     <Teleport to="body">
         <Transition enter-active-class="transition duration-200 ease-out" enter-from-class="opacity-0"
                     enter-to-class="opacity-100" leave-to-class="opacity-0">
-            <div v-if="showModal" class="fixed inset-0 z-50 flex items-center justify-center p-4"
+            <div v-if="showModal" class="fixed inset-0 z-[10000] flex items-center justify-center p-4"
                  @click.self="closeModal">
                 <div class="absolute inset-0 bg-black/40 backdrop-blur-sm"/>
                 <div class="relative w-full max-w-lg bg-white dark:bg-gray-900 rounded-2xl shadow-2xl
                              border border-gray-200 dark:border-gray-700 overflow-hidden">
-                    <div class="h-1 bg-gradient-to-r from-primary-500 to-primary-700"/>
-                    <div class="p-6 space-y-5">
+                    <!-- Illustration background subtile -->
+                    <div class="pointer-events-none absolute inset-0 modal-bg-illustration" aria-hidden="true" />
+                    <div class="relative z-10 h-1 bg-gradient-to-r from-primary-500 to-primary-700"/>
+                    <div class="relative z-10 p-6 space-y-5">
                         <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
                             {{ isEdit ? 'Modifier le rôle' : 'Créer un rôle custom' }}
                         </h3>
@@ -449,13 +451,15 @@ const handleAction = (key: string, row: Record<string, unknown>) => {
     <Teleport to="body">
         <Transition enter-active-class="transition duration-200 ease-out" enter-from-class="opacity-0"
                     enter-to-class="opacity-100" leave-to-class="opacity-0">
-            <div v-if="confirm.show" class="fixed inset-0 z-[9999] flex items-center justify-center p-4"
+            <div v-if="confirm.show" class="fixed inset-0 z-[10001] flex items-center justify-center p-4"
                  @click.self="confirm.show = false">
                 <div class="absolute inset-0 bg-black/40 backdrop-blur-sm"/>
                 <div class="relative w-full max-w-sm bg-white dark:bg-gray-900 rounded-2xl shadow-2xl
                              border border-gray-200 dark:border-gray-700 overflow-hidden">
-                    <div class="h-1 bg-red-500"/>
-                    <div class="p-6">
+                    <!-- Illustration background subtile -->
+                    <div class="pointer-events-none absolute inset-0 modal-bg-illustration" aria-hidden="true" />
+                    <div class="relative z-10 h-1 bg-red-500"/>
+                    <div class="relative z-10 p-6">
                         <div class="flex items-start gap-3 mb-5">
                             <div class="w-10 h-10 rounded-xl bg-red-100 dark:bg-red-900/30
                                         flex items-center justify-center flex-shrink-0">
