@@ -92,16 +92,24 @@ class StaffModel extends Model
     }
 
     /**
-     * Liste pour les selects (congés, événements, etc.)
+     * Liste pour les selects (congés, événements, etc.) — scopée par école.
      */
     public static function getAllActive()
     {
-        return self::select('staff.*', 'users.name', 'users.last_name', 'users.email', 'users.profile_picture')
+        $user         = Auth::user();
+        $isSuperAdmin = $user && (int) $user->user_type === 0;
+
+        $q = self::select('staff.*', 'users.name', 'users.last_name', 'users.email', 'users.profile_picture')
             ->join('users', 'users.id', '=', 'staff.user_id')
             ->where('staff.is_delete', 0)
             ->where('staff.status', 'active')
-            ->orderBy('users.last_name')
-            ->get();
+            ->orderBy('users.last_name');
+
+        if (! $isSuperAdmin && $user) {
+            $q->where('staff.school_id', $user->school_id);
+        }
+
+        return $q->get();
     }
 
     /**

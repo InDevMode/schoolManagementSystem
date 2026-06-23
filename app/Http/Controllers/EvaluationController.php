@@ -588,25 +588,36 @@ class EvaluationController extends Controller
      */
     public function pendingValidation()
     {
-        $grades = GradeModel::getPendingValidation(100); // on charge tout pour le groupement
+        $user         = Auth::user();
+        $isSuperAdmin = $user && (int) $user->user_type === 0;
+
+        $grades = GradeModel::getPendingValidation(100);
 
         // Calculer le nombre total d'élèves actifs pour chaque évaluation concernée
-        $evalIds    = $grades->pluck('evaluation_id')->unique();
-        $evalCounts = \DB::table('evaluations')
+        $evalIds = $grades->pluck('evaluation_id')->unique();
+
+        $evalCountQuery = \DB::table('evaluations')
             ->join('users', function ($j) {
                 $j->on('users.class_id', '=', 'evaluations.class_id')
                   ->where('users.user_type', 3)
                   ->where('users.is_delete', 0)
                   ->where('users.status', 1);
             })
-            ->whereIn('evaluations.id', $evalIds)
+            ->whereIn('evaluations.id', $evalIds);
+
+        // Scoping multi-tenant sur la requête raw
+        if (! $isSuperAdmin && $user) {
+            $evalCountQuery->where('evaluations.school_id', $user->school_id);
+        }
+
+        $evalCounts = $evalCountQuery
             ->groupBy('evaluations.id')
             ->select('evaluations.id as evaluation_id', \DB::raw('COUNT(users.id) as total_students'))
             ->pluck('total_students', 'evaluation_id');
 
         return Inertia::render('Admin/Evaluations/PendingValidation', [
-            'grades'      => $grades,
-            'evalCounts'  => $evalCounts, // Map<evaluation_id, total_students>
+            'grades'     => $grades,
+            'evalCounts' => $evalCounts,
         ]);
     }
 

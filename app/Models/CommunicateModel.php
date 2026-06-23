@@ -14,6 +14,7 @@ class CommunicateModel extends Model
     protected $table = 'communicates';
 
     protected $fillable = [
+        "school_id",
         "title",
         "notice_date",
         "publish_date",
@@ -40,11 +41,18 @@ class CommunicateModel extends Model
 
     public static function getNoticeBoard(int $perpage)
     {
-        return CommunicateModel::select('communicates.*', 'users.name as created_by_name')
+        $user         = \Illuminate\Support\Facades\Auth::user();
+        $isSuperAdmin = $user && (int) $user->user_type === 0;
+
+        $q = CommunicateModel::select('communicates.*', 'users.name as created_by_name')
             ->join('users', 'users.id', '=', 'communicates.created_by')
-            ->where('communicates.is_delete', '=', 0)
-            ->orderBy('communicates.id', 'desc')
-            ->paginate($perpage);
+            ->where('communicates.is_delete', '=', 0);
+
+        if (! $isSuperAdmin && $user) {
+            $q->where('communicates.school_id', $user->school_id);
+        }
+
+        return $q->orderBy('communicates.id', 'desc')->paginate($perpage);
     }
 
     /**
@@ -72,11 +80,19 @@ class CommunicateModel extends Model
      */
     public static function getNoticeBoardWithRecipients(int $perpage)
     {
-        $notices = CommunicateModel::select('communicates.*', 'users.name as created_by_name')
+        $user         = \Illuminate\Support\Facades\Auth::user();
+        $isSuperAdmin = $user && (int) $user->user_type === 0;
+
+        $q = CommunicateModel::select('communicates.*', 'users.name as created_by_name')
             ->join('users', 'users.id', '=', 'communicates.created_by')
-            ->where('communicates.is_delete', '=', 0)
-            ->orderBy('communicates.id', 'desc')
-            ->paginate($perpage);
+            ->where('communicates.is_delete', '=', 0);
+
+        // Scoping multi-tenant : un admin ne voit que les notices de son école
+        if (! $isSuperAdmin && $user) {
+            $q->where('communicates.school_id', $user->school_id);
+        }
+
+        $notices = $q->orderBy('communicates.id', 'desc')->paginate($perpage);
 
         // Charger les destinataires pour chaque notice
         $noticeIds = $notices->pluck('id')->toArray();
@@ -95,15 +111,22 @@ class CommunicateModel extends Model
     }
 
     /**
-     * Historique des notifications supprimées
+     * Historique des notifications supprimées — scoping école.
      */
     public static function getDeletedNoticeBoard(int $perpage)
     {
-        return CommunicateModel::select('communicates.*', 'users.name as created_by_name')
+        $user         = \Illuminate\Support\Facades\Auth::user();
+        $isSuperAdmin = $user && (int) $user->user_type === 0;
+
+        $q = CommunicateModel::select('communicates.*', 'users.name as created_by_name')
             ->join('users', 'users.id', '=', 'communicates.created_by')
-            ->where('communicates.is_delete', '=', 1)
-            ->orderBy('communicates.id', 'desc')
-            ->paginate($perpage);
+            ->where('communicates.is_delete', '=', 1);
+
+        if (! $isSuperAdmin && $user) {
+            $q->where('communicates.school_id', $user->school_id);
+        }
+
+        return $q->orderBy('communicates.id', 'desc')->paginate($perpage);
     }
 
     // Méthode utilisé dans le frontend pour récupérer les utilisateurs à qui on a envoyé un message
@@ -120,11 +143,19 @@ class CommunicateModel extends Model
 
     public static function getNoticeBoardWithUserType(int $message_to, int $perpage)
     {
+        $user = \Illuminate\Support\Facades\Auth::user();
+
         $results = CommunicateModel::select('communicates.*', 'users.name as created_by_name')
             ->join('noticeboard_messages', 'noticeboard_messages.communicates_id', '=', 'communicates.id')
             ->join('users', 'users.id', '=', 'communicates.created_by')
             ->where('noticeboard_messages.message_to', '=', $message_to)
-            ->where('communicates.is_delete', '=', 0);
+            ->where('communicates.is_delete', '=', 0)
+            ->where('communicates.is_active', '=', 1);
+
+        // Scoping multi-tenant : l'élève/parent/prof ne voit que les notices de son école
+        if ($user && $user->school_id) {
+            $results->where('communicates.school_id', $user->school_id);
+        }
 
         $filters = [
             'communicates.title' => strtolower(Request::get('title')),

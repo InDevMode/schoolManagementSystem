@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\DeletionLogModel;
+use App\Models\EventTypeCustomModel;
 use App\Models\LeaveTypeModel;
 use App\Models\StaffEventModel;
 use App\Models\StaffLeaveModel;
@@ -169,12 +170,18 @@ class StaffController extends Controller
         $request->validate(['name' => 'required|string|max:100']);
 
         try {
-            $existing = LeaveTypeModel::getNameSingle($request->name);
+            $user     = Auth::user();
+            $schoolId = (int) $user->user_type === 0
+                ? ($request->school_id ?? null)
+                : $user->school_id;
+
+            $existing = LeaveTypeModel::getNameSingle($request->name, $schoolId);
             if ($existing) {
-                return redirect()->back()->with('error', 'Un type de congé avec ce nom existe déjà.');
+                return redirect()->back()->with('error', 'Un type de congé avec ce nom existe déjà dans cette école.');
             }
 
             $lt              = new LeaveTypeModel;
+            $lt->school_id   = $schoolId;
             $lt->name        = trim($request->name);
             $lt->description = trim($request->description ?? '');
             $lt->color       = $request->color ?? '#6366f1';
@@ -199,13 +206,19 @@ class StaffController extends Controller
         $request->validate(['name' => 'required|string|max:100']);
 
         try {
-            $existing = LeaveTypeModel::checkNameSingle($request->name, $id);
-            if ($existing) {
-                return redirect()->back()->with('error', 'Un type de congé avec ce nom existe déjà.');
+            $lt = LeaveTypeModel::getSingle($id);
+            if (!$lt) abort(404);
+
+            // Vérifier que l'admin ne modifie que les types de son école
+            $user = Auth::user();
+            if ((int) $user->user_type !== 0 && (int) $lt->school_id !== (int) $user->school_id) {
+                return redirect()->back()->with('error', 'Accès refusé à ce type de congé.');
             }
 
-            $lt              = LeaveTypeModel::getSingle($id);
-            if (!$lt) abort(404);
+            $existing = LeaveTypeModel::checkNameSingle($request->name, $id, $lt->school_id);
+            if ($existing) {
+                return redirect()->back()->with('error', 'Un type de congé avec ce nom existe déjà dans cette école.');
+            }
 
             $lt->name        = trim($request->name);
             $lt->description = trim($request->description ?? '');
@@ -335,10 +348,12 @@ class StaffController extends Controller
     {
         $perPage = min((int) request('per_page', 15), 100);
         return Inertia::render('Admin/Staff/Events', [
-            'events'      => StaffEventModel::getAll($perPage),
-            'typeLabels'  => StaffEventModel::$typeLabels,
-            'typeColors'  => StaffEventModel::$typeColors,
-            'calendarEvents' => StaffEventModel::getCalendarEvents(),
+            'events'          => StaffEventModel::getAll($perPage),
+            'typeLabels'      => StaffEventModel::$typeLabels,
+            'typeColors'      => StaffEventModel::$typeColors,
+            'calendarEvents'  => StaffEventModel::getCalendarEvents(),
+            // Types personnalisés de l'école pour les selects
+            'customEventTypes' => EventTypeCustomModel::getForCurrentSchool(),
         ]);
     }
 
@@ -347,25 +362,39 @@ class StaffController extends Controller
         $request->validate([
             'title'      => 'required|string|max:200',
             'event_date' => 'required|date',
-            'event_type' => 'required|in:academic,cultural,administrative,exam,ceremony,trip',
+            'event_type' => 'required|in:academic,cultural,administrative,exam,ceremony,trip,custom',
         ]);
 
         try {
-            $event             = new StaffEventModel;
-            $event->title      = trim($request->title);
-            $event->description= trim($request->description ?? '');
-            $event->event_date = $request->event_date;
-            $event->start_time = $request->start_time ?? null;
-            $event->end_time   = $request->end_time ?? null;
-            $event->event_type = $request->event_type;
-            $event->location   = trim($request->location ?? '');
-            $event->created_by = Auth::id();
+            $currentUser = Auth::user();
+            $schoolId    = (int) $currentUser->user_type === 0
+                ? ($request->school_id ?? null)
+                : $currentUser->school_id;
+
+            $event                      = new StaffEventModel;
+            $event->school_id           = $schoolId;
+            $event->title               = trim($request->title);
+            $event->description         = trim($request->description ?? '');
+            $event->event_date          = $request->event_date;
+            $event->start_time          = $request->start_time ?? null;
+            $event->end_time            = $request->end_time ?? null;
+            $event->event_type          = $request->event_type;
+            $event->custom_event_type_id = $request->custom_event_type_id ?? null;
+            $event->location            = trim($request->location ?? '');
+            $event->created_by          = $currentUser->id;
             $event->save();
 
-            // Notifier tous les utilisateurs actifs (admins, profs, élèves, parents)
+            // Notifier uniquement les utilisateurs actifs de la même école
             try {
                 $eventDate = \Carbon\Carbon::parse($event->event_date)->format('d-m-Y');
-                $users = User::where('is_delete', 0)->where('status', 1)->get();
+                $usersQuery = User::where('is_delete', 0)->where('status', 1);
+
+                // Scoping : notifier seulement les utilisateurs de cette école
+                if ($schoolId) {
+                    $usersQuery->where('school_id', $schoolId);
+                }
+
+                $users = $usersQuery->get();
                 foreach ($users as $u) {
                     $u->notify(new NewEventNotification($event->title, $eventDate, $event->event_type));
                 }
@@ -392,20 +421,27 @@ class StaffController extends Controller
         $request->validate([
             'title'      => 'required|string|max:200',
             'event_date' => 'required|date',
-            'event_type' => 'required|in:academic,cultural,administrative,exam,ceremony,trip',
+            'event_type' => 'required|in:academic,cultural,administrative,exam,ceremony,trip,custom',
         ]);
 
         try {
-            $event             = StaffEventModel::getSingle($id);
+            $event = StaffEventModel::getSingle($id);
             if (!$event) abort(404);
 
-            $event->title      = trim($request->title);
-            $event->description= trim($request->description ?? '');
-            $event->event_date = $request->event_date;
-            $event->start_time = $request->start_time ?? null;
-            $event->end_time   = $request->end_time ?? null;
-            $event->event_type = $request->event_type;
-            $event->location   = trim($request->location ?? '');
+            // Vérifier que l'admin ne modifie que les événements de son école
+            $user = Auth::user();
+            if ((int) $user->user_type !== 0 && (int) $event->school_id !== (int) $user->school_id) {
+                return redirect()->back()->with('error', 'Accès refusé à cet événement.');
+            }
+
+            $event->title               = trim($request->title);
+            $event->description         = trim($request->description ?? '');
+            $event->event_date          = $request->event_date;
+            $event->start_time          = $request->start_time ?? null;
+            $event->end_time            = $request->end_time ?? null;
+            $event->event_type          = $request->event_type;
+            $event->custom_event_type_id = $request->custom_event_type_id ?? null;
+            $event->location            = trim($request->location ?? '');
             $event->save();
 
             return redirect()->back()->with('success', 'Événement mis à jour.');
@@ -420,10 +456,130 @@ class StaffController extends Controller
         $event = StaffEventModel::getSingle($id);
         if (!$event) abort(404);
 
+        // Vérifier que l'admin ne supprime que les événements de son école
+        $user = Auth::user();
+        if ((int) $user->user_type !== 0 && (int) $event->school_id !== (int) $user->school_id) {
+            return redirect()->back()->with('error', 'Accès refusé à cet événement.');
+        }
+
         DeletionLogModel::log('staff_events', $event->id, $event->toArray());
         $event->is_delete = 1;
         $event->save();
 
         return redirect()->back()->with('success', 'Événement supprimé.');
+    }
+
+    // ══════════════════════════════════════════════════════════════════════════
+    // TYPES D'ÉVÉNEMENTS PERSONNALISÉS (par école)
+    // ══════════════════════════════════════════════════════════════════════════
+
+    public function customEventTypeList()
+    {
+        $perPage = min((int) request('per_page', 15), 100);
+        return Inertia::render('Admin/Staff/CustomEventTypes', [
+            'customEventTypes' => EventTypeCustomModel::getAllPaginated($perPage),
+        ]);
+    }
+
+    public function customEventTypeCreate(Request $request)
+    {
+        $request->validate([
+            'name'  => 'required|string|max:100',
+            'color' => 'nullable|string|max:7',
+        ]);
+
+        try {
+            $user     = Auth::user();
+            $schoolId = (int) $user->user_type === 0
+                ? ($request->school_id ?? null)
+                : $user->school_id;
+
+            if (! $schoolId) {
+                return redirect()->back()->with('error', 'Impossible de déterminer l\'école.');
+            }
+
+            // Unicité du nom dans l'école
+            $existing = EventTypeCustomModel::getByNameAndSchool($request->name, $schoolId);
+            if ($existing) {
+                return redirect()->back()->with('error', 'Un type d\'événement avec ce nom existe déjà dans cette école.');
+            }
+
+            $type              = new EventTypeCustomModel;
+            $type->school_id   = $schoolId;
+            $type->name        = trim($request->name);
+            $type->color       = $request->color ?? '#6366f1';
+            $type->description = trim($request->description ?? '');
+            $type->created_by  = $user->id;
+            $type->save();
+
+            return redirect()->back()->with('success', 'Type d\'événement créé avec succès.');
+        } catch (\Exception $e) {
+            Log::error("Erreur création type événement : " . $e->getMessage());
+            return redirect()->back()->with('error', 'Une erreur est survenue.');
+        }
+    }
+
+    public function customEventTypeEdit(int $id)
+    {
+        $type = EventTypeCustomModel::getSingle($id);
+        if (!$type) abort(404);
+
+        // Vérifier que l'admin ne voit que les types de son école
+        $user = Auth::user();
+        if ((int) $user->user_type !== 0 && (int) $type->school_id !== (int) $user->school_id) {
+            abort(403);
+        }
+
+        return response()->json(['customEventType' => $type]);
+    }
+
+    public function customEventTypeUpdate(Request $request, int $id)
+    {
+        $request->validate([
+            'name'  => 'required|string|max:100',
+            'color' => 'nullable|string|max:7',
+        ]);
+
+        try {
+            $type = EventTypeCustomModel::getSingle($id);
+            if (!$type) abort(404);
+
+            $user = Auth::user();
+            if ((int) $user->user_type !== 0 && (int) $type->school_id !== (int) $user->school_id) {
+                return redirect()->back()->with('error', 'Accès refusé à ce type d\'événement.');
+            }
+
+            // Unicité du nom dans l'école (hors enregistrement courant)
+            $existing = EventTypeCustomModel::getByNameAndSchool($request->name, $type->school_id, $id);
+            if ($existing) {
+                return redirect()->back()->with('error', 'Un type d\'événement avec ce nom existe déjà dans cette école.');
+            }
+
+            $type->name        = trim($request->name);
+            $type->color       = $request->color ?? $type->color;
+            $type->description = trim($request->description ?? '');
+            $type->save();
+
+            return redirect()->back()->with('success', 'Type d\'événement mis à jour.');
+        } catch (\Exception $e) {
+            Log::error("Erreur mise à jour type événement : " . $e->getMessage());
+            return redirect()->back()->with('error', 'Une erreur est survenue.');
+        }
+    }
+
+    public function customEventTypeDelete(int $id)
+    {
+        $type = EventTypeCustomModel::getSingle($id);
+        if (!$type) abort(404);
+
+        $user = Auth::user();
+        if ((int) $user->user_type !== 0 && (int) $type->school_id !== (int) $user->school_id) {
+            return redirect()->back()->with('error', 'Accès refusé à ce type d\'événement.');
+        }
+
+        $type->is_delete = 1;
+        $type->save();
+
+        return redirect()->back()->with('success', 'Type d\'événement supprimé.');
     }
 }

@@ -29,6 +29,7 @@ class CommunicateController extends Controller
         try {
 
             $noticeBoard = new CommunicateModel;
+            $noticeBoard->school_id   = auth()->user()->school_id; // scoping multi-tenant
             $noticeBoard->title = $request->title;
             $noticeBoard->notice_date = $request->notice_date;
             $noticeBoard->publish_date = $request->publish_date;
@@ -198,27 +199,28 @@ class CommunicateController extends Controller
     public function sendMail()
     {
         return Inertia::render('Admin/SendMail/Index', [
-            'users' => User::getUsers(),
+            'users' => User::getUsersForSchool(auth()->user()),
         ]);
     }
 
     public function sendMailCreate(Request $request)
     {
         try {
-            $senderName = auth()->user()->name . ' ' . auth()->user()->last_name;
+            $sender     = auth()->user();
+            $senderName = $sender->name . ' ' . $sender->last_name;
             $notification = new MailSentNotification($request->subject, $senderName);
+            $schoolId   = $sender->school_id; // null = super admin (envoie à tous)
 
             // Envoi aux destinataires individuels
             if (!empty($request->user_ids)) {
                 foreach ($request->user_ids as $userId) {
                     $user = User::getSingle($userId);
 
-                    if ($user && $user->email) {
+                    // Vérifier que l'utilisateur appartient à la même école
+                    if ($user && $user->email && ($schoolId === null || (int) $user->school_id === (int) $schoolId)) {
                         $user->send_message = $request->message;
                         $user->send_subject = $request->subject;
                         Mail::to($user->email)->send(new SendMailUserMail($user));
-
-                        // Notification in-app
                         $user->notify($notification);
                     }
                 }
@@ -227,15 +229,14 @@ class CommunicateController extends Controller
             // Envoi aux groupes (indépendant des destinataires individuels)
             if (!empty($request->message_to)) {
                 foreach ($request->message_to as $user_type) {
-                    $groupUsers = User::getUserByUserType($user_type);
+                    // Scoper par école : un admin ne peut envoyer qu'aux utilisateurs de son école
+                    $groupUsers = User::getUserByUserTypeAndSchool((int) $user_type, $schoolId);
                     if (!empty($groupUsers)) {
                         foreach ($groupUsers as $user) {
                             if ($user && $user->email) {
                                 $user->send_message = $request->message;
                                 $user->send_subject = $request->subject;
                                 Mail::to($user->email)->send(new SendMailUserMail($user));
-
-                                // Notification in-app
                                 $user->notify($notification);
                             }
                         }

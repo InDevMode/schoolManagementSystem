@@ -3,8 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\PeriodModel;
-use App\Models\SettingModel;
+use App\Models\School;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 
@@ -14,7 +15,6 @@ class PeriodController extends Controller
     {
         return Inertia::render('Admin/Periods/Index', [
             'periods'  => PeriodModel::getPeriods(15),
-            'settings' => SettingModel::getSingle(1),
         ]);
     }
 
@@ -29,8 +29,20 @@ class PeriodController extends Controller
             'status'       => 'required|in:0,1',
         ]);
 
+        $user = Auth::user();
+
+        // Le super admin doit fournir un school_id explicite, l'admin utilise le sien
+        $schoolId = (int) $user->user_type === 0
+            ? ($request->school_id ?? null)
+            : $user->school_id;
+
+        if (! $schoolId) {
+            return redirect()->back()->with('error', 'Impossible de déterminer l\'école pour cette période.');
+        }
+
         try {
             $period               = new PeriodModel();
+            $period->school_id    = $schoolId;
             $period->name         = trim($request->name);
             $period->type         = $request->type;
             $period->order_number = intval($request->order_number);
@@ -38,8 +50,7 @@ class PeriodController extends Controller
             $period->start_date   = $request->start_date;
             $period->end_date     = $request->end_date;
             $period->status       = intval($request->status);
-            $period->settings_id  = intval($request->settings_id ?? 1);
-            $period->created_by   = auth()->user()->id;
+            $period->created_by   = $user->id;
             $period->save();
 
             return redirect('admin/examinations/period/list')
@@ -65,6 +76,12 @@ class PeriodController extends Controller
             $period = PeriodModel::getSingle($id);
             if (!$period) abort(404);
 
+            // Vérifier que l'admin ne modifie que les périodes de son école
+            $user = Auth::user();
+            if ((int) $user->user_type !== 0 && (int) $period->school_id !== (int) $user->school_id) {
+                return redirect()->back()->with('error', 'Accès refusé à cette période.');
+            }
+
             $period->name         = trim($request->name);
             $period->type         = $request->type;
             $period->order_number = intval($request->order_number);
@@ -72,7 +89,6 @@ class PeriodController extends Controller
             $period->start_date   = $request->start_date;
             $period->end_date     = $request->end_date;
             $period->status       = intval($request->status);
-            $period->settings_id  = intval($request->settings_id ?? $period->settings_id ?? 1);
             $period->save();
 
             return redirect('admin/examinations/period/list')
@@ -88,6 +104,12 @@ class PeriodController extends Controller
         $period = PeriodModel::getSingle($id);
         if (!$period) abort(404);
 
+        // Vérifier que l'admin ne supprime que les périodes de son école
+        $user = Auth::user();
+        if ((int) $user->user_type !== 0 && (int) $period->school_id !== (int) $user->school_id) {
+            return redirect()->back()->with('error', 'Accès refusé à cette période.');
+        }
+
         $period->is_delete = 1;
         $period->save();
 
@@ -95,16 +117,26 @@ class PeriodController extends Controller
     }
 
     /**
-     * Marquer une période comme courante
+     * Marquer une période comme courante — uniquement dans l'école de l'admin.
      */
     public function setCurrent($id)
     {
         try {
-            // Désactiver toutes les autres périodes courantes
-            PeriodModel::where('is_current', true)->update(['is_current' => false]);
-
             $period = PeriodModel::getSingle($id);
             if (!$period) abort(404);
+
+            $user = Auth::user();
+
+            // Vérifier que la période appartient à l'école de l'admin
+            if ((int) $user->user_type !== 0 && (int) $period->school_id !== (int) $user->school_id) {
+                return redirect()->back()->with('error', 'Accès refusé à cette période.');
+            }
+
+            // Désactiver uniquement les périodes courantes de LA MÊME ÉCOLE
+            $schoolId = (int) $user->user_type === 0 ? $period->school_id : $user->school_id;
+            PeriodModel::where('school_id', $schoolId)
+                ->where('is_current', true)
+                ->update(['is_current' => false]);
 
             $period->is_current = true;
             $period->save();

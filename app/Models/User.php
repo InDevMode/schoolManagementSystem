@@ -487,6 +487,53 @@ class User extends Authenticatable
             ->get();
     }
 
+    /**
+     * Utilisateurs d'un type donné scopés par école.
+     * Si $schoolId est null (super admin), retourne tous les utilisateurs du type.
+     */
+    public static function getUserByUserTypeAndSchool(int $user_type, ?int $schoolId): \Illuminate\Database\Eloquent\Collection
+    {
+        $q = User::select('users.*')
+            ->where('user_type', $user_type)
+            ->where('is_delete', 0)
+            ->where('status', 1);
+
+        if ($schoolId !== null) {
+            $q->where('school_id', $schoolId);
+        }
+
+        return $q->get();
+    }
+
+    /**
+     * Liste des utilisateurs pour le select d'envoi de mail — scopée par école.
+     */
+    public static function getUsersForSchool(?object $authUser)
+    {
+        $q = User::select('id', 'name', 'last_name', 'user_type', 'school_id')
+            ->whereIn('user_type', [1, 2, 3, 4])
+            ->where('status', 1)
+            ->where('is_delete', 0);
+
+        // Scoping multi-tenant
+        if ($authUser && $authUser->user_type !== 0 && $authUser->school_id) {
+            $q->where('school_id', $authUser->school_id);
+        }
+
+        return $q->get()->map(function ($user) {
+            $suffix = match ((int) $user->user_type) {
+                1 => 'Admin',
+                2 => 'Professeur',
+                3 => 'Apprenant',
+                4 => 'Parent',
+                default => '',
+            };
+            $user->suffix    = $suffix;
+            $user->full_name = "{$user->name} {$user->last_name} - {$suffix}";
+            return $user;
+        });
+    }
+
     public static function getFeesCollectionStudent(int $perpage)
     {
         $results = User::select(

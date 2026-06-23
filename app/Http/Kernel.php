@@ -39,6 +39,7 @@ class Kernel extends HttpKernel
             \App\Http\Middleware\OnlineUser::class,
             \App\Http\Middleware\HandleInertiaRequests::class,
             \App\Http\Middleware\ForcePasswordChange::class,
+            \App\Http\Middleware\EnsureSchoolActive::class,
         ],
 
         'api' => [
@@ -75,6 +76,7 @@ class Kernel extends HttpKernel
         'common'      => \App\Http\Middleware\CommonMiddleware::class,
         'check_perm'  => \App\Http\Middleware\CheckPermission::class,
         'force_pwd'   => \App\Http\Middleware\ForcePasswordChange::class,
+        'school_active' => \App\Http\Middleware\EnsureSchoolActive::class,
 
     ];
 }

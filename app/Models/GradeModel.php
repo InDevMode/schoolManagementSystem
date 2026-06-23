@@ -91,13 +91,16 @@ class GradeModel extends Model
     }
 
     /**
-     * Notes en attente de validation
+     * Notes en attente de validation — scopées par école de l'admin connecté.
      * Ne retourne QUE les notes avec un score saisi (score NOT NULL)
      * et dont l'évaluation n'est pas annulée (status != 'cancelled').
      */
     public static function getPendingValidation(int $perPage)
     {
-        return self::select(
+        $user         = \Illuminate\Support\Facades\Auth::user();
+        $isSuperAdmin = $user && (int) $user->user_type === 0;
+
+        $q = self::select(
             'grades.*',
             'users.name as student_name',
             'users.last_name as student_last_name',
@@ -116,9 +119,14 @@ class GradeModel extends Model
             ->whereNotNull('grades.score')
             ->where('grades.is_delete', 0)
             ->where('evaluations.is_delete', 0)
-            ->where('evaluations.status', '!=', 'cancelled') // ← exclure les évaluations annulées
-            ->orderBy('grades.created_at', 'desc')
-            ->paginate($perPage);
+            ->where('evaluations.status', '!=', 'cancelled');
+
+        // Scoping multi-tenant
+        if (! $isSuperAdmin && $user) {
+            $q->where('evaluations.school_id', $user->school_id);
+        }
+
+        return $q->orderBy('grades.created_at', 'desc')->paginate($perPage);
     }
 
     /**

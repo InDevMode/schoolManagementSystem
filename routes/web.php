@@ -341,6 +341,13 @@ Route::group(['middleware' => 'admin'], function () {
     Route::post('admin/staff/events/edit/{id}',                   [StaffController::class, 'eventUpdate'])->middleware('check_perm:action.staff.events');
     Route::get('admin/staff/events/delete/{id}',                  [StaffController::class, 'eventDelete'])->middleware('check_perm:action.staff.events');
 
+    // ── Types d'événements personnalisés (par école) ──────────────────────────
+    Route::get('admin/staff/event-types/list',                    [StaffController::class, 'customEventTypeList'])->middleware('check_perm:view.staff.events');
+    Route::post('admin/staff/event-types/add',                    [StaffController::class, 'customEventTypeCreate'])->middleware('check_perm:action.staff.events');
+    Route::get('admin/staff/event-types/edit/{id}',               [StaffController::class, 'customEventTypeEdit'])->middleware('check_perm:action.staff.events');
+    Route::post('admin/staff/event-types/edit/{id}',              [StaffController::class, 'customEventTypeUpdate'])->middleware('check_perm:action.staff.events');
+    Route::get('admin/staff/event-types/delete/{id}',             [StaffController::class, 'customEventTypeDelete'])->middleware('check_perm:action.staff.events');
+
 });
 
 Route::group(['middleware' => 'teacher'], function () {

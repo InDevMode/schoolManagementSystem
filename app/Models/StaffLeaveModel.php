@@ -31,6 +31,9 @@ class StaffLeaveModel extends Model
 
     public static function getAll(int $perPage)
     {
+        $currentUser  = \Illuminate\Support\Facades\Auth::user();
+        $isSuperAdmin = $currentUser && (int) $currentUser->user_type === 0;
+
         $q = self::select(
             'staff_leaves.*',
             'users.name as first_name',
@@ -46,6 +49,11 @@ class StaffLeaveModel extends Model
             ->leftJoin('users as approver', 'approver.id', '=', 'staff_leaves.approved_by')
             ->where('staff_leaves.is_delete', 0);
 
+        // Scoping multi-tenant : un admin ne voit que les congés de son école
+        if (! $isSuperAdmin && $currentUser) {
+            $q->where('staff.school_id', $currentUser->school_id);
+        }
+
         if ($v = Request::get('status'))   $q->where('staff_leaves.status', $v);
         if ($v = Request::get('staff_id')) $q->where('staff_leaves.staff_id', $v);
 
@@ -54,7 +62,23 @@ class StaffLeaveModel extends Model
 
     public static function getPendingCount(): int
     {
-        return self::where('status', 'pending')->where('is_delete', 0)->count();
+        $user         = \Illuminate\Support\Facades\Auth::user();
+        $isSuperAdmin = $user && (int) $user->user_type === 0;
+
+        $q = self::where('status', 'pending')->where('is_delete', 0);
+
+        if (! $isSuperAdmin && $user) {
+            $q->whereHas('staff', fn($sq) => $sq->where('school_id', $user->school_id));
+        }
+
+        return $q->count();
+    }
+
+    // ── Relation ──────────────────────────────────────────────────────────────
+
+    public function staff(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(StaffModel::class, 'staff_id');
     }
 
     public function getDurationDays(): ?int

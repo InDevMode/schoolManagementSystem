@@ -9,23 +9,20 @@ use Symfony\Component\HttpFoundation\Response;
 
 class TeacherMiddleware
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param Closure(Request): (Response) $next
-     */
     public function handle(Request $request, Closure $next): Response
     {
-        if(!empty(Auth::check())){
-            if(Auth::user()->user_type == 2){
-                return $next($request);
-            }else {
-                Auth::logout();
-                return redirect(url(''));
-            }
-        }else {
-            Auth::logout();
-            return redirect(url(''));
+        if (! Auth::check()) {
+            return redirect(url('login'));
         }
+
+        $user = Auth::user();
+
+        // Vérifier le type ET le statut actif de l'utilisateur
+        if ((int) $user->user_type === 2 && (int) $user->status === 1) {
+            return $next($request);
+        }
+
+        Auth::logout();
+        return redirect(url('login'))->with('error', 'Accès refusé ou compte désactivé.');
     }
 }

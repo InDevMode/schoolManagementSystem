@@ -14,7 +14,7 @@ class BulletinModel extends Model
     protected $table = 'bulletins';
 
     protected $fillable = [
-        'student_id', 'period_id', 'average', 'rank', 'total_students',
+        'school_id', 'student_id', 'period_id', 'average', 'rank', 'total_students',
         'class_success_rate', 'appreciation', 'teacher_comment',
         'status', 'generated_by', 'generated_at',
     ];
@@ -70,10 +70,13 @@ class BulletinModel extends Model
     }
 
     /**
-     * Liste paginée des bulletins pour l'admin
+     * Liste paginée des bulletins pour l'admin — scopée par école.
      */
     public static function getAll(int $perPage)
     {
+        $user         = \Illuminate\Support\Facades\Auth::user();
+        $isSuperAdmin = $user && (int) $user->user_type === 0;
+
         $q = self::select(
             'bulletins.*',
             'users.name as student_name',
@@ -86,6 +89,11 @@ class BulletinModel extends Model
             ->join('periods', 'periods.id', '=', 'bulletins.period_id')
             ->join('class', 'class.id', '=', 'users.class_id')
             ->where('bulletins.is_delete', 0);
+
+        // Scoping multi-tenant
+        if (! $isSuperAdmin && $user) {
+            $q->where('bulletins.school_id', $user->school_id);
+        }
 
         if ($v = Request::get('period_id')) $q->where('bulletins.period_id', $v);
         if ($v = Request::get('class_id'))  $q->where('class.id', $v);
@@ -175,6 +183,7 @@ class BulletinModel extends Model
             'student_id' => $student_id,
             'period_id'  => $period_id,
         ]);
+        $bulletin->school_id          = $student->school_id; // scoping multi-tenant
         $bulletin->average            = $generalAverage;
         $bulletin->rank               = $rank;
         $bulletin->total_students     = $totalStudents;
