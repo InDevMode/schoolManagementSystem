@@ -1,5 +1,5 @@
 <template>
-    <div :class="['min-h-screen flex bg-gray-50 dark:bg-gray-900 transition-colors duration-300', isDark ? 'dark' : '']">
+    <div :class="['min-h-screen flex bg-gray-50 dark:bg-gray-900 transition-colors duration-300 app-bg-pattern', isDark ? 'dark' : '']">
 
         <!-- ── Page Loader ── -->
         <Transition

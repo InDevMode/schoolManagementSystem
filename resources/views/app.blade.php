@@ -30,7 +30,7 @@
     <!-- SDK FedaPay (optionnel pour widget inline) -->
     <script src="https://cdn.fedapay.com/checkout.js?v=1.1.7" defer></script>
 </head>
-<body class="font-inter antialiased bg-gray-50 dark:bg-gray-900">
+<body class="font-inter antialiased bg-gray-50 dark:bg-gray-900 app-bg-pattern">
     @inertia
 </body>
 </html>

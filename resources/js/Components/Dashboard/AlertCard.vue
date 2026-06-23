@@ -3,22 +3,32 @@
         :is="href ? 'a' : 'div'"
         :href="href"
         :class="[
-            'card px-3 py-3 flex items-center gap-3 transition-all duration-300 ease-out',
-            href ? 'cursor-pointer hover:shadow-md hover:-translate-y-0.5 hover:border-primary-200 dark:hover:border-primary-700/50' : '',
+            'relative overflow-hidden rounded-2xl p-4 bg-white dark:bg-gray-800',
+            'border border-gray-100 dark:border-gray-700/60 shadow-sm',
+            'transition-all duration-300 ease-out',
+            href ? 'cursor-pointer hover:shadow-lg hover:-translate-y-1' : '',
         ]"
     >
-        <div :class="['w-9 h-9 rounded-xl flex-shrink-0 flex items-center justify-center shadow-sm', iconBgClass]">
-            <NavIcon :name="icon" :class="['w-4 h-4', iconColorClass]"/>
-        </div>
-        <div class="min-w-0 flex-1">
-            <p class="text-[11px] text-gray-500 dark:text-gray-400 leading-none truncate font-medium">{{ label }}</p>
-            <p :class="['text-lg font-black leading-tight mt-0.5 tabular-nums', valueColorClass]">
-                {{ typeof value === 'number' ? value.toLocaleString('fr-FR') : value }}
-            </p>
-        </div>
-        <!-- Indicateur animé si alerte -->
+        <!-- Déco fond -->
+        <div :class="['absolute -top-3 -right-3 w-14 h-14 rounded-full opacity-10 dark:opacity-5 pointer-events-none', bubbleBg]"/>
+
+        <!-- Indicateur animé (alerte) -->
         <span v-if="(variant === 'danger' || variant === 'warning') && Number(value) > 0"
-            :class="['w-2 h-2 rounded-full flex-shrink-0 animate-pulse', variant === 'danger' ? 'bg-danger-500' : 'bg-warning-500']"/>
+            :class="['absolute top-3 right-3 w-2 h-2 rounded-full animate-pulse z-10', variant === 'danger' ? 'bg-red-500' : 'bg-amber-500']"
+        />
+
+        <!-- Icône -->
+        <div class="relative mb-2">
+            <div :class="['w-10 h-10 rounded-xl flex items-center justify-center shadow-md', iconContainerBg]">
+                <NavIcon :name="icon" class="w-4 h-4 text-white drop-shadow"/>
+            </div>
+        </div>
+
+        <!-- Valeur + label -->
+        <p :class="['relative text-xl font-black leading-none tabular-nums', valueColorClass]">
+            {{ typeof value === 'number' ? value.toLocaleString('fr-FR') : value }}
+        </p>
+        <p class="relative text-xs text-gray-500 dark:text-gray-400 mt-1 font-medium truncate">{{ label }}</p>
     </component>
 </template>
 
@@ -36,29 +46,29 @@ const props = defineProps<{
 
 const palettes = {
     default: {
-        bg:    'bg-gradient-to-br from-primary-100 to-primary-50 dark:from-primary-900/40 dark:to-primary-900/20',
-        text:  'text-primary-600 dark:text-primary-400',
-        value: 'text-gray-900 dark:text-white',
+        gradient:   'bg-gradient-to-br from-primary-400 to-primary-600',
+        bubble:     'bg-primary-400',
+        valueColor: 'text-gray-900 dark:text-white',
     },
     warning: {
-        bg:    'bg-gradient-to-br from-warning-100 to-amber-50 dark:from-warning-900/40 dark:to-warning-900/20',
-        text:  'text-warning-600 dark:text-warning-400',
-        value: 'text-warning-700 dark:text-warning-400',
+        gradient:   'bg-gradient-to-br from-amber-400 to-orange-500',
+        bubble:     'bg-amber-400',
+        valueColor: 'text-amber-700 dark:text-amber-400',
     },
     danger: {
-        bg:    'bg-gradient-to-br from-danger-100 to-red-50 dark:from-danger-900/40 dark:to-danger-900/20',
-        text:  'text-danger-600 dark:text-danger-400',
-        value: 'text-danger-700 dark:text-danger-400',
+        gradient:   'bg-gradient-to-br from-red-400 to-red-600',
+        bubble:     'bg-red-400',
+        valueColor: 'text-red-700 dark:text-red-400',
     },
     info: {
-        bg:    'bg-gradient-to-br from-blue-100 to-blue-50 dark:from-blue-900/40 dark:to-blue-900/20',
-        text:  'text-blue-600 dark:text-blue-400',
-        value: 'text-gray-900 dark:text-white',
+        gradient:   'bg-gradient-to-br from-blue-400 to-blue-600',
+        bubble:     'bg-blue-400',
+        valueColor: 'text-gray-900 dark:text-white',
     },
 };
 
 const p              = computed(() => palettes[props.variant ?? 'default']);
-const iconBgClass    = computed(() => p.value.bg);
-const iconColorClass = computed(() => p.value.text);
-const valueColorClass = computed(() => p.value.value);
+const iconContainerBg = computed(() => p.value.gradient);
+const bubbleBg       = computed(() => p.value.bubble);
+const valueColorClass = computed(() => p.value.valueColor);
 </script>
