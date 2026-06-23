@@ -494,6 +494,98 @@
                 <AppButton variant="danger" :loading="deleting" @click="confirmDelete">Supprimer</AppButton>
             </template>
         </AppModal>
+
+        <!-- Modal Assigner un parent -->
+        <AppModal v-model="showAssignParent" title="Assigner un parent" size="md" persistent>
+            <div class="space-y-4">
+                <p class="text-sm text-gray-600 dark:text-gray-400">
+                    Sélectionnez le parent à associer à
+                    <strong class="text-gray-900 dark:text-white">{{ assignParentTarget?.last_name }} {{ assignParentTarget?.name }}</strong>.
+                </p>
+
+                <!-- Barre de recherche -->
+                <div class="relative">
+                    <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                    </svg>
+                    <input
+                        v-model="parentSearch"
+                        type="text"
+                        placeholder="Rechercher un parent…"
+                        class="w-full pl-9 pr-4 py-2.5 text-sm bg-gray-50 dark:bg-gray-700/60 border border-gray-200 dark:border-gray-600 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                    />
+                </div>
+
+                <!-- Chargement -->
+                <div v-if="loadingParents" class="flex items-center justify-center py-8">
+                    <svg class="w-6 h-6 text-primary-500 animate-spin" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"/>
+                    </svg>
+                </div>
+
+                <!-- Liste des parents -->
+                <div v-else class="max-h-64 overflow-y-auto rounded-xl border border-gray-200 dark:border-gray-700 divide-y divide-gray-100 dark:divide-gray-700">
+                    <template v-if="filteredParentList.length">
+                        <button
+                            v-for="parent in filteredParentList"
+                            :key="parent.id"
+                            type="button"
+                            :class="[
+                                'w-full flex items-center gap-3 px-4 py-3 text-left transition-colors',
+                                selectedParentId === parent.id
+                                    ? 'bg-amber-50 dark:bg-amber-900/20'
+                                    : 'bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700/50'
+                            ]"
+                            @click="selectedParentId = parent.id">
+                            <!-- Avatar -->
+                            <div class="w-9 h-9 rounded-full bg-amber-100 dark:bg-amber-900/40 flex items-center justify-center flex-shrink-0 text-amber-700 dark:text-amber-300 font-bold text-sm overflow-hidden">
+                                <img v-if="parent.profile_picture"
+                                    :src="`/upload/profile/${parent.profile_picture}`"
+                                    class="w-full h-full object-cover"
+                                    @error="(e) => { (e.target as HTMLImageElement).style.display='none' }" />
+                                <span v-else>{{ (parent.last_name?.[0] ?? '') }}{{ (parent.name?.[0] ?? '') }}</span>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-sm font-semibold text-gray-900 dark:text-white truncate">{{ parent.full_name }}</p>
+                                <p v-if="parent.mobile_number" class="text-xs text-gray-400 dark:text-gray-500 font-mono">{{ parent.mobile_number }}</p>
+                            </div>
+                            <!-- Indicateur sélection -->
+                            <div :class="[
+                                'w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-colors',
+                                selectedParentId === parent.id
+                                    ? 'border-amber-500 bg-amber-500'
+                                    : 'border-gray-300 dark:border-gray-600'
+                            ]">
+                                <svg v-if="selectedParentId === parent.id" class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
+                                </svg>
+                            </div>
+                        </button>
+                    </template>
+                    <div v-else class="flex flex-col items-center justify-center py-10 text-center px-4 bg-white dark:bg-gray-800">
+                        <svg class="w-8 h-8 text-gray-300 dark:text-gray-600 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+                        </svg>
+                        <p class="text-sm text-gray-400 dark:text-gray-500">Aucun parent trouvé</p>
+                    </div>
+                </div>
+            </div>
+            <template #footer>
+                <AppButton variant="ghost" @click="showAssignParent = false">Annuler</AppButton>
+                <AppButton
+                    :disabled="!selectedParentId || assigningParent"
+                    :loading="assigningParent"
+                    @click="confirmAssignParent">
+                    <template #icon>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/>
+                        </svg>
+                    </template>
+                    Assigner
+                </AppButton>
+            </template>
+        </AppModal>
     </div>
 </template>
 
@@ -727,4 +819,81 @@ const handleResetPassword = async (ids: (string | number)[]) => {
     } catch { toast.error('Erreur lors de la réinitialisation.'); }
 };
 const formatDate = fmtDate;
+
+// -- Assignation parent -------------------------------------------------------
+interface ParentItem {
+    id: number;
+    name: string;
+    last_name: string;
+    full_name: string;
+    profile_picture: string | null;
+    mobile_number?: string;
+}
+
+const showAssignParent    = ref(false);
+const assignParentTarget  = ref<Student | null>(null);
+const parentList          = ref<ParentItem[]>([]);
+const loadingParents      = ref(false);
+const parentSearch        = ref('');
+const selectedParentId    = ref<number | null>(null);
+const assigningParent     = ref(false);
+
+const filteredParentList = computed(() => {
+    if (!parentSearch.value.trim()) return parentList.value;
+    const q = parentSearch.value.toLowerCase();
+    return parentList.value.filter(p =>
+        p.full_name.toLowerCase().includes(q) ||
+        p.mobile_number?.toLowerCase().includes(q)
+    );
+});
+
+const openAssignParent = async (student: Student) => {
+    assignParentTarget.value = student;
+    selectedParentId.value   = null;
+    parentSearch.value       = '';
+    showAssignParent.value   = true;
+    loadingParents.value     = true;
+    try {
+        const csrf = (document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement)?.content ?? '';
+        const res  = await fetch('/admin/parents/list-json', {
+            headers: { Accept: 'application/json', 'X-CSRF-TOKEN': csrf },
+        });
+        if (!res.ok) throw new Error();
+        const data = await res.json();
+        parentList.value = data.parents ?? [];
+    } catch {
+        toast.error('Impossible de charger la liste des parents.');
+        showAssignParent.value = false;
+    } finally {
+        loadingParents.value = false;
+    }
+};
+
+const confirmAssignParent = () => {
+    if (!selectedParentId.value || !assignParentTarget.value) return;
+    assigningParent.value = true;
+    router.get(
+        `/admin/parent/${selectedParentId.value}/assign_student_parent/${assignParentTarget.value.id}`,
+        {},
+        {
+            onSuccess: () => {
+                showAssignParent.value = false;
+                // Mettre à jour le viewTarget si le modal détail est encore ouvert
+                if (viewTarget.value && viewTarget.value.id === assignParentTarget.value!.id) {
+                    const parent = parentList.value.find(p => p.id === selectedParentId.value);
+                    if (parent) {
+                        viewTarget.value = {
+                            ...viewTarget.value,
+                            parent_name:      parent.name,
+                            parent_last_name: parent.last_name,
+                        };
+                    }
+                }
+                toast.success('Parent assigné avec succès.');
+            },
+            onError: () => toast.error("Erreur lors de l'assignation."),
+            onFinish: () => { assigningParent.value = false; },
+        }
+    );
+};
 </script>

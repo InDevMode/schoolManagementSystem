@@ -354,6 +354,7 @@
                         >
                             <div
                                 v-if="flyoutId === item.id"
+                                data-flyout-panel
                                 class="fixed w-56 bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700
                                        shadow-xl overflow-hidden"
                                 :style="{
@@ -384,7 +385,6 @@
                                             : ''"
                                         @mouseenter="e => { if (!isActiveChild(child)) { (e.currentTarget as HTMLElement).style.background = 'linear-gradient(135deg, #7B74F0cc, #9189f5cc)'; const ico = (e.currentTarget as HTMLElement).querySelector('.flyout-ico') as HTMLElement|null; if (ico) { ico.style.background = 'rgba(255,255,255,0.2)'; ico.style.color = 'white'; } } }"
                                         @mouseleave="e => { if (!isActiveChild(child)) { (e.currentTarget as HTMLElement).style.background = ''; const ico = (e.currentTarget as HTMLElement).querySelector('.flyout-ico') as HTMLElement|null; if (ico) { ico.style.background = ''; ico.style.color = ''; } } }"
-                                        @click="flyoutId = null"
                                     >
                                         <span :class="[
                                             'flyout-ico w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 transition-all duration-150',
@@ -821,10 +821,14 @@ const handleOutsideClick = (e: MouseEvent) => {
     if (sidebarProfileRef.value && !sidebarProfileRef.value.contains(e.target as Node)) {
         profileOpen.value = false;
     }
-    // Fermer le flyout si clic en dehors
+    // Fermer le flyout si clic en dehors — on utilise un délai pour laisser
+    // le clic sur les liens du flyout se propager (navigation Inertia) avant
+    // de détruire le panneau.
     if (flyoutId.value) {
         const target = e.target as HTMLElement;
-        if (!target.closest('[data-flyout]') && !target.closest('aside')) {
+        const isInsideFlyout = target.closest('[data-flyout-panel]');
+        const isInsideSidebar = target.closest('aside');
+        if (!isInsideFlyout && !isInsideSidebar) {
             flyoutId.value = null;
         }
     }
@@ -878,6 +882,11 @@ const flyoutId = ref<string | null>(null);
 const flyoutEl = ref<HTMLElement | null>(null);
 const flyoutX  = ref(0);
 const flyoutY  = ref(0);
+
+// Fermer le flyout dès que la navigation Inertia démarre
+onMounted(() => {
+    router.on('start', () => { flyoutId.value = null; });
+});
 
 // Ouvrir/fermer le flyout au clic (position calculée depuis le bouton)
 const toggleFlyout = (itemId: string, e: MouseEvent) => {
