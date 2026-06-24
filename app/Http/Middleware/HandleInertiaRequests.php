@@ -102,6 +102,7 @@ class HandleInertiaRequests extends Middleware
                             'kkiapay_public_key' => $globalSetting->kkiapay_public_key ?? '',
                             'stripe_public_key'  => $globalSetting->stripe_public_key  ?? '',
                             'fedapay_public_key' => $globalSetting->fedapay_public_key ?? '',
+                            'paypal_email'       => $globalSetting->paypal_email       ?? '',
                             'auth_background'    => $authBackground,
                         ];
                     }
@@ -122,6 +123,7 @@ class HandleInertiaRequests extends Middleware
                             'kkiapay_public_key' => $school->kkiapay_public_key ?? '',
                             'stripe_public_key'  => $school->stripe_public_key  ?? '',
                             'fedapay_public_key' => $school->fedapay_public_key ?? '',
+                            'paypal_email'       => $school->paypal_email       ?? '',
                             'auth_background'    => $authBackground,
                         ];
                     }

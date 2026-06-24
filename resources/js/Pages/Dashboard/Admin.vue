@@ -292,21 +292,126 @@
                         <h2 class="text-base font-semibold text-gray-900 dark:text-white">Contributions scolaires</h2>
                         <PeriodFilter v-model="financePeriod" />
                     </div>
+
+                    <!-- KPI principaux -->
                     <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                        <KpiCard label="Total dossiers"    :value="totalFeesCollections"    color="violet" icon="M9 8h6m-5 0a3 3 0 110 6H9l3 3m-3-6h6m6 1a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                        <KpiCard label="Dossiers auj."     :value="totalFeesCollectionsToday ?? 0" color="success" icon="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2"/>
-                        <KpiCard label="Devoirs assignés"  :value="totalHomework ?? 0"      color="info"   icon="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
-                        <KpiCard label="Taux collecte"     :value="feesRate + '%'"           color="amber"  icon="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2z"/>
+                        <KpiCard label="Dossiers payés"
+                            :value="feesStats?.countPaid ?? totalFeesCollections"
+                            color="success"
+                            icon="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        <KpiCard label="En attente"
+                            :value="feesStats?.countPending ?? 0"
+                            color="amber"
+                            icon="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        <KpiCard label="Non payés"
+                            :value="feesStats?.countUnpaid ?? 0"
+                            color="danger"
+                            icon="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        <KpiCard label="Taux de collecte"
+                            :value="feesRate + '%'"
+                            color="violet"
+                            icon="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2z"/>
                     </div>
-                    <div class="card p-4">
-                        <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">Évolution des contributions (12 mois)</h3>
-                        <ApexArea :series="feesAreaSeries" :categories="months" :colors="['#7C3AED','#10B981']" :height="150"/>
+
+                    <!-- Montants -->
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3" v-if="feesStats">
+                        <div class="card p-4 flex flex-col gap-1">
+                            <span class="text-xs text-gray-500 dark:text-gray-400">Montant total attendu</span>
+                            <span class="text-xl font-bold text-gray-900 dark:text-white">{{ fmtAmount(feesStats.totalAmount) }} <span class="text-xs font-normal text-gray-400">FCFA</span></span>
+                        </div>
+                        <div class="card p-4 flex flex-col gap-1">
+                            <span class="text-xs text-gray-500 dark:text-gray-400">Montant collecté</span>
+                            <span class="text-xl font-bold text-green-600 dark:text-green-400">{{ fmtAmount(feesStats.paidAmount) }} <span class="text-xs font-normal text-gray-400">FCFA</span></span>
+                        </div>
+                        <div class="card p-4 flex flex-col gap-1">
+                            <span class="text-xs text-gray-500 dark:text-gray-400">Reste à collecter</span>
+                            <span class="text-xl font-bold text-amber-600 dark:text-amber-400">{{ fmtAmount(feesStats.remainingAmount) }} <span class="text-xs font-normal text-gray-400">FCFA</span></span>
+                        </div>
                     </div>
+
+                    <!-- Graphique évolution mensuelle par nombre + mode de paiement -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                        <div class="card p-4">
+                            <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">Évolution des contributions (12 mois)</h3>
+                            <ApexArea :series="feesAreaSeries" :categories="months" :colors="['#7C3AED','#10B981']" :height="160"/>
+                        </div>
+                        <div class="card p-4" v-if="feesPaymentTypeSeries.length > 0">
+                            <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">Répartition par mode de paiement</h3>
+                            <ApexDonut
+                                :series="feesPaymentTypeSeries"
+                                :labels="feesPaymentTypeLabels"
+                                :colors="feesPaymentTypeColors"
+                                :height="200"/>
+                        </div>
+                        <div class="card p-4 col-span-full" v-else-if="feesStats && !feesPaymentTypeSeries.length">
+                            <p class="text-sm text-gray-400 text-center py-4">Aucune donnée de mode de paiement disponible</p>
+                        </div>
+                    </div>
+
+                    <!-- Évolution mensuelle par mode de paiement (bar chart) -->
+                    <div class="card p-4" v-if="feesMonthlyByTypeSeries.length > 0">
+                        <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">Contributions par mode de paiement (mensuel)</h3>
+                        <ApexBar
+                            :series="feesMonthlyByTypeSeries"
+                            :categories="months"
+                            :colors="feesPaymentTypeColors"
+                            :height="200"
+                            :stacked="true"/>
+                    </div>
+
+                    <!-- Détail des modes de paiement -->
+                    <div class="card p-4" v-if="feesStats?.paymentTypes?.length">
+                        <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">Détail par mode de paiement</h3>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm">
+                                <thead>
+                                    <tr class="border-b border-gray-100 dark:border-gray-700">
+                                        <th class="text-left py-2 px-3 text-gray-500 dark:text-gray-400 font-medium">Mode</th>
+                                        <th class="text-right py-2 px-3 text-gray-500 dark:text-gray-400 font-medium">Dossiers</th>
+                                        <th class="text-right py-2 px-3 text-gray-500 dark:text-gray-400 font-medium">Montant collecté</th>
+                                        <th class="text-right py-2 px-3 text-gray-500 dark:text-gray-400 font-medium">% dossiers</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="(pt, i) in feesStats.paymentTypes" :key="pt.type"
+                                        class="border-b border-gray-50 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
+                                        <td class="py-2 px-3 flex items-center gap-2">
+                                            <span class="w-2.5 h-2.5 rounded-full flex-shrink-0" :style="{ background: feesPaymentTypeColors[i % feesPaymentTypeColors.length] }"></span>
+                                            <span class="font-medium text-gray-800 dark:text-gray-200">{{ feesPaymentTypeLabels[i] }}</span>
+                                        </td>
+                                        <td class="text-right py-2 px-3 text-gray-700 dark:text-gray-300 font-semibold">{{ pt.count }}</td>
+                                        <td class="text-right py-2 px-3 text-green-600 dark:text-green-400 font-semibold">{{ fmtAmount(pt.amount) }}</td>
+                                        <td class="text-right py-2 px-3">
+                                            <span class="text-gray-500 dark:text-gray-400">
+                                                {{ feesStats.countPaid > 0 ? Math.round(pt.count / (feesStats.countPaid + feesStats.countPending + feesStats.countUnpaid) * 100) : 0 }}%
+                                            </span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Progression de collecte -->
                     <div class="card p-4">
                         <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">Progression de collecte</h3>
                         <div class="space-y-3">
-                            <ProgressBar label="Dossiers actifs / Total apprenants" :value="totalFeesCollections" :max="totalStudent || 1" color="violet" />
-                            <ProgressBar label="Règlements aujourd'hui" :value="totalFeesCollectionsToday ?? 0" :max="(totalFeesCollections || 1)" color="success" />
+                            <ProgressBar label="Dossiers payés / Total dossiers"
+                                :value="feesStats?.countPaid ?? totalFeesCollections"
+                                :max="(feesStats ? feesStats.countPaid + feesStats.countPending + feesStats.countUnpaid : totalFeesCollections) || 1"
+                                color="success" />
+                            <ProgressBar label="Dossiers en attente"
+                                :value="feesStats?.countPending ?? 0"
+                                :max="(feesStats ? feesStats.countPaid + feesStats.countPending + feesStats.countUnpaid : totalFeesCollections) || 1"
+                                color="amber" />
+                            <ProgressBar label="Montant collecté / Montant total"
+                                :value="feesStats?.paidAmount ?? 0"
+                                :max="feesStats?.totalAmount || 1"
+                                color="violet" />
+                            <ProgressBar label="Règlements aujourd'hui"
+                                :value="totalFeesCollectionsToday ?? 0"
+                                :max="(feesStats?.countPaid || totalFeesCollections || 1)"
+                                color="info" />
                         </div>
                     </div>
                 </div>
@@ -413,6 +518,14 @@ const props = defineProps<{
     totalParentMale?: number; totalParentFemale?: number;
     totalAdminMale?: number; totalAdminFemale?: number;
     attendanceByMonth?: { present: number[]; late: number[]; absent: number[]; halfday: number[] };
+    feesStats?: {
+        totalAmount: number; paidAmount: number; remainingAmount: number;
+        countPaid: number; countPending: number; countUnpaid: number;
+        collectionRate: number;
+        paymentTypes: { type: string; count: number; amount: number }[];
+        monthlyCount: number[]; monthlyPaid: number[];
+        monthlyByType: { name: string; data: number[] }[];
+    };
     currentLeaves?: any[]; upcomingEvents?: any[]; calendarEvents?: any[]; currentPeriod?: any;
     [key: string]: unknown;
 }>();
@@ -467,11 +580,47 @@ const evalMonthSeries = [
     { name: 'Brouillon', data: [2, 3, 4, 2, 5, 3, 4, 2, 3, 5, 4, 3] },
     { name: 'Validées',  data: [1, 2, 3, 5, 4, 6, 5, 7, 6, 4, 5, 6] },
 ];
-const feesRate = computed(() => Math.round(Math.min(100, (props.totalFeesCollections / (props.totalStudent || 1)) * 100)));
-const feesAreaSeries = [
-    { name: 'Contributions', data: [15, 22, 30, 40, 38, 45, 50, 55, 48, 60, 65, 70] },
-    { name: 'Objectif',      data: [20, 25, 30, 40, 42, 48, 52, 58, 55, 62, 68, 75] },
-];
+const feesRate = computed(() => props.feesStats?.collectionRate ?? Math.round(Math.min(100, (props.totalFeesCollections / (props.totalStudent || 1)) * 100)));
+
+// ── Données contributions réelles ─────────────────────────────────────────────
+const feesAreaSeries = computed(() => {
+    const fs = props.feesStats;
+    if (fs?.monthlyCount?.length === 12) {
+        return [
+            { name: 'Contributions', data: fs.monthlyCount },
+            { name: 'Montant payé',  data: fs.monthlyPaid  },
+        ];
+    }
+    return [
+        { name: 'Contributions', data: [15, 22, 30, 40, 38, 45, 50, 55, 48, 60, 65, 70] },
+        { name: 'Objectif',      data: [20, 25, 30, 40, 42, 48, 52, 58, 55, 62, 68, 75] },
+    ];
+});
+
+const feesPaymentTypeSeries = computed(() => {
+    const fs = props.feesStats;
+    if (fs?.paymentTypes?.length) return fs.paymentTypes.map(p => p.count);
+    return [];
+});
+const feesPaymentTypeLabels = computed(() => {
+    const fs = props.feesStats;
+    const labels: Record<string, string> = {
+        cash: 'Espèces', check: 'Chèque', transfer: 'Virement', virement: 'Virement',
+        kkiapay: 'Kkiapay', paypal: 'PayPal', stripe: 'Stripe', fedapay: 'FedaPay',
+    };
+    if (fs?.paymentTypes?.length) return fs.paymentTypes.map(p => labels[p.type] ?? p.type);
+    return [];
+});
+const feesPaymentTypeColors = ['#7C3AED','#10B981','#3B82F6','#F59E0B','#EF4444','#06B6D4','#8B5CF6','#EC4899'];
+
+const feesMonthlyByTypeSeries = computed(() => {
+    const fs = props.feesStats;
+    if (fs?.monthlyByType?.length) return fs.monthlyByType;
+    return [];
+});
+
+const fmtAmount = (n: number) => new Intl.NumberFormat('fr-FR').format(n);
+
 
 const typeColors: Record<string, string> = { academic: '#3b82f6', cultural: '#8b5cf6', administrative: '#f59e0b', exam: '#ef4444', ceremony: '#10b981', trip: '#06b6d4' };
 const typeLabels: Record<string, string> = { academic: 'Académique', cultural: 'Culturel', administrative: 'Admin', exam: 'Examen', ceremony: 'Cérémonie', trip: 'Sortie' };

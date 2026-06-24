@@ -38,6 +38,35 @@ class FeesCollectionController extends Controller
         ]);
     }
 
+    // ──────────────────────────────────────────────────────────────────────────
+    // HELPER — Récupère les clés de paiement depuis la DB selon l'utilisateur
+    // ──────────────────────────────────────────────────────────────────────────
+
+    /**
+     * Retourne les clés de paiement depuis la DB.
+     * - Super admin (user_type=0) → table settings (id=1)
+     * - Admin / autres → table schools (school_id de l'utilisateur connecté)
+     */
+    private function getPaymentConfig(): object
+    {
+        $user = auth()->user();
+
+        if (!$user || (int) $user->user_type === 0) {
+            // Super admin → settings globaux
+            $setting = SettingModel::getSingle(1);
+            return $setting ?? (object) [];
+        }
+
+        // Admin d'école et autres → école de l'utilisateur
+        $school = \App\Models\School::find($user->school_id);
+        if ($school) {
+            return $school;
+        }
+
+        // Fallback sur les settings globaux si pas d'école trouvée
+        return SettingModel::getSingle(1) ?? (object) [];
+    }
+
     public function createFees(Request $request, $student_id)
     {
         try {
@@ -88,9 +117,15 @@ class FeesCollectionController extends Controller
 
                 case 'kkiapay':
                     $transactionId = $request->input('kkiapay_payment_id');
+                    $payConfig = $this->getPaymentConfig();
+
+                    $kkiapaySecret = $payConfig->kkiapay_secret_key ?? env('KKIAPAY_SECRET_KEY', '');
+                    if (empty($kkiapaySecret)) {
+                        return back()->with('error', 'Clé secrète Kkiapay non configurée. Allez dans Paramètres pour la configurer.');
+                    }
 
                     $response = Http::withHeaders([
-                        'Authorization' => 'Bearer ' . env('KKIAPAY_SECRET_KEY'),
+                        'Authorization' => 'Bearer ' . $kkiapaySecret,
                         'Accept' => 'application/json',
                     ])->get("https://api.kkiapay.me/api/v1/transactions/$transactionId");
 
@@ -109,17 +144,29 @@ class FeesCollectionController extends Controller
                     return back()->with('success', 'Paiement Kkiapay validé et enregistré.');
 
                 case 'paypal':
-                    $paypalUrl = $this->getAdminPaypalUrl($request, $getStudent, $student_id);
+                    try {
+                        $paypalUrl = $this->getAdminPaypalUrl($request, $getStudent, $student_id);
+                    } catch (\RuntimeException $e) {
+                        return response()->json(['error' => $e->getMessage()], 422);
+                    }
                     return response()->json(['redirect_url' => $paypalUrl]);
 
                 case 'stripe':
                     $fees = new FeesCollectionModel($paymentData);
-                    $stripeUrl = $this->redirectToAdminStripe($fees, $getStudent);
+                    try {
+                        $stripeUrl = $this->redirectToAdminStripe($fees, $getStudent);
+                    } catch (\RuntimeException $e) {
+                        return response()->json(['error' => $e->getMessage()], 422);
+                    }
                     // Retourner l'URL en JSON pour que le frontend fasse la redirection
                     return response()->json(['redirect_url' => $stripeUrl]);
 
                 case 'fedapay':
-                    $fedapayUrl = $this->getFedapayUrl($request, $getStudent, $student_id, $paymentData);
+                    try {
+                        $fedapayUrl = $this->getFedapayUrl($request, $getStudent, $student_id, $paymentData);
+                    } catch (\RuntimeException $e) {
+                        return response()->json(['error' => $e->getMessage()], 422);
+                    }
                     return response()->json(['redirect_url' => $fedapayUrl]);
             }
 
@@ -133,8 +180,12 @@ class FeesCollectionController extends Controller
 
     private function getFedapayUrl(Request $request, $student, $student_id, array $paymentData): string
     {
-        $setting   = SettingModel::getSingle(1);
-        $secretKey = $setting->fedapay_secret_key ?? env('FEDAPAY_SECRET_KEY', '');
+        $payConfig = $this->getPaymentConfig();
+        $secretKey = $payConfig->fedapay_secret_key ?? env('FEDAPAY_SECRET_KEY', '');
+
+        if (empty($secretKey)) {
+            throw new \RuntimeException('Clé secrète FedaPay non configurée. Allez dans Paramètres pour la configurer.');
+        }
 
         FedaPay::setApiKey($secretKey);
 
@@ -169,8 +220,8 @@ class FeesCollectionController extends Controller
         $pending = session('fedapay_pending');
 
         if ($pending) {
-            $setting   = SettingModel::getSingle(1);
-            $secretKey = $setting->fedapay_secret_key ?? env('FEDAPAY_SECRET_KEY', '');
+            $payConfig = $this->getPaymentConfig();
+            $secretKey = $payConfig->fedapay_secret_key ?? env('FEDAPAY_SECRET_KEY', '');
 
             FedaPay::setApiKey($secretKey);
             $environment = str_starts_with($secretKey, 'sk_live') ? 'live' : 'sandbox';
@@ -207,10 +258,15 @@ class FeesCollectionController extends Controller
 
     private function getAdminPaypalUrl(Request $request, $student, $student_id): string
     {
-        $getSetting = SettingModel::getSingle(1);
+        $payConfig = $this->getPaymentConfig();
+        $paypalEmail = $payConfig->paypal_email ?? '';
+
+        if (empty($paypalEmail)) {
+            throw new \RuntimeException('Email PayPal non configuré. Allez dans Paramètres pour le configurer.');
+        }
 
         $query = [
-            'business'      => $getSetting->paypal_email,
+            'business'      => $paypalEmail,
             'cmd'           => '_xclick',
             'item_name'     => "Frais de scolarité",
             'no_shipping'   => '1',
@@ -235,7 +291,14 @@ class FeesCollectionController extends Controller
 
     private function redirectToAdminStripe(FeesCollectionModel $fees, $student)
     {
-        Stripe::setApiKey(env('STRIPE_SECRET'));
+        $payConfig  = $this->getPaymentConfig();
+        $stripeKey  = $payConfig->stripe_secret_key ?? env('STRIPE_SECRET', '');
+
+        if (empty($stripeKey)) {
+            throw new \RuntimeException('Clé secrète Stripe non configurée. Allez dans Paramètres pour la configurer.');
+        }
+
+        Stripe::setApiKey($stripeKey);
 
         $session = StripeSession::create([
             'customer_email' => $student->email,
@@ -297,7 +360,9 @@ class FeesCollectionController extends Controller
 
     public function stripeAdminSuccess(Request $request)
     {
-        Stripe::setApiKey(env('STRIPE_SECRET'));
+        $payConfig = $this->getPaymentConfig();
+        $stripeKey = $payConfig->stripe_secret_key ?? env('STRIPE_SECRET', '');
+        Stripe::setApiKey($stripeKey);
 
         $session = StripeSession::retrieve($request->get('session_id'));
 
@@ -329,12 +394,12 @@ class FeesCollectionController extends Controller
 
     public function paypalAdminError()
     {
-        return redirect()->route('admin/feescollections/collections/list')->with('error', 'Paiement annulé ou échoué.');
+        return redirect('admin/feescollections/collections/list')->with('error', 'Paiement annulé ou échoué.');
     }
 
     public function stripeAdminError()
     {
-        return redirect()->route('admin/feescollections/collections/list')->with('error', 'Paiement annulé ou échoué.');
+        return redirect('admin/feescollections/collections/list')->with('error', 'Paiement annulé ou échoué.');
     }
 
     public function deleteFees($id)
@@ -401,9 +466,11 @@ class FeesCollectionController extends Controller
             switch ($request->payment_type) {
                 case 'kkiapay':
                     $transactionId = $request->input('kkiapay_payment_id');
+                    $payConfig = $this->getPaymentConfig();
+                    $kkiapaySecret = $payConfig->kkiapay_secret_key ?? env('KKIAPAY_SECRET_KEY', '');
 
                     $response = Http::withHeaders([
-                        'Authorization' => 'Bearer ' . env('KKIAPAY_SECRET_KEY'),
+                        'Authorization' => 'Bearer ' . $kkiapaySecret,
                         'Accept' => 'application/json',
                     ])->get("https://api.kkiapay.me/api/v1/transactions/$transactionId");
 
@@ -443,10 +510,10 @@ class FeesCollectionController extends Controller
 
     private function redirectToStudentPaypal($request, $student, $student_id)
     {
-        $getSetting = SettingModel::getSingle(1);
+        $payConfig = $this->getPaymentConfig();
 
         $query = [
-            'business' => $getSetting->paypal_email,
+            'business' => $payConfig->paypal_email ?? '',
             'cmd' => '_xclick',
             'item_name' => "Frais de scolarité",
             'no_shipping' => '1',
@@ -474,7 +541,14 @@ class FeesCollectionController extends Controller
 
     private function redirectToStudentStripe(FeesCollectionModel $fees, $student): string
     {
-        Stripe::setApiKey(env('STRIPE_SECRET'));
+        $payConfig = $this->getPaymentConfig();
+        $stripeKey = $payConfig->stripe_secret_key ?? env('STRIPE_SECRET', '');
+
+        if (empty($stripeKey)) {
+            throw new \RuntimeException('Clé secrète Stripe non configurée. Allez dans Paramètres pour la configurer.');
+        }
+
+        Stripe::setApiKey($stripeKey);
 
         $session = StripeSession::create([
             'customer_email' => $student->email,
@@ -543,7 +617,7 @@ class FeesCollectionController extends Controller
 
     public function paypalStudentError()
     {
-        return redirect()->route('student/my_fees')->with('error', 'Paiement annulé ou échoué.');
+        return redirect('student/my_fees')->with('error', 'Paiement annulé ou échoué.');
     }
 
     public function paypalStudentSuccess(Request $request)
@@ -568,7 +642,9 @@ class FeesCollectionController extends Controller
 
     public function stripeStudentSuccess(Request $request)
     {
-        Stripe::setApiKey(env('STRIPE_SECRET'));
+        $payConfig = $this->getPaymentConfig();
+        $stripeKey = $payConfig->stripe_secret_key ?? env('STRIPE_SECRET', '');
+        Stripe::setApiKey($stripeKey);
 
         $session = StripeSession::retrieve($request->get('session_id'));
 
@@ -587,12 +663,12 @@ class FeesCollectionController extends Controller
             return redirect('student/my_fees')->with('success', 'Paiement validé avec succès.');
         }
 
-        return redirect()->route('student/my_fees')->with('error', 'Paiement non confirmé.');
+        return redirect('student/my_fees')->with('error', 'Paiement non confirmé.');
     }
 
     public function stripeStudentError()
     {
-        return redirect()->route('student/my_fees')->with('error', 'Paiement annulé ou échoué.');
+        return redirect('student/my_fees')->with('error', 'Paiement annulé ou échoué.');
     }
 
     public function parentStudentFees($student_id)
@@ -642,9 +718,11 @@ class FeesCollectionController extends Controller
             switch ($request->payment_type) {
                 case 'kkiapay':
                     $transactionId = $request->input('kkiapay_payment_id');
+                    $payConfig = $this->getPaymentConfig();
+                    $kkiapaySecret = $payConfig->kkiapay_secret_key ?? env('KKIAPAY_SECRET_KEY', '');
 
                     $response = Http::withHeaders([
-                        'Authorization' => 'Bearer ' . env('KKIAPAY_SECRET_KEY'),
+                        'Authorization' => 'Bearer ' . $kkiapaySecret,
                         'Accept' => 'application/json',
                     ])->get("https://api.kkiapay.me/api/v1/transactions/$transactionId");
 
@@ -718,7 +796,9 @@ class FeesCollectionController extends Controller
 
     public function stripeParentSuccess(Request $request)
     {
-        Stripe::setApiKey(env('STRIPE_SECRET'));
+        $payConfig = $this->getPaymentConfig();
+        $stripeKey = $payConfig->stripe_secret_key ?? env('STRIPE_SECRET', '');
+        Stripe::setApiKey($stripeKey);
 
         $session = StripeSession::retrieve($request->get('session_id'));
 
@@ -755,10 +835,10 @@ class FeesCollectionController extends Controller
 
     private function redirectToParentPaypal($request, $student, $student_id)
     {
-        $getSetting = SettingModel::getSingle(1);
+        $payConfig = $this->getPaymentConfig();
 
         $query = [
-            'business' => $getSetting->paypal_email,
+            'business' => $payConfig->paypal_email ?? '',
             'cmd' => '_xclick',
             'item_name' => "Frais de scolarité",
             'no_shipping' => '1',
@@ -786,7 +866,14 @@ class FeesCollectionController extends Controller
 
     private function redirectToParentStripe(FeesCollectionModel $fees, $student): string
     {
-        Stripe::setApiKey(env('STRIPE_SECRET'));
+        $payConfig = $this->getPaymentConfig();
+        $stripeKey = $payConfig->stripe_secret_key ?? env('STRIPE_SECRET', '');
+
+        if (empty($stripeKey)) {
+            throw new \RuntimeException('Clé secrète Stripe non configurée. Allez dans Paramètres pour la configurer.');
+        }
+
+        Stripe::setApiKey($stripeKey);
 
         $session = StripeSession::create([
             'customer_email' => $student->email,

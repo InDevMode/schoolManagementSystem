@@ -23,6 +23,7 @@ export interface PageProps {
         kkiapay_public_key?: string;
         stripe_public_key?: string;
         fedapay_public_key?: string;
+        paypal_email?: string;
     } | null;
     flash: {
         success?: string;

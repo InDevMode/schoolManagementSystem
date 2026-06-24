@@ -14,7 +14,6 @@
                         :options="classOptions"
                         placeholder="Toutes les classes"
                         class="min-w-[200px]"
-                        @change="applyFilters"
                     />
                 </div>
             </template>
@@ -131,6 +130,7 @@
                     label="Mode de paiement"
                     :options="paymentTypes"
                     required
+                    @change="onPaymentTypeChange"
                 />
                 <AppInput
                     v-model="payForm.remark"
@@ -155,10 +155,16 @@
                     <p class="font-medium mb-1">Paiement via Stripe</p>
                     <p>Vous serez redirigé vers la page de paiement sécurisée Stripe.</p>
                 </div>
+
+                <!-- Info PayPal -->
+                <div v-if="payForm.payment_type === 'paypal'" class="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-xl text-xs text-blue-700 dark:text-blue-300">
+                    <p class="font-medium mb-1">Paiement via PayPal</p>
+                    <p>Vous serez redirigé vers PayPal pour finaliser le paiement.</p>
+                </div>
             </form>
 
             <template #footer>
-                <AppButton variant="ghost" @click="showPayment = false">Annuler</AppButton>
+                <AppButton variant="ghost" @click="showPayment = false; paying = false">Annuler</AppButton>
 
                 <!-- Bouton Kkiapay -->
                 <AppButton
@@ -193,6 +199,18 @@
                     Payer avec Stripe
                 </AppButton>
 
+                <!-- Bouton PayPal -->
+                <AppButton
+                    v-else-if="payForm.payment_type === 'paypal'"
+                    :loading="paying"
+                    :disabled="!payForm.amount"
+                    class="bg-[#0070ba] hover:bg-[#005ea6] text-white"
+                    @click="payWithPaypal"
+                >
+                    <svg class="w-4 h-4 mr-1 inline" viewBox="0 0 24 24" fill="currentColor"><path d="M7.076 21.337H2.47a.641.641 0 0 1-.633-.74L4.944.901C5.026.382 5.474 0 5.998 0h7.46c2.57 0 4.578.543 5.69 1.81 1.01 1.15 1.304 2.42 1.012 4.287-.023.143-.047.288-.077.437-.983 5.05-4.349 6.797-8.647 6.797h-2.19c-.524 0-.968.382-1.05.9l-1.12 7.106zm14.146-14.42a3.35 3.35 0 0 0-.607-.541c-.013.076-.026.175-.041.254-.93 4.778-4.005 7.201-9.138 7.201h-2.19a.563.563 0 0 0-.556.479l-1.187 7.527h-.506l-.24 1.516a.56.56 0 0 0 .554.647h3.882c.46 0 .85-.334.922-.788.06-.26.76-4.852.816-5.09a.932.932 0 0 1 .923-.788h.58c3.76 0 6.705-1.528 7.565-5.946.36-1.847.174-3.388-.777-4.471z"/></svg>
+                    Payer avec PayPal
+                </AppButton>
+
                 <!-- Bouton standard (cash, chèque, virement) -->
                 <AppButton
                     v-else
@@ -208,13 +226,15 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import { router, usePage } from '@inertiajs/vue3';
 import { PageHeader, AppSelect, DataTable, AppBadge, AppModal, AppButton, AppInput } from '@/Components/UI';
 import { useCan } from '@/Composables/useCan';
+import { useToast } from '@/Composables/useToast';
 import type { PageProps } from '@/types';
 
 const { can } = useCan();
+const toast = useToast();
 
 interface FeesStudent {
     [key: string]: unknown;
@@ -243,8 +263,11 @@ const props = defineProps<{
 const page            = usePage<PageProps>();
 const kkiapayKey  = computed(() => page.props.settings?.kkiapay_public_key ?? '');
 const fedapayKey  = computed(() => page.props.settings?.fedapay_public_key ?? '');
+const paypalEmail = computed(() => page.props.settings?.paypal_email ?? '');
 
-const filters         = ref({ class_id: '' });
+// Initialiser le filtre depuis l'URL courante (pour conserver le filtre après reload)
+const urlParams   = new URLSearchParams(window.location.search);
+const filters     = ref({ class_id: urlParams.get('class_id') ?? '' });
 const showPayment     = ref(false);
 const paying          = ref(false);
 const selectedStudent = ref<FeesStudent | null>(null);
@@ -274,6 +297,7 @@ const paymentTypes = [
     { value: 'kkiapay',  label: 'Kkiapay' },
     { value: 'fedapay',  label: 'FedaPay' },
     { value: 'stripe',   label: 'Stripe' },
+    { value: 'paypal',   label: 'PayPal' },
 ];
 
 const columns = [
@@ -296,7 +320,14 @@ const progressPercent = (row: FeesStudent) => {
 const openPayment = (student: FeesStudent) => {
     selectedStudent.value = student;
     payForm.value = { amount: '', payment_type: 'cash', remark: '', errors: {} };
+    paying.value = false;
     showPayment.value = true;
+};
+
+// Réinitialiser l'état paying quand on change de mode de paiement
+const onPaymentTypeChange = () => {
+    paying.value = false;
+    payForm.value.errors = {};
 };
 
 // Paiement standard (cash, chèque, virement)
@@ -313,7 +344,10 @@ const submitPayment = () => {
             showPayment.value = false;
             router.reload({ only: ['feesCollections'] });
         },
-        onError:  (e) => { payForm.value.errors = e; },
+        onError:  (e) => {
+            payForm.value.errors = e;
+            toast.error('Erreur lors de l\'enregistrement du paiement.');
+        },
         onFinish: () => { paying.value = false; },
     });
 };
@@ -322,7 +356,7 @@ const submitPayment = () => {
 const payWithKkiapay = () => {
     if (!payForm.value.amount || !selectedStudent.value) return;
     if (!kkiapayKey.value) {
-        alert('Clé publique Kkiapay non configurée. Allez dans Paramètres pour la configurer.');
+        toast.error('Clé publique Kkiapay non configurée. Allez dans Paramètres pour la configurer.');
         return;
     }
 
@@ -331,7 +365,7 @@ const payWithKkiapay = () => {
     // Charger le SDK Kkiapay si pas encore chargé
     const openKkiapay = (window as any).openKkiapayWidget;
     if (typeof openKkiapay !== 'function') {
-        alert('Le widget Kkiapay n\'est pas chargé. Vérifiez votre connexion internet.');
+        toast.error("Le widget Kkiapay n'est pas chargé. Vérifiez votre connexion internet.");
         paying.value = false;
         return;
     }
@@ -345,7 +379,7 @@ const payWithKkiapay = () => {
     });
 
     // Écouter le succès du paiement Kkiapay
-    (window as any).addSuccessListener?.((response: { transactionId: string }) => {
+    const successHandler = (response: { transactionId: string }) => {
         router.post(`/admin/feescollections/collections/addFees/${selectedStudent.value!.id}`, {
             amount:              payForm.value.amount,
             payment_type:        'kkiapay',
@@ -353,17 +387,30 @@ const payWithKkiapay = () => {
             kkiapay_payment_id:  response.transactionId,
         }, {
             preserveScroll: true,
-            onSuccess: () => { showPayment.value = false; router.reload({ only: ['feesCollections'] }); },
+            onSuccess: () => {
+                showPayment.value = false;
+                router.reload({ only: ['feesCollections'] });
+            },
+            onError: () => { toast.error('Erreur lors de l\'enregistrement du paiement Kkiapay.'); },
             onFinish:  () => { paying.value = false; },
         });
-    });
+    };
+
+    // Écouter la fermeture/annulation du widget Kkiapay → réactiver le bouton
+    const closeHandler = () => {
+        paying.value = false;
+    };
+
+    (window as any).addSuccessListener?.(successHandler);
+    // KKiaPay émet un événement "close" quand l'utilisateur ferme le widget
+    (window as any).addCloseListener?.(closeHandler);
 };
 
 // Paiement FedaPay — redirection vers FedaPay Checkout
 const payWithFedapay = async () => {
     if (!payForm.value.amount || !selectedStudent.value) return;
     if (!fedapayKey.value) {
-        alert('Clé publique FedaPay non configurée. Allez dans Paramètres pour la configurer.');
+        toast.error('Clé publique FedaPay non configurée. Allez dans Paramètres pour la configurer.');
         return;
     }
     paying.value = true;
@@ -390,11 +437,11 @@ const payWithFedapay = async () => {
         if (data.redirect_url) {
             window.location.href = data.redirect_url;
         } else if (data.error) {
-            payForm.value.errors = { amount: data.error };
+            toast.error(data.error);
             paying.value = false;
         }
     } catch {
-        payForm.value.errors = { amount: 'Erreur lors de la connexion à FedaPay.' };
+        toast.error('Erreur lors de la connexion à FedaPay.');
         paying.value = false;
     }
 };
@@ -402,6 +449,13 @@ const payWithFedapay = async () => {
 // Paiement Stripe — le serveur crée la session et retourne l'URL en JSON
 const payWithStripe = async () => {
     if (!payForm.value.amount || !selectedStudent.value) return;
+
+    // Vérifier la clé publique Stripe côté frontend avant d'envoyer
+    if (!page.props.settings?.stripe_public_key) {
+        toast.error('Clé publique Stripe non configurée. Allez dans Paramètres pour la configurer.');
+        return;
+    }
+
     paying.value = true;
 
     try {
@@ -427,16 +481,68 @@ const payWithStripe = async () => {
             // Redirection externe — window.location.href évite le problème CORS
             window.location.href = data.redirect_url;
         } else if (data.error) {
-            payForm.value.errors = { amount: data.error };
+            toast.error(data.error);
             paying.value = false;
         }
-    } catch (e) {
-        payForm.value.errors = { amount: 'Erreur lors de la connexion à Stripe.' };
+    } catch {
+        toast.error('Erreur lors de la connexion à Stripe.');
         paying.value = false;
     }
 };
 
+// Paiement PayPal — redirection vers PayPal
+const payWithPaypal = async () => {
+    if (!payForm.value.amount || !selectedStudent.value) return;
+
+    if (!paypalEmail.value) {
+        toast.error('Email PayPal non configuré. Allez dans Paramètres pour le configurer.');
+        return;
+    }
+
+    paying.value = true;
+
+    try {
+        const csrfToken = (document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement)?.content ?? '';
+        const res = await fetch(`/admin/feescollections/collections/addFees/${selectedStudent.value.id}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': csrfToken,
+                'X-Requested-With': 'XMLHttpRequest',
+            },
+            body: JSON.stringify({
+                amount:       payForm.value.amount,
+                payment_type: 'paypal',
+                remark:       payForm.value.remark,
+            }),
+        });
+
+        const data = await res.json();
+
+        if (data.redirect_url) {
+            window.location.href = data.redirect_url;
+        } else if (data.error) {
+            toast.error(data.error);
+            paying.value = false;
+        }
+    } catch {
+        toast.error('Erreur lors de la connexion à PayPal.');
+        paying.value = false;
+    }
+};
+
+// Réinitialiser paying quand le modal se ferme (ex: clic en dehors ou Échap)
+watch(showPayment, (val) => {
+    if (!val) paying.value = false;
+});
+
+// Filtrage par classe — watch car AppSelect n'émet que update:modelValue (pas @change)
+watch(() => filters.value.class_id, () => {
+    applyFilters();
+});
+
 const applyFilters = () => {
-    router.get('/admin/feescollections/collections/list', filters.value, { preserveState: true, replace: true });
+    router.get('/admin/feescollections/collections/list', { class_id: filters.value.class_id || undefined }, { preserveState: true, replace: true });
 };
 </script>
