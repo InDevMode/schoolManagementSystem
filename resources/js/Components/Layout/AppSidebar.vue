@@ -833,7 +833,10 @@ const handleOutsideClick = (e: MouseEvent) => {
         }
     }
 };
-onMounted(()  => document.addEventListener('mousedown', handleOutsideClick));
+onMounted(() => {
+    document.addEventListener('mousedown', handleOutsideClick);
+    router.on('start', () => { flyoutId.value = null; });
+});
 onUnmounted(() => document.removeEventListener('mousedown', handleOutsideClick));
 
 // Ouvrir automatiquement le menu actif au chargement
@@ -882,11 +885,6 @@ const flyoutId = ref<string | null>(null);
 const flyoutEl = ref<HTMLElement | null>(null);
 const flyoutX  = ref(0);
 const flyoutY  = ref(0);
-
-// Fermer le flyout dès que la navigation Inertia démarre
-onMounted(() => {
-    router.on('start', () => { flyoutId.value = null; });
-});
 
 // Ouvrir/fermer le flyout au clic (position calculée depuis le bouton)
 const toggleFlyout = (itemId: string, e: MouseEvent) => {
