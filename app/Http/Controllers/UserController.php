@@ -716,6 +716,9 @@ class UserController extends Controller
             $setting = SettingModel::getSingle(1);
             if ($setting) {
                 $setting->paypal_email        = trim($request->paypal_email ?? '');
+                $setting->paypal_client_id    = trim($request->paypal_client_id ?? '');
+                $setting->paypal_secret       = trim($request->paypal_secret ?? '');
+                $setting->paypal_mode         = in_array($request->paypal_mode, ['sandbox', 'live']) ? $request->paypal_mode : 'sandbox';
                 $setting->kkiapay_public_key  = trim($request->kkiapay_public_key ?? '');
                 $setting->kkiapay_private_key = trim($request->kkiapay_private_key ?? '');
                 $setting->kkiapay_secret_key  = trim($request->kkiapay_secret_key ?? '');

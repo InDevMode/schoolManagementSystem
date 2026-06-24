@@ -97,16 +97,24 @@
                         <h3 class="text-sm font-semibold text-gray-900 dark:text-white border-b border-gray-100 dark:border-gray-700 pb-2.5 flex items-center gap-2">
                             <svg class="w-4 h-4 text-violet-500" viewBox="0 0 24 24" fill="currentColor"><path d="M7.076 21.337H2.47a.641.641 0 0 1-.633-.74L4.944.901C5.026.382 5.474 0 5.998 0h7.46c2.57 0 4.578.543 5.69 1.81 1.01 1.15 1.304 2.42 1.012 4.287-.023.143-.047.288-.077.437-.983 5.05-4.349 6.797-8.647 6.797h-2.19c-.524 0-.968.382-1.05.9l-1.12 7.106zm14.146-14.42a3.35 3.35 0 0 0-.607-.541c-.013.076-.026.175-.041.254-.93 4.778-4.005 7.201-9.138 7.201h-2.19a.563.563 0 0 0-.556.479l-1.187 7.527h-.506l-.24 1.516a.56.56 0 0 0 .554.647h3.882c.46 0 .85-.334.922-.788.06-.26.76-4.852.816-5.09a.932.932 0 0 1 .923-.788h.58c3.76 0 6.705-1.528 7.565-5.946.36-1.847.174-3.388-.777-4.471z"/></svg>
                             PayPal
-                            <span :class="form.paypal_email ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300' : 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300'"
+                            <span :class="(form.paypal_client_id && form.paypal_secret) ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300' : 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300'"
                                   class="ml-auto inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium">
-                                <span :class="form.paypal_email ? 'bg-emerald-500' : 'bg-amber-500'" class="w-1.5 h-1.5 rounded-full"></span>
-                                {{ form.paypal_email ? 'Configuré' : 'Non configuré' }}
+                                <span :class="(form.paypal_client_id && form.paypal_secret) ? 'bg-emerald-500' : 'bg-amber-500'" class="w-1.5 h-1.5 rounded-full"></span>
+                                {{ (form.paypal_client_id && form.paypal_secret) ? 'Configuré' : 'Non configuré' }}
                             </span>
                         </h3>
-                        <AppInput v-model="form.paypal_email" label="Email PayPal" type="email" placeholder="votre@paypal.com" />
-                        <p v-if="!form.paypal_email" class="text-xs text-amber-600 dark:text-amber-400 flex items-center gap-1">
+                        <p class="text-xs text-gray-500 dark:text-gray-400">
+                            Créez une application sur <a href="https://developer.paypal.com/dashboard/" target="_blank" class="text-primary-600 hover:underline">developer.paypal.com</a> pour obtenir vos identifiants API REST.
+                        </p>
+                        <div class="grid grid-cols-2 gap-3">
+                            <AppInput v-model="form.paypal_client_id" label="Client ID" placeholder="AX..." />
+                            <AppInput v-model="form.paypal_secret"    label="Secret"    placeholder="EF..." />
+                        </div>
+                        <AppSelect v-model="form.paypal_mode" label="Mode"
+                                   :options="[{value:'sandbox',label:'Sandbox (test)'},{value:'live',label:'Live (production)'}]" />
+                        <p v-if="!form.paypal_client_id || !form.paypal_secret" class="text-xs text-amber-600 dark:text-amber-400 flex items-center gap-1">
                             <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                            Renseignez votre email PayPal pour activer ce mode de paiement.
+                            Le Client ID et le Secret sont requis pour PayPal (API REST v2).
                         </p>
                     </div>
 
@@ -402,6 +410,9 @@ interface Setting {
     uai_number?:         string;
     status?:             string;
     paypal_email?:       string;
+        paypal_client_id?:   string;
+        paypal_secret?:      string;
+        paypal_mode?:        string;
     kkiapay_public_key?: string;
     kkiapay_private_key?:string;
     kkiapay_secret_key?: string;
@@ -449,6 +460,9 @@ const form = ref<Setting>({
     uai_number:          props.setting?.uai_number          ?? '',
     status:              props.setting?.status              ?? '1',
     paypal_email:        props.setting?.paypal_email        ?? '',
+    paypal_client_id:    props.setting?.paypal_client_id    ?? '',
+    paypal_secret:       props.setting?.paypal_secret       ?? '',
+    paypal_mode:         props.setting?.paypal_mode         ?? 'sandbox',
     kkiapay_public_key:  props.setting?.kkiapay_public_key  ?? '',
     kkiapay_private_key: props.setting?.kkiapay_private_key ?? '',
     kkiapay_secret_key:  props.setting?.kkiapay_secret_key  ?? '',

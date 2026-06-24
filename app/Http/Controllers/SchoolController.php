@@ -217,6 +217,9 @@ class SchoolController extends Controller
             'uai_number'         => 'nullable|string|max:50',
             'status'             => 'nullable|in:0,1',
             'paypal_email'       => 'nullable|email|max:150',
+            'paypal_client_id'   => 'nullable|string|max:255',
+            'paypal_secret'      => 'nullable|string|max:255',
+            'paypal_mode'        => 'nullable|in:sandbox,live',
             'kkiapay_public_key'  => 'nullable|string|max:255',
             'kkiapay_private_key' => 'nullable|string|max:255',
             'kkiapay_secret_key'  => 'nullable|string|max:255',
@@ -236,6 +239,9 @@ class SchoolController extends Controller
             $school->email              = $request->email ? trim($request->email) : null;
             $school->uai_number         = $request->uai_number ? trim($request->uai_number) : null;
             $school->paypal_email       = $request->paypal_email ? trim($request->paypal_email) : null;
+            $school->paypal_client_id   = $request->paypal_client_id ? trim($request->paypal_client_id) : null;
+            $school->paypal_secret      = $request->paypal_secret ? trim($request->paypal_secret) : null;
+            $school->paypal_mode        = in_array($request->paypal_mode, ['sandbox', 'live']) ? $request->paypal_mode : 'sandbox';
             $school->kkiapay_public_key  = $request->kkiapay_public_key ? trim($request->kkiapay_public_key) : null;
             $school->kkiapay_private_key = $request->kkiapay_private_key ? trim($request->kkiapay_private_key) : null;
             $school->kkiapay_secret_key  = $request->kkiapay_secret_key ? trim($request->kkiapay_secret_key) : null;

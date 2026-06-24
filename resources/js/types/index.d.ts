@@ -24,6 +24,7 @@ export interface PageProps {
         stripe_public_key?: string;
         fedapay_public_key?: string;
         paypal_email?: string;
+        paypal_client_id?: string;
     } | null;
     flash: {
         success?: string;

@@ -260,10 +260,10 @@ const props = defineProps<{
     };
 }>();
 
-const page            = usePage<PageProps>();
-const kkiapayKey  = computed(() => page.props.settings?.kkiapay_public_key ?? '');
-const fedapayKey  = computed(() => page.props.settings?.fedapay_public_key ?? '');
-const paypalEmail = computed(() => page.props.settings?.paypal_email ?? '');
+const page           = usePage<PageProps>();
+const kkiapayKey     = computed(() => page.props.settings?.kkiapay_public_key ?? '');
+const fedapayKey     = computed(() => page.props.settings?.fedapay_public_key ?? '');
+const paypalClientId = computed(() => page.props.settings?.paypal_client_id ?? '');
 
 // Initialiser le filtre depuis l'URL courante (pour conserver le filtre après reload)
 const urlParams   = new URLSearchParams(window.location.search);
@@ -490,12 +490,12 @@ const payWithStripe = async () => {
     }
 };
 
-// Paiement PayPal — redirection vers PayPal
+// Paiement PayPal — redirection vers PayPal REST v2
 const payWithPaypal = async () => {
     if (!payForm.value.amount || !selectedStudent.value) return;
 
-    if (!paypalEmail.value) {
-        toast.error('Email PayPal non configuré. Allez dans Paramètres pour le configurer.');
+    if (!paypalClientId.value) {
+        toast.error('Identifiants PayPal non configurés. Allez dans Paramètres pour les configurer.');
         return;
     }
 

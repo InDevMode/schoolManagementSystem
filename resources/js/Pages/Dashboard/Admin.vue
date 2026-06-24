@@ -329,28 +329,32 @@
                         </div>
                     </div>
 
-                    <!-- Graphique évolution mensuelle par nombre + mode de paiement -->
+                    <!-- Graphiques : évolution mensuelle + donut modes -->
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
                         <div class="card p-4">
                             <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">Évolution des contributions (12 mois)</h3>
-                            <ApexArea :series="feesAreaSeries" :categories="months" :colors="['#7C3AED','#10B981']" :height="160"/>
+                            <ApexArea :series="feesAreaSeries" :categories="months" :colors="['#7C3AED','#10B981']" :height="180"/>
                         </div>
-                        <div class="card p-4" v-if="feesPaymentTypeSeries.length > 0">
-                            <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">Répartition par mode de paiement</h3>
-                            <ApexDonut
-                                :series="feesPaymentTypeSeries"
-                                :labels="feesPaymentTypeLabels"
-                                :colors="feesPaymentTypeColors"
-                                :height="200"/>
-                        </div>
-                        <div class="card p-4 col-span-full" v-else-if="feesStats && !feesPaymentTypeSeries.length">
-                            <p class="text-sm text-gray-400 text-center py-4">Aucune donnée de mode de paiement disponible</p>
+                        <div class="card p-4">
+                            <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-1">Répartition par mode de paiement</h3>
+                            <p class="text-xs text-gray-400 mb-3">Tous les modes utilisés dans cet établissement</p>
+                            <div v-if="feesPaymentTypeSeries.length > 0">
+                                <ApexDonut
+                                    :series="feesPaymentTypeSeries"
+                                    :labels="feesPaymentTypeLabels"
+                                    :colors="feesPaymentTypeColors"
+                                    :height="210"/>
+                            </div>
+                            <div v-else class="flex items-center justify-center h-28 text-xs text-gray-400">
+                                Aucune donnée de mode de paiement disponible
+                            </div>
                         </div>
                     </div>
 
-                    <!-- Évolution mensuelle par mode de paiement (bar chart) -->
+                    <!-- Évolution mensuelle par mode -->
                     <div class="card p-4" v-if="feesMonthlyByTypeSeries.length > 0">
-                        <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">Contributions par mode de paiement (mensuel)</h3>
+                        <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-1">Évolution mensuelle par mode de paiement</h3>
+                        <p class="text-xs text-gray-400 mb-3">Nombre de dossiers par mode sur les 12 derniers mois</p>
                         <ApexBar
                             :series="feesMonthlyByTypeSeries"
                             :categories="months"
@@ -359,7 +363,84 @@
                             :stacked="true"/>
                     </div>
 
-                    <!-- Détail des modes de paiement -->
+                    <!-- Tableau récapitulatif par classe -->
+                    <div class="card p-4" v-if="feesStats?.byClass?.length">
+                        <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">Récapitulatif par classe</h3>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm">
+                                <thead>
+                                    <tr class="border-b border-gray-100 dark:border-gray-700">
+                                        <th class="text-left py-2 px-3 text-gray-500 dark:text-gray-400 font-medium">Classe</th>
+                                        <th class="text-right py-2 px-3 text-gray-500 dark:text-gray-400 font-medium">Total</th>
+                                        <th class="text-right py-2 px-3 text-gray-500 dark:text-gray-400 font-medium">Payés</th>
+                                        <th class="text-right py-2 px-3 text-gray-500 dark:text-gray-400 font-medium">En attente</th>
+                                        <th class="text-right py-2 px-3 text-gray-500 dark:text-gray-400 font-medium">Collecté</th>
+                                        <th class="text-right py-2 px-3 text-gray-500 dark:text-gray-400 font-medium">Restant</th>
+                                        <th class="text-right py-2 px-3 text-gray-500 dark:text-gray-400 font-medium">Taux</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="(cls, i) in feesStats.byClass" :key="cls.class_id"
+                                        class="border-b border-gray-50 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800/40 transition-colors">
+                                        <td class="py-2.5 px-3">
+                                            <div class="flex items-center gap-2">
+                                                <span class="w-2 h-2 rounded-full flex-shrink-0"
+                                                    :style="{ background: feesPaymentTypeColors[i % feesPaymentTypeColors.length] }"/>
+                                                <span class="font-medium text-gray-800 dark:text-gray-200">{{ cls.class_name }}</span>
+                                            </div>
+                                        </td>
+                                        <td class="text-right py-2.5 px-3 text-gray-600 dark:text-gray-300">{{ cls.total }}</td>
+                                        <td class="text-right py-2.5 px-3">
+                                            <span class="text-green-600 dark:text-green-400 font-semibold">{{ cls.paid_count }}</span>
+                                        </td>
+                                        <td class="text-right py-2.5 px-3">
+                                            <span class="text-amber-500 font-semibold">{{ cls.pending_count }}</span>
+                                        </td>
+                                        <td class="text-right py-2.5 px-3 text-green-600 dark:text-green-400 font-semibold text-xs">
+                                            {{ fmtAmount(cls.paid_amount) }}
+                                        </td>
+                                        <td class="text-right py-2.5 px-3 text-amber-600 dark:text-amber-400 text-xs">
+                                            {{ fmtAmount(cls.remaining_amount) }}
+                                        </td>
+                                        <td class="text-right py-2.5 px-3">
+                                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold"
+                                                :class="cls.total_amount > 0 && Math.round(cls.paid_amount / cls.total_amount * 100) >= 75
+                                                    ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400'
+                                                    : cls.total_amount > 0 && Math.round(cls.paid_amount / cls.total_amount * 100) >= 40
+                                                    ? 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400'
+                                                    : 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400'">
+                                                {{ cls.total_amount > 0 ? Math.round(cls.paid_amount / cls.total_amount * 100) : 0 }}%
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    <!-- Ligne totaux -->
+                                    <tr class="bg-gray-50 dark:bg-gray-800/60 font-semibold">
+                                        <td class="py-2.5 px-3 text-gray-700 dark:text-gray-200">Total</td>
+                                        <td class="text-right py-2.5 px-3 text-gray-700 dark:text-gray-200">
+                                            {{ feesStats.byClass.reduce((s, c) => s + c.total, 0) }}
+                                        </td>
+                                        <td class="text-right py-2.5 px-3 text-green-600 dark:text-green-400">
+                                            {{ feesStats.byClass.reduce((s, c) => s + c.paid_count, 0) }}
+                                        </td>
+                                        <td class="text-right py-2.5 px-3 text-amber-500">
+                                            {{ feesStats.byClass.reduce((s, c) => s + c.pending_count, 0) }}
+                                        </td>
+                                        <td class="text-right py-2.5 px-3 text-green-600 dark:text-green-400 text-xs">
+                                            {{ fmtAmount(feesStats.byClass.reduce((s, c) => s + c.paid_amount, 0)) }}
+                                        </td>
+                                        <td class="text-right py-2.5 px-3 text-amber-600 dark:text-amber-400 text-xs">
+                                            {{ fmtAmount(feesStats.byClass.reduce((s, c) => s + c.remaining_amount, 0)) }}
+                                        </td>
+                                        <td class="text-right py-2.5 px-3 text-violet-600 dark:text-violet-400">
+                                            {{ feesRate }}%
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Détail par mode de paiement -->
                     <div class="card p-4" v-if="feesStats?.paymentTypes?.length">
                         <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">Détail par mode de paiement</h3>
                         <div class="overflow-x-auto">
@@ -375,16 +456,16 @@
                                 <tbody>
                                     <tr v-for="(pt, i) in feesStats.paymentTypes" :key="pt.type"
                                         class="border-b border-gray-50 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
-                                        <td class="py-2 px-3 flex items-center gap-2">
-                                            <span class="w-2.5 h-2.5 rounded-full flex-shrink-0" :style="{ background: feesPaymentTypeColors[i % feesPaymentTypeColors.length] }"></span>
+                                        <td class="py-2.5 px-3 flex items-center gap-2">
+                                            <span class="w-2.5 h-2.5 rounded-full flex-shrink-0" :style="{ background: feesPaymentTypeColors[i % feesPaymentTypeColors.length] }"/>
                                             <span class="font-medium text-gray-800 dark:text-gray-200">{{ feesPaymentTypeLabels[i] }}</span>
                                         </td>
-                                        <td class="text-right py-2 px-3 text-gray-700 dark:text-gray-300 font-semibold">{{ pt.count }}</td>
-                                        <td class="text-right py-2 px-3 text-green-600 dark:text-green-400 font-semibold">{{ fmtAmount(pt.amount) }}</td>
-                                        <td class="text-right py-2 px-3">
-                                            <span class="text-gray-500 dark:text-gray-400">
-                                                {{ feesStats.countPaid > 0 ? Math.round(pt.count / (feesStats.countPaid + feesStats.countPending + feesStats.countUnpaid) * 100) : 0 }}%
-                                            </span>
+                                        <td class="text-right py-2.5 px-3 text-gray-700 dark:text-gray-300 font-semibold">{{ pt.count }}</td>
+                                        <td class="text-right py-2.5 px-3 text-green-600 dark:text-green-400 font-semibold">{{ fmtAmount(pt.amount) }}</td>
+                                        <td class="text-right py-2.5 px-3 text-gray-500 dark:text-gray-400">
+                                            {{ (feesStats.countPaid + feesStats.countPending + feesStats.countUnpaid) > 0
+                                                ? Math.round(pt.count / (feesStats.countPaid + feesStats.countPending + feesStats.countUnpaid) * 100)
+                                                : 0 }}%
                                         </td>
                                     </tr>
                                 </tbody>
@@ -525,6 +606,11 @@ const props = defineProps<{
         paymentTypes: { type: string; count: number; amount: number }[];
         monthlyCount: number[]; monthlyPaid: number[];
         monthlyByType: { name: string; data: number[] }[];
+        byClass: {
+            class_id: number; class_name: string;
+            total: number; paid_count: number; pending_count: number;
+            paid_amount: number; total_amount: number; remaining_amount: number;
+        }[];
     };
     currentLeaves?: any[]; upcomingEvents?: any[]; calendarEvents?: any[]; currentPeriod?: any;
     [key: string]: unknown;

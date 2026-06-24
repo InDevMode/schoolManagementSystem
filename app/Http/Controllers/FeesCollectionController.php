@@ -256,37 +256,113 @@ class FeesCollectionController extends Controller
         return redirect()->away($this->getAdminPaypalUrl($request, $student, $student_id));
     }
 
-    private function getAdminPaypalUrl(Request $request, $student, $student_id): string
-    {
-        $payConfig = $this->getPaymentConfig();
-        $paypalEmail = $payConfig->paypal_email ?? '';
+    // ──────────────────────────────────────────────────────────────────────────
+    // HELPERS PayPal — API REST Orders v2
+    // ──────────────────────────────────────────────────────────────────────────
 
-        if (empty($paypalEmail)) {
-            throw new \RuntimeException('Email PayPal non configuré. Allez dans Paramètres pour le configurer.');
+    /**
+     * Retourne un access_token OAuth2 PayPal.
+     */
+    private function getPaypalAccessToken(string $clientId, string $secret, string $mode): string
+    {
+        $baseUrl = $mode === 'live'
+            ? 'https://api-m.paypal.com'
+            : 'https://api-m.sandbox.paypal.com';
+
+        $response = Http::withBasicAuth($clientId, $secret)
+            ->asForm()
+            ->post("{$baseUrl}/v1/oauth2/token", ['grant_type' => 'client_credentials']);
+
+        if (!$response->ok()) {
+            throw new \RuntimeException('Impossible d\'obtenir un token PayPal. Vérifiez vos identifiants.');
         }
 
-        $query = [
-            'business'      => $paypalEmail,
-            'cmd'           => '_xclick',
-            'item_name'     => "Frais de scolarité",
-            'no_shipping'   => '1',
-            'amount'        => $request->amount,
-            'currency_code' => 'XOF',
-            'custom'        => json_encode([
-                'student_id'      => $student_id,
-                'class_id'        => $student->class_id,
-                'total_amount'    => $student->class_amount,
-                'paid_amount'     => $request->amount,
-                'remaning_amount' => $student->class_amount - (FeesCollectionModel::getPaidAmount($student_id, $student->class_id) + $request->amount),
-                'remark'          => $request->remark,
-                'created_by'      => auth()->user()->id,
-            ]),
-            'notify_url'    => url('paypal/ipn/admin'),
-            'cancel_return' => url('admin/feescollections_paypal/payment_error'),
-            'return'        => url('admin/feescollections_paypal/payment_success'),
+        return $response->json('access_token');
+    }
+
+    /**
+     * Crée un ordre PayPal (API v2) et retourne l'URL d'approbation.
+     */
+    private function createPaypalOrder(array $paymentData, $student, int $studentId, float $amount): string
+    {
+        $payConfig   = $this->getPaymentConfig();
+        $clientId    = $payConfig->paypal_client_id ?? '';
+        $secret      = $payConfig->paypal_secret    ?? '';
+        $mode        = $payConfig->paypal_mode      ?? 'sandbox';
+
+        if (empty($clientId) || empty($secret)) {
+            throw new \RuntimeException('Identifiants PayPal non configurés. Allez dans Paramètres pour les configurer.');
+        }
+
+        $baseUrl     = $mode === 'live'
+            ? 'https://api-m.paypal.com'
+            : 'https://api-m.sandbox.paypal.com';
+
+        $accessToken = $this->getPaypalAccessToken($clientId, $secret, $mode);
+
+        // Stocker les données du paiement en session pour le callback
+        session(['paypal_pending' => array_merge($paymentData, [
+            'student_id_ref' => $studentId,
+        ])]);
+
+        $response = Http::withToken($accessToken)
+            ->post("{$baseUrl}/v2/checkout/orders", [
+                'intent' => 'CAPTURE',
+                'purchase_units' => [[
+                    'amount' => [
+                        'currency_code' => 'USD', // PayPal ne supporte pas XOF nativement
+                        'value'         => number_format($amount / 655.957, 2, '.', ''), // CFA → USD approx.
+                    ],
+                    'description' => 'Frais scolaires — ' . $student->last_name . ' ' . $student->name,
+                ]],
+                'application_context' => [
+                    'return_url' => url('admin/feescollections_paypal/payment_success'),
+                    'cancel_url' => url('admin/feescollections_paypal/payment_error'),
+                    'brand_name' => config('app.name', 'School Management'),
+                    'user_action' => 'PAY_NOW',
+                ],
+            ]);
+
+        if (!$response->ok()) {
+            Log::error('PayPal order creation failed: ' . $response->body());
+            throw new \RuntimeException('Erreur lors de la création de l\'ordre PayPal. Réessayez.');
+        }
+
+        // Récupérer l'URL d'approbation
+        $approveUrl = collect($response->json('links'))
+            ->firstWhere('rel', 'approve')['href'] ?? null;
+
+        if (!$approveUrl) {
+            throw new \RuntimeException('URL d\'approbation PayPal introuvable.');
+        }
+
+        return $approveUrl;
+    }
+
+    private function getAdminPaypalUrl(Request $request, $student, $student_id): string
+    {
+        $payConfig  = $this->getPaymentConfig();
+        $clientId   = $payConfig->paypal_client_id ?? '';
+        $secret     = $payConfig->paypal_secret    ?? '';
+
+        if (empty($clientId) || empty($secret)) {
+            throw new \RuntimeException('Identifiants PayPal non configurés. Allez dans Paramètres pour les configurer.');
+        }
+
+        $getPaidAmount = FeesCollectionModel::getPaidAmount($student_id, $student->class_id);
+
+        $paymentData = [
+            'class_id'        => intval($student->class_id),
+            'student_id'      => intval($student_id),
+            'total_amount'    => intval($student->class_amount),
+            'paid_amount'     => intval($request->amount),
+            'remaning_amount' => intval($student->class_amount) - ($getPaidAmount + intval($request->amount)),
+            'payment_type'    => 'paypal',
+            'remark'          => $request->remark,
+            'created_by'      => auth()->user()->id,
         ];
 
-        return 'https://www.sandbox.paypal.com/cgi-bin/webscr?' . http_build_query($query);
+        return $this->createPaypalOrder($paymentData, $student, $student_id, (float) $request->amount);
     }
 
     private function redirectToAdminStripe(FeesCollectionModel $fees, $student)
@@ -331,31 +407,51 @@ class FeesCollectionController extends Controller
 
     public function paypalAdminSuccess(Request $request)
     {
-        if (!empty($request->custom) && $request->st === 'Completed') {
-            $metadata = json_decode($request->custom);
+        $pending = session('paypal_pending');
+        $orderId = $request->get('token'); // PayPal envoie le token = order_id dans l'URL de retour
 
-            $fees = new FeesCollectionModel;
-            $fees->class_id = intval($metadata->class_id);
-            $fees->student_id = intval($metadata->student_id);
-            $fees->total_amount = intval($metadata->total_amount);
-            $fees->paid_amount = intval($metadata->paid_amount);
-            $fees->remaning_amount = intval($metadata->remaning_amount);
-            $fees->payment_type = 'paypal';
-            $fees->remark = $metadata->remark;
-            $fees->created_by = intval($metadata->created_by);
-            $fees->payment_status = $request->st;
-            $fees->payment_data = json_encode($request->all());
+        if (!$pending || !$orderId) {
+            return redirect('admin/feescollections/collections/list')
+                ->with('error', 'Données de paiement PayPal introuvables.');
+        }
+
+        try {
+            $payConfig   = $this->getPaymentConfig();
+            $clientId    = $payConfig->paypal_client_id ?? '';
+            $secret      = $payConfig->paypal_secret    ?? '';
+            $mode        = $payConfig->paypal_mode      ?? 'sandbox';
+            $baseUrl     = $mode === 'live' ? 'https://api-m.paypal.com' : 'https://api-m.sandbox.paypal.com';
+
+            $accessToken = $this->getPaypalAccessToken($clientId, $secret, $mode);
+
+            // Capturer l'ordre PayPal
+            $capture = Http::withToken($accessToken)
+                ->post("{$baseUrl}/v2/checkout/orders/{$orderId}/capture");
+
+            if (!$capture->ok() || $capture->json('status') !== 'COMPLETED') {
+                Log::error('PayPal capture failed: ' . $capture->body());
+                return redirect('admin/feescollections/collections/list')
+                    ->with('error', 'Capture PayPal échouée. Veuillez contacter le support.');
+            }
+
+            $fees = new FeesCollectionModel($pending);
+            $fees->payment_status    = 'Paid';
+            $fees->payment_data      = json_encode($capture->json());
             $fees->save();
 
-            // Notifier l'apprenant et son parent
+            session()->forget('paypal_pending');
+
             $student = User::find($fees->student_id);
             if ($student) $this->notifyPayment($fees, $student);
 
             return redirect('admin/feescollections/collections/list')
                 ->with('success', 'Paiement PayPal validé et contribution enregistrée.');
-        }
 
-        return redirect()->back()->with('error', 'Paiement non reconnu ou incomplet.');
+        } catch (\Exception $e) {
+            Log::error('PayPal admin success error: ' . $e->getMessage());
+            return redirect('admin/feescollections/collections/list')
+                ->with('error', 'Erreur lors de la validation PayPal : ' . $e->getMessage());
+        }
     }
 
     public function stripeAdminSuccess(Request $request)
@@ -491,8 +587,17 @@ class FeesCollectionController extends Controller
                         ->with('success', 'Paiement Kkiapay validé et contribution enregistrée.');
 
                 case 'paypal':
-                    // 🔁 Redirection vers PayPal avec les données en `custom`
-                    return $this->redirectToStudentPaypal($request, $getStudent, Auth::user()->id);
+                    // 🔁 Redirection vers PayPal REST v2
+                    $paymentData['payment_type'] = 'paypal';
+                    try {
+                        $paypalUrl = $this->createPaypalOrder($paymentData, $getStudent, Auth::user()->id, (float) $newPayment);
+                        // Mettre à jour les URLs de retour pour l'étudiant
+                        // (on recrée l'ordre avec les bonnes URLs via un helper dédié)
+                        $paypalUrl = $this->createStudentPaypalOrder($paymentData, $getStudent, Auth::user()->id, (float) $newPayment);
+                    } catch (\RuntimeException $e) {
+                        return redirect()->back()->with('error', $e->getMessage());
+                    }
+                    return redirect()->away($paypalUrl);
 
                 case 'stripe':
                     // 🔁 Redirection vers Stripe avec les données en `metadata`
@@ -508,35 +613,46 @@ class FeesCollectionController extends Controller
         }
     }
 
-    private function redirectToStudentPaypal($request, $student, $student_id)
+    private function createStudentPaypalOrder(array $paymentData, $student, int $studentId, float $amount): string
     {
-        $payConfig = $this->getPaymentConfig();
+        $payConfig   = $this->getPaymentConfig();
+        $clientId    = $payConfig->paypal_client_id ?? '';
+        $secret      = $payConfig->paypal_secret    ?? '';
+        $mode        = $payConfig->paypal_mode      ?? 'sandbox';
 
-        $query = [
-            'business' => $payConfig->paypal_email ?? '',
-            'cmd' => '_xclick',
-            'item_name' => "Frais de scolarité",
-            'no_shipping' => '1',
-            'amount' => $request->amount,
-            'currency_code' => 'XOF',
-            'custom' => json_encode([
-                'student_id' => $student_id,
-                'class_id' => $student->class_id,
-                'total_amount' => $student->class_amount,
-                'paid_amount' => $request->amount,
-                'remaning_amount' => $student->class_amount - (FeesCollectionModel::getPaidAmount($student_id, $student->class_id) + $request->amount),
-                'remark' => $request->remark,
-                'created_by' => auth()->user()->id,
-            ]),
-            'notify_url' => url('paypal/ipn'),
-            'cancel_return' => url('student/my_fees_paypal/payment_error'),
-            'return' => url('student/my_fees_paypal/payment_success'),
-        ];
+        if (empty($clientId) || empty($secret)) {
+            throw new \RuntimeException('Identifiants PayPal non configurés. Allez dans Paramètres pour les configurer.');
+        }
 
-        $query_string = http_build_query($query);
-        $url = 'https://www.sandbox.paypal.com/cgi-bin/webscr?' . $query_string;
+        $baseUrl     = $mode === 'live' ? 'https://api-m.paypal.com' : 'https://api-m.sandbox.paypal.com';
+        $accessToken = $this->getPaypalAccessToken($clientId, $secret, $mode);
 
-        return redirect()->away($url);
+        session(['paypal_student_pending' => $paymentData]);
+
+        $response = Http::withToken($accessToken)
+            ->post("{$baseUrl}/v2/checkout/orders", [
+                'intent' => 'CAPTURE',
+                'purchase_units' => [[
+                    'amount' => [
+                        'currency_code' => 'USD',
+                        'value'         => number_format($amount / 655.957, 2, '.', ''),
+                    ],
+                    'description' => 'Frais scolaires — ' . $student->last_name . ' ' . $student->name,
+                ]],
+                'application_context' => [
+                    'return_url' => url('student/my_fees_paypal/payment_success'),
+                    'cancel_url' => url('student/my_fees_paypal/payment_error'),
+                    'brand_name' => config('app.name', 'School Management'),
+                    'user_action' => 'PAY_NOW',
+                ],
+            ]);
+
+        if (!$response->ok()) {
+            throw new \RuntimeException('Erreur lors de la création de l\'ordre PayPal.');
+        }
+
+        return collect($response->json('links'))->firstWhere('rel', 'approve')['href']
+            ?? throw new \RuntimeException('URL d\'approbation PayPal introuvable.');
     }
 
     private function redirectToStudentStripe(FeesCollectionModel $fees, $student): string
@@ -584,35 +700,9 @@ class FeesCollectionController extends Controller
 
     public function paypalIPN(Request $request)
     {
-        $raw_post_data = file_get_contents('php://input');
-        $req = 'cmd=_notify-validate&' . $raw_post_data;
-
-        // Vérification côté PayPal
-        $paypal_url = 'https://ipnpb.sandbox.paypal.com/cgi-bin/webscr';
-        $ch = curl_init($paypal_url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_HEADER, false);
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $req);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
-        curl_setopt($ch, CURLOPT_CAINFO, __DIR__ . '/cert/cacert.pem'); // Certificat racine
-        $res = curl_exec($ch);
-        curl_close($ch);
-
-        if (strcmp($res, "VERIFIED") === 0) {
-            $item_number = $request->item_number;
-            $payment_status = $request->payment_status;
-
-            if ($payment_status === 'Completed') {
-                $fees = FeesCollectionModel::find($item_number);
-                if ($fees) {
-                    $fees->is_payment = 1;
-                    $fees->payment_status = $payment_status;
-                    $fees->payment_data = json_encode($request->all());
-                    $fees->save();
-                }
-            }
-        }
+        // IPN obsolète — l'API REST PayPal v2 n'utilise pas IPN.
+        // Conservé pour compatibilité ascendante, ne fait rien.
+        return response()->noContent();
     }
 
     public function paypalStudentError()
@@ -622,22 +712,45 @@ class FeesCollectionController extends Controller
 
     public function paypalStudentSuccess(Request $request)
     {
-        if (!empty($request->item_number) && $request->st == 'Completed') {
-            $fees = FeesCollectionModel::getSingle($request->item_number);
-            if ($fees) {
-                $fees->is_payment = 1;
-                $fees->payment_status = $request->st;
-                $fees->payment_data = json_encode($request->all());
-                $fees->save();
+        $pending = session('paypal_student_pending');
+        $orderId = $request->get('token');
 
-                // Notifier l'apprenant et son parent
-                $student = User::find($fees->student_id);
-                if ($student) $this->notifyPayment($fees, $student);
-
-                return redirect('student/myfees')->with('success', 'Paiement validé avec succès.');
-            }
+        if (!$pending || !$orderId) {
+            return redirect('student/my_fees')->with('error', 'Données de paiement PayPal introuvables.');
         }
-        return redirect()->back()->with('error', 'Paiement non reconnu.');
+
+        try {
+            $payConfig   = $this->getPaymentConfig();
+            $clientId    = $payConfig->paypal_client_id ?? '';
+            $secret      = $payConfig->paypal_secret    ?? '';
+            $mode        = $payConfig->paypal_mode      ?? 'sandbox';
+            $baseUrl     = $mode === 'live' ? 'https://api-m.paypal.com' : 'https://api-m.sandbox.paypal.com';
+
+            $accessToken = $this->getPaypalAccessToken($clientId, $secret, $mode);
+
+            $capture = Http::withToken($accessToken)
+                ->post("{$baseUrl}/v2/checkout/orders/{$orderId}/capture");
+
+            if (!$capture->ok() || $capture->json('status') !== 'COMPLETED') {
+                return redirect('student/my_fees')->with('error', 'Capture PayPal échouée.');
+            }
+
+            $fees = new FeesCollectionModel($pending);
+            $fees->payment_status = 'Paid';
+            $fees->payment_data   = json_encode($capture->json());
+            $fees->save();
+
+            session()->forget('paypal_student_pending');
+
+            $student = User::find($fees->student_id);
+            if ($student) $this->notifyPayment($fees, $student);
+
+            return redirect('student/my_fees')->with('success', 'Paiement PayPal validé avec succès.');
+
+        } catch (\Exception $e) {
+            Log::error('PayPal student success error: ' . $e->getMessage());
+            return redirect('student/my_fees')->with('error', 'Erreur PayPal : ' . $e->getMessage());
+        }
     }
 
     public function stripeStudentSuccess(Request $request)
@@ -743,8 +856,14 @@ class FeesCollectionController extends Controller
                         ->with('success', 'Paiement Kkiapay validé et contribution enregistrée.');
 
                 case 'paypal':
-                    // 🔁 Redirection vers PayPal avec les données en `custom`
-                    return $this->redirectToParentPaypal($request, $getStudent, $student_id);
+                    // 🔁 Redirection vers PayPal REST v2
+                    $paymentData['payment_type'] = 'paypal';
+                    try {
+                        $paypalUrl = $this->createParentPaypalOrder($paymentData, $getStudent, $student_id, (float) $newPayment);
+                    } catch (\RuntimeException $e) {
+                        return redirect()->back()->with('error', $e->getMessage());
+                    }
+                    return redirect()->away($paypalUrl);
 
                 case 'stripe':
                     // 🔁 Redirection vers Stripe avec les données en `metadata`
@@ -767,31 +886,46 @@ class FeesCollectionController extends Controller
 
     public function paypalParentSuccess(Request $request)
     {
-        if (!empty($request->custom) && $request->st === 'Completed') {
-            $metadata = json_decode($request->custom);
+        $pending = session('paypal_parent_pending');
+        $orderId = $request->get('token');
 
-            $fees = new FeesCollectionModel;
-            $fees->class_id = intval($metadata->class_id);
-            $fees->student_id = intval($metadata->student_id);
-            $fees->total_amount = intval($metadata->total_amount);
-            $fees->paid_amount = intval($metadata->paid_amount);
-            $fees->remaning_amount = intval($metadata->remaning_amount);
-            $fees->payment_type = 'paypal';
-            $fees->remark = $metadata->remark;
-            $fees->created_by = intval($metadata->created_by);
-            $fees->payment_status = $request->st;
-            $fees->payment_data = json_encode($request->all());
+        if (!$pending || !$orderId) {
+            return redirect()->back()->with('error', 'Données de paiement PayPal introuvables.');
+        }
+
+        try {
+            $payConfig   = $this->getPaymentConfig();
+            $clientId    = $payConfig->paypal_client_id ?? '';
+            $secret      = $payConfig->paypal_secret    ?? '';
+            $mode        = $payConfig->paypal_mode      ?? 'sandbox';
+            $baseUrl     = $mode === 'live' ? 'https://api-m.paypal.com' : 'https://api-m.sandbox.paypal.com';
+
+            $accessToken = $this->getPaypalAccessToken($clientId, $secret, $mode);
+
+            $capture = Http::withToken($accessToken)
+                ->post("{$baseUrl}/v2/checkout/orders/{$orderId}/capture");
+
+            if (!$capture->ok() || $capture->json('status') !== 'COMPLETED') {
+                return redirect()->back()->with('error', 'Capture PayPal échouée.');
+            }
+
+            $fees = new FeesCollectionModel($pending);
+            $fees->payment_status = 'Paid';
+            $fees->payment_data   = json_encode($capture->json());
             $fees->save();
 
-            // Notifier l'apprenant et son parent
+            session()->forget('paypal_parent_pending');
+
             $student = User::find($fees->student_id);
             if ($student) $this->notifyPayment($fees, $student);
 
-            return redirect('parent/my_student/feescollections/' . $metadata->student_id)
+            return redirect('parent/my_student/feescollections/' . $fees->student_id)
                 ->with('success', 'Paiement PayPal validé et contribution enregistrée.');
-        }
 
-        return redirect()->back()->with('error', 'Paiement non reconnu ou incomplet.');
+        } catch (\Exception $e) {
+            Log::error('PayPal parent success error: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Erreur PayPal : ' . $e->getMessage());
+        }
     }
 
     public function stripeParentSuccess(Request $request)
@@ -833,35 +967,46 @@ class FeesCollectionController extends Controller
         return redirect()->back()->with('error', 'Paiement annulé ou échoué.');
     }
 
-    private function redirectToParentPaypal($request, $student, $student_id)
+    private function createParentPaypalOrder(array $paymentData, $student, int $studentId, float $amount): string
     {
-        $payConfig = $this->getPaymentConfig();
+        $payConfig   = $this->getPaymentConfig();
+        $clientId    = $payConfig->paypal_client_id ?? '';
+        $secret      = $payConfig->paypal_secret    ?? '';
+        $mode        = $payConfig->paypal_mode      ?? 'sandbox';
 
-        $query = [
-            'business' => $payConfig->paypal_email ?? '',
-            'cmd' => '_xclick',
-            'item_name' => "Frais de scolarité",
-            'no_shipping' => '1',
-            'amount' => $request->amount,
-            'currency_code' => 'XOF',
-            'custom' => json_encode([
-                'student_id' => $student_id,
-                'class_id' => $student->class_id,
-                'total_amount' => $student->class_amount,
-                'paid_amount' => $request->amount,
-                'remaning_amount' => $student->class_amount - (FeesCollectionModel::getPaidAmount($student_id, $student->class_id) + $request->amount),
-                'remark' => $request->remark,
-                'created_by' => auth()->user()->id,
-            ]),
-            'notify_url' => url('paypal/ipn'),
-            'cancel_return' => url('parent/my_fees_paypal/payment_error'),
-            'return' => url('parent/my_fees_paypal/payment_success'),
-        ];
+        if (empty($clientId) || empty($secret)) {
+            throw new \RuntimeException('Identifiants PayPal non configurés. Allez dans Paramètres pour les configurer.');
+        }
 
-        $query_string = http_build_query($query);
-        $url = 'https://www.sandbox.paypal.com/cgi-bin/webscr?' . $query_string;
+        $baseUrl     = $mode === 'live' ? 'https://api-m.paypal.com' : 'https://api-m.sandbox.paypal.com';
+        $accessToken = $this->getPaypalAccessToken($clientId, $secret, $mode);
 
-        return redirect()->away($url);
+        session(['paypal_parent_pending' => $paymentData]);
+
+        $response = Http::withToken($accessToken)
+            ->post("{$baseUrl}/v2/checkout/orders", [
+                'intent' => 'CAPTURE',
+                'purchase_units' => [[
+                    'amount' => [
+                        'currency_code' => 'USD',
+                        'value'         => number_format($amount / 655.957, 2, '.', ''),
+                    ],
+                    'description' => 'Frais scolaires — ' . $student->last_name . ' ' . $student->name,
+                ]],
+                'application_context' => [
+                    'return_url' => url('parent/my_fees_paypal/payment_success'),
+                    'cancel_url' => url('parent/my_fees_paypal/payment_error'),
+                    'brand_name' => config('app.name', 'School Management'),
+                    'user_action' => 'PAY_NOW',
+                ],
+            ]);
+
+        if (!$response->ok()) {
+            throw new \RuntimeException('Erreur lors de la création de l\'ordre PayPal.');
+        }
+
+        return collect($response->json('links'))->firstWhere('rel', 'approve')['href']
+            ?? throw new \RuntimeException('URL d\'approbation PayPal introuvable.');
     }
 
     private function redirectToParentStripe(FeesCollectionModel $fees, $student): string

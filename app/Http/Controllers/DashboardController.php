@@ -118,6 +118,7 @@ class DashboardController extends Controller
                 $data['currentLeaves']       = $this->safeStat(fn() => StaffModel::getCurrentLeaves(), []);
                 // ── Contributions détaillées ──
                 $data['feesStats']           = $this->safeStat(fn() => $this->getFeesStats(), []);
+                $data['feesStatsBySchool']    = $this->safeStat(fn() => $this->getFeesStatsBySchool(), []);
                 $data['upcomingEvents']      = $upcomingEvents;
                 $data['calendarEvents']      = $calendarEvents;
                 $data['currentPeriod']       = $currentPeriod;
@@ -548,28 +549,43 @@ class DashboardController extends Controller
      */
     private function getFeesStats(?int $schoolId = null): array
     {
-        $base = DB::table('feescollections')
-            ->where('feescollections.is_delete', 0);
-
+        // Récupérer les IDs des élèves de l'école pour éviter les ambiguïtés de jointures
+        $filterStudentIds = null;
         if ($schoolId !== null) {
-            $base = $base->join('users', 'users.id', '=', 'feescollections.student_id')
-                         ->where('users.school_id', $schoolId)
-                         ->where('users.is_delete', 0);
+            $filterStudentIds = DB::table('users')
+                ->where('school_id', $schoolId)
+                ->where('is_delete', 0)
+                ->where('user_type', 3)
+                ->pluck('id')
+                ->toArray();
+
+            if (empty($filterStudentIds)) {
+                return $this->emptyFeesStats();
+            }
         }
 
+        // Closure helper : requête de base filtrée
+        $q = function () use ($filterStudentIds) {
+            $query = DB::table('feescollections')->where('feescollections.is_delete', 0);
+            if ($filterStudentIds !== null) {
+                $query->whereIn('feescollections.student_id', $filterStudentIds);
+            }
+            return $query;
+        };
+
         // ── Montants globaux ────────────────────────────────────────────────
-        $amountRow = (clone $base)
-            ->selectRaw('SUM(total_amount) as total, SUM(paid_amount) as paid, SUM(remaning_amount) as remaining')
+        $amountRow = $q()
+            ->selectRaw('SUM(feescollections.total_amount) as total, SUM(feescollections.paid_amount) as paid, SUM(feescollections.remaning_amount) as remaining')
             ->first();
 
         $totalAmount     = (int) ($amountRow->total     ?? 0);
         $paidAmount      = (int) ($amountRow->paid      ?? 0);
         $remainingAmount = (int) ($amountRow->remaining ?? 0);
 
-        // ── Dossiers par statut (is_payment + payment_status) ───────────────
-        $statusRows = (clone $base)
-            ->selectRaw('payment_status, is_payment, COUNT(*) as total')
-            ->groupBy('payment_status', 'is_payment')
+        // ── Dossiers par statut ──────────────────────────────────────────────
+        $statusRows = $q()
+            ->selectRaw('feescollections.payment_status, feescollections.is_payment, COUNT(*) as total')
+            ->groupBy('feescollections.payment_status', 'feescollections.is_payment')
             ->get();
 
         $countPaid    = 0;
@@ -590,30 +606,12 @@ class DashboardController extends Controller
             }
         }
 
-        // ── Montants payés par statut ────────────────────────────────────────
-        $paidAmountRow = (clone $base)
-            ->where(function ($q) {
-                $q->where('is_payment', 1)
-                  ->orWhereIn('payment_status', ['Paid', 'Completed']);
-            })
-            ->selectRaw('SUM(paid_amount) as paid')
-            ->first();
-
-        $pendingAmountRow = (clone $base)
-            ->where('is_payment', 0)
-            ->where(function ($q) {
-                $q->where('payment_status', 'Pending')
-                  ->orWhereNull('payment_status');
-            })
-            ->selectRaw('SUM(total_amount) as amount')
-            ->first();
-
         // ── Répartition par mode de paiement ───────────────────────────────
-        $paymentTypeRows = (clone $base)
-            ->whereNotNull('payment_type')
-            ->where('payment_type', '!=', '')
-            ->selectRaw('payment_type, COUNT(*) as count, SUM(paid_amount) as amount')
-            ->groupBy('payment_type')
+        $paymentTypeRows = $q()
+            ->whereNotNull('feescollections.payment_type')
+            ->where('feescollections.payment_type', '!=', '')
+            ->selectRaw('feescollections.payment_type, COUNT(*) as count, SUM(feescollections.paid_amount) as amount')
+            ->groupBy('feescollections.payment_type')
             ->orderByDesc('count')
             ->get();
 
@@ -628,27 +626,25 @@ class DashboardController extends Controller
 
         // ── Évolution mensuelle (année en cours) ────────────────────────────
         $year = date('Y');
-        $monthlyRows = (clone $base)
+        $monthlyRows = $q()
             ->whereYear('feescollections.created_at', $year)
-            ->selectRaw('MONTH(feescollections.created_at) as month, COUNT(*) as count, SUM(paid_amount) as paid')
+            ->selectRaw('MONTH(feescollections.created_at) as month, COUNT(*) as count, SUM(feescollections.paid_amount) as paid')
             ->groupBy(DB::raw('MONTH(feescollections.created_at)'))
             ->get()
             ->keyBy('month');
 
-        $monthlyCount  = [];
-        $monthlyPaid   = [];
-        $monthlyByType = [];
-
+        $monthlyCount = [];
+        $monthlyPaid  = [];
         for ($m = 1; $m <= 12; $m++) {
             $monthlyCount[] = (int) ($monthlyRows->get($m)?->count ?? 0);
             $monthlyPaid[]  = (int) ($monthlyRows->get($m)?->paid  ?? 0);
         }
 
-        // Évolution mensuelle par mode de paiement (top 4 modes)
-        $topTypes = array_slice(array_column($paymentTypes, 'type'), 0, 4);
-        foreach ($topTypes as $type) {
-            $rows = DB::table('feescollections')
-                ->where('feescollections.is_delete', 0)
+        // Évolution mensuelle par mode de paiement (tous les modes)
+        $monthlyByType = [];
+        foreach ($paymentTypes as $pt) {
+            $type = $pt['type'];
+            $typeRows = $q()
                 ->where('feescollections.payment_type', $type)
                 ->whereYear('feescollections.created_at', $year)
                 ->selectRaw('MONTH(feescollections.created_at) as month, COUNT(*) as count')
@@ -658,33 +654,170 @@ class DashboardController extends Controller
 
             $series = [];
             for ($m = 1; $m <= 12; $m++) {
-                $series[] = (int) ($rows->get($m)?->count ?? 0);
+                $series[] = (int) ($typeRows->get($m)?->count ?? 0);
             }
             $monthlyByType[] = ['name' => $type, 'data' => $series];
         }
 
-        // Taux de collecte réel (sur les montants)
-        $collectionRate = $totalAmount > 0
-            ? round(($paidAmount / $totalAmount) * 100, 1)
-            : 0;
+        // ── Répartition par classe (Admin seulement) ───────────────────────
+        $byClass = [];
+        if ($filterStudentIds !== null) {
+            $classRows = $q()
+                ->join('class', 'class.id', '=', 'feescollections.class_id')
+                ->selectRaw('class.id as class_id, class.name as class_name,
+                    COUNT(*) as total,
+                    SUM(CASE WHEN feescollections.is_payment = 1 THEN 1 ELSE 0 END) as paid_count,
+                    SUM(CASE WHEN feescollections.payment_status = \'Pending\' AND feescollections.is_payment = 0 THEN 1 ELSE 0 END) as pending_count,
+                    SUM(feescollections.paid_amount) as paid_amount,
+                    SUM(feescollections.total_amount) as total_amount,
+                    SUM(feescollections.remaning_amount) as remaining_amount')
+                ->groupBy('class.id', 'class.name')
+                ->orderBy('class.name')
+                ->get();
+
+            foreach ($classRows as $row) {
+                $byClass[] = [
+                    'class_id'         => $row->class_id,
+                    'class_name'       => $row->class_name,
+                    'total'            => (int) $row->total,
+                    'paid_count'       => (int) $row->paid_count,
+                    'pending_count'    => (int) $row->pending_count,
+                    'paid_amount'      => (int) ($row->paid_amount ?? 0),
+                    'total_amount'     => (int) ($row->total_amount ?? 0),
+                    'remaining_amount' => (int) ($row->remaining_amount ?? 0),
+                ];
+            }
+        }
+
+        $collectionRate = $totalAmount > 0 ? round(($paidAmount / $totalAmount) * 100, 1) : 0;
 
         return [
-            // Montants globaux
             'totalAmount'     => $totalAmount,
             'paidAmount'      => $paidAmount,
             'remainingAmount' => $remainingAmount,
-            // Dossiers par statut
             'countPaid'       => $countPaid,
             'countPending'    => $countPending,
             'countUnpaid'     => $countUnpaid,
-            // Taux de collecte réel
             'collectionRate'  => $collectionRate,
-            // Répartition par mode de paiement
             'paymentTypes'    => $paymentTypes,
-            // Évolution mensuelle
             'monthlyCount'    => $monthlyCount,
             'monthlyPaid'     => $monthlyPaid,
             'monthlyByType'   => $monthlyByType,
+            'byClass'         => $byClass,
+        ];
+    }
+
+    /**
+     * Retourne les stats contributions regroupées par école (SuperAdmin uniquement).
+     */
+    private function getFeesStatsBySchool(): array
+    {
+        $year = date('Y');
+
+        // Toutes les écoles actives
+        $schools = DB::table('schools')
+            ->where('is_delete', 0)
+            ->where('status', 1)
+            ->select('id', 'school_name')
+            ->orderBy('school_name')
+            ->get();
+
+        // Montants + compteurs par école
+        $schoolRows = DB::table('feescollections')
+            ->join('users as su', 'su.id', '=', 'feescollections.student_id')
+            ->join('schools', 'schools.id', '=', 'su.school_id')
+            ->where('feescollections.is_delete', 0)
+            ->where('su.is_delete', 0)
+            ->where('schools.is_delete', 0)
+            ->selectRaw("
+                schools.id as school_id,
+                schools.school_name,
+                COUNT(*) as total,
+                SUM(CASE WHEN feescollections.is_payment = 1 THEN 1 ELSE 0 END) as paid_count,
+                SUM(CASE WHEN feescollections.payment_status = 'Pending' AND feescollections.is_payment = 0 THEN 1 ELSE 0 END) as pending_count,
+                SUM(feescollections.paid_amount) as paid_amount,
+                SUM(feescollections.total_amount) as total_amount,
+                SUM(feescollections.remaning_amount) as remaining_amount
+            ")
+            ->groupBy('schools.id', 'schools.school_name')
+            ->get()
+            ->keyBy('school_id');
+
+        // Répartition mode de paiement × école
+        $allModes = DB::table('feescollections')
+            ->join('users as su2', 'su2.id', '=', 'feescollections.student_id')
+            ->join('schools as sc2', 'sc2.id', '=', 'su2.school_id')
+            ->where('feescollections.is_delete', 0)
+            ->where('su2.is_delete', 0)
+            ->where('sc2.is_delete', 0)
+            ->whereNotNull('feescollections.payment_type')
+            ->where('feescollections.payment_type', '!=', '')
+            ->selectRaw('feescollections.payment_type, sc2.id as school_id, sc2.school_name, COUNT(*) as count, SUM(feescollections.paid_amount) as amount')
+            ->groupBy('feescollections.payment_type', 'sc2.id', 'sc2.school_name')
+            ->orderBy('feescollections.payment_type')
+            ->get();
+
+        // modeSchoolMap[mode] = [{school_name, count, amount}, ...]
+        $modeSchoolMap = [];
+        foreach ($allModes as $row) {
+            $modeSchoolMap[$row->payment_type][] = [
+                'school_id'   => $row->school_id,
+                'school_name' => $row->school_name,
+                'count'       => (int) $row->count,
+                'amount'      => (int) ($row->amount ?? 0),
+            ];
+        }
+
+        // Construire le résultat par école
+        $bySchool = [];
+        foreach ($schools as $school) {
+            $row = $schoolRows->get($school->id);
+            $ptRows = $allModes->filter(fn($r) => $r->school_id === $school->id);
+
+            $paymentTypes = [];
+            foreach ($ptRows as $pt) {
+                $paymentTypes[] = [
+                    'type'   => $pt->payment_type,
+                    'count'  => (int) $pt->count,
+                    'amount' => (int) ($pt->amount ?? 0),
+                ];
+            }
+
+            $totalAmt = (int) ($row?->total_amount ?? 0);
+            $paidAmt  = (int) ($row?->paid_amount  ?? 0);
+
+            $bySchool[] = [
+                'school_id'        => $school->id,
+                'school_name'      => $school->school_name,
+                'total'            => (int) ($row?->total ?? 0),
+                'paid_count'       => (int) ($row?->paid_count ?? 0),
+                'pending_count'    => (int) ($row?->pending_count ?? 0),
+                'paid_amount'      => $paidAmt,
+                'total_amount'     => $totalAmt,
+                'remaining_amount' => (int) ($row?->remaining_amount ?? 0),
+                'collection_rate'  => $totalAmt > 0 ? round(($paidAmt / $totalAmt) * 100, 1) : 0,
+                'payment_types'    => array_values($paymentTypes),
+            ];
+        }
+
+        return [
+            'bySchool'      => $bySchool,
+            'modeSchoolMap' => $modeSchoolMap,
+        ];
+    }
+
+    /**
+     * Retourne un tableau de stats vides pour les contributions.
+     */
+    private function emptyFeesStats(): array
+    {
+        return [
+            'totalAmount' => 0, 'paidAmount' => 0, 'remainingAmount' => 0,
+            'countPaid' => 0, 'countPending' => 0, 'countUnpaid' => 0,
+            'collectionRate' => 0, 'paymentTypes' => [],
+            'monthlyCount' => array_fill(0, 12, 0),
+            'monthlyPaid'  => array_fill(0, 12, 0),
+            'monthlyByType' => [], 'byClass' => [],
         ];
     }
 

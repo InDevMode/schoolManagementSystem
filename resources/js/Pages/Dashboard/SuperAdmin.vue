@@ -487,7 +487,7 @@
                         <PeriodFilter v-model="financePeriod" />
                     </div>
 
-                    <!-- KPI principaux -->
+                    <!-- KPI globaux -->
                     <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
                         <KpiCard label="Dossiers payés"
                             :value="feesStats?.countPaid ?? totalFeesCollections"
@@ -507,7 +507,7 @@
                             icon="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
                     </div>
 
-                    <!-- Montants -->
+                    <!-- Montants globaux -->
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-3" v-if="feesStats">
                         <div class="card p-4 flex flex-col gap-1">
                             <span class="text-xs text-gray-500 dark:text-gray-400">Montant total attendu</span>
@@ -523,25 +523,45 @@
                         </div>
                     </div>
 
-                    <!-- Graphiques évolution + donut -->
+                    <!-- Évolution mensuelle + Donut tous modes par école -->
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
                         <div class="card p-4">
                             <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">Évolution des contributions (12 mois)</h3>
-                            <ApexArea :series="feesAreaSeries" :categories="months" :colors="['#7C3AED','#10B981']" :height="160"/>
+                            <ApexArea :series="feesAreaSeries" :categories="months" :colors="['#7C3AED','#10B981']" :height="180"/>
                         </div>
-                        <div class="card p-4" v-if="feesPaymentTypeSeries.length > 0">
-                            <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">Répartition par mode de paiement</h3>
-                            <ApexDonut
-                                :series="feesPaymentTypeSeries"
-                                :labels="feesPaymentTypeLabels"
-                                :colors="feesPaymentTypeColors"
-                                :height="200"/>
+                        <!-- Donut : tous modes × toutes écoles -->
+                        <div class="card p-4">
+                            <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-1">Répartition par mode & école</h3>
+                            <p class="text-xs text-gray-400 dark:text-gray-500 mb-3">Chaque segment = un mode dans une école</p>
+                            <div v-if="feesSchoolDonutSeries.length > 0">
+                                <ApexDonut
+                                    :series="feesSchoolDonutSeries"
+                                    :labels="feesSchoolDonutLabels"
+                                    :colors="feesSchoolDonutColors"
+                                    :height="220"/>
+                            </div>
+                            <div v-else class="flex items-center justify-center h-32 text-xs text-gray-400">
+                                Aucune donnée de paiement disponible
+                            </div>
                         </div>
                     </div>
 
-                    <!-- Contributions par mode de paiement mensuel -->
+                    <!-- Bar chart : modes de paiement par école -->
+                    <div class="card p-4" v-if="feesSchoolBarSeries.length > 0">
+                        <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-1">Modes de paiement par école</h3>
+                        <p class="text-xs text-gray-400 dark:text-gray-500 mb-3">Nombre de dossiers par mode selon l'établissement</p>
+                        <ApexBar
+                            :series="feesSchoolBarSeries"
+                            :categories="feesSchoolBarCategories"
+                            :colors="feesPaymentTypeColors"
+                            :height="220"
+                            :stacked="true"/>
+                    </div>
+
+                    <!-- Contributions mensuel tous modes (global) -->
                     <div class="card p-4" v-if="feesMonthlyByTypeSeries.length > 0">
-                        <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">Contributions par mode de paiement (mensuel)</h3>
+                        <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-1">Évolution mensuelle par mode de paiement</h3>
+                        <p class="text-xs text-gray-400 dark:text-gray-500 mb-3">Tous les modes sur les 12 derniers mois</p>
                         <ApexBar
                             :series="feesMonthlyByTypeSeries"
                             :categories="months"
@@ -550,9 +570,65 @@
                             :stacked="true"/>
                     </div>
 
-                    <!-- Tableau détail modes de paiement -->
+                    <!-- Tableau par école -->
+                    <div class="card p-4" v-if="feesStatsBySchool?.bySchool?.length">
+                        <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">Récapitulatif par école</h3>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm">
+                                <thead>
+                                    <tr class="border-b border-gray-100 dark:border-gray-700">
+                                        <th class="text-left py-2 px-3 text-gray-500 dark:text-gray-400 font-medium">École</th>
+                                        <th class="text-right py-2 px-3 text-gray-500 dark:text-gray-400 font-medium">Total</th>
+                                        <th class="text-right py-2 px-3 text-gray-500 dark:text-gray-400 font-medium">Payés</th>
+                                        <th class="text-right py-2 px-3 text-gray-500 dark:text-gray-400 font-medium">En attente</th>
+                                        <th class="text-right py-2 px-3 text-gray-500 dark:text-gray-400 font-medium">Collecté</th>
+                                        <th class="text-right py-2 px-3 text-gray-500 dark:text-gray-400 font-medium">Restant</th>
+                                        <th class="text-right py-2 px-3 text-gray-500 dark:text-gray-400 font-medium">Taux</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="(school, i) in feesStatsBySchool.bySchool" :key="school.school_id"
+                                        class="border-b border-gray-50 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800/40 transition-colors">
+                                        <td class="py-2.5 px-3">
+                                            <div class="flex items-center gap-2">
+                                                <span class="w-2 h-2 rounded-full flex-shrink-0" :style="{ background: schoolPalette[i % schoolPalette.length] }"/>
+                                                <span class="font-medium text-gray-800 dark:text-gray-200 truncate max-w-[160px]">{{ school.school_name }}</span>
+                                            </div>
+                                            <!-- Modes de paiement de cette école -->
+                                            <div v-if="school.payment_types?.length" class="flex flex-wrap gap-1 mt-1 pl-4">
+                                                <span v-for="pt in school.payment_types" :key="pt.type"
+                                                    class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-medium bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300">
+                                                    {{ { cash:'Espèces', check:'Chèque', transfer:'Virement', virement:'Virement', kkiapay:'Kkiapay', paypal:'PayPal', stripe:'Stripe', fedapay:'FedaPay' }[pt.type] ?? pt.type }}
+                                                    <span class="text-violet-500 font-bold">×{{ pt.count }}</span>
+                                                </span>
+                                            </div>
+                                        </td>
+                                        <td class="text-right py-2.5 px-3 text-gray-600 dark:text-gray-300">{{ school.total }}</td>
+                                        <td class="text-right py-2.5 px-3">
+                                            <span class="text-green-600 dark:text-green-400 font-semibold">{{ school.paid_count }}</span>
+                                        </td>
+                                        <td class="text-right py-2.5 px-3">
+                                            <span class="text-amber-500 font-semibold">{{ school.pending_count }}</span>
+                                        </td>
+                                        <td class="text-right py-2.5 px-3 text-green-600 dark:text-green-400 font-semibold text-xs">{{ fmtAmount(school.paid_amount) }}</td>
+                                        <td class="text-right py-2.5 px-3 text-amber-600 dark:text-amber-400 text-xs">{{ fmtAmount(school.remaining_amount) }}</td>
+                                        <td class="text-right py-2.5 px-3">
+                                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold"
+                                                :class="school.collection_rate >= 75 ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400'
+                                                    : school.collection_rate >= 40 ? 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400'
+                                                    : 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400'">
+                                                {{ school.collection_rate }}%
+                                            </span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Tableau détail modes de paiement (global) -->
                     <div class="card p-4" v-if="feesStats?.paymentTypes?.length">
-                        <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">Détail par mode de paiement</h3>
+                        <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">Détail global par mode de paiement</h3>
                         <div class="overflow-x-auto">
                             <table class="w-full text-sm">
                                 <thead>
@@ -561,23 +637,31 @@
                                         <th class="text-right py-2 px-3 text-gray-500 dark:text-gray-400 font-medium">Dossiers</th>
                                         <th class="text-right py-2 px-3 text-gray-500 dark:text-gray-400 font-medium">Montant collecté</th>
                                         <th class="text-right py-2 px-3 text-gray-500 dark:text-gray-400 font-medium">% dossiers</th>
+                                        <th class="text-left py-2 px-3 text-gray-500 dark:text-gray-400 font-medium">Écoles concernées</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr v-for="(pt, i) in feesStats.paymentTypes" :key="pt.type"
                                         class="border-b border-gray-50 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
-                                        <td class="py-2 px-3 flex items-center gap-2">
-                                            <span class="w-2.5 h-2.5 rounded-full flex-shrink-0" :style="{ background: feesPaymentTypeColors[i % feesPaymentTypeColors.length] }"></span>
+                                        <td class="py-2.5 px-3 flex items-center gap-2">
+                                            <span class="w-2.5 h-2.5 rounded-full flex-shrink-0" :style="{ background: feesPaymentTypeColors[i % feesPaymentTypeColors.length] }"/>
                                             <span class="font-medium text-gray-800 dark:text-gray-200">{{ feesPaymentTypeLabels[i] }}</span>
                                         </td>
-                                        <td class="text-right py-2 px-3 text-gray-700 dark:text-gray-300 font-semibold">{{ pt.count }}</td>
-                                        <td class="text-right py-2 px-3 text-green-600 dark:text-green-400 font-semibold">{{ fmtAmount(pt.amount) }}</td>
-                                        <td class="text-right py-2 px-3">
-                                            <span class="text-gray-500 dark:text-gray-400">
-                                                {{ feesStats.countPaid + feesStats.countPending + feesStats.countUnpaid > 0
-                                                    ? Math.round(pt.count / (feesStats.countPaid + feesStats.countPending + feesStats.countUnpaid) * 100)
-                                                    : 0 }}%
-                                            </span>
+                                        <td class="text-right py-2.5 px-3 text-gray-700 dark:text-gray-300 font-semibold">{{ pt.count }}</td>
+                                        <td class="text-right py-2.5 px-3 text-green-600 dark:text-green-400 font-semibold">{{ fmtAmount(pt.amount) }}</td>
+                                        <td class="text-right py-2.5 px-3 text-gray-500 dark:text-gray-400">
+                                            {{ (feesStats.countPaid + feesStats.countPending + feesStats.countUnpaid) > 0
+                                                ? Math.round(pt.count / (feesStats.countPaid + feesStats.countPending + feesStats.countUnpaid) * 100)
+                                                : 0 }}%
+                                        </td>
+                                        <td class="py-2.5 px-3">
+                                            <div class="flex flex-wrap gap-1">
+                                                <span v-for="entry in (feesStatsBySchool?.modeSchoolMap?.[pt.type] ?? [])" :key="entry.school_name"
+                                                    class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300">
+                                                    {{ entry.school_name }}
+                                                    <span class="font-bold text-violet-500">×{{ entry.count }}</span>
+                                                </span>
+                                            </div>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -721,6 +805,16 @@ const props = defineProps<{
         monthlyCount: number[]; monthlyPaid: number[];
         monthlyByType: { name: string; data: number[] }[];
     };
+    feesStatsBySchool?: {
+        bySchool: {
+            school_id: number; school_name: string;
+            total: number; paid_count: number; pending_count: number;
+            paid_amount: number; total_amount: number; remaining_amount: number;
+            collection_rate: number;
+            payment_types: { type: string; count: number; amount: number }[];
+        }[];
+        modeSchoolMap: Record<string, { school_id: number; school_name: string; count: number; amount: number }[]>;
+    };
     currentLeaves?: any[]; upcomingEvents?: any[]; calendarEvents?: any[]; currentPeriod?: any;
     [key: string]: unknown;
 }>();
@@ -815,6 +909,72 @@ const feesPaymentTypeLabels = computed(() => {
 const feesPaymentTypeColors = ['#7C3AED','#10B981','#3B82F6','#F59E0B','#EF4444','#06B6D4','#8B5CF6','#EC4899'];
 const feesMonthlyByTypeSeries = computed(() => props.feesStats?.monthlyByType ?? []);
 const fmtAmount = (n: number) => new Intl.NumberFormat('fr-FR').format(n);
+
+// ── Graphiques par école (SuperAdmin) ─────────────────────────────────────────
+// Série donut : un segment par mode × école (label = "Mode – École")
+const feesSchoolDonutSeries = computed(() => {
+    const map = props.feesStatsBySchool?.modeSchoolMap ?? {};
+    const series: number[] = [];
+    for (const mode of Object.keys(map)) {
+        for (const item of map[mode]) {
+            series.push(item.count);
+        }
+    }
+    return series;
+});
+const feesSchoolDonutLabels = computed(() => {
+    const map = props.feesStatsBySchool?.modeSchoolMap ?? {};
+    const modeLabels: Record<string, string> = {
+        cash: 'Espèces', check: 'Chèque', transfer: 'Virement', virement: 'Virement',
+        kkiapay: 'Kkiapay', paypal: 'PayPal', stripe: 'Stripe', fedapay: 'FedaPay',
+    };
+    const labels: string[] = [];
+    for (const mode of Object.keys(map)) {
+        for (const item of map[mode]) {
+            labels.push(`${modeLabels[mode] ?? mode} – ${item.school_name}`);
+        }
+    }
+    return labels;
+});
+const feesSchoolDonutColors = computed(() => {
+    const map = props.feesStatsBySchool?.modeSchoolMap ?? {};
+    const baseModeColors: Record<string, string> = {
+        cash: '#7C3AED', check: '#10B981', transfer: '#3B82F6', virement: '#3B82F6',
+        kkiapay: '#F59E0B', paypal: '#06B6D4', stripe: '#8B5CF6', fedapay: '#EF4444',
+    };
+    const allColors = ['#7C3AED','#10B981','#3B82F6','#F59E0B','#EF4444','#06B6D4','#8B5CF6','#EC4899','#14B8A6','#F97316'];
+    const colors: string[] = [];
+    let modeIdx = 0;
+    for (const mode of Object.keys(map)) {
+        const base = baseModeColors[mode] ?? allColors[modeIdx % allColors.length];
+        for (let i = 0; i < map[mode].length; i++) {
+            // Variation de luminosité par école
+            colors.push(i === 0 ? base : allColors[(modeIdx * 2 + i) % allColors.length]);
+        }
+        modeIdx++;
+    }
+    return colors;
+});
+
+// Bar chart : modes de paiement en séries, écoles en catégories
+const feesSchoolBarSeries = computed(() => {
+    const map = props.feesStatsBySchool?.modeSchoolMap ?? {};
+    const schools = props.feesStatsBySchool?.bySchool?.map(s => s.school_name) ?? [];
+    if (!schools.length) return [];
+    const modeLabels: Record<string, string> = {
+        cash: 'Espèces', check: 'Chèque', transfer: 'Virement', virement: 'Virement',
+        kkiapay: 'Kkiapay', paypal: 'PayPal', stripe: 'Stripe', fedapay: 'FedaPay',
+    };
+    return Object.keys(map).map(mode => ({
+        name: modeLabels[mode] ?? mode,
+        data: schools.map(schoolName => {
+            const item = map[mode]?.find(i => i.school_name === schoolName);
+            return item?.count ?? 0;
+        }),
+    }));
+});
+const feesSchoolBarCategories = computed(() => props.feesStatsBySchool?.bySchool?.map(s => s.school_name) ?? []);
+
 
 
 // ── Staff rôles ───────────────────────────────────────────────────────────────
