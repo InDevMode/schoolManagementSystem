@@ -402,7 +402,7 @@
                 </p>
             </div>
             <template #footer>
-                <AppButton variant="ghost" @click="showNote = false">Fermer</AppButton>
+                <AppButton variant="close" @click="showNote = false">Fermer</AppButton>
             </template>
         </AppModal>
 

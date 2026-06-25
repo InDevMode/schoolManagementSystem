@@ -154,7 +154,7 @@
                     </div>
                 </div>
 
-                <!-- ── PRÉSENCES ───────────────────────────────────────────── -->
+                <!-- ── Présences ───────────────────────────────────────────── -->
                 <div v-show="active === 'attendance'" class="space-y-4">
                     <div class="flex items-center justify-between">
                         <h2 class="text-base font-semibold text-gray-900 dark:text-white">Présences de mes classes</h2>
@@ -167,7 +167,7 @@
                         <AttendanceBadge label="Demi-journée" :value="totalAttHalfDay ?? 0"  color="info"    icon="calendar-days"/>
                     </div>
                     <div class="card p-5">
-                        <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-4">Évolution des présences</h3>
+                        <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-4">Évolution des Présences</h3>
                         <ApexBar
                             :series="teacherAttSeries"
                             :categories="months"

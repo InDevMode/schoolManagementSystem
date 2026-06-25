@@ -356,7 +356,7 @@ class DashboardController extends Controller
     }
 
     /**
-     * Retourne les présences totales par école (pour le Super Admin).
+     * Retourne les Présences totales par école (pour le Super Admin).
      * Retourne un tableau [{school_name, present, late, absent, halfday}].
      * Note: attendance_type est stocké en string ('present','late','absent','half_day').
      */
@@ -402,7 +402,7 @@ class DashboardController extends Controller
             }
         }
 
-        // Inclure aussi les écoles sans présences (pour afficher 0)
+        // Inclure aussi les écoles sans Présences (pour afficher 0)
         $allSchools = DB::table('schools')
             ->where('is_delete', 0)
             ->where('status', 1)
@@ -491,7 +491,7 @@ class DashboardController extends Controller
     }
 
     /**
-     * Retourne les présences par mois pour les 12 derniers mois.
+     * Retourne les Présences par mois pour les 12 derniers mois.
      * La table `attendances` stocke attendance_type en string ('present','late','absent','half_day').
      */
     private function getAttendanceByMonth(?int $schoolId = null): array

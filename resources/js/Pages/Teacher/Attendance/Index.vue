@@ -236,7 +236,7 @@ const saveAll = async () => {
             attendance_date: filters.attendance_date,
         }, { preserveState: false, replace: true });
     } catch (e) {
-        console.error('Erreur enregistrement présences', e);
+        console.error('Erreur enregistrement Présences', e);
     } finally {
         saving.value = false;
     }

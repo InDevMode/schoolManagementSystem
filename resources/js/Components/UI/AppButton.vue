@@ -25,7 +25,7 @@ import { computed } from 'vue';
 import { Link } from '@inertiajs/vue3';
 
 interface Props {
-    variant?: 'primary' | 'secondary' | 'danger' | 'success' | 'warning' | 'ghost' | 'outline';
+    variant?: 'primary' | 'secondary' | 'danger' | 'success' | 'warning' | 'ghost' | 'outline' | 'close';
     size?: 'xs' | 'sm' | 'md' | 'lg';
     type?: 'button' | 'submit' | 'reset';
     disabled?: boolean;
@@ -52,6 +52,7 @@ const variants: Record<string, string> = {
     success:   'bg-success-600 hover:bg-success-700 text-white focus:ring-success-500 shadow-sm',
     warning:   'bg-warning-500 hover:bg-warning-600 text-white focus:ring-warning-500 shadow-sm',
     ghost:     'bg-transparent hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 focus:ring-gray-400',
+    close:     'bg-gray-300 hover:bg-gray-400 dark:bg-gray-600 dark:hover:bg-gray-500 text-gray-700 dark:text-gray-200 focus:ring-gray-400 shadow-sm',
     outline:   'border border-primary-600 text-primary-600 hover:bg-primary-50 dark:hover:bg-primary-900/20 focus:ring-primary-500',
 };
 

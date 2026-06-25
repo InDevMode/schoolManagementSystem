@@ -81,7 +81,7 @@ class ExportAttendance implements FromCollection, WithMapping, WithHeadings, Wit
      */
     public function collection(): Collection
     {
-        // Si tu veux TOUTES les présences :
+        // Si tu veux TOUTES les Présences :
         return StudentAttendanceModel::getAllAttendance();
 
     }

@@ -228,6 +228,7 @@
             :initials="viewTarget ? (viewTarget.last_name?.[0] ?? '') + (viewTarget.name?.[0] ?? '') : '?'"
             :tabs="adminTabs"
             default-tab="profile"
+            color="primary"
             size="lg"
         >
             <template #avatar>
@@ -246,46 +247,17 @@
 
             <template #sidebar-footer>
                 <Link v-if="viewTarget" :href="`/chat?receiver_id=${viewTarget.id_encoded}`"
-                    class="flex items-center justify-center gap-2 w-full px-3 py-2 rounded-xl bg-primary-600 hover:bg-primary-700 text-white text-xs font-semibold transition-colors shadow-sm">
+                    class="flex items-center justify-center gap-2 w-full px-3 py-2 rounded-xl bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white text-xs font-semibold transition-colors shadow-sm">
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
                     </svg>
-                    Envoyer un message
+                    Message
                 </Link>
             </template>
 
             <template #default="{ activeTab }">
                 <div v-if="viewTarget">
                     <div v-show="activeTab === 'profile'" class="space-y-5">
-                        <!-- Bannière -->
-                        <div class="relative rounded-2xl overflow-hidden bg-gradient-to-br from-primary-600 to-violet-700 p-5">
-                            <div class="absolute inset-0 opacity-10" style="background-image:radial-gradient(circle at 80% 20%, white 0%, transparent 60%)"/>
-                            <div class="relative flex items-center gap-4">
-                                <div class="relative flex-shrink-0">
-                                    <img v-if="viewTarget.profile_picture"
-                                         :src="`/upload/profile/${viewTarget.profile_picture}`"
-                                         class="w-14 h-14 rounded-xl object-cover ring-4 ring-white/30 shadow-xl"/>
-                                    <div v-else class="w-14 h-14 rounded-xl bg-white/20 backdrop-blur flex items-center justify-center ring-4 ring-white/30 shadow-xl">
-                                        <span class="text-lg font-bold text-white">{{ viewTarget.last_name?.[0] }}{{ viewTarget.name?.[0] }}</span>
-                                    </div>
-                                    <span class="absolute -bottom-1 -right-1 w-3.5 h-3.5 rounded-full border-2 border-white shadow-sm"
-                                          :class="viewTarget.is_online ? 'bg-emerald-400' : 'bg-gray-400'"/>
-                                </div>
-                                <div class="flex-1 min-w-0">
-                                    <h2 class="text-base font-bold text-white truncate">{{ viewTarget.last_name }} {{ viewTarget.name }}</h2>
-                                    <p class="text-primary-200 text-xs mt-0.5">{{ viewTarget.email }}</p>
-                                    <div class="flex items-center gap-2 mt-2 flex-wrap">
-                                        <span :class="['px-2 py-0.5 rounded-full text-xs font-semibold', viewTarget.status == 1 ? 'bg-emerald-400/30 text-emerald-100' : 'bg-red-400/30 text-red-100']">
-                                            {{ viewTarget.status == 1 ? '? Actif' : '? Inactif' }}
-                                        </span>
-                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-white/10 text-white/80">
-                                            <span class="w-1.5 h-1.5 rounded-full" :class="viewTarget.is_online ? 'bg-emerald-400' : 'bg-gray-400'"/>
-                                            {{ viewTarget.is_online ? 'En ligne' : 'Hors ligne' }}
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             <InfoCard label="Rôle" value="Administrateur" highlight />
                             <InfoCard label="Téléphone" :value="viewTarget.mobile_number" mono />
@@ -299,7 +271,7 @@
             </template>
 
             <template #footer>
-                <AppButton variant="ghost" @click="showView = false">Fermer</AppButton>
+                <AppButton variant="close" @click="showView = false">Fermer</AppButton>
                 <AppButton v-if="canEdit" @click="showView = false; openEdit(viewTarget!)">
                     <template #icon>
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -18,7 +18,7 @@ class StaffAndEventsSeeder extends Seeder
 {
     public function run(): void
     {
-        $this->command->info('  🌱 Personnel & RH...');
+        $this->command->info('  🌱 Gestion Personnel...');
 
         $this->seedStaff();
         $this->seedLeaves();

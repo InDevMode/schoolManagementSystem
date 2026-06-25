@@ -216,7 +216,7 @@
             </div>
 
             <template #footer>
-                <AppButton variant="ghost" @click="showTimetable = false">Fermer</AppButton>
+                <AppButton variant="close" @click="showTimetable = false">Fermer</AppButton>
             </template>
         </AppModal>
 

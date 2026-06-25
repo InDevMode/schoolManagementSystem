@@ -513,10 +513,10 @@ super_admin (user_type = 0)
 │   Gère son école — crée et administre tous les utilisateurs
 │
     ├── teacher (user_type = 2)
-    │   Saisit les notes, présences, devoirs, emploi du temps
+    │   Saisit les notes, Présences, devoirs, emploi du temps
     │
     ├── student (user_type = 3)
-    │   Consulte ses notes, bulletin, devoirs, présences
+    │   Consulte ses notes, bulletin, devoirs, Présences
     │
     └── parent (user_type = 4)
         Suit les résultats et la scolarité de son enfant

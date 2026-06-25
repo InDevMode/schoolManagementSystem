@@ -142,11 +142,12 @@
             :initials="detailsTarget ? (detailsTarget.last_name?.[0] ?? '') + (detailsTarget.name?.[0] ?? '') : '?'"
             :tabs="studentTabs"
             default-tab="profile"
+            color="primary"
             size="lg"
         >
             <template #avatar>
                 <div class="relative">
-                    <div class="w-16 h-16 rounded-2xl flex items-center justify-center text-xl font-bold text-white shadow-md"
+                    <div class="w-16 h-16 rounded-2xl flex items-center justify-center text-xl font-bold text-white shadow-md ring-4 ring-white/25"
                          :style="{ backgroundColor: avatarColor(detailsTarget?.last_name ?? '') }">
                         {{ detailsTarget?.last_name?.[0]?.toUpperCase() }}{{ detailsTarget?.name?.[0]?.toUpperCase() }}
                     </div>
@@ -157,11 +158,11 @@
             <template #sidebar-footer>
                 <Link v-if="detailsTarget"
                     :href="`/chat?receiver_id=${detailsTarget.id_encoded}`"
-                    class="flex items-center justify-center gap-2 w-full px-3 py-2 rounded-xl bg-primary-600 hover:bg-primary-700 text-white text-xs font-semibold transition-colors shadow-sm">
+                    class="flex items-center justify-center gap-2 w-full px-3 py-2 rounded-xl bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white text-xs font-semibold transition-colors shadow-sm">
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
                     </svg>
-                    Envoyer un message
+                    Message
                 </Link>
             </template>
 
@@ -169,30 +170,6 @@
                 <div v-if="detailsTarget">
                     <!-- PROFIL -->
                     <div v-show="activeTab === 'profile'" class="space-y-5">
-                        <!-- Bannière -->
-                        <div class="relative rounded-2xl overflow-hidden p-5"
-                             :style="`background: linear-gradient(135deg, ${avatarColor(detailsTarget.last_name)}, ${avatarColor(detailsTarget.last_name)}cc)`">
-                            <div class="absolute inset-0 opacity-10" style="background-image:radial-gradient(circle at 80% 20%, white 0%, transparent 60%)"/>
-                            <div class="relative flex items-center gap-4">
-                                <div class="w-14 h-14 rounded-xl flex items-center justify-center text-lg font-bold text-white ring-4 ring-white/30 shadow-xl"
-                                     :style="{ backgroundColor: avatarColor(detailsTarget.last_name) + '80' }">
-                                    {{ detailsTarget.last_name?.[0]?.toUpperCase() }}{{ detailsTarget.name?.[0]?.toUpperCase() }}
-                                </div>
-                                <div class="flex-1 min-w-0">
-                                    <h2 class="text-base font-bold text-white truncate">{{ detailsTarget.last_name }} {{ detailsTarget.name }}</h2>
-                                    <p class="text-white/70 text-xs mt-0.5">{{ detailsTarget.email }}</p>
-                                    <div class="flex items-center gap-2 mt-2 flex-wrap">
-                                        <span :class="['px-2 py-0.5 rounded-full text-xs font-semibold', detailsTarget.status == 1 ? 'bg-emerald-400/30 text-emerald-100' : 'bg-red-400/30 text-red-100']">
-                                            {{ detailsTarget.status == 1 ? '✓ Actif' : '✗ Inactif' }}
-                                        </span>
-                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-white/10 text-white/80">
-                                            <span class="w-1.5 h-1.5 rounded-full" :class="detailsTarget.is_online ? 'bg-emerald-400' : 'bg-gray-400'"/>
-                                            {{ detailsTarget.is_online ? 'En ligne' : 'Hors ligne' }}
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                         <!-- Infos grille -->
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             <InfoCard label="Classe" :value="detailsTarget.class_name" highlight />
@@ -216,7 +193,7 @@
             </template>
 
             <template #footer>
-                <AppButton variant="ghost" @click="showDetails = false">Fermer</AppButton>
+                <AppButton variant="close" @click="showDetails = false">Fermer</AppButton>
             </template>
         </DetailModal>
 

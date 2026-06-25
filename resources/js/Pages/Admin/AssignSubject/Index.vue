@@ -1,7 +1,7 @@
-﻿<template>
+<template>
     <div class="space-y-6">
         <!-- Header -->
-        <PageHeader title="Assignation Matières-Classes" :subtitle="`${classSubjects.total} assignation(s)`" color="indigo">
+        <PageHeader title="Assignation Mati�res-Classes" :subtitle="`${classSubjects.total} assignation(s)`" color="indigo">
             <template #icon>
                 <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/>
@@ -34,7 +34,7 @@
             </template>
             <template #actions="{ row }">
                 <div class="flex items-center justify-end gap-1.5">
-                    <button title="Voir les détails" @click="openDetails(row as any)"
+                    <button title="Voir les d�tails" @click="openDetails(row as any)"
                             class="p-1.5 rounded-xl transition-all duration-150
                                    text-white bg-violet-500 hover:bg-violet-600 active:bg-violet-700
                                    shadow-sm shadow-violet-200 dark:shadow-violet-900/40">
@@ -66,7 +66,7 @@
                     <svg class="w-4 h-4 text-violet-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0zM2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
                     </svg>
-                    Voir les détails
+                    Voir les d�tails
                 </button>
                 <button v-if="canEdit" @click="openEdit(row as any)"
                         class="flex w-full items-center gap-2.5 px-3.5 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-emerald-50 dark:hover:bg-gray-700/60 hover:text-emerald-700 transition-colors">
@@ -88,19 +88,19 @@
             </template>
         </DataTable>
 
-        <!-- Modal Créer -->
+        <!-- Modal Cr�er -->
         <AppModal v-model="showCreateForm" title="Nouvelle assignation" size="md">
             <form :id="createFormId" @submit.prevent="submitCreate" class="space-y-4">
                 <AppSelect
                     v-model="createForm.class_id"
                     label="Classe"
                     :options="classOptions"
-                    placeholder="Sélectionner une classe"
+                    placeholder="S�lectionner une classe"
                     required
                     :error="createForm.errors.class_id"
                 />
 
-                <!-- Alerte toutes matières déjà assignées -->
+                <!-- Alerte toutes mati�res d�j� assign�es -->
                 <div
                     v-if="createForm.class_id && availableCount === 0"
                     class="flex items-start gap-2 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-xl p-3"
@@ -109,11 +109,11 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                     </svg>
                     <p class="text-xs text-amber-700 dark:text-amber-300">
-                        Toutes les matières sont déjà assignées à cette classe. Modifiez les assignations existantes si nécessaire.
+                        Toutes les mati�res sont d�j� assign�es � cette classe. Modifiez les assignations existantes si n�cessaire.
                     </p>
                 </div>
 
-                <!-- Info matières déjà assignées -->
+                <!-- Info mati�res d�j� assign�es -->
                 <div
                     v-else-if="createForm.class_id && alreadyAssignedSubjectIds.length > 0"
                     class="flex items-start gap-2 bg-violet-50 dark:bg-violet-900/20 border border-violet-200 dark:border-violet-800 rounded-xl p-3"
@@ -122,15 +122,15 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                     </svg>
                     <p class="text-xs text-violet-700 dark:text-violet-300">
-                        {{ alreadyAssignedSubjectIds.length }} matière(s) déjà assignée(s) à cette classe sont grisées et non sélectionnables.
+                        {{ alreadyAssignedSubjectIds.length }} mati�re(s) d�j� assign�e(s) � cette classe sont gris�es et non s�lectionnables.
                     </p>
                 </div>
 
                 <AppMultiSelect
                     v-model="createForm.subject_ids"
-                    label="Matières"
+                    label="Mati�res"
                     :options="subjectOptions"
-                    placeholder="Sélectionner des matières"
+                    placeholder="S�lectionner des mati�res"
                     required
                     :error="createForm.errors.subject_ids"
                 />
@@ -157,15 +157,15 @@
                     v-model="editForm.class_id"
                     label="Classe"
                     :options="classOptions"
-                    placeholder="Sélectionner une classe"
+                    placeholder="S�lectionner une classe"
                     required
                     :error="editForm.errors.class_id"
                 />
                 <AppSelect
                     v-model="editForm.subject_id"
-                    label="Matière"
+                    label="Mati�re"
                     :options="subjectOptionsEdit"
-                    placeholder="Sélectionner une matière"
+                    placeholder="S�lectionner une mati�re"
                     required
                     :error="editForm.errors.subject_id"
                 />
@@ -178,7 +178,7 @@
             </template>
         </AppModal>
 
-        <!-- Drawer Voir détails -->
+        <!-- Drawer Voir d�tails -->
         <Teleport to="body">
             <Transition
                 enter-active-class="transition-all duration-300 ease-out"
@@ -209,8 +209,8 @@
                                         </svg>
                                     </div>
                                     <div>
-                                        <h2 class="text-base font-semibold text-gray-900 dark:text-white">Détails de l'assignation</h2>
-                                        <p class="text-xs text-gray-500 dark:text-gray-400">Matière — Classe</p>
+                                        <h2 class="text-base font-semibold text-gray-900 dark:text-white">D�tails de l'assignation</h2>
+                                        <p class="text-xs text-gray-500 dark:text-gray-400">Mati�re � Classe</p>
                                     </div>
                                 </div>
                                 <button @click="showDetails = false" class="p-1.5 rounded-xl bg-red-500 hover:bg-red-600 text-white transition-colors flex-shrink-0 shadow-sm">
@@ -227,7 +227,7 @@
                                         <p class="text-base font-semibold text-gray-900 dark:text-white">{{ detailsTarget.class_name }}</p>
                                     </div>
                                     <div>
-                                        <p class="text-xs font-medium text-indigo-400 uppercase tracking-wide mb-1">Matière</p>
+                                        <p class="text-xs font-medium text-indigo-400 uppercase tracking-wide mb-1">Mati�re</p>
                                         <p class="text-base font-semibold text-gray-900 dark:text-white">{{ detailsTarget.subject_name }}</p>
                                     </div>
                                 </div>
@@ -253,18 +253,18 @@
                                     </AppBadge>
                                 </div>
 
-                                <!-- Métadonnées -->
+                                <!-- M�tadonn�es -->
                                 <div class="space-y-3 pt-2 border-t border-gray-100 dark:border-gray-700">
                                     <div v-if="detailsTarget.created_by_name">
-                                        <p class="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wide mb-1">Créé par</p>
+                                        <p class="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wide mb-1">Cr�� par</p>
                                         <p class="text-sm text-gray-700 dark:text-gray-300">{{ detailsTarget.created_by_name }}</p>
                                     </div>
                                     <div v-if="detailsTarget.created_at">
-                                        <p class="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wide mb-1">Date de création</p>
+                                        <p class="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wide mb-1">Date de cr�ation</p>
                                         <p class="text-sm text-gray-700 dark:text-gray-300">{{ formatDate(detailsTarget.created_at) }}</p>
                                     </div>
                                     <div v-if="detailsTarget.updated_at">
-                                        <p class="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wide mb-1">Dernière modification</p>
+                                        <p class="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wide mb-1">Derni�re modification</p>
                                         <p class="text-sm text-gray-700 dark:text-gray-300">{{ formatDate(detailsTarget.updated_at) }}</p>
                                     </div>
                                 </div>
@@ -272,7 +272,7 @@
 
                             <!-- Footer -->
                             <div class="px-6 py-4 border-t border-gray-200 dark:border-gray-700 flex gap-2">
-                                <AppButton variant="ghost" class="flex-1" @click="showDetails = false">Fermer</AppButton>
+                                <AppButton variant="close" class="flex-1" @click="showDetails = false">Fermer</AppButton>
                                 <AppButton v-if="canEdit" class="flex-1" @click="() => { showDetails = false; openEdit(detailsTarget!) }">
                                     <template #icon>
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
@@ -343,7 +343,7 @@ const detailsTarget = ref<ClassSubject | null>(null);
 const toast    = useToast();
 const tableRef = ref<InstanceType<typeof DataTable> | null>(null);
 
-// IDs des matières déjà assignées à la classe sélectionnée dans le formulaire de création
+// IDs des mati�res d�j� assign�es � la classe s�lectionn�e dans le formulaire de cr�ation
 const alreadyAssignedSubjectIds = ref<number[]>([]);
 
 const statusOptions = [
@@ -355,7 +355,7 @@ const classOptions = computed(() =>
     props.classes.map(c => ({ value: String(c.id), label: c.name }))
 );
 
-/** Matières avec disabled=true si déjà assignées à la classe sélectionnée */
+/** Mati�res avec disabled=true si d�j� assign�es � la classe s�lectionn�e */
 const subjectOptions = computed(() =>
     props.subjects.map(s => ({
         value:    String(s.id),
@@ -364,18 +364,18 @@ const subjectOptions = computed(() =>
     }))
 );
 
-/** Options pour le formulaire d'édition (toutes activées) */
+/** Options pour le formulaire d'�dition (toutes activ�es) */
 const subjectOptionsEdit = computed(() =>
     props.subjects.map(s => ({ value: String(s.id), label: s.name }))
 );
 
 const columns = [
     { key: 'class_name',      label: 'Classe',        sortable: true  },
-    { key: 'subject_name',    label: 'Matière',        sortable: true  },
+    { key: 'subject_name',    label: 'Mati�re',        sortable: true  },
     { key: 'coefficient',     label: 'Coefficient',    sortable: true  },
     { key: 'status',          label: 'Statut',         sortable: true, exportFormat: (v: unknown) => (v == 1 ? 'Actif' : 'Inactif')  },
-    { key: 'created_by_name', label: 'Créé par',       sortable: false },
-    { key: 'created_at',      label: 'Date création',  sortable: true,
+    { key: 'created_by_name', label: 'Cr�� par',       sortable: false },
+    { key: 'created_at',      label: 'Date cr�ation',  sortable: true,
       format: (v: unknown) => fmtDate(v as string) },
 ];
 
@@ -393,7 +393,7 @@ const editForm = useForm({
     status:      '1',
 });
 
-// ── Quand la classe change dans le formulaire création, recalculer les doublons ──
+// -- Quand la classe change dans le formulaire cr�ation, recalculer les doublons --
 watch(() => createForm.class_id, (newClassId) => {
     if (!newClassId) {
         alreadyAssignedSubjectIds.value = [];
@@ -401,8 +401,8 @@ watch(() => createForm.class_id, (newClassId) => {
         return;
     }
     const classIdNum = parseInt(newClassId);
-    // On cherche dans les données déjà chargées (pagination — on compare sur la page courante)
-    // Pour être exhaustif on fait un appel API
+    // On cherche dans les donn�es d�j� charg�es (pagination � on compare sur la page courante)
+    // Pour �tre exhaustif on fait un appel API
     fetch(`/admin/practicalworks/homework/getSubjectByClassId/${newClassId}`, {
         headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
         credentials: 'same-origin',
@@ -413,7 +413,7 @@ watch(() => createForm.class_id, (newClassId) => {
         })
         .catch(() => { alreadyAssignedSubjectIds.value = []; });
 
-    // Retirer de la sélection les matières déjà assignées
+    // Retirer de la s�lection les mati�res d�j� assign�es
     createForm.subject_ids = createForm.subject_ids.filter(
         id => !alreadyAssignedSubjectIds.value.includes(parseInt(id))
     );
@@ -421,13 +421,13 @@ watch(() => createForm.class_id, (newClassId) => {
 
 const formatDate = fmtDate;
 
-// ── Nombre de matières encore disponibles pour cette classe ──
+// -- Nombre de mati�res encore disponibles pour cette classe --
 const availableCount = computed(() => {
     if (!createForm.class_id) return props.subjects.length;
     return props.subjects.filter(s => !alreadyAssignedSubjectIds.value.includes(s.id)).length;
 });
 
-// ── Ouvrir créer ─────────────────────────────────────────────────────────────
+// -- Ouvrir cr�er -------------------------------------------------------------
 const openCreate = () => {
     createForm.reset();
     createForm.coefficient = '1';
@@ -436,7 +436,7 @@ const openCreate = () => {
     showCreateForm.value = true;
 };
 
-// ── Ouvrir modifier ──────────────────────────────────────────────────────────
+// -- Ouvrir modifier ----------------------------------------------------------
 const openEdit = (item: ClassSubject) => {
     editTarget.value = item;
     editForm.class_id    = String(item.class_id);
@@ -446,21 +446,21 @@ const openEdit = (item: ClassSubject) => {
     showEditForm.value = true;
 };
 
-// ── Ouvrir détails ───────────────────────────────────────────────────────────
+// -- Ouvrir d�tails -----------------------------------------------------------
 const openDetails = (item: ClassSubject) => {
     detailsTarget.value = item;
     showDetails.value = true;
 };
 
-// ── Soumettre créer ──────────────────────────────────────────────────────────
+// -- Soumettre cr�er ----------------------------------------------------------
 const submitCreate = () => {
-    // Filtrer les matières déjà assignées avant soumission (sécurité côté client)
+    // Filtrer les mati�res d�j� assign�es avant soumission (s�curit� c�t� client)
     const filteredIds = createForm.subject_ids.filter(
         id => !alreadyAssignedSubjectIds.value.includes(parseInt(id))
     );
 
     if (filteredIds.length === 0) {
-        toast.error('Toutes les matières sélectionnées sont déjà assignées à cette classe.');
+        toast.error('Toutes les mati�res s�lectionn�es sont d�j� assign�es � cette classe.');
         return;
     }
 
@@ -484,7 +484,7 @@ const submitCreate = () => {
     });
 };
 
-// ── Soumettre modifier ───────────────────────────────────────────────────────
+// -- Soumettre modifier -------------------------------------------------------
 const submitEdit = () => {
     if (!editTarget.value) return;
     editForm.post(`/admin/assign_subject/edit_single/${editTarget.value.id}`, {
@@ -495,11 +495,11 @@ const submitEdit = () => {
     });
 };
 
-// ── Supprimer (bulk via DataTable) ───────────────────────────────────────────
+// -- Supprimer (bulk via DataTable) -------------------------------------------
 const handleDelete = (ids: (string | number)[]) => {
     ids.forEach(id => {
         router.get(`/admin/assign_subject/delete/${id}`, {}, {
-            onSuccess: () => toast.success('Assignation supprimée avec succès.'),
+            onSuccess: () => toast.success('Assignation supprim�e avec succ�s.'),
             onError: () => toast.error('Erreur lors de la suppression.'),
         });
     });

@@ -374,8 +374,8 @@
                     Gérez votre école<br/>
                     <span style="color: rgba(196,181,253,0.95);">intelligemment</span>
                 </h2>
-                <p class="text-sm leading-relaxed max-w-sm" style="color: rgba(255,255,255,0.65);">
-                    Élèves, enseignants, notes, présences et bien plus — tout en un seul endroit.
+                <p class="text-sm leading-relaxed max-w-sm font-semibold" style="color: rgba(255, 255, 255, 0.85);">
+                    Élèves, enseignants, notes, Présences et bien plus — tout en un seul endroit.
                 </p>
 
                 <!-- Badges stats -->
@@ -402,6 +402,157 @@
         <!-- ── PANNEAU DROIT : formulaire ── -->
         <div class="flex-1 flex flex-col items-center justify-center px-6 py-10 overflow-y-auto relative z-10 transition-colors duration-300"
              :style="rightPanelStyle">
+
+            <!-- ── Illustrations décoratives en arrière-plan du panneau droit ── -->
+            <div class="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
+
+                <!-- Coin haut-gauche : graduation cap + étoiles -->
+                <svg class="absolute -top-8 -left-8" width="220" height="220" viewBox="0 0 220 220" fill="none"
+                     :style="{ opacity: isDark ? '0.07' : '0.055' }">
+                    <g :fill="isDark ? '#c4b5fd' : '#6d28d9'">
+                        <!-- Chapeau de diplômé -->
+                        <path d="M110 40 L60 65 L110 90 L160 65 Z"/>
+                        <path d="M90 75 L90 105 Q110 115 130 105 L130 75 L110 85 Z" opacity="0.7"/>
+                        <line x1="160" y1="65" x2="160" y2="90" stroke-width="3" :stroke="isDark ? '#c4b5fd' : '#6d28d9'"/>
+                        <circle cx="160" cy="93" r="5"/>
+                        <!-- Étoiles flottantes -->
+                        <path d="M30 30 L33 20 L36 30 L46 33 L36 36 L33 46 L30 36 L20 33 Z" opacity="0.6"/>
+                        <path d="M170 20 L172 14 L174 20 L180 22 L174 24 L172 30 L170 24 L164 22 Z" opacity="0.5"/>
+                        <path d="M50 140 L52 134 L54 140 L60 142 L54 144 L52 150 L50 144 L44 142 Z" opacity="0.4"/>
+                        <!-- Grille de points -->
+                        <circle cx="20" cy="80" r="2.5" opacity="0.5"/>
+                        <circle cx="36" cy="80" r="2.5" opacity="0.5"/>
+                        <circle cx="52" cy="80" r="2.5" opacity="0.5"/>
+                        <circle cx="20" cy="96" r="2.5" opacity="0.4"/>
+                        <circle cx="36" cy="96" r="2.5" opacity="0.4"/>
+                        <circle cx="52" cy="96" r="2.5" opacity="0.4"/>
+                        <circle cx="20" cy="112" r="2.5" opacity="0.3"/>
+                        <circle cx="36" cy="112" r="2.5" opacity="0.3"/>
+                        <circle cx="52" cy="112" r="2.5" opacity="0.3"/>
+                        <!-- Cercle pointillé -->
+                        <circle cx="180" cy="140" r="30" fill="none" :stroke="isDark ? '#c4b5fd' : '#6d28d9'" stroke-width="1.5" stroke-dasharray="5 4" opacity="0.5"/>
+                    </g>
+                </svg>
+
+                <!-- Haut-droite : crayon + livres empilés -->
+                <svg class="absolute top-0 right-0" width="200" height="200" viewBox="0 0 200 200" fill="none"
+                     :style="{ opacity: isDark ? '0.07' : '0.055' }">
+                    <g :fill="isDark ? '#a78bfa' : '#7c3aed'">
+                        <!-- Crayon -->
+                        <rect x="130" y="20" width="14" height="60" rx="3" transform="rotate(25 137 50)"/>
+                        <path d="M126 78 L140 86 L133 94 Z" opacity="0.8"/>
+                        <rect x="130" y="20" width="14" height="8" rx="2" transform="rotate(25 137 50)" :fill="isDark ? '#fbbf24' : '#f59e0b'" opacity="0.7"/>
+                        <!-- Livres empilés -->
+                        <rect x="20" y="140" width="60" height="12" rx="3" opacity="0.9"/>
+                        <rect x="14" y="128" width="68" height="12" rx="3" opacity="0.7"/>
+                        <rect x="22" y="116" width="52" height="12" rx="3" opacity="0.5"/>
+                        <!-- Trombones -->
+                        <path d="M160 100 Q175 90 175 105 Q175 120 160 115 Q148 110 155 100 Z" fill="none" :stroke="isDark ? '#a78bfa' : '#7c3aed'" stroke-width="2.5" opacity="0.6"/>
+                        <!-- Étoile -->
+                        <path d="M40 50 L44 38 L48 50 L60 54 L48 58 L44 70 L40 58 L28 54 Z" opacity="0.5"/>
+                        <!-- Points -->
+                        <circle cx="155" cy="155" r="3" opacity="0.4"/>
+                        <circle cx="170" cy="155" r="3" opacity="0.4"/>
+                        <circle cx="185" cy="155" r="3" opacity="0.4"/>
+                        <circle cx="155" cy="170" r="3" opacity="0.3"/>
+                        <circle cx="170" cy="170" r="3" opacity="0.3"/>
+                        <circle cx="185" cy="170" r="3" opacity="0.3"/>
+                    </g>
+                </svg>
+
+                <!-- Centre-gauche : loupe + bulle -->
+                <svg class="absolute top-1/2 -translate-y-1/2 -left-4" width="160" height="260" viewBox="0 0 160 260" fill="none"
+                     :style="{ opacity: isDark ? '0.065' : '0.05' }">
+                    <g :fill="isDark ? '#c4b5fd' : '#8b5cf6'">
+                        <!-- Loupe -->
+                        <circle cx="55" cy="80" r="35" fill="none" :stroke="isDark ? '#c4b5fd' : '#8b5cf6'" stroke-width="8" opacity="0.8"/>
+                        <line x1="80" y1="105" x2="105" y2="130" :stroke="isDark ? '#c4b5fd' : '#8b5cf6'" stroke-width="8" stroke-linecap="round" opacity="0.8"/>
+                        <!-- Symbole dans la loupe -->
+                        <text x="40" y="88" font-size="22" :fill="isDark ? '#c4b5fd' : '#8b5cf6'" font-family="serif" opacity="0.7">+</text>
+                        <!-- Bulle de dialogue -->
+                        <rect x="10" y="155" width="90" height="55" rx="14" opacity="0.5"/>
+                        <path d="M25 210 L15 230 L45 210 Z" opacity="0.5"/>
+                        <!-- Lignes dans la bulle -->
+                        <rect x="20" y="168" width="60" height="5" rx="2.5" :fill="isDark ? '#ede9fe' : 'white'" opacity="0.6"/>
+                        <rect x="20" y="180" width="44" height="5" rx="2.5" :fill="isDark ? '#ede9fe' : 'white'" opacity="0.5"/>
+                        <rect x="20" y="192" width="52" height="5" rx="2.5" :fill="isDark ? '#ede9fe' : 'white'" opacity="0.4"/>
+                    </g>
+                </svg>
+
+                <!-- Bas-gauche : trophée -->
+                <svg class="absolute bottom-8 left-0" width="180" height="180" viewBox="0 0 180 180" fill="none"
+                     :style="{ opacity: isDark ? '0.065' : '0.05' }">
+                    <g :fill="isDark ? '#fbbf24' : '#d97706'" opacity="0.8">
+                        <!-- Trophée -->
+                        <path d="M60 20 L120 20 L110 80 Q90 100 70 80 Z"/>
+                        <path d="M40 20 L60 20 L60 50 Q40 50 35 30 Z" opacity="0.7"/>
+                        <path d="M120 20 L140 20 L145 30 Q140 50 120 50 Z" opacity="0.7"/>
+                        <rect x="82" y="100" width="16" height="30" rx="4" opacity="0.8"/>
+                        <rect x="60" y="130" width="60" height="10" rx="5" opacity="0.8"/>
+                        <!-- Étoile sur trophée -->
+                        <path d="M90 40 L93 32 L96 40 L104 43 L96 46 L93 54 L90 46 L82 43 Z" :fill="isDark ? '#fde68a' : '#fbbf24'" opacity="0.9"/>
+                    </g>
+                    <!-- Motif grille -->
+                    <g :fill="isDark ? '#c4b5fd' : '#6d28d9'" opacity="0.35">
+                        <circle cx="140" cy="50" r="3"/>
+                        <circle cx="155" cy="50" r="3"/>
+                        <circle cx="140" cy="65" r="3"/>
+                        <circle cx="155" cy="65" r="3"/>
+                        <circle cx="140" cy="80" r="3"/>
+                        <circle cx="155" cy="80" r="3"/>
+                    </g>
+                </svg>
+
+                <!-- Bas-droite : calculatrice + règle -->
+                <svg class="absolute bottom-0 right-0" width="200" height="200" viewBox="0 0 200 200" fill="none"
+                     :style="{ opacity: isDark ? '0.065' : '0.05' }">
+                    <g :fill="isDark ? '#a78bfa' : '#7c3aed'">
+                        <!-- Calculatrice -->
+                        <rect x="90" y="60" width="80" height="110" rx="8" opacity="0.8"/>
+                        <rect x="98" y="68" width="64" height="28" rx="4" :fill="isDark ? '#312e81' : '#ede9fe'" opacity="0.9"/>
+                        <!-- Touches -->
+                        <rect x="98"  y="104" width="14" height="14" rx="3" :fill="isDark ? '#c4b5fd' : 'white'" opacity="0.7"/>
+                        <rect x="117" y="104" width="14" height="14" rx="3" :fill="isDark ? '#c4b5fd' : 'white'" opacity="0.7"/>
+                        <rect x="136" y="104" width="14" height="14" rx="3" :fill="isDark ? '#fbbf24' : '#f59e0b'" opacity="0.8"/>
+                        <rect x="98"  y="122" width="14" height="14" rx="3" :fill="isDark ? '#c4b5fd' : 'white'" opacity="0.7"/>
+                        <rect x="117" y="122" width="14" height="14" rx="3" :fill="isDark ? '#c4b5fd' : 'white'" opacity="0.7"/>
+                        <rect x="136" y="122" width="14" height="32" rx="3" :fill="isDark ? '#7c3aed' : '#6d28d9'" opacity="0.8"/>
+                        <rect x="98"  y="140" width="14" height="14" rx="3" :fill="isDark ? '#c4b5fd' : 'white'" opacity="0.7"/>
+                        <rect x="117" y="140" width="14" height="14" rx="3" :fill="isDark ? '#c4b5fd' : 'white'" opacity="0.7"/>
+                        <!-- Règle diagonale -->
+                        <rect x="20" y="30" width="80" height="16" rx="4" transform="rotate(-30 60 38)" opacity="0.6"/>
+                        <g :stroke="isDark ? '#312e81' : '#ede9fe'" stroke-width="1" opacity="0.7">
+                            <line x1="30" y1="26" x2="30" y2="32" transform="rotate(-30 60 38)"/>
+                            <line x1="42" y1="26" x2="42" y2="32" transform="rotate(-30 60 38)"/>
+                            <line x1="54" y1="26" x2="54" y2="32" transform="rotate(-30 60 38)"/>
+                            <line x1="66" y1="26" x2="66" y2="32" transform="rotate(-30 60 38)"/>
+                            <line x1="78" y1="26" x2="78" y2="32" transform="rotate(-30 60 38)"/>
+                        </g>
+                    </g>
+                </svg>
+
+                <!-- Centre-droite : formules mathématiques flottantes -->
+                <svg class="absolute top-1/3 right-4" width="140" height="200" viewBox="0 0 140 200" fill="none"
+                     :style="{ opacity: isDark ? '0.05' : '0.04' }">
+                    <text x="10" y="35" font-size="14" :fill="isDark ? '#c4b5fd' : '#6d28d9'" font-family="serif">E = mc²</text>
+                    <text x="10" y="75" font-size="12" :fill="isDark ? '#a78bfa' : '#7c3aed'" font-family="serif">∑(n=1..∞)</text>
+                    <text x="10" y="115" font-size="13" :fill="isDark ? '#c4b5fd' : '#6d28d9'" font-family="serif">√(a²+b²)</text>
+                    <text x="10" y="155" font-size="12" :fill="isDark ? '#a78bfa' : '#7c3aed'" font-family="serif">∫ f(x) dx</text>
+                    <text x="10" y="190" font-size="11" :fill="isDark ? '#c4b5fd' : '#6d28d9'" font-family="serif">π ≈ 3.14159</text>
+                </svg>
+
+                <!-- Lignes diagonales discrètes traversant tout -->
+                <svg class="absolute inset-0 w-full h-full" preserveAspectRatio="none" fill="none"
+                     :style="{ opacity: isDark ? '0.04' : '0.03' }">
+                    <g :stroke="isDark ? '#c4b5fd' : '#6d28d9'" stroke-width="1" stroke-dasharray="8 12">
+                        <line x1="0%"   y1="15%"  x2="25%"  y2="100%"/>
+                        <line x1="75%"  y1="0%"   x2="100%" y2="60%"/>
+                        <line x1="0%"   y1="65%"  x2="20%"  y2="100%"/>
+                        <line x1="80%"  y1="40%"  x2="100%" y2="90%"/>
+                    </g>
+                </svg>
+
+            </div>
 
             <!-- Toggle dark/light -->
             <div class="absolute top-4 right-4 z-20">

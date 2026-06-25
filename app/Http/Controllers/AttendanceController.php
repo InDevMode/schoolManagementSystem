@@ -43,7 +43,7 @@ class AttendanceController extends Controller
     }
 
     /**
-     * Enregistre les présences (batch ou single).
+     * Enregistre les Présences (batch ou single).
      * Si un enregistrement existait et avait été soft-supprimé, on le restaure.
      */
     public function attendanceStudentSave(Request $request): \Illuminate\Http\JsonResponse

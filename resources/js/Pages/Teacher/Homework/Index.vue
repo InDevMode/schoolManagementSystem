@@ -464,7 +464,7 @@
                 </div>
             </div>
             <template #footer>
-                <AppButton variant="ghost" @click="showDetails = false">Fermer</AppButton>
+                <AppButton variant="close" @click="showDetails = false">Fermer</AppButton>
             </template>
         </AppModal>
 

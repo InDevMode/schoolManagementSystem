@@ -25,88 +25,103 @@
                     leave-to-class="opacity-0 scale-[0.97]"
                 >
                     <div v-if="modelValue"
-                        :class="['relative bg-white dark:bg-gray-900 rounded-2xl shadow-2xl overflow-hidden flex', sizeClass]"
+                        :class="['relative bg-white dark:bg-gray-900 rounded-2xl shadow-2xl overflow-hidden flex flex-col', sizeClass]"
                         style="max-height: 88vh;"
                         role="dialog"
                         :aria-label="title">
 
-                        <!-- Illustration background subtile -->
-                        <div class="pointer-events-none absolute inset-0 modal-bg-illustration" aria-hidden="true" />
+                        <!-- ══════════════════════════════════════════
+                             HEADER ILLUSTRÉ (style "Board Meeting")
+                        ═══════════════════════════════════════════ -->
+                        <div :class="['relative flex-shrink-0 overflow-hidden', headerGradient]"
+                             style="min-height: 108px;">
 
-                        <!-- ── Sidebar navigation (gauche) ── -->
-                        <aside v-if="tabs && tabs.length > 0"
-                            class="relative z-10 w-52 flex-shrink-0 bg-gray-50 dark:bg-gray-800/60 border-r border-gray-200 dark:border-gray-700/60 flex flex-col">
-
-                            <!-- Profil mini dans la sidebar -->
-                            <div class="px-4 pt-5 pb-4 border-b border-gray-200 dark:border-gray-700/60">
-                                <slot name="sidebar-header">
-                                    <div class="flex flex-col items-center text-center gap-2">
-                                        <slot name="avatar">
-                                            <div class="w-14 h-14 rounded-full bg-gradient-to-br from-primary-500 to-violet-600 flex items-center justify-center text-white text-lg font-bold shadow-md">
-                                                {{ initials }}
-                                            </div>
-                                        </slot>
-                                        <div>
-                                            <p class="text-sm font-semibold text-gray-900 dark:text-white leading-snug">{{ title }}</p>
-                                            <p v-if="subtitle" class="text-xs text-gray-400 dark:text-gray-500 mt-0.5">{{ subtitle }}</p>
-                                        </div>
-                                    </div>
-                                </slot>
+                            <!-- Pattern géométrique décoratif (losanges) — opacité réduite -->
+                            <div class="pointer-events-none absolute inset-0" aria-hidden="true">
+                                <svg class="absolute inset-0 w-full h-full opacity-[0.035]" xmlns="http://www.w3.org/2000/svg">
+                                    <defs>
+                                        <pattern id="detail-diamond" x="0" y="0" width="24" height="24" patternUnits="userSpaceOnUse">
+                                            <path d="M12 0 L24 12 L12 24 L0 12 Z" fill="none" stroke="white" stroke-width="1"/>
+                                        </pattern>
+                                    </defs>
+                                    <rect width="100%" height="100%" fill="url(#detail-diamond)"/>
+                                </svg>
+                                <!-- Radial highlight top-right -->
+                                <div class="absolute -top-8 -right-8 w-48 h-48 rounded-full bg-white/8 blur-2xl" />
+                                <!-- Gradient fade vers le bas -->
+                                <div class="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-black/8 to-transparent" />
                             </div>
 
-                            <!-- Navigation tabs -->
-                            <nav class="flex-1 px-2 py-3 space-y-0.5">
+                            <!-- Bouton fermer -->
+                            <button
+                                @click="close"
+                                class="absolute top-3 right-3 z-20 p-1.5 rounded-xl bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white transition-colors shadow-sm">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/>
+                                </svg>
+                            </button>
+
+                            <!-- Contenu du header : avatar + nom uniquement -->
+                            <div class="relative z-10 flex items-center gap-4 px-6 pt-5 pb-4">
+                                <!-- Avatar slot -->
+                                <div class="flex-shrink-0">
+                                    <slot name="avatar">
+                                        <div :class="['w-14 h-14 rounded-2xl flex items-center justify-center text-white text-xl font-bold shadow-lg ring-4 ring-white/25', avatarFallbackBg]">
+                                            {{ initials }}
+                                        </div>
+                                    </slot>
+                                </div>
+
+                                <!-- Nom + subtitle -->
+                                <div class="flex-1 min-w-0">
+                                    <h2 class="text-lg font-bold text-white truncate leading-tight">{{ title }}</h2>
+                                    <p v-if="subtitle" class="text-white/70 text-sm mt-0.5 truncate">{{ subtitle }}</p>
+                                </div>
+                            </div>
+
+                            <!-- ── Tabs horizontaux ── -->
+                            <div v-if="tabs && tabs.length > 0"
+                                 class="relative z-10 flex items-end gap-1 px-6 pb-0">
                                 <button
                                     v-for="tab in tabs"
                                     :key="tab.id"
                                     @click="activeTab = tab.id"
                                     :class="[
-                                        'w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-150',
+                                        'flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium rounded-t-xl transition-all duration-150 border-b-2 whitespace-nowrap',
                                         activeTab === tab.id
-                                            ? 'bg-white dark:bg-gray-700 text-primary-700 dark:text-primary-300 shadow-sm'
-                                            : 'text-gray-600 dark:text-gray-400 hover:bg-white/60 dark:hover:bg-gray-700/50 hover:text-gray-900 dark:hover:text-white'
+                                            ? 'bg-white dark:bg-gray-900 text-gray-900 dark:text-white border-transparent shadow-sm'
+                                            : 'text-white/75 border-transparent hover:text-white hover:bg-white/10'
                                     ]">
-                                    <span v-if="tab.icon" class="w-4 h-4 flex-shrink-0" v-html="tab.icon" />
+                                    <span v-if="tab.icon" class="w-3.5 h-3.5 flex-shrink-0" v-html="tab.icon" />
                                     {{ tab.label }}
                                 </button>
-                            </nav>
-
-                            <!-- Actions sidebar bas -->
-                            <div v-if="$slots['sidebar-footer']" class="px-3 py-3 border-t border-gray-200 dark:border-gray-700/60">
-                                <slot name="sidebar-footer" />
                             </div>
-                        </aside>
+                        </div>
 
-                        <!-- ── Contenu principal (droite) ── -->
-                        <div class="relative z-10 flex flex-col flex-1 min-w-0 overflow-hidden">
-
-                            <!-- Header -->
-                            <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-gray-700/60 flex-shrink-0 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm">
-                                <div>
-                                    <h3 class="text-base font-semibold text-gray-900 dark:text-white">
-                                        {{ activeTabLabel || title }}
-                                    </h3>
-                                    <p v-if="activeTabDesc || subtitle" class="text-xs text-gray-400 dark:text-gray-500 mt-0.5">
-                                        {{ activeTabDesc || subtitle }}
-                                    </p>
-                                </div>
-                                <button
-                                    @click="close"
-                                    class="p-1.5 rounded-xl bg-red-500 hover:bg-red-600 text-white transition-colors flex-shrink-0 shadow-sm">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/>
-                                    </svg>
-                                </button>
-                            </div>
-
-                            <!-- Body -->
-                            <div class="flex-1 overflow-y-auto px-6 py-5">
+                        <!-- ══════════════════════════════════════════
+                             BODY (contenu de l'onglet actif)
+                        ═══════════════════════════════════════════ -->
+                        <div class="relative flex-1 overflow-y-auto px-6 py-5 bg-white dark:bg-gray-900">
+                            <!-- Illustration background sur le body -->
+                            <div class="pointer-events-none absolute inset-0 modal-bg-illustration" aria-hidden="true" />
+                            <div class="relative z-10">
                                 <slot :active-tab="activeTab" />
                             </div>
+                        </div>
 
-                            <!-- Footer actions -->
-                            <div v-if="$slots.footer"
-                                class="flex items-center justify-end gap-3 px-6 py-4 border-t border-gray-200 dark:border-gray-700/60 flex-shrink-0 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm">
+                        <!-- ══════════════════════════════════════════
+                             FOOTER actions
+                        ═══════════════════════════════════════════ -->
+                        <div v-if="$slots.footer || $slots['sidebar-footer']"
+                            class="relative flex items-center justify-between gap-3 px-6 py-4 border-t border-gray-100 dark:border-gray-700/60 flex-shrink-0 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm">
+                            <!-- Illustration background sur le footer -->
+                            <div class="pointer-events-none absolute inset-0 modal-bg-illustration opacity-50" aria-hidden="true" />
+                            <!-- Gauche : bouton Message (slot sidebar-footer) -->
+                            <div class="relative z-10 flex items-center gap-2">
+                                <slot name="sidebar-footer" />
+                            </div>
+                            <!-- Droite : Fermer + Modifier -->
+                            <div class="relative z-10 flex items-center gap-2">
                                 <slot name="footer" />
                             </div>
                         </div>
@@ -127,11 +142,14 @@ interface Tab {
     description?: string;
 }
 
+type ColorVariant = 'primary' | 'violet' | 'emerald' | 'blue' | 'amber' | 'rose' | 'indigo' | 'teal' | 'purple';
+
 interface Props {
     modelValue: boolean;
     title?: string;
     subtitle?: string;
     initials?: string;
+    color?: ColorVariant;
     size?: 'md' | 'lg' | 'xl' | '2xl';
     tabs?: Tab[];
     defaultTab?: string;
@@ -144,6 +162,7 @@ const props = withDefaults(defineProps<Props>(), {
     tabs: () => [],
     persistent: false,
     initials: '?',
+    color: 'primary',
 });
 
 const emit = defineEmits<{ 'update:modelValue': [value: boolean] }>();
@@ -154,13 +173,34 @@ watch(() => props.modelValue, (val) => {
     if (val) activeTab.value = props.defaultTab ?? props.tabs?.[0]?.id ?? '';
 });
 
-const activeTabLabel = computed(() => props.tabs?.find(t => t.id === activeTab.value)?.label ?? '');
-const activeTabDesc  = computed(() => props.tabs?.find(t => t.id === activeTab.value)?.description ?? '');
+const headerGradient = computed(() => ({
+    primary: 'bg-gradient-to-br from-primary-500 via-primary-600 to-violet-700',
+    violet:  'bg-gradient-to-br from-violet-500 via-violet-600 to-purple-700',
+    emerald: 'bg-gradient-to-br from-emerald-500 via-emerald-600 to-teal-700',
+    blue:    'bg-gradient-to-br from-blue-500 via-blue-600 to-indigo-700',
+    amber:   'bg-gradient-to-br from-amber-400 via-amber-500 to-orange-600',
+    rose:    'bg-gradient-to-br from-rose-500 via-rose-600 to-pink-700',
+    indigo:  'bg-gradient-to-br from-indigo-500 via-indigo-600 to-violet-700',
+    teal:    'bg-gradient-to-br from-teal-500 via-teal-600 to-cyan-700',
+    purple:  'bg-gradient-to-br from-purple-500 via-purple-600 to-violet-800',
+}[props.color]));
+
+const avatarFallbackBg = computed(() => ({
+    primary: 'bg-white/20',
+    violet:  'bg-white/20',
+    emerald: 'bg-white/20',
+    blue:    'bg-white/20',
+    amber:   'bg-white/20',
+    rose:    'bg-white/20',
+    indigo:  'bg-white/20',
+    teal:    'bg-white/20',
+    purple:  'bg-white/20',
+}[props.color]));
 
 const sizeClass = computed(() => ({
-    md:  'w-full max-w-2xl',
-    lg:  'w-full max-w-3xl',
-    xl:  'w-full max-w-4xl',
+    md:    'w-full max-w-2xl',
+    lg:    'w-full max-w-3xl',
+    xl:    'w-full max-w-4xl',
     '2xl': 'w-full max-w-5xl',
 }[props.size]));
 

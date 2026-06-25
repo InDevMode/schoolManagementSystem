@@ -104,7 +104,7 @@
                 </div>
             </div>
             <template #footer>
-                <AppButton variant="ghost" @click="showDetail = false">Fermer</AppButton>
+                <AppButton variant="close" @click="showDetail = false">Fermer</AppButton>
             </template>
         </AppModal>
     </div>

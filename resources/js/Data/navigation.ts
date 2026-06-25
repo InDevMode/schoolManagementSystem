@@ -30,7 +30,7 @@ export const adminNav: NavItem[] = [
         ],
     },
     {
-        id: 'examinations', label: 'Examens & Sessions', icon: 'clipboard-document-list',
+        id: 'examinations', label: 'Examens', icon: 'clipboard-document-list',
         children: [
             { id: 'periods',        label: 'Périodes',         icon: 'calendar',      href: '/admin/examinations/period/list',  permission: 'view.exams.periods'  },
             { id: 'evaluations',    label: 'Evaluations', icon: 'pencil-square', href: '/admin/evaluations/list',        permission: 'view.exams.list'     },
@@ -72,7 +72,7 @@ export const adminNav: NavItem[] = [
         href: '/admin/settings', permission: 'view.settings',
     },
     {
-        id: 'staff', label: 'Personnel & RH', icon: 'user-group',
+        id: 'staff', label: 'Gestion Personnel', icon: 'user-group',
         children: [
             { id: 'staff-list',        label: 'Personnel',        icon: 'users',          href: '/admin/staff/list',              permission: 'view.staff.list'   },
             { id: 'staff-leaves',      label: 'Congés',           icon: 'calendar-days',  href: '/admin/staff/leaves/list',       permission: 'view.staff.leaves' },
@@ -112,7 +112,7 @@ export const superAdminNav: NavItem[] = [
         ],
     },
     {
-        id: 'sa-examinations', label: 'Examens & Sessions', icon: 'clipboard-document-list',
+        id: 'sa-examinations', label: 'Examens', icon: 'clipboard-document-list',
         children: [
             { id: 'sa-periods',        label: 'Périodes',           icon: 'calendar',      href: '/admin/examinations/period/list',  permission: 'view.exams.periods'  },
             { id: 'sa-evaluations',    label: 'Evaluations', icon: 'pencil-square', href: '/admin/evaluations/list',          permission: 'view.exams.list'     },
@@ -122,7 +122,7 @@ export const superAdminNav: NavItem[] = [
         ],
     },
     {
-        id: 'sa-staff', label: 'Gestion RH', icon: 'user-group',
+        id: 'sa-staff', label: 'Gestion Personnel', icon: 'user-group',
         children: [
             { id: 'sa-staff-list',   label: 'Personnel',       icon: 'users',         href: '/admin/staff/list',             permission: 'view.staff.list'   },
             { id: 'sa-staff-leaves', label: 'Congés',          icon: 'calendar-days', href: '/admin/staff/leaves/list',      permission: 'view.staff.leaves' },

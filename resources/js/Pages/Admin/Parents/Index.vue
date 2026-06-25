@@ -1,4 +1,4 @@
-﻿<template>
+<template>
     <div class="space-y-6">
         <PageHeader title="Parents" :subtitle="`${parents.total} parent(s)`" color="violet">
             <template #icon>
@@ -25,7 +25,7 @@
                       d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
             </svg>
             <span class="text-primary-700 dark:text-primary-300 font-medium">Mode Super Admin</span>
-            <span class="text-primary-600 dark:text-primary-400">— Double-cliquez sur une cellule pour l'éditer · Clic droit pour le menu rapide</span>
+            <span class="text-primary-600 dark:text-primary-400">� Double-cliquez sur une cellule pour l'�diter � Clic droit pour le menu rapide</span>
         </div>
 
         <DataTable
@@ -54,7 +54,7 @@
                                     class="ml-1.5 opacity-0 group-hover/name:opacity-100 transition-opacity duration-150
                                            p-0.5 rounded text-gray-400 hover:text-primary-600 hover:bg-primary-50
                                            dark:hover:text-primary-400 dark:hover:bg-primary-900/20"
-                                    :title="copiedField === `name-${row.id}` ? 'Copié !' : 'Copier le nom'"
+                                    :title="copiedField === `name-${row.id}` ? 'Copi� !' : 'Copier le nom'"
                                     @click.stop="copyToClipboard(`${row.last_name} ${row.name}`, `name-${row.id}`)">
                                 <svg v-if="copiedField !== `name-${row.id}`" class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
@@ -70,7 +70,7 @@
                                     class="ml-1.5 opacity-0 group-hover/email:opacity-100 transition-opacity duration-150
                                            p-0.5 rounded text-gray-400 hover:text-violet-600 hover:bg-violet-50
                                            dark:hover:text-violet-400 dark:hover:bg-violet-900/20"
-                                    :title="copiedField === `email-${row.id}` ? 'Copié !' : 'Copier l\'email'"
+                                    :title="copiedField === `email-${row.id}` ? 'Copi� !' : 'Copier l\'email'"
                                     @click.stop="copyToClipboard(row.email as string, `email-${row.id}`)">
                                 <svg v-if="copiedField !== `email-${row.id}`" class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
@@ -90,7 +90,7 @@
                 </AppBadge>
             </template>
 
-            <!-- École (super admin uniquement) -->
+            <!-- �cole (super admin uniquement) -->
             <template #cell-school_name="{ row }">
                 <span v-if="row.school_name"
                       class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium
@@ -102,7 +102,7 @@
                     </svg>
                     {{ row.school_name }}
                 </span>
-                <span v-else class="text-gray-400 dark:text-gray-600">—</span>
+                <span v-else class="text-gray-400 dark:text-gray-600">�</span>
             </template>
 
             <template #cell-is_online="{ row }">
@@ -120,7 +120,7 @@
 
             <template #actions="{ row }">
                 <div class="flex items-center justify-end gap-1.5">
-                    <button v-if="canView" title="Voir les détails" @click="openView(row as any)"
+                    <button v-if="canView" title="Voir les d�tails" @click="openView(row as any)"
                             class="p-1.5 rounded-xl transition-all duration-150
                                    text-white bg-violet-500 hover:bg-violet-600 active:bg-violet-700
                                    shadow-sm shadow-violet-200 dark:shadow-violet-900/40">
@@ -138,7 +138,7 @@
                                   d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                         </svg>
                     </button>
-                    <Link v-if="canManageChildren" :href="`/admin/parent/student/${row.id}`" title="Gérer les enfants"
+                    <Link v-if="canManageChildren" :href="`/admin/parent/student/${row.id}`" title="G�rer les enfants"
                        class="p-1.5 rounded-xl transition-all duration-150
                               text-white bg-indigo-500 hover:bg-indigo-600 active:bg-indigo-700
                               shadow-sm shadow-indigo-200 dark:shadow-indigo-900/40">
@@ -147,8 +147,8 @@
                                   d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
                         </svg>
                     </Link>
-                    <!-- Réinitialiser MDP -->
-                    <button v-if="canResetPassword" title="Réinit. MDP" @click="tableRef?.confirmResetPassword(row.id as number, `${row.last_name} ${row.name}`)"
+                    <!-- R�initialiser MDP -->
+                    <button v-if="canResetPassword" title="R�init. MDP" @click="tableRef?.confirmResetPassword(row.id as number, `${row.last_name} ${row.name}`)"
                             class="p-1.5 rounded-xl transition-all duration-150
                                    text-white bg-amber-500 hover:bg-amber-600 active:bg-amber-700
                                    shadow-sm shadow-amber-200 dark:shadow-amber-900/40">
@@ -176,7 +176,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                               d="M15 12a3 3 0 11-6 0 3 3 0 016 0zM2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
                     </svg>
-                    Voir les détails
+                    Voir les d�tails
                 </button>
                 <button v-if="canEdit" @click="openEdit(row as any)"
                         class="flex w-full items-center gap-2.5 px-3.5 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-emerald-50 dark:hover:bg-gray-700/60 hover:text-emerald-700 transition-colors">
@@ -192,14 +192,14 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                               d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
                     </svg>
-                    Gérer les enfants
+                    G�rer les enfants
                 </Link>
                 <button v-if="canResetPassword" @click="tableRef?.confirmResetPassword((row as any).id, `${row.last_name} ${row.name}`)"
                         class="flex w-full items-center gap-2.5 px-3.5 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-amber-50 dark:hover:bg-gray-700/60 hover:text-amber-700 transition-colors">
                     <svg class="w-4 h-4 text-amber-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/>
                     </svg>
-                    Réinitialiser le mot de passe
+                    R�initialiser le mot de passe
                 </button>
                 <Link :href="`/chat?receiver_id=${(row as any).id_encoded}`"
                    class="flex items-center gap-2.5 px-3.5 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-violet-50 dark:hover:bg-gray-700/60 hover:text-violet-700 transition-colors">
@@ -223,7 +223,7 @@
             </template>
         </DataTable>
 
-        <!-- Modal Détails Parent — style settings panel -->
+        <!-- Modal D�tails Parent � style settings panel -->
         <DetailModal
             v-model="showView"
             :title="viewTarget ? `${viewTarget.last_name} ${viewTarget.name}` : ''"
@@ -231,6 +231,7 @@
             :initials="viewTarget ? (viewTarget.last_name?.[0] ?? '') + (viewTarget.name?.[0] ?? '') : '?'"
             :tabs="parentTabs"
             default-tab="profile"
+            color="violet"
             size="lg"
         >
             <template #avatar>
@@ -249,11 +250,11 @@
 
             <template #sidebar-footer>
                 <Link v-if="viewTarget" :href="`/chat?receiver_id=${viewTarget.id_encoded}`"
-                    class="flex items-center justify-center gap-2 w-full px-3 py-2 rounded-xl bg-violet-600 hover:bg-violet-700 text-white text-xs font-semibold transition-colors shadow-sm">
+                    class="flex items-center justify-center gap-2 w-full px-3 py-2 rounded-xl bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white text-xs font-semibold transition-colors shadow-sm">
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
                     </svg>
-                    Envoyer un message
+                    Message
                 </Link>
             </template>
 
@@ -261,41 +262,13 @@
                 <div v-if="viewTarget">
                     <!-- PROFIL -->
                     <div v-show="activeTab === 'profile'" class="space-y-5">
-                        <div class="relative rounded-2xl overflow-hidden bg-gradient-to-br from-violet-600 to-purple-700 p-5">
-                            <div class="absolute inset-0 opacity-10" style="background-image:radial-gradient(circle at 80% 20%, white 0%, transparent 60%)"/>
-                            <div class="relative flex items-center gap-4">
-                                <div class="relative flex-shrink-0">
-                                    <img v-if="viewTarget.profile_picture"
-                                         :src="`/upload/profile/${viewTarget.profile_picture}`"
-                                         class="w-14 h-14 rounded-xl object-cover ring-4 ring-white/30 shadow-xl"/>
-                                    <div v-else class="w-14 h-14 rounded-xl bg-white/20 backdrop-blur flex items-center justify-center ring-4 ring-white/30 shadow-xl">
-                                        <span class="text-lg font-bold text-white">{{ viewTarget.last_name?.[0] }}{{ viewTarget.name?.[0] }}</span>
-                                    </div>
-                                    <span class="absolute -bottom-1 -right-1 w-3.5 h-3.5 rounded-full border-2 border-white shadow-sm"
-                                          :class="viewTarget.is_online ? 'bg-emerald-400' : 'bg-gray-400'"/>
-                                </div>
-                                <div class="flex-1 min-w-0">
-                                    <h2 class="text-base font-bold text-white truncate">{{ viewTarget.last_name }} {{ viewTarget.name }}</h2>
-                                    <p class="text-violet-100 text-xs mt-0.5">{{ viewTarget.email }}</p>
-                                    <div class="flex items-center gap-2 mt-2 flex-wrap">
-                                        <span :class="['px-2 py-0.5 rounded-full text-xs font-semibold', viewTarget.status == 1 ? 'bg-emerald-400/30 text-emerald-100' : 'bg-red-400/30 text-red-100']">
-                                            {{ viewTarget.status == 1 ? '✓ Actif' : '✗ Inactif' }}
-                                        </span>
-                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-white/10 text-white/80">
-                                            <span class="w-1.5 h-1.5 rounded-full" :class="viewTarget.is_online ? 'bg-emerald-400' : 'bg-gray-400'"/>
-                                            {{ viewTarget.is_online ? 'En ligne' : 'Hors ligne' }}
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                            <InfoCard label="Téléphone" :value="viewTarget.mobile_number" mono />
-                            <InfoCard label="Genre" :value="viewTarget.gender === 'male' ? 'Masculin' : viewTarget.gender === 'female' ? 'Féminin' : viewTarget.gender" />
+                            <InfoCard label="T�l�phone" :value="viewTarget.mobile_number" mono />
+                            <InfoCard label="Genre" :value="viewTarget.gender === 'male' ? 'Masculin' : viewTarget.gender === 'female' ? 'F�minin' : viewTarget.gender" />
                             <InfoCard label="Profession" :value="viewTarget.occupation" />
                             <InfoCard label="Statut" :badge="viewTarget.status == 1 ? 'success' : 'danger'" :value="viewTarget.status == 1 ? 'Actif' : 'Inactif'" />
                             <InfoCard v-if="viewTarget.address" label="Adresse" :value="viewTarget.address" />
-                            <InfoCard v-if="isSuperAdmin && viewTarget.school_name" label="École" :value="viewTarget.school_name" highlight />
+                            <InfoCard v-if="isSuperAdmin && viewTarget.school_name" label="�cole" :value="viewTarget.school_name" highlight />
                         </div>
                     </div>
 
@@ -319,8 +292,8 @@
                                               d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
                                     </svg>
                                 </div>
-                                <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Aucun enfant assigné</p>
-                                <p class="text-xs text-gray-400 dark:text-gray-500 mt-1">Ce parent n'a pas encore d'enfants associés.</p>
+                                <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Aucun enfant assign�</p>
+                                <p class="text-xs text-gray-400 dark:text-gray-500 mt-1">Ce parent n'a pas encore d'enfants associ�s.</p>
                             </div>
 
                             <div v-else class="space-y-2">
@@ -351,7 +324,7 @@
                                         </p>
                                         <p class="text-xs text-gray-500 dark:text-gray-400 truncate">
                                             {{ child.class_name ?? 'Aucune classe' }}
-                                            <span v-if="child.admission_number" class="ml-1 text-gray-400">· {{ child.admission_number }}</span>
+                                            <span v-if="child.admission_number" class="ml-1 text-gray-400">� {{ child.admission_number }}</span>
                                         </p>
                                     </div>
 
@@ -361,7 +334,7 @@
                                         :href="`/admin/parent/student/${viewTarget?.id}`"
                                         class="p-1.5 rounded-xl text-indigo-500 hover:bg-indigo-50 dark:hover:bg-indigo-900/20
                                                hover:text-indigo-700 transition-colors flex-shrink-0"
-                                        title="Gérer les enfants"
+                                        title="G�rer les enfants"
                                         @click="showView = false"
                                     >
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -372,7 +345,7 @@
                                 </div>
                             </div>
 
-                            <!-- Lien gérer les enfants -->
+                            <!-- Lien g�rer les enfants -->
                             <div class="pt-2 border-t border-gray-100 dark:border-gray-700">
                                 <Link
                                     v-if="canManageChildren && viewTarget"
@@ -387,7 +360,7 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                               d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
                                     </svg>
-                                    Gérer les enfants de ce parent
+                                    G�rer les enfants de ce parent
                                 </Link>
                             </div>
                         </template>
@@ -396,7 +369,7 @@
             </template>
 
             <template #footer>
-                <AppButton variant="ghost" @click="showView = false">Fermer</AppButton>
+                <AppButton variant="close" @click="showView = false">Fermer</AppButton>
                 <AppButton v-if="canEdit" @click="showView = false; openEdit(viewTarget!)">
                     <template #icon>
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -421,11 +394,11 @@
                     </div>
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <AppInput v-model="form.last_name" label="Prénoms" required/>
+                    <AppInput v-model="form.last_name" label="Pr�noms" required/>
                     <AppInput v-model="form.name" label="Nom" required/>
                     <AppInput v-model="form.email" label="Email" type="email" required/>
-                    <AppInput v-model="form.mobile_number" label="Téléphone"/>
-                    <AppSelect v-model="form.gender" label="Genre" :options="genderOptions" placeholder="Sélectionner..."/>
+                    <AppInput v-model="form.mobile_number" label="T�l�phone"/>
+                    <AppSelect v-model="form.gender" label="Genre" :options="genderOptions" placeholder="S�lectionner..."/>
                     <AppInput v-model="form.occupation" label="Profession"/>
                     <AppSelect v-model="form.status" label="Statut" :options="statusOptions" required/>
                     <AppInput v-model="form.password"
@@ -437,7 +410,7 @@
             <template #footer>
                 <AppButton variant="ghost" @click="showForm = false">Annuler</AppButton>
                 <AppButton type="submit" :form="formId" :loading="submitting">
-                    {{ editTarget ? 'Enregistrer' : 'Créer' }}
+                    {{ editTarget ? 'Enregistrer' : 'Cr�er' }}
                 </AppButton>
             </template>
         </AppModal>
@@ -464,7 +437,7 @@ import UserAvatar from '@/Components/Shared/UserAvatar.vue';
 import { useToast } from '@/Composables/useToast';
 import { useCan } from '@/Composables/useCan';
 
-// ── Composant InfoCard réutilisable ──────────────────────────────────────────
+// -- Composant InfoCard r�utilisable ------------------------------------------
 const InfoCard = defineComponent({
     props: {
         label:     { type: String, required: true },
@@ -484,10 +457,10 @@ const InfoCard = defineComponent({
                         p.badge === 'success'
                             ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400'
                             : 'bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400'].join(' '),
-                }, [h('span', { class: ['w-1.5 h-1.5 rounded-full', p.badge === 'success' ? 'bg-emerald-500' : 'bg-red-400'].join(' ') }), p.value || '—'])
+                }, [h('span', { class: ['w-1.5 h-1.5 rounded-full', p.badge === 'success' ? 'bg-emerald-500' : 'bg-red-400'].join(' ') }), p.value || '�'])
                 : h('p', {
                     class: ['text-sm font-semibold', p.highlight ? 'text-primary-700 dark:text-primary-400' : 'text-gray-800 dark:text-gray-200', p.mono ? 'font-mono' : ''].filter(Boolean).join(' '),
-                }, p.value || '—'),
+                }, p.value || '�'),
         ]);
     },
 });
@@ -530,7 +503,7 @@ const picFile    = ref<File | null>(null);
 const toast      = useToast();
 const tableRef   = ref<InstanceType<typeof DataTable> | null>(null);
 
-// ── Enfants du parent ─────────────────────────────────────────────────────────
+// -- Enfants du parent ---------------------------------------------------------
 interface ChildStudent {
     id: number; name: string; last_name: string;
     class_name: string | null; admission_number: string | null;
@@ -556,7 +529,7 @@ const loadParentChildren = async (parentId: number) => {
 };
 
 const statusOptions = [{ value: '1', label: 'Actif' }, { value: '0', label: 'Inactif' }];
-const genderOptions = [{ value: 'male', label: 'Masculin' }, { value: 'female', label: 'Féminin' }, { value: 'other', label: 'Autre' }];
+const genderOptions = [{ value: 'male', label: 'Masculin' }, { value: 'female', label: 'F�minin' }, { value: 'other', label: 'Autre' }];
 
 const parentTabs = [
     {
@@ -568,7 +541,7 @@ const parentTabs = [
     {
         id: 'children',
         label: 'Enfants',
-        description: 'Enfants associés à ce parent',
+        description: 'Enfants associ�s � ce parent',
         icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>',
     },
 ];
@@ -578,9 +551,9 @@ const columns = computed(() => [
     { key: 'last_name',     label: '',           searchable: true,  visible: false },
     { key: 'name',          label: '',           searchable: true,  visible: false },
     { key: 'email',         label: '',           searchable: true,  visible: false },
-    { key: 'mobile_number', label: 'Téléphone',  editable: isSuperAdmin.value, dataType: 'tel' as const, searchable: true },
+    { key: 'mobile_number', label: 'T�l�phone',  editable: isSuperAdmin.value, dataType: 'tel' as const, searchable: true },
     { key: 'occupation',    label: 'Profession', editable: isSuperAdmin.value, sortable: true, searchable: true },
-    ...(isSuperAdmin.value ? [{ key: 'school_name', label: 'École', sortable: false, searchable: false }] : []),
+    ...(isSuperAdmin.value ? [{ key: 'school_name', label: '�cole', sortable: false, searchable: false }] : []),
     { key: 'status',        label: 'Statut',     sortable: true,    searchable: false, exportFormat: (v: unknown) => (v == 1 ? 'Actif' : 'Inactif') },
     { key: 'is_online',     label: 'En ligne',   sortable: false,   searchable: false, exportFormat: (v: unknown) => (v ? 'En ligne' : 'Hors ligne') },
 ]);
@@ -629,7 +602,7 @@ const submitForm = () => {
     submitting.value = true;
     const url = editTarget.value ? `/admin/parent/edit/${editTarget.value.id}` : '/admin/parent/add';
     router.post(url, data, {
-        onSuccess: () => { showForm.value = false; toast.success(editTarget.value ? 'Parent modifié.' : 'Parent créé.'); },
+        onSuccess: () => { showForm.value = false; toast.success(editTarget.value ? 'Parent modifi�.' : 'Parent cr��.'); },
         onError:   () => toast.error('Erreur lors de l\'enregistrement.'),
         onFinish:  () => { submitting.value = false; },
     });
@@ -642,7 +615,7 @@ const confirmDelete = () => {
     });
 };
 
-// ── Copie presse-papier ───────────────────────────────────────────────────────
+// -- Copie presse-papier -------------------------------------------------------
 const copiedField = ref<string | null>(null);
 let copiedTimeout: ReturnType<typeof setTimeout> | null = null;
 const copyToClipboard = (text: string, fieldKey: string) => {
@@ -655,7 +628,7 @@ const copyToClipboard = (text: string, fieldKey: string) => {
 
 const handleDelete = (ids: (string | number)[]) => {
     ids.forEach(id => router.get(`/admin/parent/delete/${id}`, {}, {
-        onSuccess: () => toast.success('Parent supprimé.'),
+        onSuccess: () => toast.success('Parent supprim�.'),
         onError:   () => toast.error('Erreur lors de la suppression.'),
     }));
 };
@@ -669,6 +642,6 @@ const handleResetPassword = async (ids: (string | number)[]) => {
         });
         const data = await res.json();
         data.success ? toast.success(data.message) : toast.error(data.message);
-    } catch { toast.error('Erreur lors de la réinitialisation.'); }
+    } catch { toast.error('Erreur lors de la r�initialisation.'); }
 };
 </script>

@@ -328,7 +328,7 @@
             </div>
 
             <template #footer>
-                <AppButton variant="ghost" @click="showDetail = false">Fermer</AppButton>
+                <AppButton variant="close" @click="showDetail = false">Fermer</AppButton>
                 <AppButton v-if="can('action.noticeboard.manage')" @click="openEdit(detailTarget!); showDetail = false">Modifier</AppButton>
             </template>
         </AppModal>

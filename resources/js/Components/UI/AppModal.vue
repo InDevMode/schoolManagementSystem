@@ -54,8 +54,15 @@
                         </div>
 
                         <!-- Footer -->
-                        <div v-if="$slots.footer" class="relative z-10 px-6 py-4 border-t border-gray-100 dark:border-gray-700 flex-shrink-0 flex items-center justify-end gap-3">
-                            <slot name="footer" />
+                        <div v-if="$slots.footer || $slots['footer-left']" class="relative z-10 px-6 py-4 border-t border-gray-100 dark:border-gray-700 flex-shrink-0 flex items-center justify-between gap-3">
+                            <!-- Gauche -->
+                            <div class="flex items-center gap-2">
+                                <slot name="footer-left" />
+                            </div>
+                            <!-- Droite -->
+                            <div class="flex items-center gap-2">
+                                <slot name="footer" />
+                            </div>
                         </div>
                     </div>
                 </Transition>

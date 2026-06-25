@@ -1,4 +1,4 @@
-﻿<template>
+<template>
     <div class="space-y-6">
         <!-- Header -->
         <PageHeader title="Assignation Classes-Professeurs" :subtitle="`${classTeachers.total} assignation(s)`" color="emerald">
@@ -37,7 +37,7 @@
             </template>
             <template #actions="{ row }">
                 <div class="flex items-center justify-end gap-1.5">
-                    <button title="Voir les détails" @click="openDetails(row as any)"
+                    <button title="Voir les d�tails" @click="openDetails(row as any)"
                             class="p-1.5 rounded-xl transition-all duration-150
                                    text-white bg-violet-500 hover:bg-violet-600 active:bg-violet-700
                                    shadow-sm shadow-violet-200 dark:shadow-violet-900/40">
@@ -53,7 +53,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                         </svg>
                     </button>
-                    <button v-if="canDelete" title="Supprimer" @click="tableRef?.confirmDelete(row.id as number, `${row.class_name} — ${row.teacher_last_name} ${row.teacher_name}`)"
+                    <button v-if="canDelete" title="Supprimer" @click="tableRef?.confirmDelete(row.id as number, `${row.class_name} � ${row.teacher_last_name} ${row.teacher_name}`)"
                             class="p-1.5 rounded-xl transition-all duration-150
                                    text-white bg-red-500 hover:bg-red-600 active:bg-red-700
                                    shadow-sm shadow-red-200 dark:shadow-red-900/40">
@@ -69,7 +69,7 @@
                     <svg class="w-4 h-4 text-violet-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0zM2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
                     </svg>
-                    Voir les détails
+                    Voir les d�tails
                 </button>
                 <button v-if="canEdit" @click="openEdit(row as any)"
                         class="flex w-full items-center gap-2.5 px-3.5 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-emerald-50 dark:hover:bg-gray-700/60 hover:text-emerald-700 transition-colors">
@@ -80,7 +80,7 @@
                 </button>
                 <template v-if="canDelete">
                     <div class="my-1 border-t border-gray-100 dark:border-gray-700"/>
-                    <button @click="tableRef?.confirmDelete(row.id as number, `${row.class_name} — ${row.teacher_last_name} ${row.teacher_name}`)"
+                    <button @click="tableRef?.confirmDelete(row.id as number, `${row.class_name} � ${row.teacher_last_name} ${row.teacher_name}`)"
                             class="flex w-full items-center gap-2.5 px-3.5 py-2.5 text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
                         <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
@@ -91,14 +91,14 @@
             </template>
         </DataTable>
 
-        <!-- Modal Créer -->
+        <!-- Modal Cr�er -->
         <AppModal v-model="showCreateForm" title="Nouvelle assignation" size="md">
             <form :id="createFormId" @submit.prevent="submitCreate" class="space-y-4">
                 <AppSelect
                     v-model="createForm.class_id"
                     label="Classe"
                     :options="classOptions"
-                    placeholder="Sélectionner une classe"
+                    placeholder="S�lectionner une classe"
                     required
                     :error="createForm.errors.class_id"
                 />
@@ -106,7 +106,7 @@
                     v-model="createForm.teacher_ids"
                     label="Professeurs"
                     :options="teacherOptions"
-                    placeholder="Sélectionner des professeurs"
+                    placeholder="S�lectionner des professeurs"
                     required
                     :error="createForm.errors.teacher_ids"
                 />
@@ -125,7 +125,7 @@
                     v-model="editForm.class_id"
                     label="Classe"
                     :options="classOptions"
-                    placeholder="Sélectionner une classe"
+                    placeholder="S�lectionner une classe"
                     required
                     :error="editForm.errors.class_id"
                 />
@@ -133,7 +133,7 @@
                     v-model="editForm.teacher_id"
                     label="Professeur"
                     :options="teacherOptions"
-                    placeholder="Sélectionner un professeur"
+                    placeholder="S�lectionner un professeur"
                     required
                     :error="editForm.errors.teacher_id"
                 />
@@ -145,7 +145,7 @@
             </template>
         </AppModal>
 
-        <!-- Drawer Voir détails -->
+        <!-- Drawer Voir d�tails -->
         <Teleport to="body">
             <Transition
                 enter-active-class="transition-all duration-300 ease-out"
@@ -176,8 +176,8 @@
                                         </svg>
                                     </div>
                                     <div>
-                                        <h2 class="text-base font-semibold text-gray-900 dark:text-white">Détails de l'assignation</h2>
-                                        <p class="text-xs text-gray-500 dark:text-gray-400">Professeur — Classe</p>
+                                        <h2 class="text-base font-semibold text-gray-900 dark:text-white">D�tails de l'assignation</h2>
+                                        <p class="text-xs text-gray-500 dark:text-gray-400">Professeur � Classe</p>
                                     </div>
                                 </div>
                                 <button @click="showDetails = false" class="p-1.5 rounded-xl bg-red-500 hover:bg-red-600 text-white transition-colors flex-shrink-0 shadow-sm">
@@ -205,7 +205,7 @@
                                     </div>
                                     <!-- Classe -->
                                     <div>
-                                        <p class="text-xs font-medium text-emerald-500 uppercase tracking-wide mb-1">Classe assignée</p>
+                                        <p class="text-xs font-medium text-emerald-500 uppercase tracking-wide mb-1">Classe assign�e</p>
                                         <p class="text-base font-semibold text-gray-900 dark:text-white">{{ detailsTarget.class_name }}</p>
                                     </div>
                                 </div>
@@ -218,18 +218,18 @@
                                     </AppBadge>
                                 </div>
 
-                                <!-- Métadonnées -->
+                                <!-- M�tadonn�es -->
                                 <div class="space-y-3 pt-2 border-t border-gray-100 dark:border-gray-700">
                                     <div v-if="detailsTarget.created_by_name">
-                                        <p class="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wide mb-1">Créé par</p>
+                                        <p class="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wide mb-1">Cr�� par</p>
                                         <p class="text-sm text-gray-700 dark:text-gray-300">{{ detailsTarget.created_by_name }}</p>
                                     </div>
                                     <div v-if="detailsTarget.created_at">
-                                        <p class="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wide mb-1">Date de création</p>
+                                        <p class="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wide mb-1">Date de cr�ation</p>
                                         <p class="text-sm text-gray-700 dark:text-gray-300">{{ formatDate(detailsTarget.created_at) }}</p>
                                     </div>
                                     <div v-if="detailsTarget.updated_at">
-                                        <p class="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wide mb-1">Dernière modification</p>
+                                        <p class="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wide mb-1">Derni�re modification</p>
                                         <p class="text-sm text-gray-700 dark:text-gray-300">{{ formatDate(detailsTarget.updated_at) }}</p>
                                     </div>
                                 </div>
@@ -237,7 +237,7 @@
 
                             <!-- Footer -->
                             <div class="px-6 py-4 border-t border-gray-200 dark:border-gray-700 flex gap-2">
-                                <AppButton variant="ghost" class="flex-1" @click="showDetails = false">Fermer</AppButton>
+                                <AppButton variant="close" class="flex-1" @click="showDetails = false">Fermer</AppButton>
                                 <AppButton v-if="canEdit" class="flex-1" @click="() => { showDetails = false; openEdit(detailsTarget!) }">
                                     <template #icon>
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
@@ -325,8 +325,8 @@ const columns = [
     { key: 'class_name',      label: 'Classe',        sortable: true  },
     { key: 'teacher_name',    label: 'Professeur',     sortable: true  },
     { key: 'status',          label: 'Statut',         sortable: true, exportFormat: (v: unknown) => (v == 1 ? 'Actif' : 'Inactif')  },
-    { key: 'created_by_name', label: 'Créé par',       sortable: false },
-    { key: 'created_at',      label: 'Date création',  sortable: true,
+    { key: 'created_by_name', label: 'Cr�� par',       sortable: false },
+    { key: 'created_at',      label: 'Date cr�ation',  sortable: true,
       format: (v: unknown) => fmtDate(v as string) },
 ];
 
@@ -344,14 +344,14 @@ const editForm = useForm({
 
 const formatDate = fmtDate;
 
-// ── Ouvrir créer ─────────────────────────────────────────────────────────────
+// -- Ouvrir cr�er -------------------------------------------------------------
 const openCreate = () => {
     createForm.reset();
     createForm.status = '1';
     showCreateForm.value = true;
 };
 
-// ── Ouvrir modifier ──────────────────────────────────────────────────────────
+// -- Ouvrir modifier ----------------------------------------------------------
 const openEdit = (item: ClassTeacher) => {
     editTarget.value = item;
     editForm.class_id   = String(item.class_id);
@@ -360,13 +360,13 @@ const openEdit = (item: ClassTeacher) => {
     showEditForm.value = true;
 };
 
-// ── Ouvrir détails ───────────────────────────────────────────────────────────
+// -- Ouvrir d�tails -----------------------------------------------------------
 const openDetails = (item: ClassTeacher) => {
     detailsTarget.value = item;
     showDetails.value = true;
 };
 
-// ── Soumettre créer ──────────────────────────────────────────────────────────
+// -- Soumettre cr�er ----------------------------------------------------------
 const submitCreate = () => {
     const data = new FormData();
     data.append('class_id', createForm.class_id);
@@ -382,7 +382,7 @@ const submitCreate = () => {
     });
 };
 
-// ── Soumettre modifier ───────────────────────────────────────────────────────
+// -- Soumettre modifier -------------------------------------------------------
 const submitEdit = () => {
     if (!editTarget.value) return;
     editForm.post(`/admin/assign_class/edit_single/${editTarget.value.id}`, {
@@ -390,11 +390,11 @@ const submitEdit = () => {
     });
 };
 
-// ── Supprimer (bulk via DataTable) ───────────────────────────────────────────
+// -- Supprimer (bulk via DataTable) -------------------------------------------
 const handleDelete = (ids: (string | number)[]) => {
     ids.forEach(id => {
         router.get(`/admin/assign_class/delete/${id}`, {}, {
-            onSuccess: () => toast.success('Assignation supprimée avec succès.'),
+            onSuccess: () => toast.success('Assignation supprim�e avec succ�s.'),
             onError: () => toast.error('Erreur lors de la suppression.'),
         });
     });

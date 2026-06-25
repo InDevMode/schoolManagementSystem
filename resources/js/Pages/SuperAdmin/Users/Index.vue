@@ -501,8 +501,8 @@
                         <!-- Footer -->
                         <div class="flex gap-2 px-5 pb-5">
                             <button @click="viewTarget = null"
-                                    class="flex-1 px-3 py-2 rounded-xl text-sm font-medium border border-gray-200 dark:border-gray-600
-                                           text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                                    class="flex-1 px-3 py-2 rounded-xl text-sm font-medium bg-gray-300 dark:bg-gray-600
+                                           text-gray-700 dark:text-gray-200 hover:bg-gray-400 dark:hover:bg-gray-500 transition-colors shadow-sm">
                                 Fermer
                             </button>
                             <button v-if="canEdit" @click="openEdit(viewTarget!); viewTarget = null"
@@ -599,8 +599,7 @@
                         <!-- Footer -->
                         <div class="flex gap-3 px-6 pb-6">
                             <button @click="editTarget = null"
-                                    class="flex-1 px-4 py-2.5 rounded-xl text-sm font-medium border border-gray-200 dark:border-gray-600
-                                           text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                                    class="flex-1 px-4 py-2.5 rounded-xl text-sm font-medium bg-gray-300 dark:bg-gray-600 text-gray-700 dark:text-gray-200 hover:bg-gray-400 dark:hover:bg-gray-500 transition-colors shadow-sm">
                                 Annuler
                             </button>
                             <button @click="submitEdit" :disabled="saving"
@@ -644,8 +643,7 @@
                         </div>
                         <div class="px-6 pb-6 flex gap-3 mt-2">
                             <button @click="resetTarget = null"
-                                    class="flex-1 px-4 py-2.5 rounded-xl text-sm font-medium border border-gray-200 dark:border-gray-600
-                                           text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                                    class="flex-1 px-4 py-2.5 rounded-xl text-sm font-medium bg-gray-300 dark:bg-gray-600 text-gray-700 dark:text-gray-200 hover:bg-gray-400 dark:hover:bg-gray-500 transition-colors shadow-sm">
                                 Annuler
                             </button>
                             <button @click="executeReset" :disabled="resetting"
@@ -689,8 +687,7 @@
                         </div>
                         <div class="px-6 pb-6 flex gap-3 mt-2">
                             <button @click="deleteTarget = null"
-                                    class="flex-1 px-4 py-2.5 rounded-xl text-sm font-medium border border-gray-200 dark:border-gray-600
-                                           text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                                    class="flex-1 px-4 py-2.5 rounded-xl text-sm font-medium bg-gray-300 dark:bg-gray-600 text-gray-700 dark:text-gray-200 hover:bg-gray-400 dark:hover:bg-gray-500 transition-colors shadow-sm">
                                 Annuler
                             </button>
                             <button @click="executeDelete" :disabled="deleting"

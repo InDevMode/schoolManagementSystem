@@ -242,13 +242,13 @@ const saveAll = async () => {
 
     try {
         await axios.post('/admin/attendance/student/save', { entries });
-        // Recharger la page pour afficher les présences enregistrées
+        // Recharger la page pour afficher les Présences enregistrées
         router.get('/admin/attendance/students/list', {
             class_id:        filters.class_id,
             attendance_date: filters.attendance_date,
         }, { preserveState: false, replace: true });
     } catch (e) {
-        console.error('Erreur enregistrement présences', e);
+        console.error('Erreur enregistrement Présences', e);
     } finally {
         saving.value = false;
     }
