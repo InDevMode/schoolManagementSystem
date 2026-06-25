@@ -33,7 +33,18 @@ class ChatController extends Controller
             }
 
             ChatModel::updateCountMessage($sender_id, $receiver_id);
-            $receiver  = User::getSingle($receiver_id);
+            $receiverUser = User::getSingle($receiver_id);
+            $receiver = null;
+            if ($receiverUser) {
+                $receiver = [
+                    'id'              => $receiverUser->id,
+                    'name'            => $receiverUser->name,
+                    'last_name'       => $receiverUser->last_name,
+                    'profile_picture' => $receiverUser->profile_picture,
+                    'last_login'      => $receiverUser->last_login,
+                    'is_online'       => \Illuminate\Support\Facades\Cache::has('OnlineUser.' . $receiverUser->id),
+                ];
+            }
             $getChats  = ChatModel::getChats($receiver_id, $sender_id)->map(function ($m) {
                 $arr             = $m->toArray();
                 $arr['file_url'] = $m->file ? url('upload/chats/' . $m->file) : null;
@@ -141,7 +152,8 @@ class ChatController extends Controller
     private function formatChatContact($user, string $role, ?string $className = null): array
     {
         $lastLogin   = $user->last_login;
-        $isOnline    = $lastLogin && \Carbon\Carbon::parse($lastLogin)->diffInMinutes(now()) <= 5;
+        // Vérifier si l'utilisateur est vraiment connecté via le Cache (expire après 1 minute)
+        $isOnline    = \Illuminate\Support\Facades\Cache::has('OnlineUser.' . $user->id);
         $profilePic  = $user->profile_picture
             ? url('upload/profile/' . $user->profile_picture)
             : url('upload/default.jpg');
@@ -283,11 +295,19 @@ class ChatController extends Controller
 
         $contacts = ChatModel::getChatUser($sender_id);
 
+        // Statut en ligne du receiver pour mise à jour en temps réel
+        $receiverUser = User::getSingle($receiver_id);
+        $receiverStatus = $receiverUser ? [
+            'is_online'  => \Illuminate\Support\Facades\Cache::has('OnlineUser.' . $receiver_id),
+            'last_login' => $receiverUser->last_login,
+        ] : null;
+
         return response()->json([
             'messages'         => $newMessages,
             'updated_messages' => $updatedMessages,
             'contacts'         => $contacts,
             'read_up_to'       => $readUpTo,
+            'receiver_status'  => $receiverStatus,
         ]);
     }
 

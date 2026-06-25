@@ -1,4 +1,4 @@
-﻿<script setup lang="ts">
+<script setup lang="ts">
 import { ref, computed } from 'vue';
 import { router } from '@inertiajs/vue3';
 import DataTable from '@/Components/UI/DataTable.vue';
@@ -14,13 +14,13 @@ interface Role {
 
 const props = defineProps<{ roles: Role[]; usedUserTypes: number[]; }>();
 
-// ── Filtres actifs/supprimés ───────────────────────────────────────────────
+// -- Filtres actifs/supprim�s -----------------------------------------------
 const showDeleted  = ref(false);
 const search       = ref('');
 const activeRoles  = computed(() => props.roles.filter(r => r.is_delete === 0));
 const deletedRoles = computed(() => props.roles.filter(r => r.is_delete === 1));
 
-// ── Recherche ──────────────────────────────────────────────────────────────
+// -- Recherche --------------------------------------------------------------
 const filteredActiveRoles = computed(() => {
     const q = search.value.toLowerCase().trim();
     if (!q) return activeRoles.value;
@@ -42,14 +42,14 @@ const filteredDeletedRoles = computed(() => {
 
 const shownRoles = computed(() => showDeleted.value ? filteredDeletedRoles.value : filteredActiveRoles.value);
 
-// ── Rôles système protégés (user_type 0-4) ────────────────────────────────
+// -- R�les syst�me prot�g�s (user_type 0-4) --------------------------------
 const isSystem = (role: Role) => role.user_type !== null && role.user_type <= 4;
 
 const SYSTEM_LABELS: Record<number, string> = {
     0: 'Super Admin', 1: 'Admin', 2: 'Professeur', 3: 'Apprenant', 4: 'Parent',
 };
 
-// ── Modal création/édition ─────────────────────────────────────────────────
+// -- Modal cr�ation/�dition -------------------------------------------------
 const showModal  = ref(false);
 const isEdit     = ref(false);
 const submitting = ref(false);
@@ -78,7 +78,7 @@ const validate = () => {
     if (!form.value.name.trim()) errors.value.name = 'Le nom est requis.';
     const ut = parseInt(form.value.user_type as string);
     if (!form.value.user_type)   errors.value.user_type = 'Le user_type est requis.';
-    else if (isNaN(ut) || ut < 5) errors.value.user_type = 'Le user_type doit être ≥ 5 (0–4 sont réservés aux rôles système).';
+    else if (isNaN(ut) || ut < 5) errors.value.user_type = 'Le user_type doit �tre = 5 (0�4 sont r�serv�s aux r�les syst�me).';
     return Object.keys(errors.value).length === 0;
 };
 
@@ -100,7 +100,7 @@ const submit = () => {
     });
 };
 
-// ── Prochain user_type disponible ─────────────────────────────────────────
+// -- Prochain user_type disponible -----------------------------------------
 const nextAvailableUserType = computed(() => {
     const used = new Set(props.usedUserTypes);
     let n = 5;
@@ -108,7 +108,7 @@ const nextAvailableUserType = computed(() => {
     return n;
 });
 
-// ── Confirm dialog ────────────────────────────────────────────────────────
+// -- Confirm dialog --------------------------------------------------------
 const confirm = ref<{ show: boolean; title: string; message: string; onConfirm: () => void }>({
     show: false, title: '', message: '', onConfirm: () => {},
 });
@@ -117,11 +117,11 @@ const askConfirm = (title: string, message: string, fn: () => void) => {
 };
 const doConfirm = () => { confirm.value.onConfirm(); confirm.value.show = false; };
 
-// ── Soft-delete / restore ─────────────────────────────────────────────────
+// -- Soft-delete / restore -------------------------------------------------
 const softDelete = (role: Role) => {
     askConfirm(
-        'Supprimer le rôle',
-        `Voulez-vous supprimer le rôle « ${role.name} » ?\nIl sera masqué mais récupérable depuis l'onglet "Supprimés".`,
+        'Supprimer le r�le',
+        `Voulez-vous supprimer le r�le � ${role.name} � ?\nIl sera masqu� mais r�cup�rable depuis l'onglet "Supprim�s".`,
         () => router.get(`/superadmin/config/roles/delete/${role.id}`, {}, { preserveScroll: true })
     );
 };
@@ -129,13 +129,13 @@ const restore = (role: Role) => {
     router.get(`/superadmin/config/roles/restore/${role.id}`, {}, { preserveScroll: true });
 };
 
-// ── DataTable ─────────────────────────────────────────────────────────────
+// -- DataTable -------------------------------------------------------------
 const columns: DtColumn[] = [
-    { key: 'name',              label: 'Nom du rôle',   sortable: true },
+    { key: 'name',              label: 'Nom du r�le',   sortable: true },
     { key: 'user_type',         label: 'user_type',     sortable: true, align: 'center' },
     { key: 'description',       label: 'Description',   sortable: false },
     { key: 'permissions_count', label: 'Permissions',   sortable: true, align: 'center', dataType: 'number' },
-    { key: 'created_at',        label: 'Créé le',       sortable: true },
+    { key: 'created_at',        label: 'Cr�� le',       sortable: true },
 ];
 
 const activeActions: DtAction[] = [
@@ -155,7 +155,7 @@ const handleAction = (key: string, row: Record<string, unknown>) => {
 <template>
 <div class="space-y-5">
 
-    <!-- En-tête -->
+    <!-- En-t�te -->
     <div class="flex items-center justify-between flex-wrap gap-3">
         <div class="flex items-center gap-4">
             <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-violet-500 to-purple-700 flex items-center justify-center shadow-lg shadow-violet-500/30 flex-shrink-0">
@@ -164,17 +164,17 @@ const handleAction = (key: string, row: Record<string, unknown>) => {
                 </svg>
             </div>
             <div>
-                <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Rôles</h1>
+                <h1 class="text-2xl font-bold text-gray-900 dark:text-white">R�les</h1>
                 <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
                     <span class="font-semibold text-gray-700 dark:text-gray-200">{{ activeRoles.length }}</span> actifs
-                    <span v-if="deletedRoles.length" class="ml-2 text-red-500">·
-                        <span class="font-semibold">{{ deletedRoles.length }}</span> supprimé{{ deletedRoles.length > 1 ? 's' : '' }}
+                    <span v-if="deletedRoles.length" class="ml-2 text-red-500">�
+                        <span class="font-semibold">{{ deletedRoles.length }}</span> supprim�{{ deletedRoles.length > 1 ? 's' : '' }}
                     </span>
                 </p>
             </div>
         </div>
         <div class="flex items-center gap-2 flex-wrap">
-            <!-- Toggle actifs/supprimés -->
+            <!-- Toggle actifs/supprim�s -->
             <div class="flex items-center rounded-xl border border-gray-200 dark:border-gray-600 overflow-hidden">
                 <button @click="showDeleted = false"
                         :class="['px-3 py-1.5 text-xs font-medium transition-colors',
@@ -184,7 +184,7 @@ const handleAction = (key: string, row: Record<string, unknown>) => {
                 <button @click="showDeleted = true"
                         :class="['px-3 py-1.5 text-xs font-medium transition-colors',
                                  showDeleted ? 'bg-red-600 text-white' : 'text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700']">
-                    Supprimés ({{ deletedRoles.length }})
+                    Supprim�s ({{ deletedRoles.length }})
                 </button>
             </div>
             <button v-if="!showDeleted" @click="openCreate"
@@ -193,7 +193,7 @@ const handleAction = (key: string, row: Record<string, unknown>) => {
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
                 </svg>
-                Nouveau rôle
+                Nouveau r�le
             </button>
         </div>
     </div>
@@ -206,7 +206,7 @@ const handleAction = (key: string, row: Record<string, unknown>) => {
                   d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
         </svg>
         <input v-model="search" type="text"
-               :placeholder="showDeleted ? 'Rechercher dans les supprimés...' : 'Rechercher un rôle, une description...'"
+               :placeholder="showDeleted ? 'Rechercher dans les supprim�s...' : 'Rechercher un r�le, une description...'"
                class="w-full pl-9 pr-8 py-2 text-sm rounded-xl border border-gray-200 dark:border-gray-600
                       bg-white dark:bg-gray-800 text-gray-900 dark:text-white
                       focus:outline-none focus:ring-2 focus:ring-primary-500/40 transition-colors
@@ -220,10 +220,10 @@ const handleAction = (key: string, row: Record<string, unknown>) => {
         </button>
     </div>
     <p v-if="search" class="text-xs text-gray-400 -mt-2">
-        {{ shownRoles.length }} résultat{{ shownRoles.length !== 1 ? 's' : '' }} pour « {{ search }} »
+        {{ shownRoles.length }} r�sultat{{ shownRoles.length !== 1 ? 's' : '' }} pour � {{ search }} �
     </p>
 
-    <!-- Info rôles système -->
+    <!-- Info r�les syst�me -->
     <div v-if="!showDeleted"
          class="flex items-start gap-3 p-4 rounded-xl bg-amber-50 dark:bg-amber-900/10 border border-amber-200 dark:border-amber-700/40">
         <svg class="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -231,27 +231,27 @@ const handleAction = (key: string, row: Record<string, unknown>) => {
                   d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
         </svg>
         <div class="text-sm text-amber-700 dark:text-amber-400">
-            Rôles système protégés :
+            R�les syst�me prot�g�s :
             <code v-for="(label, ut) in SYSTEM_LABELS" :key="ut"
                   class="mx-1 px-1.5 py-0.5 rounded bg-amber-100 dark:bg-amber-800/30 font-mono text-xs">
                 {{ label }} (#{{ ut }})
             </code>
-            — non modifiables, non supprimables.
-            Les rôles custom doivent avoir <code class="font-mono px-1 bg-amber-100 dark:bg-amber-800/30 rounded">user_type ≥ 5</code>.
+            � non modifiables, non supprimables.
+            Les r�les custom doivent avoir <code class="font-mono px-1 bg-amber-100 dark:bg-amber-800/30 rounded">user_type = 5</code>.
             Prochain disponible : <strong>{{ nextAvailableUserType }}</strong>
         </div>
     </div>
 
-    <!-- Vue supprimés -->
+    <!-- Vue supprim�s -->
     <template v-if="showDeleted">
         <div v-if="!filteredDeletedRoles.length"
              class="card p-10 text-center text-gray-400 dark:text-gray-500 text-sm">
-            {{ search ? `Aucun rôle supprimé trouvé pour « ${search} ».` : 'Aucun rôle supprimé.' }}
+            {{ search ? `Aucun r�le supprim� trouv� pour � ${search} �.` : 'Aucun r�le supprim�.' }}
         </div>
         <div v-else class="card overflow-hidden">
             <div class="px-5 py-3 bg-red-50 dark:bg-red-900/10 border-b border-red-100 dark:border-red-800/30">
                 <p class="text-sm font-medium text-red-700 dark:text-red-400">
-                    Ces rôles ont été supprimés (soft delete). Vous pouvez les restaurer.
+                    Ces r�les ont �t� supprim�s (soft delete). Vous pouvez les restaurer.
                 </p>
             </div>
             <div class="divide-y divide-gray-100 dark:divide-gray-700/50">
@@ -263,7 +263,7 @@ const handleAction = (key: string, row: Record<string, unknown>) => {
                               class="text-xs font-mono px-1.5 py-0.5 rounded bg-gray-100 dark:bg-gray-700 text-gray-400">
                             #{{ r.user_type }}
                         </span>
-                        <span class="text-xs text-red-400 dark:text-red-500">Supprimé le {{ r.deleted_at }}</span>
+                        <span class="text-xs text-red-400 dark:text-red-500">Supprim� le {{ r.deleted_at }}</span>
                     </div>
                     <button @click="restore(r)"
                             class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium
@@ -286,11 +286,11 @@ const handleAction = (key: string, row: Record<string, unknown>) => {
         :columns="columns"
         :actions="activeActions"
         row-key="id"
-        title="Liste des rôles"
+        title="Liste des r�les"
         export-filename="roles"
         @action="handleAction"
     >
-        <!-- Nom + badge système -->
+        <!-- Nom + badge syst�me -->
         <template #cell-name="{ row }">
             <div class="flex items-center gap-2">
                 <span class="font-medium text-gray-800 dark:text-gray-200">{{ row.name }}</span>
@@ -298,12 +298,12 @@ const handleAction = (key: string, row: Record<string, unknown>) => {
                       class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold
                              bg-gray-100 text-gray-500 dark:bg-white/10 dark:text-gray-400
                              border border-gray-200 dark:border-white/10">
-                    Système
+                    Syst�me
                 </span>
             </div>
         </template>
 
-        <!-- user_type : badge coloré selon type -->
+        <!-- user_type : badge color� selon type -->
         <template #cell-user_type="{ row }">
             <template v-if="row.user_type !== null && row.user_type !== undefined">
                 <span :class="[
@@ -317,18 +317,18 @@ const handleAction = (key: string, row: Record<string, unknown>) => {
                     {{ row.user_type }}
                 </span>
             </template>
-            <span v-else class="text-gray-300 dark:text-gray-600 text-xs">—</span>
+            <span v-else class="text-gray-300 dark:text-gray-600 text-xs">�</span>
         </template>
 
         <!-- Description -->
         <template #cell-description="{ row }">
             <span class="text-sm text-gray-500 dark:text-gray-400 italic">
-                {{ row.description || '—' }}
+                {{ row.description || '�' }}
             </span>
         </template>
     </DataTable>
 
-    <!-- ══════════════ MODAL CRÉATION / ÉDITION ══════════════ -->
+    <!-- -------------- MODAL CR�ATION / �DITION -------------- -->
     <Teleport to="body">
         <Transition enter-active-class="transition duration-200 ease-out" enter-from-class="opacity-0"
                     enter-to-class="opacity-100" leave-to-class="opacity-0">
@@ -342,16 +342,16 @@ const handleAction = (key: string, row: Record<string, unknown>) => {
                     <div class="relative z-10 h-1 bg-gradient-to-r from-primary-500 to-primary-700"/>
                     <div class="relative z-10 p-6 space-y-5">
                         <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
-                            {{ isEdit ? 'Modifier le rôle' : 'Créer un rôle custom' }}
+                            {{ isEdit ? 'Modifier le r�le' : 'Cr�er un r�le custom' }}
                         </h3>
 
                         <!-- Nom -->
                         <div>
                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
-                                Nom du rôle <span class="text-red-500">*</span>
+                                Nom du r�le <span class="text-red-500">*</span>
                             </label>
                             <input v-model="form.name" type="text"
-                                   placeholder="ex: comptable, délégué, coordinateur..."
+                                   placeholder="ex: comptable, d�l�gu�, coordinateur..."
                                    class="w-full px-3 py-2.5 text-sm rounded-xl border bg-white dark:bg-gray-800
                                           text-gray-900 dark:text-white focus:outline-none focus:ring-2
                                           focus:ring-primary-500/40 focus:border-primary-400 transition-colors"
@@ -364,7 +364,7 @@ const handleAction = (key: string, row: Record<string, unknown>) => {
                         <div>
                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
                                 user_type <span class="text-red-500">*</span>
-                                <span class="ml-1 text-xs font-normal text-gray-400">(≥ 5, unique par rôle)</span>
+                                <span class="ml-1 text-xs font-normal text-gray-400">(= 5, unique par r�le)</span>
                             </label>
                             <div class="flex gap-2">
                                 <input v-model="form.user_type" type="number" min="5"
@@ -380,13 +380,13 @@ const handleAction = (key: string, row: Record<string, unknown>) => {
                                                bg-gray-50 dark:bg-gray-800 text-gray-600 dark:text-gray-400
                                                hover:bg-primary-50 dark:hover:bg-primary-900/20
                                                hover:border-primary-300 hover:text-primary-700 transition-colors whitespace-nowrap">
-                                    Suggérer ({{ nextAvailableUserType }})
+                                    Sugg�rer ({{ nextAvailableUserType }})
                                 </button>
                             </div>
                             <p v-if="errors.user_type" class="mt-1 text-xs text-red-600">{{ errors.user_type }}</p>
-                            <!-- user_types déjà pris -->
+                            <!-- user_types d�j� pris -->
                             <div v-if="usedUserTypes.length" class="mt-2 flex flex-wrap gap-1.5 items-center">
-                                <span class="text-xs text-gray-400 dark:text-gray-500">Déjà utilisés :</span>
+                                <span class="text-xs text-gray-400 dark:text-gray-500">D�j� utilis�s :</span>
                                 <span v-for="ut in [...usedUserTypes].sort((a,b) => a-b)" :key="ut"
                                       class="inline-flex items-center px-2 py-0.5 rounded text-xs font-mono
                                              bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400">
@@ -401,14 +401,14 @@ const handleAction = (key: string, row: Record<string, unknown>) => {
                                 Description <span class="text-xs font-normal text-gray-400">(optionnelle)</span>
                             </label>
                             <input v-model="form.description" type="text"
-                                   placeholder="ex: Gestion de la comptabilité, accès limité aux frais..."
+                                   placeholder="ex: Gestion de la comptabilit�, acc�s limit� aux frais..."
                                    class="w-full px-3 py-2.5 text-sm rounded-xl border border-gray-200 dark:border-gray-600
                                           bg-white dark:bg-gray-800 text-gray-900 dark:text-white
                                           focus:outline-none focus:ring-2 focus:ring-primary-500/40
                                           focus:border-primary-400 transition-colors"/>
                         </div>
 
-                        <!-- Aperçu -->
+                        <!-- Aper�u -->
                         <div v-if="form.name && form.user_type"
                              class="flex items-start gap-3 p-3 rounded-xl bg-primary-50 dark:bg-primary-900/10
                                     border border-primary-200 dark:border-primary-700/40">
@@ -419,16 +419,15 @@ const handleAction = (key: string, row: Record<string, unknown>) => {
                             <p class="text-xs text-primary-700 dark:text-primary-300">
                                 Les utilisateurs avec
                                 <code class="font-mono font-bold">user_type = {{ form.user_type }}</code>
-                                auront le rôle <strong>{{ form.name }}</strong>
-                                et accéderont à <code class="font-mono">/admin/dashboard</code>.
+                                auront le r�le <strong>{{ form.name }}</strong>
+                                et acc�deront � <code class="font-mono">/admin/dashboard</code>.
                             </p>
                         </div>
 
                         <!-- Boutons -->
                         <div class="flex justify-end gap-2.5 pt-2 border-t border-gray-100 dark:border-gray-700">
                             <button @click="closeModal"
-                                    class="px-4 py-2 text-sm font-medium rounded-xl border border-gray-200 dark:border-gray-600
-                                           text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                                    class="px-4 py-2 text-sm font-medium rounded-xl bg-gray-300 dark:bg-gray-600 text-gray-700 dark:text-gray-200 hover:bg-gray-400 dark:hover:bg-gray-500 transition-colors shadow-sm">
                                 Annuler
                             </button>
                             <button @click="submit" :disabled="submitting"
@@ -438,7 +437,7 @@ const handleAction = (key: string, row: Record<string, unknown>) => {
                                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
                                     <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
                                 </svg>
-                                {{ isEdit ? 'Enregistrer' : 'Créer le rôle' }}
+                                {{ isEdit ? 'Enregistrer' : 'Cr�er le r�le' }}
                             </button>
                         </div>
                     </div>
@@ -447,7 +446,7 @@ const handleAction = (key: string, row: Record<string, unknown>) => {
         </Transition>
     </Teleport>
 
-    <!-- ══════════════ CONFIRM DIALOG ══════════════ -->
+    <!-- -------------- CONFIRM DIALOG -------------- -->
     <Teleport to="body">
         <Transition enter-active-class="transition duration-200 ease-out" enter-from-class="opacity-0"
                     enter-to-class="opacity-100" leave-to-class="opacity-0">
@@ -475,8 +474,7 @@ const handleAction = (key: string, row: Record<string, unknown>) => {
                         </div>
                         <div class="flex justify-end gap-2">
                             <button @click="confirm.show = false"
-                                    class="px-4 py-2 text-sm font-medium rounded-xl border border-gray-200 dark:border-gray-600
-                                           text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                                    class="px-4 py-2 text-sm font-medium rounded-xl bg-gray-300 dark:bg-gray-600 text-gray-700 dark:text-gray-200 hover:bg-gray-400 dark:hover:bg-gray-500 transition-colors shadow-sm">
                                 Annuler
                             </button>
                             <button @click="doConfirm"

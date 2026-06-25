@@ -286,7 +286,8 @@
                             <div class="relative flex-shrink-0">
                                 <img :src="avatarUrl(receiver.profile_picture)" :alt="receiver.name"
                                     class="w-10 h-10 rounded-full object-cover bg-gray-200 ring-2 ring-primary-200 dark:ring-primary-800" @error="onImgError"/>
-                                <span class="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-emerald-500 rounded-full border-2 border-white dark:border-gray-800"/>
+                                <span :class="['absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-white dark:border-gray-800',
+                                    receiverIsOnline ? 'bg-emerald-500' : 'bg-gray-300 dark:bg-gray-500']"/>
                             </div>
                             <div class="flex-1 min-w-0">
                                 <p class="font-bold text-gray-900 dark:text-white text-sm">{{ receiver.last_name }} {{ receiver.name }}</p>
@@ -297,7 +298,9 @@
                                         </span>
                                         en train d'écrire…
                                     </p>
-                                    <p v-else class="text-xs text-emerald-500">En ligne</p>
+                                    <p v-else :class="['text-xs', receiverIsOnline ? 'text-emerald-500' : 'text-gray-400']">
+                                        {{ receiverIsOnline ? 'En ligne' : receiverLastSeenText }}
+                                    </p>
                                 </Transition>
                             </div>
                             <!-- Actions en-tête -->
@@ -794,6 +797,25 @@ const lastMsgId     = ref<number>(props.chats.length ? (props.chats.at(-1)?.id ?
 const lightboxSrc   = ref<string | null>(null);
 const lightboxFile  = ref<string | null>(null);
 
+// ── Statut en ligne du receiver ───────────────────────────────────────────────
+const receiverIsOnline   = ref<boolean>(props.receiver?.is_online ?? false);
+const receiverLastLogin  = ref<string | null>(props.receiver?.last_login ?? null);
+const receiverLastSeenText = computed(() => {
+    if (!receiverLastLogin.value) return 'Jamais connecté';
+    const date = new Date(receiverLastLogin.value);
+    const now  = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const diffMin = Math.floor(diffMs / 60000);
+    const diffH   = Math.floor(diffMin / 60);
+    const diffD   = Math.floor(diffH / 24);
+    if (diffMin < 1)   return 'Vu à l\'instant';
+    if (diffMin < 60)  return `Vu il y a ${diffMin} min`;
+    if (diffH < 24)    return `Vu il y a ${diffH} h`;
+    if (diffD === 1)   return 'Vu hier';
+    if (diffD < 7)     return `Vu il y a ${diffD} jours`;
+    return `Vu le ${date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })}`;
+});
+
 // ── Fichier pending ───────────────────────────────────────────────────────────
 const pendingFile        = ref<File | null>(null);
 const pendingFilePreview = ref<string | null>(null);
@@ -970,7 +992,8 @@ const isActiveContact = (c: any) => {
     if (!props.receiver_id) return false;
     try { return atob(props.receiver_id) === String(c.user_id); } catch { return false; }
 };
-const isOnline = (c: any) => c.last_login ? (Date.now() - new Date(c.last_login).getTime()) / 60000 <= 5 : false;
+// Pour la sidebar inbox : utiliser is_online fourni par le serveur (via pollContacts)
+const isOnline = (c: any) => c.is_online ?? false;
 const isLastSentMsg = (chat: any) => {
     if (!authUser.value) return false;
     const sent = localChats.value.filter(c => c.sender_id === authUser.value.id && !c.is_delete);
@@ -1048,6 +1071,11 @@ const pollMessages = async () => {
             localChats.value.forEach(c => { if (c.sender_id === authUser.value?.id && c.id <= data.read_up_to) c.status = 1; });
         }
         if (data.contacts) localContacts.value = data.contacts;
+        // Mise à jour du statut en ligne du receiver
+        if (data.receiver_status) {
+            receiverIsOnline.value  = data.receiver_status.is_online;
+            receiverLastLogin.value = data.receiver_status.last_login;
+        }
     } catch { pollingActive.value = false; }
 };
 

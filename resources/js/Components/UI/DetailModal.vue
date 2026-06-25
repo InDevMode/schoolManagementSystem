@@ -38,7 +38,7 @@
 
                             <!-- Pattern géométrique décoratif (losanges) — opacité réduite -->
                             <div class="pointer-events-none absolute inset-0" aria-hidden="true">
-                                <svg class="absolute inset-0 w-full h-full opacity-[0.035]" xmlns="http://www.w3.org/2000/svg">
+                                <svg class="absolute inset-0 w-full h-full opacity-[0.12]" xmlns="http://www.w3.org/2000/svg">
                                     <defs>
                                         <pattern id="detail-diamond" x="0" y="0" width="24" height="24" patternUnits="userSpaceOnUse">
                                             <path d="M12 0 L24 12 L12 24 L0 12 Z" fill="none" stroke="white" stroke-width="1"/>
@@ -47,9 +47,9 @@
                                     <rect width="100%" height="100%" fill="url(#detail-diamond)"/>
                                 </svg>
                                 <!-- Radial highlight top-right -->
-                                <div class="absolute -top-8 -right-8 w-48 h-48 rounded-full bg-white/8 blur-2xl" />
+                                <div class="absolute -top-8 -right-8 w-48 h-48 rounded-full bg-white/10 blur-2xl" />
                                 <!-- Gradient fade vers le bas -->
-                                <div class="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-black/8 to-transparent" />
+                                <div class="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-black/10 to-transparent" />
                             </div>
 
                             <!-- Bouton fermer -->
@@ -115,7 +115,7 @@
                         <div v-if="$slots.footer || $slots['sidebar-footer']"
                             class="relative flex items-center justify-between gap-3 px-6 py-4 border-t border-gray-100 dark:border-gray-700/60 flex-shrink-0 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm">
                             <!-- Illustration background sur le footer -->
-                            <div class="pointer-events-none absolute inset-0 modal-bg-illustration opacity-50" aria-hidden="true" />
+                            <div class="pointer-events-none absolute inset-0 modal-bg-illustration" aria-hidden="true" />
                             <!-- Gauche : bouton Message (slot sidebar-footer) -->
                             <div class="relative z-10 flex items-center gap-2">
                                 <slot name="sidebar-footer" />

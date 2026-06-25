@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use DB;
 
 class ChatModel extends Model
@@ -112,6 +113,7 @@ class ChatModel extends Model
             $data['user_id'] = $value->connection_user_id;
             $data['name'] = $value->getConnectUser->last_name . ' ' . $value->getConnectUser->name;
             $data['last_login'] = $value->getConnectUser->last_login;
+            $data['is_online'] = Cache::has('OnlineUser.' . $value->connection_user_id);
             $data['sender_profile_picture'] = $value->getConnectUser->getProfile();
             $data['countMessage'] = $value->countMessage($value->connection_user_id, $user_id);
             $result[] = $data;

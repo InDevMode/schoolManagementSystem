@@ -81,7 +81,7 @@
                         class="p-1.5 rounded-xl transition-all duration-150
                                text-white bg-red-500 hover:bg-red-600 active:bg-red-700
                                shadow-sm shadow-red-200 dark:shadow-red-900/40"
-                        title="Mettre à la corbeille"
+                        title="Supprimer"
                         @click="confirmDelete(row.id as number, row.class_name as string)"
                     >
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -479,9 +479,9 @@
         <!-- Confirm Delete Dialog -->
         <ConfirmDialog
             v-model="showConfirmDelete"
-            title="Mettre à la corbeille"
+            title="Supprimer"
             :message="`Le travail « ${deleteTarget.label} » sera déplacé dans la corbeille. Vous pourrez le restaurer.`"
-            confirm-label="Mettre à la corbeille"
+            confirm-label="Supprimer"
             confirm-variant="danger"
             @confirm="doDelete"
         />
