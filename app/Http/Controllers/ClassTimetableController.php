@@ -118,7 +118,7 @@ class ClassTimetableController extends Controller
                 }
             }
 
-            // Notifier les élèves de la classe et leurs parents
+            // Notifier les apprenants de la classe et leurs parents
             try {
                 $class   = ClassModel::getSingle($request->class_id);
                 $subject = SubjectModel::getSingle($request->subject_id);
@@ -127,7 +127,7 @@ class ClassTimetableController extends Controller
                     $className   = $class->name;
                     $subjectName = $subject->name;
 
-                    // Tous les élèves actifs de la classe
+                    // Tous les apprenants actifs de la classe
                     $students = User::where('class_id', $request->class_id)
                         ->where('user_type', 3)
                         ->where('is_delete', 0)
@@ -255,7 +255,7 @@ class ClassTimetableController extends Controller
     }
 
     // ─────────────────────────────────────────────────────────────────────
-    // HELPER — grille matricielle pour un élève
+    // HELPER — grille matricielle pour un apprenant
     // Structure : [ { name, week: [ { week_id, week_name, day, start_time, end_time, room_number } ] } ]
     // ─────────────────────────────────────────────────────────────────────
 

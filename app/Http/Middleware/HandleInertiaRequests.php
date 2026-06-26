@@ -74,7 +74,7 @@ class HandleInertiaRequests extends Middleware
         }
 
         // Partager les settings de l'école (pour le header Vue)
-        // Pour un admin/prof/élève/parent : on lit l'école à laquelle il appartient.
+        // Pour un admin/prof/apprenant/parent : on lit l'école à laquelle il appartient.
         // Pour le super admin (user_type = 0) : on lit les settings globaux (SettingModel id=1).
         // Le auth_background est toujours lu depuis les settings globaux (id=1),
         // car il s'applique à la page de connexion accessible à tous.

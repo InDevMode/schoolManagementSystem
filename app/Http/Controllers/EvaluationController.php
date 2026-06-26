@@ -272,7 +272,7 @@ class EvaluationController extends Controller
                 if ($score !== null && $score > (float) $eval->max_score) {
                     return response()->json([
                         'success' => false,
-                        'message' => "La note {$score} dépasse la note maximale ({$eval->max_score}) pour l'élève #{$gradeData['student_id']}.",
+                        'message' => "La note {$score} dépasse la note maximale ({$eval->max_score}) pour l'apprenant #{$gradeData['student_id']}.",
                     ]);
                 }
 
@@ -340,7 +340,7 @@ class EvaluationController extends Controller
      * - Sans grade_ids  → validation globale, BLOQUÉE si des notes manquent.
      *
      * L'évaluation ne passe en statut "validated" QUE SI :
-     *   1. Tous les élèves actifs de la classe ont une note saisie (score non null)
+     *   1. Tous les apprenants actifs de la classe ont une note saisie (score non null)
      *   2. Toutes ces notes sont validées (validated = true)
      */
     public function validateGrades(Request $request)
@@ -356,7 +356,7 @@ class EvaluationController extends Controller
                 return response()->json(['success' => false, 'message' => 'Évaluation introuvable.'], 404);
             }
 
-            // Nombre total d'élèves actifs dans la classe
+            // Nombre total d'apprenants actifs dans la classe
             $totalStudents = User::where('class_id', $eval->class_id)
                 ->where('user_type', 3)
                 ->where('is_delete', 0)
@@ -390,7 +390,7 @@ class EvaluationController extends Controller
                     ]);
 
                 // Vérifier si TOUTES les conditions sont maintenant réunies pour valider l'éval :
-                // - Chaque élève actif a une note saisie
+                // - Chaque apprenant actif a une note saisie
                 // - Toutes les notes sont validées
                 $savedGrades    = GradeModel::where('evaluation_id', $eval->id)
                     ->where('is_delete', 0)->whereNotNull('score')->count();
@@ -420,7 +420,7 @@ class EvaluationController extends Controller
                 $missing = $totalStudents - $savedGrades;
                 return response()->json([
                     'success' => false,
-                    'message' => "{$missing} élève(s) n'ont pas encore de note saisie. "
+                    'message' => "{$missing} apprenant(s) n'ont pas encore de note saisie. "
                                . "Saisissez toutes les notes avant de valider.",
                     'missing' => $missing,
                     'total'   => $totalStudents,
@@ -484,7 +484,7 @@ class EvaluationController extends Controller
                     $eval = $evalGrades->first()->evaluation;
                     $evalLabel = $eval?->title
                         ?: (EvaluationModel::$typeLabels[$eval?->type ?? ''] ?? $eval?->type ?? '');
-                    $studentNames = $evalGrades->map(fn($g) => $g->student ? trim($g->student->last_name . ' ' . $g->student->name) : "Élève #{$g->student_id}")->join(', ');
+                    $studentNames = $evalGrades->map(fn($g) => $g->student ? trim($g->student->last_name . ' ' . $g->student->name) : "apprenant #{$g->student_id}")->join(', ');
                     $count = $evalGrades->count();
 
                     $teacher->notify(new \App\Notifications\GradeRejectedNotification(
@@ -593,7 +593,7 @@ class EvaluationController extends Controller
 
         $grades = GradeModel::getPendingValidation(100);
 
-        // Calculer le nombre total d'élèves actifs pour chaque évaluation concernée
+        // Calculer le nombre total d'apprenants actifs pour chaque évaluation concernée
         $evalIds = $grades->pluck('evaluation_id')->unique();
 
         $evalCountQuery = \DB::table('evaluations')
@@ -839,7 +839,7 @@ class EvaluationController extends Controller
     }
 
     // ──────────────────────────────────────────────────────────────────────────
-    // ÉLÈVE — Ses notes
+    // apprenant — Ses notes
     // ──────────────────────────────────────────────────────────────────────────
 
     public function studentGrades(Request $request)
@@ -865,7 +865,7 @@ class EvaluationController extends Controller
 
     public function parentStudentGrades(Request $request, int $student_id)
     {
-        // Vérifier que l'élève appartient bien au parent
+        // Vérifier que l'apprenant appartient bien au parent
         $student = User::find($student_id);
         if (!$student || $student->parent_id !== Auth::id()) abort(403);
 

@@ -285,7 +285,7 @@
                         <path d="M235 215 Q248 222 245 232" stroke="#7c3aed" stroke-width="9" stroke-linecap="round" fill="none"/>
                         <circle cx="245" cy="233" r="5" fill="url(#skinB)"/>
 
-                        <!-- ══ RANGÉES D'ÉLÈVES ══ -->
+                        <!-- ══ RANGÉES D'apprenantS ══ -->
                         <!-- ─ Rang 1 fond ─ -->
                         <rect x="30"  y="235" width="35" height="22" rx="4" fill="rgba(139,92,246,0.45)"/>
                         <rect x="30"  y="233" width="35" height="4"  rx="2" fill="rgba(196,181,253,0.45)"/>
@@ -295,13 +295,13 @@
                         <circle cx="52" cy="223" r="1.5" fill="#92400e"/>
                         <path d="M40 229 Q47 233 54 229" stroke="#92400e" stroke-width="1.2" fill="none" stroke-linecap="round"/>
                         <rect x="36" y="204" width="22" height="15" rx="4" fill="#6d28d9"/>
-                        <!-- Cheveux élève 1 -->
+                        <!-- Cheveux apprenant 1 -->
                         <path d="M36 212 Q38 204 47 204 Q56 204 58 212" fill="#1c1917"/>
-                        <!-- Livre élève 1 -->
+                        <!-- Livre apprenant 1 -->
                         <rect x="32" y="236" width="14" height="10" rx="2" fill="#ef4444" opacity="0.85"/>
                         <line x1="39" y1="237" x2="39" y2="245" stroke="rgba(255,255,255,0.4)" stroke-width="0.8"/>
 
-                        <!-- Élève 2 fond centre -->
+                        <!-- apprenant 2 fond centre -->
                         <rect x="195" y="232" width="36" height="22" rx="4" fill="rgba(139,92,246,0.45)"/>
                         <rect x="195" y="230" width="36" height="4"  rx="2" fill="rgba(196,181,253,0.45)"/>
                         <ellipse cx="213" cy="227" rx="10" ry="5" fill="rgba(124,58,237,0.15)"/>
@@ -311,11 +311,11 @@
                         <path d="M205 226 Q212 230 219 226" stroke="#92400e" stroke-width="1.2" fill="none" stroke-linecap="round"/>
                         <rect x="201" y="200" width="22" height="16" rx="4" fill="#be185d"/>
                         <path d="M200 209 Q202 200 213 200 Q224 200 226 209" fill="#374151"/>
-                        <!-- Main levée élève 2 -->
+                        <!-- Main levée apprenant 2 -->
                         <path d="M222 208 Q230 200 228 190" stroke="#f59e0b" stroke-width="7" stroke-linecap="round" fill="none"/>
                         <circle cx="228" cy="188" r="4.5" fill="#f59e0b"/>
 
-                        <!-- Élève 3 fond droite -->
+                        <!-- apprenant 3 fond droite -->
                         <rect x="370" y="235" width="36" height="22" rx="4" fill="rgba(139,92,246,0.45)"/>
                         <rect x="370" y="233" width="36" height="4"  rx="2" fill="rgba(196,181,253,0.45)"/>
                         <ellipse cx="388" cy="230" rx="10" ry="5" fill="rgba(124,58,237,0.15)"/>
@@ -325,7 +325,7 @@
                         <path d="M380 228 Q387 232 394 228" stroke="#92400e" stroke-width="1.2" fill="none" stroke-linecap="round"/>
                         <rect x="376" y="202" width="22" height="16" rx="4" fill="#0284c7"/>
                         <path d="M375 211 Q377 202 388 202 Q399 202 401 211" fill="#1c1917"/>
-                        <!-- Ordinateur élève 3 -->
+                        <!-- Ordinateur apprenant 3 -->
                         <rect x="372" y="236" width="20" height="14" rx="2" fill="#1e1b4b"/>
                         <rect x="373" y="237" width="18" height="11" rx="1" fill="#3b82f6" opacity="0.6"/>
 
@@ -346,7 +346,7 @@
                         <line x1="94" y1="271" x2="94" y2="285" stroke="rgba(255,255,255,0.4)" stroke-width="0.8"/>
                         <rect x="105" y="270" width="16" height="16" rx="2" fill="#a78bfa" opacity="0.9"/>
 
-                        <!-- Élève 5 avant droite -->
+                        <!-- apprenant 5 avant droite -->
                         <rect x="314" y="268" width="46" height="28" rx="5" fill="rgba(109,40,217,0.40)"/>
                         <rect x="314" y="265" width="46" height="6"  rx="3" fill="rgba(167,139,250,0.45)"/>
                         <ellipse cx="337" cy="262" rx="14" ry="6" fill="rgba(124,58,237,0.15)"/>
@@ -359,7 +359,7 @@
                         <path d="M320 237 Q322 224 337 224 Q352 224 354 237" fill="#1c1917"/>
                         <path d="M322 238 Q318 242 316 250" stroke="#1c1917" stroke-width="4" stroke-linecap="round" fill="none"/>
                         <path d="M352 238 Q356 242 358 250" stroke="#1c1917" stroke-width="4" stroke-linecap="round" fill="none"/>
-                        <!-- Stylo élève 5 -->
+                        <!-- Stylo apprenant 5 -->
                         <path d="M348 250 Q354 242 350 234" stroke="#fb923c" stroke-width="6" stroke-linecap="round" fill="none"/>
                         <circle cx="350" cy="233" r="4" fill="#fb923c"/>
 
@@ -375,7 +375,7 @@
                     <span style="color: rgba(196,181,253,0.95);">intelligemment</span>
                 </h2>
                 <p class="text-sm leading-relaxed max-w-sm font-semibold" style="color: rgba(255, 255, 255, 0.85);">
-                    Élèves, enseignants, notes, Présences et bien plus — tout en un seul endroit.
+                    apprenants, enseignants, notes, Présences et bien plus — tout en un seul endroit.
                 </p>
 
                 <!-- Badges stats -->
@@ -388,7 +388,7 @@
                     <div class="w-px" style="background: rgba(255,255,255,0.18);"></div>
                     <div class="text-center">
                         <div class="text-white text-lg font-bold">50k+</div>
-                        <div class="text-xs" style="color: rgba(196,181,253,0.75);">Élèves</div>
+                        <div class="text-xs" style="color: rgba(196,181,253,0.75);">apprenants</div>
                     </div>
                     <div class="w-px" style="background: rgba(255,255,255,0.18);"></div>
                     <div class="text-center">

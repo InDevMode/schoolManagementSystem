@@ -56,7 +56,7 @@ class BulletinModel extends Model
     }
 
     /**
-     * Bulletins d'un élève (toutes périodes, publiés)
+     * Bulletins d'un apprenant (toutes périodes, publiés)
      */
     public static function getByStudent(int $student_id)
     {
@@ -103,17 +103,17 @@ class BulletinModel extends Model
     }
 
     /**
-     * Génère ou recalcule le bulletin d'un élève pour une période.
+     * Génère ou recalcule le bulletin d'un apprenant pour une période.
      *
      * ⚠️  Pour un calcul de rang correct, préférer generateForClass() qui calcule
      *     les rangs en une seule passe sur toute la classe.
-     *     Appeler generate() sur un seul élève donne un rang approximatif basé
+     *     Appeler generate() sur un seul apprenant donne un rang approximatif basé
      *     sur les moyennes recalculées à la volée pour toute la classe.
      */
     public static function generate(int $student_id, int $period_id, int $generated_by): self
     {
         $student = User::find($student_id);
-        if (!$student) throw new \Exception("Élève introuvable.");
+        if (!$student) throw new \Exception("apprenant introuvable.");
 
         $class_id = $student->class_id;
 
@@ -124,8 +124,8 @@ class BulletinModel extends Model
     }
 
     /**
-     * Génère le bulletin d'un élève en réutilisant les moyennes de classe déjà calculées.
-     * Évite de recalculer les moyennes de toute la classe pour chaque élève.
+     * Génère le bulletin d'un apprenant en réutilisant les moyennes de classe déjà calculées.
+     * Évite de recalculer les moyennes de toute la classe pour chaque apprenant.
      *
      * @param array $classAverages  [student_id => general_average] — calculé une seule fois pour la classe
      */
@@ -136,7 +136,7 @@ class BulletinModel extends Model
         array $classAverages
     ): self {
         $student = User::find($student_id);
-        if (!$student) throw new \Exception("Élève introuvable.");
+        if (!$student) throw new \Exception("apprenant introuvable.");
 
         $class_id = $student->class_id;
 
@@ -172,7 +172,7 @@ class BulletinModel extends Model
 
         // ── Rang ─────────────────────────────────────────────────────────────
         // On utilise les moyennes passées en paramètre (calculées une fois pour
-        // toute la classe) pour garantir que tous les élèves ont le même référentiel.
+        // toute la classe) pour garantir que tous les apprenants ont le même référentiel.
         $rank          = self::computeRank($student_id, $classAverages);
         $totalStudents = count($classAverages);
         $passCount     = count(array_filter($classAverages, fn($a) => $a >= 10));
@@ -217,11 +217,11 @@ class BulletinModel extends Model
      * Génère tous les bulletins d'une classe pour une période.
      *
      * Les moyennes de classe sont calculées UNE SEULE FOIS puis partagées
-     * entre tous les élèves — garantit des rangs cohérents et identiques
+     * entre tous les apprenants — garantit des rangs cohérents et identiques
      * quel que soit l'ordre de génération.
      *
-     * Gestion des ex-aequo : deux élèves avec la même moyenne ont le même rang.
-     * L'élève suivant prend le rang +2 (méthode standard, ex : 1er, 2e, 2e, 4e).
+     * Gestion des ex-aequo : deux apprenants avec la même moyenne ont le même rang.
+     * L'apprenant suivant prend le rang +2 (méthode standard, ex : 1er, 2e, 2e, 4e).
      */
     public static function generateForClass(int $class_id, int $period_id, int $generated_by): array
     {
@@ -242,7 +242,7 @@ class BulletinModel extends Model
                 self::generateWithClassAverages($student->id, $period_id, $generated_by, $classAverages);
                 $results['success']++;
             } catch (\Exception $e) {
-                $results['errors'][] = "Élève #{$student->id} ({$student->name} {$student->last_name}) : {$e->getMessage()}";
+                $results['errors'][] = "apprenant #{$student->id} ({$student->name} {$student->last_name}) : {$e->getMessage()}";
             }
         }
 
@@ -250,11 +250,11 @@ class BulletinModel extends Model
     }
 
     /**
-     * Calcule le rang d'un élève dans sa classe à partir du tableau des moyennes.
+     * Calcule le rang d'un apprenant dans sa classe à partir du tableau des moyennes.
      *
      * Règle des ex-aequo (méthode standard) :
-     *   - Deux élèves avec 14.50 → tous les deux 2e rang
-     *   - L'élève suivant (14.25) → 4e rang (pas 3e)
+     *   - Deux apprenants avec 14.50 → tous les deux 2e rang
+     *   - L'apprenant suivant (14.25) → 4e rang (pas 3e)
      *
      * @param  array $classAverages  [student_id => general_average]
      */
@@ -264,18 +264,18 @@ class BulletinModel extends Model
 
         $studentAvg = $classAverages[$student_id];
 
-        // Nombre d'élèves ayant une moyenne STRICTEMENT supérieure
+        // Nombre d'apprenants ayant une moyenne STRICTEMENT supérieure
         $countAbove = count(array_filter($classAverages, fn($avg) => $avg > $studentAvg));
 
         return $countAbove + 1;
     }
 
     /**
-     * Calcule les moyennes générales de tous les élèves d'une classe.
+     * Calcule les moyennes générales de tous les apprenants d'une classe.
      * Retourne [student_id => average]
      *
      * Les matières assignées à la classe sont chargées une seule fois
-     * pour éviter N requêtes redondantes (une par élève).
+     * pour éviter N requêtes redondantes (une par apprenant).
      */
     public static function computeClassAverages(int $class_id, int $period_id): array
     {

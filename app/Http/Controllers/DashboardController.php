@@ -213,7 +213,7 @@ class DashboardController extends Controller
                 );
                 return Inertia::render('Dashboard/Teacher', $data);
 
-            // ── Élève ────────────────────────────────────────────────────────
+            // ── apprenant ────────────────────────────────────────────────────────
             case 3:
                 $student_id = Auth::user()->id;
                 $data['totalStudentSubject']  = ClassSubjectModel::getTotalStudentSubject();
@@ -549,7 +549,7 @@ class DashboardController extends Controller
      */
     private function getFeesStats(?int $schoolId = null): array
     {
-        // Récupérer les IDs des élèves de l'école pour éviter les ambiguïtés de jointures
+        // Récupérer les IDs des apprenants de l'école pour éviter les ambiguïtés de jointures
         $filterStudentIds = null;
         if ($schoolId !== null) {
             $filterStudentIds = DB::table('users')

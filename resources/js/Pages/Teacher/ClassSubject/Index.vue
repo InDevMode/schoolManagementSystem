@@ -53,7 +53,7 @@
                                 </svg>
                                 <span>
                                     <span class="font-bold text-gray-700 dark:text-gray-200">{{ item.student_count }}</span>
-                                    élève{{ item.student_count > 1 ? 's' : '' }}
+                                    apprenant{{ item.student_count > 1 ? 's' : '' }}
                                 </span>
                             </div>
                             <div class="flex items-center gap-1.5 text-xs text-gray-500 dark:text-gray-400">

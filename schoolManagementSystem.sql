@@ -456,7 +456,7 @@ INSERT INTO `homework` (`id`, `work_id`, `student_id`, `document_file`, `descrip
 (2, 7, 11, 'homework_student07072025095205uycwrinf0h7e2rgbnzk8.pdf', '<p>Soumission du travail de maison concernant la science physique technologie ...<br></p>', 'submitted', 0, '2025-07-07 07:52:05', '2025-07-07 07:52:05'),
 (3, 7, 19, 'homework_student07072025041912dpuhqk0oojvi4bc6acde.docx', '<p>Laravel attend automatiquement une chaîne <em>déjà </em>hashée...</p>', 'submitted', 0, '2025-07-07 14:19:12', '2025-07-07 14:19:12'),
 (4, 4, 19, 'homework_student07072025042859v6txdhyewvsu6notbu5q.pdf', '<p>Soumission de mon curriculum vitae comme travail de maison...<br></p>', 'submitted', 0, '2025-07-07 14:28:59', '2025-07-07 14:28:59'),
-(5, 5, 19, 'homework_student07072025043123jfqhu1jeihqtbvpqcbct.xlsx', 'Souhaites-tu aussi que le <code data-start=\"2626\" data-end=\"2634\">status</code> dans <code data-start=\"2640\" data-end=\"2647\">works</code> soit mis à jour <strong data-start=\"2664\" data-end=\"2711\">uniquement quand tous les élèves ont soumis</strong> ?', 'submitted', 0, '2025-07-07 14:31:23', '2025-07-07 14:31:23'),
+(5, 5, 19, 'homework_student07072025043123jfqhu1jeihqtbvpqcbct.xlsx', 'Souhaites-tu aussi que le <code data-start=\"2626\" data-end=\"2634\">status</code> dans <code data-start=\"2640\" data-end=\"2647\">works</code> soit mis à jour <strong data-start=\"2664\" data-end=\"2711\">uniquement quand tous les apprenants ont soumis</strong> ?', 'submitted', 0, '2025-07-07 14:31:23', '2025-07-07 14:31:23'),
 (6, 5, 11, 'homework_student07072025044754yx2q5wucyg0mfbsscsbr.pdf', '<p>Protocole de transcription ...<br></p>', 'submitted', 0, '2025-07-07 14:47:54', '2025-07-07 14:47:54');
 
 -- --------------------------------------------------------

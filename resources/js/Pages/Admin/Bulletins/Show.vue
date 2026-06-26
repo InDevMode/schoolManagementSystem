@@ -54,7 +54,7 @@
                         </div>
                     </div>
 
-                    <!-- Photo élève -->
+                    <!-- Photo apprenant -->
                     <div class="flex flex-col items-center gap-1">
                         <div class="w-20 h-24 rounded-xl border-2 border-gray-200 dark:border-gray-600 overflow-hidden bg-gray-50 dark:bg-gray-700">
                             <img v-if="studentPhotoUrl" :src="studentPhotoUrl" alt="Photo" class="w-full h-full object-cover"/>
@@ -68,7 +68,7 @@
                     </div>
                 </div>
 
-                <!-- Infos élève -->
+                <!-- Infos apprenant -->
                 <div class="mt-6 grid grid-cols-2 gap-x-8 gap-y-2 text-sm">
                     <div class="flex gap-2">
                         <span class="text-gray-500 dark:text-gray-400 w-36 flex-shrink-0">Nom et Prénom :</span>
@@ -235,7 +235,7 @@
         <!-- Statut -->
         <div class="flex justify-center">
             <AppBadge :variant="detail.bulletin?.status === 'published' ? 'success' : 'secondary'" class="text-sm" dot>
-                {{ detail.bulletin?.status === 'published' ? 'Bulletin publié — visible par l\'élève et ses parents' : 'Brouillon — non visible par l\'élève' }}
+                {{ detail.bulletin?.status === 'published' ? 'Bulletin publié — visible par l\'apprenant et ses parents' : 'Brouillon — non visible par l\'apprenant' }}
             </AppBadge>
         </div>
 

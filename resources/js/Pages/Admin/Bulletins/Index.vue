@@ -72,7 +72,7 @@
                     <thead class="bg-gray-50 dark:bg-gray-800/60">
                         <tr>
                             <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Rang</th>
-                            <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Élève</th>
+                            <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase">apprenant</th>
                             <th class="px-4 py-3 text-center text-xs font-semibold text-gray-500 uppercase">Moyenne</th>
                             <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Appréciation</th>
                         </tr>

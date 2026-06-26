@@ -116,7 +116,7 @@ class StaffEventModel extends Model
             ->whereDate('event_date', '>=', today()->subMonth())
             ->whereDate('event_date', '<=', today()->addMonths(3));
 
-        // Scoping : élève, parent, prof ne voient que les événements de leur école
+        // Scoping : apprenant, parent, prof ne voient que les événements de leur école
         if (! $isSuperAdmin && $user) {
             $q->where('school_id', $user->school_id);
         }

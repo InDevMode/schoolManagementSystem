@@ -55,7 +55,7 @@ class WorkModel extends Model
             ->first();
 
         if ($work) {
-            // Total des élèves de la classe pour afficher X/total soumis
+            // Total des apprenants de la classe pour afficher X/total soumis
             $work->total_students = \App\Models\User::where('class_id', $work->class_id)
                 ->where('user_type', 3)
                 ->where('is_delete', 0)

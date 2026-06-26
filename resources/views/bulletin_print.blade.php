@@ -129,7 +129,7 @@
             color: #9ca3af;
         }
 
-        /* ── Infos élève ──────────────────────────────────────────── */
+        /* ── Infos apprenant ──────────────────────────────────────────── */
         .student-info {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -396,17 +396,17 @@
         </div>
         <div class="header-photo">
             @if($studentPhoto)
-                <img src="{{ $studentPhoto }}" alt="Photo élève"/>
+                <img src="{{ $studentPhoto }}" alt="Photo apprenant"/>
             @else
                 <div class="photo-placeholder">👤</div>
             @endif
         </div>
     </div>
 
-    <!-- Infos élève -->
+    <!-- Infos apprenant -->
     <div class="student-info">
         <div class="info-row">
-            <span class="info-label">Nom de l'élève :</span>
+            <span class="info-label">Nom de l'apprenant :</span>
             <span class="info-value">{{ $bulletin->student_last_name }} {{ $bulletin->student_name }}</span>
         </div>
         <div class="info-row">

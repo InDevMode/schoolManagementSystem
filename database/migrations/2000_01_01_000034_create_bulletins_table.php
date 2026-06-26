@@ -5,7 +5,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 /**
- * Table bulletins — bulletins scolaires (un par élève par période).
+ * Table bulletins — bulletins scolaires (un par apprenant par période).
  */
 return new class extends Migration
 {
@@ -32,7 +32,7 @@ return new class extends Migration
             $table->foreign('period_id')->references('id')->on('periods')->onDelete('cascade');
             $table->foreign('generated_by')->references('id')->on('users')->onDelete('set null');
 
-            // Un seul bulletin par élève par période
+            // Un seul bulletin par apprenant par période
             $table->unique(['student_id', 'period_id']);
         });
     }

@@ -74,7 +74,7 @@
                 <span class="text-2xl font-bold text-gray-900 dark:text-white">{{ evaluation.max_score }}</span>
             </div>
             <div class="card p-4 text-center">
-                <p class="text-xs text-gray-400 mb-1">Élèves</p>
+                <p class="text-xs text-gray-400 mb-1">apprenants</p>
                 <span class="text-2xl font-bold text-gray-900 dark:text-white">{{ localGrades.length }}</span>
             </div>
         </div>
@@ -165,7 +165,7 @@
                     <thead class="bg-gray-50 dark:bg-gray-800/60">
                         <tr>
                             <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase">N°</th>
-                            <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Élève</th>
+                            <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase">apprenant</th>
                             <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Matricule</th>
                             <th class="px-4 py-3 text-center text-xs font-semibold text-gray-500 uppercase">
                                 Note /{{ evaluation.max_score }}

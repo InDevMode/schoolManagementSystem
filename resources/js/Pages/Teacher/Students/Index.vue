@@ -27,7 +27,7 @@
                     <p class="text-xs font-semibold text-gray-900 dark:text-white truncate">{{ cls.class_name }}</p>
                     <p class="text-[11px] text-gray-500 dark:text-gray-400">
                         <span class="font-bold text-primary-600 dark:text-primary-400">{{ cls.student_count }}</span>
-                        élève{{ cls.student_count > 1 ? 's' : '' }}
+                        apprenant{{ cls.student_count > 1 ? 's' : '' }}
                     </p>
                 </div>
             </div>

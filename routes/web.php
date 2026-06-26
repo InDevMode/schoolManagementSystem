@@ -427,7 +427,7 @@ Route::group(['middleware' => 'student'], function () {
     Route::get('student/my_subject', [SubjectController::class, 'studentSubject']);
     Route::get('student/my_timetable', [ClassTimetableController::class, 'studentTimetable']);
 
-    // ── Notes et bulletins — élève ────────────────────────────────────────
+    // ── Notes et bulletins — apprenant ────────────────────────────────────────
     Route::get('student/my_grades',                          [EvaluationController::class, 'studentGrades']);
     Route::get('student/my_bulletins',                       [BulletinController::class, 'studentBulletins']);
     Route::get('student/my_bulletins/{id}',                  [BulletinController::class, 'studentBulletinShow']);

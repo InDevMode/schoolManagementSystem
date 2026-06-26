@@ -250,7 +250,7 @@ const statusOpts = [
 ];
 const statusOptions = [{ value: '', label: 'Tous les statuts' }, ...statusOpts];
 
-const userTypeLabel = (t: number) => ({ 1: 'Admin', 2: 'Prof', 3: 'Élève', 4: 'Parent' }[t] ?? 'Autre');
+const userTypeLabel = (t: number) => ({ 1: 'Admin', 2: 'Prof', 3: 'apprenant', 4: 'Parent' }[t] ?? 'Autre');
 
 // Tous les users disponibles — le scoping par école est fait côté backend
 const userOptions = computed(() =>

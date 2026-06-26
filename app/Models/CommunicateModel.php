@@ -152,7 +152,7 @@ class CommunicateModel extends Model
             ->where('communicates.is_delete', '=', 0)
             ->where('communicates.is_active', '=', 1);
 
-        // Scoping multi-tenant : l'élève/parent/prof ne voit que les notices de son école
+        // Scoping multi-tenant : l'apprenant/parent/prof ne voit que les notices de son école
         if ($user && $user->school_id) {
             $results->where('communicates.school_id', $user->school_id);
         }

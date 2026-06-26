@@ -128,7 +128,7 @@
                 </span>
             </div>
             <p class="px-4 pb-3 text-xs text-orange-600 dark:text-orange-400">
-                Ces élèves apparaissent dans la liste ci-dessous. Saisissez leurs notes et cliquez sur "Enregistrer".
+                Ces apprenants apparaissent dans la liste ci-dessous. Saisissez leurs notes et cliquez sur "Enregistrer".
             </p>
         </div>
 
@@ -149,7 +149,7 @@
                 <span class="text-2xl font-bold text-gray-900 dark:text-white">/{{ evaluation.max_score }}</span>
             </div>
             <div class="card p-4 text-center">
-                <p class="text-xs text-gray-400 mb-1">Élèves</p>
+                <p class="text-xs text-gray-400 mb-1">apprenants</p>
                 <span class="text-2xl font-bold text-gray-900 dark:text-white">{{ localGrades.length }}</span>
             </div>
         </div>
@@ -174,7 +174,7 @@
         <div v-if="evaluation && localGrades.length" class="card overflow-hidden">
             <div class="px-5 py-3.5 border-b border-gray-100 dark:border-gray-700 flex items-center justify-between bg-gray-50 dark:bg-gray-800/60">
                 <p class="text-sm font-semibold text-gray-900 dark:text-white">
-                    Liste des élèves — {{ evaluation.subject_name }}
+                    Liste des apprenants — {{ evaluation.subject_name }}
                 </p>
                 <div v-if="canEdit" class="flex items-center gap-3">
                     <span class="text-xs text-gray-400">{{ savedCount }}/{{ localGrades.length }} notes saisies</span>
@@ -190,7 +190,7 @@
                     <thead class="bg-white dark:bg-gray-800">
                         <tr>
                             <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase w-8">#</th>
-                            <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Élève</th>
+                            <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase">apprenant</th>
                             <th class="px-4 py-3 text-center text-xs font-semibold text-gray-500 uppercase">
                                 Note /{{ evaluation.max_score }}
                             </th>

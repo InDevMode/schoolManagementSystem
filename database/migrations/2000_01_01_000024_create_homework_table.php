@@ -5,7 +5,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 /**
- * Table homework — soumissions des élèves pour un work.
+ * Table homework — soumissions des apprenants pour un work.
  * Fusionne : create_homework + add_status
  */
 return new class extends Migration

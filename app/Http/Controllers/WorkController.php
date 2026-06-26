@@ -182,7 +182,7 @@ class WorkController extends Controller
                 $this->saveAttachments($request->file('attachments'), $work->id, 'hw_admin');
             }
 
-            // Notifier les élèves de la classe et leurs parents
+            // Notifier les apprenants de la classe et leurs parents
             try {
                 $class   = ClassModel::getSingle($work->class_id);
                 $subject = ClassSubjectModel::select('subject.name')
@@ -459,7 +459,7 @@ class WorkController extends Controller
                 $this->saveAttachments($request->file('attachments'), $work->id, 'hw_teacher');
             }
 
-            // Notifier les élèves de la classe et leurs parents
+            // Notifier les apprenants de la classe et leurs parents
             try {
                 $class   = ClassModel::getSingle($work->class_id);
                 $subject = ClassSubjectModel::select('subject.name')
@@ -697,7 +697,7 @@ class WorkController extends Controller
             return redirect('student/my_homework')
                 ->with('success', 'Votre travail a été soumis avec succès.');
         } catch (\Exception $e) {
-            Log::error("Erreur soumission travail (élève) : " . $e->getMessage());
+            Log::error("Erreur soumission travail (apprenant) : " . $e->getMessage());
             return redirect()->back()->with('error', 'Une erreur est survenue. Veuillez réessayer.');
         }
     }

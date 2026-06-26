@@ -242,7 +242,7 @@ Les seeders sont numérotés pour garantir l'ordre des dépendances :
 | 04 | `SuperAdminSeeder` | Compte super administrateur global |
 | 05 | `WeekSeeder` | 6 jours de la semaine (emploi du temps) |
 | 06 | `LeaveTypesSeeder` | 7 types de congés par défaut |
-| 07 | `MultiSchoolSeeder` | Admins, profs, élèves, parents + classes + matières |
+| 07 | `MultiSchoolSeeder` | Admins, profs, apprenants, parents + classes + matières |
 | 08 | `PeriodsSeeder` | 3 trimestres 2025-2026 |
 | 09 | `StaffAndEventsSeeder` | Fiches personnel, demandes de congés, événements |
 | 10 | `EvaluationsSeeder` | Évaluations et notes de démo |
@@ -351,7 +351,7 @@ Après `php artisan migrate --seed`, les comptes suivants sont disponibles :
 | Rôle | Exemple d'email | Mot de passe |
 |------|-----------------|--------------|
 | Professeur | `prof1@lmc.bj`, `prof2@lmc.bj`, ... | `Prof@1234` |
-| Élève | `eleve1@lmc.bj`, `eleve2@lmc.bj`, ... | `Eleve@1234` |
+| apprenant | `eleve1@lmc.bj`, `eleve2@lmc.bj`, ... | `Eleve@1234` |
 | Parent | `parent1@lmc.bj`, `parent2@lmc.bj`, ... | `Parent@1234` |
 
 > Les mêmes patterns s'appliquent aux écoles `@csm.bj` et `@epe.bj`.
@@ -423,9 +423,9 @@ Requête HTTP
 - Chaque école a ses propres clés de paiement, logo, favicon et configuration académique
 
 ### Gestion des utilisateurs
-- 5 types : Super Admin, Admin, Professeur, Élève, Parent
+- 5 types : Super Admin, Admin, Professeur, apprenant, Parent
 - Création, modification, suppression douce (`is_delete`), réinitialisation de mot de passe
-- Liaison parent ↔ élève
+- Liaison parent ↔ apprenant
 - Export Excel des listes
 
 ### Académique
@@ -447,7 +447,7 @@ Requête HTTP
 - Score absent géré (null avec observation)
 
 ### Bulletins
-- Génération automatique par élève par période
+- Génération automatique par apprenant par période
 - Moyenne générale, rang, taux de réussite de classe
 - Détail par matière (moyenne, points pondérés, appréciation)
 - Publication (draft → published)
@@ -459,10 +459,10 @@ Requête HTTP
 
 ### Devoirs
 - Création de travaux par classe et matière (avec pièces jointes multiples)
-- Soumission par les élèves avec statut de suivi
+- Soumission par les apprenants avec statut de suivi
 
 ### Frais de scolarité
-- Suivi des paiements par élève et classe
+- Suivi des paiements par apprenant et classe
 - Montants total, versé, restant
 - Intégration passerelles de paiement (KkiaPay, Stripe, FedaPay, PayPal)
 - Statuts de paiement

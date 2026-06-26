@@ -9,7 +9,7 @@
                 </svg>
             </template>
             <template v-if="student" #actions>
-                <!-- Infos élève chip -->
+                <!-- Infos apprenant chip -->
                 <div class="flex items-center gap-2.5 px-3 py-2 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm">
                     <div class="w-8 h-8 rounded-xl bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center flex-shrink-0">
                         <svg class="w-4 h-4 text-primary-600 dark:text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -15,7 +15,7 @@ use Illuminate\Database\Seeder;
  *  4. SuperAdminSeeder        → compte super admin global
  *  5. WeekSeeder              → jours de la semaine (pour l'emploi du temps)
  *  6. LeaveTypesSeeder        → types de congés par défaut
- *  7. MultiSchoolSeeder       → users (admin/prof/élèves/parents) + classes + matières
+ *  7. MultiSchoolSeeder       → users (admin/prof/apprenants/parents) + classes + matières
  *  8. PeriodsSeeder           → 3 trimestres 2025-2026
  *  9. StaffAndEventsSeeder    → fiches personnel, congés, événements
  * 10. EvaluationsSeeder       → évaluations + notes de démo

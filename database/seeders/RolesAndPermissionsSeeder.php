@@ -173,7 +173,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'super_admin' => ['user_type' => 0, 'description' => 'Super administrateur — accès total'],
             'admin'       => ['user_type' => 1, 'description' => 'Administrateur d\'école'],
             'teacher'     => ['user_type' => 2, 'description' => 'Professeur / Enseignant'],
-            'student'     => ['user_type' => 3, 'description' => 'Apprenant / Élève'],
+            'student'     => ['user_type' => 3, 'description' => 'Apprenant / apprenant'],
             'parent'      => ['user_type' => 4, 'description' => 'Parent ou tuteur légal'],
         ];
 

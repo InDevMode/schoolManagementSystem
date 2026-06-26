@@ -75,7 +75,7 @@ const effectivePlaceholder = computed((): string => {
         if (lbl.includes('matière'))        return 'Sélectionner une matière';
         if (lbl.includes('sujet'))          return 'Sélectionner un sujet';
         if (lbl.includes('professeur') || lbl.includes('enseignant')) return 'Sélectionner un professeur';
-        if (lbl.includes('élève') || lbl.includes('apprenant') || lbl.includes('étudiant')) return 'Sélectionner un élève';
+        if (lbl.includes('apprenant') || lbl.includes('apprenant') || lbl.includes('étudiant')) return 'Sélectionner un apprenant';
         if (lbl.includes('parent'))         return 'Sélectionner un parent';
         if (lbl.includes('rôle') || lbl.includes('role')) return 'Sélectionner un rôle';
         if (lbl.includes('statut') || lbl.includes('status')) return 'Sélectionner un statut';

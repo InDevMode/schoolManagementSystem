@@ -36,7 +36,7 @@ class ResetIncompleteEvaluations extends Command
         $reasons  = [];
 
         foreach ($evaluations as $eval) {
-            // Nombre d'élèves actifs dans la classe
+            // Nombre d'apprenants actifs dans la classe
             $totalStudents = DB::table('users')
                 ->where('class_id', $eval->class_id)
                 ->where('user_type', 3)
@@ -64,7 +64,7 @@ class ResetIncompleteEvaluations extends Command
 
             if ($savedGrades < $totalStudents) {
                 $missing = $totalStudents - $savedGrades;
-                $reason  = "{$missing} note(s) non saisie(s) sur {$totalStudents} élève(s)";
+                $reason  = "{$missing} note(s) non saisie(s) sur {$totalStudents} apprenant(s)";
             } elseif ($validatedGrades < $totalStudents) {
                 $notValidated = $totalStudents - $validatedGrades;
                 $reason       = "{$notValidated} note(s) saisie(s) mais non validée(s)";

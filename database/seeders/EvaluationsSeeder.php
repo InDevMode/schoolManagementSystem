@@ -12,11 +12,11 @@ use Illuminate\Support\Facades\DB;
  *
  * Crée pour chaque classe × matière × période :
  *   - Des évaluations variées (interrogation, devoir surveillé, etc.)
- *   - Des notes pour chaque élève
+ *   - Des notes pour chaque apprenant
  *
  * Dépendances :
  *   - PeriodsSeeder (periods doit être peuplé)
- *   - MultiSchoolSeeder (classes, matières, élèves doivent exister)
+ *   - MultiSchoolSeeder (classes, matières, apprenants doivent exister)
  */
 class EvaluationsSeeder extends Seeder
 {
@@ -46,7 +46,7 @@ class EvaluationsSeeder extends Seeder
         $gradeCount = 0;
 
         foreach ($classes as $class) {
-            // Élèves de cette classe
+            // apprenants de cette classe
             $students = User::where('class_id', $class->id)
                 ->where('user_type', 3)
                 ->where('is_delete', 0)

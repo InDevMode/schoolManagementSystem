@@ -173,7 +173,7 @@ class StudentController extends Controller
     {
         $teacherId = Auth::id();
 
-        // Compte d'élèves par classe pour ce professeur
+        // Compte d'apprenants par classe pour ce professeur
         $studentsByClass = \App\Models\ClassTeacherModel::select(
                 'class.id as class_id',
                 'class.name as class_name',

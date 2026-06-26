@@ -218,7 +218,7 @@ class EvaluationModel extends Model
     }
 
     /**
-     * Calcule la moyenne d'un élève pour une matière sur une période.
+     * Calcule la moyenne d'un apprenant pour une matière sur une période.
      *
      * Formule béninoise en deux étapes :
      *

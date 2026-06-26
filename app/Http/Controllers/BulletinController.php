@@ -32,7 +32,7 @@ class BulletinController extends Controller
     }
 
     /**
-     * Génère le bulletin d'un seul élève
+     * Génère le bulletin d'un seul apprenant
      */
     public function generate(Request $request)
     {
@@ -85,7 +85,7 @@ class BulletinController extends Controller
     }
 
     /**
-     * Publier un bulletin (le rend visible aux élèves/parents)
+     * Publier un bulletin (le rend visible aux apprenants/parents)
      */
     public function publish(int $id)
     {
@@ -95,7 +95,7 @@ class BulletinController extends Controller
         $bulletin->status = 'published';
         $bulletin->save();
 
-        // Notifier l'élève et son parent
+        // Notifier l'apprenant et son parent
         try {
             $student = User::find($bulletin->student_id);
             $period  = PeriodModel::find($bulletin->period_id);
@@ -104,7 +104,7 @@ class BulletinController extends Controller
             if ($student) {
                 $studentName = "{$student->name} {$student->last_name}";
 
-                // Notification à l'élève
+                // Notification à l'apprenant
                 $student->notify(new BulletinPublishedNotification($studentName, $periodName, $id, 'student'));
 
                 // Notification au parent s'il existe
@@ -150,7 +150,7 @@ class BulletinController extends Controller
                 ->where('bulletins.status', 'draft')
                 ->update(['bulletins.status' => 'published']);
 
-            // Notifier chaque élève et son parent
+            // Notifier chaque apprenant et son parent
             try {
                 $period = PeriodModel::find($request->period_id);
                 $periodName = $period?->name ?? 'Période inconnue';
@@ -240,7 +240,7 @@ class BulletinController extends Controller
     }
 
     // ──────────────────────────────────────────────────────────────────────────
-    // ÉLÈVE — Ses bulletins
+    // apprenant — Ses bulletins
     // ──────────────────────────────────────────────────────────────────────────
 
     public function studentBulletins()
@@ -256,7 +256,7 @@ class BulletinController extends Controller
     {
         $bulletin = BulletinModel::getSingle($id);
 
-        // Sécurité : un élève ne peut voir que ses propres bulletins publiés
+        // Sécurité : un apprenant ne peut voir que ses propres bulletins publiés
         if (!$bulletin || $bulletin->student_id !== Auth::id() || $bulletin->status !== 'published') {
             abort(403);
         }
@@ -370,7 +370,7 @@ class BulletinController extends Controller
             (int) $request->period_id
         );
 
-        // Enrichir avec le nom des élèves
+        // Enrichir avec le nom des apprenants
         $students = User::whereIn('id', array_keys($averages))
             ->select('id', 'name', 'last_name', 'admission_number')
             ->get()

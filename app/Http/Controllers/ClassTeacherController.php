@@ -139,7 +139,7 @@ class ClassTeacherController extends Controller
                 'id'         => $row->class_id,
                 'name'       => $row->class_name,
                 'status'     => (int) $row->status,
-                // Nombre d'élèves
+                // Nombre d'apprenants
                 'students'   => \App\Models\User::where('class_id', $row->class_id)
                     ->where('user_type', 3)
                     ->where('is_delete', 0)
@@ -155,7 +155,7 @@ class ClassTeacherController extends Controller
 
         $classSubjects = ClassTeacherModel::getMyClassSubjectGroup($teacherId);
 
-        // Pour chaque classe, on enrichit avec les matières et le nombre d'élèves
+        // Pour chaque classe, on enrichit avec les matières et le nombre d'apprenants
         $classSubjects = $classSubjects->map(function ($item) {
             // Matières assignées à cette classe
             $item->subjects = \App\Models\ClassSubjectModel::select(
@@ -173,7 +173,7 @@ class ClassTeacherController extends Controller
                 ->orderBy('subject.name')
                 ->get();
 
-            // Nombre d'élèves dans cette classe
+            // Nombre d'apprenants dans cette classe
             $item->student_count = \App\Models\User::where('class_id', $item->class_id)
                 ->where('user_type', 3)
                 ->where('is_delete', 0)

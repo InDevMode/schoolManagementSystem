@@ -5,7 +5,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 /**
- * Table grades — notes individuelles des élèves pour une évaluation.
+ * Table grades — notes individuelles des apprenants pour une évaluation.
  */
 return new class extends Migration
 {

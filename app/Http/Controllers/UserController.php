@@ -231,11 +231,11 @@ class UserController extends Controller
             $regex = '/^[a-z0-9]+@[a-z0-9]+\.(fr|com|org|bj|io)$/';
 
             if (!$student) {
-                return redirect()->back()->with('error', 'Cet élève est introuvable.');
+                return redirect()->back()->with('error', 'Cet apprenant est introuvable.');
             }
 
             if ($studentMail) {
-                return redirect()->back()->with('error', 'Cet email a déjà été utilisé par un autre élève');
+                return redirect()->back()->with('error', 'Cet email a déjà été utilisé par un autre apprenant');
             }
             if (!empty($request->password) && $passwordLength < 6) {
                 return redirect()->back()->with('error', 'Votre mot de passe ne doit pas être de moins de 6 caractères.');
@@ -255,7 +255,7 @@ class UserController extends Controller
                 $minimumAge = 2;
                 $age = $dateOfBirth->diffInYears(Carbon::now());
                 if ($age < $minimumAge) {
-                    return redirect()->back()->with('error', 'L\'élève doit avoir au moins 2 ans.');
+                    return redirect()->back()->with('error', 'L\'apprenant doit avoir au moins 2 ans.');
                 }
                 $student->date_of_birth = $dateOfBirth;
             }

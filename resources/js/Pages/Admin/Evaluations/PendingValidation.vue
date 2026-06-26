@@ -24,7 +24,7 @@
                                 — {{ group.subject_name }} · {{ group.class_name }}
                             </p>
                             <p class="text-xs text-gray-400 mt-0.5">
-                                {{ formatDate(group.eval_date) }} · {{ group.count }} note(s) saisie(s) / {{ group.totalStudents }} élève(s)
+                                {{ formatDate(group.eval_date) }} · {{ group.count }} note(s) saisie(s) / {{ group.totalStudents }} apprenant(s)
                             </p>
                             <!-- Avertissement notes manquantes -->
                             <p v-if="!group.isComplete" class="text-xs text-amber-600 dark:text-amber-400 mt-0.5 flex items-center gap-1">
@@ -78,7 +78,7 @@
                     <table class="min-w-full divide-y divide-gray-100 dark:divide-gray-700">
                         <thead class="bg-gray-50 dark:bg-gray-800/60">
                             <tr>
-                                <th class="px-4 py-2.5 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Élève</th>
+                                <th class="px-4 py-2.5 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">apprenant</th>
                                 <th class="px-4 py-2.5 text-center text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Note</th>
                                 <th class="px-4 py-2.5 text-center text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Sur 20</th>
                                 <th class="px-4 py-2.5 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Observation</th>

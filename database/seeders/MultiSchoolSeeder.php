@@ -13,7 +13,7 @@ use Spatie\Permission\PermissionRegistrar;
 /**
  * MultiSchoolSeeder — Crée les utilisateurs pour les 3 écoles de démo.
  *
- * Par école : 1 admin, 2 profs, 4 élèves, 2 parents, classes et matières.
+ * Par école : 1 admin, 2 profs, 4 apprenants, 2 parents, classes et matières.
  *
  * Dépendances :
  *   - SchoolSeeder (les 3 écoles doivent exister)
@@ -23,7 +23,7 @@ use Spatie\Permission\PermissionRegistrar;
  * Lycée Moderne de Cotonou   → admin@lmc.bj / Admin@LMC2025
  * Collège Saint-Michel       → admin@csm.bj / Admin@CSM2025
  * École Primaire Les Étoiles → admin@epe.bj / Admin@EPE2025
- * Professeurs : Prof@1234  |  Élèves : Eleve@1234  |  Parents : Parent@1234
+ * Professeurs : Prof@1234  |  apprenants : Eleve@1234  |  Parents : Parent@1234
  * ─────────────────────────────────────────────────────
  */
 class MultiSchoolSeeder extends Seeder
@@ -305,7 +305,7 @@ class MultiSchoolSeeder extends Seeder
             }
             $this->command->info("    ✅ " . count($teacherIds) . " professeurs (mot de passe : Prof@1234)");
 
-            // ── Élèves ────────────────────────────────────────────────────────
+            // ── apprenants ────────────────────────────────────────────────────────
             $studentIds = [];
             $schoolPrefix = strtoupper(substr($data['school_code'], 0, 3));
             foreach ($data['students'] as $sData) {
@@ -336,7 +336,7 @@ class MultiSchoolSeeder extends Seeder
 
                 $studentIds[] = $student->id;
             }
-            $this->command->info("    ✅ " . count($studentIds) . " élèves (mot de passe : Eleve@1234)");
+            $this->command->info("    ✅ " . count($studentIds) . " apprenants (mot de passe : Eleve@1234)");
 
             // ── Parents ───────────────────────────────────────────────────────
             foreach ($data['parents'] as $pData) {
@@ -359,7 +359,7 @@ class MultiSchoolSeeder extends Seeder
                     $parent->assignRole('parent');
                 }
 
-                // Lier l'élève à ce parent
+                // Lier l'apprenant à ce parent
                 if (isset($studentIds[$pData['student_idx']])) {
                     User::where('id', $studentIds[$pData['student_idx']])
                         ->update(['parent_id' => $parent->id]);
@@ -380,7 +380,7 @@ class MultiSchoolSeeder extends Seeder
                 ['École Primaire Les Étoiles',   'admin@epe.bj', 'Admin@EPE2025'],
             ]
         );
-        $this->command->line('Profs : Prof@1234  |  Élèves : Eleve@1234  |  Parents : Parent@1234');
+        $this->command->line('Profs : Prof@1234  |  apprenants : Eleve@1234  |  Parents : Parent@1234');
         $this->command->line('══════════════════════════════════════════════════');
     }
 }

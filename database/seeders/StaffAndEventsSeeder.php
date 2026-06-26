@@ -136,7 +136,7 @@ class StaffAndEventsSeeder extends Seeder
         $schoolId  = $admin?->school_id;
 
         $eventsData = [
-            ['Réunion des parents d\'élèves',          'administrative', Carbon::today()->addDays(7),  '08:00', '11:00', 'Salle polyvalente'],
+            ['Réunion des parents d\'apprenants',          'administrative', Carbon::today()->addDays(7),  '08:00', '11:00', 'Salle polyvalente'],
             ['Examen 2ème trimestre — Mathématiques',  'exam',           Carbon::today()->addDays(12), '08:00', '10:00', 'Toutes salles'],
             ['Journée culturelle et artistique',       'cultural',       Carbon::today()->addDays(18), '09:00', '17:00', 'Cour principale'],
             ['Sortie pédagogique au musée',            'trip',           Carbon::today()->addDays(25), '07:30', '17:00', 'Musée national'],

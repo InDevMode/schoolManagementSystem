@@ -51,7 +51,7 @@ class GradeModel extends Model
 
     /**
      * Toutes les notes d'une évaluation (saisie en masse)
-     * Retourne les élèves de la classe avec leur note si elle existe
+     * Retourne les apprenants de la classe avec leur note si elle existe
      */
     public static function getGradesForEvaluation(int $evaluation_id, int $class_id)
     {
@@ -130,7 +130,7 @@ class GradeModel extends Model
     }
 
     /**
-     * Notes d'un élève pour une période
+     * Notes d'un apprenant pour une période
      */
     public static function getStudentGradesForPeriod(int $student_id, int $period_id)
     {
