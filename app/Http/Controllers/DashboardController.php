@@ -507,8 +507,8 @@ class DashboardController extends Controller
               ->where('users.is_delete', 0);
         }
 
-        $rows = $q->selectRaw('attendances.attendance_type as type, MONTH(attendances.attendance_date) as month, COUNT(*) as total')
-                  ->groupBy('attendances.attendance_type', DB::raw('MONTH(attendances.attendance_date)'))
+        $rows = $q->selectRaw('attendances.attendance_type as type, EXTRACT(MONTH FROM attendances.attendance_date) as month, COUNT(*) as total')
+                  ->groupBy('attendances.attendance_type', DB::raw('EXTRACT(MONTH FROM attendances.attendance_date)'))
                   ->get();
 
         $result = [
@@ -628,8 +628,8 @@ class DashboardController extends Controller
         $year = date('Y');
         $monthlyRows = $q()
             ->whereYear('feescollections.created_at', $year)
-            ->selectRaw('MONTH(feescollections.created_at) as month, COUNT(*) as count, SUM(feescollections.paid_amount) as paid')
-            ->groupBy(DB::raw('MONTH(feescollections.created_at)'))
+            ->selectRaw('EXTRACT(MONTH FROM feescollections.created_at) as month, COUNT(*) as count, SUM(feescollections.paid_amount) as paid')
+            ->groupBy(DB::raw('EXTRACT(MONTH FROM feescollections.created_at)'))
             ->get()
             ->keyBy('month');
 
@@ -647,8 +647,8 @@ class DashboardController extends Controller
             $typeRows = $q()
                 ->where('feescollections.payment_type', $type)
                 ->whereYear('feescollections.created_at', $year)
-                ->selectRaw('MONTH(feescollections.created_at) as month, COUNT(*) as count')
-                ->groupBy(DB::raw('MONTH(feescollections.created_at)'))
+                ->selectRaw('EXTRACT(MONTH FROM feescollections.created_at) as month, COUNT(*) as count')
+                ->groupBy(DB::raw('EXTRACT(MONTH FROM feescollections.created_at)'))
                 ->get()
                 ->keyBy('month');
 

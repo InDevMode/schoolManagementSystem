@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Str;
+use App\Services\UploadService;
 use Inertia\Inertia;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -207,16 +207,11 @@ class StudentController extends Controller
 
     private function uploadProfilePicture(Request $request, string $prefix): string
     {
-        $file = $request->file('profile_picture');
-        $fileName = strtolower($prefix . date('dmYhis') . Str::random(10)) . '.' . $file->getClientOriginalExtension();
-        $file->move('upload/profile/', $fileName);
-        return $fileName;
+        return UploadService::upload($request->file('profile_picture'), UploadService::profileFolder(), $prefix);
     }
 
-    private function deleteOldPicture(?string $filename): void
+    private function deleteOldPicture(?string $path): void
     {
-        if ($filename && file_exists('upload/profile/' . $filename)) {
-            unlink('upload/profile/' . $filename);
-        }
+        UploadService::delete($path);
     }
 }

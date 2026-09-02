@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
@@ -9,7 +10,7 @@ use Illuminate\Support\Facades\Request;
 
 class HomeworkModel extends Model
 {
-    use HasFactory;
+    use HasFactory, HasUuids;
 
     protected $table = 'homework';
 
@@ -24,7 +25,7 @@ class HomeworkModel extends Model
         'is_delete'
     ];
 
-    public static function getSingle(int $id)
+    public static function getSingle(string $id)
     {
         return HomeworkModel::find($id);
     }
@@ -59,9 +60,9 @@ class HomeworkModel extends Model
             ->paginate($perpage);
     }
 
-    public function getDocument()
+    public function getDocument(): string
     {
-        return (!empty($this->document_file) && file_exists('upload/practicalworks/' . $this->document_file)) ? url('upload/practicalworks/' . $this->document_file) : '';
+        return \App\Services\UploadService::url($this->document_file, '');
     }
 
     public function getHomework()
@@ -69,7 +70,7 @@ class HomeworkModel extends Model
         return $this->belongsTo(WorkModel::class, 'work_id', );
     }
 
-    public static function getHomeworks(int $work_id, int $perpage)
+    public static function getHomeworks(string $work_id, int $perpage)
     {
         $results = HomeworkModel::select(
             'homework.*',

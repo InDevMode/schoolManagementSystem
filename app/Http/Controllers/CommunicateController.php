@@ -217,7 +217,7 @@ class CommunicateController extends Controller
                     $user = User::getSingle($userId);
 
                     // Vérifier que l'utilisateur appartient à la même école
-                    if ($user && $user->email && ($schoolId === null || (int) $user->school_id === (int) $schoolId)) {
+                    if ($user && $user->email && ($schoolId === null || $user->school_id === $schoolId)) {
                         $user->send_message = $request->message;
                         $user->send_subject = $request->subject;
                         Mail::to($user->email)->send(new SendMailUserMail($user));

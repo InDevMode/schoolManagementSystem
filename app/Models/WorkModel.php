@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
@@ -9,7 +10,7 @@ use Illuminate\Support\Facades\Request;
 
 class WorkModel extends Model
 {
-    use HasFactory;
+    use HasFactory, HasUuids;
 
     protected $table = 'works';
 
@@ -121,7 +122,7 @@ class WorkModel extends Model
             ->paginate($perpage);
     }
 
-    public static function getWorksWithStudentStatus(int $class_id, int $student_id, int $perpage)
+    public static function getWorksWithStudentStatus(string $class_id, string $student_id, int $perpage)
     {
         $results = WorkModel::select(
             'works.*',

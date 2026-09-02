@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
@@ -9,7 +10,7 @@ use Illuminate\Support\Facades\Request;
 
 class StaffEventModel extends Model
 {
-    use HasFactory;
+    use HasFactory, HasUuids;
 
     protected $table = 'staff_events';
 
@@ -50,7 +51,7 @@ class StaffEventModel extends Model
 
     // ── Helpers ───────────────────────────────────────────────────────────────
 
-    public static function getSingle(int $id): ?self
+    public static function getSingle(string $id): ?self
     {
         return self::find($id);
     }

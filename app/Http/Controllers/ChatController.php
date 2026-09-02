@@ -183,12 +183,7 @@ class ChatController extends Controller
             $chat->created_date = Carbon::createFromTimestamp(time());
 
             if (!empty($request->file('file'))) {
-                $ext = $request->file('file')->getClientOriginalExtension();
-                $file = $request->file('file');
-                $randomStr = 'chat_file' . date('dmYhis') . Str::random(20);
-                $fileName = strtolower($randomStr) . '.' . $ext;
-                $file->move('upload/chats/', $fileName);
-                $chat->file = $fileName;
+                $chat->file = UploadService::upload($request->file('file'), UploadService::chatsFolder(), 'chat_file');
             }
 
             $chat->save();
@@ -213,19 +208,8 @@ class ChatController extends Controller
             $chat->created_date = Carbon::createFromTimestamp(time());
 
             if (!empty($request->file('file'))) {
-                $chatFile = $chat->file;
-                if (!empty($chatFile)) {
-                    $chatFileUrl = ChatModel::getChatFile();
-                    if (!empty($chatFileUrl)) {
-                        unlink('upload/chats/' . $chatFile);
-                    }
-                }
-                $ext = $request->file('file')->getClientOriginalExtension();
-                $file = $request->file('file');
-                $randomStr = 'chat_file' . date('dmYhis') . Str::random(20);
-                $fileName = strtolower($randomStr) . '.' . $ext;
-                $file->move('upload/chats/', $fileName);
-                $chat->file = $fileName;
+                UploadService::delete($chat->file);
+                $chat->file = UploadService::upload($request->file('file'), UploadService::chatsFolder(), 'chat_file');
             }
 
             $chat->save();
@@ -257,8 +241,8 @@ class ChatController extends Controller
     public function pollMessages(Request $request)
     {
         $sender_id   = Auth::id();
-        $receiver_id = (int) $request->receiver_id;
-        $lastId      = (int) ($request->last_id ?? 0);
+        $receiver_id = $request->receiver_id;
+        $lastId      = ($request->last_id ?? null);
 
         if (!$receiver_id) {
             return response()->json(['messages' => [], 'contacts' => []]);
@@ -348,22 +332,19 @@ class ChatController extends Controller
             $chat->message      = $request->message ?? '';
             $chat->created_date = Carbon::now();
 
+            $originalName = null;
             if ($request->hasFile('file')) {
-                $file         = $request->file('file');
-                $originalName = $file->getClientOriginalName();
-                $fileName     = 'chat_file' . date('dmYhis') . Str::random(10) . '.' . $file->getClientOriginalExtension();
-                $file->move('upload/chats/', $fileName);
-                $chat->file = $fileName;
-            } else {
-                $originalName = null;
+                $uploadedFile = $request->file('file');
+                $originalName = $uploadedFile->getClientOriginalName();
+                $chat->file   = UploadService::upload($uploadedFile, UploadService::chatsFolder(), 'chat_file');
             }
 
             $chat->save();
 
             // Ajouter l'URL du fichier dans la réponse
             $chatData              = $chat->toArray();
-            $chatData['file_url']  = $chat->file ? url('upload/chats/' . $chat->file) : null;
-            $chatData['file_name'] = $chat->file ? ($originalName ?? $chat->file) : null;
+            $chatData['file_url']  = $chat->file ? UploadService::url($chat->file) : null;
+            $chatData['file_name'] = $chat->file ? ($originalName ?? basename($chat->file)) : null;
 
             return response()->json(['success' => true, 'message' => $chatData]);
         } catch (\Illuminate\Validation\ValidationException $e) {
@@ -419,7 +400,7 @@ class ChatController extends Controller
     public function setTyping(Request $request)
     {
         $senderId    = Auth::id();
-        $receiverId  = (int) $request->receiver_id;
+        $receiverId  = $request->receiver_id;
         $isTyping    = (bool) $request->is_typing;
 
         $key = "chat_typing_{$senderId}_{$receiverId}";
@@ -440,7 +421,7 @@ class ChatController extends Controller
     public function checkTyping(Request $request)
     {
         $myId        = Auth::id();
-        $receiverId  = (int) $request->receiver_id;
+        $receiverId  = $request->receiver_id;
 
         // Est-ce que le destinataire est en train de m'écrire ?
         $typingKey   = "chat_typing_{$receiverId}_{$myId}";

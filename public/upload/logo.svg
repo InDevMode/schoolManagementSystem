@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%"   stop-color="#7B74F0"/>
+      <stop offset="100%" stop-color="#5b4fd4"/>
+    </linearGradient>
+    <linearGradient id="shine" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%"   stop-color="rgba(255,255,255,0.25)"/>
+      <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Fond cercle principal -->
+  <circle cx="100" cy="100" r="96" fill="url(#bg)"/>
+  <!-- Reflet lumière -->
+  <ellipse cx="100" cy="60" rx="55" ry="35" fill="url(#shine)"/>
+  <!-- Bordure légère -->
+  <circle cx="100" cy="100" r="96" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="2"/>
+
+  <!-- Chapeau de diplômé — icône principale -->
+  <!-- Plateau du chapeau -->
+  <path d="M100 52 L42 82 L100 112 L158 82 Z"
+        fill="white" opacity="0.95"/>
+  <!-- Calotte (dessous du plateau) -->
+  <path d="M68 92 L68 122 Q100 138 132 122 L132 92 L100 106 Z"
+        fill="white" opacity="0.80"/>
+  <!-- Corde -->
+  <line x1="158" y1="82" x2="158" y2="110"
+        stroke="white" stroke-width="3.5" stroke-linecap="round" opacity="0.90"/>
+  <circle cx="158" cy="114" r="5" fill="white" opacity="0.90"/>
+  <!-- Étoile sur le dessus du chapeau -->
+  <path d="M100 68 L103 78 L114 78 L105 85 L108 95 L100 89 L92 95 L95 85 L86 78 L97 78 Z"
+        fill="#7B74F0" opacity="0.95"/>
+
+  <!-- Texte "SMS" sous le chapeau -->
+  <text x="100" y="160" text-anchor="middle"
+        font-family="'Segoe UI', Arial, sans-serif"
+        font-weight="800" font-size="22" fill="white" opacity="0.95"
+        letter-spacing="3">SMS</text>
+  <!-- Ligne décorative sous le texte -->
+  <rect x="72" y="165" width="56" height="2.5" rx="1.25" fill="rgba(255,255,255,0.45)"/>
+</svg>

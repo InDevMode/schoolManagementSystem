@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class WorkAttachmentModel extends Model
 {
-    use HasFactory;
+    use HasFactory, HasUuids;
 
     protected $table = 'work_attachments';
 
@@ -22,10 +23,10 @@ class WorkAttachmentModel extends Model
 
     protected $hidden = ['is_delete'];
 
-    /** URL publique du fichier */
+    /** URL publique du fichier (Supabase Storage) */
     public function getUrlAttribute(): string
     {
-        return url('upload/practicalworks/' . $this->file_path);
+        return \App\Services\UploadService::url($this->file_path);
     }
 
     /** Taille lisible (ex: 1.2 Mo) */

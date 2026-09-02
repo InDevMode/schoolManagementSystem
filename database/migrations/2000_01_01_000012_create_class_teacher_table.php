@@ -4,20 +4,17 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-/**
- * Table class_teacher — liaison entre classes et professeurs.
- */
 return new class extends Migration
 {
     public function up(): void
     {
         Schema::create('class_teacher', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('class_id')->nullable();
-            $table->unsignedBigInteger('teacher_id')->nullable();
-            $table->tinyInteger('status')->default(0)->comment('0: Inactive, 1: Active');
-            $table->tinyInteger('is_delete')->default(0)->comment('0: actif, 1: supprimé');
-            $table->unsignedBigInteger('created_by')->nullable();
+            $table->uuid('id')->primary();
+            $table->uuid('class_id')->nullable();
+            $table->uuid('teacher_id')->nullable();
+            $table->smallInteger('status')->default(0)->comment('0: Inactive, 1: Active');
+            $table->smallInteger('is_delete')->default(0)->comment('0: actif, 1: supprimé');
+            $table->uuid('created_by')->nullable();
             $table->timestamps();
 
             $table->foreign('class_id')->references('id')->on('class')->onDelete('cascade');

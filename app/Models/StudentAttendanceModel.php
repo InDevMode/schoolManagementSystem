@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
@@ -9,7 +10,7 @@ use Illuminate\Support\Facades\Request;
 
 class StudentAttendanceModel extends Model
 {
-    use HasFactory;
+    use HasFactory, HasUuids;
 
     protected $table = 'attendances';
 
@@ -116,7 +117,7 @@ class StudentAttendanceModel extends Model
         }
     }
 
-    public static function getMyAttendance(int $student_id, int $perpage)
+    public static function getMyAttendance(string $student_id, int $perpage)
     {
         $results = StudentAttendanceModel::select('attendances.*', 'class.name as class_name')
             ->join('class', 'class.id', '=', 'attendances.class_id')
@@ -151,7 +152,7 @@ class StudentAttendanceModel extends Model
         return $results;
     }
 
-    public static function getClassStudent(int $student_id)
+    public static function getClassStudent(string $student_id)
     {
         return StudentAttendanceModel::select('attendances.*', 'class.name as class_name')
             ->join('class', 'class.id', '=', 'attendances.class_id')
@@ -159,7 +160,7 @@ class StudentAttendanceModel extends Model
             ->where('class.is_delete', '=', 0)
             ->where('class.status', '=', 1)
             ->where('attendances.is_delete', '=', 0)
-            ->groupBy('attendances.class_id')
+            ->orderBy('attendances.attendance_date', 'desc')
             ->get();
     }
 
@@ -234,7 +235,7 @@ class StudentAttendanceModel extends Model
             ->count();
     }
 
-    public static function getTotalAttendanceTypeByStudent(int $attendanceType, int $student_id)
+    public static function getTotalAttendanceTypeByStudent(int $attendanceType, string $student_id)
     {
         $typeStr = self::attTypeStr($attendanceType);
         return StudentAttendanceModel::where(function($q) use ($attendanceType, $typeStr) {

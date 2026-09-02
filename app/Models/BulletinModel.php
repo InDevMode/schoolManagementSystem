@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
@@ -9,7 +10,7 @@ use Illuminate\Support\Facades\Request;
 
 class BulletinModel extends Model
 {
-    use HasFactory;
+    use HasFactory, HasUuids;
 
     protected $table = 'bulletins';
 
@@ -42,12 +43,12 @@ class BulletinModel extends Model
         };
     }
 
-    public static function getSingle(int $id): ?self
+    public static function getSingle(string $id): ?self
     {
         return self::find($id);
     }
 
-    public static function getByStudentAndPeriod(int $student_id, int $period_id): ?self
+    public static function getByStudentAndPeriod(string $student_id, string $period_id): ?self
     {
         return self::where('student_id', $student_id)
             ->where('period_id', $period_id)
@@ -58,7 +59,7 @@ class BulletinModel extends Model
     /**
      * Bulletins d'un apprenant (toutes périodes, publiés)
      */
-    public static function getByStudent(int $student_id)
+    public static function getByStudent(string $student_id)
     {
         return self::select('bulletins.*', 'periods.name as period_name', 'periods.type as period_type', 'periods.order_number')
             ->join('periods', 'periods.id', '=', 'bulletins.period_id')
@@ -110,7 +111,7 @@ class BulletinModel extends Model
      *     Appeler generate() sur un seul apprenant donne un rang approximatif basé
      *     sur les moyennes recalculées à la volée pour toute la classe.
      */
-    public static function generate(int $student_id, int $period_id, int $generated_by): self
+    public static function generate(string $student_id, string $period_id, string $generated_by): self
     {
         $student = User::find($student_id);
         if (!$student) throw new \Exception("apprenant introuvable.");
@@ -223,7 +224,7 @@ class BulletinModel extends Model
      * Gestion des ex-aequo : deux apprenants avec la même moyenne ont le même rang.
      * L'apprenant suivant prend le rang +2 (méthode standard, ex : 1er, 2e, 2e, 4e).
      */
-    public static function generateForClass(int $class_id, int $period_id, int $generated_by): array
+    public static function generateForClass(string $class_id, string $period_id, string $generated_by): array
     {
         $students = User::where('class_id', $class_id)
             ->where('user_type', 3)
@@ -258,7 +259,7 @@ class BulletinModel extends Model
      *
      * @param  array $classAverages  [student_id => general_average]
      */
-    public static function computeRank(int $student_id, array $classAverages): ?int
+    public static function computeRank(string $student_id, array $classAverages): ?int
     {
         if (!isset($classAverages[$student_id])) return null;
 
@@ -277,7 +278,7 @@ class BulletinModel extends Model
      * Les matières assignées à la classe sont chargées une seule fois
      * pour éviter N requêtes redondantes (une par apprenant).
      */
-    public static function computeClassAverages(int $class_id, int $period_id): array
+    public static function computeClassAverages(string $class_id, string $period_id): array
     {
         $students = User::where('class_id', $class_id)
             ->where('user_type', 3)
@@ -316,7 +317,7 @@ class BulletinModel extends Model
      * validées (interrogations, devoirs, etc.) afin que le PDF puisse afficher
      * chaque note individuellement.
      */
-    public static function getFullDetail(int $bulletin_id): array
+    public static function getFullDetail(string $bulletin_id): array
     {
         $bulletin = self::select('bulletins.*', 'users.name as student_name', 'users.last_name as student_last_name',
                 'users.admission_number', 'users.profile_picture', 'users.date_of_birth', 'users.gender',

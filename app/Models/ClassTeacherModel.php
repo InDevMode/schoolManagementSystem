@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
@@ -10,7 +11,7 @@ use Illuminate\Support\Facades\Request;
 
 class ClassTeacherModel extends Model
 {
-    use HasFactory;
+    use HasFactory, HasUuids;
 
     protected $table = 'class_teacher';
 
@@ -25,7 +26,7 @@ class ClassTeacherModel extends Model
         'is_delete',
     ];
 
-    public static function getSingle(int $id)
+    public static function getSingle(string $id)
     {
         return ClassTeacherModel::find($id);
     }
@@ -82,7 +83,7 @@ class ClassTeacherModel extends Model
         return ClassTeacherModel::where('class_id', '=', $class_id)->delete();
     }
 
-    public static function getMyClassSubject(int $perPage, int $teacher_id)
+    public static function getMyClassSubject(int $perPage, string $teacher_id)
     {
         $results = ClassTeacherModel::select(
             'class_teacher.*',
@@ -122,7 +123,7 @@ class ClassTeacherModel extends Model
             ->paginate($perPage);
     }
 
-    public static function getMyClassTimetable(int $class_id, int $subject_id)
+    public static function getMyClassTimetable(string $class_id, string $subject_id)
     {
         Carbon::setLocale('fr');
         $dayName = Carbon::now()->translatedFormat('l');
@@ -152,7 +153,7 @@ class ClassTeacherModel extends Model
             ->get();
     }
 
-    public static function getMyClassSubjectGroup(int $teacher_id)
+    public static function getMyClassSubjectGroup(string $teacher_id)
     {
         return ClassTeacherModel::select(
             'class_teacher.*',
@@ -163,7 +164,7 @@ class ClassTeacherModel extends Model
             ->where('class_teacher.is_delete', '=', 0)
             ->where('class_teacher.status', '=', 1)
             ->where('class_teacher.teacher_id', '=', $teacher_id)
-            ->groupBy('class_teacher.id')
+            ->groupBy('class_teacher.id', 'class.id', 'class.name')
             ->get();
     }
 

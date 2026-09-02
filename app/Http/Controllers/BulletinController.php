@@ -43,8 +43,8 @@ class BulletinController extends Controller
 
         try {
             $bulletin = BulletinModel::generate(
-                (int) $request->student_id,
-                (int) $request->period_id,
+                $request->student_id,
+                $request->period_id,
                 Auth::id()
             );
 
@@ -67,8 +67,8 @@ class BulletinController extends Controller
 
         try {
             $results = BulletinModel::generateForClass(
-                (int) $request->class_id,
-                (int) $request->period_id,
+                $request->class_id,
+                $request->period_id,
                 Auth::id()
             );
 
@@ -366,8 +366,8 @@ class BulletinController extends Controller
         ]);
 
         $averages = BulletinModel::computeClassAverages(
-            (int) $request->class_id,
-            (int) $request->period_id
+            $request->class_id,
+            $request->period_id
         );
 
         // Enrichir avec le nom des apprenants

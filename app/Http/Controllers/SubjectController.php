@@ -60,7 +60,7 @@ class SubjectController extends Controller
 
             $subject->name = trim($request->name);
             $subject->type = trim($request->type);
-            $subject->status = intval($request->status);
+            $subject->status = $request->status;
             $subject->save();
             return redirect('admin/subject/list')->with('success', 'Cette matière a été modifiée avec succès.');
 

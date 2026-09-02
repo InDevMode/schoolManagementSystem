@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -10,7 +11,7 @@ use Illuminate\Support\Facades\Request;
 
 class ClassSubjectModel extends Model
 {
-    use HasFactory;
+    use HasFactory, HasUuids;
 
     protected $table = 'class_subject';
 
@@ -26,7 +27,7 @@ class ClassSubjectModel extends Model
         'is_delete',
     ];
 
-    public static function getSingle(int $id)
+    public static function getSingle(string $id)
     {
         return ClassSubjectModel::find($id);
     }
@@ -89,7 +90,7 @@ class ClassSubjectModel extends Model
         return ClassSubjectModel::where('class_id', '=', $class_id)->delete();
     }
 
-    public static function studentStubject(int $class_id, int $perPage)
+    public static function studentStubject(string $class_id, int $perPage)
     {
         $results = ClassSubjectModel::select(
             'class_subject.*',
@@ -131,7 +132,7 @@ class ClassSubjectModel extends Model
             ->paginate($perPage);
     }
 
-    public static function getSubject(int $class_id)
+    public static function getSubject(string $class_id)
     {
         return ClassSubjectModel::select(
             'class_subject.*',
@@ -169,7 +170,7 @@ class ClassSubjectModel extends Model
             ->count('class_subject.subject_id');
     }
 
-    public static function getClassSubject(int $class_id, int $subject_id)
+    public static function getClassSubject(string $class_id, string $subject_id)
     {
         return ClassSubjectModel::where('class_id', '=', $class_id)
             ->where('subject_id', '=', $subject_id)

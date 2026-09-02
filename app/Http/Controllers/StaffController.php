@@ -62,7 +62,7 @@ class StaffController extends Controller
 
         try {
             // Récupérer les infos depuis le user lié
-            $linkedUser = User::findOrFail((int) $request->user_id);
+            $linkedUser = User::findOrFail($request->user_id);
 
             $staff             = new StaffModel;
             $staff->role            = $request->role;
@@ -121,7 +121,7 @@ class StaffController extends Controller
             if (!$staff) abort(404);
 
             // Resynchroniser depuis le user lié si le user_id change
-            $linkedUser = User::findOrFail((int) $request->user_id);
+            $linkedUser = User::findOrFail($request->user_id);
 
             $staff->role            = $request->role;
             $staff->status          = $request->status;
@@ -211,7 +211,7 @@ class StaffController extends Controller
 
             // Vérifier que l'admin ne modifie que les types de son école
             $user = Auth::user();
-            if ((int) $user->user_type !== 0 && (int) $lt->school_id !== (int) $user->school_id) {
+            if ((int) $user->user_type !== 0 && $lt->school_id !== $user->school_id) {
                 return redirect()->back()->with('error', 'Accès refusé à ce type de congé.');
             }
 
@@ -430,7 +430,7 @@ class StaffController extends Controller
 
             // Vérifier que l'admin ne modifie que les événements de son école
             $user = Auth::user();
-            if ((int) $user->user_type !== 0 && (int) $event->school_id !== (int) $user->school_id) {
+            if ((int) $user->user_type !== 0 && $event->school_id !== $user->school_id) {
                 return redirect()->back()->with('error', 'Accès refusé à cet événement.');
             }
 
@@ -458,7 +458,7 @@ class StaffController extends Controller
 
         // Vérifier que l'admin ne supprime que les événements de son école
         $user = Auth::user();
-        if ((int) $user->user_type !== 0 && (int) $event->school_id !== (int) $user->school_id) {
+        if ((int) $user->user_type !== 0 && $event->school_id !== $user->school_id) {
             return redirect()->back()->with('error', 'Accès refusé à cet événement.');
         }
 
@@ -526,7 +526,7 @@ class StaffController extends Controller
 
         // Vérifier que l'admin ne voit que les types de son école
         $user = Auth::user();
-        if ((int) $user->user_type !== 0 && (int) $type->school_id !== (int) $user->school_id) {
+        if ((int) $user->user_type !== 0 && $type->school_id !== $user->school_id) {
             abort(403);
         }
 
@@ -545,7 +545,7 @@ class StaffController extends Controller
             if (!$type) abort(404);
 
             $user = Auth::user();
-            if ((int) $user->user_type !== 0 && (int) $type->school_id !== (int) $user->school_id) {
+            if ((int) $user->user_type !== 0 && $type->school_id !== $user->school_id) {
                 return redirect()->back()->with('error', 'Accès refusé à ce type d\'événement.');
             }
 
@@ -573,7 +573,7 @@ class StaffController extends Controller
         if (!$type) abort(404);
 
         $user = Auth::user();
-        if ((int) $user->user_type !== 0 && (int) $type->school_id !== (int) $user->school_id) {
+        if ((int) $user->user_type !== 0 && $type->school_id !== $user->school_id) {
             return redirect()->back()->with('error', 'Accès refusé à ce type d\'événement.');
         }
 

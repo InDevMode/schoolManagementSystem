@@ -60,20 +60,8 @@ class UserController extends Controller
             }
 
             if ($request->hasFile('profile_picture')) {
-                $file = $request->file('profile_picture');
-                $ext = $file->getClientOriginalExtension();
-                $randomStr = 'superadmin' . date('dmYHis') . Str::random(20);
-                $fileName = strtolower($randomStr) . '.' . $ext;
-
-                if (!empty($admin->profile_picture)) {
-                    $oldPath = public_path('upload/profile/' . $admin->profile_picture);
-                    if (file_exists($oldPath)) {
-                        unlink($oldPath);
-                    }
-                }
-
-                $file->move(public_path('upload/profile/'), $fileName);
-                $admin->profile_picture = $fileName;
+                UploadService::delete($admin->profile_picture);
+                $admin->profile_picture = UploadService::upload($request->file('profile_picture'), UploadService::profileFolder(), 'superadmin');
             }
 
             $admin->name          = trim($request->name);
@@ -117,22 +105,8 @@ class UserController extends Controller
             }
 
             if ($request->hasFile('profile_picture')) {
-                $file = $request->file('profile_picture');
-                $ext = $file->getClientOriginalExtension();
-                $randomStr = 'admin' . date('dmYHis') . Str::random(20);
-                $fileName = strtolower($randomStr) . '.' . $ext;
-
-                // Supprimer l'ancienne photo si elle existe
-                if (!empty($admin->profile_picture)) {
-                    $oldPath = public_path('upload/profile/' . $admin->profile_picture);
-                    if (file_exists($oldPath)) {
-                        unlink($oldPath);
-                    }
-                }
-
-                // Déplacer la nouvelle photo
-                $file->move(public_path('upload/profile/'), $fileName);
-                $admin->profile_picture = $fileName;
+                UploadService::delete($admin->profile_picture);
+                $admin->profile_picture = UploadService::upload($request->file('profile_picture'), UploadService::profileFolder(), 'admin');
             }
 
             $admin->name = trim($request->name);
@@ -193,22 +167,8 @@ class UserController extends Controller
             }
 
             if ($request->hasFile('profile_picture')) {
-                $file = $request->file('profile_picture');
-                $ext = $file->getClientOriginalExtension();
-                $randomStr = 'teacher' . date('dmYHis') . Str::random(20);
-                $fileName = strtolower($randomStr) . '.' . $ext;
-
-                // Supprimer l'ancienne photo si elle existe
-                if (!empty($teacher->profile_picture)) {
-                    $oldPath = public_path('upload/profile/' . $teacher->profile_picture);
-                    if (file_exists($oldPath)) {
-                        unlink($oldPath);
-                    }
-                }
-
-                // Déplacer la nouvelle photo
-                $file->move(public_path('upload/profile/'), $fileName);
-                $teacher->profile_picture = $fileName;
+                UploadService::delete($teacher->profile_picture);
+                $teacher->profile_picture = UploadService::upload($request->file('profile_picture'), UploadService::profileFolder(), 'teacher');
             }
 
             $teacher->save();
@@ -270,22 +230,8 @@ class UserController extends Controller
             }
 
             if ($request->hasFile('profile_picture')) {
-                $file = $request->file('profile_picture');
-                $ext = $file->getClientOriginalExtension();
-                $randomStr = 'student' . date('dmYHis') . Str::random(20);
-                $fileName = strtolower($randomStr) . '.' . $ext;
-
-                // Supprimer l'ancienne photo si elle existe
-                if (!empty($student->profile_picture)) {
-                    $oldPath = public_path('upload/profile/' . $student->profile_picture);
-                    if (file_exists($oldPath)) {
-                        unlink($oldPath);
-                    }
-                }
-
-                // Déplacer la nouvelle photo
-                $file->move(public_path('upload/profile/'), $fileName);
-                $student->profile_picture = $fileName;
+                UploadService::delete($student->profile_picture);
+                $student->profile_picture = UploadService::upload($request->file('profile_picture'), UploadService::profileFolder(), 'student');
             }
 
             $student->blood_group = trim($request->blood_group);
@@ -341,22 +287,8 @@ class UserController extends Controller
             }
 
             if ($request->hasFile('profile_picture')) {
-                $file = $request->file('profile_picture');
-                $ext = $file->getClientOriginalExtension();
-                $randomStr = 'parent' . date('dmYHis') . Str::random(20);
-                $fileName = strtolower($randomStr) . '.' . $ext;
-
-                // Supprimer l'ancienne photo si elle existe
-                if (!empty($parent->profile_picture)) {
-                    $oldPath = public_path('upload/profile/' . $parent->profile_picture);
-                    if (file_exists($oldPath)) {
-                        unlink($oldPath);
-                    }
-                }
-
-                // Déplacer la nouvelle photo
-                $file->move(public_path('upload/profile/'), $fileName);
-                $parent->profile_picture = $fileName;
+                UploadService::delete($parent->profile_picture);
+                $parent->profile_picture = UploadService::upload($request->file('profile_picture'), UploadService::profileFolder(), 'parent');
             }
 
             $parent->save();
@@ -387,7 +319,7 @@ class UserController extends Controller
         ]);
 
         try {
-            $user = User::getSingle((int) $request->id);
+            $user = User::getSingle($request->id);
             if (!$user) {
                 return response()->json(['success' => false, 'message' => 'Utilisateur introuvable.'], 404);
             }
@@ -440,7 +372,7 @@ class UserController extends Controller
             $failCount    = 0;
 
             foreach ($request->ids as $userId) {
-                $user = User::find((int) $userId);
+                $user = User::find($userId);
                 if (!$user) {
                     $failCount++;
                     continue;
@@ -743,35 +675,17 @@ class UserController extends Controller
                     }
                 }
 
-                // Upload image de fond
+                // Upload image/vidéo de fond (Supabase Storage)
                 if ($request->hasFile('auth_bg_image')) {
-                    $file     = $request->file('auth_bg_image');
-                    $ext      = $file->getClientOriginalExtension();
-                    $fileName = 'auth_bg_' . date('dmYHis') . Str::random(8) . '.' . $ext;
-                    $uploadDir = public_path('upload/setting/');
-                    if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
-                    // Supprimer l'ancien fichier si c'est un fichier local
-                    if (!empty($setting->auth_bg_value) && !str_starts_with($setting->auth_bg_value, 'http')) {
-                        $oldPath = public_path('upload/setting/' . $setting->auth_bg_value);
-                        if (file_exists($oldPath)) unlink($oldPath);
-                    }
-                    $file->move($uploadDir, $fileName);
-                    $setting->auth_bg_value = url('upload/setting/' . $fileName);
+                    UploadService::delete(basename($setting->auth_bg_value ?? ''));
+                    $path = UploadService::upload($request->file('auth_bg_image'), UploadService::settingFolder(), 'auth_bg');
+                    $setting->auth_bg_value = UploadService::url($path);
                     $setting->auth_bg_type  = 'image';
                 }
-                // Upload vidéo de fond
                 elseif ($request->hasFile('auth_bg_video')) {
-                    $file     = $request->file('auth_bg_video');
-                    $ext      = $file->getClientOriginalExtension();
-                    $fileName = 'auth_bg_vid_' . date('dmYHis') . Str::random(8) . '.' . $ext;
-                    $uploadDir = public_path('upload/setting/');
-                    if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
-                    if (!empty($setting->auth_bg_value) && !str_starts_with($setting->auth_bg_value, 'http')) {
-                        $oldPath = public_path('upload/setting/' . basename($setting->auth_bg_value));
-                        if (file_exists($oldPath)) unlink($oldPath);
-                    }
-                    $file->move($uploadDir, $fileName);
-                    $setting->auth_bg_value = url('upload/setting/' . $fileName);
+                    UploadService::delete(basename($setting->auth_bg_value ?? ''));
+                    $path = UploadService::upload($request->file('auth_bg_video'), UploadService::settingFolder(), 'auth_bg_vid');
+                    $setting->auth_bg_value = UploadService::url($path);
                     $setting->auth_bg_type  = 'video';
                 }
                 elseif ($request->has('auth_bg_value') && $request->filled('auth_bg_value')) {
@@ -785,47 +699,14 @@ class UserController extends Controller
                     $setting->auth_bg_overlay = trim($request->auth_bg_overlay ?? 'rgba(0,0,0,0.35)');
                 }
 
-                $uploadDir = public_path('upload/setting/');
-                if (!is_dir($uploadDir)) {
-                    mkdir($uploadDir, 0755, true);
-                }
-
                 if ($request->hasFile('favicon')) {
-                    $file = $request->file('favicon');
-                    $ext = $file->getClientOriginalExtension();
-                    $randomStr = 'favicon' . date('dmYHis') . Str::random(20);
-                    $fileName = strtolower($randomStr) . '.' . $ext;
-
-                    // Supprimer l'ancienne photo si elle existe
-                    if (!empty($setting->favicon)) {
-                        $oldPath = public_path('upload/setting/' . $setting->favicon);
-                        if (file_exists($oldPath)) {
-                            unlink($oldPath);
-                        }
-                    }
-
-                    // Déplacer la nouvelle photo
-                    $file->move($uploadDir, $fileName);
-                    $setting->favicon = $fileName;
+                    UploadService::delete($setting->favicon);
+                    $setting->favicon = UploadService::upload($request->file('favicon'), UploadService::settingFolder(), 'favicon');
                 }
 
                 if ($request->hasFile('logo')) {
-                    $file = $request->file('logo');
-                    $ext = $file->getClientOriginalExtension();
-                    $randomStr = 'logo' . date('dmYHis') . Str::random(20);
-                    $fileName = strtolower($randomStr) . '.' . $ext;
-
-                    // Supprimer l'ancienne photo si elle existe
-                    if (!empty($setting->logo)) {
-                        $oldPath = public_path('upload/setting/' . $setting->logo);
-                        if (file_exists($oldPath)) {
-                            unlink($oldPath);
-                        }
-                    }
-
-                    // Déplacer la nouvelle photo
-                    $file->move($uploadDir, $fileName);
-                    $setting->logo = $fileName;
+                    UploadService::delete($setting->logo);
+                    $setting->logo = UploadService::upload($request->file('logo'), UploadService::settingFolder(), 'logo');
                 }
 
                 $setting->save();

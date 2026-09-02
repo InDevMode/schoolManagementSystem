@@ -63,22 +63,12 @@ class SettingModel extends Model
 
     public function getFavicon(): string
     {
-        $path = public_path('upload/setting/' . $this->favicon);
-        if (!empty($this->favicon) && file_exists($path)) {
-            return url('upload/setting/' . $this->favicon);
-        }
-        // Image par défaut si rien n'existe
-        return url('upload/favicon.png');
+        return \App\Services\UploadService::url($this->favicon, asset('upload/favicon.png'));
     }
 
     public function getLogo(): string
     {
-        $path = public_path('upload/setting/' . $this->logo);
-        if (!empty($this->logo) && file_exists($path)) {
-            return url('upload/setting/' . $this->logo);
-        }
-        // Image par défaut si rien n'existe
-        return url('upload/logo.png');
+        return \App\Services\UploadService::url($this->logo, asset('upload/logo.png'));
     }
 
 

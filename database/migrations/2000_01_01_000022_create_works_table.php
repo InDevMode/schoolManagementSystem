@@ -4,26 +4,22 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-/**
- * Table works — travaux assignés aux classes (devoirs de cours).
- * Fusionne : create_works + add_soft_delete_fields
- */
 return new class extends Migration
 {
     public function up(): void
     {
         Schema::create('works', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('class_id')->nullable();
-            $table->unsignedBigInteger('subject_id')->nullable();
+            $table->uuid('id')->primary();
+            $table->uuid('class_id')->nullable();
+            $table->uuid('subject_id')->nullable();
             $table->date('work_date')->nullable();
             $table->date('submission_date')->nullable();
             $table->string('document_file')->nullable();
             $table->longText('description')->nullable();
-            $table->tinyInteger('is_delete')->default(0)->comment('0: actif, 1: supprimé');
+            $table->smallInteger('is_delete')->default(0)->comment('0: actif, 1: supprimé');
             $table->timestamp('deleted_at')->nullable();
-            $table->unsignedInteger('deleted_by')->nullable();
-            $table->unsignedBigInteger('created_by')->nullable();
+            $table->uuid('deleted_by')->nullable();
+            $table->uuid('created_by')->nullable();
             $table->timestamps();
 
             $table->foreign('class_id')->references('id')->on('class')->onDelete('cascade');

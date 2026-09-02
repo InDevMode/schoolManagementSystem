@@ -13,7 +13,7 @@ use App\Notifications\NewHomeworkNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Str;
+use App\Services\UploadService;
 use Inertia\Inertia;
 
 class WorkController extends Controller
@@ -29,28 +29,19 @@ class WorkController extends Controller
      * @param  int  $workId
      * @param  string  $prefix
      */
-    private function saveAttachments(array $files, int $workId, string $prefix = 'homework'): void
+    private function saveAttachments(array $files, string $workId, string $prefix = 'homework'): void
     {
         foreach ($files as $file) {
             if (!$file->isValid()) continue;
 
-            // Capturer toutes les métadonnées AVANT le move() car le fichier
-            // temporaire est supprimé dès que move() est appelé.
-            $originalName = $file->getClientOriginalName();
-            $ext          = $file->getClientOriginalExtension();
-            $fileSize     = $file->getSize();
-            $original     = pathinfo($originalName, PATHINFO_FILENAME);
-            $slug         = Str::slug(mb_substr($original, 0, 40));
-            $fileName     = $prefix . '_' . date('dmYHis') . '_' . Str::random(8) . '_' . $slug . '.' . $ext;
-
-            $file->move(public_path('upload/practicalworks'), $fileName);
+            $meta = UploadService::uploadAttachment($file, UploadService::worksFolder(), $prefix);
 
             WorkAttachmentModel::create([
                 'work_id'   => $workId,
-                'file_name' => $originalName,
-                'file_path' => $fileName,
-                'file_ext'  => strtolower($ext),
-                'file_size' => $fileSize,
+                'file_name' => $meta['original_name'],
+                'file_path' => $meta['path'],
+                'file_ext'  => $meta['ext'],
+                'file_size' => $meta['size'],
             ]);
         }
     }
@@ -159,20 +150,16 @@ class WorkController extends Controller
 
         try {
             $work                  = new WorkModel();
-            $work->class_id        = intval($request->class_id);
-            $work->subject_id      = intval($request->subject_id);
+            $work->class_id        = $request->class_id;
+            $work->subject_id      = $request->subject_id;
             $work->work_date       = trim($request->work_date);
             $work->submission_date = trim($request->submission_date);
             $work->description     = trim($request->description ?? '');
             $work->created_by      = Auth::user()->id;
 
-            // Compatibilité ascendante — fichier unique legacy
+            // Fichier unique legacy (admin create)
             if ($request->hasFile('document_file')) {
-                $f        = $request->file('document_file');
-                $ext      = $f->getClientOriginalExtension();
-                $fileName = strtolower('homework_admin' . date('dmYhis') . Str::random(20)) . '.' . $ext;
-                $f->move('upload/practicalworks/', $fileName);
-                $work->document_file = $fileName;
+                $work->document_file = UploadService::upload($request->file('document_file'), UploadService::worksFolder(), 'homework_admin');
             }
 
             $work->save();
@@ -245,19 +232,16 @@ class WorkController extends Controller
                 return redirect()->back()->with('error', 'Vous ne pouvez modifier que vos propres travaux.');
             }
 
-            $work->class_id        = intval($request->class_id);
-            $work->subject_id      = intval($request->subject_id);
+            $work->class_id        = $request->class_id;
+            $work->subject_id      = $request->subject_id;
             $work->work_date       = trim($request->work_date);
             $work->submission_date = trim($request->submission_date);
             $work->description     = trim($request->description ?? '');
 
-            // Fichier unique legacy
+            // Fichier unique legacy (admin update)
             if ($request->hasFile('document_file')) {
-                $f        = $request->file('document_file');
-                $ext      = $f->getClientOriginalExtension();
-                $fileName = strtolower('homework_admin' . date('dmYhis') . Str::random(20)) . '.' . $ext;
-                $f->move('upload/practicalworks/', $fileName);
-                $work->document_file = $fileName;
+                UploadService::delete($work->document_file);
+                $work->document_file = UploadService::upload($request->file('document_file'), UploadService::worksFolder(), 'homework_admin');
             }
 
             $work->save();
@@ -438,19 +422,16 @@ class WorkController extends Controller
 
         try {
             $work                  = new WorkModel();
-            $work->class_id        = intval($request->class_id);
-            $work->subject_id      = intval($request->subject_id);
+            $work->class_id        = $request->class_id;
+            $work->subject_id      = $request->subject_id;
             $work->work_date       = trim($request->work_date);
             $work->submission_date = trim($request->submission_date);
             $work->description     = trim($request->description ?? '');
             $work->created_by      = Auth::user()->id;
 
             if ($request->hasFile('document_file')) {
-                $f        = $request->file('document_file');
-                $ext      = $f->getClientOriginalExtension();
-                $fileName = strtolower('homework_teacher' . date('dmYhis') . Str::random(20)) . '.' . $ext;
-                $f->move('upload/practicalworks/', $fileName);
-                $work->document_file = $fileName;
+                UploadService::delete($work->document_file ?? null);
+                $work->document_file = UploadService::upload($request->file('document_file'), UploadService::worksFolder(), 'homework_teacher');
             }
 
             $work->save();
@@ -523,18 +504,15 @@ class WorkController extends Controller
                 return redirect()->back()->with('error', 'Travail introuvable ou vous n\'êtes pas autorisé à le modifier.');
             }
 
-            $work->class_id        = intval($request->class_id);
-            $work->subject_id      = intval($request->subject_id);
+            $work->class_id        = $request->class_id;
+            $work->subject_id      = $request->subject_id;
             $work->work_date       = trim($request->work_date);
             $work->submission_date = trim($request->submission_date);
             $work->description     = trim($request->description ?? '');
 
             if ($request->hasFile('document_file')) {
-                $f        = $request->file('document_file');
-                $ext      = $f->getClientOriginalExtension();
-                $fileName = strtolower('homework_teacher' . date('dmYhis') . Str::random(20)) . '.' . $ext;
-                $f->move('upload/practicalworks/', $fileName);
-                $work->document_file = $fileName;
+                UploadService::delete($work->document_file ?? null);
+                $work->document_file = UploadService::upload($request->file('document_file'), UploadService::worksFolder(), 'homework_teacher');
             }
 
             $work->save();
@@ -679,17 +657,13 @@ class WorkController extends Controller
 
         try {
             $homework             = new HomeworkModel();
-            $homework->work_id    = intval($work_id);
+            $homework->work_id    = $work_id;
             $homework->student_id = Auth::user()->id;
             $homework->description = trim($request->description ?? '');
             $homework->status     = 'submitted';
 
             if ($request->hasFile('document_file')) {
-                $f        = $request->file('document_file');
-                $ext      = $f->getClientOriginalExtension();
-                $fileName = strtolower('homework_student' . date('dmYhis') . Str::random(20)) . '.' . $ext;
-                $f->move('upload/homeworks/', $fileName);
-                $homework->document_file = $fileName;
+                $homework->document_file = UploadService::upload($request->file('document_file'), UploadService::homeworksFolder(), 'homework_student');
             }
 
             $homework->save();

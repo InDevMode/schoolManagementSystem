@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class NoticeBoardMessageModel extends Model
 {
-    use HasFactory;
+    use HasFactory, HasUuids;
 
     protected $table = 'noticeboard_messages';
 
@@ -21,7 +22,7 @@ class NoticeBoardMessageModel extends Model
         '',
     ];
 
-    public static function deleteNoticeBoardMessage(int $id){
+    public static function deleteNoticeBoardMessage(string $id){
         return NoticeBoardMessageModel::where('communicates_id', $id)->delete();
     }
 
@@ -41,7 +42,7 @@ class NoticeBoardMessageModel extends Model
         return NoticeBoardMessageModel::where('message_to', 4)->count();
     }
 
-    public static function getNoticeBoardMessage(int $user_id, int $message_to){
+    public static function getNoticeBoardMessage(string $user_id, int $message_to){
         return NoticeBoardMessageModel::select('noticeboard_messages.*', 'communicates.message')
             ->join('communicates', 'communicates.id', '=', 'noticeboard_messages.communicates_id')
             ->where('noticeboard_messages.message_to', $message_to)

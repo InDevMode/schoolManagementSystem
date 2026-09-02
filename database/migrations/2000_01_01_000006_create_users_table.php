@@ -5,9 +5,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 /**
- * Table users — version consolidée avec toutes les colonnes finales.
- * Fusionne toutes les migrations add_*_to_users_table en un seul fichier.
- *
+ * Table users — version UUID consolidée.
  * user_type : 0 = super_admin, 1 = admin, 2 = teacher, 3 = student, 4 = parent
  */
 return new class extends Migration
@@ -16,7 +14,7 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             // ── Identité ────────────────────────────────────────────────────
-            $table->id();
+            $table->uuid('id')->primary();
             $table->string('name');
             $table->string('last_name')->nullable();
             $table->string('email')->unique();
@@ -25,15 +23,15 @@ return new class extends Migration
             $table->rememberToken();
 
             // ── Type & accès ────────────────────────────────────────────────
-            $table->tinyInteger('user_type')->default(1)
+            $table->smallInteger('user_type')->default(1)
                   ->comment('0:super_admin 1:admin 2:teacher 3:student 4:parent');
-            $table->tinyInteger('status')->default(0)->comment('0: Inactive, 1: Active');
-            $table->tinyInteger('must_change_password')->default(0)
+            $table->smallInteger('status')->default(0)->comment('0: Inactive, 1: Active');
+            $table->smallInteger('must_change_password')->default(0)
                   ->comment('1 = doit changer son MDP à la prochaine connexion');
-            $table->tinyInteger('is_delete')->default(0)->comment('0: actif, 1: supprimé');
+            $table->smallInteger('is_delete')->default(0)->comment('0: actif, 1: supprimé');
 
             // ── Multi-tenant ────────────────────────────────────────────────
-            $table->unsignedBigInteger('school_id')->nullable()
+            $table->uuid('school_id')->nullable()
                   ->comment('FK → schools.id — null pour le super admin');
 
             // ── Profil personnel ────────────────────────────────────────────
@@ -52,9 +50,9 @@ return new class extends Migration
             $table->string('admission_number')->nullable();
             $table->date('admission_date')->nullable();
             $table->string('roll_number')->nullable();
-            $table->unsignedBigInteger('class_id')->nullable()
+            $table->uuid('class_id')->nullable()
                   ->comment('Pour les étudiants — FK vers class.id');
-            $table->unsignedBigInteger('parent_id')->nullable()
+            $table->uuid('parent_id')->nullable()
                   ->comment('Pour les étudiants — FK vers users.id (parent)');
 
             // ── Professionnel / RH ──────────────────────────────────────────
@@ -70,7 +68,7 @@ return new class extends Migration
             $table->string('provider_id')->nullable();
 
             // ── Audit ───────────────────────────────────────────────────────
-            $table->unsignedBigInteger('created_by')->nullable();
+            $table->uuid('created_by')->nullable();
             $table->timestamp('last_login')->nullable();
 
             $table->timestamps();
@@ -80,10 +78,20 @@ return new class extends Migration
             $table->index('user_type');
             $table->index(['school_id', 'user_type']);
         });
+
+        // FK après création (users se référence elle-même pour parent_id)
+        Schema::table('users', function (Blueprint $table) {
+            $table->foreign('school_id')->references('id')->on('schools')->onDelete('set null');
+            $table->foreign('parent_id')->references('id')->on('users')->onDelete('set null');
+        });
     }
 
     public function down(): void
     {
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropForeign(['school_id']);
+            $table->dropForeign(['parent_id']);
+        });
         Schema::dropIfExists('users');
     }
 };

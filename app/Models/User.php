@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -13,7 +14,7 @@ use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable, HasRoles;
+    use HasApiTokens, HasFactory, HasUuids, Notifiable, HasRoles;
 
     protected $table = 'users';
 
@@ -88,12 +89,12 @@ class User extends Authenticatable
 
     // ── Helpers ───────────────────────────────────────────────────────────────
 
-    public static function getSingle(int $id)
+    public static function getSingle(string $id)
     {
         return User::find($id);
     }
 
-    public static function getAllAdmin(int $perPage, ?int $schoolId = null)
+    public static function getAllAdmin(int $perPage, ?string $schoolId = null)
     {
         $results = User::select('users.*')
             ->where('user_type', '=', 1);
@@ -123,7 +124,7 @@ class User extends Authenticatable
         }
 
         return $results->where('is_delete', '=', 0)
-            ->orderBy('id', 'desc')
+            ->orderBy('created_at', 'desc')
             ->paginate($perPage);
     }
 
@@ -132,7 +133,7 @@ class User extends Authenticatable
         return User::where('email', '=', $email)->first();
     }
 
-    public static function checkEmailSingle(string $email, int $id)
+    public static function checkEmailSingle(string $email, string $id)
     {
         return User::where('email', $email)->where('id', '!=', $id)->first();
     }
@@ -283,19 +284,15 @@ class User extends Authenticatable
         }
 
         return $results->where('users.is_delete', '=', 0)
-            ->orderBy('users.id', 'desc')
-            ->groupBy('users.id')
-            ->paginate($perPage);
+            ->orderBy('users.created_at', 'desc')->paginate($perPage);
     }
 
     public function getProfile(): string
     {
-        $path = public_path('upload/profile/' . $this->profile_picture);
-        if (!empty($this->profile_picture) && file_exists($path)) {
-            return url('upload/profile/' . $this->profile_picture);
-        }
-        // Image par défaut si rien n'existe
-        return url('upload/default.jpg');
+        return \App\Services\UploadService::url(
+            $this->profile_picture,
+            asset('upload/default.jpg')
+        );
     }
 
     public static function getStudentList(int $perPage)
@@ -329,7 +326,7 @@ class User extends Authenticatable
             ->paginate($perPage);
     }
 
-    public static function getMyStudent(int $perPage, int $parent_id, )
+    public static function getMyStudent(int $perPage, string $parent_id, )
     {
         $results = User::select(
             'users.*',
@@ -379,9 +376,7 @@ class User extends Authenticatable
         }
 
         return $results->where('users.is_delete', '=', 0)
-            ->orderBy('users.id', 'desc')
-            ->groupBy('users.id')
-            ->paginate($perPage);
+            ->orderBy('users.created_at', 'desc')->paginate($perPage);
     }
 
     public static function getTeacher()
@@ -393,7 +388,7 @@ class User extends Authenticatable
             ->get();
     }
 
-    public static function getTeacherStudent(int $perPage, int $teacher_id)
+    public static function getTeacherStudent(int $perPage, string $teacher_id)
     {
         $results = User::select('users.*', 'class.name as class_name')
             ->join('class', 'class.id', '=', 'users.class_id')
@@ -438,7 +433,7 @@ class User extends Authenticatable
             ->paginate($perPage);
     }
 
-    public static function getStudent(int $class_id)
+    public static function getStudent(string $class_id)
     {
         return User::select('users.*', 'class.name as class_name', 'parent.name as parent_name', 'parent.last_name as parent_last_name')
             ->join('class', 'class.id', '=', 'users.class_id')
@@ -451,7 +446,7 @@ class User extends Authenticatable
             ->get();
     }
 
-    public static function getAttendance(int $student_id, int $class_id, string $date)
+    public static function getAttendance(string $student_id, string $class_id, string $date)
     {
         return StudentAttendanceModel::checkAlreadyAttendance($student_id, $class_id, $date);
     }
@@ -491,7 +486,7 @@ class User extends Authenticatable
      * Utilisateurs d'un type donné scopés par école.
      * Si $schoolId est null (super admin), retourne tous les utilisateurs du type.
      */
-    public static function getUserByUserTypeAndSchool(int $user_type, ?int $schoolId): \Illuminate\Database\Eloquent\Collection
+    public static function getUserByUserTypeAndSchool(int $user_type, ?string $schoolId): \Illuminate\Database\Eloquent\Collection
     {
         $q = User::select('users.*')
             ->where('user_type', $user_type)
@@ -615,7 +610,7 @@ class User extends Authenticatable
             ->first();
     }
 
-    public static function getSingleClass(int $id)
+    public static function getSingleClass(string $id)
     {
         return User::select('users.*', 'class.name as class_name', 'class.amount as class_amount')
             ->join('class', 'class.id', '=', 'users.class_id')
@@ -623,7 +618,7 @@ class User extends Authenticatable
             ->first();
     }
 
-    public static function getTotalUserWithUserType(int $user_type, ?int $schoolId = null)
+    public static function getTotalUserWithUserType(int $user_type, ?string $schoolId = null)
     {
         $q = User::select('users.id')
             ->where('user_type', $user_type)
@@ -636,7 +631,7 @@ class User extends Authenticatable
         return $q->count();
     }
 
-    public static function getTotalUser(?int $schoolId = null)
+    public static function getTotalUser(?string $schoolId = null)
     {
         $q = User::select('users.id')->where('is_delete', 0);
 
@@ -704,14 +699,14 @@ class User extends Authenticatable
         return $class_ids;
     }
 
-    public static function updateLastLogin(int $sender_id)
+    public static function updateLastLogin(string $sender_id)
     {
         return User::where('id', $sender_id)->update([
             'last_login' => now(),
         ]);
     }
 
-    public static function getStudentData(int $student_id)
+    public static function getStudentData(string $student_id)
     {
         return User::select('users.*', 'class.name as class_name', 'parent.name as parent_name', 'parent.last_name as parent_last_name')
             ->join('class', 'class.id', '=', 'users.class_id')
@@ -745,7 +740,7 @@ class User extends Authenticatable
         }
 
         return $results->where('is_delete', '=', 0)
-            ->orderBy('id', 'asc')
+            ->orderBy('created_at', 'asc')
             ->get();
     }
 
@@ -845,9 +840,7 @@ class User extends Authenticatable
         }
 
         return $results->where('users.is_delete', '=', 0)
-            ->orderBy('users.id', 'asc')
-            ->groupBy('users.id')
-            ->get();
+            ->orderBy('users.created_at', 'asc')->get();
     }
 
     public static function getAllParentList()

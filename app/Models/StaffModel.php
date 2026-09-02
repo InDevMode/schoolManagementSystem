@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
@@ -16,7 +17,7 @@ use Illuminate\Support\Facades\Request;
  */
 class StaffModel extends Model
 {
-    use HasFactory;
+    use HasFactory, HasUuids;
 
     protected $table = 'staff';
 
@@ -38,7 +39,7 @@ class StaffModel extends Model
         'other'      => 'Autre',
     ];
 
-    public static function getSingle(int $id): ?self
+    public static function getSingle(string $id): ?self
     {
         return self::find($id);
     }
@@ -46,7 +47,7 @@ class StaffModel extends Model
     /**
      * Vérifie si un user a déjà une fiche staff
      */
-    public static function getByUserId(int $user_id): ?self
+    public static function getByUserId(string $user_id): ?self
     {
         return self::where('user_id', $user_id)->where('is_delete', 0)->first();
     }

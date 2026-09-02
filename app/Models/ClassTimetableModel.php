@@ -3,13 +3,14 @@
 namespace App\Models;
 
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 
 class ClassTimetableModel extends Model
 {
-    use HasFactory;
+    use HasFactory, HasUuids;
 
     protected $table = 'class_timetable';
 
@@ -25,7 +26,7 @@ class ClassTimetableModel extends Model
     protected $hidden = [
     ];
 
-    public static function getClassTimetable(int $class_id, int $subject_id, int $week_id)
+    public static function getClassTimetable(string $class_id, string $subject_id, int $week_id)
     {
         return ClassTimetableModel::where('class_id', '=', $class_id)
             ->where('subject_id', '=', $subject_id)
@@ -34,7 +35,7 @@ class ClassTimetableModel extends Model
             ->first();
     }
 
-    public static function getSubject(int $class_id)
+    public static function getSubject(string $class_id)
     {
         return ClassSubjectModel::select(
             'class_subject.id',

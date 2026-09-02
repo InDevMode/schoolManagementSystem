@@ -56,6 +56,20 @@ return [
             'throw' => false,
         ],
 
+        // ── Supabase Storage (API S3-compatible) ──────────────────────────────
+        'supabase' => [
+            'driver'                  => 's3',
+            'key'                     => env('SUPABASE_S3_KEY'),
+            'secret'                  => env('SUPABASE_S3_SECRET'),
+            'region'                  => env('SUPABASE_S3_REGION', 'eu-central-1'),
+            'bucket'                  => env('SUPABASE_S3_BUCKET', 'schoolms'),
+            'endpoint'                => env('SUPABASE_S3_ENDPOINT'),
+            'use_path_style_endpoint' => true,
+            'url'                     => env('SUPABASE_STORAGE_URL'),
+            'visibility'              => 'public',
+            'throw'                   => true,
+        ],
+
     ],
 
     /*

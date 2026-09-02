@@ -2,7 +2,7 @@
 
 Système de gestion scolaire multi-établissements développé avec **Laravel 10**, **Vue 3**, **Inertia.js** et **Tailwind CSS**.
 
-Conçu pour gérer plusieurs écoles depuis une seule plateforme — chaque établissement dispose de ses propres données (utilisateurs, classes, matières, évaluations, bulletins, frais...) isolées des autres.
+Conçu pour héberger plusieurs écoles depuis une seule plateforme — chaque établissement dispose de ses propres données isolées (utilisateurs, classes, matières, évaluations, bulletins, frais) via un champ `school_id` (UUID) présent sur toutes les tables principales.
 
 ---
 
@@ -10,9 +10,9 @@ Conçu pour gérer plusieurs écoles depuis une seule plateforme — chaque éta
 
 1. [Stack technique](#1-stack-technique)
 2. [Prérequis](#2-prérequis)
-3. [Installation](#3-installation)
-4. [Configuration](#4-configuration)
-5. [Base de données](#5-base-de-données)
+3. [Installation locale](#3-installation-locale)
+4. [Configuration Supabase (PostgreSQL)](#4-configuration-supabase-postgresql)
+5. [Base de données — migrations et seed](#5-base-de-données--migrations-et-seed)
 6. [Lancer le projet](#6-lancer-le-projet)
 7. [Comptes de démo](#7-comptes-de-démo)
 8. [Architecture du projet](#8-architecture-du-projet)
@@ -22,10 +22,11 @@ Conçu pour gérer plusieurs écoles depuis une seule plateforme — chaque éta
 12. [Structure des seeders](#12-structure-des-seeders)
 13. [Variables d'environnement](#13-variables-denvironnement)
 14. [Commandes artisan utiles](#14-commandes-artisan-utiles)
-15. [Paiements en ligne](#15-paiements-en-ligne)
-16. [Authentification sociale](#16-authentification-sociale)
-17. [Emails](#17-emails)
-18. [Contribuer](#18-contribuer)
+15. [Déploiement (Railway + Supabase)](#15-déploiement-railway--supabase)
+16. [Paiements en ligne](#16-paiements-en-ligne)
+17. [Authentification sociale](#17-authentification-sociale)
+18. [Emails](#18-emails)
+19. [Résolution de problèmes fréquents](#19-résolution-de-problèmes-fréquents)
 
 ---
 
@@ -37,25 +38,26 @@ Conçu pour gérer plusieurs écoles depuis une seule plateforme — chaque éta
 | Frontend | Vue 3 + Inertia.js | Vue 3.5 / Inertia 2.0 |
 | CSS | Tailwind CSS + Flowbite | 3.x |
 | Build | Vite | 5.x |
-| Base de données | MySQL | 8.0+ |
-| Auth & RBAC | Laravel Sanctum + Spatie Permission | Sanctum 3.3 / Spatie 6.x |
+| Base de données | **PostgreSQL** (Supabase) | 15+ |
+| Identifiants | **UUID v4** sur toutes les tables | — |
+| Auth & RBAC | Spatie Laravel Permission | 6.x |
 | Exports | Maatwebsite Excel | 3.1 |
 | Paiements | KkiaPay · Stripe · FedaPay · PayPal | — |
 | Auth sociale | Laravel Socialite | 5.x |
 | Éditeur riche | TipTap | 3.x |
 | Langage | PHP 8.1+ / TypeScript | — |
 
+> **Important** : ce projet utilise **PostgreSQL** exclusivement. MySQL n'est plus supporté depuis la migration vers UUID v4.
+
 ---
 
 ## 2. Prérequis
 
-Avant de cloner le projet, assurez-vous d'avoir installé :
-
-- **PHP** ≥ 8.1 avec les extensions : `pdo_mysql`, `mbstring`, `openssl`, `tokenizer`, `xml`, `ctype`, `json`, `bcmath`, `fileinfo`
+- **PHP** ≥ 8.1 avec les extensions : `pdo_pgsql`, `mbstring`, `openssl`, `tokenizer`, `xml`, `ctype`, `json`, `bcmath`, `fileinfo`
 - **Composer** ≥ 2.x → [getcomposer.org](https://getcomposer.org)
 - **Node.js** ≥ 18.x et **npm** ≥ 9.x → [nodejs.org](https://nodejs.org)
-- **MySQL** ≥ 8.0 (ou MariaDB ≥ 10.6)
 - **Git** → [git-scm.com](https://git-scm.com)
+- Un projet **Supabase** (gratuit) → [supabase.com](https://supabase.com)
 
 Vérifier les versions :
 
@@ -64,12 +66,11 @@ php --version
 composer --version
 node --version
 npm --version
-mysql --version
 ```
 
 ---
 
-## 3. Installation
+## 3. Installation locale
 
 ### Étape 1 — Cloner le dépôt
 
@@ -84,7 +85,10 @@ cd schoolManagementSystem
 composer install
 ```
 
-> Si vous êtes en production, utilisez `composer install --no-dev --optimize-autoloader`
+En production :
+```bash
+composer install --no-dev --optimize-autoloader
+```
 
 ### Étape 3 — Installer les dépendances JavaScript
 
@@ -92,71 +96,31 @@ composer install
 npm install
 ```
 
-### Étape 4 — Déchiffrer le fichier d'environnement
+### Étape 4 — Créer le fichier d'environnement
 
-Ce projet ne contient pas de `.env.example`. Le fichier `.env` est distribué sous forme chiffrée (`.env.encrypted`) et versionné dans le dépôt.
-
-Pour le déchiffrer, demandez la **clé de déchiffrement** au responsable du projet, puis exécutez :
+Copiez le fichier d'exemple :
 
 ```bash
-php artisan env:decrypt --key=LA_CLE_FOURNIE_PAR_LE_RESPONSABLE
+cp .env.example .env
 ```
 
-Cela génère le fichier `.env` à la racine du projet.
-
-> **Important** : La clé de déchiffrement est **fixe** — c'est celle qui a servi à chiffrer le fichier `.env.encrypted`. Générer une nouvelle clé avec `php artisan key:generate` ne permettra **pas** de déchiffrer ce fichier. La clé du `.env.encrypted` est distincte de `APP_KEY`.
-
-> La clé de déchiffrement doit être transmise de façon sécurisée (message privé chiffré, gestionnaire de secrets, etc.) — jamais dans le dépôt Git.
-
-### Étape 5 — Vérifier la clé d'application
-
-Après le déchiffrement, la variable `APP_KEY` est déjà présente dans le `.env` généré. Si elle est vide pour une raison quelconque, régénérez-la :
+Puis générez la clé d'application :
 
 ```bash
 php artisan key:generate
 ```
 
-### Étape 6 — Créer la base de données
+### Étape 5 — Configurer la connexion Supabase
 
-Connectez-vous à MySQL et créez la base :
+Éditez `.env` avec les informations de votre base Supabase (voir [section 4](#4-configuration-supabase-postgresql)).
 
-```sql
-CREATE DATABASE schoolManagementSystem CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-```
-
-### Étape 7 — Configurer les variables d'environnement
-
-Éditez le fichier `.env` et renseignez au minimum :
-
-```env
-APP_NAME=schoolManagementSystem
-APP_URL=http://127.0.0.1:8000
-
-DB_CONNECTION=mysql
-DB_HOST=127.0.0.1
-DB_PORT=3306
-DB_DATABASE=schoolManagementSystem
-DB_USERNAME=root
-DB_PASSWORD=votre_mot_de_passe
-```
-
-### Étape 8 — Migrer et peupler la base de données
+### Étape 6 — Migrer et peupler la base
 
 ```bash
-php artisan migrate --seed
+php artisan migrate:fresh --seed
 ```
 
-Cette commande crée les 36 tables et insère toutes les données de démo en un seul appel.
-
-### Étape 9 — Publier les assets Spatie Permission
-
-```bash
-php artisan vendor:publish --provider="Spatie\Permission\PermissionServiceProvider"
-```
-
-> À faire **une seule fois** après le premier `composer install`. Le fichier `config/permission.php` est déjà présent dans le dépôt — cette commande met à jour les assets si la version du package change.
-
-### Étape 10 — Créer le lien symbolique storage
+### Étape 7 — Créer le lien symbolique storage
 
 ```bash
 php artisan storage:link
@@ -164,115 +128,129 @@ php artisan storage:link
 
 ---
 
-## 4. Configuration
+## Configuration Supabase Storage
 
-### Fichier `.env` — paramètres essentiels
+### 1. Créer le bucket
+
+Dans ton projet Supabase → **Storage** → **New bucket** :
+- Nom : `schoolms`
+- Accès : **Public**
+
+### 2. Obtenir les clés S3
+
+Supabase Storage expose une API S3-compatible. Dans **Settings → Storage → S3 Connection** :
+- Copie **Access Key ID** → `SUPABASE_S3_KEY`
+- Copie **Secret Access Key** → `SUPABASE_S3_SECRET`
+
+### 3. Renseigner le `.env`
 
 ```env
-# ── Application ──────────────────────────────────────────────
-APP_NAME=schoolManagementSystem
-APP_ENV=local          # local | production
-APP_DEBUG=true         # false en production
-APP_URL=http://127.0.0.1:8000
+FILESYSTEM_DISK=supabase
 
-# ── Base de données ───────────────────────────────────────────
-DB_CONNECTION=mysql
-DB_HOST=127.0.0.1
-DB_PORT=3306
-DB_DATABASE=schoolManagementSystem
-DB_USERNAME=root
-DB_PASSWORD=
-
-# ── Email (SMTP Gmail) ────────────────────────────────────────
-MAIL_MAILER=smtp
-MAIL_HOST=smtp.gmail.com
-MAIL_PORT=587
-MAIL_USERNAME=votre_email@gmail.com
-MAIL_PASSWORD=votre_mot_de_passe_application
-MAIL_ENCRYPTION=tls
-MAIL_FROM_ADDRESS=votre_email@gmail.com
-MAIL_FROM_NAME="${APP_NAME}"
-
-# ── Paiements (optionnel) ─────────────────────────────────────
-KKIAPAY_PUBLIC_KEY=
-KKIAPAY_PRIVATE_KEY=
-KKIAPAY_SECRET_KEY=
-STRIPE_PUBLIC_KEY=
-STRIPE_SECRET_KEY=
-FEDAPAY_PUBLIC_KEY=
-FEDAPAY_SECRET_KEY=
-
-# ── Auth sociale Google (optionnel) ───────────────────────────
-GOOGLE_CLIENT_ID=
-GOOGLE_CLIENT_SECRET=
-GOOGLE_REDIRECT_URI="${APP_URL}/auth/google/callback"
+SUPABASE_S3_KEY=ton_access_key_id
+SUPABASE_S3_SECRET=ton_secret_access_key
+SUPABASE_S3_REGION=eu-central-1
+SUPABASE_S3_BUCKET=schoolms
+SUPABASE_S3_ENDPOINT=https://ymyyjryfauneudznxetb.supabase.co/storage/v1/s3
+SUPABASE_STORAGE_URL=https://ymyyjryfauneudznxetb.supabase.co/storage/v1/object/public
 ```
 
-> **Note Gmail** : Pour `MAIL_PASSWORD`, générez un **mot de passe d'application** depuis les paramètres de sécurité de votre compte Google (l'authentification à deux facteurs doit être activée).
+### Organisation des dossiers dans le bucket
+
+| Dossier | Contenu |
+|---------|---------|
+| `profiles/` | Photos de profil (admins, profs, apprenants, parents) |
+| `schools/` | Logos et favicons des écoles |
+| `settings/` | Logo, favicon et backgrounds de la page de connexion |
+| `works/` | Pièces jointes des devoirs (admin/prof) |
+| `homeworks/` | Soumissions des apprenants |
+| `chats/` | Fichiers partagés dans le chat |
 
 ---
 
-## 5. Base de données
+### Obtenir les informations de connexion
+
+1. Connectez-vous sur [supabase.com](https://supabase.com)
+2. Ouvrez votre projet → **Settings → Database**
+3. Dans la section **Connection string**, choisissez **Direct connection** (pas le pooler — important pour les migrations)
+4. Copiez les paramètres
+
+### Variables `.env` à renseigner
+
+```env
+DB_CONNECTION=pgsql
+DB_HOST=db.xxxxxxxxxxxxxx.supabase.co
+DB_PORT=5432
+DB_DATABASE=postgres
+DB_USERNAME=postgres
+DB_PASSWORD=votre_mot_de_passe_supabase
+DB_SSLMODE=require
+```
+
+> **DB_SSLMODE=require** est obligatoire sur Supabase en production. En développement local avec PostgreSQL, utilisez `prefer`.
+
+### Pooler Supabase (pour l'application en production)
+
+En production sur Railway ou Render, utilisez le pooler PgBouncer de Supabase pour les connexions applicatives (port 6543) :
+
+```env
+DB_HOST=aws-0-xx-xxxx-x.pooler.supabase.com
+DB_PORT=6543
+DB_USERNAME=postgres.xxxxxxxxxxxxxx
+```
+
+> Pour les migrations (`php artisan migrate`), utilisez toujours la connexion directe (port 5432), pas le pooler.
+
+---
+
+## 5. Base de données — migrations et seed
 
 ### Lancer les migrations et le seed
 
 ```bash
-# Première installation
-php artisan migrate --seed
-
-# Repartir de zéro (développement uniquement — détruit toutes les données)
+# Première installation — crée toutes les tables et insère les données de démo
 php artisan migrate:fresh --seed
+
+# Ajouter de nouvelles migrations sans réinitialiser
+php artisan migrate --seed
 ```
 
 ### Lancer un seeder précis
 
 ```bash
-php artisan db:seed --class=MultiSchoolSeeder
+php artisan db:seed --class=EvaluationsSeeder
 ```
 
 ### Ordre des seeders
 
-Les seeders sont numérotés pour garantir l'ordre des dépendances :
-
 | # | Seeder | Contenu |
 |---|--------|---------|
-| 01 | `SettingsSeeder` | Configuration globale (id=1, requis par `periods`) |
-| 02 | `SchoolSeeder` | 3 écoles de démo (Lycée, Collège, Primaire) |
-| 03 | `RolesAndPermissionsSeeder` | 5 rôles + ~100 permissions Spatie |
-| 04 | `SuperAdminSeeder` | Compte super administrateur global |
-| 05 | `WeekSeeder` | 6 jours de la semaine (emploi du temps) |
-| 06 | `LeaveTypesSeeder` | 7 types de congés par défaut |
-| 07 | `MultiSchoolSeeder` | Admins, profs, apprenants, parents + classes + matières |
-| 08 | `PeriodsSeeder` | 3 trimestres 2025-2026 |
-| 09 | `StaffAndEventsSeeder` | Fiches personnel, demandes de congés, événements |
-| 10 | `EvaluationsSeeder` | Évaluations et notes de démo |
+| 1 | `SettingsSeeder` | Configuration globale (bigInt id=1, référencé par `periods.settings_id`) |
+| 2 | `SchoolSeeder` | 3 écoles de démo avec UUIDs fixes |
+| 3 | `RolesAndPermissionsSeeder` | 5 rôles + ~100 permissions Spatie |
+| 4 | `SuperAdminSeeder` | Compte super administrateur (UUID fixe) |
+| 5 | `WeekSeeder` | 6 jours de la semaine avec UUIDs fixes |
+| 6 | `LeaveTypesSeeder` | 7 types de congés par défaut |
+| 7 | `MultiSchoolSeeder` | Admins, profs, apprenants, parents + classes + matières + emploi du temps |
+| 8 | `PeriodsSeeder` | 3 trimestres 2025-2026 (globaux + scopés par école) |
+| 9 | `StaffAndEventsSeeder` | Fiches RH, demandes de congés, événements scolaires |
+| 10 | `EvaluationsSeeder` | Évaluations, notes, bulletins, présences, frais, devoirs, annonces |
 
-### Schéma simplifié des tables
+Chaque seeder est **idempotent** : il vérifie l'existence avant d'insérer et peut être relancé sans créer de doublons.
 
+### Note sur les UUIDs dans les seeders
+
+Toutes les insertions via `DB::table()->insert()` incluent un UUID explicite :
+
+```php
+DB::table('class')->insert([
+    'id'        => (string) Str::uuid(),
+    'school_id' => SchoolSeeder::LMC_ID,
+    // ...
+]);
 ```
-schools ──┬── users ──┬── class_teacher
-          │           ├── class_subject
-          │           ├── attendances
-          │           ├── feescollections
-          │           ├── staff
-          │           ├── grades
-          │           └── bulletins
-          │
-settings ─┴── periods ──┬── exams ── schedules
-                        ├── evaluations ── grades
-                        └── bulletins ── bulletin_subjects
 
-class ────┬── class_subject ── subject
-          ├── class_teacher
-          ├── class_timetable ── week
-          └── works ── homework
-                    └── work_attachments
-
-leave_types ── staff_leaves ── staff
-staff_events (indépendant)
-communicates ── noticeboard_messages
-chats, notifications, deletion_logs, marks_grade, marks_register
-```
+Les insertions via le modèle Eloquent (`User::firstOrCreate()`) bénéficient du trait `HasUuids` automatiquement.
 
 ---
 
@@ -284,7 +262,7 @@ chats, notifications, deletion_logs, marks_grade, marks_register
 ```bash
 php artisan serve
 ```
-> L'application est disponible sur `http://127.0.0.1:8000`
+L'application est disponible sur `http://127.0.0.1:8000`
 
 **Terminal 2 — Vite (hot reload)**
 ```bash
@@ -309,30 +287,28 @@ php artisan permission:cache-reset
 
 ### Scheduler (tâches planifiées)
 
-Pour activer les commandes planifiées (ex : réinitialisation des évaluations, envoi d'emails) :
-
 **Linux / Mac** — Ajouter au crontab :
 ```bash
 * * * * * cd /chemin/vers/le/projet && php artisan schedule:run >> /dev/null 2>&1
 ```
 
-**Windows** — Utiliser le fichier fourni :
+**Windows** — Exécuter périodiquement :
 ```bash
-run-scheduler.bat
+php artisan schedule:run
 ```
-Ou créer une tâche planifiée Windows pointant vers `php artisan schedule:run`.
+Ou créer une tâche planifiée Windows pointant vers ce script.
 
 ---
 
 ## 7. Comptes de démo
 
-Après `php artisan migrate --seed`, les comptes suivants sont disponibles :
+Après `php artisan migrate:fresh --seed` :
 
 ### Super Administrateur (accès global à toutes les écoles)
 
 | Champ | Valeur |
 |-------|--------|
-| Email | `superadmin@sms.local` |
+| Email | `schoolmanagementsystem00@gmail.com` |
 | Mot de passe | `SuperAdmin@2025` |
 | Rôle | `super_admin` |
 
@@ -346,15 +322,13 @@ Après `php artisan migrate --seed`, les comptes suivants sont disponibles :
 | Collège Saint-Michel | `admin@csm.bj` | `Admin@CSM2025` |
 | École Primaire Les Étoiles | `admin@epe.bj` | `Admin@EPE2025` |
 
-### Autres utilisateurs (même mot de passe pour tous)
+### Autres utilisateurs
 
 | Rôle | Exemple d'email | Mot de passe |
 |------|-----------------|--------------|
-| Professeur | `prof1@lmc.bj`, `prof2@lmc.bj`, ... | `Prof@1234` |
-| apprenant | `eleve1@lmc.bj`, `eleve2@lmc.bj`, ... | `Eleve@1234` |
+| Professeur | `prof1@lmc.bj`, `prof1@csm.bj`, `prof1@epe.bj` | `Prof@1234` |
+| Apprenant | `eleve1@lmc.bj`, `eleve2@lmc.bj`, ... | `Eleve@1234` |
 | Parent | `parent1@lmc.bj`, `parent2@lmc.bj`, ... | `Parent@1234` |
-
-> Les mêmes patterns s'appliquent aux écoles `@csm.bj` et `@epe.bj`.
 
 ---
 
@@ -364,216 +338,165 @@ Après `php artisan migrate --seed`, les comptes suivants sont disponibles :
 schoolManagementSystem/
 │
 ├── app/
-│   ├── Console/
-│   │   └── Commands/          # Commandes artisan personnalisées
-│   │       ├── ResetIncompleteEvaluations.php
-│   │       ├── SendNoticeBoardEmails.php
-│   │       └── SyncSuperAdminPermissions.php
-│   │
-│   ├── Exports/               # Exports Excel (Maatwebsite)
-│   │   ├── ExportStudent.php
-│   │   ├── ExportTeacher.php
-│   │   └── ...
-│   │
+│   ├── Console/Commands/        # 3 commandes artisan personnalisées
+│   ├── Exports/                 # 7 exporteurs Excel (Maatwebsite)
 │   ├── Http/
-│   │   ├── Controllers/       # 26 contrôleurs métier
-│   │   └── Middleware/        # AdminMiddleware, CheckPermission, CommonMiddleware...
-│   │
-│   └── Models/                # 25 modèles Eloquent
+│   │   ├── Controllers/         # 28 contrôleurs métier
+│   │   └── Middleware/          # AdminMiddleware, CheckPermission, EnsureSchoolActive...
+│   └── Models/                  # 27 modèles Eloquent (tous avec HasUuids sauf SettingModel)
 │
 ├── database/
-│   ├── migrations/            # 36 migrations consolidées (une par table)
-│   └── seeders/               # 10 seeders numérotés + DatabaseSeeder
+│   ├── migrations/              # 37 migrations consolidées (une par table, UUID v4)
+│   └── seeders/                 # 10 seeders + DatabaseSeeder
 │
 ├── resources/
-│   ├── js/                    # Vue 3 + Inertia (composants, pages, stores Pinia)
-│   └── views/                 # Layouts Blade (point d'entrée Inertia)
+│   ├── js/                      # Vue 3 + Inertia + TypeScript (Pages, Components, Composables)
+│   └── views/                   # app.blade.php (shell Inertia) + bulletin_print.blade.php
 │
 ├── routes/
-│   └── api.php                # Routes API (Sanctum)
+│   └── web.php                  # Toutes les routes groupées par rôle
 │
 ├── config/
-│   └── permission.php         # Configuration Spatie Laravel Permission
+│   ├── database.php             # Connexion pgsql par défaut
+│   └── permission.php           # model_morph_key = 'model_uuid' (UUID Spatie)
 │
-├── public/
-│   └── upload/                # Fichiers uploadés (logos, avatars, documents)
-│
-└── storage/
-    └── app/public/            # Lien symbolique via `php artisan storage:link`
+└── public/upload/               # Fichiers uploadés (logos, avatars, documents)
 ```
 
 ### Flux de rendu
 
 ```
 Requête HTTP
-    → Laravel Router
-    → Middleware (auth, CheckPermission...)
-    → Controller (retourne Inertia::render())
-    → Inertia.js transmet les props à Vue 3
-    → Composant Vue rendu côté client
+  → Router Laravel
+  → Middleware (auth, role, CheckPermission, EnsureSchoolActive...)
+  → Controller → Inertia::render('Page/Name', $props)
+  → Inertia.js transmet les props au composant Vue 3
+  → Rendu côté client
 ```
 
 ---
 
 ## 9. Fonctionnalités
 
-### Gestion multi-écoles
-- Création et gestion de plusieurs établissements depuis une interface super admin
-- Isolation complète des données par école (`school_id` sur toutes les tables principales)
-- Chaque école a ses propres clés de paiement, logo, favicon et configuration académique
+### Multi-écoles
+- Plusieurs établissements depuis une seule instance Laravel
+- Isolation complète des données par `school_id` (UUID)
+- Chaque école a ses propres clés de paiement, logo, fond de connexion et configuration académique
+- Le super admin gère toutes les écoles ; chaque admin ne voit que son école
 
-### Gestion des utilisateurs
-- 5 types : Super Admin, Admin, Professeur, apprenant, Parent
-- Création, modification, suppression douce (`is_delete`), réinitialisation de mot de passe
+### Utilisateurs
+- 5 rôles : Super Admin · Admin · Professeur · Apprenant · Parent
+- CRUD complet, désactivation (soft delete via `is_delete`), réinitialisation de mot de passe
 - Liaison parent ↔ apprenant
-- Export Excel des listes
+- Export Excel
+- Connexion sociale Google / Facebook (Socialite)
+- Changement de mot de passe forcé (flag `must_change_password`)
 
 ### Académique
-- Gestion des classes et des matières
-- Affectation des matières aux classes avec coefficients
-- Affectation des professeurs aux classes
-- Emploi du temps (par classe, jour, matière, salle, créneau horaire)
-
-### Périodes & Examens
-- 3 trimestres ou semestres configurables par école
-- Planification des examens avec salles et horaires
-- Registre de notes (marks_register — ancien système)
+- Gestion des classes et matières avec coefficients
+- Affectation matières ↔ classes, professeurs ↔ classes
+- Emploi du temps par classe, jour, créneau, salle
 
 ### Évaluations & Notes (nouveau système)
-- Types : Interrogation, Devoir surveillé, Travail maison, Examen blanc
-- Statuts : Brouillon → Ouvert → Fermé → Validé → Annulé
-- Workflow de validation professeur → admin
-- Coefficient par évaluation
-- Score absent géré (null avec observation)
+- Types : Interrogation · Devoir surveillé · Travail maison · Examen blanc
+- Workflow : Brouillon → Ouvert → Fermé → Validé / Annulé
+- Coefficient et score max configurables
+- Gestion des absences (score null avec observation)
 
 ### Bulletins
 - Génération automatique par apprenant par période
-- Moyenne générale, rang, taux de réussite de classe
-- Détail par matière (moyenne, points pondérés, appréciation)
-- Publication (draft → published)
+- Calcul moyenne générale, rang, taux de réussite de classe
+- Détail par matière (moyenne pondérée, appréciation)
+- Statuts : Brouillon → Publié
+- Impression via vue Blade dédiée
 
 ### Présences
-- Saisie par classe et date
-- Statuts : Présent, En retard, Absent, Demi-journée
-- Rapports de présence
+- Saisie par classe et date — statuts : Présent · En retard · Absent · Demi-journée
+- Rapports avec export
 
 ### Devoirs
-- Création de travaux par classe et matière (avec pièces jointes multiples)
-- Soumission par les apprenants avec statut de suivi
+- Création par classe et matière, pièces jointes multiples
+- Suivi des soumissions apprenants
 
 ### Frais de scolarité
-- Suivi des paiements par apprenant et classe
-- Montants total, versé, restant
-- Intégration passerelles de paiement (KkiaPay, Stripe, FedaPay, PayPal)
-- Statuts de paiement
+- Suivi total / versé / restant par apprenant
+- Intégration KkiaPay · Stripe · FedaPay · PayPal
 
 ### Communication
-- Tableau d'affichage (noticeboard) avec ciblage par type d'utilisateur
+- Tableau d'affichage (noticeboard) ciblé par type d'utilisateur
 - Envoi d'emails groupés
-- Horodatage de l'envoi email
+- Messagerie interne (chat temps réel par polling)
+- Notifications in-app
 
-### Messagerie interne
-- Chat temps réel entre utilisateurs
-- Support des emojis (utf8mb4)
-- Marquage lu/non-lu
-
-### Ressources humaines (Personnel)
-- Fiches personnel (directeur, enseignant, comptable, secrétaire...)
-- Types de congés configurables
+### Ressources humaines
+- Fiches personnel, types de congés configurables
 - Gestion des demandes de congés (en attente / approuvé / rejeté)
-- Calendrier des événements scolaires
+- Calendrier des événements scolaires (types personnalisables par école)
 
-### RBAC (Contrôle d'accès basé sur les rôles)
-- Interface d'administration des rôles et permissions
-- Spatie Laravel Permission — permissions granulaires
-- Attribution de permissions directement sur un utilisateur (en plus de son rôle)
+### RBAC
+- Interface complète de gestion des rôles et permissions (super admin)
+- Spatie Permission v6 — permissions granulaires par route
+- Attribution de permissions directement sur un utilisateur
 
-### Authentification
-- Connexion email + mot de passe
-- Connexion sociale via Google (OAuth2)
-- Réinitialisation de mot de passe obligatoire configurable
-- Journalisation de la dernière connexion
-
-### Journal de suppression
-- Toute suppression est archivée dans `deletion_logs` avec snapshot des données
-- Traçabilité complète (qui a supprimé quoi et quand)
+### Journal d'audit
+- Toute suppression enregistrée dans `deletion_logs` (snapshot JSON + auteur + horodatage)
 
 ---
 
 ## 10. Rôles et permissions
 
-### Hiérarchie des rôles
+### Hiérarchie
 
 ```
 super_admin (user_type = 0)
-│   Accès total — gère toutes les écoles
-│   Seul à pouvoir gérer les rôles et permissions (RBAC)
+│  Accès total — gère toutes les écoles, RBAC
 │
 └── admin (user_type = 1)
-│   Gère son école — crée et administre tous les utilisateurs
-│
-    ├── teacher (user_type = 2)
-    │   Saisit les notes, Présences, devoirs, emploi du temps
+    │  Gère son école
     │
-    ├── student (user_type = 3)
-    │   Consulte ses notes, bulletin, devoirs, Présences
-    │
-    └── parent (user_type = 4)
-        Suit les résultats et la scolarité de son enfant
+    ├── teacher (user_type = 2)   — notes, présences, devoirs
+    ├── student (user_type = 3)   — consultation résultats
+    └── parent  (user_type = 4)   — suivi enfant
 ```
 
-### Permissions clés
+### Exemples de permissions
 
-| Catégorie | Exemple de permission |
-|-----------|----------------------|
+| Catégorie | Permission |
+|-----------|------------|
 | Navigation | `view.dashboard.admin`, `view.bulletins.list` |
 | Utilisateurs | `action.teachers.create`, `action.students.reset_password` |
 | Académique | `action.classes.create`, `action.subjects.edit` |
 | Évaluations | `action.exams.create`, `action.marks.manage` |
 | Bulletins | `action.bulletins.generate`, `action.bulletins.publish` |
-| Présences | `action.attendance.save` |
 | Frais | `action.fees.collect`, `action.fees.delete` |
-| Communication | `action.noticeboard.manage`, `action.mail.send` |
 | Personnel | `action.staff.create`, `action.staff.leaves` |
 | RBAC | `roles.view`, `permissions.assign` *(super_admin uniquement)* |
-| Paramètres | `action.settings.manage` |
-
-### Middleware de vérification
-
-Les routes protégées utilisent `CheckPermission` :
-
-```php
-Route::middleware(['auth', 'checkPermission:action.classes.create'])->group(function () {
-    // ...
-});
-```
 
 ---
 
 ## 11. Structure des migrations
 
-Les migrations sont consolidées — **une seule migration par table**, avec la structure finale complète. Plus aucun fichier `add_column_to_*`.
+37 migrations consolidées — **une seule migration par table**, structure finale complète, toutes les clés primaires en **UUID v4**.
 
 ```
 database/migrations/
 ├── 2000_01_01_000001_create_password_reset_tokens_table.php
 ├── 2000_01_01_000002_create_failed_jobs_table.php
-├── 2000_01_01_000003_create_personal_access_tokens_table.php
-├── 2000_01_01_000004_create_schools_table.php          ← multi-tenant
-├── 2000_01_01_000005_create_settings_table.php         ← rétrocompat
-├── 2000_01_01_000006_create_users_table.php            ← dépend de schools
-├── 2000_01_01_000007_create_permissions_tables.php     ← Spatie (roles, permissions...)
+├── 2000_01_01_000004_create_schools_table.php          ← uuid PK, multi-tenant root
+├── 2000_01_01_000005_create_settings_table.php         ← bigIncrements (singleton id=1)
+├── 2000_01_01_000006_create_users_table.php            ← uuid PK, FK → schools
+├── 2000_01_01_000007_create_permissions_tables.php     ← Spatie (model_morph_key = uuid)
 ├── 2000_01_01_000008_create_class_table.php
 ├── 2000_01_01_000009_create_subject_table.php
 ├── 2000_01_01_000010_create_week_table.php
 ├── 2000_01_01_000011_create_class_subject_table.php    ← unique(class_id, subject_id)
 ├── 2000_01_01_000012_create_class_teacher_table.php
 ├── 2000_01_01_000013_create_class_timetable_table.php
-├── 2000_01_01_000014_create_periods_table.php          ← dépend de settings
-├── 2000_01_01_000015_create_exams_table.php            ← dépend de periods
+├── 2000_01_01_000014_create_periods_table.php          ← FK → settings (bigInt) + schools
+├── 2000_01_01_000015_create_exams_table.php
 ├── 2000_01_01_000016_create_schedules_table.php
 ├── 2000_01_01_000017_create_marks_grade_table.php
-├── 2000_01_01_000018_create_marks_register_table.php
+├── 2000_01_01_000018_create_marks_register_table.php   ← ancien système (conservé)
 ├── 2000_01_01_000019_create_attendances_table.php
 ├── 2000_01_01_000020_create_communicates_table.php
 ├── 2000_01_01_000021_create_noticeboard_messages_table.php
@@ -582,19 +505,27 @@ database/migrations/
 ├── 2000_01_01_000024_create_homework_table.php
 ├── 2000_01_01_000025_create_feescollections_table.php
 ├── 2000_01_01_000026_create_chats_table.php
-├── 2000_01_01_000027_create_notifications_table.php
+├── 2000_01_01_000027_create_notifications_table.php    ← uuidMorphs (Laravel std)
 ├── 2000_01_01_000028_create_leave_types_table.php
 ├── 2000_01_01_000029_create_staff_table.php
 ├── 2000_01_01_000030_create_staff_leaves_table.php
 ├── 2000_01_01_000031_create_staff_events_table.php
-├── 2000_01_01_000032_create_evaluations_table.php      ← dépend de exams, periods
-├── 2000_01_01_000033_create_grades_table.php           ← dépend de evaluations
-├── 2000_01_01_000034_create_bulletins_table.php        ← dépend de periods
-├── 2000_01_01_000035_create_bulletin_subjects_table.php
-└── 2000_01_01_000036_create_deletion_logs_table.php
+├── 2000_01_01_000032_create_event_type_customs_table.php  ← types personnalisés par école
+├── 2000_01_01_000033_create_evaluations_table.php
+├── 2000_01_01_000034_create_grades_table.php
+├── 2000_01_01_000035_create_bulletins_table.php         ← unique(student_id, period_id)
+├── 2000_01_01_000036_create_bulletin_subjects_table.php
+└── 2000_01_01_000037_create_deletion_logs_table.php     ← record_id = string(36) uuid
 ```
 
-> **Note settings vs schools** : La table `settings` est conservée pour la rétrocompatibilité du code existant (`SettingModel`, `PeriodModel`). La table `schools` est la source de vérité pour le multi-tenant. Une migration future fusionnera les deux.
+### Particularités UUID
+
+- Toutes les clés primaires : `$table->uuid('id')->primary()`
+- Toutes les clés étrangères : `$table->uuid('xxx_id')->nullable()` + `$table->foreign(...)`
+- Exception : `settings.id` reste `bigIncrements` (singleton référencé en dur par `settings_id = 1`)
+- Table `notifications` : utilise `uuidMorphs('notifiable')` (standard Laravel)
+- Table `deletion_logs` : `record_id` est `string(36)` car il pointe vers n'importe quelle table UUID
+- Spatie : `config/permission.php` → `model_morph_key = 'model_uuid'`
 
 ---
 
@@ -602,92 +533,81 @@ database/migrations/
 
 ```
 database/seeders/
-├── DatabaseSeeder.php          ← Orchestrateur (appelle tous les seeders dans l'ordre)
-├── 01_SettingsSeeder.php       ← settings id=1
-├── 02_SchoolSeeder.php         ← 3 écoles de démo
-├── 03_RolesAndPermissionsSeeder.php
-├── 04_SuperAdminSeeder.php
-├── 05_WeekSeeder.php
-├── 06_LeaveTypesSeeder.php
-├── 07_MultiSchoolSeeder.php    ← users + classes + matières
-├── 08_PeriodsSeeder.php
-├── 09_StaffAndEventsSeeder.php
-└── 10_EvaluationsSeeder.php
+├── DatabaseSeeder.php             ← Orchestrateur
+├── SettingsSeeder.php
+├── SchoolSeeder.php               ← UUIDs fixes : LMC_ID, CSM_ID, EPE_ID
+├── RolesAndPermissionsSeeder.php
+├── SuperAdminSeeder.php           ← UUID fixe : SUPER_ADMIN_ID
+├── WeekSeeder.php                 ← UUIDs fixes par jour (WEEK_IDS[])
+├── LeaveTypesSeeder.php
+├── MultiSchoolSeeder.php          ← Str::uuid() pour toutes les insertions DB::table()
+├── PeriodsSeeder.php              ← UUIDs fixes : T1_ID, T2_ID, T3_ID
+├── StaffAndEventsSeeder.php
+└── EvaluationsSeeder.php          ← Évaluations + notes + bulletins + présences + frais + devoirs + annonces
 ```
-
-Chaque seeder est **idempotent** : il vérifie l'existence avant d'insérer et peut être relancé sans créer de doublons.
 
 ---
 
 ## 13. Variables d'environnement
 
-Liste complète des variables utilisées par le projet :
-
 ```env
-# Application
-APP_NAME=schoolManagementSystem
+# ── Application ───────────────────────────────────────────────
+APP_NAME="School Management System"
 APP_ENV=local
-APP_KEY=                          # généré par php artisan key:generate
+APP_KEY=                          # php artisan key:generate
 APP_DEBUG=true
 APP_URL=http://127.0.0.1:8000
 
-# Base de données
-DB_CONNECTION=mysql
-DB_HOST=127.0.0.1
-DB_PORT=3306
-DB_DATABASE=schoolManagementSystem
-DB_USERNAME=root
-DB_PASSWORD=
+# ── Base de données PostgreSQL (Supabase) ─────────────────────
+DB_CONNECTION=pgsql
+DB_HOST=db.xxxxxxxxxxxxxx.supabase.co
+DB_PORT=5432
+DB_DATABASE=postgres
+DB_USERNAME=postgres
+DB_PASSWORD=votre_mot_de_passe
+DB_SSLMODE=require                # "require" sur Supabase, "prefer" en local
 
-# Cache / Session / Queue
+# ── Cache / Session / Queue ───────────────────────────────────
 CACHE_DRIVER=file
 SESSION_DRIVER=file
 QUEUE_CONNECTION=sync
 
-# Mail
+# ── Mail ──────────────────────────────────────────────────────
 MAIL_MAILER=smtp
 MAIL_HOST=smtp.gmail.com
 MAIL_PORT=587
-MAIL_USERNAME=
-MAIL_PASSWORD=
+MAIL_USERNAME=votre_email@gmail.com
+MAIL_PASSWORD=xxxx_xxxx_xxxx_xxxx  # mot de passe d'application Gmail
 MAIL_ENCRYPTION=tls
-MAIL_FROM_ADDRESS=
+MAIL_FROM_ADDRESS=votre_email@gmail.com
 MAIL_FROM_NAME="${APP_NAME}"
 
-# KkiaPay (paiement mobile Bénin/Afrique)
+# ── Paiements ─────────────────────────────────────────────────
+PAYPAL_MODE=sandbox
+PAYPAL_CLIENT_ID=
+PAYPAL_SECRET=
+
+STRIPE_PUBLIC_KEY=
+STRIPE_SECRET_KEY=
+
 KKIAPAY_PUBLIC_KEY=
 KKIAPAY_PRIVATE_KEY=
 KKIAPAY_SECRET_KEY=
 
-# Stripe (paiement international)
-STRIPE_PUBLIC_KEY=
-STRIPE_SECRET_KEY=
-
-# FedaPay (paiement mobile Afrique)
 FEDAPAY_PUBLIC_KEY=
 FEDAPAY_SECRET_KEY=
 
-# PayPal
-PAYPAL_EMAIL=
-
-# Google OAuth
+# ── Auth sociale ──────────────────────────────────────────────
 GOOGLE_CLIENT_ID=
 GOOGLE_CLIENT_SECRET=
 GOOGLE_REDIRECT_URI="${APP_URL}/auth/google/callback"
 
-# Facebook OAuth (optionnel)
 FACEBOOK_CLIENT_ID=
 FACEBOOK_CLIENT_SECRET=
 FACEBOOK_REDIRECT_URI="${APP_URL}/auth/facebook/callback"
 
-# Pusher (notifications temps réel — optionnel)
-PUSHER_APP_ID=
-PUSHER_APP_KEY=
-PUSHER_APP_SECRET=
-PUSHER_HOST=
-PUSHER_PORT=443
-PUSHER_SCHEME=https
-PUSHER_APP_CLUSTER=mt1
+# ── Vite ──────────────────────────────────────────────────────
+VITE_APP_NAME="${APP_NAME}"
 ```
 
 ---
@@ -697,80 +617,113 @@ PUSHER_APP_CLUSTER=mt1
 ### Base de données
 
 ```bash
-# Migrer + seeder en une commande (première installation)
-php artisan migrate --seed
-
-# Repartir de zéro (dev uniquement — supprime toutes les données)
+# Repartir de zéro + seed complet (développement)
 php artisan migrate:fresh --seed
 
-# Lancer un seeder précis
-php artisan db:seed --class=MultiSchoolSeeder
+# Appliquer les nouvelles migrations uniquement
+php artisan migrate
 
-# Vérifier l'état des migrations
+# Lancer un seeder précis
+php artisan db:seed --class=EvaluationsSeeder
+
+# État des migrations
 php artisan migrate:status
 ```
 
 ### Cache
 
 ```bash
-# Vider tous les caches
+# Tout vider
 php artisan optimize:clear
 
-# Vider uniquement le cache Spatie Permission (après modif rôles/permissions)
+# Cache Spatie uniquement (après modif rôles/permissions)
 php artisan permission:cache-reset
 
-# Reconstruire les caches en production
-php artisan config:cache
-php artisan route:cache
-php artisan view:cache
-php artisan event:cache
+# Caches de production
+php artisan config:cache && php artisan route:cache && php artisan view:cache
 ```
 
 ### Commandes personnalisées
 
 ```bash
-# Réinitialiser les évaluations incomplètes bloquées
+# Réinitialiser les évaluations bloquées en état incomplet
 php artisan evaluations:reset-incomplete
 
 # Envoyer les emails du tableau d'affichage en attente
 php artisan noticeboard:send-emails
 
-# Synchroniser les permissions du super admin (après ajout de nouvelles permissions)
+# Synchroniser les permissions du super admin
 php artisan permissions:sync-super-admin
 ```
 
 ### Développement
 
 ```bash
-# Lancer le serveur de développement
-php artisan serve
-
-# Lancer Vite (hot reload assets)
-npm run dev
-
-# Build de production
-npm run build
-
-# Vérification TypeScript
-npm run type-check
-
-# Ouvrir le REPL Laravel
-php artisan tinker
-
-# Lister toutes les routes
-php artisan route:list
-
-# Créer le lien symbolique storage → public
-php artisan storage:link
+php artisan serve          # Serveur local
+npm run dev                # Vite hot reload
+npm run build              # Build de production
+php artisan tinker         # REPL Laravel
+php artisan route:list     # Liste des routes
+php artisan storage:link   # Lien symbolique storage → public
 ```
 
 ---
 
-## 15. Paiements en ligne
+## 15. Déploiement (Railway + Supabase)
 
-Le projet intègre 4 passerelles de paiement configurables par école.
+### Architecture recommandée
 
-### KkiaPay (paiement mobile — Bénin / Afrique de l'Ouest)
+```
+Railway (App Laravel)  ──────→  Supabase (PostgreSQL)
+        │
+        └──→  Cloudinary ou Supabase Storage (uploads)
+```
+
+### Étapes sur Railway
+
+1. Créez un nouveau projet sur [railway.app](https://railway.app)
+2. Connectez votre dépôt GitHub
+3. Railway détecte automatiquement Laravel via Nixpacks
+4. Ajoutez les variables d'environnement dans Railway → **Variables** (reprendre le contenu du `.env.example` avec les valeurs de production)
+5. Ajoutez une commande de release :
+
+```
+php artisan migrate --force && php artisan config:cache && php artisan route:cache
+```
+
+### Variables Railway essentielles
+
+```env
+APP_ENV=production
+APP_DEBUG=false
+APP_URL=https://votre-app.railway.app
+
+DB_CONNECTION=pgsql
+DB_HOST=db.xxxxxx.supabase.co
+DB_PORT=5432
+DB_DATABASE=postgres
+DB_USERNAME=postgres
+DB_PASSWORD=votre_mot_de_passe
+DB_SSLMODE=require
+
+QUEUE_CONNECTION=sync
+SESSION_DRIVER=cookie
+CACHE_DRIVER=file
+```
+
+### Uploads en production
+
+Les fichiers uploadés (`public/upload/`) ne persistent pas entre les déploiements Railway. Configurez un stockage externe :
+
+- **Cloudinary** — pour les images (logos, photos de profil)
+- **Supabase Storage** — pour les documents (devoirs, pièces jointes)
+- **Backblaze B2** — alternative S3-compatible
+
+---
+
+## 16. Paiements en ligne
+
+### KkiaPay (mobile money — Bénin / Afrique de l'Ouest)
 
 ```env
 KKIAPAY_PUBLIC_KEY=tpk_xxxxxxxxxxxx
@@ -778,62 +731,57 @@ KKIAPAY_PRIVATE_KEY=tpvk_xxxxxxxxxxxx
 KKIAPAY_SECRET_KEY=xxxxxxxxxxxxxxxxxx
 ```
 
-Obtenir les clés sur [kkiapay.me](https://kkiapay.me) → Tableau de bord → API Keys.
+Obtenir les clés : [kkiapay.me](https://kkiapay.me) → Tableau de bord → API Keys
 
-### FedaPay (paiement mobile — Afrique)
+### FedaPay (mobile money — Afrique)
 
 ```env
 FEDAPAY_PUBLIC_KEY=pk_live_xxxxxxxxxxxx
 FEDAPAY_SECRET_KEY=sk_live_xxxxxxxxxxxx
 ```
 
-Obtenir les clés sur [fedapay.com](https://fedapay.com) → Mon compte → API.
+Obtenir les clés : [fedapay.com](https://fedapay.com) → API
 
-### Stripe (paiement international par carte)
+### Stripe (carte internationale)
 
 ```env
 STRIPE_PUBLIC_KEY=pk_live_xxxxxxxxxxxx
 STRIPE_SECRET_KEY=sk_live_xxxxxxxxxxxx
 ```
 
-Obtenir les clés sur [dashboard.stripe.com](https://dashboard.stripe.com) → Developers → API Keys.
+Obtenir les clés : [dashboard.stripe.com](https://dashboard.stripe.com) → Developers → API Keys
 
 ### PayPal
 
 ```env
-PAYPAL_EMAIL=votre_compte@paypal.com
+PAYPAL_MODE=sandbox       # sandbox ou live
+PAYPAL_CLIENT_ID=
+PAYPAL_SECRET=
 ```
 
-> En mode développement, utilisez les clés **sandbox/test** de chaque passerelle pour ne pas débiter de vrais comptes.
+> Utilisez les clés **sandbox/test** de chaque passerelle en développement.
 
 ---
 
-## 16. Authentification sociale
+## 17. Authentification sociale
 
 ### Google OAuth
 
-1. Rendez-vous sur [console.cloud.google.com](https://console.cloud.google.com)
-2. Créez un projet ou sélectionnez le vôtre
-3. Menu **APIs & Services → Credentials → Create Credentials → OAuth 2.0 Client ID**
-4. Type d'application : **Web application**
-5. Ajoutez l'URI de redirection autorisée : `http://127.0.0.1:8000/auth/google/callback`
-6. Copiez le **Client ID** et le **Client Secret** dans le `.env` :
+1. [console.cloud.google.com](https://console.cloud.google.com) → **APIs & Services → Credentials → OAuth 2.0 Client ID**
+2. Type : **Web application**
+3. URI de redirection autorisée : `https://votre-domaine.com/auth/google/callback`
+4. Copiez les clés dans `.env` :
 
 ```env
-GOOGLE_CLIENT_ID=594636074255-xxxxxxxxxxxx.apps.googleusercontent.com
-GOOGLE_CLIENT_SECRET=GOCSPX-xxxxxxxxxxxx
-GOOGLE_REDIRECT_URI=http://127.0.0.1:8000/auth/google/callback
+GOOGLE_CLIENT_ID=594636074255-xxxx.apps.googleusercontent.com
+GOOGLE_CLIENT_SECRET=GOCSPX-xxxx
+GOOGLE_REDIRECT_URI=https://votre-domaine.com/auth/google/callback
 ```
 
-> En production, remplacez `http://127.0.0.1:8000` par votre domaine réel et mettez à jour l'URI dans la console Google.
+### Facebook OAuth
 
-### Facebook OAuth (optionnel)
-
-1. Rendez-vous sur [developers.facebook.com](https://developers.facebook.com)
-2. Créez une application de type **Consumer**
-3. Ajoutez le produit **Facebook Login**
-4. URI de redirection : `http://votre-domaine.com/auth/facebook/callback`
-5. Copiez l'**App ID** et l'**App Secret** :
+1. [developers.facebook.com](https://developers.facebook.com) → Application **Consumer** → **Facebook Login**
+2. URI de redirection : `https://votre-domaine.com/auth/facebook/callback`
 
 ```env
 FACEBOOK_CLIENT_ID=
@@ -843,103 +791,52 @@ FACEBOOK_REDIRECT_URI="${APP_URL}/auth/facebook/callback"
 
 ---
 
-## 17. Emails
+## 18. Emails
 
-Le projet utilise SMTP pour l'envoi des emails (tableau d'affichage, notifications, réinitialisation de mot de passe).
+### Configuration Gmail (développement)
 
-### Configuration Gmail (recommandée pour le développement)
-
-1. Activez la **validation en deux étapes** sur votre compte Google
-2. Allez dans **Compte Google → Sécurité → Mots de passe des applications**
-3. Créez un mot de passe d'application pour "Autre (nom personnalisé)" → `SMS`
-4. Utilisez ce mot de passe de 16 caractères dans le `.env` :
+1. Activez la validation en deux étapes sur votre compte Google
+2. **Compte Google → Sécurité → Mots de passe des applications** → créez un mot de passe pour `SMS`
+3. Renseignez le `.env` :
 
 ```env
 MAIL_MAILER=smtp
 MAIL_HOST=smtp.gmail.com
 MAIL_PORT=587
 MAIL_USERNAME=votre_email@gmail.com
-MAIL_PASSWORD=xxxx xxxx xxxx xxxx    # mot de passe d'application (sans espaces)
+MAIL_PASSWORD=xxxxxxxxxxxxxxxx    # mot de passe d'application (16 caractères)
 MAIL_ENCRYPTION=tls
-MAIL_FROM_ADDRESS=votre_email@gmail.com
-MAIL_FROM_NAME="${APP_NAME}"
-```
-
-### Tester l'envoi d'email
-
-```bash
-php artisan tinker
->>> Mail::raw('Test SMS', fn($m) => $m->to('test@exemple.com')->subject('Test'));
 ```
 
 ### Mode log (développement sans SMTP)
-
-Pour voir les emails dans les logs sans les envoyer :
 
 ```env
 MAIL_MAILER=log
 ```
 
-Les emails apparaîtront dans `storage/logs/laravel.log`.
+Les emails apparaissent dans `storage/logs/laravel.log`.
+
+### Tester l'envoi
+
+```bash
+php artisan tinker
+>>> Mail::raw('Test', fn($m) => $m->to('test@exemple.com')->subject('Test'));
+```
 
 ---
 
-## 18. Contribuer
-
-### Processus de contribution
-
-1. **Forkez** le dépôt
-2. Créez une branche depuis `main` :
-   ```bash
-   git checkout -b feature/ma-fonctionnalite
-   ```
-3. Développez et committez vos changements :
-   ```bash
-   git add .
-   git commit -m "feat: description claire de la fonctionnalité"
-   ```
-4. Poussez votre branche :
-   ```bash
-   git push origin feature/ma-fonctionnalite
-   ```
-5. Ouvrez une **Pull Request** vers `main`
-
-### Conventions
-
-- **Migrations** : une seule migration par table avec la structure finale complète — pas de fichiers `add_column_to_*`
-- **Seeders** : numérotés (`01_`, `02_`...), idempotents (vérifier avant d'insérer), sans données dépendantes dans les migrations
-- **Nommage** : `snake_case` pour les colonnes, `PascalCase` pour les classes PHP, `camelCase` pour les variables JS/TS
-- **Commits** : respecter le format [Conventional Commits](https://www.conventionalcommits.org/fr) (`feat:`, `fix:`, `refactor:`, `docs:`)
-
-### Ajouter une nouvelle table
-
-1. Créer une migration consolidée :
-   ```bash
-   # Nommer manuellement en continuant la numérotation 2000_01_01_0000XX
-   # Ex : 2000_01_01_000037_create_ma_table.php
-   ```
-2. Créer le modèle Eloquent dans `app/Models/`
-3. Créer le seeder correspondant dans `database/seeders/` avec la numérotation suivante
-4. L'ajouter dans `DatabaseSeeder.php` au bon endroit dans la chaîne
-5. Créer le contrôleur dans `app/Http/Controllers/`
-
-### Ajouter une permission
-
-1. Ajouter le nom dans `03_RolesAndPermissionsSeeder.php` → tableau `ALL_PERMISSIONS`
-2. L'assigner au(x) rôle(s) concerné(s) dans le même seeder
-3. Relancer le seeder : `php artisan db:seed --class=RolesAndPermissionsSeeder`
-4. Puis resynchroniser le super admin : `php artisan permissions:sync-super-admin`
-
----
-
-## Résolution de problèmes fréquents
+## 19. Résolution de problèmes fréquents
 
 ### `php artisan migrate` échoue avec une erreur de clé étrangère
 
-Vérifiez que la table parente existe. Avec les nouvelles migrations consolidées, l'ordre `2000_01_01_0000XX` garantit les dépendances. Si vous avez d'anciennes migrations en base, faites :
+Assurez-vous de partir d'une base vide. Les migrations sont ordonnées pour respecter les dépendances :
 ```bash
 php artisan migrate:fresh --seed
 ```
+
+### Erreur `SQLSTATE[42P01]: undefined table` sur Supabase
+
+La connexion utilise peut-être le pooler (port 6543) pour les migrations. Utilisez la connexion directe (port 5432) pour `migrate`.
 
 ### `Class "Spatie\Permission\..." not found`
 
@@ -949,7 +846,18 @@ php artisan vendor:publish --provider="Spatie\Permission\PermissionServiceProvid
 php artisan config:clear
 ```
 
-### Page blanche / erreur 500 après `npm run build`
+### Les permissions ne se chargent pas
+
+```bash
+php artisan permission:cache-reset
+php artisan config:clear
+```
+
+### Erreur UUID dans les seeders (`insertGetId` retourne un int)
+
+Les seeders utilisent `DB::table()->insert(['id' => (string) Str::uuid(), ...])` — ne pas utiliser `insertGetId()` qui ne fonctionne pas avec les UUIDs PostgreSQL. Si vous ajoutez un seeder personnalisé, suivez ce pattern.
+
+### Page blanche / 500 après déploiement
 
 ```bash
 php artisan config:clear
@@ -958,31 +866,13 @@ php artisan route:clear
 npm run build
 ```
 
-### Les permissions ne se chargent pas correctement
+### Erreur `EXTRACT(MONTH FROM ...)` sur PostgreSQL
 
-```bash
-php artisan permission:cache-reset
-php artisan config:clear
-```
+Toutes les requêtes utilisent `EXTRACT(MONTH FROM colonne)` (standard SQL). `MONTH()` (MySQL uniquement) a été remplacé dans tout le code.
 
-### Erreur `SQLSTATE[42S01]: Table already exists`
+### Fichiers uploadés absents en production
 
-La base de données contient des anciennes tables. Utilisez :
-```bash
-php artisan migrate:fresh --seed
-```
-> ⚠️ Cette commande **supprime toutes les données**. À n'utiliser qu'en développement.
-
-### Erreur d'upload de fichier (logo, avatar)
-
-Vérifiez que le lien symbolique est créé et que le dossier `upload/` a les bonnes permissions :
-```bash
-php artisan storage:link
-# Windows
-icacls "public\upload" /grant "Everyone:(OI)(CI)F"
-# Linux/Mac
-chmod -R 775 public/upload storage
-```
+Configurez un stockage externe (Cloudinary, Supabase Storage, S3) — les fichiers dans `public/upload/` ne persistent pas sur les hébergeurs sans disque persistant (Railway, Render).
 
 ---
 
@@ -992,4 +882,4 @@ Ce projet est sous licence **MIT**. Voir le fichier [LICENSE](LICENSE) pour plus
 
 ---
 
-*Développé avec ❤️ — Laravel 10 · Vue 3 · Inertia.js · Tailwind CSS*
+*Développé avec ❤️ — Laravel 10 · Vue 3 · Inertia.js · Tailwind CSS · PostgreSQL / Supabase*

@@ -47,7 +47,7 @@ class EvaluationController extends Controller
 
         try {
             // Le coefficient vient de l'assignation classe-matière, pas du type
-            $classSubject = ClassSubjectModel::getClassSubject((int) $request->class_id, (int) $request->subject_id);
+            $classSubject = ClassSubjectModel::getClassSubject($request->class_id, $request->subject_id);
             $coefficient  = $classSubject?->coefficient ?? 1;
 
             $eval              = new EvaluationModel;
@@ -210,32 +210,32 @@ class EvaluationController extends Controller
             'currentPeriod'     => PeriodModel::getCurrentPeriod()->first(),
             'evaluations'       => [],
             'grades'            => [],
-            'selectedClassId'   => $request->class_id   ? (int) $request->class_id   : null,
-            'selectedPeriodId'  => $request->period_id  ? (int) $request->period_id  : null,
+            'selectedClassId'   => $request->class_id   ? $request->class_id   : null,
+            'selectedPeriodId'  => $request->period_id  ? $request->period_id  : null,
         ];
 
         if ($request->evaluation_id) {
-            $eval = EvaluationModel::getSingle((int) $request->evaluation_id);
+            $eval = EvaluationModel::getSingle($request->evaluation_id);
             if ($eval) {
                 $data['evaluation']      = $eval;
                 $data['grades']          = GradeModel::getGradesForEvaluation($eval->id, $eval->class_id);
                 $data['stats']           = GradeModel::getEvaluationStats($eval->id, (float) $eval->max_score);
                 // S'assurer que les sélecteurs restent synchronisés avec l'évaluation choisie
-                $data['selectedClassId']  = (int) $eval->class_id;
-                $data['selectedPeriodId'] = (int) $eval->period_id;
+                $data['selectedClassId']  = $eval->class_id;
+                $data['selectedPeriodId'] = $eval->period_id;
             }
         }
 
         if ($request->class_id && $request->period_id) {
             $data['evaluations'] = EvaluationModel::getByClassAndPeriod(
-                (int) $request->class_id,
-                (int) $request->period_id
+                $request->class_id,
+                $request->period_id
             );
         } elseif (isset($data['evaluation'])) {
             // Charger aussi la liste pour le select
             $data['evaluations'] = EvaluationModel::getByClassAndPeriod(
-                (int) $data['evaluation']->class_id,
-                (int) $data['evaluation']->period_id
+                $data['evaluation']->class_id,
+                $data['evaluation']->period_id
             );
         }
 
@@ -560,7 +560,7 @@ class EvaluationController extends Controller
             $evalLabel = $eval->title ?: (EvaluationModel::$typeLabels[$eval->type ?? ''] ?? $eval->type);
 
             // Notifier le professeur si c'est l'admin qui annule
-            if ($eval->teacher_id && (int)$eval->teacher_id !== Auth::id()) {
+            if ($eval->teacher_id && $eval->teacher_id !== Auth::id()) {
                 $teacher = User::find($eval->teacher_id);
                 if ($teacher) {
                     $teacher->notify(new \App\Notifications\EvaluationCancelledByAdminNotification(
@@ -691,12 +691,12 @@ class EvaluationController extends Controller
         try {
             // Vérifier que la classe appartient bien au prof
             $myClassIds = ClassTeacherModel::getMyClassSubjectGroup(Auth::id())->pluck('class_id')->toArray();
-            if (!in_array((int) $request->class_id, $myClassIds)) {
+            if (!in_array($request->class_id, $myClassIds)) {
                 return redirect()->back()->with('error', 'Vous n\'êtes pas assigné à cette classe.');
             }
 
             // Le coefficient vient de l'assignation classe-matière
-            $classSubject = ClassSubjectModel::getClassSubject((int) $request->class_id, (int) $request->subject_id);
+            $classSubject = ClassSubjectModel::getClassSubject($request->class_id, $request->subject_id);
             $coefficient  = $classSubject?->coefficient ?? 1;
 
             $eval              = new EvaluationModel;
@@ -731,19 +731,19 @@ class EvaluationController extends Controller
             'currentPeriod'    => PeriodModel::getCurrentPeriod()->first(),
             'evaluations'      => [],
             'grades'           => [],
-            'selectedClassId'  => $request->class_id  ? (int) $request->class_id  : null,
-            'selectedPeriodId' => $request->period_id ? (int) $request->period_id : null,
+            'selectedClassId'  => $request->class_id  ? $request->class_id  : null,
+            'selectedPeriodId' => $request->period_id ? $request->period_id : null,
         ];
 
         if ($request->evaluation_id) {
-            $eval = EvaluationModel::getSingle((int) $request->evaluation_id);
+            $eval = EvaluationModel::getSingle($request->evaluation_id);
             // Sécurité : le prof ne peut accéder qu'à SES évaluations
-            if ($eval && (int)$eval->teacher_id === $teacher_id) {
+            if ($eval && $eval->teacher_id === $teacher_id) {
                 $data['evaluation']       = $eval;
                 $data['grades']           = GradeModel::getGradesForEvaluation($eval->id, $eval->class_id);
                 $data['stats']            = GradeModel::getEvaluationStats($eval->id, (float) $eval->max_score);
-                $data['selectedClassId']  = (int) $eval->class_id;
-                $data['selectedPeriodId'] = (int) $eval->period_id;
+                $data['selectedClassId']  = $eval->class_id;
+                $data['selectedPeriodId'] = $eval->period_id;
                 // Notes rejetées (is_delete=1) pour cette évaluation — le prof doit les re-saisir
                 $data['rejectedGrades'] = GradeModel::select('grades.*', 'users.name', 'users.last_name', 'users.admission_number')
                     ->join('users', 'users.id', '=', 'grades.student_id')
@@ -755,14 +755,14 @@ class EvaluationController extends Controller
 
         if ($request->class_id && $request->period_id) {
             $data['evaluations'] = EvaluationModel::getByClassAndPeriod(
-                (int) $request->class_id,
-                (int) $request->period_id
-            )->filter(fn($e) => (int)$e->teacher_id === $teacher_id)->values();
+                $request->class_id,
+                $request->period_id
+            )->filter(fn($e) => $e->teacher_id === $teacher_id)->values();
         } elseif (isset($data['evaluation'])) {
             $data['evaluations'] = EvaluationModel::getByClassAndPeriod(
-                (int) $data['evaluation']->class_id,
-                (int) $data['evaluation']->period_id
-            )->filter(fn($e) => (int)$e->teacher_id === $teacher_id)->values();
+                $data['evaluation']->class_id,
+                $data['evaluation']->period_id
+            )->filter(fn($e) => $e->teacher_id === $teacher_id)->values();
         }
 
         return Inertia::render('Teacher/Evaluations/GradeEntry', $data);
@@ -785,7 +785,7 @@ class EvaluationController extends Controller
         }
 
         // Le prof ne peut saisir que si l'évaluation lui appartient et est OUVERTE
-        if ((int)$eval->teacher_id !== $teacher_id) {
+        if ($eval->teacher_id !== $teacher_id) {
             return response()->json(['success' => false, 'message' => 'Accès refusé.'], 403);
         }
 
@@ -813,7 +813,7 @@ class EvaluationController extends Controller
             return response()->json(['success' => false, 'message' => 'Évaluation introuvable.'], 404);
         }
 
-        if ((int)$eval->teacher_id !== $teacher_id) {
+        if ($eval->teacher_id !== $teacher_id) {
             return response()->json(['success' => false, 'message' => 'Accès refusé.'], 403);
         }
 
@@ -849,7 +849,7 @@ class EvaluationController extends Controller
         $period_id  = $request->period_id ?? ($periods->first()?->id);
 
         $grades = $period_id
-            ? GradeModel::getStudentGradesForPeriod($student_id, (int) $period_id)
+            ? GradeModel::getStudentGradesForPeriod($student_id, $period_id)
             : collect();
 
         return Inertia::render('Student/Evaluations/MyGrades', [
@@ -873,7 +873,7 @@ class EvaluationController extends Controller
         $period_id = $request->period_id ?? ($periods->first()?->id);
 
         $grades = $period_id
-            ? GradeModel::getStudentGradesForPeriod($student_id, (int) $period_id)
+            ? GradeModel::getStudentGradesForPeriod($student_id, $period_id)
             : collect();
 
         return Inertia::render('Parent/Evaluations/StudentGrades', [
@@ -894,7 +894,7 @@ class EvaluationController extends Controller
      */
     public function getSubjectsByClass(int|string $class_id)
     {
-        $subjects = ClassSubjectModel::getSubject((int) $class_id)
+        $subjects = ClassSubjectModel::getSubject($class_id)
             ->map(fn($s) => [
                 'subject_id'   => $s->subject_id,
                 'subject_name' => $s->subject_name,
@@ -914,8 +914,8 @@ class EvaluationController extends Controller
         }
 
         $evals = EvaluationModel::getByClassAndPeriod(
-            (int) $request->class_id,
-            (int) $request->period_id
+            $request->class_id,
+            $request->period_id
         );
 
         return response()->json($evals);

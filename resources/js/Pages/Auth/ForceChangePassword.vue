@@ -21,7 +21,7 @@
         <div class="mb-6 flex items-center gap-3 px-4 py-3 rounded-xl"
              :style="{ background: isDark ? 'rgba(255,255,255,0.04)' : 'rgba(0,0,0,0.03)', border: isDark ? '1px solid rgba(255,255,255,0.07)' : '1px solid rgba(0,0,0,0.07)' }">
             <div class="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold text-white flex-shrink-0"
-                 style="background: linear-gradient(135deg,#9189f5,#6660d4)">
+                 style="background: linear-gradient(135deg,#2563eb,#7B74F0)">
                 {{ initials }}
             </div>
             <div>
@@ -37,7 +37,7 @@
         <!-- Titre -->
         <div class="mb-6">
             <div class="w-14 h-14 rounded-2xl flex items-center justify-center mb-4" :style="iconBoxStyle">
-                <svg class="w-7 h-7" style="color:#9189f5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="w-7 h-7" style="color:#2563eb" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                           d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/>
                 </svg>
@@ -73,7 +73,7 @@
                            :type="showPwd ? 'text' : 'password'"
                            placeholder="••••••••••"
                            required
-                           class="w-full pl-10 pr-12 py-3 rounded-xl text-sm outline-none transition-all focus:ring-2 focus:ring-primary-500"
+                           class="w-full pl-10 pr-12 py-3 rounded-xl text-sm outline-none transition-all focus:ring-2 focus:ring-violet-500"
                            :class="form.errors.password ? 'ring-2 ring-red-500' : ''"
                            :style="inputStyle"/>
                     <button type="button" @click="showPwd = !showPwd"
@@ -117,7 +117,7 @@
                            :type="showConf ? 'text' : 'password'"
                            placeholder="••••••••••"
                            required
-                           class="w-full pl-10 pr-12 py-3 rounded-xl text-sm outline-none transition-all focus:ring-2 focus:ring-primary-500"
+                           class="w-full pl-10 pr-12 py-3 rounded-xl text-sm outline-none transition-all focus:ring-2 focus:ring-violet-500"
                            :class="confirmRing"
                            :style="inputStyle"/>
                     <button type="button" @click="showConf = !showConf"
@@ -155,7 +155,7 @@
                     :disabled="form.processing || !canSubmit"
                     class="w-full py-3.5 px-4 rounded-xl font-semibold text-sm text-white transition-all flex items-center justify-center gap-2
                            hover:opacity-90 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed"
-                    style="background:linear-gradient(135deg,#9189f5,#6660d4);box-shadow:0 4px 18px rgba(123,116,240,0.35)">
+                    style="background:#7B74F0;box-shadow:0 4px 20px rgba(123,116,240,0.45)">
                 <svg v-if="form.processing" class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
                     <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
@@ -237,14 +237,14 @@ const canSubmit = computed(() =>
 );
 
 const inputStyle = computed(() => ({
-    background: isDark.value ? 'rgba(109,40,217,0.12)' : '#f5f3ff',
-    color:      isDark.value ? '#ede9fe'                : '#1e1b4b',
-    border:     isDark.value ? '1px solid rgba(139,92,246,0.25)' : '1px solid #ddd6fe',
+    background: isDark.value ? 'rgba(123,116,240,0.35)' : '#f5f3ff',
+    color:      isDark.value ? '#f5f3ff'                : '#3b2fa0',
+    border:     isDark.value ? '1px solid rgba(123,116,240,0.25)' : '1px solid #ddd6fe',
 }));
 
 const iconBoxStyle = computed(() => ({
-    background: isDark.value ? 'rgba(124,58,237,0.15)' : 'rgba(124,58,237,0.08)',
-    border:     isDark.value ? '1px solid rgba(124,58,237,0.3)' : '1px solid rgba(124,58,237,0.2)',
+    background: isDark.value ? 'rgba(123,116,240,0.25)' : 'rgba(123,116,240,0.25)',
+    border:     isDark.value ? '1px solid rgba(123,116,240,0.25)' : '1px solid rgba(123,116,240,0.25)',
 }));
 
 const alertStyle = computed(() => ({

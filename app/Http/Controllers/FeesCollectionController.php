@@ -77,24 +77,24 @@ class FeesCollectionController extends Controller
             $getPaidAmount = FeesCollectionModel::getPaidAmount($student_id, $getStudent->class_id);
 
             // 💰 Nouveau montant à payer
-            $newPayment = intval($request->amount);
+            $newPayment = $request->amount;
             if ($newPayment <= 0) {
                 return back()->with('error', 'Le montant doit être supérieur à 0.');
             }
 
             // 💰 Nouveau montant total après ce paiement
             $totalAfterPayment = $getPaidAmount + $newPayment;
-            if ($totalAfterPayment > intval($getStudent->class_amount)) {
+            if ($totalAfterPayment > $getStudent->class_amount) {
                 return back()->with('error', 'La contribution totale ne peut pas dépasser le montant requis pour la classe.');
             }
 
             // 🧾 Préparation des données communes
             $paymentData = [
-                'class_id' => intval($getStudent->class_id),
-                'student_id' => intval($student_id),
-                'total_amount' => intval($getStudent->class_amount),
+                'class_id' => $getStudent->class_id,
+                'student_id' => $student_id,
+                'total_amount' => $getStudent->class_amount,
                 'paid_amount' => $newPayment,
-                'remaning_amount' => intval($getStudent->class_amount) - $totalAfterPayment,
+                'remaning_amount' => $getStudent->class_amount - $totalAfterPayment,
                 'payment_type' => $request->payment_type,
                 'remark' => $request->remark,
                 'created_by' => auth()->user()->id,
@@ -195,7 +195,7 @@ class FeesCollectionController extends Controller
 
         $transaction = FedaTransaction::create([
             'description' => 'Frais de scolarité — ' . $student->name . ' ' . $student->last_name,
-            'amount'      => intval($request->amount),
+            'amount'      => $request->amount,
             'currency'    => ['iso' => 'XOF'],
             'callback_url'=> url('admin/feescollections_fedapay/payment_success'),
             'customer'    => [
@@ -352,11 +352,11 @@ class FeesCollectionController extends Controller
         $getPaidAmount = FeesCollectionModel::getPaidAmount($student_id, $student->class_id);
 
         $paymentData = [
-            'class_id'        => intval($student->class_id),
-            'student_id'      => intval($student_id),
-            'total_amount'    => intval($student->class_amount),
-            'paid_amount'     => intval($request->amount),
-            'remaning_amount' => intval($student->class_amount) - ($getPaidAmount + intval($request->amount)),
+            'class_id'        => $student->class_id,
+            'student_id'      => $student_id,
+            'total_amount'    => $student->class_amount,
+            'paid_amount'     => $request->amount,
+            'remaning_amount' => $student->class_amount - ($getPaidAmount + $request->amount),
             'payment_type'    => 'paypal',
             'remark'          => $request->remark,
             'created_by'      => auth()->user()->id,
@@ -466,14 +466,14 @@ class FeesCollectionController extends Controller
             $metadata = $session->metadata;
 
             $fees = new FeesCollectionModel;
-            $fees->class_id = intval($metadata->class_id);
-            $fees->student_id = intval($metadata->student_id);
-            $fees->total_amount = intval($metadata->total_amount);
-            $fees->paid_amount = intval($metadata->paid_amount);
-            $fees->remaning_amount = intval($metadata->remaning_amount);
+            $fees->class_id = $metadata->class_id;
+            $fees->student_id = $metadata->student_id;
+            $fees->total_amount = $metadata->total_amount;
+            $fees->paid_amount = $metadata->paid_amount;
+            $fees->remaning_amount = $metadata->remaning_amount;
             $fees->payment_type = 'stripe';
             $fees->remark = $metadata->remark;
-            $fees->created_by = intval($metadata->created_by);
+            $fees->created_by = $metadata->created_by;
             $fees->stripe_session_id = $session->id;
             $fees->save();
 
@@ -532,7 +532,7 @@ class FeesCollectionController extends Controller
             $getPaidAmount = FeesCollectionModel::getPaidAmount(Auth::user()->id, Auth::user()->class_id);
 
             // 💰 Nouveau montant à payer
-            $newPayment = intval($request->amount);
+            $newPayment = $request->amount;
 
             // Vérifie que le montant à payer est supérieur à 0
             if ($newPayment <= 0) {
@@ -542,17 +542,17 @@ class FeesCollectionController extends Controller
             // 💰 Nouveau montant total après ce paiement
             $totalAfterPayment = $getPaidAmount + $newPayment;
             // ✅ Vérifie que le paiement ne dépasse pas le montant total requis
-            if ($totalAfterPayment > intval($getStudent->class_amount)) {
+            if ($totalAfterPayment > $getStudent->class_amount) {
                 return redirect()->back()->with('error', 'La contribution totale ne peut pas dépasser le montant requis pour la classe.');
             }
 
             // Préparation des données communes
             $paymentData = [
-                'class_id' => intval(Auth::user()->class_id),
-                'student_id' => intval(Auth::user()->id),
-                'total_amount' => intval($getStudent->class_amount),
+                'class_id' => Auth::user()->class_id,
+                'student_id' => Auth::user()->id,
+                'total_amount' => $getStudent->class_amount,
                 'paid_amount' => $newPayment,
-                'remaning_amount' => intval($getStudent->class_amount) - $totalAfterPayment,
+                'remaning_amount' => $getStudent->class_amount - $totalAfterPayment,
                 'payment_type' => $request->payment_type,
                 'remark' => $request->remark,
                 'created_by' => auth()->user()->id,
@@ -803,7 +803,7 @@ class FeesCollectionController extends Controller
             $getPaidAmount = FeesCollectionModel::getPaidAmount($student_id, $getStudent->class_id);
 
             // Vérification si le montant est valide
-            $newPayment = intval($request->amount);
+            $newPayment = $request->amount;
             if ($newPayment <= 0) {
                 return redirect()->back()->with('error', 'Le montant doit être supérieur à 0.');
             }
@@ -811,17 +811,17 @@ class FeesCollectionController extends Controller
             // Calcul du montant total après paiement
             $totalAfterPayment = $getPaidAmount + $newPayment;
             // Vérification si le montant total dépasse le montant requis pour la classe
-            if ($totalAfterPayment > intval($getStudent->class_amount)) {
+            if ($totalAfterPayment > $getStudent->class_amount) {
                 return redirect()->back()->with('error', 'La contribution totale ne peut pas dépasser le montant requis pour la classe.');
             }
 
             // Préparation des données communes
             $paymentData = [
-                'class_id' => intval($getStudent->class_id),
-                'student_id' => intval($student_id),
-                'total_amount' => intval($getStudent->class_amount),
+                'class_id' => $getStudent->class_id,
+                'student_id' => $student_id,
+                'total_amount' => $getStudent->class_amount,
                 'paid_amount' => $newPayment,
-                'remaning_amount' => intval($getStudent->class_amount) - $totalAfterPayment,
+                'remaning_amount' => $getStudent->class_amount - $totalAfterPayment,
                 'payment_type' => $request->payment_type,
                 'remark' => $request->remark,
                 'created_by' => auth()->user()->id,
@@ -940,14 +940,14 @@ class FeesCollectionController extends Controller
             $metadata = $session->metadata;
 
             $fees = new FeesCollectionModel;
-            $fees->class_id = intval($metadata->class_id);
-            $fees->student_id = intval($metadata->student_id);
-            $fees->total_amount = intval($metadata->total_amount);
-            $fees->paid_amount = intval($metadata->paid_amount);
-            $fees->remaning_amount = intval($metadata->remaning_amount);
+            $fees->class_id = $metadata->class_id;
+            $fees->student_id = $metadata->student_id;
+            $fees->total_amount = $metadata->total_amount;
+            $fees->paid_amount = $metadata->paid_amount;
+            $fees->remaning_amount = $metadata->remaning_amount;
             $fees->payment_type = 'stripe';
             $fees->remark = $metadata->remark;
-            $fees->created_by = intval($metadata->created_by);
+            $fees->created_by = $metadata->created_by;
             $fees->stripe_session_id = $session->id;
             $fees->save();
 

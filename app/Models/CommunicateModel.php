@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
@@ -9,7 +10,7 @@ use Illuminate\Support\Facades\Request;
 
 class CommunicateModel extends Model
 {
-    use HasFactory;
+    use HasFactory, HasUuids;
 
     protected $table = 'communicates';
 
@@ -58,7 +59,7 @@ class CommunicateModel extends Model
     /**
      * Retourne une notice avec ses destinataires (message_to)
      */
-    public static function getSingleWithRecipients(int $id): ?self
+    public static function getSingleWithRecipients(string $id): ?self
     {
         $notice = CommunicateModel::select('communicates.*', 'users.name as created_by_name')
             ->join('users', 'users.id', '=', 'communicates.created_by')

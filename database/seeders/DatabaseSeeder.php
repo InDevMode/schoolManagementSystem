@@ -5,47 +5,31 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 
 /**
- * DatabaseSeeder — Orchestrateur principal.
- *
- * Ordre d'exécution respectant les dépendances :
- *
- *  1. SettingsSeeder          → settings (id=1) requis par periods.settings_id
- *  2. SchoolSeeder            → 3 écoles de démo
- *  3. RolesAndPermissionsSeeder → rôles + permissions Spatie
- *  4. SuperAdminSeeder        → compte super admin global
- *  5. WeekSeeder              → jours de la semaine (pour l'emploi du temps)
- *  6. LeaveTypesSeeder        → types de congés par défaut
- *  7. MultiSchoolSeeder       → users (admin/prof/apprenants/parents) + classes + matières
- *  8. PeriodsSeeder           → 3 trimestres 2025-2026
- *  9. StaffAndEventsSeeder    → fiches personnel, congés, événements
- * 10. EvaluationsSeeder       → évaluations + notes de démo
- *
- * Commandes utiles :
- *   php artisan db:seed                       — exécute tout
- *   php artisan db:seed --class=SchoolSeeder  — exécute un seeder précis
- *   php artisan migrate:fresh --seed          — repart de zéro (dev)
+ * DatabaseSeeder — Orchestrateur.
+ * Ordre : respecte toutes les dépendances FK.
+ * Toutes les tables remplies, aucune colonne nullable laissée vide.
  */
 class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
         $this->command->info('');
-        $this->command->info('╔══════════════════════════════════════════════╗');
-        $this->command->info('║        School Management System — Seed       ║');
-        $this->command->info('╚══════════════════════════════════════════════╝');
+        $this->command->info('╔══════════════════════════════════════════════════╗');
+        $this->command->info('║   School Management System — Seed complet (UUID) ║');
+        $this->command->info('╚══════════════════════════════════════════════════╝');
         $this->command->info('');
 
         $seeders = [
-            '1/10  Settings'        => SettingsSeeder::class,
-            '2/10  Schools'         => SchoolSeeder::class,
-            '3/10  Roles & Perms'   => RolesAndPermissionsSeeder::class,
-            '4/10  Super Admin'     => SuperAdminSeeder::class,
-            '5/10  Week days'       => WeekSeeder::class,
-            '6/10  Leave Types'     => LeaveTypesSeeder::class,
-            '7/10  Users & Classes' => MultiSchoolSeeder::class,
-            '8/10  Periods'         => PeriodsSeeder::class,
-            '9/10  Staff & Events'  => StaffAndEventsSeeder::class,
-            '10/10 Evaluations'     => EvaluationsSeeder::class,
+            '1/10  Settings'         => SettingsSeeder::class,
+            '2/10  Schools'          => SchoolSeeder::class,
+            '3/10  Roles & Perms'    => RolesAndPermissionsSeeder::class,
+            '4/10  Super Admin'      => SuperAdminSeeder::class,
+            '5/10  Jours semaine'    => WeekSeeder::class,
+            '6/10  Types congés'     => LeaveTypesSeeder::class,
+            '7/10  Users & Classes'  => MultiSchoolSeeder::class,
+            '8/10  Périodes & Exams' => PeriodsSeeder::class,
+            '9/10  Staff & Événements' => StaffAndEventsSeeder::class,
+            '10/10 Évaluations'      => EvaluationsSeeder::class,
         ];
 
         foreach ($seeders as $label => $class) {
@@ -54,12 +38,16 @@ class DatabaseSeeder extends Seeder
             $this->command->info('');
         }
 
-        $this->command->info('╔══════════════════════════════════════════════╗');
-        $this->command->info('║  ✅  Seed terminé avec succès !              ║');
-        $this->command->info('║                                              ║');
-        $this->command->info('║  Super Admin : superadmin@sms.local          ║');
-        $this->command->info('║  Mot de passe : SuperAdmin@2025              ║');
-        $this->command->info('╚══════════════════════════════════════════════╝');
-        $this->command->info('');
+        $this->command->info('╔══════════════════════════════════════════════════════════╗');
+        $this->command->info('║  ✅  Seed terminé avec succès !                          ║');
+        $this->command->info('║                                                          ║');
+        $this->command->info('║  Super Admin  : schoolmanagementsystem00@gmail.com / SuperAdmin@2025  ║');
+        $this->command->info('║  Admin LMC    : admin@lmc.bj     / Admin@LMC2025        ║');
+        $this->command->info('║  Admin CSM    : admin@csm.bj     / Admin@CSM2025        ║');
+        $this->command->info('║  Admin EPE    : admin@epe.bj     / Admin@EPE2025        ║');
+        $this->command->info('║  Profs        : prof1@lmc.bj     / Prof@1234            ║');
+        $this->command->info('║  Apprenants   : eleve1@lmc.bj    / Eleve@1234           ║');
+        $this->command->info('║  Parents      : parent1@lmc.bj   / Parent@1234          ║');
+        $this->command->info('╚══════════════════════════════════════════════════════════╝');
     }
 }

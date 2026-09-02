@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class GradeModel extends Model
 {
-    use HasFactory;
+    use HasFactory, HasUuids;
 
     protected $table = 'grades';
 
@@ -36,12 +37,12 @@ class GradeModel extends Model
         return $this->belongsTo(User::class, 'student_id');
     }
 
-    public static function getSingle(int $id): ?self
+    public static function getSingle(string $id): ?self
     {
         return self::find($id);
     }
 
-    public static function findByStudentAndEvaluation(int $student_id, int $evaluation_id): ?self
+    public static function findByStudentAndEvaluation(string $student_id, string $evaluation_id): ?self
     {
         return self::where('student_id', $student_id)
             ->where('evaluation_id', $evaluation_id)
@@ -53,7 +54,7 @@ class GradeModel extends Model
      * Toutes les notes d'une évaluation (saisie en masse)
      * Retourne les apprenants de la classe avec leur note si elle existe
      */
-    public static function getGradesForEvaluation(int $evaluation_id, int $class_id)
+    public static function getGradesForEvaluation(string $evaluation_id, string $class_id)
     {
         $students = User::select('users.id as student_id', 'users.name', 'users.last_name', 'users.admission_number')
             ->where('users.class_id', $class_id)
@@ -132,7 +133,7 @@ class GradeModel extends Model
     /**
      * Notes d'un apprenant pour une période
      */
-    public static function getStudentGradesForPeriod(int $student_id, int $period_id)
+    public static function getStudentGradesForPeriod(string $student_id, string $period_id)
     {
         return self::select(
             'grades.*',
@@ -158,7 +159,7 @@ class GradeModel extends Model
     /**
      * Stats d'une évaluation (min, max, moyenne de la classe)
      */
-    public static function getEvaluationStats(int $evaluation_id, float $max_score): array
+    public static function getEvaluationStats(string $evaluation_id, float $max_score): array
     {
         $grades = self::where('evaluation_id', $evaluation_id)
             ->where('is_delete', 0)

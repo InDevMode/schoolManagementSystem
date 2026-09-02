@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
@@ -9,7 +10,7 @@ use Illuminate\Support\Facades\Request;
 
 class FeesCollectionModel extends Model
 {
-    use HasFactory;
+    use HasFactory, HasUuids;
 
     protected $table = 'feescollections';
 
@@ -28,7 +29,7 @@ class FeesCollectionModel extends Model
         'is_delete'
     ];
 
-    public static function getSingle(int $id)
+    public static function getSingle(string $id)
     {
         return FeesCollectionModel::find($id);
     }
@@ -86,11 +87,11 @@ class FeesCollectionModel extends Model
             };
         }
 
-        return $results->orderBy('id', 'desc')
+        return $results->orderBy('created_at', 'desc')
             ->paginate($perpage);
     }
 
-    public static function getFees(int $student_id, int $perpage)
+    public static function getFees(string $student_id, int $perpage)
     {
         return FeesCollectionModel::select(
             'feescollections.*',
@@ -113,11 +114,11 @@ class FeesCollectionModel extends Model
             ->join('users', 'users.id', '=', 'feescollections.student_id')
             ->where('feescollections.student_id', $student_id)
             ->where('feescollections.is_payment', 1)
-            ->orderBy('id', 'desc')
+            ->orderBy('created_at', 'desc')
             ->paginate($perpage);
     }
 
-    public static function getPaidAmount(int $student_id, int $class_id)
+    public static function getPaidAmount(string $student_id, string $class_id)
     {
         return FeesCollectionModel::where('feescollections.student_id', $student_id)
             ->where('feescollections.class_id', $class_id)
@@ -125,7 +126,7 @@ class FeesCollectionModel extends Model
             ->sum('feescollections.paid_amount');
     }
 
-    public static function getFeesByStudentIdAndClassId(int $student_id, int $class_id)
+    public static function getFeesByStudentIdAndClassId(string $student_id, string $class_id)
     {
         return FeesCollectionModel::where('feescollections.student_id', $student_id)
             ->where('feescollections.class_id', $class_id)
@@ -237,7 +238,7 @@ class FeesCollectionModel extends Model
             };
         }
 
-        return $results->orderBy('id', 'desc')
+        return $results->orderBy('created_at', 'desc')
             ->get();
     }
 

@@ -108,9 +108,9 @@ class ClassTimetableController extends Controller
                     !empty($slot['end_time'])
                 ) {
                     ClassTimetableModel::create([
-                        'class_id'    => intval($request->class_id),
-                        'subject_id'  => intval($request->subject_id),
-                        'week_id'     => intval($slot['week_id']),
+                        'class_id'    => $request->class_id,
+                        'subject_id'  => $request->subject_id,
+                        'week_id'     => $slot['week_id'],
                         'start_time'  => $slot['start_time'],
                         'end_time'    => $slot['end_time'],
                         'room_number' => $slot['room_number'] ?? '',
@@ -222,7 +222,7 @@ class ClassTimetableController extends Controller
     public function parentClassFullTimetable($class_id): \Illuminate\Http\JsonResponse
     {
         return response()->json([
-            'timetable' => $this->buildStudentTimetableMatrix((int) $class_id),
+            'timetable' => $this->buildStudentTimetableMatrix($class_id),
         ]);
     }
 

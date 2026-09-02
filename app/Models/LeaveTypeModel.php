@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 
 class LeaveTypeModel extends Model
 {
-    use HasFactory;
+    use HasFactory, HasUuids;
 
     protected $table = 'leave_types';
 
@@ -18,7 +19,7 @@ class LeaveTypeModel extends Model
 
     // ── Helpers ───────────────────────────────────────────────────────────────
 
-    public static function getSingle(int $id): ?self
+    public static function getSingle(string $id): ?self
     {
         return self::find($id);
     }
@@ -76,7 +77,7 @@ class LeaveTypeModel extends Model
     /**
      * Vérifie l'unicité du nom dans l'école lors de la modification.
      */
-    public static function checkNameSingle(string $name, int $id, ?int $schoolId = null): ?self
+    public static function checkNameSingle(string $name, string $id, ?int $schoolId = null): ?self
     {
         $q = self::where('name', $name)->where('id', '!=', $id)->where('is_delete', 0);
 

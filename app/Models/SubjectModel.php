@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -9,7 +10,7 @@ use Illuminate\Support\Facades\Request;
 
 class SubjectModel extends Model
 {
-    use HasFactory;
+    use HasFactory, HasUuids;
 
     protected $table = 'subject';
 
@@ -24,7 +25,7 @@ class SubjectModel extends Model
         'is_delete',
     ];
 
-    public static function getSingle(int $id): ?SubjectModel
+    public static function getSingle(string $id): ?SubjectModel
     {
         return SubjectModel::find($id);
     }
@@ -53,8 +54,7 @@ class SubjectModel extends Model
         }
 
         return $results->where('subject.is_delete', 0)
-            ->orderBy('subject.id', 'desc')
-            ->groupBy('subject.id')
+            ->orderBy('subject.created_at', 'desc')
             ->paginate($perPage);
     }
 
@@ -74,7 +74,7 @@ class SubjectModel extends Model
             ->first();
     }
 
-    public static function checkNameSingle(string $name, int $id): ?SubjectModel
+    public static function checkNameSingle(string $name, string $id): ?SubjectModel
     {
         return SubjectModel::where('name', '=',$name)
             ->where('id', '!=', $id)

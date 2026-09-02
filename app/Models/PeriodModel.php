@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
@@ -9,7 +10,7 @@ use Illuminate\Support\Facades\Request;
 
 class PeriodModel extends Model
 {
-    use HasFactory;
+    use HasFactory, HasUuids;
 
     protected $table = 'periods';
 
@@ -35,7 +36,7 @@ class PeriodModel extends Model
         'is_current' => 'boolean',
     ];
 
-    public static function getSingle(int $id)
+    public static function getSingle(string $id)
     {
         return PeriodModel::find($id);
     }
@@ -135,7 +136,7 @@ class PeriodModel extends Model
      * Marquer une période comme courante UNIQUEMENT dans son école.
      * Désactive les autres périodes courantes de la même école.
      */
-    public static function setCurrentForSchool(int $periodId, int $schoolId): bool
+    public static function setCurrentForSchool(string $periodId, string $schoolId): bool
     {
         // Désactiver les périodes courantes de cette école uniquement
         PeriodModel::where('school_id', $schoolId)

@@ -45,11 +45,11 @@ class PeriodController extends Controller
             $period->school_id    = $schoolId;
             $period->name         = trim($request->name);
             $period->type         = $request->type;
-            $period->order_number = intval($request->order_number);
+            $period->order_number = $request->order_number;
             $period->school_year  = trim($request->school_year ?? '');
             $period->start_date   = $request->start_date;
             $period->end_date     = $request->end_date;
-            $period->status       = intval($request->status);
+            $period->status       = $request->status;
             $period->created_by   = $user->id;
             $period->save();
 
@@ -78,17 +78,17 @@ class PeriodController extends Controller
 
             // Vérifier que l'admin ne modifie que les périodes de son école
             $user = Auth::user();
-            if ((int) $user->user_type !== 0 && (int) $period->school_id !== (int) $user->school_id) {
+            if ((int) $user->user_type !== 0 && $period->school_id !== $user->school_id) {
                 return redirect()->back()->with('error', 'Accès refusé à cette période.');
             }
 
             $period->name         = trim($request->name);
             $period->type         = $request->type;
-            $period->order_number = intval($request->order_number);
+            $period->order_number = $request->order_number;
             $period->school_year  = trim($request->school_year ?? '');
             $period->start_date   = $request->start_date;
             $period->end_date     = $request->end_date;
-            $period->status       = intval($request->status);
+            $period->status       = $request->status;
             $period->save();
 
             return redirect('admin/examinations/period/list')
@@ -106,7 +106,7 @@ class PeriodController extends Controller
 
         // Vérifier que l'admin ne supprime que les périodes de son école
         $user = Auth::user();
-        if ((int) $user->user_type !== 0 && (int) $period->school_id !== (int) $user->school_id) {
+        if ((int) $user->user_type !== 0 && $period->school_id !== $user->school_id) {
             return redirect()->back()->with('error', 'Accès refusé à cette période.');
         }
 
@@ -128,7 +128,7 @@ class PeriodController extends Controller
             $user = Auth::user();
 
             // Vérifier que la période appartient à l'école de l'admin
-            if ((int) $user->user_type !== 0 && (int) $period->school_id !== (int) $user->school_id) {
+            if ((int) $user->user_type !== 0 && $period->school_id !== $user->school_id) {
                 return redirect()->back()->with('error', 'Accès refusé à cette période.');
             }
 

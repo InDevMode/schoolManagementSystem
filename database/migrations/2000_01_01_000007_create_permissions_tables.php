@@ -5,17 +5,18 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 /**
- * Tables Spatie Laravel-Permission — version consolidée.
- * Inclut les colonnes supplémentaires (user_type, description, is_delete).
+ * Tables Spatie Laravel-Permission — version UUID.
+ * model_morph_key est uuid (string) pour pointer vers users.id (uuid).
+ * permissions et roles gardent bigIncrements (Spatie les gère en interne).
  */
 return new class extends Migration
 {
     public function up(): void
     {
-        $tableNames   = config('permission.table_names');
-        $columnNames  = config('permission.column_names');
-        $pivotRole    = $columnNames['role_pivot_key'] ?? 'role_id';
-        $pivotPerm    = $columnNames['permission_pivot_key'] ?? 'permission_id';
+        $tableNames  = config('permission.table_names');
+        $columnNames = config('permission.column_names');
+        $pivotRole   = $columnNames['role_pivot_key'] ?? 'role_id';
+        $pivotPerm   = $columnNames['permission_pivot_key'] ?? 'permission_id';
 
         throw_if(
             empty($tableNames),
@@ -28,8 +29,8 @@ return new class extends Migration
             $table->bigIncrements('id');
             $table->string('name');
             $table->string('guard_name');
-            $table->tinyInteger('is_delete')->default(0)->comment('0: actif, 1: supprimé');
-            $table->unsignedInteger('deleted_by')->nullable();
+            $table->smallInteger('is_delete')->default(0)->comment('0: actif, 1: supprimé');
+            $table->unsignedBigInteger('deleted_by')->nullable();
             $table->timestamp('deleted_at')->nullable();
             $table->timestamps();
 
@@ -37,15 +38,15 @@ return new class extends Migration
         });
 
         // ── roles ────────────────────────────────────────────────────────────
-        Schema::create($tableNames['roles'], function (Blueprint $table) use ($columnNames) {
+        Schema::create($tableNames['roles'], function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name');
             $table->string('guard_name');
-            $table->unsignedSmallInteger('user_type')->nullable()
+            $table->smallInteger('user_type')->nullable()
                   ->comment('0:super_admin 1:admin 2:teacher 3:student 4:parent 5+:custom');
             $table->string('description')->nullable();
-            $table->tinyInteger('is_delete')->default(0)->comment('0: actif, 1: supprimé');
-            $table->unsignedInteger('deleted_by')->nullable();
+            $table->smallInteger('is_delete')->default(0)->comment('0: actif, 1: supprimé');
+            $table->unsignedBigInteger('deleted_by')->nullable();
             $table->timestamp('deleted_at')->nullable();
             $table->timestamps();
 
@@ -58,7 +59,8 @@ return new class extends Migration
         ) {
             $table->unsignedBigInteger($pivotPerm);
             $table->string('model_type');
-            $table->unsignedBigInteger($columnNames['model_morph_key']);
+            // UUID pour pointer vers users.id
+            $table->uuid($columnNames['model_morph_key']);
             $table->index(
                 [$columnNames['model_morph_key'], 'model_type'],
                 'model_has_permissions_model_id_model_type_index'
@@ -79,7 +81,8 @@ return new class extends Migration
         ) {
             $table->unsignedBigInteger($pivotRole);
             $table->string('model_type');
-            $table->unsignedBigInteger($columnNames['model_morph_key']);
+            // UUID pour pointer vers users.id
+            $table->uuid($columnNames['model_morph_key']);
             $table->index(
                 [$columnNames['model_morph_key'], 'model_type'],
                 'model_has_roles_model_id_model_type_index'
@@ -113,9 +116,8 @@ return new class extends Migration
         });
 
         app('cache')
-            ->store(config('permission.cache.store') != 'default'
-                ? config('permission.cache.store')
-                : null)
+            ->store(config('permission.cache.store') !== 'default'
+                ? config('permission.cache.store') : null)
             ->forget(config('permission.cache.key'));
     }
 

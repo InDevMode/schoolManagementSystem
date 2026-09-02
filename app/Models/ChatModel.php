@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
@@ -10,7 +11,7 @@ use DB;
 
 class ChatModel extends Model
 {
-    use HasFactory;
+    use HasFactory, HasUuids;
 
     protected $table = 'chats';
     protected $fillable = ['receiver_id', 'sender_id', 'message', 'status', 'file',];
@@ -20,12 +21,12 @@ class ChatModel extends Model
     ];
 
 
-    public static function getSingle(int $id)
+    public static function getSingle(string $id)
     {
         return ChatModel::find($id);
     }
 
-    public static function getChats(int $receiver_id, int $sender_id)
+    public static function getChats(string $receiver_id, string $sender_id)
     {
         return ChatModel::select('chats.*')
             ->where(function ($query) use ($receiver_id, $sender_id) {
@@ -45,7 +46,7 @@ class ChatModel extends Model
             })
             // NE PAS exclure les messages supprimés — on les affiche "Message supprimé"
             // mais on les inclut pour maintenir la cohérence de la conversation
-            ->orderBy('id', 'asc')
+            ->orderBy('created_at', 'asc')
             ->get();
     }
 
@@ -62,7 +63,7 @@ class ChatModel extends Model
             ->update(['status' => 1]);
     }
 
-    public static function getChatUser(int $user_id)
+    public static function getChatUser(string $user_id)
     {
         $getChatUser = ChatModel::select(
             'chats.*',
@@ -77,18 +78,18 @@ class ChatModel extends Model
         )
             ->join('users as sender', 'sender.id', '=', 'chats.sender_id')
             ->join('users as receiver', 'receiver.id', '=', 'chats.receiver_id')
-            ->whereIn('chats.id', function ($query) use ($user_id) {
-                $query->selectRaw('MAX(chats.id)')
-                    ->from('chats')
+            ->whereIn('chats.created_at', function ($query) use ($user_id) {
+                $query->selectRaw('MAX(c2.created_at)')
+                    ->from('chats as c2')
                     ->where(function ($sub) use ($user_id) {
-                        $sub->where('chats.receiver_id', $user_id)
-                            ->orWhere('chats.sender_id', $user_id);
+                        $sub->where('c2.receiver_id', $user_id)
+                            ->orWhere('c2.sender_id', $user_id);
                     })
                     ->where(function ($sub) {
-                        $sub->where('chats.is_delete', 0)
-                            ->orWhereNull('chats.is_delete');
+                        $sub->where('c2.is_delete', 0)
+                            ->orWhereNull('c2.is_delete');
                     })
-                    ->groupBy(\Illuminate\Support\Facades\DB::raw('CASE WHEN chats.sender_id = ' . $user_id . ' THEN chats.receiver_id ELSE chats.sender_id END'));
+                    ->groupBy(\Illuminate\Support\Facades\DB::raw('CASE WHEN c2.sender_id = \'' . $user_id . '\' THEN c2.receiver_id ELSE c2.sender_id END'));
             })
             ->where(function ($q) {
                 $q->where('chats.is_delete', 0)->orWhereNull('chats.is_delete');
@@ -121,7 +122,7 @@ class ChatModel extends Model
         return $result;
     }
 
-    public function countMessage(int $connection_user_id, int $user_id)
+    public function countMessage(int $connection_user_id, string $user_id)
     {
         return ChatModel::where('sender_id', '=', $connection_user_id)
             ->where('receiver_id', '=', $user_id)
@@ -134,14 +135,14 @@ class ChatModel extends Model
         return $this->belongsTo(User::class, 'connection_user_id');
     }
 
-    public static function updateCountMessage(int $sender_id, int $receiver_id)
+    public static function updateCountMessage(string $sender_id, string $receiver_id)
     {
         ChatModel::where('sender_id', $receiver_id)
             ->where('receiver_id', '=', $sender_id)
             ->update(['status' => 1]);
     }
 
-    public static function getUnreadMessages(int $user_id)
+    public static function getUnreadMessages(string $user_id)
     {
         $getUnread = ChatModel::select(
             'chats.*',
@@ -189,12 +190,7 @@ class ChatModel extends Model
 
     public function getChatFile(): string
     {
-        $path = base_path('upload/chats/' . $this->file);
-        if (!empty($this->file) && file_exists($path)) {
-            return url('upload/chats/' . $this->file);
-        }
-        // Image par défaut si rien n'existe
-        return url('');
+        return \App\Services\UploadService::url($this->file, '');
     }
 
 

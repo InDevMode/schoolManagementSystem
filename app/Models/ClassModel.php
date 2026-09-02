@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
@@ -10,7 +11,7 @@ use Illuminate\Support\Facades\Request;
 
 class ClassModel extends Model
 {
-    use HasFactory;
+    use HasFactory, HasUuids;
 
     protected $table = 'class';
 
@@ -26,10 +27,10 @@ class ClassModel extends Model
     ];
 
     /**
-     * @param int $id
+     * @param string $id
      * @return ClassModel|null
      */
-    public static function getSingle(int $id): ?ClassModel
+    public static function getSingle(string $id): ?ClassModel
     {
         return ClassModel::find($id);
     }
@@ -70,8 +71,7 @@ class ClassModel extends Model
         }
 
         return $results->where('class.is_delete', 0)
-            ->orderBy('class.id', 'desc')
-            ->groupBy('class.id')
+            ->orderBy('class.created_at', 'desc')
             ->paginate($perPage);
     }
 
@@ -110,10 +110,10 @@ class ClassModel extends Model
 
     /**
      * @param string $name
-     * @param int $id
+     * @param string $id
      * @return ClassModel|null
      */
-    public static function checkNameSingle(string $name, int $id): ?ClassModel
+    public static function checkNameSingle(string $name, string $id): ?ClassModel
     {
         return ClassModel::where('name', $name)
             ->where('id', '!=', $id)

@@ -2,12 +2,14 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Request;
 
 class DeletionLogModel extends Model
 {
+    use HasUuids;
     protected $table = 'deletion_logs';
 
     public $timestamps = false;
@@ -24,7 +26,7 @@ class DeletionLogModel extends Model
     /**
      * Enregistre une suppression — appeler AVANT de mettre is_delete=1
      */
-    public static function log(string $table, int $recordId, array $recordData, ?string $reason = null): void
+    public static function log(string $table, string $recordId, array $recordData, ?string $reason = null): void
     {
         self::create([
             'table_name'  => $table,

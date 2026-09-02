@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Request;
 
 class EvaluationModel extends Model
 {
-    use HasFactory;
+    use HasFactory, HasUuids;
 
     protected $table = 'evaluations';
 
@@ -40,7 +41,7 @@ class EvaluationModel extends Model
         'examen_blanc'     => 'Examen blanc',
     ];
 
-    public static function getSingle(int $id): ?self
+    public static function getSingle(string $id): ?self
     {
         return self::find($id);
     }
@@ -86,7 +87,7 @@ class EvaluationModel extends Model
     /**
      * Évaluations d'une classe pour une période donnée
      */
-    public static function getByClassAndPeriod(int $class_id, int $period_id)
+    public static function getByClassAndPeriod(string $class_id, string $period_id)
     {
         return self::select('evaluations.*', 'subject.name as subject_name')
             ->join('subject', 'subject.id', '=', 'evaluations.subject_id')
@@ -117,7 +118,7 @@ class EvaluationModel extends Model
      *   'groups_count'     => 4,
      * ]
      */
-    public static function calculateSubjectAverageDetail(int $student_id, int $subject_id, int $period_id): array
+    public static function calculateSubjectAverageDetail(string $student_id, string $subject_id, string $period_id): array
     {
         $evaluations = self::where('subject_id', $subject_id)
             ->where('period_id', $period_id)
@@ -171,7 +172,7 @@ class EvaluationModel extends Model
             'weighted_average'=> $weightedAverage,
         ];
     }
-    public static function getByTeacher(int $teacher_id, ?int $class_id = null, ?int $subject_id = null)
+    public static function getByTeacher(string $teacher_id, ?string $class_id = null, ?string $subject_id = null)
     {
         $q = self::select(
             'evaluations.*',
@@ -194,7 +195,7 @@ class EvaluationModel extends Model
     /**
      * Évaluations d'un prof paginées avec filtres
      */
-    public static function getByTeacherPaginated(int $teacher_id, int $perPage)
+    public static function getByTeacherPaginated(string $teacher_id, int $perPage)
     {
         $q = self::select(
             'evaluations.*',
@@ -238,7 +239,7 @@ class EvaluationModel extends Model
      * Retourne la moyenne simple de la matière (sur 20), sans le coefficient.
      * Le coefficient est appliqué ensuite dans BulletinModel::generate().
      */
-    public static function calculateSubjectAverage(int $student_id, int $subject_id, int $period_id): ?float
+    public static function calculateSubjectAverage(string $student_id, string $subject_id, string $period_id): ?float
     {
         $evaluations = self::where('subject_id', $subject_id)
             ->where('period_id', $period_id)

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\UploadService;
 use App\Models\School;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -276,20 +277,11 @@ class SchoolController extends Controller
 
     private function uploadFile(Request $request, string $field): string
     {
-        $file     = $request->file($field);
-        $ext      = $file->getClientOriginalExtension();
-        $fileName = strtolower('school_' . $field . '_' . date('dmYHis') . Str::random(8)) . '.' . $ext;
-        $file->move(public_path('upload/school/'), $fileName);
-        return $fileName;
+        return UploadService::upload($request->file($field), UploadService::schoolFolder(), 'school_' . $field);
     }
 
-    private function deleteFile(?string $filename): void
+    private function deleteFile(?string $path): void
     {
-        if ($filename) {
-            $path = public_path('upload/school/' . $filename);
-            if (file_exists($path)) {
-                unlink($path);
-            }
-        }
+        UploadService::delete($path);
     }
 }

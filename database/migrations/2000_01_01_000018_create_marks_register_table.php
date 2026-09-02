@@ -5,23 +5,22 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 /**
- * Table marks_register — registre des notes (ancien système).
- * Fusionne : create_marks_register + improve_timetable_and_marks_register (colonnes marks_register).
+ * Table marks_register — registre des notes (ancien système, conservé).
  */
 return new class extends Migration
 {
     public function up(): void
     {
         Schema::create('marks_register', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('student_id')->nullable();
-            $table->unsignedBigInteger('exam_id')->nullable();
-            $table->unsignedBigInteger('class_id')->nullable();
-            $table->unsignedBigInteger('subject_id')->nullable();
-            $table->unsignedBigInteger('period_id')->nullable()
+            $table->uuid('id')->primary();
+            $table->uuid('student_id')->nullable();
+            $table->uuid('exam_id')->nullable();
+            $table->uuid('class_id')->nullable();
+            $table->uuid('subject_id')->nullable();
+            $table->uuid('period_id')->nullable()
                   ->comment('Lien période pour le bulletin');
-            $table->enum('eval_type', ['interrogation', 'devoir_surveille', 'travail_maison', 'examen_blanc'])
-                  ->nullable()->comment('Type d\'évaluation béninois');
+            $table->string('eval_type')->nullable()
+                  ->comment('interrogation, devoir_surveille, travail_maison, examen_blanc');
 
             // Notes brutes
             $table->decimal('class_work', 5, 2)->nullable();
@@ -40,22 +39,21 @@ return new class extends Migration
             // Agrégats
             $table->decimal('passing_marks', 6, 2)->nullable();
             $table->decimal('full_marks', 6, 2)->nullable();
-            $table->decimal('max_score', 5, 2)->default(20)->comment('Note maximale (20 par défaut)');
+            $table->decimal('max_score', 5, 2)->default(20);
             $table->decimal('total_marks', 6, 2)->nullable();
             $table->decimal('quiz_average', 5, 2)->nullable();
             $table->decimal('assignment_average', 5, 2)->nullable();
-            $table->decimal('subject_average', 5, 2)->nullable()
-                  ->comment('Σ(note×coeff) / Σ(coeffs) sur 20');
+            $table->decimal('subject_average', 5, 2)->nullable();
             $table->decimal('coefficient', 3, 1)->default(1);
 
             // Observation & workflow
-            $table->string('observation')->nullable()->comment('Ex: Absent, Dispensé...');
+            $table->string('observation')->nullable();
             $table->boolean('validated')->default(false);
-            $table->unsignedBigInteger('validated_by')->nullable();
+            $table->uuid('validated_by')->nullable();
             $table->timestamp('validated_at')->nullable();
 
-            $table->tinyInteger('is_delete')->default(0)->comment('0: actif, 1: supprimé');
-            $table->unsignedBigInteger('created_by')->nullable();
+            $table->smallInteger('is_delete')->default(0)->comment('0: actif, 1: supprimé');
+            $table->uuid('created_by')->nullable();
             $table->timestamps();
 
             $table->foreign('student_id')->references('id')->on('users')->onDelete('cascade');

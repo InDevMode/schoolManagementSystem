@@ -2,12 +2,15 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
 
 class School extends Model
 {
+    use HasUuids;
+
     protected $table = 'schools';
 
     protected $fillable = [
@@ -66,20 +69,12 @@ class School extends Model
 
     public function getLogoUrl(): string
     {
-        $path = public_path('upload/school/' . $this->logo);
-        if (!empty($this->logo) && file_exists($path)) {
-            return url('upload/school/' . $this->logo);
-        }
-        return url('upload/logo.png');
+        return \App\Services\UploadService::url($this->logo, asset('upload/logo.png'));
     }
 
     public function getFaviconUrl(): string
     {
-        $path = public_path('upload/school/' . $this->favicon);
-        if (!empty($this->favicon) && file_exists($path)) {
-            return url('upload/school/' . $this->favicon);
-        }
-        return url('upload/favicon.png');
+        return \App\Services\UploadService::url($this->favicon, asset('upload/favicon.png'));
     }
 
     // ── Helpers statiques ──────────────────────────────────────────────────
