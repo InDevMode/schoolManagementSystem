@@ -322,7 +322,7 @@ watch(() => form.class_id, async (newClassId) => {
     if (!newClassId) return;
     loadingSubjects.value = true;
     try {
-        const res = await axios.get(`/admin/evaluations/subjects-by-class/${newClassId}`);
+        const res = await axios.get(`/teacher/evaluations/subjects-by-class/${newClassId}`);
         dynamicSubjects.value = res.data;
     } catch {
         dynamicSubjects.value = [];

@@ -82,8 +82,8 @@ class HandleInertiaRequests extends Middleware
         try {
             $settings = null;
 
-            // Auth background — toujours chargé depuis les settings globaux (même sans connexion)
-            $globalSetting = \App\Models\SettingModel::getSingle(1);
+            // Settings globaux — cachés 10 min (changent rarement)
+            $globalSetting = Cache::remember('settings.global.1', 600, fn () => \App\Models\SettingModel::getSingle(1));
             $authBackground = $globalSetting
                 ? $globalSetting->getAuthBackground()
                 : [
@@ -109,8 +109,8 @@ class HandleInertiaRequests extends Middleware
                         ];
                     }
                 } else {
-                    // Admin / autres → école de l'utilisateur
-                    $school = \App\Models\School::find($user->school_id);
+                    // Admin / autres → école de l'utilisateur (réutilise le cache de EnsureSchoolActive)
+                    $school = Cache::remember("school.active.{$user->school_id}", 300, fn () => \App\Models\School::find($user->school_id));
                     if ($school) {
                         // Si l'école n'a pas de logo propre, on utilise le logo global (settings id=1)
                         $logoUrl = $school->getLogoUrl();

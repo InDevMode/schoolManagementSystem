@@ -337,7 +337,7 @@
 </template>
 
 <script setup lang="ts">
-import { fmtDate } from '@/utils/dateFormat';
+import { fmtDate } from '@/Utils/dateFormat';
 import { ref, reactive } from 'vue';
 import { router, usePage } from '@inertiajs/vue3';
 import { PageHeader, AppInput, AppSelect, AppModal, AppAlert } from '@/Components/UI';

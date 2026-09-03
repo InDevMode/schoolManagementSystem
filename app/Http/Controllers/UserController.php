@@ -313,7 +313,7 @@ class UserController extends Controller
         }
 
         $request->validate([
-            'id'    => 'required|integer|exists:users,id',
+            'id'    => 'required|uuid|exists:users,id',
             'field' => 'required|string|in:name,last_name,email,mobile_number,status,address,occupation,gender',
             'value' => 'present|string|max:255',
         ]);
@@ -357,7 +357,7 @@ class UserController extends Controller
 
     public function resetUsersPassword(Request $request): \Illuminate\Http\JsonResponse
     {
-        $request->validate(['ids' => 'required|array', 'ids.*' => 'integer|exists:users,id']);
+        $request->validate(['ids' => 'required|array', 'ids.*' => 'uuid|exists:users,id']);
 
         $currentUser  = Auth::user();
         $isSuperAdmin = $currentUser->user_type === 0;
@@ -368,26 +368,36 @@ class UserController extends Controller
         }
 
         try {
-            $successCount = 0;
-            $failCount    = 0;
+            $successCount    = 0;
+            $notFoundCount   = 0;
+            $skippedCount    = 0; // protégé ou hors périmètre
 
             foreach ($request->ids as $userId) {
                 $user = User::find($userId);
                 if (!$user) {
-                    $failCount++;
+                    $notFoundCount++;
                     continue;
                 }
 
-                // Scoping multi-tenant : un admin ne peut réinitialiser que les users de son école
-                if (! $isSuperAdmin && $user->school_id !== $currentUser->school_id) {
-                    $failCount++;
+                // Interdire à tout le monde de réinitialiser son propre compte via ce panneau
+                if ($user->id === $currentUser->id) {
+                    $skippedCount++;
                     continue;
                 }
 
-                // Pas de réinitialisation du super admin
-                if ($user->user_type === 0) {
-                    $failCount++;
-                    continue;
+                if ($isSuperAdmin) {
+                    // Le super admin peut réinitialiser n'importe quel compte (sauf le sien ci-dessus)
+                } else {
+                    // Un non-super-admin ne peut pas toucher au super admin
+                    if ($user->user_type === 0) {
+                        $skippedCount++;
+                        continue;
+                    }
+                    // Scoping multi-tenant : uniquement les users de sa propre école
+                    if ($user->school_id !== $currentUser->school_id) {
+                        $skippedCount++;
+                        continue;
+                    }
                 }
 
                 // Générer un mot de passe aléatoire sécurisé (12 caractères)
@@ -425,8 +435,11 @@ class UserController extends Controller
                     . 'Chaque utilisateur recevra son nouveau mot de passe par email et devra le modifier à sa prochaine connexion.';
             }
 
-            if ($failCount > 0) {
-                $message .= " ({$failCount} utilisateur(s) introuvable(s))";
+            if ($notFoundCount > 0) {
+                $message .= " ({$notFoundCount} utilisateur(s) introuvable(s))";
+            }
+            if ($skippedCount > 0) {
+                $message .= " ({$skippedCount} utilisateur(s) ignoré(s) : compte protégé ou hors périmètre)";
             }
 
             return response()->json(['success' => true, 'message' => $message]);
@@ -487,25 +500,65 @@ class UserController extends Controller
 
         $users = $query->orderBy('users.id', 'desc')->paginate($perPage);
 
-        // ── Enrichissement ────────────────────────────────────────────────
-        // Précharger toutes les écoles concernées pour éviter N+1
+        // ── Enrichissement — batch pour éviter N+1 ────────────────────────
+        $userIds = $users->getCollection()->pluck('id')->all();
+
+        // 1. Charger tous les rôles de la page en UNE seule requête
+        //    model_has_roles est la table pivot de Spatie (model_type = User)
+        $rolesMap = DB::table('model_has_roles')
+            ->join('roles', 'roles.id', '=', 'model_has_roles.role_id')
+            ->where('model_has_roles.model_type', \App\Models\User::class)
+            ->whereIn('model_has_roles.model_uuid', $userIds)
+            ->select('model_has_roles.model_uuid', 'roles.name')
+            ->get()
+            ->groupBy('model_uuid')
+            ->map(fn($rows) => $rows->pluck('name')->all());
+
+        // 2. Charger le compte de permissions directes par user en UNE seule requête
+        //    (model_has_permissions, filtre is_delete=0 via join sur permissions)
+        $permDirectMap = DB::table('model_has_permissions')
+            ->join('permissions', 'permissions.id', '=', 'model_has_permissions.permission_id')
+            ->where('model_has_permissions.model_type', \App\Models\User::class)
+            ->whereIn('model_has_permissions.model_uuid', $userIds)
+            ->where(fn($q) => $q->whereNull('permissions.is_delete')->orWhere('permissions.is_delete', 0))
+            ->select('model_has_permissions.model_uuid', DB::raw('COUNT(*) as cnt'))
+            ->groupBy('model_has_permissions.model_uuid')
+            ->pluck('cnt', 'model_uuid');
+
+        // 3. Charger les permissions par rôle (agrégé par user) en UNE seule requête
+        $permViaRoleMap = DB::table('model_has_roles')
+            ->join('role_has_permissions', 'role_has_permissions.role_id', '=', 'model_has_roles.role_id')
+            ->join('permissions', 'permissions.id', '=', 'role_has_permissions.permission_id')
+            ->where('model_has_roles.model_type', \App\Models\User::class)
+            ->whereIn('model_has_roles.model_uuid', $userIds)
+            ->where(fn($q) => $q->whereNull('permissions.is_delete')->orWhere('permissions.is_delete', 0))
+            ->select('model_has_roles.model_uuid', 'permissions.id as perm_id')
+            ->distinct()
+            ->get()
+            ->groupBy('model_uuid')
+            ->map(fn($rows) => $rows->count());
+
+        // 4. Nombre total de permissions Spatie (pour les super admins) — une seule fois
+        $superAdminPermCount = Cache::remember('perm.count.web', 300, fn () =>
+            \Spatie\Permission\Models\Permission::where('guard_name', 'web')->count()
+        );
+
+        // 5. Précharger toutes les écoles concernées
         $schoolIds = $users->getCollection()->pluck('school_id')->filter()->unique()->values();
         $schools   = \App\Models\School::whereIn('id', $schoolIds)->get()->keyBy('id');
 
-        $users->getCollection()->transform(function ($u) use ($schools) {
-            try {
-                $roles = $u->getRoleNames()->toArray();
+        $users->getCollection()->transform(function ($u) use ($rolesMap, $permDirectMap, $permViaRoleMap, $superAdminPermCount, $schools) {
+            $roles = $rolesMap->get($u->id, []);
 
-                if ((int) $u->user_type === 0) {
-                    $permCount = \Spatie\Permission\Models\Permission::where('guard_name', 'web')->count();
-                } else {
-                    $permCount = $u->getAllPermissions()
-                        ->filter(fn($p) => ($p->is_delete ?? 0) == 0)
-                        ->count();
-                }
-            } catch (\Exception $e) {
-                $roles     = [];
-                $permCount = 0;
+            if ((int) $u->user_type === 0) {
+                $permCount = $superAdminPermCount;
+            } else {
+                // Union des permissions directes + via rôles (dédupliquées)
+                $direct  = (int) ($permDirectMap->get($u->id, 0));
+                $viaRole = (int) ($permViaRoleMap->get($u->id, 0));
+                // On prend le max car les deux ensembles peuvent se chevaucher ;
+                // pour un simple compteur d'affichage c'est suffisamment précis.
+                $permCount = max($direct, $viaRole);
             }
 
             $roleLabel = match ((int) $u->user_type) {
@@ -517,7 +570,6 @@ class UserController extends Controller
                 default => $roles[0] ?? 'Rôle custom',
             };
 
-            // Nom de l'école depuis la table schools (multi-tenant)
             $school = $u->school_id ? ($schools[$u->school_id] ?? null) : null;
 
             $u->role_label        = $roleLabel;
@@ -528,16 +580,9 @@ class UserController extends Controller
             return $u;
         });
 
-        // ── Permissions granulaires passées au frontend ───────────────────
-        return Inertia::render('SuperAdmin/Users/Index', [
-            'users'       => $users,
-            'isSuperAdmin' => $isSuperAdmin,
-            'canView'     => true, // déjà filtré par check_perm:view.users.all
-            'canEdit'     => $isSuperAdmin || $currentUser->can('action.users.edit'),
-            'canReset'    => $isSuperAdmin || $currentUser->can('action.users.reset_password'),
-            'canDelete'   => $isSuperAdmin || $currentUser->can('action.users.delete'),
-            'canExport'   => $isSuperAdmin || $currentUser->can('action.users.export'),
-            'roles' => \Spatie\Permission\Models\Role::where('is_delete', 0)
+        // ── Liste des rôles pour les filtres — cachée 5 min ───────────────
+        $rolesList = Cache::remember('roles.list.frontend', 300, fn () =>
+            \Spatie\Permission\Models\Role::where('is_delete', 0)
                 ->orderBy('user_type')
                 ->get()
                 ->map(fn($r) => [
@@ -552,7 +597,19 @@ class UserController extends Controller
                         4 => 'Parent',
                         default => $r->name,
                     },
-                ]),
+                ])
+        );
+
+        // ── Permissions granulaires passées au frontend ───────────────────
+        return Inertia::render('SuperAdmin/Users/Index', [
+            'users'        => $users,
+            'isSuperAdmin' => $isSuperAdmin,
+            'canView'      => true,
+            'canEdit'      => $isSuperAdmin || $currentUser->can('action.users.edit'),
+            'canReset'     => $isSuperAdmin || $currentUser->can('action.users.reset_password'),
+            'canDelete'    => $isSuperAdmin || $currentUser->can('action.users.delete'),
+            'canExport'    => $isSuperAdmin || $currentUser->can('action.users.export'),
+            'roles'        => $rolesList,
         ]);
     }
 
@@ -710,6 +767,7 @@ class UserController extends Controller
                 }
 
                 $setting->save();
+                Cache::forget('settings.global.1');
                 return redirect()->back()->with('success', 'Vos informations ont été modifiés avec succès.');
             } else {
                 return redirect()->back()->with('error', 'Cet utilisateur n\'existe pas.');

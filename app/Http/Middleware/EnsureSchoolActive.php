@@ -30,7 +30,7 @@ class EnsureSchoolActive
             return $next($request);
         }
 
-        $school = School::find($user->school_id);
+        $school = Cache::remember("school.active.{$user->school_id}", 300, fn () => School::find($user->school_id));
 
         if (! $school || (int) $school->status !== 1 || (int) $school->is_delete !== 0) {
             Auth::logout();

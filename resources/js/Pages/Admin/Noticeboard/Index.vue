@@ -363,7 +363,7 @@
 </template>
 
 <script setup lang="ts">
-import { fmtDate } from '@/utils/dateFormat';
+import { fmtDate } from '@/Utils/dateFormat';
 import { ref, computed } from 'vue';
 import { useForm, router, Link } from '@inertiajs/vue3';
 import { PageHeader, AppButton, AppInput, AppModal, AppRichEditor, AppPagination } from '@/Components/UI';

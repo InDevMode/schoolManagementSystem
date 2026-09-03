@@ -429,7 +429,7 @@ watch(selectedEval, (val, oldVal) => {
 const loadEvals = async (keepSelection = false) => {
     if (!selectedClass.value || !selectedPeriod.value) return;
     try {
-        const res = await axios.get('/admin/evaluations/by-class-period', {
+        const res = await axios.get('/teacher/evaluations/by-class-period', {
             params: { class_id: selectedClass.value, period_id: selectedPeriod.value },
         });
         evalList.value = res.data;

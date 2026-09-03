@@ -19,9 +19,9 @@ class AdminMiddleware
     {
         if (!empty(Auth::check())) {
             $userType = Auth::user()->user_type;
-            // user_type 0 (super_admin), 1 (admin) ET tous les rôles custom (>= 5)
-            // ont accès aux routes /admin/*
-            if ($userType === 0 || $userType >= 1) {
+            // user_type 0 (super_admin), 1 (admin) ET rôles custom (>= 5) uniquement.
+            // Les teachers (2), students (3) et parents (4) sont exclus.
+            if ($userType === 0 || $userType === 1 || $userType >= 5) {
                 return $next($request);
             }
             Auth::logout();

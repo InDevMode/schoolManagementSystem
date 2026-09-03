@@ -130,7 +130,7 @@ class User extends Authenticatable
 
     public static function getEmailSingle(string $email)
     {
-        return User::where('email', '=', $email)->first();
+        return User::where('email', '=', $email)->where('status', 1)->first();
     }
 
     public static function checkEmailSingle(string $email, string $id)
@@ -140,7 +140,10 @@ class User extends Authenticatable
 
     public static function getTokenSingle(string $token)
     {
-        return User::where('remember_token', '=', $token)->first();
+        return User::where('remember_token', '=', $token)
+                   ->whereNotNull('remember_token')
+                   ->where('status', 1)
+                   ->first();
     }
 
     public static function getAllStudent(int $perPage)

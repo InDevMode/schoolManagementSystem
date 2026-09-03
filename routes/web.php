@@ -168,7 +168,6 @@ Route::group(['middleware' => 'admin'], function () {
     // Assign Class Subject url
     Route::get('admin/assign_subject/list',              [ClassSubjectController::class, 'list'])->middleware('check_perm:view.academics.assign_subjects');
     Route::post('admin/assign_subject/add',              [ClassSubjectController::class, 'create'])->middleware('check_perm:view.academics.assign_subjects');
-    Route::post('admin/assign_subject/edit/{id}',        [ClassSubjectController::class, 'update'])->middleware('check_perm:view.academics.assign_subjects');
     Route::post('admin/assign_subject/edit_single/{id}', [ClassSubjectController::class, 'updateSingle'])->middleware('check_perm:view.academics.assign_subjects');
     Route::get('admin/assign_subject/delete/{id}',       [ClassSubjectController::class, 'delete'])->middleware('check_perm:view.academics.assign_subjects');
 
@@ -212,7 +211,6 @@ Route::group(['middleware' => 'admin'], function () {
     // Assign class to teacher url
     Route::get('admin/assign_class/list',              [ClassTeacherController::class, 'list'])->middleware('check_perm:view.academics.assign_classes');
     Route::post('admin/assign_class/add',              [ClassTeacherController::class, 'create'])->middleware('check_perm:view.academics.assign_classes');
-    Route::post('admin/assign_class/edit/{id}',        [ClassTeacherController::class, 'update'])->middleware('check_perm:view.academics.assign_classes');
     Route::post('admin/assign_class/edit_single/{id}', [ClassTeacherController::class, 'updateSingle'])->middleware('check_perm:view.academics.assign_classes');
     Route::get('admin/assign_class/delete/{id}',       [ClassTeacherController::class, 'delete'])->middleware('check_perm:view.academics.assign_classes');
     // Classes d'un professeur (JSON — pour le modal de détail)
@@ -286,7 +284,7 @@ Route::group(['middleware' => 'admin'], function () {
     Route::get('admin/feescollections_stripe/payment_error',    [FeesCollectionController::class, 'stripeAdminError']);
     Route::post('/paypal/ipn/admin',                            [FeesCollectionController::class, 'paypalIPN']);
 
-    Route::get('admin/test', [AdminController::class, 'test']);
+
 
     // ── Évaluations béninoises (nouveaux types) ──────────────────────────────
     Route::get('admin/evaluations/list',                           [EvaluationController::class, 'list'])->middleware('check_perm:view.exams.list');
@@ -379,6 +377,10 @@ Route::group(['middleware' => 'teacher'], function () {
     Route::get('teacher/evaluations/grade-entry',          [EvaluationController::class, 'teacherGradeEntry']);
     Route::post('teacher/evaluations/grades/save',         [EvaluationController::class, 'teacherSaveGrades']);
     Route::post('teacher/evaluations/{id}/cancel',         [EvaluationController::class, 'teacherCancelEvaluation']);
+    // Endpoints JSON partagés avec les pages teacher (dupliqués depuis le groupe admin
+    // pour permettre l'accès après le durcissement du AdminMiddleware)
+    Route::get('teacher/evaluations/subjects-by-class/{class_id}', [EvaluationController::class, 'getSubjectsByClass']);
+    Route::get('teacher/evaluations/by-class-period',              [EvaluationController::class, 'getEvaluationsByClassPeriod']);
 
     // Student attendance url
     Route::get('teacher/attendance/student/list', [AttendanceController::class, 'attendanceStudentTeacher']);

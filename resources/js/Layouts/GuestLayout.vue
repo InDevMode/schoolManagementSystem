@@ -1,15 +1,15 @@
 ﻿<template>
-    <div class="min-h-screen flex overflow-hidden" :class="isDark ? 'dark' : ''"
-         :style="{ background: isDark ? '#1e1b4b' : '#f5f3ff' }">
+    <div class="min-h-screen flex" :class="isDark ? 'dark' : ''"
+         :style="{ background: isDark ? '#1e1b4b' : '#f8f7ff' }">
 
         <!-- ═══════════════════════════════════════════
-             PANNEAU GAUCHE — Violet + vagues blanches
+             PANNEAU GAUCHE — Violet avec bord droit ondulé
         ═══════════════════════════════════════════ -->
         <!-- PANNEAU GAUCHE -->
         <div class="hidden lg:flex flex-col relative flex-shrink-0"
-             style="width:48%;min-height:100vh;overflow:hidden;">
+             style="width:48%;min-height:100vh;overflow:visible;z-index:10;">
 
-            <!-- Fond violet -->
+            <!-- Fond violet de base avec clip-path ondulé -->
             <div v-if="bgType === 'image' && bgValue"
                  class="absolute inset-0 bg-cover bg-center"
                  :style="{ backgroundImage: `url(${bgValue})` }">
@@ -23,35 +23,78 @@
                 </video>
                 <div class="absolute inset-0" :style="{ background: bgOverlay }"/>
             </div>
-            <div v-else class="absolute inset-0"
-                 :style="{ background: bgValue || defaultGradient }"/>
 
-            <!-- Vagues blanches — bord droit uniquement -->
-            <div class="absolute inset-y-0 right-0 pointer-events-none"
-                 style="width:72px;z-index:10;">
-                <svg viewBox="0 0 72 900" preserveAspectRatio="none"
-                     class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M72 0 C58 50 72 100 58 155 C44 210 32 232 50 287 C68 342 72 364 56 419 C40 476 32 500 52 555 C72 610 72 632 57 687 C42 742 34 766 54 821 C74 876 72 900 72 900 Z" fill="rgba(255,255,255,0.08)"/>
-                    <path d="M72 0 C62 45 72 95 64 150 C55 207 43 228 60 283 C77 338 72 360 58 415 C44 472 36 496 56 551 C76 606 72 628 59 683 C46 738 38 762 58 817 C78 872 72 900 72 900 Z" fill="rgba(255,255,255,0.16)"/>
-                    <path d="M72 0 C65 40 72 90 67 145 C61 200 50 222 66 277 C82 332 72 354 62 409 C52 466 44 490 63 545 C82 600 72 622 63 677 C54 732 46 756 65 811 C84 866 72 900 72 900 Z" fill="rgba(255,255,255,0.28)"/>
-                    <path d="M72 0 C68 36 72 85 70 140 C67 195 57 217 71 272 C85 327 72 349 65 404 C58 461 51 485 68 540 C85 595 72 617 66 672 C60 727 53 751 69 806 C85 861 72 900 72 900 Z" fill="rgba(255,255,255,0.45)"/>
-                    <path d="M72 0 C70 30 72 78 71 133 C70 188 61 210 72 265 C83 320 72 342 69 397 C66 454 59 478 72 533 C85 588 72 610 70 665 C68 720 61 744 72 799 C83 854 72 900 72 900 Z" fill="rgba(255,255,255,0.68)"/>
-                    <path d="M72 0 L72 900" stroke="rgba(255,255,255,0.82)" stroke-width="5"/>
+            <!-- SVG unique : fond violet ondulé + vagues, tout en un, déborde à droite -->
+            <div class="absolute inset-y-0 pointer-events-none"
+                 style="left:0;right:-220px;z-index:20;">
+                <svg width="100%" height="100%"
+                     viewBox="0 0 720 900" preserveAspectRatio="none"
+                     xmlns="http://www.w3.org/2000/svg">
+
+                    <!-- FOND VIOLET — bord droit ondulé, pas de ligne droite -->
+                    <path d="M0 0
+                             C0 0 490 0 490 0
+                             C490 0 530 50 510 150
+                             C490 250 525 300 505 400
+                             C485 500 522 550 502 650
+                             C482 750 518 800 498 900
+                             L0 900 Z"
+                          fill="#7F00FF"/>
+
+                    <!-- Vague 2 — légèrement plus à droite, plus claire -->
+                    <path d="M0 0
+                             C0 0 530 0 530 0
+                             C530 0 575 55 552 158
+                             C529 261 568 314 545 417
+                             C522 520 562 573 539 676
+                             C516 779 556 832 533 900
+                             L0 900 Z"
+                          fill="rgba(123,116,240,0.55)"/>
+
+                    <!-- Vague 3 -->
+                    <path d="M0 0
+                             C0 0 570 0 570 0
+                             C570 0 618 60 593 165
+                             C568 270 610 325 585 430
+                             C560 535 603 590 578 695
+                             C553 800 596 855 571 900
+                             L0 900 Z"
+                          fill="rgba(123,116,240,0.35)"/>
+
+                    <!-- Vague 4 -->
+                    <path d="M0 0
+                             C0 0 610 0 610 0
+                             C610 0 662 65 635 173
+                             C608 281 653 336 626 444
+                             C599 552 645 607 618 715
+                             C591 823 637 878 610 900
+                             L0 900 Z"
+                          fill="rgba(155,135,245,0.22)"/>
+
+                    <!-- Vague 5 — la plus large, quasi transparente -->
+                    <path d="M0 0
+                             C0 0 650 0 650 0
+                             C650 0 706 70 677 181
+                             C648 292 696 348 667 459
+                             C638 570 688 626 659 737
+                             C630 848 680 904 651 900
+                             L0 900 Z"
+                          fill="rgba(196,181,253,0.14)"/>
                 </svg>
             </div>
 
-            <!-- Contenu centré — pas de cadre, layout exact comme la capture -->
+            <!-- Contenu — justify-between: Welcome en haut, centre au milieu, liens en bas -->
             <div class="relative flex flex-col items-center justify-between h-full py-12 px-10 text-center"
                  style="z-index:20;">
 
-                <!-- Haut : Welcome + Logo + Nom + Description -->
-                <div class="flex flex-col items-center gap-0">
+                <!-- Haut : Welcome to -->
+                <p class="text-white font-bold drop-shadow-lg"
+                   style="font-size:16px;letter-spacing:0.06em;text-shadow:0 2px 8px rgba(0,0,0,0.30);">
+                    Welcome to
+                </p>
 
-                    <!-- Welcome to -->
-                    <p class="text-white font-semibold mb-8 drop-shadow"
-                       style="font-size:16px;letter-spacing:0.02em;">
-                        Welcome to
-                    </p>
+                <!-- Centre : Logo + Nom + Description -->
+                <div class="flex flex-col items-center gap-0">
 
                     <!-- Grand cercle blanc avec icône dedans -->
                     <div class="rounded-full flex items-center justify-center mb-5 shadow-2xl relative"
@@ -72,22 +115,23 @@
                             <path d="M32 15 L34.2 21.5 L41 21.5 L35.5 25.8 L37.7 32.3 L32 28.2 L26.3 32.3 L28.5 25.8 L23 21.5 L29.8 21.5 Z"
                                   fill="#fbbf24"/>
                         </svg>
-                        <!-- Image logo si disponible -->
+                        <!-- Image logo si disponible — overflow:hidden cache le texte alt -->
                         <img v-if="logoUrl"
-                             :src="logoUrl" alt="Logo"
-                             class="rounded-full object-cover"
-                             style="width:56px;height:56px;position:absolute;z-index:2;"/>
+                             :src="logoUrl" alt=""
+                             class="rounded-full object-cover overflow-hidden"
+                             style="width:100%;height:100%;position:absolute;inset:0;z-index:2;
+                                    text-indent:-9999px;color:transparent;"/>
                     </div>
 
                     <!-- Nom de l app -->
-                    <h1 class="text-white font-bold mb-5 drop-shadow"
-                        style="font-size:18px;letter-spacing:0.01em;">
+                    <h1 class="text-white font-bold mb-5"
+                        style="font-size:18px;letter-spacing:0.01em;text-shadow:0 2px 10px rgba(0,0,0,0.25);">
                         {{ appName }}
                     </h1>
 
                     <!-- Description -->
                     <p class="font-medium leading-relaxed"
-                       style="font-size:12px;color:rgba(255,255,255,0.78);max-width:240px;">
+                       style="font-size:12px;color:rgba(255,255,255,0.92);max-width:240px;text-shadow:0 1px 4px rgba(0,0,0,0.20);">
                         Gérez vos apprenants, enseignants, notes et présences.
                         Rejoignez notre communauté et embarquez dans un
                         voyage scolaire intelligent !
@@ -97,14 +141,14 @@
                 <!-- Liens bas -->
                 <div class="flex flex-row items-center gap-5">
                     <a href="/login"
-                       class="font-semibold uppercase whitespace-nowrap transition-opacity hover:opacity-100"
-                       style="font-size:11px;color:rgba(255,255,255,0.58);letter-spacing:0.10em;">
+                       class="font-bold uppercase whitespace-nowrap transition-opacity hover:opacity-100"
+                       style="font-size:11px;color:rgba(255,255,255,0.90);letter-spacing:0.10em;text-shadow:0 1px 4px rgba(0,0,0,0.25);">
                         Se connecter
                     </a>
-                    <span style="color:rgba(255,255,255,0.30);">|</span>
+                    <span style="color:rgba(255,255,255,0.50);">|</span>
                     <a href="/"
-                       class="font-semibold uppercase whitespace-nowrap transition-opacity hover:opacity-100"
-                       style="font-size:11px;color:rgba(255,255,255,0.58);letter-spacing:0.10em;">
+                       class="font-bold uppercase whitespace-nowrap transition-opacity hover:opacity-100"
+                       style="font-size:11px;color:rgba(255,255,255,0.90);letter-spacing:0.10em;text-shadow:0 1px 4px rgba(0,0,0,0.25);">
                         Accueil
                     </a>
                 </div>
@@ -115,6 +159,7 @@
              PANNEAU DROIT — Formulaire
         ═══════════════════════════════════════════ -->
         <div class="flex-1 flex flex-col items-center justify-center px-6 py-10 overflow-y-auto relative transition-colors duration-300"
+             style="z-index:5;"
              :style="rightPanelStyle">
 
             <!-- Décorations géométriques en arrière-plan -->
@@ -331,7 +376,7 @@ const defaultGradient = 'linear-gradient(160deg, #5b4fd4 0%, #7B74F0 55%, #9188f
 const rightPanelStyle = computed(() => ({
     background: isDark.value
         ? 'linear-gradient(160deg, #1e1b4b 0%, #2e1065 100%)'
-        : 'linear-gradient(160deg, #f5f3ff 0%, #ede9fe 60%, #f5f3ff 100%)',
+        : '#f8f7ff',
 }));
 
 const cardStyle = computed(() => ({

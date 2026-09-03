@@ -63,12 +63,22 @@ class SettingModel extends Model
 
     public function getFavicon(): string
     {
-        return \App\Services\UploadService::url($this->favicon, asset('upload/favicon.png'));
+        $path = $this->favicon;
+        // Ancienne valeur sans dossier (ex: "favicon.png") → fallback local
+        if (!$path || !str_contains($path, '/')) {
+            return asset('upload/favicon.png');
+        }
+        return \App\Services\UploadService::url($path, asset('upload/favicon.png'));
     }
 
     public function getLogo(): string
     {
-        return \App\Services\UploadService::url($this->logo, asset('upload/logo.png'));
+        $path = $this->logo;
+        // Ancienne valeur sans dossier (ex: "logo.png") → fallback local
+        if (!$path || !str_contains($path, '/')) {
+            return asset('upload/logo.png');
+        }
+        return \App\Services\UploadService::url($path, asset('upload/logo.png'));
     }
 
 

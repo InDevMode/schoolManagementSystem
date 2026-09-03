@@ -81,7 +81,7 @@
 </template>
 
 <script setup lang="ts">
-import { fmtDate } from '@/utils/dateFormat';
+import { fmtDate } from '@/Utils/dateFormat';
 import { ref, computed, reactive } from 'vue';
 import { router } from '@inertiajs/vue3';
 import { PageHeader, AppBadge, DataTable } from '@/Components/UI';

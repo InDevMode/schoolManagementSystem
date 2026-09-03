@@ -2,8 +2,6 @@
 
 namespace App\Http\Middleware;
 
-use App\Models\User;
-use Carbon\Carbon;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -16,19 +14,16 @@ class OnlineUser
     /**
      * Handle an incoming request.
      *
+     * Met à jour le statut "en ligne" via le cache uniquement.
+     * Le last_login est écrit une seule fois lors de la connexion (AuthController).
+     *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (!empty(Auth::check())) {
-            $expireTime = Carbon::now()->addMinutes(1);
-            Cache::put('OnlineUser.' . Auth::user()->id, true, $expireTime);
-            $getUserData = User::getSingle(Auth::user()->id);
-            if (!empty($getUserData)) {
-                $getUserData->update([
-                    'last_login' => now(),
-                ]);
-            }
+        if (Auth::check()) {
+            // Cache uniquement — pas de SELECT ni d'UPDATE en base sur chaque requête
+            Cache::put('OnlineUser.' . Auth::id(), true, now()->addMinutes(2));
         }
         return $next($request);
     }

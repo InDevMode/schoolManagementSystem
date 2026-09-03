@@ -319,12 +319,18 @@ onMounted(() => {
     // Poll toutes les 30 secondes (comme le chat)
     pollInterval = setInterval(() => fetchNotifications(true), 30_000);
     document.addEventListener('mousedown', onClickOutside);
+    // Écouter l'événement global pour forcer un refresh immédiat
+    window.addEventListener('refresh-notifications', handleGlobalRefresh);
 });
 
 onUnmounted(() => {
     if (pollInterval) clearInterval(pollInterval);
     document.removeEventListener('mousedown', onClickOutside);
+    window.removeEventListener('refresh-notifications', handleGlobalRefresh);
 });
+
+// ── Refresh global (déclenché depuis n'importe quel composant) ───────────────
+const handleGlobalRefresh = () => fetchNotifications(true);
 </script>
 
 <style scoped>

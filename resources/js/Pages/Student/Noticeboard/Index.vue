@@ -101,7 +101,7 @@
 </template>
 
 <script setup lang="ts">
-import { fmtDate } from '@/utils/dateFormat';
+import { fmtDate } from '@/Utils/dateFormat';
 import { ref, computed } from 'vue';
 import { PageHeader, AppButton, AppModal, AppPagination } from '@/Components/UI';
 import { stripHtml } from '@/Utils/html';

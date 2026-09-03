@@ -1,20 +1,20 @@
-﻿<template>
+<template>
     <div :class="['flex h-screen overflow-hidden transition-colors duration-300', isDark ? 'dark' : '', 'bg-gray-100 dark:bg-gray-900']">
 
-        <!-- ── App Sidebar ── -->
+        <!-- -- App Sidebar -- -->
         <AppSidebar :collapsed="sidebarCollapsed" :mobile-open="mobileSidebarOpen"
             @toggle="sidebarCollapsed = !sidebarCollapsed" @close="mobileSidebarOpen = false" />
 
-        <!-- ── Contenu principal ── -->
+        <!-- -- Contenu principal -- -->
         <div :class="['flex flex-col flex-1 min-w-0 transition-all duration-300 overflow-hidden', sidebarCollapsed ? 'lg:ml-[72px]' : 'lg:ml-64']">
             <AppTopbar @open-mobile="mobileSidebarOpen = true" />
 
-            <!-- ── Corps chat 3 colonnes ── -->
+            <!-- -- Corps chat 3 colonnes -- -->
             <div class="flex flex-1 overflow-hidden">
 
-                <!-- ════════════════════════════════════════════════════════
-                     COLONNE GAUCHE — Liste conversations + contacts
-                ════════════════════════════════════════════════════════ -->
+                <!-- --------------------------------------------------------
+                     COLONNE GAUCHE � Liste conversations + contacts
+                -------------------------------------------------------- -->
                 <aside class="w-[300px] flex-shrink-0 flex flex-col border-r border-gray-200 dark:border-gray-700"
                        style="background: #fff; transition: background 0.3s;"
                        :style="{ background: isDark ? '#1f2937' : '#ffffff' }">
@@ -82,7 +82,7 @@
                         </button>
                     </div>
 
-                    <!-- ── TAB INBOX ── -->
+                    <!-- -- TAB INBOX -- -->
                     <div v-show="activeTab === 'inbox'" class="flex-1 overflow-y-auto mt-1">
                         <template v-if="filteredContacts.length">
                             <a v-for="contact in filteredContacts" :key="contact.user_id"
@@ -110,7 +110,7 @@
                                     <div class="flex items-center justify-between gap-1 mt-0.5">
                                         <p :class="['text-xs truncate flex-1',
                                             contact.countMessage > 0 ? 'text-gray-700 dark:text-gray-200 font-medium' : 'text-gray-400 dark:text-gray-500']">
-                                            <span v-if="contact.is_delete" class="italic">Message supprimé</span>
+                                            <span v-if="contact.is_delete" class="italic">Message supprim�</span>
                                             <span v-else>{{ contact.message || 'Aucun message' }}</span>
                                         </p>
                                         <span v-if="contact.countMessage > 0"
@@ -129,11 +129,11 @@
                                 </svg>
                             </div>
                             <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Aucune conversation</p>
-                            <p class="text-xs text-gray-400 mt-1">Cliquez sur "Contacts" pour démarrer</p>
+                            <p class="text-xs text-gray-400 mt-1">Cliquez sur "Contacts" pour d�marrer</p>
                         </div>
                     </div>
 
-                    <!-- ── TAB CONTACTS ── -->
+                    <!-- -- TAB CONTACTS -- -->
                     <div v-show="activeTab === 'contacts'" class="flex-1 overflow-y-auto mt-1">
                         <template v-if="filteredChatContacts.length">
                             <template v-if="hasClassGroups">
@@ -154,7 +154,7 @@
                                         <div class="flex-1 min-w-0">
                                             <p class="text-sm font-semibold text-gray-900 dark:text-white truncate">{{ contact.name }}</p>
                                             <p class="text-xs text-gray-400 truncate">
-                                                {{ contact.role }}<span v-if="contact.is_online" class="text-emerald-500"> · En ligne</span>
+                                                {{ contact.role }}<span v-if="contact.is_online" class="text-emerald-500"> � En ligne</span>
                                             </p>
                                         </div>
                                     </a>
@@ -172,7 +172,7 @@
                                     </div>
                                     <div class="flex-1 min-w-0">
                                         <p class="text-sm font-semibold text-gray-900 dark:text-white truncate">{{ contact.name }}</p>
-                                        <p class="text-xs text-gray-400">{{ contact.role }}<span v-if="contact.is_online" class="text-emerald-500"> · En ligne</span></p>
+                                        <p class="text-xs text-gray-400">{{ contact.role }}<span v-if="contact.is_online" class="text-emerald-500"> � En ligne</span></p>
                                     </div>
                                 </a>
                             </template>
@@ -201,9 +201,9 @@
                     </div>
                 </aside>
 
-                <!-- ════════════════════════════════════════════════════════
+                <!-- --------------------------------------------------------
                      MODAL NOUVEAU MESSAGE
-                ════════════════════════════════════════════════════════ -->
+                -------------------------------------------------------- -->
                 <Teleport to="body">
                     <Transition enter-active-class="transition duration-200 ease-out" enter-from-class="opacity-0" enter-to-class="opacity-100"
                         leave-active-class="transition duration-150 ease-in" leave-to-class="opacity-0">
@@ -227,7 +227,7 @@
                                         <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                                         </svg>
-                                        <input v-model="modalContactSearch" type="text" placeholder="Rechercher un contact…"
+                                        <input v-model="modalContactSearch" type="text" placeholder="Rechercher un contact�"
                                             class="w-full pl-9 pr-4 py-2 text-sm bg-gray-50 dark:bg-gray-700/60 border border-gray-200 dark:border-gray-600 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500"/>
                                     </div>
                                 </div>
@@ -244,14 +244,14 @@
                                         </div>
                                         <div class="flex-1 min-w-0">
                                             <p class="text-sm font-semibold text-gray-900 dark:text-white truncate">{{ contact.name }}</p>
-                                            <p class="text-xs text-gray-400">{{ contact.role }}<span v-if="contact.is_online" class="text-emerald-500"> · En ligne</span></p>
+                                            <p class="text-xs text-gray-400">{{ contact.role }}<span v-if="contact.is_online" class="text-emerald-500"> � En ligne</span></p>
                                         </div>
                                         <svg class="w-4 h-4 text-primary-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                                         </svg>
                                     </a>
                                     <div v-if="!filteredModalContacts.length" class="flex flex-col items-center justify-center py-12 text-center">
-                                        <p class="text-sm text-gray-400">Aucun contact trouvé</p>
+                                        <p class="text-sm text-gray-400">Aucun contact trouv�</p>
                                     </div>
                                 </div>
                             </div>
@@ -259,12 +259,12 @@
                     </Transition>
                 </Teleport>
 
-                <!-- ════════════════════════════════════════════════════════
-                     COLONNE CENTRALE — Zone de messages
-                ════════════════════════════════════════════════════════ -->
+                <!-- --------------------------------------------------------
+                     COLONNE CENTRALE � Zone de messages
+                -------------------------------------------------------- -->
                 <div class="flex-1 flex flex-col overflow-hidden relative">
 
-                    <!-- État vide -->
+                    <!-- �tat vide -->
                     <div v-if="!receiver" class="flex-1 flex flex-col items-center justify-center gap-5 relative overflow-hidden chat-messages-bg"
                          :class="isDark ? 'dark' : ''">
                         <div class="relative z-10 flex flex-col items-center">
@@ -274,13 +274,13 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
                                 </svg>
                             </div>
-                            <p class="text-lg font-bold text-gray-700 dark:text-gray-200">Sélectionnez une conversation</p>
-                            <p class="text-sm text-gray-400 mt-1">Choisissez un contact pour commencer à discuter</p>
+                            <p class="text-lg font-bold text-gray-700 dark:text-gray-200">S�lectionnez une conversation</p>
+                            <p class="text-sm text-gray-400 mt-1">Choisissez un contact pour commencer � discuter</p>
                         </div>
                     </div>
 
                     <template v-if="receiver">
-                        <!-- En-tête conversation -->
+                        <!-- En-t�te conversation -->
                         <div class="flex items-center gap-3 px-5 py-3 flex-shrink-0 border-b border-gray-200 dark:border-gray-700 shadow-sm"
                              :style="{ background: isDark ? '#1f2937' : '#ffffff' }">
                             <div class="relative flex-shrink-0">
@@ -296,14 +296,14 @@
                                         <span class="flex gap-0.5">
                                             <span v-for="d in [0,150,300]" :key="d" class="w-1 h-1 bg-primary-500 rounded-full animate-bounce" :style="`animation-delay:${d}ms`"/>
                                         </span>
-                                        en train d'écrire…
+                                        en train d'�crire�
                                     </p>
                                     <p v-else :class="['text-xs', receiverIsOnline ? 'text-emerald-500' : 'text-gray-400']">
                                         {{ receiverIsOnline ? 'En ligne' : receiverLastSeenText }}
                                     </p>
                                 </Transition>
                             </div>
-                            <!-- Actions en-tête -->
+                            <!-- Actions en-t�te -->
                             <div class="flex items-center gap-1 ml-auto">
                                 <button @click="showSearchBar = !showSearchBar"
                                     :class="['p-2 rounded-xl transition-colors', showSearchBar ? 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300' : 'text-gray-400 hover:text-primary-600 hover:bg-primary-50 dark:hover:bg-primary-900/20']"
@@ -333,19 +333,19 @@
                                     <input v-model="msgSearch" ref="msgSearchInput" type="text" placeholder="Rechercher dans la conversation..."
                                         class="w-full pl-9 pr-4 py-2 text-sm bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500"/>
                                     <span v-if="msgSearch" class="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-gray-400">
-                                        {{ msgSearchResults.length }} résultat(s)
+                                        {{ msgSearchResults.length }} r�sultat(s)
                                     </span>
                                 </div>
                             </div>
                         </Transition>
 
-                        <!-- ── Zone messages avec fond géométrique (même motif que app-bg-pattern) ── -->
+                        <!-- -- Zone messages avec fond g�om�trique (m�me motif que app-bg-pattern) -- -->
                         <div ref="messagesContainer" class="flex-1 overflow-y-auto px-4 py-4 space-y-1 relative chat-messages-bg"
                              :class="isDark ? 'dark' : ''">
 
                             <div class="relative z-10">
                             <template v-for="(chat, index) in displayedChats" :key="chat.id">
-                                <!-- Séparateur de date -->
+                                <!-- S�parateur de date -->
                                 <div v-if="showDateSeparator(index)" class="flex items-center gap-3 my-4">
                                     <div class="flex-1 h-px bg-gray-300 dark:bg-gray-700"/>
                                     <span class="text-[11px] text-gray-500 dark:text-gray-400 font-medium px-3 py-1 bg-white dark:bg-gray-800 rounded-full border border-gray-200 dark:border-gray-700 shadow-sm">
@@ -354,7 +354,7 @@
                                     <div class="flex-1 h-px bg-gray-300 dark:bg-gray-700"/>
                                 </div>
 
-                                <!-- Message envoyé (moi) -->
+                                <!-- Message envoy� (moi) -->
                                 <div v-if="authUser && chat.sender_id === authUser.id" class="group flex justify-end items-end gap-2 mb-1">
                                     <div class="flex flex-col items-end max-w-[68%]">
                                         <!-- Actions hover -->
@@ -368,7 +368,7 @@
                                                 Supprimer
                                             </button>
                                         </div>
-                                        <!-- Bulle envoyée -->
+                                        <!-- Bulle envoy�e -->
                                         <div :class="['rounded-2xl rounded-br-sm overflow-hidden max-w-full shadow-md',
                                             chat.is_delete ? 'bg-gray-300 dark:bg-gray-600' : '']"
                                              :style="!chat.is_delete ? 'background: linear-gradient(135deg, #7B74F0, #6d28d9)' : ''">
@@ -392,7 +392,7 @@
                                                     </div>
                                                     <div class="min-w-0">
                                                         <p class="text-sm font-bold truncate max-w-[160px]">{{ fileBaseName(chat.file) }}</p>
-                                                        <p class="text-[11px] opacity-70 mt-0.5">Télécharger</p>
+                                                        <p class="text-[11px] opacity-70 mt-0.5">T�l�charger</p>
                                                     </div>
                                                 </a>
                                             </template>
@@ -400,7 +400,7 @@
                                                 :class="['px-4 py-2.5 text-sm text-white whitespace-pre-wrap break-words leading-relaxed', chat.file ? 'border-t border-white/20' : '']">
                                                 {{ chat.message }}
                                             </p>
-                                            <p v-if="chat.is_delete" class="px-4 py-2.5 text-sm text-gray-500 italic">Message supprimé</p>
+                                            <p v-if="chat.is_delete" class="px-4 py-2.5 text-sm text-gray-500 italic">Message supprim�</p>
                                         </div>
                                         <!-- Horodatage -->
                                         <div class="flex items-center gap-1 mt-1 pr-1">
@@ -420,7 +420,7 @@
                                         class="w-7 h-7 rounded-full object-cover flex-shrink-0 bg-gray-200 ring-1 ring-white dark:ring-gray-800" @error="onImgError"/>
                                 </div>
 
-                                <!-- Message reçu -->
+                                <!-- Message re�u -->
                                 <div v-else class="flex items-end gap-2 mb-1">
                                     <img :src="avatarUrl(receiver.profile_picture)"
                                         class="w-7 h-7 rounded-full object-cover flex-shrink-0 bg-gray-200 ring-1 ring-white dark:ring-gray-800" @error="onImgError"/>
@@ -447,7 +447,7 @@
                                                     </div>
                                                     <div class="min-w-0">
                                                         <p class="text-sm font-bold truncate max-w-[160px]">{{ fileBaseName(chat.file) }}</p>
-                                                        <p class="text-[11px] text-gray-400 mt-0.5">Télécharger</p>
+                                                        <p class="text-[11px] text-gray-400 mt-0.5">T�l�charger</p>
                                                     </div>
                                                 </a>
                                             </template>
@@ -455,14 +455,14 @@
                                                 :class="['px-4 py-2.5 text-sm text-gray-800 dark:text-gray-100 whitespace-pre-wrap break-words leading-relaxed', chat.file ? 'border-t border-gray-100 dark:border-gray-600' : '']">
                                                 {{ chat.message }}
                                             </p>
-                                            <p v-if="chat.is_delete" class="px-4 py-2.5 text-sm text-gray-400 italic">Message supprimé</p>
+                                            <p v-if="chat.is_delete" class="px-4 py-2.5 text-sm text-gray-400 italic">Message supprim�</p>
                                         </div>
                                         <span class="text-[10px] text-gray-400 mt-1 pl-1">{{ timeAgo(chat.created_date) }}</span>
                                     </div>
                                 </div>
                             </template>
 
-                            <!-- Indicateur "en train d'écrire" -->
+                            <!-- Indicateur "en train d'�crire" -->
                             <Transition enter-active-class="transition duration-300 ease-out" enter-from-class="opacity-0 translate-y-2" enter-to-class="opacity-100 translate-y-0" leave-to-class="opacity-0">
                                 <div v-if="peerTyping" class="flex items-end gap-2 mb-1">
                                     <img :src="avatarUrl(receiver.profile_picture)"
@@ -478,11 +478,11 @@
                             </div>
                         </div>
 
-                        <!-- ── Zone de saisie ── -->
+                        <!-- -- Zone de saisie -- -->
                         <div class="flex-shrink-0 px-4 py-3 border-t border-gray-200 dark:border-gray-700"
                              :style="{ background: isDark ? '#1f2937' : '#ffffff' }">
 
-                            <!-- Bandeau édition -->
+                            <!-- Bandeau �dition -->
                             <div v-if="editing" class="flex items-center gap-2 mb-2.5 px-3 py-2 bg-primary-50 dark:bg-primary-900/20 rounded-xl text-xs text-primary-700 dark:text-primary-300 border border-primary-200 dark:border-primary-800/50">
                                 <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
@@ -495,7 +495,7 @@
                                 </button>
                             </div>
 
-                            <!-- Prévisualisation fichier -->
+                            <!-- Pr�visualisation fichier -->
                             <div v-if="pendingFile && !editing"
                                 class="flex items-center gap-3 mb-2.5 px-3 py-2.5 rounded-xl border border-gray-200 dark:border-gray-600"
                                 :style="{ background: isDark ? 'rgba(55,65,81,0.5)' : '#f9fafb' }">
@@ -515,9 +515,9 @@
                                 </button>
                             </div>
 
-                            <!-- Rangée de saisie principale -->
+                            <!-- Rang�e de saisie principale -->
                             <div class="flex items-center gap-2">
-                                <!-- Pièce jointe -->
+                                <!-- Pi�ce jointe -->
                                 <label class="p-2 rounded-xl text-gray-400 hover:text-primary-600 hover:bg-primary-50 dark:hover:bg-primary-900/20 cursor-pointer transition-all flex-shrink-0" title="Joindre un fichier">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -538,7 +538,7 @@
                                                 d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                                         </svg>
                                     </button>
-                                    <!-- Conteneur picker — monté via JS dans emojiContainer -->
+                                    <!-- Conteneur picker � mont� via JS dans emojiContainer -->
                                     <div v-show="showEmojiPicker" ref="emojiContainer"
                                         class="absolute bottom-12 left-0 z-50 shadow-2xl rounded-2xl overflow-hidden"
                                         @click.stop/>
@@ -575,9 +575,9 @@
                     </template>
                 </div>
 
-                <!-- ════════════════════════════════════════════════════════
-                     COLONNE DROITE — Panneau infos contact
-                ════════════════════════════════════════════════════════ -->
+                <!-- --------------------------------------------------------
+                     COLONNE DROITE � Panneau infos contact
+                -------------------------------------------------------- -->
                 <Transition enter-active-class="transition duration-300 ease-out" enter-from-class="opacity-0 translate-x-4"
                     enter-to-class="opacity-100 translate-x-0" leave-to-class="opacity-0 translate-x-4">
                     <aside v-if="showInfoPanel && receiver"
@@ -621,7 +621,7 @@
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
                                         </svg>
                                     </button>
-                                    <span class="text-[10px] text-gray-400">Épingler</span>
+                                    <span class="text-[10px] text-gray-400">�pingler</span>
                                 </div>
                                 <div class="flex flex-col items-center gap-1">
                                     <button class="w-10 h-10 rounded-xl bg-gray-100 dark:bg-gray-700 flex items-center justify-center text-gray-500 hover:bg-primary-100 dark:hover:bg-primary-900/30 hover:text-primary-600 transition-colors">
@@ -629,7 +629,7 @@
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><circle cx="12" cy="12" r="3"/>
                                         </svg>
                                     </button>
-                                    <span class="text-[10px] text-gray-400">Paramètres</span>
+                                    <span class="text-[10px] text-gray-400">Param�tres</span>
                                 </div>
                             </div>
                         </div>
@@ -650,14 +650,14 @@
                             </div>
                         </div>
 
-                        <!-- Photos partagées -->
+                        <!-- Photos partag�es -->
                         <div v-if="sharedImages.length > 0" class="px-5 py-4 border-b border-gray-100 dark:border-gray-700">
                             <div class="flex items-center justify-between mb-3">
                                 <h4 class="text-xs font-bold text-gray-700 dark:text-gray-300 flex items-center gap-1.5">
                                     <svg class="w-4 h-4 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                                     </svg>
-                                    Photos &amp; Médias
+                                    Photos &amp; M�dias
                                     <span class="min-w-[20px] h-5 px-1 bg-primary-100 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 text-[10px] font-bold rounded-full flex items-center justify-center">
                                         {{ sharedImages.length }}
                                     </span>
@@ -672,7 +672,7 @@
                             </div>
                         </div>
 
-                        <!-- Fichiers partagés -->
+                        <!-- Fichiers partag�s -->
                         <div v-if="sharedFiles.length > 0" class="px-5 py-4">
                             <div class="flex items-center justify-between mb-3">
                                 <h4 class="text-xs font-bold text-gray-700 dark:text-gray-300 flex items-center gap-1.5">
@@ -711,7 +711,7 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                                 </svg>
                             </div>
-                            <p class="text-xs text-gray-400">Aucun fichier partagé</p>
+                            <p class="text-xs text-gray-400">Aucun fichier partag�</p>
                         </div>
                     </aside>
                 </Transition>
@@ -743,7 +743,7 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted, nextTick, watch, h, defineComponent } from 'vue';
-import { fmtDate } from '@/utils/dateFormat';
+import { fmtDate } from '@/Utils/dateFormat';
 import { usePage } from '@inertiajs/vue3';
 import { useDark } from '@vueuse/core';
 import type { PageProps } from '@/types';
@@ -766,7 +766,7 @@ const authUser = computed(() => page.props.auth?.user as any);
 const csrf     = computed(() => (document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement)?.content ?? '');
 const encodeId = (id: number | string) => btoa(String(id));
 
-// ── UI state ──────────────────────────────────────────────────────────────────
+// -- UI state ------------------------------------------------------------------
 const showInfoPanel       = ref(false);
 const activeTab           = ref<'inbox' | 'contacts'>('inbox');
 const showSearchBar       = ref(false);
@@ -775,14 +775,14 @@ const msgSearchInput      = ref<HTMLInputElement>();
 const showNewMessageModal  = ref(false);
 const modalContactSearch   = ref('');
 
-// ── Refs DOM ──────────────────────────────────────────────────────────────────
+// -- Refs DOM ------------------------------------------------------------------
 const messagesContainer = ref<HTMLElement>();
 const textarea          = ref<HTMLTextAreaElement>();
 const fileInput         = ref<HTMLInputElement>();
 const emojiWrapper      = ref<HTMLElement>();
 const emojiContainer    = ref<HTMLElement>();
 
-// ── State messages ────────────────────────────────────────────────────────────
+// -- State messages ------------------------------------------------------------
 const localChats        = ref<any[]>([...props.chats]);
 const localContacts     = ref<any[]>([...props.contacts]);
 const localChatContacts = ref<any[]>([...props.chatContacts]);
@@ -797,18 +797,18 @@ const lastMsgId     = ref<number>(props.chats.length ? (props.chats.at(-1)?.id ?
 const lightboxSrc   = ref<string | null>(null);
 const lightboxFile  = ref<string | null>(null);
 
-// ── Statut en ligne du receiver ───────────────────────────────────────────────
+// -- Statut en ligne du receiver -----------------------------------------------
 const receiverIsOnline   = ref<boolean>(props.receiver?.is_online ?? false);
 const receiverLastLogin  = ref<string | null>(props.receiver?.last_login ?? null);
 const receiverLastSeenText = computed(() => {
-    if (!receiverLastLogin.value) return 'Jamais connecté';
+    if (!receiverLastLogin.value) return 'Jamais connect�';
     const date = new Date(receiverLastLogin.value);
     const now  = new Date();
     const diffMs = now.getTime() - date.getTime();
     const diffMin = Math.floor(diffMs / 60000);
     const diffH   = Math.floor(diffMin / 60);
     const diffD   = Math.floor(diffH / 24);
-    if (diffMin < 1)   return 'Vu à l\'instant';
+    if (diffMin < 1)   return 'Vu � l\'instant';
     if (diffMin < 60)  return `Vu il y a ${diffMin} min`;
     if (diffH < 24)    return `Vu il y a ${diffH} h`;
     if (diffD === 1)   return 'Vu hier';
@@ -816,12 +816,12 @@ const receiverLastSeenText = computed(() => {
     return `Vu le ${date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })}`;
 });
 
-// ── Fichier pending ───────────────────────────────────────────────────────────
+// -- Fichier pending -----------------------------------------------------------
 const pendingFile        = ref<File | null>(null);
 const pendingFilePreview = ref<string | null>(null);
 const pendingFileIsImage = ref(false);
 
-// ── Emoji Picker ──────────────────────────────────────────────────────────────
+// -- Emoji Picker --------------------------------------------------------------
 const showEmojiPicker = ref(false);
 let pickerMounted = false;
 
@@ -870,7 +870,7 @@ const onDocClick = (e: MouseEvent) => {
     }
 };
 
-// ── Polling ───────────────────────────────────────────────────────────────────
+// -- Polling -------------------------------------------------------------------
 const pollOptions = [
     { label: '3s',  value: 3000  },
     { label: '5s',  value: 5000  },
@@ -885,7 +885,7 @@ let typingTimer:     ReturnType<typeof setInterval> | null = null;
 let typingStopTimer: ReturnType<typeof setTimeout>  | null = null;
 let isTypingNow = false;
 
-// ── Computed ──────────────────────────────────────────────────────────────────
+// -- Computed ------------------------------------------------------------------
 const canSend = computed(() => (message.value.trim() !== '' || pendingFile.value !== null) && !sending.value);
 const totalUnread = computed(() => localContacts.value.reduce((sum, c) => sum + (c.countMessage || 0), 0));
 const sharedImages = computed(() => localChats.value.filter(c => !c.is_delete && c.file && isImage(c.file)));
@@ -926,7 +926,7 @@ const filteredModalContacts = computed(() => {
     return localChatContacts.value.filter((c: any) => c.name?.toLowerCase().includes(q) || c.role?.toLowerCase().includes(q));
 });
 
-// ── Helpers ───────────────────────────────────────────────────────────────────
+// -- Helpers -------------------------------------------------------------------
 const DEFAULT_AVATAR = '/upload/default.jpg';
 const avatarUrl = (pic?: string | null) => {
     if (!pic) return DEFAULT_AVATAR;
@@ -965,7 +965,7 @@ const formatFileSize = (bytes: number) => {
     return `${(bytes / 1024 / 1024).toFixed(1)} Mo`;
 };
 
-// ── Gestion fichier ───────────────────────────────────────────────────────────
+// -- Gestion fichier -----------------------------------------------------------
 const onFileSelected = (e: Event) => {
     const file = (e.target as HTMLInputElement).files?.[0];
     if (!file) return;
@@ -987,7 +987,7 @@ const clearFile = () => {
 };
 const openLightbox = (src: string, file?: string) => { lightboxSrc.value = src; lightboxFile.value = file ?? null; };
 
-// ── Contacts helpers ──────────────────────────────────────────────────────────
+// -- Contacts helpers ----------------------------------------------------------
 const isActiveContact = (c: any) => {
     if (!props.receiver_id) return false;
     try { return atob(props.receiver_id) === String(c.user_id); } catch { return false; }
@@ -1009,7 +1009,7 @@ const contactTime = (contact: any) => {
     return d.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short' });
 };
 
-// ── Dates ─────────────────────────────────────────────────────────────────────
+// -- Dates ---------------------------------------------------------------------
 const showDateSeparator = (i: number) => {
     if (i === 0) return true;
     return new Date(localChats.value[i-1].created_date).toDateString() !== new Date(localChats.value[i].created_date).toDateString();
@@ -1017,13 +1017,13 @@ const showDateSeparator = (i: number) => {
 const formatDate = fmtDate;
 const timeAgo = (date: string) => {
     const diff = (Date.now() - new Date(date).getTime()) / 1000;
-    if (diff < 60)    return "À l'instant";
+    if (diff < 60)    return "� l'instant";
     if (diff < 3600)  return `Il y a ${Math.floor(diff / 60)} min`;
     if (diff < 86400) return `Il y a ${Math.floor(diff / 3600)} h`;
     return new Date(date).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short' });
 };
 
-// ── Scroll ────────────────────────────────────────────────────────────────────
+// -- Scroll --------------------------------------------------------------------
 const scrollToBottom = (smooth = false) => {
     nextTick(() => {
         if (!messagesContainer.value) return;
@@ -1031,7 +1031,7 @@ const scrollToBottom = (smooth = false) => {
     });
 };
 
-// ── Polling ───────────────────────────────────────────────────────────────────
+// -- Polling -------------------------------------------------------------------
 const pollContacts = async () => {
     try {
         const res = await fetch('/chat/contacts/poll', { headers: { Accept: 'application/json', 'X-CSRF-TOKEN': csrf.value } });
@@ -1071,7 +1071,7 @@ const pollMessages = async () => {
             localChats.value.forEach(c => { if (c.sender_id === authUser.value?.id && c.id <= data.read_up_to) c.status = 1; });
         }
         if (data.contacts) localContacts.value = data.contacts;
-        // Mise à jour du statut en ligne du receiver
+        // Mise � jour du statut en ligne du receiver
         if (data.receiver_status) {
             receiverIsOnline.value  = data.receiver_status.is_online;
             receiverLastLogin.value = data.receiver_status.last_login;
@@ -1107,7 +1107,7 @@ const stopPolling = () => {
 };
 const changePollInterval = (ms: number) => { pollInterval_.value = ms; if (props.receiver) startPolling(); };
 
-// ── Typing signal ─────────────────────────────────────────────────────────────
+// -- Typing signal -------------------------------------------------------------
 const sendTyping = async (val: boolean) => {
     if (!props.receiver) return;
     try {
@@ -1124,7 +1124,7 @@ const onTyping = () => {
     typingStopTimer = setTimeout(() => { isTypingNow = false; sendTyping(false); }, 2500);
 };
 
-// ── Envoi message ─────────────────────────────────────────────────────────────
+// -- Envoi message -------------------------------------------------------------
 const submitMessage = async () => {
     if (!canSend.value || !props.receiver) return;
     if (typingStopTimer) clearTimeout(typingStopTimer);
@@ -1186,13 +1186,13 @@ const autoResize = () => {
     textarea.value.style.height = Math.min(textarea.value.scrollHeight, 112) + 'px';
 };
 
-// ── Watchers ──────────────────────────────────────────────────────────────────
+// -- Watchers ------------------------------------------------------------------
 watch(showSearchBar, val => {
     if (val) nextTick(() => msgSearchInput.value?.focus());
     else msgSearch.value = '';
 });
 
-// ── Lifecycle ─────────────────────────────────────────────────────────────────
+// -- Lifecycle -----------------------------------------------------------------
 onMounted(() => {
     scrollToBottom();
     pollContacts();

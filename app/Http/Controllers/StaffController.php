@@ -55,7 +55,7 @@ class StaffController extends Controller
     public function create(Request $request)
     {
         $request->validate([
-            'user_id' => 'required|integer|exists:users,id',
+            'user_id' => 'required|uuid|exists:users,id',
             'role'    => 'required|string',
             'status'  => 'required|in:active,inactive,suspended',
         ]);
@@ -111,7 +111,7 @@ class StaffController extends Controller
     public function update(Request $request, int $id)
     {
         $request->validate([
-            'user_id' => 'required|integer|exists:users,id',
+            'user_id' => 'required|uuid|exists:users,id',
             'role'    => 'required|string',
             'status'  => 'required|in:active,inactive,suspended',
         ]);

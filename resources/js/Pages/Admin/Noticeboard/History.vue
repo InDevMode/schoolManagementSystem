@@ -121,7 +121,7 @@
 </template>
 
 <script setup lang="ts">
-import { fmtDate } from '@/utils/dateFormat';
+import { fmtDate } from '@/Utils/dateFormat';
 import { ref } from 'vue';
 import { router, Link } from '@inertiajs/vue3';
 import { PageHeader, AppPagination } from '@/Components/UI';

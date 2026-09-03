@@ -1,7 +1,7 @@
 <template>
     <div class="space-y-6" @click="closeContextMenu">
 
-        <!-- ââ Header âââââââââââââââââââââââââââââââââââââââââââââââââââââââ -->
+        <!--    Header    -->
         <PageHeader title="Tous les utilisateurs" :subtitle="`${users.total} utilisateur(s) au total`" color="violet">
             <template #icon>
                 <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -26,7 +26,7 @@
             </template>
         </PageHeader>
 
-        <!-- ââ Bannià¨re ââââââââââââââââââââââââââââââââââââââââââââââââââââââ -->
+        <!--    Bannière   -->
         <div v-if="isSuperAdmin" class="flex items-center gap-2.5 px-4 py-2.5 rounded-xl
                     bg-violet-50 dark:bg-violet-900/20 border border-violet-200 dark:border-violet-700 text-sm">
             <svg class="w-4 h-4 text-violet-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -37,7 +37,7 @@
             <span class="text-violet-600 dark:text-violet-400"> Double-clic sur une cellule pour éditer . Clic droit pour le menu rapide</span>
         </div>
 
-        <!-- ââ Filtres âââââââââââââââââââââââââââââââââââââââââââââââââââââââ -->
+        <!--    Filtres    -->
         <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm p-4">
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3">
                 <input v-model="filters.name"          type="text" placeholder="Nom..."       class="input-field" @keyup.enter="applyFilters"/>
@@ -86,7 +86,7 @@
             </div>
         </div>
 
-        <!-- ââ Tableau âââââââââââââââââââââââââââââââââââââââââââââââââââââââ -->
+        <!--    Tableau    -->
         <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm overflow-hidden">
 
             <!-- Barre sélection en masse -->
@@ -302,7 +302,7 @@
                                             </svg>
                                         </Link>
                                         <!-- Réinitialiser MDP -->
-                                        <button v-if="canReset" @click="openResetConfirm(u)" title="Réinitialiser le mot de passe"
+                                        <button v-if="canResetUser(u)" @click="openResetConfirm(u)" title="Réinitialiser le mot de passe"
                                                 class="p-1.5 rounded-xl text-white bg-amber-500 hover:bg-amber-600 shadow-sm transition-all">
                                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/>
@@ -419,7 +419,7 @@
                         </span>
                         Envoyer un message
                     </Link>
-                    <button v-if="canReset" @click="openResetConfirm(ctxMenu.user!); closeContextMenu()"
+                    <button v-if="ctxMenu.user && canResetUser(ctxMenu.user)" @click="openResetConfirm(ctxMenu.user!); closeContextMenu()"
                             class="ctx-item text-gray-700 dark:text-gray-300 hover:bg-amber-50 hover:text-amber-700">
                         <span class="ctx-icon bg-amber-100 dark:bg-amber-900/30 text-amber-600">
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -509,7 +509,7 @@
                                     class="flex-1 px-3 py-2 rounded-xl text-sm font-medium bg-emerald-500 hover:bg-emerald-600 text-white transition-colors">
                                 Modifier
                             </button>
-                            <button v-if="canReset" @click="openResetConfirm(viewTarget!); viewTarget = null"
+                            <button v-if="viewTarget && canResetUser(viewTarget)" @click="openResetConfirm(viewTarget!); viewTarget = null"
                                     class="flex-1 px-3 py-2 rounded-xl text-sm font-medium bg-amber-500 hover:bg-amber-600 text-white transition-colors">
                                 Réinit. MDP
                             </button>
@@ -709,16 +709,20 @@
 </template>
 
 <script setup lang="ts">
-import { fmtDate } from '@/utils/dateFormat';
+import { fmtDate } from '@/Utils/dateFormat';
 import { ref, reactive, computed, onMounted, onUnmounted } from 'vue';
-import { router, Link } from '@inertiajs/vue3';
+import { router, Link, usePage } from '@inertiajs/vue3';
 import { useToast } from '@/Composables/useToast';
 import { PageHeader } from '@/Components/UI';
 import AppLayout from '@/Layouts/AppLayout.vue';
+import type { PageProps } from '@/types';
+
+const page        = usePage<PageProps>();
+const authUser    = computed(() => page.props.auth.user);
 
 defineOptions({ layout: AppLayout });
 
-// ââ Types âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+//    Types                 
 interface UserRow {
     id: number;
     name: string;
@@ -757,11 +761,21 @@ const props = defineProps<{
 }>();
 const toast = useToast();
 
-// ââ CSRF helper âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// Détermine si le bouton reset doit être visible pour un utilisateur donné
+const canResetUser = (u: UserRow): boolean => {
+    if (!props.canReset) return false;
+    // On ne peut jamais réinitialiser son propre compte via ce panneau
+    if (authUser.value && String(u.id) === String(authUser.value.id)) return false;
+    // Seul le super admin peut réinitialiser un autre super admin
+    if (u.user_type === 0 && !props.isSuperAdmin) return false;
+    return true;
+};
+
+//    CSRF helper           
 const csrf = () =>
     (document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement)?.content ?? '';
 
-// ââ Filtres âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+//    Filtres               
 const filters    = reactive({ name: '', last_name: '', email: '', mobile_number: '', user_type: '', status: '' });
 const perPage    = ref(5);
 
@@ -782,7 +796,7 @@ const resetFilters = () => {
 };
 const goToPage = (url: string) => router.get(url, {}, { preserveState: true });
 
-// ââ Sélection âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+//    Sélection             
 const selectedIds = ref<number[]>([]);
 const allSelected = computed(() =>
     props.users.data.length > 0 && props.users.data.every(u => selectedIds.value.includes(u.id))
@@ -795,7 +809,7 @@ const toggleSelect = (id: number) => {
     i === -1 ? selectedIds.value.push(id) : selectedIds.value.splice(i, 1);
 };
 
-// ââ Copie presse-papier âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+//    Copie presse-papier   
 const copied = ref<string | null>(null);
 let copyTimer: ReturnType<typeof setTimeout> | null = null;
 const copy = (text: string, key: string) => {
@@ -806,7 +820,7 @@ const copy = (text: string, key: string) => {
     }).catch(() => toast.error('Impossible de copier.'));
 };
 
-// ââ Contexte menu (clic droit) ââââââââââââââââââââââââââââââââââââââââââââââââ
+//    Contexte menu (clic droit)                                                 
 const ctxMenu = reactive<{ visible: boolean; x: number; y: number; user: UserRow | null }>({
     visible: false, x: 0, y: 0, user: null,
 });
@@ -832,11 +846,11 @@ onUnmounted(() => {
 });
 const onEsc = (e: KeyboardEvent) => { if (e.key === 'Escape') closeContextMenu(); };
 
-// ââ Modal Voir ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+//    Modal Voir            
 const viewTarget = ref<UserRow | null>(null);
 const openView   = (u: UserRow) => { viewTarget.value = u; };
 
-// ââ Modal Modifier ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+//    Modal Modifier        
 const editTarget = ref<UserRow | null>(null);
 const editForm   = reactive({ name: '', last_name: '', email: '', mobile_number: '', status: '1', user_type: 1 });
 const saving     = ref(false);
@@ -885,27 +899,36 @@ const submitEdit = async () => {
     }
 };
 
-// ââ Réinitialisation MDP (individuelle + masse) ââââââââââââââââââââââââââââââââ
+//    Réinitialisation MDP (individuelle + masse)                                 
 const resetTarget = ref<UserRow | null>(null);
 const resetting   = ref(false);
+const bulkResetIds = ref<string[]>([]);
 
 const openResetConfirm  = (u: UserRow) => { resetTarget.value = u; };
 const openBulkReset     = () => {
-    // Pour la masse on ouvre une confirmation générique en réutilisant le màªme modal
-    // On crée un faux user représentant la sélection
+    // Filtrer les IDs pour n'inclure que les comptes resetables
+    const resetableIds = selectedIds.value.filter(id => {
+        const u = props.users.data.find(r => String(r.id) === String(id));
+        return u ? canResetUser(u) : false;
+    });
+    if (resetableIds.length === 0) return;
+    // On crée un faux user représentant la sélection filtrée
     resetTarget.value = {
-        id: -1, name: 'sélectionnés', last_name: `${selectedIds.value.length} utilisateur(s)`,
-        email: selectedIds.value.length + ' adresses email',
+        id: -1, name: 'sélectionnés', last_name: `${resetableIds.length} utilisateur(s)`,
+        email: resetableIds.length + ' adresses email',
         mobile_number: null, user_type: -1, status: 1, profile_picture: null,
         created_at: '', is_online: false, role_label: '', role_names: [],
         permissions_count: 0, school_name: null,
     } as UserRow;
+    // Stocker les IDs filtrés pour executeReset
+    bulkResetIds.value = resetableIds.map(id => String(id));
 };
 
 const executeReset = async () => {
     if (!resetTarget.value) return;
     resetting.value = true;
-    const ids = resetTarget.value.id === -1 ? selectedIds.value : [resetTarget.value.id];
+    // S'assurer que les IDs sont bien des strings UUID (pas des entiers)
+    const ids = (resetTarget.value.id === -1 ? bulkResetIds.value : [String(resetTarget.value.id)]);
     try {
         const res = await fetch('/superadmin/users/reset-password', {
             method: 'POST',
@@ -917,8 +940,18 @@ const executeReset = async () => {
             toast.success(json.message);
             resetTarget.value = null;
             selectedIds.value = [];
+            bulkResetIds.value = [];
+            // Rafraîchir immédiatement les notifications in-app du destinataire
+            // (sans attendre le prochain poll de 30s)
+            window.dispatchEvent(new Event('refresh-notifications'));
         } else {
-            toast.error(json.message);
+            // Gérer les erreurs de validation (422) et les erreurs métier
+            if (json.errors) {
+                const firstError = Object.values(json.errors as Record<string, string[]>).flat()[0];
+                toast.error(firstError ?? 'Erreur de validation.');
+            } else {
+                toast.error(json.message ?? 'Une erreur est survenue.');
+            }
         }
     } catch {
         toast.error('Erreur réseau.');
@@ -927,7 +960,7 @@ const executeReset = async () => {
     }
 };
 
-// ââ Suppression âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+//    Suppression           
 const deleteTarget = ref<UserRow | null>(null);
 const deleting     = ref(false);
 
@@ -955,7 +988,7 @@ const executeDelete = async () => {
     }
 };
 
-// ââ Helpers visuels âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+//    Helpers visuels       
 const formatDate = fmtDate;
 const initials   = (u: UserRow) => ((u.last_name?.[0] ?? '') + (u.name?.[0] ?? '')).toUpperCase() || '?';
 const encodedId  = (id: number) => btoa(String(id));

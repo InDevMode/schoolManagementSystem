@@ -7,6 +7,7 @@ use App\Models\School;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -129,6 +130,7 @@ class SchoolController extends Controller
 
             $school->save();
 
+            Cache::forget("school.active.{$school->id}");
             return back()->with('success', "École « {$school->school_name} » modifiée avec succès.");
         } catch (\Exception $e) {
             Log::error('SchoolController::update — ' . $e->getMessage());
@@ -154,6 +156,7 @@ class SchoolController extends Controller
 
         try {
             $school->update(['is_delete' => 1]);
+            Cache::forget("school.active.{$school->id}");
             return back()->with('success', "École « {$school->school_name} » supprimée.");
         } catch (\Exception $e) {
             Log::error('SchoolController::delete — ' . $e->getMessage());
@@ -266,6 +269,7 @@ class SchoolController extends Controller
 
             $school->save();
 
+            Cache::forget("school.active.{$school->id}");
             return back()->with('success', 'Paramètres de l\'école enregistrés avec succès.');
         } catch (\Exception $e) {
             Log::error('SchoolController::updateSettings — ' . $e->getMessage());

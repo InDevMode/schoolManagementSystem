@@ -71,6 +71,7 @@ class RbacController extends Controller
                 'user_type'   => (int) $request->user_type,
                 'description' => $request->description ? trim($request->description) : null,
             ]);
+            Cache::forget('roles.list.frontend');
             return back()->with('success', "Rôle « {$request->name} » (user_type={$request->user_type}) créé avec succès.");
         } catch (\Exception $e) {
             Log::error('RBAC roleCreate: ' . $e->getMessage());
@@ -105,6 +106,7 @@ class RbacController extends Controller
                 'user_type'   => (int) $request->user_type,
                 'description' => $request->description ? trim($request->description) : null,
             ]);
+            Cache::forget('roles.list.frontend');
             return back()->with('success', 'Rôle modifié avec succès.');
         } catch (\Exception $e) {
             Log::error('RBAC roleUpdate: ' . $e->getMessage());
@@ -128,6 +130,7 @@ class RbacController extends Controller
                 'deleted_at' => now(),
             ]);
             app()[PermissionRegistrar::class]->forgetCachedPermissions();
+            Cache::forget('roles.list.frontend');
             return back()->with('success', "Rôle « {$role->name} » supprimé (soft delete).");
         } catch (\Exception $e) {
             Log::error('RBAC roleDelete: ' . $e->getMessage());
@@ -144,6 +147,7 @@ class RbacController extends Controller
             'deleted_at' => null,
         ]);
         app()[PermissionRegistrar::class]->forgetCachedPermissions();
+        Cache::forget('roles.list.frontend');
         return back()->with('success', 'Rôle restauré avec succès.');
     }
 
@@ -187,6 +191,7 @@ class RbacController extends Controller
         try {
             Permission::create(['name' => trim($request->name), 'guard_name' => 'web']);
             app()[PermissionRegistrar::class]->forgetCachedPermissions();
+            Cache::forget('perm.count.web');
             return back()->with('success', "Permission « {$request->name} » créée avec succès.");
         } catch (\Exception $e) {
             Log::error('RBAC permissionCreate: ' . $e->getMessage());
@@ -205,6 +210,7 @@ class RbacController extends Controller
         try {
             $permission->update(['name' => trim($request->name)]);
             app()[PermissionRegistrar::class]->forgetCachedPermissions();
+            Cache::forget('perm.count.web');
             return back()->with('success', 'Permission modifiée avec succès.');
         } catch (\Exception $e) {
             Log::error('RBAC permissionUpdate: ' . $e->getMessage());
@@ -224,6 +230,7 @@ class RbacController extends Controller
                 'deleted_at' => now(),
             ]);
             app()[PermissionRegistrar::class]->forgetCachedPermissions();
+            Cache::forget('perm.count.web');
             return back()->with('success', "Permission « {$permission->name} » supprimée (soft delete).");
         } catch (\Exception $e) {
             Log::error('RBAC permissionDelete: ' . $e->getMessage());
@@ -240,6 +247,7 @@ class RbacController extends Controller
             'deleted_at' => null,
         ]);
         app()[PermissionRegistrar::class]->forgetCachedPermissions();
+        Cache::forget('perm.count.web');
         return back()->with('success', 'Permission restaurée avec succès.');
     }
 

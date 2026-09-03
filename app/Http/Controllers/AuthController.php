@@ -37,7 +37,9 @@ class AuthController extends Controller
                 return back()->with('error', "Cet utilisateur n'est pas activé.");
             }
 
-            User::getSingle($user->id)->update(['last_login' => now()]);
+            // Auth::attempt() a déjà hydraté $user — on met à jour directement sans SELECT supplémentaire
+            $user->last_login = now();
+            $user->save();
             $request->session()->regenerate();
 
             return $this->redirectByRole($user->user_type);
@@ -86,7 +88,7 @@ class AuthController extends Controller
         abort_unless($user, 404);
 
         $user->password       = Hash::make($request->password);
-        $user->remember_token = Str::random(30);
+        $user->remember_token = null; // Invalider le token après usage
         $user->save();
 
         return redirect('/login')->with('success', 'Mot de passe réinitialisé avec succès. Connectez-vous.');

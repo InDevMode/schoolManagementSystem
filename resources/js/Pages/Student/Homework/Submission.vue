@@ -150,7 +150,7 @@
 </template>
 
 <script setup lang="ts">
-import { fmtDate } from '@/utils/dateFormat';
+import { fmtDate } from '@/Utils/dateFormat';
 import { ref, computed } from 'vue';
 import { router, Link } from '@inertiajs/vue3';
 import { AppButton, FileTypeIcon } from '@/Components/UI';

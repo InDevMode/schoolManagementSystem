@@ -84,7 +84,7 @@
 </template>
 
 <script setup lang="ts">
-import { fmtDate } from '@/utils/dateFormat';
+import { fmtDate } from '@/Utils/dateFormat';
 import { computed } from 'vue';
 import { PageHeader, DataTable, AppBadge } from '@/Components/UI';
 

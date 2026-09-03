@@ -144,6 +144,7 @@ class ChatModel extends Model
 
     public static function getUnreadMessages(string $user_id)
     {
+        // Requête principale : dernier message non lu par expéditeur
         $getUnread = ChatModel::select(
             'chats.*',
             'sender.name as sender_name',
@@ -160,17 +161,30 @@ class ChatModel extends Model
             ->distinct('sender.id')
             ->get();
 
-        $result = [];
+        if ($getUnread->isEmpty()) {
+            return [];
+        }
 
+        // Charger tous les counts non lus par expéditeur en UNE seule requête GROUP BY
+        $senderIds = $getUnread->pluck('sender_id')->unique()->all();
+        $counts    = ChatModel::where('receiver_id', $user_id)
+            ->whereIn('sender_id', $senderIds)
+            ->where('status', 0)
+            ->selectRaw('sender_id, COUNT(*) as cnt')
+            ->groupBy('sender_id')
+            ->pluck('cnt', 'sender_id');
+
+        $result = [];
         foreach ($getUnread as $value) {
-            $data['id'] = $value->id;
-            $data['message'] = $value->message;
-            $data['created_date'] = $value->created_date;
-            $data['sender_id'] = $value->sender_id;
-            $data['sender_name'] = $value->sender_last_name . ' ' . $value->sender_name;
+            $data['id']                     = $value->id;
+            $data['message']                = $value->message;
+            $data['created_date']           = $value->created_date;
+            $data['sender_id']              = $value->sender_id;
+            $data['sender_name']            = $value->sender_last_name . ' ' . $value->sender_name;
             $data['sender_profile_picture'] = $value->sender_profile_picture;
-            $data['sender_last_login'] = $value->last_login;
-            $data['countMessage'] = $value->countMessage($value->id, $user_id);
+            $data['sender_last_login']      = $value->last_login;
+            // Lookup en mémoire — plus de requête par itération
+            $data['countMessage']           = (int) ($counts->get($value->sender_id, 0));
             $result[] = $data;
         }
 

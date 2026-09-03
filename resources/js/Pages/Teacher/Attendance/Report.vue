@@ -32,7 +32,7 @@
 </template>
 
 <script setup lang="ts">
-import { fmtDate } from '@/utils/dateFormat';
+import { fmtDate } from '@/Utils/dateFormat';
 import { PageHeader, AppBadge, DataTable } from '@/Components/UI';
 
 interface AttendanceRecord {

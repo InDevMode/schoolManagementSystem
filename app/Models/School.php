@@ -69,12 +69,20 @@ class School extends Model
 
     public function getLogoUrl(): string
     {
-        return \App\Services\UploadService::url($this->logo, asset('upload/logo.png'));
+        $path = $this->logo;
+        if (!$path || !str_contains($path, '/')) {
+            return asset('upload/logo.png');
+        }
+        return \App\Services\UploadService::url($path, asset('upload/logo.png'));
     }
 
     public function getFaviconUrl(): string
     {
-        return \App\Services\UploadService::url($this->favicon, asset('upload/favicon.png'));
+        $path = $this->favicon;
+        if (!$path || !str_contains($path, '/')) {
+            return asset('upload/favicon.png');
+        }
+        return \App\Services\UploadService::url($path, asset('upload/favicon.png'));
     }
 
     // ── Helpers statiques ──────────────────────────────────────────────────

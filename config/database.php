@@ -76,6 +76,11 @@ return [
             'prefix_indexes' => true,
             'search_path'    => 'public',
             'sslmode'        => env('DB_SSLMODE', 'prefer'),
+            // Connexions persistantes — évite le handshake TCP+TLS à chaque requête
+            // Particulièrement utile contre une DB distante (ex : Supabase)
+            'options'        => [
+                PDO::ATTR_PERSISTENT => env('DB_PERSISTENT', false),
+            ],
         ],
 
         'sqlsrv' => [
