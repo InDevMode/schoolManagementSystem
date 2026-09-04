@@ -8,6 +8,7 @@ use App\Models\FeesCollectionModel;
 use App\Models\SettingModel;
 use App\Models\User;
 use App\Notifications\FeesPaymentNotification;
+use App\Services\RefDataCache;
 use FedaPay\FedaPay;
 use FedaPay\Transaction as FedaTransaction;
 use Illuminate\Http\Request;
@@ -25,7 +26,7 @@ class FeesCollectionController extends Controller
     {
         $perPage = min((int) request('per_page', 15), 100);
         return Inertia::render('Admin/Fees/Index', [
-            'classes' => ClassModel::getClass(),
+            'classes'          => RefDataCache::classes(),
             'feesCollections' => User::getFeesCollectionStudent($perPage),
         ]);
     }

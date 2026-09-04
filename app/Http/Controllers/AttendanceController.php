@@ -7,6 +7,7 @@ use App\Models\ClassModel;
 use App\Models\ClassTeacherModel;
 use App\Models\StudentAttendanceModel;
 use App\Models\User;
+use App\Services\RefDataCache;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -34,7 +35,7 @@ class AttendanceController extends Controller
         }
 
         return Inertia::render('Admin/Attendance/Index', [
-            'classes'            => ClassModel::getClass(),
+            'classes'            => RefDataCache::classes(),
             'students'           => $students,
             'selectedClass'      => $request->class_id,
             'selectedDate'       => $request->attendance_date,
@@ -111,7 +112,7 @@ class AttendanceController extends Controller
     public function attendanceReport()
     {
         return Inertia::render('Admin/Attendance/Report', [
-            'classes'    => ClassModel::getClass(),
+            'classes'    => RefDataCache::classes(),
             'attendance' => StudentAttendanceModel::getStudentAttendance(15),
         ]);
     }

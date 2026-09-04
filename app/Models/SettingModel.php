@@ -64,21 +64,19 @@ class SettingModel extends Model
     public function getFavicon(): string
     {
         $path = $this->favicon;
-        // Ancienne valeur sans dossier (ex: "favicon.png") → fallback local
         if (!$path || !str_contains($path, '/')) {
-            return asset('upload/favicon.png');
+            return asset('upload/favicon.svg');
         }
-        return \App\Services\UploadService::url($path, asset('upload/favicon.png'));
+        return \App\Services\UploadService::url($path, asset('upload/favicon.svg'));
     }
 
     public function getLogo(): string
     {
         $path = $this->logo;
-        // Ancienne valeur sans dossier (ex: "logo.png") → fallback local
         if (!$path || !str_contains($path, '/')) {
-            return asset('upload/logo.png');
+            return asset('upload/logo.svg');
         }
-        return \App\Services\UploadService::url($path, asset('upload/logo.png'));
+        return \App\Services\UploadService::url($path, asset('upload/logo.svg'));
     }
 
 

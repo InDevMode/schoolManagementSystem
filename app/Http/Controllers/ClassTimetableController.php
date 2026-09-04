@@ -8,6 +8,7 @@ use App\Models\ClassTimetableModel;
 use App\Models\SubjectModel;
 use App\Models\User;
 use App\Models\WeekModel;
+use App\Services\RefDataCache;
 use App\Notifications\TimetableCreatedNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -61,7 +62,7 @@ class ClassTimetableController extends Controller
         }
 
         return Inertia::render('Admin/Timetable/Index', [
-            'classes'         => ClassModel::getClass(),
+            'classes'         => RefDataCache::classes(),
             'subjects'        => $subjects,
             'week'            => $week,
             'selectedClass'   => $request->class_id,

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\ClassSubjectModel;
 use App\Models\SubjectModel;
 use App\Models\User;
+use App\Services\RefDataCache;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -36,6 +37,8 @@ class SubjectController extends Controller
             $subject->created_by = auth()->user()->id;
             $subject->save();
 
+            RefDataCache::forgetSubjects();
+
             return redirect('admin/subject/list')->with('success', 'Cette matière a été créé avec succès.');
         } catch (\Exception $e) {
             Log::error("Erreur lors de la création d'une matière : " . $e->getMessage());
@@ -62,6 +65,9 @@ class SubjectController extends Controller
             $subject->type = trim($request->type);
             $subject->status = $request->status;
             $subject->save();
+
+            RefDataCache::forgetSubjects();
+
             return redirect('admin/subject/list')->with('success', 'Cette matière a été modifiée avec succès.');
 
         } catch (\Exception $e) {
@@ -77,6 +83,7 @@ class SubjectController extends Controller
         if ($class) {
             $class->is_delete = 1;
             $class->save();
+            RefDataCache::forgetSubjects();
             return redirect('admin/subject/list')->with('success', 'Cette matière a été supprimé avec succès.');
         } else {
             abort(404);

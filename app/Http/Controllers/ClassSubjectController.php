@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\ClassModel;
 use App\Models\ClassSubjectModel;
 use App\Models\SubjectModel;
+use App\Services\RefDataCache;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -16,8 +17,8 @@ class ClassSubjectController extends Controller
     {
         return Inertia::render('Admin/AssignSubject/Index', [
             'classSubjects' => ClassSubjectModel::getAllClassSubject(15),
-            'classes'       => ClassModel::getClass(),
-            'subjects'      => SubjectModel::getSubject(),
+            'classes'       => RefDataCache::classes(),
+            'subjects'      => RefDataCache::subjects(),
         ]);
     }
 

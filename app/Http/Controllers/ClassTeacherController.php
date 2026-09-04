@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\ClassModel;
 use App\Models\ClassTeacherModel;
 use App\Models\User;
+use App\Services\RefDataCache;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -16,7 +17,7 @@ class ClassTeacherController extends Controller
     {
         return Inertia::render('Admin/AssignClass/Index', [
             'classTeachers' => ClassTeacherModel::getAllClassTeacher(15),
-            'classes'       => ClassModel::getClass(),
+            'classes'       => RefDataCache::classes(),
             'teachers'      => User::getTeacher(),
         ]);
     }

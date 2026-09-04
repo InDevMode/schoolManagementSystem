@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\PeriodModel;
 use App\Models\School;
+use App\Services\RefDataCache;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -53,6 +54,8 @@ class PeriodController extends Controller
             $period->created_by   = $user->id;
             $period->save();
 
+            RefDataCache::forgetPeriods((int) $schoolId);
+
             return redirect('admin/examinations/period/list')
                 ->with('success', 'Période créée avec succès.');
         } catch (\Exception $e) {
@@ -91,6 +94,8 @@ class PeriodController extends Controller
             $period->status       = $request->status;
             $period->save();
 
+            RefDataCache::forgetPeriods((int) $period->school_id);
+
             return redirect('admin/examinations/period/list')
                 ->with('success', 'Période modifiée avec succès.');
         } catch (\Exception $e) {
@@ -112,6 +117,8 @@ class PeriodController extends Controller
 
         $period->is_delete = 1;
         $period->save();
+
+        RefDataCache::forgetPeriods((int) $period->school_id);
 
         return redirect()->back()->with('success', 'Période supprimée avec succès.');
     }
@@ -140,6 +147,8 @@ class PeriodController extends Controller
 
             $period->is_current = true;
             $period->save();
+
+            RefDataCache::forgetPeriods((int) $schoolId);
 
             return redirect()->back()->with('success', "Période «{$period->name}» définie comme courante.");
         } catch (\Exception $e) {

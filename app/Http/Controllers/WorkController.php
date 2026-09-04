@@ -8,6 +8,7 @@ use App\Models\ClassTeacherModel;
 use App\Models\HomeworkModel;
 use App\Models\User;
 use App\Models\WorkAttachmentModel;
+use App\Services\RefDataCache;
 use App\Models\WorkModel;
 use App\Notifications\NewHomeworkNotification;
 use Illuminate\Http\Request;
@@ -67,7 +68,7 @@ class WorkController extends Controller
         $user = Auth::user();
         return Inertia::render('Admin/Homework/Index', [
             'works'           => WorkModel::getWorks(15),
-            'classes'         => ClassModel::getClass(),
+            'classes'         => RefDataCache::classes(),
             'currentUserId'   => $user->id,
             'currentUserType' => $user->user_type,
             'canCreate'       => $user->user_type === 0 || $user->can('action.homework.create'),

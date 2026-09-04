@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\ClassModel;
+use App\Services\RefDataCache;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
@@ -36,6 +37,8 @@ class ClassController extends Controller
             $class->school_id  = ($user->user_type !== 0) ? $user->school_id : null;
             $class->save();
 
+            RefDataCache::forgetClasses((int) $class->school_id ?: 0);
+
             return redirect('admin/class/list')->with('success', 'Cette classe a été créé avec succès.');
         } catch (\Exception $e) {
             Log::error("Erreur lors de la création d'une classe : " . $e->getMessage());
@@ -62,6 +65,9 @@ class ClassController extends Controller
             $class->status = $request->status;
             $class->amount = $request->amount;
             $class->save();
+
+            RefDataCache::forgetClasses((int) $class->school_id ?: 0);
+
             return redirect('admin/class/list')->with('success', 'Cette classe a été modifiée avec succès.');
 
         } catch (\Exception $e) {
@@ -77,6 +83,7 @@ class ClassController extends Controller
         if ($class) {
             $class->is_delete = 1;
             $class->save();
+            RefDataCache::forgetClasses((int) $class->school_id ?: 0);
             return redirect('admin/class/list')->with('success', 'Cette classe a été supprimé avec succès.');
         } else {
             abort(404);

@@ -8,6 +8,7 @@ use App\Models\DeletionLogModel;
 use App\Models\PeriodModel;
 use App\Models\SettingModel;
 use App\Models\User;
+use App\Services\RefDataCache;
 use App\Notifications\BulletinPublishedNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -26,8 +27,8 @@ class BulletinController extends Controller
         $perPage = min((int) request('per_page', 5), 100);
         return Inertia::render('Admin/Bulletins/Index', [
             'bulletins' => BulletinModel::getAll($perPage),
-            'classes'   => ClassModel::getClass(),
-            'periods'   => PeriodModel::getAllPeriods(),
+            'classes'   => RefDataCache::classes(),
+            'periods'   => RefDataCache::periods(),
         ]);
     }
 

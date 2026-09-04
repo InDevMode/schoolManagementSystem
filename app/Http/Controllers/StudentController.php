@@ -6,6 +6,7 @@ use App\Exports\ExportStudent;
 use App\Models\ClassModel;
 use App\Models\ClassTeacherModel;
 use App\Models\User;
+use App\Services\RefDataCache;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -36,7 +37,7 @@ class StudentController extends Controller
 
         return Inertia::render('Admin/Students/Index', [
             'students' => $students,
-            'classes'  => ClassModel::getClass(),
+            'classes'  => RefDataCache::classes(),
         ]);
     }
 

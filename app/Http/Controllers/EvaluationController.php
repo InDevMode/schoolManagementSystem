@@ -8,6 +8,7 @@ use App\Models\ClassTeacherModel;
 use App\Models\DeletionLogModel;
 use App\Models\EvaluationModel;
 use App\Models\GradeModel;
+use App\Services\RefDataCache;
 use App\Models\PeriodModel;
 use App\Models\SubjectModel;
 use App\Models\User;
@@ -27,9 +28,9 @@ class EvaluationController extends Controller
         $perPage = min((int) request('per_page', 6), 100);
         return Inertia::render('Admin/Evaluations/Index', [
             'evaluations'   => EvaluationModel::getAll($perPage),
-            'classes'       => ClassModel::getClass(),
-            'periods'       => PeriodModel::getAllPeriods(),
-            'currentPeriod' => PeriodModel::getCurrentPeriod()->first(),
+            'classes'       => RefDataCache::classes(),
+            'periods'       => RefDataCache::periods(),
+            'currentPeriod' => RefDataCache::currentPeriod(),
             'typeLabels'    => EvaluationModel::$typeLabels,
             'typeCoeffs'    => EvaluationModel::$typeCoefficients,
         ]);
@@ -80,9 +81,9 @@ class EvaluationController extends Controller
 
         return response()->json([
             'evaluation' => $eval,
-            'classes'    => ClassModel::getClass(),
-            'subjects'   => SubjectModel::getSubject(),
-            'periods'    => PeriodModel::getAllPeriods(),
+            'classes'    => RefDataCache::classes(),
+            'subjects'   => RefDataCache::subjects(),
+            'periods'    => RefDataCache::periods(),
         ]);
     }
 
@@ -205,9 +206,9 @@ class EvaluationController extends Controller
     public function gradeEntry(Request $request)
     {
         $data = [
-            'classes'           => ClassModel::getClass(),
-            'periods'           => PeriodModel::getCurrentPeriod(),
-            'currentPeriod'     => PeriodModel::getCurrentPeriod()->first(),
+            'classes'           => RefDataCache::classes(),
+            'periods'           => RefDataCache::periods(),
+            'currentPeriod'     => RefDataCache::currentPeriod(),
             'evaluations'       => [],
             'grades'            => [],
             'selectedClassId'   => $request->class_id   ? $request->class_id   : null,
@@ -672,8 +673,7 @@ class EvaluationController extends Controller
         return Inertia::render('Teacher/Evaluations/Index', [
             'evaluations'   => $evaluations,
             'classes'       => $classes,
-            'currentPeriod' => PeriodModel::getCurrentPeriod()->first(),
-            'typeLabels'    => EvaluationModel::$typeLabels,
+            'currentPeriod' => RefDataCache::currentPeriod(),
             'typeCoeffs'    => EvaluationModel::$typeCoefficients,
         ]);
     }
@@ -727,8 +727,8 @@ class EvaluationController extends Controller
         $classes    = ClassTeacherModel::getMyClassSubjectGroup($teacher_id);
         $data       = [
             'classes'          => $classes,
-            'periods'          => PeriodModel::getCurrentPeriod(),
-            'currentPeriod'    => PeriodModel::getCurrentPeriod()->first(),
+            'periods'          => RefDataCache::periods(),
+            'currentPeriod'    => RefDataCache::currentPeriod(),
             'evaluations'      => [],
             'grades'           => [],
             'selectedClassId'  => $request->class_id  ? $request->class_id  : null,
@@ -845,7 +845,7 @@ class EvaluationController extends Controller
     public function studentGrades(Request $request)
     {
         $student_id = Auth::id();
-        $periods    = PeriodModel::getAllPeriods();
+        $periods    = RefDataCache::periods();
         $period_id  = $request->period_id ?? ($periods->first()?->id);
 
         $grades = $period_id
@@ -869,7 +869,7 @@ class EvaluationController extends Controller
         $student = User::find($student_id);
         if (!$student || $student->parent_id !== Auth::id()) abort(403);
 
-        $periods   = PeriodModel::getAllPeriods();
+        $periods   = RefDataCache::periods();
         $period_id = $request->period_id ?? ($periods->first()?->id);
 
         $grades = $period_id

@@ -1,7 +1,7 @@
 <template>
     <div class="space-y-6">
         <!-- Header -->
-        <PageHeader title="Classes" :subtitle="`${classes.total} classe(s) enregistrée(s)`" color="primary">
+        <PageHeader title="Classes" :subtitle="`${classes.total} classe(s) enregistrï¿½e(s)`" color="primary">
             <template #icon>
                 <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
@@ -39,7 +39,7 @@
             </template>
             <template #actions="{ row }">
                 <div class="flex items-center justify-end gap-1.5">
-                    <button title="Voir les détails" @click="openDetails(row as any)"
+                    <button title="Voir les dÃ©tails" @click="openDetails(row as any)"
                             class="p-1.5 rounded-xl transition-all duration-150
                                    text-white bg-violet-500 hover:bg-violet-600 active:bg-violet-700
                                    shadow-sm shadow-violet-200 dark:shadow-violet-900/40">
@@ -71,7 +71,7 @@
                     <svg class="w-4 h-4 text-violet-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0zM2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
                     </svg>
-                    Voir les détails
+                    Voir les dÃ©tails
                 </button>
                 <button v-if="canEdit" @click="openEdit(row as any)"
                         class="flex w-full items-center gap-2.5 px-3.5 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-emerald-50 dark:hover:bg-gray-700/60 hover:text-emerald-700 transition-colors">
@@ -93,7 +93,7 @@
             </template>
         </DataTable>
 
-        <!-- Modal Créer / Modifier -->
+        <!-- Modal CrÃ©er / Modifier -->
         <AppModal v-model="showForm" :title="editTarget ? 'Modifier la classe' : 'Nouvelle classe'" size="md">
             <form :id="formId" @submit.prevent="submitForm" class="space-y-4">
                 <AppInput v-model="form.name" label="Nom de la classe" required :error="form.errors.name" />
@@ -103,7 +103,7 @@
             <template #footer>
                 <AppButton variant="ghost" @click="showForm = false">Annuler</AppButton>
                 <AppButton type="submit" :form="formId" :loading="form.processing">
-                    {{ editTarget ? 'Enregistrer' : 'Créer' }}
+                    {{ editTarget ? 'Enregistrer' : 'CrÃ©er' }}
                 </AppButton>
             </template>
         </AppModal>
@@ -112,7 +112,7 @@
         <AppModal v-model="showDelete" title="Supprimer la classe" size="sm" persistent>
             <p class="text-sm text-gray-600 dark:text-gray-400">
                 Voulez-vous vraiment supprimer la classe <strong class="text-gray-900 dark:text-white">{{ deleteTarget?.name }}</strong> ?
-                Elle sera masquée de l'affichage. Le super administrateur peut la retrouver dans l'historique.
+                Elle sera masquÃ©e de l'affichage. Le super administrateur peut la retrouver dans l'historique.
             </p>
             <template #footer>
                 <AppButton variant="ghost" @click="showDelete = false">Annuler</AppButton>
@@ -120,7 +120,7 @@
             </template>
         </AppModal>
 
-        <!-- Drawer Voir détails -->
+        <!-- Drawer Voir dÃ©tails -->
         <Teleport to="body">
             <Transition
                 enter-active-class="transition-all duration-300 ease-out"
@@ -153,8 +153,8 @@
                                         </svg>
                                     </div>
                                     <div>
-                                        <h2 class="text-base font-semibold text-gray-900 dark:text-white">Détails de la classe</h2>
-                                        <p class="text-xs text-gray-500 dark:text-gray-400">Informations complètes</p>
+                                        <h2 class="text-base font-semibold text-gray-900 dark:text-white">dÃ©tails de la classe</h2>
+                                        <p class="text-xs text-gray-500 dark:text-gray-400">Informations complï¿½tes</p>
                                     </div>
                                 </div>
                                 <button @click="showDetails = false" class="p-1.5 rounded-xl bg-red-500 hover:bg-red-600 text-white transition-colors flex-shrink-0 shadow-sm">
@@ -178,27 +178,27 @@
                                     </AppBadge>
                                 </div>
 
-                                <!-- Frais de scolarité -->
+                                <!-- Frais de scolaritï¿½ -->
                                 <div class="rounded-xl bg-gray-50 dark:bg-gray-800 p-4">
-                                    <p class="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wide mb-1">Frais de scolarité</p>
+                                    <p class="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wide mb-1">Frais de scolaritï¿½</p>
                                     <p class="text-2xl font-bold text-primary-600 dark:text-primary-400">
                                         {{ Number(detailsTarget.amount).toLocaleString('fr-FR') }}
                                         <span class="text-sm font-medium text-gray-500"> FCFA</span>
                                     </p>
                                 </div>
 
-                                <!-- Métadonnées -->
+                                <!-- Mï¿½tadonnï¿½es -->
                                 <div class="space-y-3 pt-2 border-t border-gray-100 dark:border-gray-700">
                                     <div v-if="detailsTarget.created_by_name">
-                                        <p class="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wide mb-1">Créé par</p>
+                                        <p class="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wide mb-1">Crï¿½ï¿½ par</p>
                                         <p class="text-sm text-gray-700 dark:text-gray-300">{{ detailsTarget.created_by_name }}</p>
                                     </div>
                                     <div v-if="detailsTarget.created_at">
-                                        <p class="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wide mb-1">Date de création</p>
+                                        <p class="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wide mb-1">Date de crï¿½ation</p>
                                         <p class="text-sm text-gray-700 dark:text-gray-300">{{ formatDate(detailsTarget.created_at) }}</p>
                                     </div>
                                     <div v-if="detailsTarget.updated_at">
-                                        <p class="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wide mb-1">Dernière modification</p>
+                                        <p class="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wide mb-1">Derniï¿½re modification</p>
                                         <p class="text-sm text-gray-700 dark:text-gray-300">{{ formatDate(detailsTarget.updated_at) }}</p>
                                     </div>
                                 </div>
@@ -275,8 +275,8 @@ const columns = [
     { key: 'name',            label: 'Nom de la classe', sortable: true  },
     { key: 'amount',          label: 'Frais (FCFA)',      sortable: true  },
     { key: 'status',          label: 'Statut',            sortable: true, exportFormat: (v: unknown) => (v == 1 ? 'Actif' : 'Inactif')  },
-    { key: 'created_by_name', label: 'Créé par',          sortable: false },
-    { key: 'created_at',      label: 'Date création',     sortable: true,
+    { key: 'created_by_name', label: 'Crï¿½ï¿½ par',          sortable: false },
+    { key: 'created_at',      label: 'Date crï¿½ation',     sortable: true,
       format: (v: unknown) => fmtDate(v as string) },
 ];
 
@@ -332,7 +332,7 @@ const confirmDelete = () => {
 const handleDelete = (ids: (string | number)[]) => {
     ids.forEach(id => {
         router.get(`/admin/class/delete/${id}`, {}, {
-            onSuccess: () => toast.success('Classe supprimée avec succès.'),
+            onSuccess: () => toast.success('Classe supprimï¿½e avec succï¿½s.'),
             onError: () => toast.error('Erreur lors de la suppression.'),
         });
     });

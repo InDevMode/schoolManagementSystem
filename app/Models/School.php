@@ -71,18 +71,18 @@ class School extends Model
     {
         $path = $this->logo;
         if (!$path || !str_contains($path, '/')) {
-            return asset('upload/logo.png');
+            return asset('upload/logo.svg');
         }
-        return \App\Services\UploadService::url($path, asset('upload/logo.png'));
+        return \App\Services\UploadService::url($path, asset('upload/logo.svg'));
     }
 
     public function getFaviconUrl(): string
     {
         $path = $this->favicon;
         if (!$path || !str_contains($path, '/')) {
-            return asset('upload/favicon.png');
+            return asset('upload/favicon.svg');
         }
-        return \App\Services\UploadService::url($path, asset('upload/favicon.png'));
+        return \App\Services\UploadService::url($path, asset('upload/favicon.svg'));
     }
 
     // ── Helpers statiques ──────────────────────────────────────────────────

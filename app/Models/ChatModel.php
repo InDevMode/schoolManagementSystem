@@ -74,7 +74,7 @@ class ChatModel extends Model
             'receiver.profile_picture as receiver_profile_picture',
             'sender.profile_picture as sender_profile_picture',
             'chats.is_delete',
-            \Illuminate\Support\Facades\DB::raw('(CASE WHEN chats.sender_id = ' . $user_id . ' THEN chats.receiver_id ELSE chats.sender_id END) as connection_user_id')
+            \Illuminate\Support\Facades\DB::raw("(CASE WHEN chats.sender_id = '" . $user_id . "' THEN chats.receiver_id ELSE chats.sender_id END) as connection_user_id")
         )
             ->join('users as sender', 'sender.id', '=', 'chats.sender_id')
             ->join('users as receiver', 'receiver.id', '=', 'chats.receiver_id')
@@ -89,7 +89,7 @@ class ChatModel extends Model
                         $sub->where('c2.is_delete', 0)
                             ->orWhereNull('c2.is_delete');
                     })
-                    ->groupBy(\Illuminate\Support\Facades\DB::raw('CASE WHEN c2.sender_id = \'' . $user_id . '\' THEN c2.receiver_id ELSE c2.sender_id END'));
+                    ->groupBy(\Illuminate\Support\Facades\DB::raw("CASE WHEN c2.sender_id = '" . $user_id . "' THEN c2.receiver_id ELSE c2.sender_id END"));
             })
             ->where(function ($q) {
                 $q->where('chats.is_delete', 0)->orWhereNull('chats.is_delete');
@@ -122,7 +122,7 @@ class ChatModel extends Model
         return $result;
     }
 
-    public function countMessage(int $connection_user_id, string $user_id)
+    public function countMessage(string $connection_user_id, string $user_id)
     {
         return ChatModel::where('sender_id', '=', $connection_user_id)
             ->where('receiver_id', '=', $user_id)

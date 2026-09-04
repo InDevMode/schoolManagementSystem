@@ -8,16 +8,17 @@
     @php
         try {
             $setting = \App\Models\SettingModel::getSingle(1);
-            $favicon = $setting?->getFavicon() ?? asset('upload/favicon.png');
+            $favicon = $setting?->getFavicon() ?? asset('upload/favicon.svg');
             $appName = $setting?->school_name ?? config('app.name', 'SMS');
         } catch (\Exception $e) {
-            $favicon = asset('upload/favicon.png');
+            $favicon = asset('upload/favicon.svg');
             $appName = config('app.name', 'SMS');
         }
     @endphp
 
     <title inertia>{{ $appName }}</title>
-    <link rel="shortcut icon" href="{{ $favicon }}" />
+    <link rel="shortcut icon" type="image/svg+xml" href="{{ $favicon }}" />
+    <link rel="icon" type="image/svg+xml" href="{{ $favicon }}" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,300;0,14..32,400;0,14..32,500;0,14..32,600;0,14..32,700;0,14..32,800;1,14..32,400&display=swap" rel="stylesheet" />

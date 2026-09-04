@@ -13,6 +13,7 @@ use App\Models\FeesCollectionModel;
 use App\Models\HomeworkModel;
 use App\Models\NoticeBoardMessageModel;
 use App\Models\PeriodModel;
+use App\Services\RefDataCache;
 use App\Models\StaffEventModel;
 use App\Models\StaffLeaveModel;
 use App\Models\StaffModel;
@@ -44,7 +45,7 @@ class DashboardController extends Controller
 
         $currentPeriod = null;
         try {
-            $currentPeriod = PeriodModel::getAllPeriods()->first();
+            $currentPeriod = RefDataCache::currentPeriod();
         } catch (\Exception $e) {}
 
         switch ((int) Auth::user()->user_type) {
